@@ -35,7 +35,7 @@ class Table:
     def all(pkg, mods="") -> [types.ModuleType]:
         res = []
         path = pkg.__path__[0]
-        pname = ".".join(path.split(os.sep)[-2:])
+        pname = pkg.__name__
         for nme in Table.modules(path):
             if nme in Table.disable:
                 continue
@@ -93,17 +93,7 @@ class Table:
                ]
 
 
-def gettable() -> dict:
-    try:
-        from .lookups import NAMES as names
-    except Exception as ex:
-        later(ex)
-        names = {}
-    return names
-
-
 def __dir__():
     return (
         'Table',
-        'gettable'
     )

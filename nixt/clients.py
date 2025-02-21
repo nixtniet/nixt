@@ -9,7 +9,7 @@ import queue
 import threading
 
 
-from .default import Default
+from .objects import Default
 from .reactor import Fleet, Reactor
 from .threads import launch
 

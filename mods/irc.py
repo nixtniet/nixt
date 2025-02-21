@@ -15,16 +15,14 @@ import time
 import _thread
 
 
-from ..clients import Config as Main
-from ..command import command
-from ..default import Default
-from ..locater import last
-from ..message import Message
-from ..objects import Object, edit, fmt, keys
-from ..persist import ident, write
-from ..reactor import Fleet, Reactor
-from ..runtime import output
-from ..threads import later, launch
+from nixt.clients import Config as Main
+from nixt.command import command
+from nixt.locater import last
+from nixt.message import Message
+from nixt.objects import Default, Object, edit, fmt, keys
+from nixt.persist import ident, write
+from nixt.reactor import Fleet, Reactor
+from nixt.threads import later, launch
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
@@ -34,8 +32,11 @@ NAME   = Main.name
 saylock = _thread.allocate_lock()
 
 
-def debug(txt):
+def output(txt):
     print(txt)
+
+
+def debug(txt):
     for ign in IGNORE:
         if ign in txt:
             return

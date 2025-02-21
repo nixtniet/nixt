@@ -4,9 +4,9 @@
 "list of bots"
 
 
-from ..objects import fmt
-from ..threads import name
-from ..clients import Fleet
+from nixt.objects import fmt
+from nixt.threads import name
+from nixt.clients import Fleet
 
 
 def flt(event):

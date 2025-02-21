@@ -8,9 +8,9 @@ import threading
 import time
 
 
-from ..objects import Object, update
-from ..package import STARTTIME
-from ..utility import elapsed
+from nixt.objects import Object, update
+from nixt.package import STARTTIME
+from nixt.utility import elapsed
 
 
 def thr(event):

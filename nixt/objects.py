@@ -9,11 +9,23 @@ import typing
 
 class Object:
 
+    def __contains__(self, key):
+        return key in dir(self)
+
+    def __iter__(self):
+        return iter(self.__dict__)
+
     def __len__(self):
         return len(self.__dict__)
 
     def __str__(self):
         return str(self.__dict__)
+
+
+class Default:
+
+    def __getattr__(self, key):
+        return self.__dict__.get(key, "")
 
 
 def construct(obj, *args, **kwargs) -> None:
@@ -106,6 +118,7 @@ def values(obj) -> [typing.Any]:
 
 def __dir__():
     return (
+        'Default',
         'Object',
         'construct',
         'edit',

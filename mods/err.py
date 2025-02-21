@@ -4,7 +4,7 @@
 "deferred errors"
 
 
-from ..excepts import Errors
+from nixt.excepts import Errors
 
 
 def err(event):

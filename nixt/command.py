@@ -8,15 +8,15 @@ import inspect
 import typing
 
 
-from .default import Default
-from .package import Table, gettable
+from .objects import Default
+from .package import Table
 from .reactor import Fleet
 
 
 class Commands:
 
     cmds = {}
-    names = gettable()
+    names = {}
 
     @staticmethod
     def add(func, mod=None) -> None:
@@ -110,9 +110,15 @@ def parse(obj, txt=None) -> None:
         obj.txt = obj.cmd or ""
 
 
+def scan(pkg):
+    for mod in Table.all(pkg):
+        Commands.scan(mod)
+
+
 def __dir__():
     return (
         'Commands',
         'command',
-        'parse'
+        'parse',
+        'scan'
     )

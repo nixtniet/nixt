@@ -27,10 +27,13 @@ from nixt.utility import elapsed
 from nixt.workdir import Workdir, skel
 
 
-import nixt.modules as MODS
-
-
 Workdir.wdr  = ".test"
+
+
+if os.path.exists("mods"):
+    import mods as MODS
+else:
+    MODS = None
 
 
 cfg = Config()
@@ -54,6 +57,7 @@ param.nme = ["hnrss hackernews", ""]
 param.pwd = ["bla mekker", ""]
 param.rem = ["hnrss", ""]
 param.res = ["hnrss"]
+param.req = [""]
 param.srv = [""]
 param.thr = [""]
 param.ver = [""]
