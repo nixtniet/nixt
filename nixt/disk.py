@@ -49,6 +49,10 @@ def cdir(pth) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
 
 
+def ident(obj) -> str:
+    return fqn(obj) + "_" + str(datetime.datetime.now()).replace(" ", "_").replace(":", "+")
+
+
 def read(obj, pth):
     with lock:
         with open(pth, 'r', encoding='utf-8') as ofile:

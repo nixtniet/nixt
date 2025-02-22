@@ -4,13 +4,7 @@
 "a clean namespace"
 
 
-import datetime
 import json
-import os
-import typing
-
-
-p = os.path.join
 
 
 class Object:
@@ -102,11 +96,7 @@ def fqn(obj) -> str:
     return kin
 
 
-def ident(obj) -> str:
-    return fqn(obj) + "_" + str(datetime.datetime.now()).replace(" ", "_").replace(":", "+")
-
-
-def items(obj) -> [(str,typing.Any)]:
+def items(obj) -> []:
     if isinstance(obj,type({})):
         return obj.items()
     return obj.__dict__.items()
@@ -125,7 +115,7 @@ def update(obj, data) -> None:
         obj.__dict__.update(data)
 
 
-def values(obj) -> [typing.Any]:
+def values(obj) -> []:
     return obj.__dict__.values()
 
 
@@ -137,7 +127,7 @@ class Decoder(json.JSONDecoder):
     def __init__(self, *args, **kwargs):
         json.JSONDecoder.__init__(self, *args, **kwargs)
 
-    def decode(self, s, _w=None) -> typing.Any:
+    def decode(self, s, _w=None):
         val = json.JSONDecoder.decode(self, s)
         if isinstance(val, dict):
             return hook(val)

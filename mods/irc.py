@@ -18,9 +18,10 @@ import _thread
 from nixt.client  import Config as Main
 from nixt.command import command
 from nixt.find    import last, store
+from nixt.disk    import ident
 from nixt.event   import Event
 from nixt.fleet   import Fleet
-from nixt.object  import Default, Object, edit, fmt, ident, keys
+from nixt.object  import Default, Object, edit, fmt, keys
 from nixt.disk    import write
 from nixt.reactor import Reactor
 from nixt.thread  import later, launch
