@@ -17,10 +17,10 @@ import _thread
 
 from nixt.clients import Config as Main
 from nixt.command import command
-from nixt.locater import last
+from nixt.locater import last, store
 from nixt.message import Message
 from nixt.objects import Default, Object, edit, fmt, keys
-from nixt.persist import ident, write
+from nixt.storage import ident, write
 from nixt.reactor import Fleet, Reactor
 from nixt.threads import later, launch
 
@@ -608,7 +608,7 @@ def cfg(event):
                    )
     else:
         edit(config, event.sets)
-        write(config, fnm)
+        write(config, fnm or store(ident(config)))
         event.done()
 
 

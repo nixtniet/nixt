@@ -19,11 +19,11 @@ sys.path.insert(0, os.getcwd())
 from nixt.clients import Buffered, Config
 from nixt.command import Commands, command, parse, scan
 from nixt.excepts import errors, later
+from nixt.locater import Workdir, skel
 from nixt.message import Message
 from nixt.objects import Object, fmt, items, keys, values
 from nixt.package import STARTTIME, Table
 from nixt.reactor import Fleet, Reactor
-from nixt.storage import Workdir, skel
 from nixt.threads import Thread, launch
 from nixt.utility import elapsed
 

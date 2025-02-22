@@ -10,7 +10,7 @@ import time
 
 
 from .objects import Object, fqn, items, update
-from .persist import Cache, read
+from .storage import Cache, read
 
 
 p = os.path.join

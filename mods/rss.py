@@ -20,11 +20,10 @@ from urllib.parse import quote_plus, urlencode
 
 
 from nixt.objects import Object, fmt, update
-from nixt.locater import find, fntime, last
-from nixt.persist import ident, write
+from nixt.locater import find, fntime, last, store
+from nixt.storage import ident, write
 from nixt.reactor import Fleet
 from nixt.threads import Repeater, launch
-from nixt.workdir import store
 from nixt.utility import elapsed, spl
 
 
@@ -112,7 +111,7 @@ class Fetcher(Object):
                 if uurl in seen:
                     continue
                 if self.dosave:
-                    write(fed)
+                    write(fed, store(ident(fed)))
                 result.append(fed)
             setattr(self.seen, feed.rss, urls)
             if not self.seenfn:
@@ -334,7 +333,7 @@ def rss(event):
             return
     feed = Rss()
     feed.rss = event.args[0]
-    write(feed)
+    write(feed, store(ident(feed)))
     event.done()
 
 
@@ -474,7 +473,7 @@ def imp(event):
             update(feed, obj)
             feed.rss = obj.xmlUrl
             feed.insertid = insertid
-            write(feed)
+            write(feed, store(ident(feed)))
             nrs += 1
     if nrskip:
         event.reply(f"skipped {nrskip} urls.")
