@@ -19,7 +19,7 @@ class Config(Default):
     init    = ""
     name    = __file__.rsplit(os.sep, maxsplit=2)[-2]
     opts    = Default()
-    version = 180
+    version = 200
 
 
 class Client(Reactor):
