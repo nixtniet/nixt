@@ -55,7 +55,6 @@ paylock = _thread.allocate_lock()
 param = Object()
 param.dpl = ["hnrss title,url", ""]
 param.flt = [""]
-param.imp = ["tests/feeds.opml", ""]
 param.nme = ["hnrss hackernews", ""]
 param.pwd = ["bla mekker", ""]
 param.res = ["hnrss", ""]
@@ -64,10 +63,9 @@ param.thr = [""]
 param.cmd = [""]
 param.mod = [""]
 param.mre = [""]
-param.exp = ['']
-param.fnd = ["log", "rss", "config", "todo", ""]
 param.upt = [""]
 param.ver = [""]
+param.fnd = ["log", "rss", "config", "todo", ""]
 
 
 pre = Object()
@@ -75,9 +73,11 @@ pre.log = ["bla", ""]
 pre.cfg = ["cfg nick=mekker", ""]
 pre.rss = ["http://hnrss.org/newest", ""]
 pre.tdo = ["mekker", ""]
+pre.imp = ["tests/feeds.opml", ""]
 
 
 post = Object()
+param.exp = ['']
 post.dne = ["hnrss", ""]
 post.rem = ["hnrss", ""]
 
