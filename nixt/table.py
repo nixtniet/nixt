@@ -11,8 +11,8 @@ import time
 import types
 
 
-from .threads import later, launch
-from .utility import spl
+from .thread import later, launch
+from .utils  import spl
 
 
 STARTTIME = time.time()
@@ -93,7 +93,17 @@ class Table:
                ]
 
 
+def gettable():
+    try:
+        from .lookup import NAMES as names
+    except Exception as ex:
+        later(ex)
+        names = {}
+    return names
+
+
 def __dir__():
     return (
         'Table',
+        'gettable'
     )

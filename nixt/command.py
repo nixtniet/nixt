@@ -8,15 +8,15 @@ import inspect
 import typing
 
 
-from .objects import Default
-from .package import Table
-from .reactor import Fleet
+from .errors import later
+from .object import Default
+from .table  import Table, gettable
 
 
 class Commands:
 
     cmds = {}
-    names = {}
+    names = gettable()
 
     @staticmethod
     def add(func, mod=None) -> None:
@@ -31,8 +31,9 @@ class Commands:
             mname = Commands.names.get(cmd)
             if mname:
                 mod = Table.load(mname)
-                Commands.scan(mod)
-                func = Commands.cmds.get(cmd)
+                if mod:
+                    Commands.scan(mod)
+                    func = Commands.cmds.get(cmd)
         return func
 
     @staticmethod
@@ -53,7 +54,7 @@ def command(evt) -> None:
     func = Commands.get(evt.cmd)
     if func:
         func(evt)
-        Fleet.display(evt)
+        evt.display()
     evt.ready()
 
 

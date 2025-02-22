@@ -16,13 +16,13 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client, Config
+from nixt.client  import Client, Config
 from nixt.command import Commands, command, parse, scan
-from nixt.excepts import errors, later
-from nixt.message import Message
-from nixt.objects import dumps
-from nixt.package import Table
-from nixt.storage import Workdir, pidname
+from nixt.errors  import errors, later
+from nixt.event   import Event
+from nixt.find    import Workdir, pidname
+from nixt.object  import dumps
+from nixt.table   import Table
 
 
 if os.path.exists("mods"):
@@ -69,13 +69,6 @@ def handler(signum, frame):
 
 class CLI(Client):
 
-    def __init__(self):
-        Client.__init__(self)
-        self.register("command", command)
-
-    def announce(self, txt):
-        pass
-
     def raw(self, txt):
         output(txt.encode('utf-8', 'replace').decode("utf-8"))
 
@@ -90,7 +83,7 @@ class Console(CLI):
         evt.wait()
 
     def poll(self):
-        evt = Message()
+        evt = Event()
         evt.txt = input("> ")
         evt.type = "command"
         return evt
@@ -170,7 +163,6 @@ def background():
     disable()
     pidfile(pidname(cfg.name))
     Commands.add(cmd)
-    scan(MODS)
     Table.inits(cfg.init or "irc,rss", pname)
     forever()
 
@@ -183,7 +175,6 @@ def console():
     parse(cfg, " ".join(sys.argv[1:]))
     cfg.init = cfg.sets.init or cfg.init
     cfg.opts = cfg.opts
-    scan(MODS)
     if "v" in cfg.opts:
         banner()
     if "i" in cfg.opts or cfg.init:
@@ -204,9 +195,8 @@ def control():
     Commands.add(srv)
     Commands.add(tbl)
     parse(cfg, " ".join(sys.argv[1:]))
-    scan(MODS)
     csl = CLI()
-    evt = Message()
+    evt = Event()
     evt.orig = repr(csl)
     evt.type = "command"
     evt.txt = cfg.otxt
@@ -220,7 +210,6 @@ def service():
     privileges()
     pidfile(pidname(cfg.name))
     Commands.add(cmd)
-    scan(MODS)
     Table.inits(cfg.init or "irc,rss", pname)
     forever()
 
@@ -285,8 +274,6 @@ def wrap(func):
     finally:
         if old:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
-    for line in errors():
-        output(line)
 
 
 def main():
@@ -303,4 +290,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+    for line in errors():
+        output(line)
     sys.exit(0)

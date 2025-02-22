@@ -15,14 +15,15 @@ import time
 import _thread
 
 
-from nixt.clients import Config as Main
+from nixt.client  import Config as Main
 from nixt.command import command
-from nixt.locater import last, store
-from nixt.message import Message
-from nixt.objects import Default, Object, edit, fmt, keys
-from nixt.storage import ident, write
-from nixt.reactor import Fleet, Reactor
-from nixt.threads import later, launch
+from nixt.find    import last, store
+from nixt.event   import Event
+from nixt.fleet   import Fleet
+from nixt.object  import Default, Object, edit, fmt, keys
+from nixt.disk    import ident, write
+from nixt.reactor import Reactor
+from nixt.thread  import later, launch
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
@@ -345,7 +346,7 @@ class IRC(Reactor, Output):
         rawstr = rawstr.replace('\u0001', '')
         rawstr = rawstr.replace('\001', '')
         debug(txt)
-        obj = Message()
+        obj = Event()
         obj.args = []
         obj.rawstr = rawstr
         obj.command = ''

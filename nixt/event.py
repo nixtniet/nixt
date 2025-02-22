@@ -8,10 +8,11 @@ import threading
 import time
 
 
-from .objects import Default
+from .fleet  import Fleet
+from .object import Default
 
 
-class Message(Default):
+class Event(Default):
 
     def __init__(self):
         Default.__init__(self)
@@ -21,6 +22,12 @@ class Message(Default):
         self.result = {}
         self.type   = "event"
         self.txt    = ""
+
+    def display(self):
+        for tme in sorted(self.result):
+            text = self.result[tme]
+            Fleet.say(self.orig, self.channel, text)
+        self.ready()
 
     def done(self) -> None:
         self.reply("ok")

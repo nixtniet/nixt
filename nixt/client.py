@@ -1,17 +1,17 @@
 # This file is placed in the Public Domain.
 
 
-"buffered clients"
+"clients"
 
 
 import os
-import queue
-import threading
 
 
-from .objects import Default
-from .reactor import Fleet, Reactor
-from .threads import launch
+from .command import command
+from .fleet   import Fleet
+from .object  import Default
+from .output  import Output
+from .reactor import Reactor
 
 
 class Config(Default):
@@ -27,47 +27,16 @@ class Client(Reactor):
     def __init__(self):
         Reactor.__init__(self)
         Fleet.add(self)
+        self.register("command", command)
+
+    def announce(self, txt):
+        pass
 
     def raw(self, txt) -> None:
         raise NotImplementedError("raw")
 
     def say(self, channel, txt) -> None:
         self.raw(txt)
-
-
-class Output:
-
-    def __init__(self):
-        self.oqueue   = queue.Queue()
-        self.running = threading.Event()
-
-    def loop(self) -> None:
-        self.running.set()
-        while self.running.is_set():
-            evt = self.oqueue.get()
-            if evt is None:
-                self.oqueue.task_done()
-                break
-            Fleet.display(evt)
-            self.oqueue.task_done()
-
-    def oput(self,evt) -> None:
-        if not self.running.is_set():
-            Fleet.display(evt)
-        self.oqueue.put(evt)
-
-    def start(self) -> None:
-        if not self.running.is_set():
-            self.running.set()
-            launch(self.loop)
-
-    def stop(self) -> None:
-        self.running.clear()
-        self.oqueue.put(None)
-
-    def wait(self) -> None:
-        self.oqueue.join()
-        self.running.wait()
 
 
 class Buffered(Client, Output):
@@ -94,10 +63,6 @@ class Buffered(Client, Output):
 
 def __dir__():
     return (
-        'Cached',
         'Client',
-        'Config',
-        'Output',
-        'debug',
-        'output'
+        'Config'
     )

@@ -9,9 +9,8 @@ import threading
 import _thread
 
 
-from .excepts import later
-from .message import Message
-from .threads import launch
+from .errors import later
+from .thread import launch
 
 
 cblock      = threading.RLock()
@@ -51,7 +50,7 @@ class Reactor:
                 _thread.interrupt_main()
         self.ready.set()
 
-    def poll(self) -> Message:
+    def poll(self):
         return self.queue.get()
 
     def put(self, evt) -> None:
@@ -73,7 +72,7 @@ class Reactor:
         self.ready.wait()
 
 
-class Client(Reactor):
+class BaseClient(Reactor):
 
     def __init__(self):
         Reactor.__init__(self)
@@ -86,55 +85,9 @@ class Client(Reactor):
         self.raw(txt)
 
 
-class Fleet:
-
-    bots = {}
-
-    @staticmethod
-    def add(bot) -> None:
-        Fleet.bots[repr(bot)] = bot
-
-    @staticmethod
-    def announce(txt) -> None:
-        for bot in Fleet.bots.values():
-            bot.announce(txt)
-
-    @staticmethod
-    def display(evt) -> None:
-        with displaylock:
-            for tme in sorted(evt.result):
-                text = evt.result[tme]
-                Fleet.say(evt.orig, evt.channel, text)
-            evt.ready()
-
-    @staticmethod
-    def first() -> None:
-        bots =  list(Fleet.bots.values())
-        res = None
-        if bots:
-            res = bots[0]
-        return res
-
-    @staticmethod
-    def get(orig) -> None:
-        return Fleet.bots.get(orig, None)
-
-    @staticmethod
-    def say(orig, channel, txt) -> None:
-        bot = Fleet.get(orig)
-        if bot:
-            bot.say(channel, txt)
-
-    @staticmethod
-    def wait() -> None:
-        for bot in Fleet.bots.values():
-            if "wait" in dir(bot):
-                bot.wait()
-
-
 def __dir__():
     return (
         'Client',
-        'Fleet',
+        'CLI',
         'Reactor'
     )

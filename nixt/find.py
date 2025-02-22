@@ -9,8 +9,8 @@ import pathlib
 import time
 
 
-from .objects import Object, fqn, items, update
-from .storage import Cache, read
+from .disk   import Cache, read
+from .object import Object, fqn, items, update
 
 
 p = os.path.join
@@ -21,6 +21,7 @@ p = os.path.join
 
 class Workdir:
 
+    name = __file__.rsplit(os.sep, maxsplit=2)[-2]
     wdr  = ""
 
 

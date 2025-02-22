@@ -12,7 +12,7 @@ import threading
 import typing
 
 
-from .objects import dumps, fqn, loads, update
+from .object import dumps, fqn, loads, update
 
 
 p    = os.path.join

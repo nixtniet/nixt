@@ -4,9 +4,11 @@
 "buffers"
 
 
-import os
 import queue
 import threading
+
+
+from .thread  import launch
 
 
 class Output:
@@ -22,12 +24,10 @@ class Output:
             if evt is None:
                 self.oqueue.task_done()
                 break
-            Fleet.display(evt)
+            evt.display()
             self.oqueue.task_done()
 
     def oput(self,evt) -> None:
-        if not self.running.is_set():
-            Fleet.display(evt)
         self.oqueue.put(evt)
 
     def start(self) -> None:
