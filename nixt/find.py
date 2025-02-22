@@ -61,7 +61,7 @@ def types() -> [str]:
 
 def fns(clz) -> [str]:
     pth = store()
-    return [os.path.join(pth, x) for x in os.listdir(pth) if clz in x]
+    return [os.path.join(pth, x) for x in os.listdir(pth) if clz in x.split("_")[0].split(".")[-1].lower()]
 
 
 def fntime(daystr) -> int:
