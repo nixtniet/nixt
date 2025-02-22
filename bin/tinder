@@ -152,7 +152,6 @@ def main():
     clt = CLI()
     clt.start()
     nrs = cfg.index or 1
-    print(nrs)
     thrs = []
     for _nr in range(nrs):
         thrs.append(launch(payload, clt, pre))
