@@ -13,7 +13,6 @@ import typing
 
 
 from .objects import dumps, fqn, loads, update
-from .workdir import store
 
 
 p    = os.path.join
@@ -65,10 +64,8 @@ def read(obj, pth):
     return pth
 
 
-def write(obj, pth=None):
+def write(obj, pth):
     with lock:
-        if pth is None:
-            pth = store(ident(obj))
         cdir(pth)
         txt = dumps(obj, indent=4)
         Cache.objs[pth] = obj

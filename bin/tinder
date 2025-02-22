@@ -23,9 +23,9 @@ from nixt.message import Message
 from nixt.objects import Object, fmt, items, keys, values
 from nixt.package import STARTTIME, Table
 from nixt.reactor import Fleet, Reactor
+from nixt.storage import Workdir, skel
 from nixt.threads import Thread, launch
 from nixt.utility import elapsed
-from nixt.workdir import Workdir, skel
 
 
 Workdir.wdr  = ".test"
