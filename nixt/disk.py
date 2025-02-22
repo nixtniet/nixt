@@ -49,10 +49,6 @@ def cdir(pth) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
 
 
-def ident(obj) -> str:
-    return p(fqn(obj),*str(datetime.datetime.now()).split())
-
-
 def read(obj, pth):
     with lock:
         with open(pth, 'r', encoding='utf-8') as ofile:
@@ -79,7 +75,6 @@ def __dir__():
         'Cache',
         'DecodeError',
         'cdir',
-        'ident',
         'read',
         'write'
     )

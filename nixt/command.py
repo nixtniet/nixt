@@ -8,7 +8,6 @@ import inspect
 import typing
 
 
-from .errors import later
 from .object import Default
 from .table  import Table, gettable
 

@@ -19,11 +19,10 @@ class Fleet:
 
     @staticmethod
     def display(evt) -> None:
-        with displaylock:
-            for tme in sorted(evt.result):
-                text = evt.result[tme]
-                Fleet.say(evt.orig, evt.channel, text)
-            evt.ready()
+        for tme in sorted(evt.result):
+            text = evt.result[tme]
+            Fleet.say(evt.orig, evt.channel, text)
+        evt.ready()
 
     @staticmethod
     def first() -> None:

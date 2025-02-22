@@ -49,31 +49,23 @@ def store(pth="") -> str:
     return p(Workdir.wdr, "store", pth)
 
 
-def strip(pth, nmr=3) -> str:
+def strip(pth, nmr=2) -> str:
     return os.sep.join(pth.split(os.sep)[-nmr:])
 
 def types() -> [str]:
-    return os.listdir(store())
+    return {x.split("_")[0] for x in os.listdir(store())}
 
 
 "find"
 
 
 def fns(clz) -> [str]:
-    dname = ''
-    pth = store(clz)
-    for rootdir, dirs, _files in os.walk(pth, topdown=False):
-        if dirs:
-            for dname in sorted(dirs):
-                if dname.count('-') == 2:
-                    ddd = p(rootdir, dname)
-                    for fll in os.listdir(ddd):
-                        yield p(ddd, fll)
+    pth = store()
+    return [os.path.join(pth, x) for x in os.listdir(pth) if clz in x]
 
 
 def fntime(daystr) -> int:
-    daystr = daystr.replace('_', ':')
-    datestr = ' '.join(daystr.split(os.sep)[-2:])
+    datestr = todate(daystr)
     if '.' in datestr:
         datestr, rest = datestr.rsplit('.', 1)
     else:
@@ -86,9 +78,8 @@ def fntime(daystr) -> int:
 
 def find(clz, selector=None, deleted=False, matching=False) -> [Object]:
     skel()
-    pth = long(clz)
     res = []
-    for fnm in fns(pth):
+    for fnm in fns(clz):
         obj = Cache.get(fnm)
         if not obj:
             obj = Object()
@@ -100,6 +91,14 @@ def find(clz, selector=None, deleted=False, matching=False) -> [Object]:
             continue
         res.append((fnm, obj))
     return sorted(res, key=lambda x: fntime(x[0]))
+
+
+def todate(date):
+    spl = "_".join(date.split("_")[1:])
+    return strip(spl.replace("_", " ").replace("+", ":"))
+
+
+"methods"
 
 
 def last(obj, selector=None) -> Object:

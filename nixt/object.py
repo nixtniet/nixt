@@ -4,8 +4,13 @@
 "a clean namespace"
 
 
+import datetime
 import json
+import os
 import typing
+
+
+p = os.path.join
 
 
 class Object:
@@ -95,6 +100,10 @@ def fqn(obj) -> str:
     if kin == "type":
         kin = f"{obj.__module__}.{obj.__name__}"
     return kin
+
+
+def ident(obj) -> str:
+    return fqn(obj) + "_" + str(datetime.datetime.now()).replace(" ", "_").replace(":", "+")
 
 
 def items(obj) -> [(str,typing.Any)]:
