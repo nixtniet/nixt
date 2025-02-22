@@ -88,8 +88,8 @@ class Buffered(Client, Output):
         Client.stop(self)
 
     def wait(self) -> None:
-        Output.wait(self)
         Client.wait(self)
+        Output.wait(self)
 
 
 def __dir__():

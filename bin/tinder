@@ -17,11 +17,13 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Buffered, Config
-from nixt.command import Commands, command, parse
+from nixt.command import Commands, command, parse, scan
 from nixt.excepts import errors, later
 from nixt.message import Message
-from nixt.objects import Object, items, keys, values
+from nixt.objects import Object, fmt, items, keys, values
 from nixt.package import STARTTIME, Table
+from nixt.pooling import Pool
+from nixt.reactor import Fleet, Reactor
 from nixt.threads import Thread, launch
 from nixt.utility import elapsed
 from nixt.workdir import Workdir, skel
@@ -52,21 +54,20 @@ paylock = _thread.allocate_lock()
 
 param = Object()
 param.dpl = ["hnrss title,url", ""]
+param.flt = [""]
 param.imp = ["tests/feeds.opml", ""]
 param.nme = ["hnrss hackernews", ""]
 param.pwd = ["bla mekker", ""]
-param.rem = ["hnrss", ""]
-param.res = ["hnrss"]
-param.req = [""]
+param.res = ["hnrss", ""]
 param.srv = [""]
 param.thr = [""]
-param.ver = [""]
 param.cmd = [""]
 param.mod = [""]
 param.mre = [""]
 param.exp = ['']
-param.fnd = ["log", "rss", "config"]
-param.dne = ["mekker", ""]
+param.fnd = ["log", "rss", "config", "todo", ""]
+param.upt = [""]
+param.ver = [""]
 
 
 pre = Object()
@@ -74,6 +75,11 @@ pre.log = ["bla", ""]
 pre.cfg = ["cfg nick=mekker", ""]
 pre.rss = ["http://hnrss.org/newest", ""]
 pre.tdo = ["mekker", ""]
+
+
+post = Object()
+post.dne = ["hnrss", ""]
+post.rem = ["hnrss", ""]
 
 
 class CLI(Buffered):
@@ -137,9 +143,8 @@ def main():
     global nrs
     global nrcommand
     parse(cfg, " ".join(sys.argv[1:]))
-    for mod in Table.all(MODS):
-        Commands.scan(mod)
-        mod.DEBUG = True
+    for mod in scan(MODS):
+        mod.debug = True
     nrcommand = len(Commands.cmds) or 1
     if "v" in cfg.opts:
         banner()
@@ -155,15 +160,17 @@ def main():
     for _nr in range(nrs):
         thrs.append(launch(payload, clt, pre))
     for thr in thrs:
-        thr.join()
+       thr.join()
     for _nr in range(nrs):
         thrs.append(launch(payload, clt, param))
     for thr in thrs:
-        thr.join()
+       thr.join()
+    for _nr in range(nrs):
+        thrs.append(launch(payload, clt, post))
+    for thr in thrs:
+       thr.join()
     consume(events)
-    clt.stop()
-    if "w" in cfg.opts:
-        clt.wait()
+    Pool.wait()
 
 
 if __name__ == "__main__":
@@ -174,14 +181,11 @@ if __name__ == "__main__":
     if "b" in cfg.opts:
         Thread.bork = True
     if "v" in cfg.opts:
+        print(f"{len(Pool.running)} threads left")
         if not list(errors()):
             print("no errors")
         for line in errors():
             print(line)
-        if events:
-            for evt in events:
-                print(evt)
-            print(f"{len(events)} events")
         print(f"{lap} {nrs} {nrcommand} {percall}")
     sys.stdout.flush()
     sys.exit(0)

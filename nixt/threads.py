@@ -103,3 +103,11 @@ class Repeater(Timer):
     def run(self) -> None:
         launch(self.start)
         super().run()
+
+
+def __dir__():
+    return (
+        'Repeater',
+        'Timer',
+        'launch'
+    )

@@ -6,11 +6,13 @@
 
 import queue
 import threading
+import time
 import _thread
 
 
 from .excepts import later
 from .message import Message
+from .pooling import Pool
 from .threads import launch
 
 
@@ -31,7 +33,7 @@ class Reactor:
             func = self.cbs.get(evt.type, None)
             if func:
                 try:
-                    evt._thr = launch(func, evt, name=evt.cmd or evt.txt)
+                    evt._thr = Pool.exec(func, evt, name=evt.cmd or evt.txt)
                 except Exception as ex:
                     later(ex)
                     evt.ready()
@@ -71,6 +73,19 @@ class Reactor:
 
     def wait(self) -> None:
         self.ready.wait()
+
+
+class Client(Reactor):
+
+    def __init__(self):
+        Reactor.__init__(self)
+        Fleet.add(self)
+
+    def raw(self, txt) -> None:
+        raise NotImplementedError("raw")
+
+    def say(self, channel, txt) -> None:
+        self.raw(txt)
 
 
 class Fleet:
@@ -121,6 +136,7 @@ class Fleet:
 
 def __dir__():
     return (
+        'Client',
         'Fleet',
         'Reactor'
     )

@@ -111,8 +111,11 @@ def parse(obj, txt=None) -> None:
 
 
 def scan(pkg):
+    mods = []
     for mod in Table.all(pkg):
         Commands.scan(mod)
+        mods.append(mod)
+    return mods
 
 
 def __dir__():
