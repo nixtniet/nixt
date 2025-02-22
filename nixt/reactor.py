@@ -12,7 +12,6 @@ import _thread
 
 from .excepts import later
 from .message import Message
-from .pooling import Pool
 from .threads import launch
 
 
@@ -33,7 +32,7 @@ class Reactor:
             func = self.cbs.get(evt.type, None)
             if func:
                 try:
-                    evt._thr = Pool.exec(func, evt, name=evt.cmd or evt.txt)
+                    evt._thr = launch(func, evt, name=evt.cmd or evt.txt)
                 except Exception as ex:
                     later(ex)
                     evt.ready()

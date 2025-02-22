@@ -4,6 +4,7 @@
 "a clean namespace"
 
 
+import json
 import typing
 
 
@@ -22,10 +23,13 @@ class Object:
         return str(self.__dict__)
 
 
-class Default:
+class Default(Object):
 
     def __getattr__(self, key):
         return self.__dict__.get(key, "")
+
+
+"methods"
 
 
 def construct(obj, *args, **kwargs) -> None:
@@ -116,16 +120,77 @@ def values(obj) -> [typing.Any]:
     return obj.__dict__.values()
 
 
+"decoder"
+
+
+class Decoder(json.JSONDecoder):
+
+    def __init__(self, *args, **kwargs):
+        json.JSONDecoder.__init__(self, *args, **kwargs)
+
+    def decode(self, s, _w=None) -> typing.Any:
+        val = json.JSONDecoder.decode(self, s)
+        if isinstance(val, dict):
+            return hook(val)
+        return val
+
+
+def hook(objdict) -> Object:
+    obj = Object()
+    construct(obj, objdict)
+    return obj
+
+
+def loads(string, *args, **kw) -> Object:
+    kw["cls"] = Decoder
+    kw["object_hook"] = hook
+    return json.loads(string, *args, **kw)
+
+
+"encoding"
+
+
+class Encoder(json.JSONEncoder):
+
+    def __init__(self, *args, **kwargs):
+        json.JSONEncoder.__init__(self, *args, **kwargs)
+
+    def default(self, o) -> str:
+        if isinstance(o, dict):
+            return o.items()
+        if issubclass(type(o), Object):
+            return vars(o)
+        if isinstance(o, list):
+            return iter(o)
+        try:
+            return json.JSONEncoder.default(self, o)
+        except TypeError:
+            try:
+                return vars(o)
+            except TypeError:
+                return repr(o)
+
+
+def dumps(*args, **kw) -> str:
+    kw["cls"] = Encoder
+    return json.dumps(*args, **kw)
+
+
+"interface"
+
+
 def __dir__():
     return (
         'Default',
         'Object',
         'construct',
+        'dumps',
         'edit',
         'fmt',
         'fqn',
         'items',
         'keys',
+        'loads',
         'update',
         'values'
     )

@@ -12,9 +12,7 @@ import threading
 import typing
 
 
-from .decoder import loads
-from .encoder import dumps
-from .objects import fqn, update
+from .objects import dumps, fqn, loads, update
 from .workdir import store
 
 
