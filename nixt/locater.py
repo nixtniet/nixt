@@ -9,8 +9,8 @@ import pathlib
 import time
 
 
-from .disk   import Cache, read
-from .object import Object, fqn, items, update
+from .objects import Object, fqn, items, update
+from .persist import Cache, read
 
 
 p = os.path.join
@@ -23,6 +23,9 @@ class Workdir:
 
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
     wdr  = ""
+
+
+"path"
 
 
 def long(name) -> str:
@@ -52,20 +55,28 @@ def store(pth="") -> str:
 def strip(pth, nmr=2) -> str:
     return os.sep.join(pth.split(os.sep)[-nmr:])
 
+
 def types() -> [str]:
-    return {x.split("_")[0] for x in os.listdir(store())}
+    return os.listdir(store())
 
 
 "find"
 
 
 def fns(clz) -> [str]:
-    pth = store()
-    return [os.path.join(pth, x) for x in os.listdir(pth) if clz in x.split("_")[0].split(".")[-1].lower()]
+    dname = ''
+    pth = store(clz)
+    for rootdir, dirs, _files in os.walk(pth, topdown=False):
+        if dirs:
+            for dname in sorted(dirs):
+                if dname.count('-') == 2:
+                    ddd = p(rootdir, dname)
+                    for fll in os.listdir(ddd):
+                        yield p(ddd, fll)
 
 
 def fntime(daystr) -> int:
-    datestr = todate(daystr)
+    datestr = ' '.join(daystr.split(os.sep)[-2:])
     if '.' in datestr:
         datestr, rest = datestr.rsplit('.', 1)
     else:
@@ -79,6 +90,7 @@ def fntime(daystr) -> int:
 def find(clz, selector=None, deleted=False, matching=False) -> [Object]:
     skel()
     res = []
+    clz = long(clz)
     for fnm in fns(clz):
         obj = Cache.get(fnm)
         if not obj:
@@ -93,9 +105,46 @@ def find(clz, selector=None, deleted=False, matching=False) -> [Object]:
     return sorted(res, key=lambda x: fntime(x[0]))
 
 
-def todate(date):
-    spl = "_".join(date.split("_")[1:])
-    return strip(spl.replace("_", " ").replace("+", ":"))
+"utility"
+
+
+def elapsed(seconds, short=True):
+    txt = ""
+    nsec = float(seconds)
+    if nsec < 1:
+        return f"{nsec:.2f}s"
+    yea = 365*24*60*60
+    week = 7*24*60*60
+    nday = 24*60*60
+    hour = 60*60
+    minute = 60
+    yeas = int(nsec/yea)
+    nsec -= yeas*yea
+    weeks = int(nsec/week)
+    nsec -= weeks*week
+    nrdays = int(nsec/nday)
+    nsec -= nrdays*nday
+    hours = int(nsec/hour)
+    nsec -= hours*hour
+    minutes = int(nsec/minute)
+    nsec -= int(minute*minutes)
+    sec = int(nsec)
+    if yeas:
+        txt += f"{yeas}y"
+    if weeks:
+        nrdays += weeks * 7
+    if nrdays:
+        txt += f"{nrdays}d"
+    if short and txt:
+        return txt.strip()
+    if hours:
+        txt += f"{hours}h"
+    if minutes:
+        txt += f"{minutes}m"
+    if sec:
+        txt += f"{sec}s"
+    txt = txt.strip()
+    return txt
 
 
 "methods"
@@ -140,6 +189,7 @@ def search(obj, selector, matching=None) -> bool:
 def __dir__():
     return (
         'Workdir',
+        'elapsed',
         'fns',
         'fntime',
         'find',

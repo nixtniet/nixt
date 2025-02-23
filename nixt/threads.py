@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"non blocking"
+"threads"
 
 
 import queue
@@ -10,7 +10,7 @@ import time
 import typing
 
 
-from .errors import later
+from .excepts import later
 
 
 lock = threading.RLock()
@@ -65,6 +65,9 @@ def name(obj) -> str:
     if '__name__' in dir(obj):
         return f'{obj.__class__.__name__}.{obj.__name__}'
     return None
+
+
+"timers"
 
 
 class Timer:

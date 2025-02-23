@@ -55,6 +55,7 @@ def later(exc) -> None:
     excp = exc.with_traceback(exc.__traceback__)
     fmt = Errors.format(excp)
     if fmt not in Errors.errors:
+        print(fmt)
         Errors.errors.append(fmt)
 
 

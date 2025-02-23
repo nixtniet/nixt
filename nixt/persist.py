@@ -12,7 +12,7 @@ import threading
 import typing
 
 
-from .object import dumps, fqn, loads, update
+from .objects import dumps, fqn, loads, update
 
 
 p    = os.path.join
@@ -50,7 +50,7 @@ def cdir(pth) -> None:
 
 
 def ident(obj) -> str:
-    return fqn(obj) + "_" + str(datetime.datetime.now()).replace(" ", "_").replace(":", "+")
+    return p(fqn(obj),*str(datetime.datetime.now()).split())
 
 
 def read(obj, pth):
@@ -82,4 +82,3 @@ def __dir__():
         'read',
         'write'
     )
-         
