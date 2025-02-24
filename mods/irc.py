@@ -16,11 +16,13 @@ import time
 import _thread
 
 
-from nixt.disk import ident, write
+from nixt.disk    import ident, write
 from nixt.errors  import later
+from nixt.event   import Event
 from nixt.find    import last, store
+from nixt.fleet   import Fleet
 from nixt.object  import Default, Object, edit, fmt, keys
-from nixt.reactor import Event, Fleet, Reactor
+from nixt.reactor import Reactor
 from nixt.thread  import launch
 
 
@@ -48,10 +50,10 @@ def output(txt):
 
 
 def init():
-    debug(f'{fmt(Config, skip="edited,password")}')
     irc = IRC()
     irc.start()
     irc.events.ready.wait()
+    debug(f'{fmt(Config, skip="edited,password")}')
     return irc
 
 

@@ -17,9 +17,10 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.errors  import errors, later
+from nixt.event   import Event
 from nixt.find    import Workdir, pidname
 from nixt.object  import dumps
-from nixt.reactor import Client, Event
+from nixt.reactor import Client
 
 
 if os.path.exists("mods"):

@@ -10,9 +10,10 @@ import time as ttime
 
 
 from nixt.disk    import ident, write
+from nixt.event   import Event
 from nixt.find    import elapsed, find, store
+from nixt.fleet   import Fleet
 from nixt.object  import update
-from nixt.reactor import Event, Fleet
 from nixt.thread  import Timer, launch
 
 

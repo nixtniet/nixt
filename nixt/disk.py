@@ -57,7 +57,7 @@ def write(obj, pth):
 def __dir__():
     return (
         'Cache',
-        'DecodeError',
+        'Error',
         'cdir',
         'read',
         'write'
