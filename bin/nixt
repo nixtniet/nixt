@@ -30,12 +30,9 @@ else:
     os._exit(0)
 
 
-"defines"
-
-
-Config.name = "nixm"
+Config.name = "nixt"
 p        = os.path.join
-pname    = "nixm.modules"
+pname    = f"{Config.name}.modules"
 
 
 def nil(txt):
@@ -61,9 +58,6 @@ def handler(signum, frame):
 
 
 # signal.signal(signal.SIGHUP, handler)
-
-
-"clients"
 
 
 class CLI(Client):
