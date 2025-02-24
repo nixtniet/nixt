@@ -11,7 +11,6 @@ import time
 
 
 IGNORE    = ["llm.py", "mbx.py", "web.py", "wsd.py", "udp.py"]
-NAME      = os.path.dirname(__file__).split(os.sep)[-1]
 MODS      = sorted([
                     x[:-3] for x in os.listdir(os.path.dirname(__file__))
                     if x.endswith(".py") and not x.startswith("__")
@@ -21,8 +20,8 @@ STARTTIME = time.time()
 
 
 for name in MODS:
-    mname = f"{NAME}.{name}"
-    importlib.import_module(mname, NAME)
+    mname = f"{__name__}.{name}"
+    importlib.import_module(mname, __name__)
 
 
 def __dir__():
