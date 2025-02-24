@@ -73,6 +73,22 @@ class Reactor:
         self.ready.wait()
 
 
+class Client(Reactor):
+
+    def __init__(self):
+        Reactor.__init__(self)
+        Fleet.add(self)
+
+    def announce(self, txt):
+        pass
+
+    def raw(self, txt) -> None:
+        raise NotImplementedError("raw")
+
+    def say(self, channel, txt) -> None:
+        self.raw(txt)
+
+
 class Event(Default):
 
     def __init__(self):
@@ -152,6 +168,7 @@ class Fleet:
 
 def __dir__():
     return (
+        'Client',
         'Event',
         'Fleet',
         'Reactor'
