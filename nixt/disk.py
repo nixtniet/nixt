@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"disk persistence"
+"disk"
 
 
 import datetime
@@ -19,7 +19,7 @@ p    = os.path.join
 lock = threading.RLock()
 
 
-class Error(Exception):
+class DecodeError(Exception):
 
     pass
 
@@ -40,7 +40,7 @@ def read(obj, pth):
                 obj2 = loads(ofile.read())
                 update(obj, obj2)
             except json.decoder.JSONDecodeError as ex:
-                raise Error(pth) from ex
+                raise DecodeError(pth) from ex
     return pth
 
 
@@ -56,7 +56,7 @@ def write(obj, pth):
 
 def __dir__():
     return (
-        'Error',
+        'DecodeError',
         'cdir',
         'read',
         'write'

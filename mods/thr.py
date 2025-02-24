@@ -8,8 +8,8 @@ import threading
 import time
 
 
-from nixt.find   import elapsed
 from nixt.object import Object, update
+from nixt.utils  import elapsed
 
 
 from . import STARTTIME

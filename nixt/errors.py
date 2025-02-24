@@ -47,10 +47,6 @@ class Errors:
         )
 
 
-def errors() -> [str]:
-    return Errors.errors
-
-
 def later(exc) -> None:
     excp = exc.with_traceback(exc.__traceback__)
     fmt = Errors.format(excp)
@@ -62,6 +58,5 @@ def later(exc) -> None:
 def __dir__():
     return (
         'Errors',
-        'errors',
         'later'
     )

@@ -8,8 +8,9 @@ import time
 
 
 from nixt.disk   import ident, write
-from nixt.find   import elapsed, find, fntime, store
+from nixt.find   import find, fntime, store
 from nixt.object import Object
+from nixt.utils  import elapsed
 
 
 class Log(Object):
@@ -33,3 +34,9 @@ def log(event):
     obj.txt = event.rest
     write(obj, store(ident(obj)))
     event.done()
+
+
+def __dir__():
+    return (
+        'log',
+    )

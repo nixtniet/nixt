@@ -14,6 +14,7 @@ import typing
 
 from nixt.object import Default
 from nixt.thread import launch
+from nixt.utils  import spl
 
 
 STARTTIME = time.time()
@@ -65,7 +66,9 @@ def command(evt) -> None:
 
 def inits(pkg, names, pname) -> [types.ModuleType]:
     mods = []
-    for name in spl(names):
+    for name in modules(pkg.__path__[0]):
+        if names and name not in spl(names):
+            continue
         mname = pname + "." + name
         if not mname:
             continue
@@ -156,14 +159,6 @@ def scan(pkg, mods=""):
         Commands.scan(mod)
         res.append(mod)
     return res
-
-
-def spl(txt):
-    try:
-        result = txt.split(',')
-    except (TypeError, ValueError):
-        result = txt
-    return [x for x in result if x]
 
 
 def __dir__():

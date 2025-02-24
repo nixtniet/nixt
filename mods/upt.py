@@ -7,7 +7,7 @@
 import time
 
 
-from nixt.find import elapsed
+from nixt.utils import elapsed
 
 
 from . import STARTTIME

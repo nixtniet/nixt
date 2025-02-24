@@ -16,7 +16,7 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.errors  import errors, later
+from nixt.errors  import Errors, later
 from nixt.event   import Event
 from nixt.find    import Workdir, pidname
 from nixt.object  import dumps
@@ -176,7 +176,8 @@ def console():
     if "v" in Config.opts:
         banner()
     if "i" in Config.opts or Config.init:
-        for _mod, thr in inits(MODS, Config.init, pname):
+        init = Config.init or None
+        for _mod, thr in inits(MODS, init, pname):
             if "w" in Config.opts:
                 thr.join()
     csl = Console()
@@ -289,6 +290,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-    for line in errors():
+    for line in Errors.errors:
         output(line)
     sys.exit(0)

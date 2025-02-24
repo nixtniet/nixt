@@ -11,7 +11,7 @@ import time
 
 
 STARTTIME = time.time()
-IGNORE    = ["llm.py", "mbx.py", "web.py", "wsd.py", "udp.py"]
+IGNORE    = ["llm.py", "mbx.py", "rst.py", "web.py", "wsd.py", "udp.py"]
 MODS      = sorted([
                     x[:-3] for x in os.listdir(os.path.dirname(__file__))
                     if x.endswith(".py") and not x.startswith("__")

@@ -17,11 +17,12 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client  import Client
-from nixt.errors  import errors, later
+from nixt.errors  import Errors, later
 from nixt.event   import Event
-from nixt.find    import Workdir, elapsed, skel
+from nixt.find    import Workdir, skel
 from nixt.object  import Object, items, keys
 from nixt.thread  import Thread, launch
+from nixt.utils   import elapsed
 
 
 Workdir.wdr  = ".test"
@@ -178,9 +179,9 @@ if __name__ == "__main__":
     if "b" in cfg.opts:
         Thread.bork = True
     if "v" in cfg.opts:
-        if not list(errors()):
+        if not list(Errors.errors):
             print("no errors")
-        for line in errors():
+        for line in Errors.errors:
             print(line)
         print(f"{lap} {nrs} {nrcommand} {percall}")
     sys.stdout.flush()
