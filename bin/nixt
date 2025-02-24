@@ -27,7 +27,7 @@ if os.path.exists("mods"):
     from mods.command import Commands, Config, command, inits, parse, scan
 else:
     print("mods directory not found")
-    
+    os._exit(0)
 
 
 "defines"
