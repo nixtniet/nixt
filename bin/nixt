@@ -16,9 +16,9 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.excepts import errors, later
-from nixt.locater import Workdir, pidname
-from nixt.objects import dumps
+from nixt.errors  import errors, later
+from nixt.find    import Workdir, pidname
+from nixt.object  import dumps
 from nixt.reactor import Client, Event
 
 

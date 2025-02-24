@@ -12,8 +12,8 @@ import types
 import typing
 
 
-from nixt.objects import Default
-from nixt.threads import launch
+from nixt.object import Default
+from nixt.thread import launch
 
 
 STARTTIME = time.time()

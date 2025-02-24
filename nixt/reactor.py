@@ -10,9 +10,9 @@ import time
 import _thread
 
 
-from .excepts import later
-from .objects import Default
-from .threads import launch
+from .errors import later
+from .object import Default
+from .thread import launch
 
 
 cblock = threading.RLock()

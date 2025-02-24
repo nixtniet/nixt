@@ -9,39 +9,19 @@ import os
 import json
 import pathlib
 import threading
-import typing
 
 
-from .objects import dumps, fqn, loads, update
+from .cache import Cache
+from .object import dumps, fqn, loads, update
 
 
 p    = os.path.join
 lock = threading.RLock()
 
 
-class DecodeError(Exception):
+class Error(Exception):
 
     pass
-
-
-class Cache:
-
-    objs = {}
-
-    @staticmethod
-    def add(path, obj) -> None:
-        Cache.objs[path] = obj
-
-    @staticmethod
-    def get(path) -> typing.Any:
-        return Cache.objs.get(path, None)
-
-    @staticmethod
-    def typed(matcher) -> [typing.Any]:
-        for key in Cache.objs:
-            if matcher not in key:
-                continue
-            yield Cache.objs.get(key)
 
 
 def cdir(pth) -> None:
@@ -60,7 +40,7 @@ def read(obj, pth):
                 obj2 = loads(ofile.read())
                 update(obj, obj2)
             except json.decoder.JSONDecodeError as ex:
-                raise DecodeError(pth) from ex
+                raise Error(pth) from ex
     return pth
 
 

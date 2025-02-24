@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"deferred exceptions handling"
+"deferred exception handling"
 
 
 import traceback

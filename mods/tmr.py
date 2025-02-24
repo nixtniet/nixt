@@ -9,14 +9,11 @@ import re
 import time as ttime
 
 
-from nixt.persist import ident, write
-from nixt.locater import elapsed, find, store
-from nixt.objects import update
+from nixt.disk    import ident, write
+from nixt.find    import elapsed, find, store
+from nixt.object  import update
 from nixt.reactor import Event, Fleet
-from nixt.threads import Timer, launch
-
-
-"defines"
+from nixt.thread  import Timer, launch
 
 
 MONTHS = [
@@ -44,9 +41,6 @@ FORMATS = [
 ]
 
 
-"init"
-
-
 def init():
     for _fn, obj in find("timer"):
         if "time" not in dir(obj):
@@ -59,15 +53,9 @@ def init():
             timer.start()
 
 
-"exceptions"
-
-
 class NoDate(Exception):
 
     pass
-
-
-"utilities"
 
 
 def extract_date(daystr):

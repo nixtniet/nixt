@@ -28,9 +28,6 @@ class Default(Object):
         return self.__dict__.get(key, "")
 
 
-"methods"
-
-
 def construct(obj, *args, **kwargs) -> None:
     if args:
         val = args[0]
@@ -173,9 +170,6 @@ class Encoder(json.JSONEncoder):
 def dumps(*args, **kw) -> str:
     kw["cls"] = Encoder
     return json.dumps(*args, **kw)
-
-
-"interface"
 
 
 def __dir__():

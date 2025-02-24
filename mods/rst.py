@@ -12,16 +12,13 @@ import time
 from http.server  import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.excepts import later
-from nixt.locater import Workdir, types
-from nixt.objects import Default, Object
-from nixt.threads import launch
+from nixt.errors import later
+from nixt.find   import Workdir, types
+from nixt.object import Default, Object
+from nixt.thread import launch
 
 
 DEBUG = False
-
-
-"init"
 
 
 def init():
@@ -35,16 +32,10 @@ def init():
     return rest
 
 
-"config"
-
-
 class Config(Default):
 
     hostname = "localhost"
     port     = 10102
-
-
-"rest"
 
 
 class REST(HTTPServer, Object):

@@ -4,9 +4,9 @@
 "fleet"
 
 
-from nixt.objects import fmt
+from nixt.object  import fmt
 from nixt.reactor import Fleet
-from nixt.threads import name
+from nixt.thread  import name
 
 
 def flt(event):

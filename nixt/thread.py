@@ -10,7 +10,7 @@ import time
 import typing
 
 
-from .excepts import later
+from .errors import later
 
 
 lock = threading.RLock()
