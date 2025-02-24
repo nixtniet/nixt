@@ -22,7 +22,6 @@ from nixt.event   import Event
 from nixt.find    import Workdir, skel
 from nixt.object  import Object, items, keys
 from nixt.thread  import Thread, launch
-from nixt.utils   import elapsed
 
 
 Workdir.wdr  = ".test"
@@ -30,7 +29,7 @@ Workdir.wdr  = ".test"
 
 if os.path.exists("mods"):
     import mods as MODS
-    from mods.command import Commands, Config, command, parse, scan
+    from mods.command import Commands, Config, command, elapsed, parse, scan
     from mods         import STARTTIME
 else:
     print("mods directory not found.")

@@ -16,7 +16,9 @@ from nixt.fleet  import Fleet
 from nixt.object import update
 from nixt.thread import launch
 from nixt.timer  import Timer
-from nixt.utils  import elapsed
+
+
+from .command  import elapsed
 
 
 MONTHS = [

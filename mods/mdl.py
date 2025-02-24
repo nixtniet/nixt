@@ -12,7 +12,9 @@ from nixt.event    import Event
 from nixt.fleet    import Fleet
 from nixt.object   import Object, construct, keys
 from nixt.repeater import Repeater
-from nixt.utils    import elapsed
+
+
+from .command import elapsed
 
 
 DAY = 24*60*60

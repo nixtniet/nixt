@@ -9,7 +9,9 @@ import time
 
 
 from nixt.object import Object, update
-from nixt.utils  import elapsed
+
+
+from .command import elapsed
 
 
 from . import STARTTIME
