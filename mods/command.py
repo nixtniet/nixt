@@ -14,7 +14,6 @@ import typing
 
 from nixt.object import Default
 from nixt.thread import launch
-from nixt.utils  import spl
 
 
 STARTTIME = time.time()
@@ -201,6 +200,15 @@ def scan(pkg, mods=""):
         Commands.scan(mod)
         res.append(mod)
     return res
+
+
+def spl(txt):
+    """ iterate over comma seperated string. """
+    try:
+        result = txt.split(',')
+    except (TypeError, ValueError):
+        result = txt
+    return [x for x in result if x]
 
 
 def __dir__():

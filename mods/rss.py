@@ -25,10 +25,9 @@ from nixt.fleet    import Fleet
 from nixt.object   import Object, fmt, update
 from nixt.thread   import launch
 from nixt.repeater import Repeater
-from nixt.utils    import elapsed
 
 
-from .command import spl
+from .command import elapsed, spl
 
 
 DEBUG = False
