@@ -67,9 +67,6 @@ def name(obj) -> str:
     return None
 
 
-"timers"
-
-
 class Timer:
 
     def __init__(self, sleep, func, *args, thrname=None, **kwargs):

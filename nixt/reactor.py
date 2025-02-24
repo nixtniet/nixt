@@ -139,7 +139,6 @@ class Fleet:
         for tme in sorted(evt.result):
             text = evt.result[tme]
             Fleet.say(evt.orig, evt.channel, text)
-        evt.ready()
 
     @staticmethod
     def first() -> None:
