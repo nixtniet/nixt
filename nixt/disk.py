@@ -11,7 +11,7 @@ import pathlib
 import threading
 
 
-from .cache import Cache
+from .cache  import Cache
 from .object import dumps, fqn, loads, update
 
 
@@ -56,7 +56,6 @@ def write(obj, pth):
 
 def __dir__():
     return (
-        'Cache',
         'Error',
         'cdir',
         'read',

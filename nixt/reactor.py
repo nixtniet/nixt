@@ -6,13 +6,11 @@
 
 import queue
 import threading
-import time
 import _thread
 
 
 from .errors import later
 from .fleet  import Fleet
-from .object import Default
 from .thread import launch
 
 

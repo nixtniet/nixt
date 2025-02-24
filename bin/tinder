@@ -16,10 +16,11 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
+from nixt.client  import Client
 from nixt.errors  import errors, later
+from nixt.event   import Event
 from nixt.find    import Workdir, elapsed, skel
 from nixt.object  import Object, items, keys
-from nixt.reactor import Client, Event
 from nixt.thread  import Thread, launch
 
 

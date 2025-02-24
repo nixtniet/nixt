@@ -5,9 +5,10 @@
 
 
 import threading
+import time
 
 
-from .thread import launch
+from .thread import launch, name
 
 
 class Timer:
@@ -41,15 +42,7 @@ class Timer:
             self.timer.cancel()
 
 
-class Repeater(Timer):
-
-    def run(self) -> None:
-        launch(self.start)
-        super().run()
-
-
 def __dir__():
     return (
-        'Repeater',
-        'Timer'
+        'Timer',
     )
