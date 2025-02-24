@@ -16,7 +16,6 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, Config, command, inits, parse, scan
 from nixt.excepts import errors, later
 from nixt.locater import Workdir, pidname
 from nixt.objects import dumps
@@ -25,8 +24,10 @@ from nixt.reactor import Client, Event
 
 if os.path.exists("mods"):
     import mods as MODS
+    from mods.command import Commands, Config, command, inits, parse, scan
 else:
-    MODs = None
+    print("mods directory not found")
+    
 
 
 "defines"

@@ -19,12 +19,14 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.command import spl
 from nixt.persist import ident,write
 from nixt.locater import elapsed, find, fntime, last, store
 from nixt.objects import Object, fmt, update
 from nixt.threads import Repeater, launch
 from nixt.reactor import Fleet
+
+
+from .command import spl
 
 
 "defines"

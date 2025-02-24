@@ -6,6 +6,7 @@
 
 import inspect
 import os
+import sys
 import time
 import types
 import typing
@@ -21,7 +22,7 @@ STARTTIME = time.time()
 class Config(Default):
 
     init    = ""
-    name    = __file__.rsplit(os.sep, maxsplit=2)[-2]
+    name    = sys.argv[0].split(os.sep)[-1]
     opts    = Default()
 
 

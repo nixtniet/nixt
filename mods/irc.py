@@ -16,8 +16,6 @@ import time
 import _thread
 
 
-from nixt.command import Config as Main
-from nixt.command import command
 from nixt.excepts import later
 from nixt.locater import last, store
 from nixt.objects import Default, Object, edit, fmt, keys
@@ -26,11 +24,16 @@ from nixt.reactor import Event, Fleet, Reactor
 from nixt.threads import launch
 
 
+from .command import Config as Main
+from .command import command
+
+
 "defines"
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]
 NAME    = sys.argv[0].split(os.sep)[-1]
+
 
 saylock = _thread.allocate_lock()
 
