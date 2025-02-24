@@ -29,12 +29,14 @@ class Reactor:
     def callback(self, evt) -> None:
         with cblock:
             func = self.cbs.get(evt.type, None)
-            if func:
-                try:
-                    evt._thr = launch(func, evt, name=evt.cmd or evt.txt)
-                except Exception as ex:
-                    later(ex)
-                    evt.ready()
+            if not func:
+                evt.ready()
+                return
+            try:
+                evt._thr = launch(func, evt, name=evt.cmd or evt.txt)
+            except Exception as ex:
+                later(ex)
+                evt.ready()
 
     def loop(self) -> None:
         evt = None

@@ -16,7 +16,7 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, Config, command, parse, scan
+from nixt.command import Commands, Config, command, inits, parse, scan
 from nixt.excepts import errors, later
 from nixt.locater import Workdir, pidname
 from nixt.objects import dumps
@@ -66,6 +66,10 @@ def handler(signum, frame):
 
 
 class CLI(Client):
+
+    def __init__(self):
+        Client.__init__(self)
+        self.register("command", command)
 
     def raw(self, txt):
         output(txt.encode('utf-8', 'replace').decode("utf-8"))
@@ -161,7 +165,7 @@ def background():
     disable()
     pidfile(pidname(Config.name))
     Commands.add(cmd)
-    Table.inits(Config.init or "irc,rss", pname)
+    inits(MODS,Config.init or "irc,rss", pname)
     forever()
 
 
@@ -176,7 +180,7 @@ def console():
     if "v" in Config.opts:
         banner()
     if "i" in Config.opts or Config.init:
-        for _mod, thr in Table.inits(Config.init, pname):
+        for _mod, thr in inits(MODS, Config.init, pname):
             if "w" in Config.opts:
                 thr.join()
     csl = Console()
@@ -209,7 +213,7 @@ def service():
     privileges()
     pidfile(pidname(Config.name))
     Commands.add(cmd)
-    Table.inits(Config.init or "irc,rss", pname)
+    inits(MODS, Config.init or "irc,rss", pname)
     forever()
 
 

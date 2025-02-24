@@ -7,10 +7,12 @@
 import inspect
 import os
 import time
+import types
 import typing
 
 
 from nixt.objects import Default
+from nixt.threads import launch
 
 
 STARTTIME = time.time()
@@ -58,6 +60,21 @@ def command(evt) -> None:
         func(evt)
         evt.display()
     evt.ready()
+
+
+def inits(pkg, names, pname) -> [types.ModuleType]:
+    mods = []
+    for name in spl(names):
+        mname = pname + "." + name
+        if not mname:
+            continue
+        mod = getattr(pkg, name, None)
+        if not mod:
+             continue
+        if "init" in dir(mod):
+           thr = launch(mod.init)
+           mods.append((mod, thr))
+    return mods
 
 
 def modules(path) -> [str]:
