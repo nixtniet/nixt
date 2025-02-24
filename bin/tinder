@@ -18,8 +18,8 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.excepts import errors, later
 from nixt.locater import Workdir, elapsed, skel
-from nixt.objects import Object, fmt, items, keys, values
-from nixt.reactor import Client, Event, Fleet, Reactor
+from nixt.objects import Object, items, keys
+from nixt.reactor import Client, Event
 from nixt.threads import Thread, launch
 
 
@@ -28,7 +28,7 @@ Workdir.wdr  = ".test"
 
 if os.path.exists("mods"):
     import mods as MODS
-    from mods.command import Commands, Config, command, inits, parse, scan
+    from mods.command import Commands, Config, command, parse, scan
     from mods         import STARTTIME
 else:
     print("mods directory not found.")
