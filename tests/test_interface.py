@@ -12,24 +12,25 @@ import unittest
 
 
 import nixt
-import nixt.excepts
-import nixt.locater
-import nixt.objects
-import nixt.persist
+import nixt.disk
+import nixt.errors
+import nixt.find
+import nixt.object
 import nixt.reactor
-import nixt.threads
+import nixt.thread
 
 
-from nixt.objects import *
+from nixt.object import *
 
 
 PACKAGE = [
-    'excepts',
-    'locater',
-    'objects',
-    'persist',
+    'cache',
+    'disk',
+    'errors',
+    'find',
+    'object',
     'reactor',
-    'threads'
+    'thread'
 ]
 
 
