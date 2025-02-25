@@ -16,6 +16,8 @@ import time
 import _thread
 
 
+from nixt.command import Config as Main
+from nixt.command import command
 from nixt.disk    import ident, write
 from nixt.errors  import later
 from nixt.event   import Event
@@ -24,10 +26,6 @@ from nixt.fleet   import Fleet
 from nixt.object  import Default, Object, edit, fmt, keys
 from nixt.reactor import Reactor
 from nixt.thread  import launch
-
-
-from .command import Config as Main
-from .command import command
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]

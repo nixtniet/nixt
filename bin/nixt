@@ -16,6 +16,7 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
+from nixt.command import Commands, Config, command, inits, parse
 from nixt.errors  import Errors, later
 from nixt.event   import Event
 from nixt.find    import Workdir, pidname
@@ -25,7 +26,6 @@ from nixt.reactor import Client
 
 if os.path.exists("mods"):
     import mods as MODS
-    from mods.command import Commands, Config, command, inits, parse, scan
 else:
     print("mods directory not found")
     os._exit(0)
@@ -34,6 +34,9 @@ else:
 Config.name = "nixt"
 p        = os.path.join
 pname    = f"{Config.name}.modules"
+
+
+"output"
 
 
 def nil(txt):
@@ -59,6 +62,9 @@ def handler(signum, frame):
 
 
 # signal.signal(signal.SIGHUP, handler)
+
+
+"clients"
 
 
 class CLI(Client):
@@ -171,7 +177,6 @@ def console():
     enable()
     Commands.add(cmd)
     parse(Config, " ".join(sys.argv[1:]))
-    scan(MODS)
     Config.init = Config.sets.init or Config.init
     if "v" in Config.opts:
         banner()
@@ -194,7 +199,6 @@ def control():
     Commands.add(srv)
     Commands.add(tbl)
     parse(Config, " ".join(sys.argv[1:]))
-    scan(MODS)
     csl = CLI()
     evt = Event()
     evt.orig = repr(csl)
@@ -228,7 +232,6 @@ def srv(event):
 
 
 def tbl(event):
-    scan(MODS)
     event.reply("# This file is placed in the Public Domain.")
     event.reply("")
     event.reply("")

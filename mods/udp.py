@@ -16,7 +16,7 @@ from nixt.reactor import Fleet
 from nixt.thread  import launch
 
 
-DEBUG = True
+DEBUG = False
 
 
 def init():

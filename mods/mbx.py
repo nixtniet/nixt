@@ -9,12 +9,10 @@ import os
 import time
 
 
+from nixt.command import elapsed
 from nixt.disk   import write
 from nixt.find   import find, fntime
 from nixt.object import Object, fmt, update
-
-
-from .command import elapsed
 
 
 class Email(Object):

@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"timers"
+"timer"
 
 
 import datetime
@@ -14,8 +14,7 @@ from nixt.event  import Event
 from nixt.find   import find, store
 from nixt.fleet  import Fleet
 from nixt.object import update
-from nixt.thread import launch
-from nixt.timer  import Timer
+from nixt.thread import Timer, launch
 
 
 from .command  import elapsed
