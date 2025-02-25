@@ -8,8 +8,8 @@ import datetime
 import time
 
 
-from nixt.command import elapsed
 from nixt.event  import Event
+from nixt.find   import elapsed
 from nixt.fleet  import Fleet
 from nixt.object import Object, construct, keys
 from nixt.thread import Repeater

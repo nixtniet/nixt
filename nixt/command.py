@@ -162,7 +162,7 @@ def scan(pkg, mods=""):
         name = pname + "." + nme
         if not name:
             continue
-        mod = getattr(pkg, nme, None)
+        mod = Table.load(name)
         if not mod:
             continue
         Commands.scan(mod)

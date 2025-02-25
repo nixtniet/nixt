@@ -16,12 +16,13 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, Config, command, inits, parse
+from nixt.command import Commands, Config, command, inits, parse, scan
 from nixt.errors  import Errors, later
 from nixt.event   import Event
 from nixt.find    import Workdir, pidname
 from nixt.object  import dumps
 from nixt.reactor import Client
+from nixt.table   import Table
 
 
 if os.path.exists("mods"):
@@ -35,6 +36,9 @@ Config.name = "nixt"
 p        = os.path.join
 pname    = f"{Config.name}.modules"
 
+
+if not Commands.names:
+    scan(MODS)
 
 "output"
 
@@ -166,6 +170,8 @@ def background():
     privileges()
     disable()
     pidfile(pidname(Config.name))
+    if not Commands.names:
+        scan(MODS)
     Commands.add(cmd)
     inits(MODS,Config.init or "irc,rss", pname)
     forever()
@@ -175,6 +181,8 @@ def console():
     import readline # noqa: F401
     Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
     enable()
+    if not Commands.names:
+        scan(MODS)
     Commands.add(cmd)
     parse(Config, " ".join(sys.argv[1:]))
     Config.init = Config.sets.init or Config.init
@@ -195,6 +203,8 @@ def control():
         return
     Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
     enable()
+    if not Commands.names:
+        scan(MODS)
     Commands.add(cmd)
     Commands.add(srv)
     Commands.add(tbl)
@@ -213,6 +223,8 @@ def service():
     enable()
     privileges()
     pidfile(pidname(Config.name))
+    if not Commands.names:
+        scan(MODS)
     Commands.add(cmd)
     inits(MODS, Config.init or "irc,rss", pname)
     forever()
@@ -232,6 +244,7 @@ def srv(event):
 
 
 def tbl(event):
+    scan(MODS)
     event.reply("# This file is placed in the Public Domain.")
     event.reply("")
     event.reply("")
