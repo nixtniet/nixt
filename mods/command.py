@@ -7,6 +7,7 @@
 import importlib
 import inspect
 import os
+import sys
 import threading
 import time
 import types
@@ -29,7 +30,7 @@ loadlock = threading.RLock()
 class Config(Default):
 
     init    = ""
-    name    = __name__.split(".")[-2]
+    name    = sys.argv[0].split(os.sep)[-1]
     opts    = Default()
 
 
@@ -45,7 +46,7 @@ def gettable():
 class Table:
 
     debug   = False
-    ignore  = ["llm", "mbx", "rst", "web", "udp", "wsd"]
+    ignore  = ["command", "names", "llm", "rst", "web", "udp", "wsd"]
     mods    = {}
 
     @staticmethod
@@ -55,8 +56,6 @@ class Table:
     @staticmethod
     def all(pkg, mods="") -> [types.ModuleType]:
         res = []
-        path = pkg.__path__[0]
-        pname = pkg.__name__
         for nme in Table.modules(path):
             if nme in Table.ignore:
                 continue
@@ -161,8 +160,10 @@ def command(evt) -> None:
     evt.ready()
 
 
-def inits(pkg, names, pname) -> [types.ModuleType]:
+def inits(pkg, names) -> [types.ModuleType]:
     mods = []
+    path = pkg.__path__[0]
+    pname = pkg.__name__
     for name in modules(pkg.__path__[0]):
         if names and name not in spl(names):
             continue

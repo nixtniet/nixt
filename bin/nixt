@@ -25,14 +25,14 @@ from nixt.reactor import Client
 
 if os.path.exists("mods"):
     import mods as MODS
-    from mods.command import Commands, Config, Table, command, inits, parse, scan
+    from mods.command import Commands, Config, Table
+    from mods.command import command, inits, parse, scan
 else:
     print("mods directory not found")
     os._exit(0)
 
 
-p        = os.path.join
-pname    = f"{Config.name}.modules"
+p = os.path.join
 
 
 "output"
@@ -168,7 +168,7 @@ def background():
     if not Commands.names:
         scan(MODS)
     Commands.add(cmd)
-    inits(MODS,Config.init or "irc,rss", pname)
+    inits(MODS, Config.init or "irc,rss")
     forever()
 
 
@@ -185,7 +185,7 @@ def console():
         banner()
     if "i" in Config.opts or Config.init:
         init = Config.init or None
-        for _mod, thr in inits(MODS, init, pname):
+        for _mod, thr in inits(MODS, init):
             if "w" in Config.opts:
                 thr.join()
     csl = Console()
@@ -221,7 +221,7 @@ def service():
     if not Commands.names:
         scan(MODS)
     Commands.add(cmd)
-    inits(MODS, Config.init or "irc,rss", pname)
+    inits(MODS, Config.init or "irc,rss")
     forever()
 
 
