@@ -21,7 +21,7 @@ loadlock = threading.RLock()
 class Table:
 
     debug   = False
-    disable = []
+    ignore  = ["llm", "mbx", "rst", "web", "udp", "wsd"]
     mods    = {}
 
     @staticmethod
@@ -34,7 +34,7 @@ class Table:
         path = pkg.__path__[0]
         pname = pkg.__name__
         for nme in Table.modules(path):
-            if nme in Table.disable:
+            if nme in Table.ignore:
                 continue
             if "__" in nme:
                 continue
@@ -71,6 +71,9 @@ class Table:
 
     @staticmethod
     def load(name) -> types.ModuleType:
+        for ign in Table.ignore:
+            if ign in name:
+                return
         with loadlock:
             pname = ".".join(name.split(".")[:-1])
             module = Table.mods.get(name)

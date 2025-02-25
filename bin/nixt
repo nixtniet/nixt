@@ -32,13 +32,9 @@ else:
     os._exit(0)
 
 
-Config.name = "nixt"
 p        = os.path.join
 pname    = f"{Config.name}.modules"
 
-
-if not Commands.names:
-    scan(MODS)
 
 "output"
 
