@@ -8,9 +8,9 @@ import threading
 import time
 
 
-from nixt.command import STARTTIME
 from nixt.find    import elapsed
 from nixt.object  import Object, update
+from nixt.reactor import STARTTIME
 
 
 def thr(event):

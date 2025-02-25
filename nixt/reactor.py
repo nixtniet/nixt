@@ -6,12 +6,16 @@
 
 import queue
 import threading
+import time
 import _thread
 
 
 from .errors import later
 from .fleet  import Fleet
 from .thread import launch
+
+
+STARTTIME = time.time()
 
 
 cblock = threading.RLock()
