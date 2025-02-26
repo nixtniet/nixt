@@ -6,6 +6,7 @@
 
 
 import os
+import random
 import shutil
 import sys
 import termios
@@ -83,6 +84,9 @@ post.dne = ["hnrss", ""]
 post.rem = ["hnrss", ""]
 
 
+rand = random.SystemRandom()
+
+
 class CLI(Client):
 
     def __init__(self):
@@ -112,7 +116,10 @@ def consume(evts):
 
 def payload(clt, cmds):
     nmr = 0
-    for cmd, examples in items(cmds):
+    cmdz = keys(cmds)
+    rand.shuffle(cmdz)
+    for cmd in cmdz:
+        examples = getattr(cmds, cmd)
         for example in examples:
             event = Event()
             event.txt = cmd + " " + example
