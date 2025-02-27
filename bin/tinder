@@ -17,28 +17,19 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.errors  import Errors, later
-from nixt.event   import Event
-from nixt.find    import Workdir, elapsed, skel
-from nixt.object  import Object, items, keys
-from nixt.reactor import Client
-from nixt.thread  import Thread, launch
+from nixt.cmnd    import STARTTIME, Config
+from nixt.disk    import skel
+from nixt.errors  import Errors
+from nixt.find    import Workdir, elapsed
+from nixt.handler import Client, Event
+from nixt.object  import Object, fmt, items, keys
+from nixt.thread  import Thread, later, launch
+
+
+from nixt import modules as MODS
 
 
 Workdir.wdr  = ".test"
-
-
-if os.path.exists("mods"):
-    import mods as MODS
-    from mods.command import STARTTIME, Commands, Config, Table
-    from mods.command import command, parse, scan
-else:
-    print("mods directory not found.")
-    os._exit(0)
-
-
-cfg = Config()
-cfg.index = 0
 
 
 lap = 1
@@ -84,6 +75,7 @@ post.dne = ["hnrss", ""]
 post.rem = ["hnrss", ""]
 
 
+cfg = Config()
 rand = random.SystemRandom()
 
 
@@ -100,7 +92,7 @@ class CLI(Client):
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    print(f"{Config.name.upper()} since {tme}")
+    print(f"{cfg.name.upper()} since {tme}")
     print(",".join(sorted(keys(Commands.cmds))))
 
 
@@ -152,6 +144,7 @@ def main():
     global nrcommand
     Table.debug = True
     parse(cfg, " ".join(sys.argv[1:]))
+    #print(fmt(cfg))
     nrcommand = len(Commands.cmds) or 1
     if "v" in cfg.opts:
         banner()
@@ -192,5 +185,3 @@ if __name__ == "__main__":
         for line in Errors.errors:
             print(line)
         print(f"{lap} {nrs} {nrcommand} {percall}")
-    sys.stdout.flush()
-    sys.exit(0)

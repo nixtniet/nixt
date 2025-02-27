@@ -6,12 +6,11 @@
 
 import os
 import pathlib
-import threading
 import time
 
 
 from .disk   import Cache, lock, read
-from .object import Object, fqn, items, search, update
+from .object import Object, fqn, search, update
 
 
 p = os.path.join
@@ -139,6 +138,12 @@ def elapsed(seconds, short=True) -> str:
         txt += f"{sec}s"
     txt = txt.strip()
     return txt
+
+
+def skel() -> str:
+    path = pathlib.Path(store())
+    path.mkdir(parents=True, exist_ok=True)
+    return path
 
 
 def spl(txt):

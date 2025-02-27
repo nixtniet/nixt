@@ -11,7 +11,8 @@ import types
 
 
 from .errors import later
-from .find  import spl
+from .find   import spl
+from .thread import launch
 
 
 initlock = threading.RLock()
