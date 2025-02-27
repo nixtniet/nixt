@@ -4,13 +4,20 @@
 "NIXT"
 
 
+import importlib
 import inspect
+import os
+import threading
 import time
+import types
 import typing
 
 
+from .errors import later
+from .find   import spl
 from .object import Default
 from .table  import Table
+from .thread import launch
 
 
 STARTTIME = time.time()
@@ -20,6 +27,7 @@ class Config(Default):
 
     init = ""
     name = Default.__module__.split(".")[0]
+    pname = f"{name}.modules"
     opts = Default()
 
 

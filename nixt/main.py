@@ -17,12 +17,9 @@ from .cmnd    import Commands, Config, command, parse
 from .errors  import Errors, later
 from .find    import Workdir, pidname, spl
 from .handler import Client, Event
-from .object  import dumps
+from .object  import Default, dumps, fmt
 from .table   import Table
 from .thread  import launch
-
-
-from . import modules as MODS
 
 
 p = os.path.join
@@ -193,7 +190,7 @@ def background():
     disable()
     pidfile(pidname(Config.name))
     Commands.add(cmd)
-    inits(MODS, Config.init or "irc,rss")
+    Table,inits(Config.init or "irc,rss", Config.pname)
     forever()
 
 
@@ -206,10 +203,9 @@ def console():
     Config.init = Config.sets.init or Config.init
     if "v" in Config.opts:
         banner()
-    if "i" in Config.opts or Config.init:
-        for _mod, thr in inits(MODS, Config.init):
-            if "w" in Config.opts:
-                thr.join()
+    for _mod, thr in Table.inits(Config.init, Config.pname):
+        if "w" in Config.opts:
+            thr.join()
     csl = Console()
     csl.start()
     forever()
@@ -239,7 +235,7 @@ def service():
     privileges()
     pidfile(pidname(Config.name))
     Commands.add(cmd)
-    inits(MODS, Config.init or "irc,rss")
+    Table.inits(Config.init or "irc,rss", Config.pname)
     forever()
 
 

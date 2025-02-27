@@ -21,9 +21,9 @@ loadlock = threading.RLock()
 
 class Table:
 
-    debug   = False
-    ignore  = ["command", "names", "llm", "rst", "web", "udp", "wsd"]
-    mods    = {}
+    debug  = False
+    ignore = ["command", "names", "llm", "rst", "web", "udp", "wsd"]
+    mods   = {}
 
     @staticmethod
     def add(mod) -> None:

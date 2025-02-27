@@ -17,10 +17,9 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.cmnd    import STARTTIME, Config
-from nixt.disk    import skel
+from nixt.cmnd    import STARTTIME, Config, command
 from nixt.errors  import Errors
-from nixt.find    import Workdir, elapsed
+from nixt.find    import Workdir, elapsed, skel
 from nixt.handler import Client, Event
 from nixt.object  import Object, fmt, items, keys
 from nixt.thread  import Thread, later, launch
@@ -75,7 +74,6 @@ post.dne = ["hnrss", ""]
 post.rem = ["hnrss", ""]
 
 
-cfg = Config()
 rand = random.SystemRandom()
 
 
@@ -86,13 +84,13 @@ class CLI(Client):
         self.register("command", command)
 
     def raw(self, txt):
-        if "v" in cfg.opts:
+        if "v" in Config.opts:
             print(txt)
 
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    print(f"{cfg.name.upper()} since {tme}")
+    print(f"{Config.name.upper()} since {tme}")
     print(",".join(sorted(keys(Commands.cmds))))
 
 
@@ -143,19 +141,21 @@ def main():
     global nrs
     global nrcommand
     Table.debug = True
-    parse(cfg, " ".join(sys.argv[1:]))
-    #print(fmt(cfg))
+    parse(Config, " ".join(sys.argv[1:]))
+    print(fmt(Config))
     nrcommand = len(Commands.cmds) or 1
-    if "v" in cfg.opts:
+    if "b" in Config.opts:
+        Thread.bork = True
+    if "v" in Config.opts:
         banner()
         print("verbose is on")
-    if "f" not in cfg.opts:
+    if "f" not in Config.opts:
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
     skel()
     clt = CLI()
     clt.start()
-    nrs = cfg.index or 1
+    nrs = Config.index or 1
     thrs = []
     for _nr in range(nrs):
         thrs.append(launch(payload, clt, pre))
@@ -177,9 +177,9 @@ if __name__ == "__main__":
     endtime = time.time()
     lap = elapsed(endtime-STARTTIME)
     percall = (endtime-STARTTIME)/(nrs*nrcommand)
-    if "b" in cfg.opts:
+    if "b" in Config.opts:
         Thread.bork = True
-    if "v" in cfg.opts:
+    if "v" in Config.opts:
         if not list(Errors.errors):
             print("no errors")
         for line in Errors.errors:

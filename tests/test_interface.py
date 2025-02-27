@@ -82,7 +82,6 @@ class TestInterface(unittest.TestCase):
         okd = True
         obj = Object()
         dirr = dir(obj)
-        print(dirr)
         for meth in METHODS:
             if meth not in dirr:
                 okd = False

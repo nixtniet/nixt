@@ -63,7 +63,7 @@ class Handler:
                 evt.ready()
                 return
             try:
-                evt._thr = launch(func, evt, name=evt.txt.split()[0])
+                evt._thr = launch(func, evt, name=(evt and evt.txt.split()[0]) or name(func))
             except Exception as ex:
                 later(ex)
                 evt.ready()
@@ -78,6 +78,7 @@ class Handler:
                 self.callback(evt)
             except (KeyboardInterrupt, EOFError):
                 evt.ready()
+                self.ready,set()
                 _thread.interrupt_main()
         self.ready.set()
 
