@@ -17,15 +17,13 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.cmnd    import STARTTIME, Config, command
+from nixt.cmnd    import STARTTIME, Commands, Config, command, parse
 from nixt.errors  import Errors
 from nixt.find    import Workdir, elapsed, skel
 from nixt.handler import Client, Event
-from nixt.object  import Object, fmt, items, keys
+from nixt.main    import enable
+from nixt.object  import Object, fmt, keys
 from nixt.thread  import Thread, later, launch
-
-
-from nixt import modules as MODS
 
 
 Workdir.wdr  = ".test"
@@ -107,7 +105,7 @@ def consume(evts):
 def payload(clt, cmds):
     nmr = 0
     cmdz = keys(cmds)
-    rand.shuffle(cmdz)
+    #rand.shuffle(cmdz)
     for cmd in cmdz:
         examples = getattr(cmds, cmd)
         for example in examples:
@@ -140,9 +138,13 @@ def wrap(function):
 def main():
     global nrs
     global nrcommand
-    Table.debug = True
-    parse(Config, " ".join(sys.argv[1:]))
+    enable()
+    print("yo!")
+    #Table.debug = True
     print(fmt(Config))
+    print("yo!")
+    parse(Config, " ".join(sys.argv[1:]))
+    print(Config.opts)
     nrcommand = len(Commands.cmds) or 1
     if "b" in Config.opts:
         Thread.bork = True
@@ -177,8 +179,6 @@ if __name__ == "__main__":
     endtime = time.time()
     lap = elapsed(endtime-STARTTIME)
     percall = (endtime-STARTTIME)/(nrs*nrcommand)
-    if "b" in Config.opts:
-        Thread.bork = True
     if "v" in Config.opts:
         if not list(Errors.errors):
             print("no errors")

@@ -23,7 +23,7 @@ from ..errors  import later
 from ..find    import last, store
 from ..fleet   import Fleet
 from ..object  import Default, Object, edit, fmt, keys
-from ..handler import Client, Event, Handler
+from ..handler import Client, Event
 from ..thread  import launch
 
 

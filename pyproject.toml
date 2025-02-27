@@ -26,11 +26,12 @@ classifiers=[
 
 [project.urls]
 "home" = "https://pypi.org/project/nixt"
-"bugs" = "https://github.com/otpcr/nixt/issues"
-"source" = "https://github.com/otpcr/nixt"
+"bugs" = "https://github.com/nixtniet/nixt/issues"
+"source" = "https://github.com/nixtniet/nixt"
 
 
 [tool.setuptools]
 packages = [
     'nixt',
+    'nixt.modules'
 ]
