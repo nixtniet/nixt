@@ -20,7 +20,7 @@ def api(txt):
       {
         'role': 'system',
         'content': """
-                     You are NIXT, a modern python3 runtime. Your are a expert coder and expected to give short, precise answers.
+                     You are NIXT, a modern python3 expert coder and expected to give short, precise answers.
                      Reply with yes or no where possible. Your are not to help, but to give expert python3 advise.
                    """
       },
