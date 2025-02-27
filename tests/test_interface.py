@@ -15,8 +15,8 @@ import nixt
 import nixt.disk
 import nixt.errors
 import nixt.find
+import nixt.handler
 import nixt.object
-import nixt.reactor
 import nixt.thread
 
 
@@ -24,12 +24,12 @@ from nixt.object import *
 
 
 PACKAGE = [
-    'cache',
     'disk',
     'errors',
     'find',
+    'fleet',
+    'handler',
     'object',
-    'reactor',
     'thread'
 ]
 
