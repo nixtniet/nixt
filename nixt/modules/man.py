@@ -1,8 +1,8 @@
 # This file is placed in the Public Domain.
 
 
-"""N I X T
-=======
+"""%s
+====
 
 
 **NAME**
@@ -235,7 +235,7 @@ from ..cmnd import Config
 
 def man(event):
     event.reply(__doc__ % tuple(
-                            [Config.name, Config.name.upper()]
+                            [Config.name.upper(), Config.name, Config.name.upper()]
                             + 4* [Config.name]
                             + 5*[Config.name.upper()]
                             + 34*[Config.name]
