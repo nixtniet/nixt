@@ -2,7 +2,3 @@
 
 
 "NIXM"
-
-
-from .disk   import read, write
-from .object import *

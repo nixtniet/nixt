@@ -17,6 +17,7 @@ NAMES = {
     "fnd": "nixt.modules.fnd",
     "imp": "nixt.modules.rss",
     "log": "nixt.modules.log",
+    "man": "nixt.modules.man",
     "mbx": "nixt.modules.mbx",
     "mod": "nixt.modules.mod",
     "mre": "nixt.modules.irc",

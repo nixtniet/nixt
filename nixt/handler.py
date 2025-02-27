@@ -13,7 +13,7 @@ import _thread
 from .errors import later
 from .fleet  import Fleet
 from .object import Default
-from .thread import launch
+from .thread import launch, name
 
 
 cblock = threading.RLock()

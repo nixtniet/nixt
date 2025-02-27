@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-TXT = """N I X T
+"""N I X T
 =======
 
 
@@ -234,7 +234,7 @@ from ..cmnd import Config
 
 
 def man(event):
-    event.reply(TXT % tuple(
+    event.reply(__doc__ % tuple(
                             [Config.name, Config.name.upper()]
                             + 4* [Config.name]
                             + 5*[Config.name.upper()]
