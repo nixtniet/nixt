@@ -27,6 +27,7 @@ class Table:
 
     @staticmethod
     def add(mod) -> None:
+        print(f"add {mod}")
         Table.mods[mod.__name__] = mod
 
     @staticmethod
@@ -72,14 +73,15 @@ class Table:
 
     @staticmethod
     def load(name) -> types.ModuleType:
-        for ign in Table.ignore:
-            if ign in name:
-                return
         with loadlock:
+            for ign in Table.ignore:
+                if ign in name:
+                    return
             pname = ".".join(name.split(".")[:-1])
             module = Table.mods.get(name)
             if not module:
                 try:
+                    print(f"import {name}")
                     Table.mods[name] = module = importlib.import_module(name, pname)
                     if Table.debug:
                         Table.mods[name].DEBUG = True

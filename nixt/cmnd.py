@@ -48,7 +48,8 @@ class Commands:
             name = Commands.names.get(cmd)
             if name:
                 mod = Table.load(name)
-                func = getattr(mod, cmd)
+                Commands.scan(mod)
+                func = Commands.cmds.get(cmd)
         return func
 
     @staticmethod

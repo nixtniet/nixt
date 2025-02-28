@@ -52,17 +52,15 @@ def types() -> [str]:
 
 
 def fns(clz) -> [str]:
-    with lock:
-        res = []
-        pth = store(clz)
-        for rootdir, dirs, _files in os.walk(pth, topdown=False):
-            if dirs:
-                for dname in sorted(dirs):
-                    if dname.count('-') == 2:
-                        ddd = p(rootdir, dname)
-                        for fll in os.listdir(ddd):
-                            res.append(p(ddd, fll))
-        return res
+    res = []
+    pth = store(clz)
+    for rootdir, dirs, _files in os.walk(pth, topdown=False):
+        if dirs:
+            for dname in sorted(dirs):
+                if dname.count('-') == 2:
+                     ddd = p(rootdir, dname)
+                     for fll in os.listdir(ddd):
+                         yield p(ddd, fll)
 
 
 def fntime(daystr) -> int:
@@ -79,23 +77,22 @@ def fntime(daystr) -> int:
 
 
 def find(clz, selector=None, deleted=False, matching=False) -> [Object]:
-    with lock:
-        res = []
-        skel()
-        res = []
-        clz = long(clz)
-        for pth in fns(clz):
-            obj = Cache.get(pth)
-            if not obj:
-                obj = Object()
-                read(obj, pth)
-                Cache.add(pth, obj)
-            if not deleted and '__deleted__' in dir(obj) and obj.__deleted__:
-                continue
-            if selector and not search(obj, selector, matching):
-                continue
-            res.append((pth, obj))
-        return sorted(res, key=lambda x: fntime(x[0]))
+    res = []
+    skel()
+    res = []
+    clz = long(clz)
+    for pth in fns(clz):
+        obj = Cache.get(pth)
+        if not obj:
+            obj = Object()
+            read(obj, pth)
+            Cache.add(pth, obj)
+        if not deleted and '__deleted__' in dir(obj) and obj.__deleted__:
+            continue
+        if selector and not search(obj, selector, matching):
+            continue
+        res.append((pth, obj))
+    return sorted(res, key=lambda x: fntime(x[0]))
 
 
 "utilities"
