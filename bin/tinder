@@ -89,7 +89,7 @@ class CLI(Client):
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     print(f"{Config.name.upper()} since {tme}")
-    print(",".join(sorted(keys(Commands.cmds))))
+    print("loaded " + ",".join(sorted(keys(Commands.names))))
 
 
 def consume(evts):
@@ -139,18 +139,13 @@ def main():
     global nrs
     global nrcommand
     enable()
-    print("yo!")
     #Table.debug = True
-    print(fmt(Config))
-    print("yo!")
     parse(Config, " ".join(sys.argv[1:]))
-    print(Config.opts)
     nrcommand = len(Commands.cmds) or 1
     if "b" in Config.opts:
         Thread.bork = True
     if "v" in Config.opts:
         banner()
-        print("verbose is on")
     if "f" not in Config.opts:
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
@@ -184,4 +179,4 @@ if __name__ == "__main__":
             print("no errors")
         for line in Errors.errors:
             print(line)
-        print(f"{lap} {nrs} {nrcommand} {percall}")
+        print(f"total: {lap} nrs: {nrs} cmds: {nrcommand} call: {percall}")

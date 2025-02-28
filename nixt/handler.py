@@ -17,6 +17,7 @@ from .thread import launch, name
 
 
 cblock = threading.RLock()
+lock = threading.RLock()
 
 
 class Event(Default):
@@ -30,7 +31,7 @@ class Event(Default):
         self.type   = "event"
         self.txt    = ""
 
-    def display(self):
+    def display(self) -> None:
         Fleet.display(self)
 
     def done(self) -> None:
@@ -63,7 +64,7 @@ class Handler:
                 evt.ready()
                 return
             try:
-                evt._thr = launch(func, evt, name=(evt and evt.txt.split()[0]) or name(func))
+                evt._thr = launch(func, evt, name=(evt.txt and evt.txt.split()[0]) or name(func))
             except Exception as ex:
                 later(ex)
                 evt.ready()
