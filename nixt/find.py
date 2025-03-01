@@ -143,7 +143,7 @@ def skel() -> str:
     return path
 
 
-def spl(txt):
+def spl(txt) -> str:
     """ iterate over comma seperated string. """
     try:
         result = txt.split(',')
