@@ -9,7 +9,7 @@ import pathlib
 import time
 
 
-from .disk   import Cache, lock, read
+from .disk   import Cache, read
 from .object import Object, fqn, search, update
 
 
@@ -52,7 +52,6 @@ def types() -> [str]:
 
 
 def fns(clz) -> [str]:
-    res = []
     pth = store(clz)
     for rootdir, dirs, _files in os.walk(pth, topdown=False):
         if dirs:

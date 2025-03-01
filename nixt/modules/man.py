@@ -233,7 +233,7 @@ code, see the nixt/modules directory for examples.
 from ..cmnd import Config
 
 
-def man(evnt):
+def man(event):
     event.reply(__doc__ % tuple(
                             [Config.name.upper(), Config.name, Config.name.upper()]
                             + 4* [Config.name]

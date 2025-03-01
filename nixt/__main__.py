@@ -4,7 +4,6 @@
 "main"
 
 
-import os
 
 
 from .main import main
