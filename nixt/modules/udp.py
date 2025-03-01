@@ -76,11 +76,17 @@ class UDP(Object):
         launch(self.loop)
 
 
+"utilities"
+
+
 def toudp(host, port, txt):
     if DEBUG:
         return
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))
+
+
+"commands"
 
 
 def udp(event):

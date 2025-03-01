@@ -31,11 +31,6 @@ def init():
     return rest
 
 
-class WebError(Exception):
-
-    pass
-
-
 class Config(Default):
 
     hostname = "localhost"

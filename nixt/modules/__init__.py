@@ -19,10 +19,5 @@ MODS      = sorted([
                    ])
 
 
-for name in MODS:
-    mname = f"{__name__}.{name}"
-    importlib.import_module(mname, __name__)
-
-
 def __dir__():
     return MODS

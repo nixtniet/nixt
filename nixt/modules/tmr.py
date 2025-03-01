@@ -17,31 +17,6 @@ from ..handler import Event
 from ..thread  import Timer, launch
 
 
-MONTHS = [
-    'Bo',
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
-]
-
-
-FORMATS = [
-    "%Y-%m-%d",
-    "%d-%m-%Y",
-    "%d-%m",
-    "%m-%d",
-]
-
-
 def init():
     for _fn, obj in find("timer"):
         if "time" not in dir(obj):
@@ -57,6 +32,9 @@ def init():
 class NoDate(Exception):
 
     pass
+
+
+"utilities"
 
 
 def extract_date(daystr):
@@ -220,3 +198,31 @@ def tmr(event):
     write(timer, store(ident(timer)))
     launch(timer.start)
     return result
+
+
+"data"
+
+
+MONTHS = [
+    'Bo',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+]
+
+
+FORMATS = [
+    "%Y-%m-%d",
+    "%d-%m-%Y",
+    "%d-%m",
+    "%m-%d",
+]
