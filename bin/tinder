@@ -19,10 +19,10 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.cmnd    import STARTTIME, Commands, Config, command, parse
 from nixt.errors  import Errors
-from nixt.find    import Workdir, elapsed, skel
 from nixt.handler import Client, Event
 from nixt.main    import enable
 from nixt.object  import Object, fmt, keys
+from nixt.persist import Workdir, elapsed, skel
 from nixt.table   import Table
 from nixt.thread  import Thread, later, launch
 

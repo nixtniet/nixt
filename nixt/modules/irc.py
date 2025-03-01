@@ -18,9 +18,8 @@ import _thread
 
 from ..cmnd    import Config as Main
 from ..cmnd    import command
-from ..disk    import ident, write
 from ..errors  import later
-from ..find    import last, store
+from ..persist import ident, last, store, write
 from ..fleet   import Fleet
 from ..object  import Default, Object, edit, fmt, keys
 from ..handler import Client, Event

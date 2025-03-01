@@ -10,9 +10,9 @@ import threading
 import types
 
 
-from .errors import later
-from .find   import spl
-from .thread import launch
+from .errors  import later
+from .persist import spl
+from .thread  import launch
 
 
 initlock = threading.RLock()

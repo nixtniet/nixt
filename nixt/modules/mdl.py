@@ -8,7 +8,7 @@ import datetime
 import time
 
 
-from ..find    import elapsed
+from ..persist import elapsed
 from ..fleet   import Fleet
 from ..handler import Event
 from ..object  import Object, construct, keys
