@@ -84,7 +84,7 @@ def get_day(daystr):
             if ymre:
                 (day, month) = ymre.groups()
                 yea = ttime.strftime("%Y", ttime.localtime())
-        except Exception as ex: # pylint: disable=W0212
+        except Exception as ex:
             raise NoDate(daystr) from ex
     if day:
         day = int(day)

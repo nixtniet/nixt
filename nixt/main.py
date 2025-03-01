@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"scripts"
+"main program"
 
 
 import os
@@ -25,26 +25,8 @@ from .thread  import launch
 p = os.path.join
 
 
-def nil(txt):
-    pass
-
-
 def output(txt):
     print(txt)
-
-
-def enable():
-    global output
-    output = print
-
-
-def disable():
-    global output
-    output = nil
-
-
-def handler(signum, frame):
-     sys.exit(0)
 
 
 class CLI(Client):
@@ -71,6 +53,26 @@ class Console(CLI):
         evt.txt = input("> ")
         evt.type = "command"
         return evt
+
+
+"output"
+
+
+def nil(txt):
+    pass
+
+
+def enable():
+    global output
+    output = print
+
+
+def disable():
+    global output
+    output = nil
+
+
+"utilities"
 
 
 def banner():
@@ -175,6 +177,13 @@ def scan(pkg, mods=""):
         Commands.scan(mod)
         res.append(mod)
     return res
+
+
+"handlers"
+
+
+def handler(signum, frame):
+     sys.exit(0)
 
 
 "scripts"

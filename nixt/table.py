@@ -81,7 +81,6 @@ class Table:
             module = Table.mods.get(name)
             if not module:
                 try:
-                    print(f"import {name}")
                     Table.mods[name] = module = importlib.import_module(name, pname)
                     if Table.debug:
                         Table.mods[name].DEBUG = True

@@ -22,6 +22,9 @@ class Workdir:
     wdr  = ""
 
 
+"paths"
+
+
 def long(name) -> str:
     split = name.split(".")[-1].lower()
     res = name
@@ -169,6 +172,9 @@ def last(obj, selector=None) -> Object:
     return res
 
 
+"interface"
+
+
 def __dir__():
     return (
         'Workdir',
@@ -177,5 +183,6 @@ def __dir__():
         'find',
         'last',
         'pidname',
+        'skel',
         'types'
     )

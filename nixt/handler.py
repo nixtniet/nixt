@@ -17,7 +17,6 @@ from .thread import launch, name
 
 
 cblock = threading.RLock()
-lock = threading.RLock()
 
 
 class Event(Default):

@@ -21,6 +21,9 @@ class Email(Object):
         self.text = ""
 
 
+"utilities"
+
+
 def todate(date):
     date = date.replace("_", ":")
     res = date.split()
@@ -109,7 +112,7 @@ def mbx(event):
         pass
     for m in thing:
         o = Email()
-        update(o, dict(m._headers)) # pylint: disable=W0212
+        update(o, dict(m._headers))
         o.text = ""
         for payload in m.walk():
             if payload.get_content_type() == 'text/plain':

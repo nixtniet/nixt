@@ -1,7 +1,7 @@
  # This file is placed in the Public Domain.
 
 
-"Genocide model of the Netherlands since 4 March 2019"
+"Genocide model of the Netherlands since 4 March 2019."
 
 
 import datetime
@@ -34,6 +34,9 @@ def init():
             sec = seconds(val)
             repeater = Repeater(sec, cbstats, evt, thrname=aliases.get(key))
             repeater.start()
+
+
+"model"
 
 
 oor = """"Totaal onderliggende doodsoorzaken (aantal)";
@@ -398,7 +401,7 @@ def now(event):
         event.reply(txt)
 
 
-"runtime"
+"init"
 
 
 def boot():

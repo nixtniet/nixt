@@ -33,9 +33,3 @@ def log(event):
     obj.txt = event.rest
     write(obj, store(ident(obj)))
     event.done()
-
-
-def __dir__():
-    return (
-        'log',
-    )

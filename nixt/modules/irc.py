@@ -81,6 +81,9 @@ class Config(Default):
         self.username = Config.username
 
 
+"output"
+
+
 class TextWrap(textwrap.TextWrapper):
 
     def __init__(self):
@@ -158,6 +161,9 @@ class Output:
         if chan in dir(Output.cache):
             return len(getattr(Output.cache, chan, []))
         return 0
+
+
+"irc"
 
 
 class IRC(Client, Output):
@@ -506,6 +512,9 @@ class IRC(Client, Output):
 
     def wait(self):
         self.events.ready.wait()
+
+
+"callbacks"
 
 
 def cb_auth(bot, evt):
