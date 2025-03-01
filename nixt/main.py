@@ -47,9 +47,6 @@ def handler(signum, frame):
      sys.exit(0)
 
 
-# signal.signal(signal.SIGHUP, handler)
-
-
 class CLI(Client):
 
     def __init__(self):
@@ -184,6 +181,7 @@ def scan(pkg, mods=""):
 
 
 def background():
+    signal.signal(signal.SIGHUP, handler)
     daemon("-v" in sys.argv)
     Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
     privileges()

@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"NIXT"
+"command"
 
 
 import inspect
@@ -9,6 +9,7 @@ import time
 import typing
 
 
+from .errors import later
 from .object import Default
 from .table  import Table
 
@@ -26,7 +27,8 @@ class Config(Default):
 
 try:
     from .names import NAMES
-except Exception:
+except Exception as ex:
+    later(ex)
     NAMES = {}
 
 
