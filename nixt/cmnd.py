@@ -5,12 +5,10 @@
 
 
 import inspect
-import sys
 import time
 import typing
 
 
-from .errors import later
 from .object import Default
 from .table  import Table
 
@@ -28,7 +26,7 @@ class Config(Default):
 
 try:
     from .names import NAMES
-except Exception as ex:
+except Exception:
     NAMES = {}
 
 

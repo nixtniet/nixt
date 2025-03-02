@@ -17,7 +17,7 @@ import _thread
 from .cmnd    import Commands, Config, command, parse
 from .errors  import Errors, later
 from .handler import Client, Event
-from .object  import dumps, values
+from .object  import dumps
 from .persist import Workdir, pidname, spl
 from .table   import Table
 from .thread  import launch

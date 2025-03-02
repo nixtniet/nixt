@@ -22,7 +22,7 @@ loadlock = threading.RLock()
 
 try:
     from .names import MD5
-except Exception as ex:
+except Exception:
     MD5 = {}
 
 
