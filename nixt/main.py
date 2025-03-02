@@ -277,6 +277,7 @@ def tbl(event):
     event.reply("")
     event.reply(f"NAMES = {dumps(Commands.names, indent=4, sort_keys=True)}")
     event.reply("")
+    event.reply("")
     event.reply("MD5 = {")
     for mod in Table.mods.values():
         event.reply(f'    "{mod.__name__}": "{md5(mod)}",')
