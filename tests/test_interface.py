@@ -11,11 +11,10 @@ import unittest
 
 
 import nixt
-import nixt.disk
 import nixt.errors
-import nixt.find
 import nixt.handler
 import nixt.object
+import nixt.persist
 import nixt.thread
 
 
@@ -23,12 +22,11 @@ from nixt.object import *
 
 
 PACKAGE = [
-    'disk',
     'errors',
-    'find',
     'fleet',
     'handler',
     'object',
+    'persist',
     'thread'
 ]
 

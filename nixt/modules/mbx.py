@@ -9,9 +9,8 @@ import os
 import time
 
 
-from ..disk   import write
-from ..find   import elapsed, find, fntime
-from ..object import Object, fmt, update
+from ..object  import Object, fmt, update
+from ..persist import elapsed, find, fntime, write
 
 
 class Email(Object):

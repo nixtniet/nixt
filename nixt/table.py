@@ -4,6 +4,7 @@
 "table"
 
 
+import hashlib
 import importlib
 import os
 import threading
@@ -19,15 +20,21 @@ initlock = threading.RLock()
 loadlock = threading.RLock()
 
 
+try:
+    from .names import MD5
+except Exception as ex:
+    MD5 = {}
+
+
 class Table:
 
     debug  = False
     ignore = ["command", "names", "llm", "rst", "web", "udp", "wsd"]
+    md5    = MD5
     mods   = {}
 
     @staticmethod
     def add(mod) -> None:
-        print(f"add {mod}")
         Table.mods[mod.__name__] = mod
 
     @staticmethod
@@ -50,6 +57,15 @@ class Table:
                 continue
             res.append(mod)
         return res
+
+    @staticmethod
+    def check(name):
+        spec = importlib.util.find_spec(name)
+        path = spec.origin
+        print(path, md5(path))
+        if md5(path) == Table.md5.get(name, None):
+            return True
+        return False
 
     @staticmethod
     def get(name) -> types.ModuleType:
@@ -81,7 +97,8 @@ class Table:
             module = Table.mods.get(name)
             if not module:
                 try:
-                    Table.mods[name] = module = importlib.import_module(name, pname)
+                    module = importlib.import_module(name, pname)
+                    Table.add(module)
                     if Table.debug:
                         Table.mods[name].DEBUG = True
                 except Exception as exc:
@@ -95,6 +112,13 @@ class Table:
                 if x.endswith(".py") and not x.startswith("__") and
                 x not in Table.disable
                ]
+
+
+def md5(path):
+    with open(path, "r", encoding="utf-8") as file:
+        txt = file.read().encode("utf-8")
+        return str(hashlib.md5(txt).hexdigest())
+
 
 
 def __dir__():

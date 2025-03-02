@@ -4,6 +4,7 @@
 "main program"
 
 
+import hashlib
 import os
 import pathlib
 import signal
@@ -16,7 +17,7 @@ import _thread
 from .cmnd    import Commands, Config, command, parse
 from .errors  import Errors, later
 from .handler import Client, Event
-from .object  import dumps
+from .object  import dumps, values
 from .persist import Workdir, pidname, spl
 from .table   import Table
 from .thread  import launch
@@ -134,6 +135,12 @@ def inits(pkg, names) -> [types.ModuleType]:
            thr = launch(mod.init)
            mods.append((mod, thr))
     return mods
+
+
+def md5(mod):
+    with open(mod.__file__, "r", encoding="utf-8") as file:
+        txt = file.read().encode("utf-8")
+        return str(hashlib.md5(txt).hexdigest())
 
 
 def modules(path) -> [str]:
@@ -269,6 +276,12 @@ def tbl(event):
     event.reply("")
     event.reply("")
     event.reply(f"NAMES = {dumps(Commands.names, indent=4, sort_keys=True)}")
+    event.reply("")
+    event.reply("MD5 = {")
+    for mod in Table.mods.values():
+        event.reply(f'    "{mod.__name__}": "{md5(mod)}",')
+    event.reply("}")
+    event.reply
 
 
 "data"
@@ -323,6 +336,7 @@ def main():
 
 if __name__ == "__main__":
     main()
-    for line in Errors.errors:
-        output(line)
+    if "v" in Config.opts:
+        for line in Errors.errors:
+            output(line)
     sys.exit(0)

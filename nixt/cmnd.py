@@ -28,7 +28,6 @@ class Config(Default):
 try:
     from .names import NAMES
 except Exception as ex:
-    later(ex)
     NAMES = {}
 
 
@@ -48,10 +47,14 @@ class Commands:
         func = Commands.cmds.get(cmd, None)
         if not func:
             name = Commands.names.get(cmd)
+            print(name)
             if name:
-                mod = Table.load(name)
-                Commands.scan(mod)
-                func = Commands.cmds.get(cmd)
+                if Table.check(name):
+                    print(f"load {name}")
+                    mod = Table.load(name)
+                    Commands.scan(mod)
+                    func = Commands.cmds.get(cmd)
+        print(func)
         return func
 
     @staticmethod
