@@ -20,9 +20,8 @@ from ..cmnd    import Config as Main
 from ..cmnd    import command
 from ..errors  import later
 from ..persist import ident, last, store, write
-from ..fleet   import Fleet
 from ..object  import Default, Object, edit, fmt, keys
-from ..handler import Client, Event
+from ..handler import Client, Event, Fleet
 from ..thread  import launch
 
 

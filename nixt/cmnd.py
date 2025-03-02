@@ -13,6 +13,12 @@ from .object import Default
 from .table  import Table
 
 
+try:
+    from .names import NAMES
+except Exception:
+    NAMES = {}
+
+
 STARTTIME = time.time()
 
 
@@ -22,12 +28,6 @@ class Config(Default):
     name = Default.__module__.split(".")[0]
     pname = f"{name}.modules"
     opts = Default()
-
-
-try:
-    from .names import NAMES
-except Exception:
-    NAMES = {}
 
 
 class Commands:

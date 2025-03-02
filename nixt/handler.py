@@ -11,12 +11,12 @@ import _thread
 
 
 from .errors import later
-from .fleet  import Fleet
 from .object import Default
 from .thread import launch, name
 
 
-cblock = threading.RLock()
+lock    = threading.RLock()
+outlock = threading.RLock()
 
 
 class Event(Default):
@@ -57,13 +57,17 @@ class Handler:
         self.stopped = threading.Event()
 
     def callback(self, evt) -> None:
-        with cblock:
+        with lock:
             func = self.cbs.get(evt.type, None)
             if not func:
                 evt.ready()
                 return
             try:
-                evt._thr = launch(func, evt, name=(evt.txt and evt.txt.split()[0]) or name(func))
+                evt._thr = launch(func, evt, name=(
+                                                   evt.txt
+                                                   and evt.txt.split()[0]
+                                                  ) or name(func)
+                                 )
             except Exception as ex:
                 later(ex)
                 evt.ready()
@@ -107,7 +111,7 @@ class Client(Handler):
         Handler.__init__(self)
         Fleet.add(self)
 
-    def announce(self, txt):
+    def announce(self, txt) -> None:
         pass
 
     def loop(self) -> None:
@@ -125,7 +129,7 @@ class Client(Handler):
                 _thread.interrupt_main()
         self.ready.set()
 
-    def poll(self):
+    def poll(self) -> Event:
         return self.queue.get()
 
     def raw(self, txt) -> None:
@@ -135,9 +139,55 @@ class Client(Handler):
         self.raw(txt)
 
 
+class Fleet:
+
+    bots = {}
+
+    @staticmethod
+    def add(bot) -> None:
+        Fleet.bots[repr(bot)] = bot
+
+    @staticmethod
+    def announce(txt) -> None:
+        for bot in Fleet.bots.values():
+            bot.announce(txt)
+
+    @staticmethod
+    def display(evt) -> None:
+        with outlock:
+            for tme in sorted(evt.result):
+                Fleet.say(evt.orig, evt.channel, evt.result[tme])
+            evt.ready()
+
+    @staticmethod
+    def first() -> None:
+        bots =  list(Fleet.bots.values())
+        res = None
+        if bots:
+            res = bots[0]
+        return res
+
+    @staticmethod
+    def get(orig) -> None:
+        return Fleet.bots.get(orig, None)
+
+    @staticmethod
+    def say(orig, channel, txt) -> None:
+        bot = Fleet.get(orig)
+        if bot:
+            bot.say(channel, txt)
+
+    @staticmethod
+    def wait() -> None:
+        for bot in Fleet.bots.values():
+            if "wait" in dir(bot):
+                bot.wait()
+
+
 def __dir__():
     return (
         'Client',
         'Event',
+        'Fleet',
         'Handler'
     )
