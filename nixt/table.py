@@ -62,7 +62,6 @@ class Table:
     def check(name):
         spec = importlib.util.find_spec(name)
         path = spec.origin
-        print(path, md5(path))
         if md5(path) == Table.md5.get(name, None):
             return True
         return False

@@ -47,14 +47,11 @@ class Commands:
         func = Commands.cmds.get(cmd, None)
         if not func:
             name = Commands.names.get(cmd)
-            print(name)
             if name:
                 if Table.check(name):
-                    print(f"load {name}")
                     mod = Table.load(name)
                     Commands.scan(mod)
                     func = Commands.cmds.get(cmd)
-        print(func)
         return func
 
     @staticmethod
