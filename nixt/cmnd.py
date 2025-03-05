@@ -5,10 +5,12 @@
 
 
 import inspect
+import sys
 import time
 import typing
 
 
+from .debug  import debug
 from .object import Default
 from .table  import Table
 
@@ -24,10 +26,10 @@ STARTTIME = time.time()
 
 class Config(Default):
 
-    init = ""
-    name = Default.__module__.split(".")[0]
+    init  = ""
+    name  = Default.__module__.split(".")[0]
     pname = f"{name}.modules"
-    opts = Default()
+    opts  = Default()
 
 
 class Commands:

@@ -18,6 +18,7 @@ import _thread
 
 from ..cmnd    import Config as Main
 from ..cmnd    import command
+from ..debug   import debug as ldebug
 from ..errors  import later
 from ..persist import ident, last, store, write
 from ..object  import Default, Object, edit, fmt, keys
@@ -36,12 +37,7 @@ def debug(txt):
     for ign in IGNORE:
         if ign in txt:
             return
-    output(txt)
-
-
-def output(txt):
-    if "v" in Main.opts:
-        print(txt)
+    ldebug(txt)
 
 
 def init():

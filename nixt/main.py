@@ -15,6 +15,7 @@ import _thread
 
 
 from .cmnd    import Commands, Config, command, parse
+from .debug   import nodebug
 from .errors  import Errors, later
 from .handler import Client, Event
 from .object  import dumps
@@ -197,14 +198,14 @@ def handler(signum, frame):
 
 
 def background():
-    signal.signal(signal.SIGHUP, handler)
     daemon("-v" in sys.argv)
+    #signal.signal(signal.SIGHUP, handler)
     Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
-    privileges()
-    disable()
+    privileges()    
+    #disable()
     pidfile(pidname(Config.name))
     Commands.add(cmd)
-    Table,inits(Config.init or "irc,rss", Config.pname)
+    Table.inits(Config.init or "irc,rss", Config.pname)
     forever()
 
 
@@ -267,6 +268,7 @@ def srv(event):
 
 
 def tbl(event):
+    nodebug()
     from . import modules as MODS
     scan(MODS)
     event.reply("# This file is placed in the Public Domain.")
@@ -327,7 +329,7 @@ def main():
     if check("c"):
         wrap(console)
     elif check("d"):
-        signal.signal(signal.SIGHUP, handler)
+        #signal.signal(signal.SIGHUP, handler)
         background()
     elif check("s"):
         wrap(service)

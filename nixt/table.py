@@ -11,6 +11,7 @@ import threading
 import types
 
 
+from .debug   import debug
 from .errors  import later
 from .persist import spl
 from .thread  import launch
@@ -64,6 +65,7 @@ class Table:
         path = spec.origin
         if md5(path) == Table.md5.get(name, None):
             return True
+        debug(f"{name} md5 doesn't match")
         return False
 
     @staticmethod

@@ -32,26 +32,24 @@ NAMES = {
     "syn": "nixt.modules.rss",
     "tdo": "nixt.modules.tdo",
     "thr": "nixt.modules.thr",
-    "tmr": "nixt.modules.tmr",
     "upt": "nixt.modules.upt"
 }
 
 
 MD5 = {
     "nixt.modules.tdo": "d9986968330ecddf4bfa90df91c15b8b",
-    "nixt.modules.mdl": "60eaeef241f41e2286ba4a2bc89e9739",
-    "nixt.modules.tmr": "8d7c84624dae50d1cb4083551003d5ef",
+    "nixt.modules.mdl": "a3a88d5d8d524a3d2f6c43bb1bc8545d",
     "nixt.modules.req": "a0013d5e8582b1cb56854d17e9c66a95",
-    "nixt.modules.rss": "246e72321757e7f1280d08d4596e24ce",
+    "nixt.modules.rss": "9ee615509048b89031ae2fc7667b5360",
     "nixt.modules.mod": "82d9b50b3a2a446fbb857de7192b8f28",
     "nixt.modules.upt": "43b9b3f7aa438735e33b9b71856ce52d",
-    "nixt.modules.slg": "1ef8d56d84e1b95f4f4d035b849b6a9c",
+    "nixt.modules.slg": "17be507c7e5acbfbaf4333aa3872a131",
     "nixt.modules.mbx": "0404adff06260c0f0fa9f8253504e6de",
     "nixt.modules.man": "8a018762925c4e9d67007b3d59a58164",
     "nixt.modules.log": "0806a70acffa5d1d669caf7ce268f007",
     "nixt.modules.thr": "e099cdbad5b4c00da0e006d609eed868",
     "nixt.modules.err": "f6d9db233a2b939423d8d4a157f99064",
     "nixt.modules.fnd": "e0b3024cdef412bb085bbc179da063d6",
-    "nixt.modules.flt": "828d2cf6d09ca431e4ef10e2407047c6",
-    "nixt.modules.irc": "c1fc61ca3019647b6040c84b09580616",
+    "nixt.modules.flt": "c3a9e14eb24fed22389d1be951e47a19",
+    "nixt.modules.irc": "0ba0222cccc0bfc57754179e83a3c275",
 }
