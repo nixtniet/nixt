@@ -10,7 +10,7 @@ import time
 import typing
 
 
-from .debug  import debug
+from .errors import debug
 from .object import Default
 from .table  import Table
 

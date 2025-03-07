@@ -144,7 +144,7 @@ def main():
     enable()
     Table.debug = True
     parse(Config, " ".join(sys.argv[1:]))
-    nrcommand = len(Commands.cmds) or 1
+    nrcommand = len(Commands.names) or 1
     if "b" in Config.opts:
         Thread.bork = True
     if "v" in Config.opts:

@@ -18,7 +18,7 @@ import _thread
 
 from ..cmnd    import Config as Main
 from ..cmnd    import command
-from ..debug   import debug as ldebug
+from ..errors  import debug as ldebug
 from ..errors  import later
 from ..persist import ident, last, store, write
 from ..object  import Default, Object, edit, fmt, keys

@@ -11,8 +11,7 @@ import threading
 import types
 
 
-from .debug   import debug
-from .errors  import later
+from .errors  import debug, later
 from .persist import spl
 from .thread  import launch
 

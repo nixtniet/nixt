@@ -318,7 +318,6 @@ def rss(event):
     if not event.rest:
         nrs = 0
         for fnm, feed in find('rss'):
-            debug(fnm, feed)
             nrs += 1
             elp = elapsed(time.time()-fntime(fnm))
             txt = fmt(feed)
