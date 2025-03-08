@@ -9,8 +9,10 @@ import os
 import time
 
 
-from ..object  import Object, fmt, update
-from ..persist import elapsed, find, fntime, write
+from ..errors  import debug
+from ..object  import Object, fmt, keys, update
+from ..persist import elapsed, find, ident, store, write
+from ..time    import extract_date, parse_time
 
 
 class Email(Object):
@@ -71,23 +73,33 @@ def cor(event):
         nr += 1
         txt = ""
         if len(event.args) > 1:
-            txt = ",".join(event.args[1:])
+            args = event.args[1:]
         else:
-            txt = "From,Subject"
-        event.reply("%s %s %s" % (nr, fmt(email, txt, plain=True), elapsed(time.time() - fntime(email.__stp__))))
+            args = ["From", "Subject"]
+        tme = getattr(email, "Date", "")
+        event.reply("%s %s %s" % (
+                                  nr,
+                                  fmt(email, args, plain=True),
+                                  elapsed(time.time() - extract_date(todate(tme)))
+                                 )
+                   )
 
 
 def eml(event):
     nrs = -1
-    result = sorted(find("email", event.gets), key=lambda x: todate(getattr(x[1], "Date", "")))
+    args = ",".join({["From", "Subject"] + keys(event.gets)})
+    debug(args, event.gets)
+    result = sorted(find("email", event.gets), key=lambda x: extract_date(todate(getattr(x[1], "Date", ""))))
+    debug(result)
     if event.index:
         o = result[event.index][1]
         tme = getattr(o, "Date", "")
-        event.reply(f'{event.index} {format(o, ["From", "Subject"] + event.args)} {elapsed(time.time() - fntime(tme))}')
+        event.reply(f'{event.index} {fmt(o, args)} {elapsed(time.time() - extract_date(todate(tme)))}')
     else:
         for fnm, o in result:
             nrs += 1
-            event.reply(f'{nrs} {format(o, ["From", "Subject"])} {elapsed(time.time() - fntime(fnm))}')
+            tme = getattr(o, "Date", "")
+            event.reply(f'{nrs} {fmt(o, args)} {elapsed(time.time() - extract_date(todate(tme)))}')
     if nrs == -1:
         event.reply("no emails found.")
 
@@ -117,7 +129,7 @@ def mbx(event):
             if payload.get_content_type() == 'text/plain':
                 o.text += payload.get_payload()
         o.text = o.text.replace("\\n", "\n")
-        write(o)
+        write(o, store(ident(o)))
         nr += 1
     if nr:
         event.reply("ok %s" % nr)

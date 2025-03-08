@@ -21,7 +21,7 @@ loadlock = threading.RLock()
 
 
 try:
-    from .names import MD5
+    from .lookup import MD5
 except Exception:
     MD5 = {}
 

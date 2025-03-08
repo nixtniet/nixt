@@ -5,18 +5,16 @@
 
 
 import inspect
-import sys
 import time
 import typing
 
 
-from .errors import debug
 from .object import Default
 from .table  import Table
 
 
 try:
-    from .names import NAMES
+    from .lookup import NAMES
 except Exception:
     NAMES = {}
 

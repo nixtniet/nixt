@@ -7,7 +7,6 @@
 import hashlib
 import os
 import pathlib
-import signal
 import sys
 import time
 import types
@@ -339,6 +338,8 @@ def main():
 if __name__ == "__main__":
     main()
     if "v" in Config.opts:
+        if not Errors.errors:
+            output("no errors")
         for line in Errors.errors:
             output(line)
     sys.exit(0)
