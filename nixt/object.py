@@ -78,7 +78,6 @@ def fmt(obj, args=None, skip=None, plain=False) -> str:
         if key in skip:
             continue
         value = getattr(obj, key, None)
-        print(value)
         if value is None:
             continue
         if plain:

@@ -12,7 +12,7 @@ import time
 from ..errors  import debug
 from ..object  import Object, fmt, keys, update
 from ..persist import elapsed, find, ident, store, write
-from ..time    import extract_date, parse_time
+from ..time    import extract_date
 
 
 class Email(Object):
@@ -71,7 +71,6 @@ def cor(event):
     nr = -1
     for _fn, email in find("email", {"From": event.args[0]}):
         nr += 1
-        txt = ""
         if len(event.args) > 1:
             args = event.args[1:]
         else:
@@ -87,19 +86,22 @@ def cor(event):
 
 def eml(event):
     nrs = -1
-    args = ",".join({["From", "Subject"] + keys(event.gets)})
-    debug(args, event.gets)
+    args = ["From", "Subject"]
+    if len(event.args) > 1:
+        args.extend(event.args[1:])
+    if event.gets:
+        args.extend(keys(event.gets))
+    args = set(args)        
     result = sorted(find("email", event.gets), key=lambda x: extract_date(todate(getattr(x[1], "Date", ""))))
-    debug(result)
     if event.index:
         o = result[event.index][1]
         tme = getattr(o, "Date", "")
-        event.reply(f'{event.index} {fmt(o, args)} {elapsed(time.time() - extract_date(todate(tme)))}')
+        event.reply(f'{event.index} {fmt(o, args, plain=True)} {elapsed(time.time() - extract_date(todate(tme)))}')
     else:
         for fnm, o in result:
             nrs += 1
             tme = getattr(o, "Date", "")
-            event.reply(f'{nrs} {fmt(o, args)} {elapsed(time.time() - extract_date(todate(tme)))}')
+            event.reply(f'{nrs} {fmt(o, args, plain=True)} {elapsed(time.time() - extract_date(todate(tme)))}')
     if nrs == -1:
         event.reply("no emails found.")
 

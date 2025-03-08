@@ -44,7 +44,7 @@ MD5 = {
     "nixt.modules.mod": "82d9b50b3a2a446fbb857de7192b8f28",
     "nixt.modules.upt": "43b9b3f7aa438735e33b9b71856ce52d",
     "nixt.modules.slg": "17be507c7e5acbfbaf4333aa3872a131",
-    "nixt.modules.mbx": "27c977d395bed8d5e5afe41f5eab2a46",
+    "nixt.modules.mbx": "e437e0a955a7e15a945ce967077b549c",
     "nixt.modules.man": "8a018762925c4e9d67007b3d59a58164",
     "nixt.modules.log": "0806a70acffa5d1d669caf7ce268f007",
     "nixt.modules.thr": "e099cdbad5b4c00da0e006d609eed868",

@@ -9,23 +9,23 @@ import re
 import time as ttime
 
 
+from .errors import later
+
+
 class NoDate(Exception):
 
     pass
 
 
-"utilities"
-
-
 def extract_date(daystr):
-    res = None
+    daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
+    res = ttime.time()
     for fmt in FORMATS:
-        print(fmt, daystr)
         try:
             res = ttime.mktime(ttime.strptime(daystr, fmt))
             break
-        except ValueError:
-            res = None
+        except ValueError as ex:
+            later(ex)
     return res
 
 
@@ -150,12 +150,16 @@ MONTHS = [
 
 
 FORMATS = [
+    "%Y-%M-%D %H:%M:%S",
     "%Y-%m-%d %H:%M:%S",
     "%Y-%m-%d",
     "%d-%m-%Y",
     "%d-%m",
     "%m-%d",
 ]
+
+
+"interface"
 
 
 def __dir__():
