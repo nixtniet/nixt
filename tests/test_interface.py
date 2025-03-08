@@ -11,23 +11,30 @@ import unittest
 
 
 import nixt
+import nixt.cmnd
 import nixt.errors
 import nixt.handler
+import nixt.main
 import nixt.object
 import nixt.persist
+import nixt.table
 import nixt.thread
+import nixt.time
 
 
 from nixt.object import *
 
 
 PACKAGE = [
+    'cmnd',
     'errors',
-    'fleet',
     'handler',
+    'main',
     'object',
     'persist',
-    'thread'
+    'table',
+    'thread',
+    'time'
 ]
 
 

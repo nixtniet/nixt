@@ -9,7 +9,6 @@ import os
 import time
 
 
-from ..errors  import debug
 from ..object  import Object, fmt, keys, update
 from ..persist import elapsed, find, ident, store, write
 from ..time    import extract_date
