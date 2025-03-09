@@ -185,6 +185,14 @@ def scan(pkg, mods=""):
     return res
 
 
+def setwd(path, name=""):
+    if name:
+        Config.name = name
+        Confid.pname = f"{name}.modules"
+        path = os.path.expanduser(f"~/.{name}")
+    Workdir.wdr = path
+
+
 "handlers"
 
 
@@ -244,7 +252,6 @@ def control():
 
 def service():
     Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
-    enable()
     privileges()
     pidfile(pidname(Config.name))
     Commands.add(cmd)
@@ -305,6 +312,20 @@ WantedBy=multi-user.target"""
 "runtime"
 
 
+def wrapped(func):
+    try:
+        func()
+    except (KeyboardInterrupt, EOFError):
+        output("")
+    except Exception as exc:
+        later(exc)
+    if check("v"):
+        if not Errors.errors:
+            output("no errors")
+        for line in Errors.errors:
+            output(line)
+
+
 def wrap(func):
     import termios
     old = None
@@ -313,33 +334,25 @@ def wrap(func):
     except termios.error:
         pass
     try:
-        func()
-    except (KeyboardInterrupt, EOFError):
-        output("")
-    except Exception as exc:
-        later(exc)
+        wrapped(func)
     finally:
         if old:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
 def main():
+    if check("v"):
+        setattr(Config.opts, "v", True)
+        enable()
     if check("c"):
         wrap(console)
     elif check("d"):
-        #signal.signal(signal.SIGHUP, handler)
         background()
     elif check("s"):
-        wrap(service)
+        wrapped(service)
     else:
         control()
 
 
 if __name__ == "__main__":
     main()
-    if "v" in Config.opts:
-        if not Errors.errors:
-            output("no errors")
-        for line in Errors.errors:
-            output(line)
-    sys.exit(0)

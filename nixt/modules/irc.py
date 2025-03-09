@@ -127,7 +127,7 @@ class Output:
             setattr(Output.cache, channel, [])
         self.oqueue.put_nowait((channel, txt))
 
-    def out(self):
+    def output(self):
         while not self.dostop.is_set():
             (channel, txt) = self.oqueue.get()
             if channel is None and txt is None:
@@ -155,6 +155,9 @@ class Output:
         if chan in dir(Output.cache):
             return len(getattr(Output.cache, chan, []))
         return 0
+
+    def start(self):
+        launch(self.output)
 
 
 "irc"
@@ -195,7 +198,6 @@ class IRC(Client, Output):
         self.register('QUIT', cb_quit)
         self.register("366", cb_ready)
         self.ident = ident(self)
-        Fleet.add(self)
 
     def announce(self, txt):
         for channel in self.channels:
@@ -486,7 +488,7 @@ class IRC(Client, Output):
         self.events.ready.clear()
         self.events.connected.clear()
         self.events.joined.clear()
-        launch(Output.out, self)
+        Output.start(self)
         Client.start(self)
         launch(
                self.doconnect,
