@@ -6,7 +6,7 @@
 
 import hashlib
 import importlib
-#import importlib.util
+import importlib.util
 import os
 import threading
 import types
@@ -111,7 +111,7 @@ class Table:
         return [
                 x[:-3] for x in os.listdir(path)
                 if x.endswith(".py") and not x.startswith("__") and
-                x not in Table.disable
+                x not in Table.ignore
                ]
 
 

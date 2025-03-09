@@ -120,23 +120,6 @@ def forever():
             _thread.interrupt_main()
 
 
-def inits(pkg, names) -> [types.ModuleType]:
-    mods = []
-    for name in modules(pkg.__path__[0]):
-        if names and name not in spl(names):
-            continue
-        mname = pkg.__name__ + "." + name
-        if not mname:
-            continue
-        mod = getattr(pkg, name, None)
-        if not mod:
-             continue
-        if "init" in dir(mod):
-           thr = launch(mod.init)
-           mods.append((mod, thr))
-    return mods
-
-
 def md5(mod):
     with open(mod.__file__, "r", encoding="utf-8") as file:
         txt = file.read().encode("utf-8")
@@ -167,25 +150,6 @@ def privileges():
     os.setuid(pwnam2.pw_uid)
 
 
-def scan(pkg, mods=""):
-    res = []
-    path = pkg.__path__[0]
-    for nme in modules(path):
-        if "__" in nme:
-            continue
-        if mods and nme not in spl(mods):
-            continue
-        name = pkg.__name__ + "." + nme
-        if not name:
-            continue
-        mod = Table.load(name)
-        if not mod:
-            continue
-        Commands.scan(mod)
-        res.append(mod)
-    return res
-
-
 def setwd(name, pname="", path=""):
     Config.name = name
     Config.pname = pname or f"{name}.modules"
@@ -212,7 +176,7 @@ def handler(signum, frame):
 def background():
     daemon("-v" in sys.argv)
     setwd(Config.name)
-    privileges()    
+    privileges()
     disable()
     pidfile(pidname(Config.name))
     Commands.add(cmd)
@@ -285,7 +249,8 @@ def srv(event):
 def tbl(event):
     nodebug()
     from . import modules as MODS
-    scan(MODS)
+    for mod in Table.all(MODS):
+        Commands.scan(mod)
     event.reply("# This file is placed in the Public Domain.")
     event.reply("")
     event.reply("")
@@ -360,7 +325,7 @@ def main():
     elif check("s"):
         wrapped(service)
     else:
-        control()
+        wrapped(control)
 
 
 if __name__ == "__main__":

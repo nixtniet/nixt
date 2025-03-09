@@ -11,8 +11,8 @@ import threading
 import time
 
 
+from ..handler import Fleet
 from ..object  import Object
-from ..reactor import Fleet
 from ..thread  import launch
 
 

@@ -31,6 +31,7 @@ NAMES = {
     "syn": "nixt.modules.rss",
     "tdo": "nixt.modules.tdo",
     "thr": "nixt.modules.thr",
+    "tmr": "nixt.modules.tmr",
     "upt": "nixt.modules.upt"
 }
 
@@ -38,6 +39,7 @@ NAMES = {
 MD5 = {
     "nixt.modules.tdo": "d9986968330ecddf4bfa90df91c15b8b",
     "nixt.modules.mdl": "a3a88d5d8d524a3d2f6c43bb1bc8545d",
+    "nixt.modules.tmr": "9be198e3665d48e2af2394c5cc1d14a6",
     "nixt.modules.req": "a0013d5e8582b1cb56854d17e9c66a95",
     "nixt.modules.rss": "ecdb1abf43729b526acd3ffb318fa5d0",
     "nixt.modules.mod": "82d9b50b3a2a446fbb857de7192b8f28",
@@ -50,5 +52,5 @@ MD5 = {
     "nixt.modules.err": "f6d9db233a2b939423d8d4a157f99064",
     "nixt.modules.fnd": "e0b3024cdef412bb085bbc179da063d6",
     "nixt.modules.flt": "c3a9e14eb24fed22389d1be951e47a19",
-    "nixt.modules.irc": "7a1b2cb633d083b5cd201c9ce3761d90",
+    "nixt.modules.irc": "4ea7d93a2868d7ca169314e04b0a52bf",
 }
