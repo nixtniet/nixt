@@ -63,26 +63,6 @@ def todate(date):
 "commands"
 
 
-def cor(event):
-    if not event.args:
-        event.reply("cor <email>")
-        return
-    nr = -1
-    for _fn, email in find("email", {"From": event.args[0]}):
-        nr += 1
-        if len(event.args) > 1:
-            args = event.args[1:]
-        else:
-            args = ["From", "Subject"]
-        tme = getattr(email, "Date", "")
-        event.reply("%s %s %s" % (
-                                  nr,
-                                  fmt(email, args, plain=True),
-                                  elapsed(time.time() - extract_date(todate(tme)))
-                                 )
-                   )
-
-
 def eml(event):
     nrs = -1
     args = ["From", "Subject"]
@@ -90,6 +70,9 @@ def eml(event):
         args.extend(event.args[1:])
     if event.gets:
         args.extend(keys(event.gets))
+    for key in keys(event.silent):
+        if key in args:
+            args.remove(key)
     args = set(args)        
     result = sorted(find("email", event.gets), key=lambda x: extract_date(todate(getattr(x[1], "Date", ""))))
     if event.index:
@@ -101,7 +84,7 @@ def eml(event):
             nrs += 1
             tme = getattr(o, "Date", "")
             event.reply(f'{nrs} {fmt(o, args, plain=True)} {elapsed(time.time() - extract_date(todate(tme)))}')
-    if nrs == -1:
+    if not result:
         event.reply("no emails found.")
 
 
