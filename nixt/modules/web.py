@@ -22,16 +22,16 @@ DEBUG = False
 
 def init():
     try:
-        rest = HTTP((Config.hostname, int(Config.port)), HTTPHandler)
+        server = HTTP((Cfg.hostname, int(Cfg.port)), HTTPHandler)
     except OSError as ex:
-        rest = None
+        server = None
         later(ex)
-    if rest is not None:
-        rest.start()
-    return rest
+    if server is not None:
+        server.start()
+    return server
 
 
-class Config(Default):
+class Cfg(Default):
 
     hostname = "localhost"
     port     = 8000

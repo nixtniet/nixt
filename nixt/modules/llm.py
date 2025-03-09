@@ -55,17 +55,17 @@ def ask(event):
     size = 0
     while 1:
         try:
-            (input, _output, error) = select.select(
+            (inp, _out, err) = select.select(
                                              [sys.stdin,],
                                              [],
                                              [sys.stderr,]
                                             )
         except KeyboardInterrupt:
             return
-        if error:
+        if err:
             break
         stop = False
-        for sock in input:
+        for sock in inp:
             txt = sock.readline()
             if not txt:
                 stop = True
