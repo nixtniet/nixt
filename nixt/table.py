@@ -6,7 +6,7 @@
 
 import hashlib
 import importlib
-import importlib.util
+#import importlib.util
 import os
 import threading
 import types

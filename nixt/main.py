@@ -7,6 +7,7 @@
 import hashlib
 import os
 import pathlib
+import signal
 import sys
 import time
 import types
@@ -185,11 +186,10 @@ def scan(pkg, mods=""):
     return res
 
 
-def setwd(path, name=""):
-    if name:
-        Config.name = name
-        Confid.pname = f"{name}.modules"
-        path = os.path.expanduser(f"~/.{name}")
+def setwd(name, pname="", path=""):
+    Config.name = name
+    Config.pname = pname or f"{name}.modules"
+    path = path or os.path.expanduser(f"~/.{name}")
     Workdir.wdr = path
 
 
@@ -197,7 +197,13 @@ def setwd(path, name=""):
 
 
 def handler(signum, frame):
-     sys.exit(0)
+    if not Errors.errors:
+        output("no errors")
+    for line in Errors.errors:
+        output(line)
+    sys.exit(0)
+
+
 
 
 "scripts"
@@ -205,10 +211,9 @@ def handler(signum, frame):
 
 def background():
     daemon("-v" in sys.argv)
-    #signal.signal(signal.SIGHUP, handler)
-    Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
+    setwd(Config.name)
     privileges()    
-    #disable()
+    disable()
     pidfile(pidname(Config.name))
     Commands.add(cmd)
     Table.inits(Config.init or "irc,rss", Config.pname)
@@ -217,7 +222,7 @@ def background():
 
 def console():
     import readline # noqa: F401
-    Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
+    setwd(Config.name)
     enable()
     Commands.add(cmd)
     parse(Config, " ".join(sys.argv[1:]))
@@ -235,6 +240,7 @@ def console():
 def control():
     if len(sys.argv) == 1:
         return
+    setwd(Config.name)
     Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
     enable()
     Commands.add(cmd)
@@ -254,7 +260,8 @@ def service():
     if not check("v"):
         nodebug()
         disable()
-    Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
+    signal.signal(signal.SIGHUP, handler)
+    setwd(Config.name)
     privileges()
     pidfile(pidname(Config.name))
     Commands.add(cmd)
@@ -322,11 +329,10 @@ def wrapped(func):
         output("")
     except Exception as exc:
         later(exc)
-    if check("v"):
-        if not Errors.errors:
-            output("no errors")
-        for line in Errors.errors:
-            output(line)
+    for line in Errors.errors:
+        output(line)
+    sys.stdout.flush()
+    sys.stderr.flush()
 
 
 def wrap(func):
