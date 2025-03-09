@@ -251,6 +251,9 @@ def control():
 
 
 def service():
+    if not check("v"):
+        nodebug()
+        disable()
     Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
     privileges()
     pidfile(pidname(Config.name))
