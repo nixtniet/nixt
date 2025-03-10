@@ -10,7 +10,6 @@ import pathlib
 import signal
 import sys
 import time
-import types
 import _thread
 
 
@@ -18,9 +17,8 @@ from .cmnd    import Commands, Config, command, parse
 from .errors  import Errors, later, nodebug
 from .handler import Client, Event
 from .object  import dumps
-from .persist import Workdir, pidname, spl
+from .persist import Workdir, pidname
 from .table   import Table
-from .thread  import launch
 
 
 p = os.path.join
