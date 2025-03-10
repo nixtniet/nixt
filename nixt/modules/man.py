@@ -42,10 +42,10 @@ it provides an "clean namespace" Object class that only has dunder
 methods, so the namespace is not cluttered with method names. This
 makes storing and reading to/from json possible.
 
-``%s`` is a demo bot, it can connect to IRC, fetch and display RSS
+``%s`` has a demo bot, it can connect to IRC, fetch and display RSS
 feeds, take todo notes, keep a shopping list and log text. You can
-also copy/paste the service file and run it under systemd for 24/7
-presence in a IRC channel.
+run it under systemd for 24/7 presence in a IRC channel.
+
 
 ``%s`` is Public Domain.
 
@@ -96,13 +96,13 @@ start console
 start console and run irc and rss clients
 
 |
-| `` $ %s -c init=irc,rss``
+| ``$ %s -c init=irc,rss``
 |
 
 list available modules
 
 |
-| `` $ %s mod``
+| ``$ %s mod``
 | ``err,flt,fnd,irc,llm,log,mbx,mdl,mod,req,rss,``
 | ``rst,slg,tdo,thr,tmr,udp,upt``
 |
@@ -161,7 +161,7 @@ irc
 sasl
 
 |
-| ``$ %s pwd <nsvnick> <nspass>``
+| ``$ %s pwd <nsnick> <nspass>``
 | ``$ %s cfg password=<frompwd>``
 |
 
@@ -185,13 +185,14 @@ opml
 **PROGRAMMING**
 
 
-``%s`` runs it's modules in the package edit a file in %s/modules/<name>.py
+``%s`` has it's modules in the package, so edit a file in %s/modules/<name>.py
 and add the following for ``hello world``
 
-|
-|    def hello(event):
-|        event.reply("hello world !!")
-|
+::
+
+    def hello(event):
+        event.reply("hello world !!")
+
 
 save this and recreate the dispatch table
 

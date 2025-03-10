@@ -26,21 +26,20 @@ perisistence for configuration files, event handler to handle the
 client/server connection, deferred exception handling to not crash
 on an error, etc.
 
-``NIXT`` contains all the python3 code to program objects in a functional
-way. It provides a base Object class that has only dunder methods, all
-methods are factored out into functions with the objects as the first
-argument. It is called Object Programming (OP), OOP without the
-oriented.
+``NIXT`` contains python3 code to program objects in a functional way.
+It provides a base Object class that has only dunder methods, methods
+are factored out into functions with the objects as the first argument.
+It is called Object Programming (OP), OOP without the oriented.
 
 ``NIXT`` contains python3 code to program objects in a functional way.
 it provides an "clean namespace" Object class that only has dunder
 methods, so the namespace is not cluttered with method names. This
 makes storing and reading to/from json possible.
 
-``NIXT`` is a demo bot, it can connect to IRC, fetch and display RSS
+``NIXT`` has a demo bot, it can connect to IRC, fetch and display RSS
 feeds, take todo notes, keep a shopping list and log text. You can
-also copy/paste the service file and run it under systemd for 24/7
-presence in a IRC channel.
+run it under systemd for 24/7 presence in a IRC channel.
+
 
 ``NIXT`` is Public Domain.
 
@@ -91,13 +90,13 @@ start console
 start console and run irc and rss clients
 
 |
-| `` $ nixt -c init=irc,rss``
+| ``$ nixt -c init=irc,rss``
 |
 
 list available modules
 
 |
-| `` $ nixt mod``
+| ``$ nixt mod``
 | ``err,flt,fnd,irc,llm,log,mbx,mdl,mod,req,rss,``
 | ``rst,slg,tdo,thr,tmr,udp,upt``
 |
@@ -156,7 +155,7 @@ irc
 sasl
 
 |
-| ``$ nixt pwd <nsvnick> <nspass>``
+| ``$ nixt pwd <nsnick> <nspass>``
 | ``$ nixt cfg password=<frompwd>``
 |
 
@@ -180,13 +179,14 @@ opml
 **PROGRAMMING**
 
 
-``nixt`` runs it's modules in the package edit a file in nixt/modules/<name>.py
+``nixt`` has it's modules in the package, so edit a file in nixt/modules/<name>.py
 and add the following for ``hello world``
 
-|
-|    def hello(event):
-|        event.reply("hello world !!")
-|
+::
+
+    def hello(event):
+        event.reply("hello world !!")
+
 
 save this and recreate the dispatch table
 
@@ -225,3 +225,4 @@ code, see the nixt/modules directory for examples.
 |
 | ``NIXT`` is Public Domain.
 |
+
