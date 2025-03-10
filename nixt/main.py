@@ -259,7 +259,7 @@ def tbl(event):
     event.reply("")
     event.reply("")
     event.reply("MD5 = {")
-    for mod in Table.mods.values():
+    for key, mod in sorted(Table.mods.items()):
         event.reply(f'    "{mod.__name__}": "{md5(mod)}",')
     event.reply("}")
     event.reply

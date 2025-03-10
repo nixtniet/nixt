@@ -1,8 +1,11 @@
 # This file is placed in the Public Domain.
 
 
-"""%s
-====
+"man page"
+
+
+TXT = """%s
+%s
 
 
 **NAME**
@@ -16,7 +19,7 @@
 
 |
 | ``%s <cmd> [key=val] [key==val]``
-| ``%s -cviw``
+| ``%s -cvw [init=mod1,mod2]``
 | ``%s -d`` 
 | ``%s -s``
 |
@@ -29,11 +32,10 @@ perisistence for configuration files, event handler to handle the
 client/server connection, deferred exception handling to not crash
 on an error, etc.
 
-``%s`` contains all the python3 code to program objects in a functional
-way. It provides a base Object class that has only dunder methods, all
-methods are factored out into functions with the objects as the first
-argument. It is called Object Programming (OP), OOP without the
-oriented.
+``%s`` contains python3 code to program objects in a functional way.
+It provides a base Object class that has only dunder methods, methods
+are factored out into functions with the objects as the first argument.
+It is called Object Programming (OP), OOP without the oriented.
 
 ``%s`` contains python3 code to program objects in a functional way.
 it provides an "clean namespace" Object class that only has dunder
@@ -101,7 +103,8 @@ list available modules
 
 |
 | `` $ %s mod``
-| ``err,flt,fnd,irc,llm,log,mbx,mdl,mod,req,rss,rst,slg,tdo,thr,tmr,udp,upt``
+| ``err,flt,fnd,irc,llm,log,mbx,mdl,mod,req,rss,``
+| ``rst,slg,tdo,thr,tmr,udp,upt``
 |
 
 start daemon
@@ -193,7 +196,7 @@ and add the following for ``hello world``
 save this and recreate the dispatch table
 
 |
-| ``$ %s tbl > %s/names.py``
+| ``$ %s tbl > %s/lookup.py``
 |
 
 ``%s`` can execute the ``hello`` command now.
@@ -234,8 +237,8 @@ from ..cmnd import Config
 
 
 def man(event):
-    event.reply(__doc__ % tuple(
-                            [Config.name.upper(), Config.name, Config.name.upper()]
+    event.reply(TXT % tuple(
+                            [Config.name.upper(), "="*len(Config.name), Config.name, Config.name.upper()]
                             + 4* [Config.name]
                             + 5*[Config.name.upper()]
                             + 34*[Config.name]
