@@ -4,6 +4,9 @@
 "man page"
 
 
+from ..cmnd import Config
+
+
 TXT = """%s
 %s
 
@@ -234,9 +237,6 @@ code, see the nixt/modules directory for examples.
 | ``%s`` is Public Domain.
 |
 """
-
-
-from ..cmnd import Config
 
 
 def spaced(txt):
