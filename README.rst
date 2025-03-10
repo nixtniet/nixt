@@ -1,11 +1,13 @@
-NIXT
-====
+N I X T
+=======
 
 
 **NAME**
 
 
-``nixt`` - NIXT
+|
+| ``nixt`` - NIXT
+|
 
 
 **SYNOPSIS**

@@ -11,7 +11,9 @@ TXT = """%s
 **NAME**
 
 
-``%s`` - %s
+|
+| ``%s`` - %s
+|
 
 
 **SYNOPSIS**
@@ -237,9 +239,17 @@ code, see the nixt/modules directory for examples.
 from ..cmnd import Config
 
 
+def spaced(txt):
+    res = ""
+    for char in txt[:-1]:
+       res += f"{char} "
+    res += txt[-1]
+    return res
+
+
 def man(event):
     event.reply(TXT % tuple(
-                            [Config.name.upper(), "="*len(Config.name), Config.name, Config.name.upper()]
+                            [spaced(Config.name.upper()), "="*(2*len(Config.name)-1), Config.name, Config.name.upper()]
                             + 4* [Config.name]
                             + 5*[Config.name.upper()]
                             + 34*[Config.name]
