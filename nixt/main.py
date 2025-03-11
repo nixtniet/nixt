@@ -219,10 +219,8 @@ def control():
 
 
 def service():
-    if not check("v"):
-        nodebug()
-        disable()
     signal.signal(signal.SIGHUP, handler)
+    nodebug()
     setwd(Config.name)
     privileges()
     pidfile(pidname(Config.name))
@@ -290,12 +288,8 @@ def wrapped(func):
         func()
     except (KeyboardInterrupt, EOFError):
         output("")
-    except Exception as exc:
-        later(exc)
     for line in Errors.errors:
         output(line)
-    sys.stdout.flush()
-    sys.stderr.flush()
 
 
 def wrap(func):
