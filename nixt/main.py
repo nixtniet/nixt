@@ -15,10 +15,11 @@ import _thread
 
 from .cmnd    import Commands, Config, command, parse
 from .errors  import Errors, later, nodebug
-from .handler import Client, Event
+from .handler import Client, Event, Handler
 from .object  import dumps
 from .persist import Workdir, pidname
 from .table   import Table
+from .thread  import Thread
 
 
 p = os.path.join
@@ -189,6 +190,10 @@ def console():
     Commands.add(cmd)
     parse(Config, " ".join(sys.argv[1:]))
     Config.init = Config.sets.init or Config.init
+    if "b" in Config.opts:
+        Thread.bork = True
+    if "t" in Config.opts:
+        Handler.threaded = True
     if "v" in Config.opts:
         banner()
     for _mod, thr in Table.inits(Config.init, Config.pname):

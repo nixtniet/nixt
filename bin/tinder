@@ -19,7 +19,7 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.cmnd    import STARTTIME, Commands, Config, command, parse
 from nixt.errors  import Errors
-from nixt.handler import Client, Event
+from nixt.handler import Client, Event, Handler
 from nixt.main    import enable
 from nixt.object  import Object, fmt, keys
 from nixt.persist import Workdir, elapsed, skel
@@ -147,6 +147,8 @@ def main():
     nrcommand = len(Commands.names) or 1
     if "b" in Config.opts:
         Thread.bork = True
+    if "t" in Config.opts:
+        Handler.threaded = True
     if "v" in Config.opts:
         banner()
     if "f" not in Config.opts:
