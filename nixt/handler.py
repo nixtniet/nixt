@@ -50,6 +50,8 @@ class Event(Default):
 
 class Handler:
 
+    threaded = False
+
     def __init__(self):
         self.cbs     = {}
         self.queue   = queue.Queue()
@@ -62,15 +64,15 @@ class Handler:
             if not func:
                 evt.ready()
                 return
-            try:
-                evt._thr = launch(func, evt, name=(
-                                                   evt.txt
-                                                   and evt.txt.split()[0]
-                                                  ) or name(func)
-                                 )
-            except Exception as ex:
-                later(ex)
-                evt.ready()
+            if not Handler.threaded:
+                func(evt)
+                return
+            evt._thr = launch(func, evt, name=(
+                                               evt.txt
+                                               and evt.txt.split()[0]
+                                              ) or name(func)
+
+                             )
 
     def loop(self) -> None:
         while not self.stopped.is_set():
@@ -80,7 +82,8 @@ class Handler:
                     break
                 evt.orig = repr(self)
                 self.callback(evt)
-            except (KeyboardInterrupt, EOFError):
+            except Exception as ex:
+                later(ex)
                 evt.ready()
                 self.ready,set()
                 _thread.interrupt_main()
@@ -123,9 +126,10 @@ class Client(Handler):
                     break
                 evt.orig = repr(self)
                 self.callback(evt)
-            except (KeyboardInterrupt, EOFError):
-                if evt:
-                    evt.ready()
+            except Exception as ex:
+                later(ex)
+                evt.ready()
+                self.ready,set()
                 _thread.interrupt_main()
         self.ready.set()
 
