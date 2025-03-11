@@ -288,8 +288,9 @@ def wrapped(func):
         func()
     except (KeyboardInterrupt, EOFError):
         output("")
-    for line in Errors.errors:
-        output(line)
+    for exc in Errors.errors:
+        for line in Errors.full(exc):
+            output(line.strip())
 
 
 def wrap(func):

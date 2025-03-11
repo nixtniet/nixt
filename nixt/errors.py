@@ -58,9 +58,7 @@ def debug(*args):
 
 def later(exc) -> None:
     excp = exc.with_traceback(exc.__traceback__)
-    fmt = Errors.format(excp)
-    if fmt not in Errors.errors:
-        Errors.errors.append(fmt)
+    Errors.errors.append(excp)
 
 
 def nodebug():
