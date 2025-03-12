@@ -24,8 +24,7 @@ from ..event   import Event
 from ..fleet   import Fleet
 from ..persist import ident, last, store, write
 from ..object  import Default, Object, edit, fmt, keys
-from ..handler import Client
-from ..reactor import Reactor
+from ..reactor import Client
 from ..thread  import launch
 
 
@@ -166,10 +165,10 @@ class Output:
 "irc"
 
 
-class IRC(Reactor, Output):
+class IRC(Client, Output):
 
     def __init__(self):
-        Reactor.__init__(self)
+        Client.__init__(self)
         Output.__init__(self)
         self.buffer = []
         self.cfg = Config()
@@ -201,7 +200,6 @@ class IRC(Reactor, Output):
         self.register('QUIT', cb_quit)
         self.register("366", cb_ready)
         self.ident = ident(self)
-        Fleet.add(self)
 
     def announce(self, txt):
         for channel in self.channels:
@@ -493,7 +491,7 @@ class IRC(Reactor, Output):
         self.events.connected.clear()
         self.events.joined.clear()
         Output.start(self)
-        Reactor.start(self)
+        Client.start(self)
         launch(
                self.doconnect,
                self.cfg.server or "localhost",
@@ -508,7 +506,7 @@ class IRC(Reactor, Output):
         self.disconnect()
         self.dostop.set()
         self.oput(None, None)
-        Reactor.stop(self)
+        Client.stop(self)
 
     def wait(self):
         self.events.ready.wait()
@@ -575,7 +573,9 @@ def cb_notice(evt):
 
 
 def cb_privmsg(evt):
+    print(evt)
     bot = Fleet.get(evt.orig)
+    print(bot)
     if not bot.cfg.commands:
         return
     if evt.txt:

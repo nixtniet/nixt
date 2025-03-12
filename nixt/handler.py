@@ -15,25 +15,12 @@ from .reactor import Reactor
 
 class Handler(Reactor):
 
-    def loop(self) -> None:
-        while not self.stopped.is_set():
-            try:
-                evt = self.poll()
-                if evt is None:
-                    break
-                evt.orig = repr(self)
-                func = self.cbs.get(evt.type, None)
-                if not func:
-                    evt.ready()
-                    return
-                func(evt)
-            except Exception as ex:
-                later(ex)
-                _thread.interrupt_main()
-        self.ready.set()
-
-    def poll(self) -> Event:
-        return self.queue.get()
+    def callback(self, evt) -> None:
+        func = self.cbs.get(evt.type, None)
+        if not func:
+            evt.ready()
+            return
+        func(evt)
 
 
 class Client(Handler):

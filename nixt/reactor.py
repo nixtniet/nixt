@@ -6,10 +6,14 @@
 
 import queue
 import threading
+import time
+
+
 import _thread
 
 
 from .errors import later
+from .fleet  import Fleet
 from .thread import launch, name
 
 
@@ -18,6 +22,8 @@ outlock = threading.RLock()
 
 
 class Reactor:
+
+    bork = False
 
     def __init__(self):
         self.cbs     = {}
@@ -49,8 +55,8 @@ class Reactor:
             except Exception as ex:
                 later(ex)
                 evt.ready()
-                self.ready,set()
-                _thread.interrupt_main()
+                if Reactor.bork:
+                    _thread.interrupt_main()
         self.ready.set()
 
     def poll(self):
@@ -75,7 +81,36 @@ class Reactor:
         self.ready.wait()
 
 
+class Handler(Reactor):
+
+    def callback(self, evt) -> None:
+        func = self.cbs.get(evt.type, None)
+        if not func:
+            evt.ready()
+            return
+        func(evt)
+
+
+class Client(Handler):
+
+    def __init__(self):
+        Handler.__init__(self)
+        Fleet.add(self)
+
+    def announce(self, txt) -> None:
+        pass
+
+    def raw(self, txt) -> None:
+        raise NotImplementedError("raw")
+
+    def say(self, channel, txt) -> None:
+        self.raw(txt)
+
+
+
 def __dir__():
     return (
-        'Reactor',
+        'Client',
+        'Handler',
+        'Reactor'
     )
