@@ -14,7 +14,7 @@ import _thread
 
 
 from .cmnd    import Commands, Config, command, parse
-from .errors  import Errors, later, nodebug
+from .errors  import Errors, nodebug
 from .handler import Client, Event, Handler
 from .object  import dumps
 from .persist import Workdir, pidname

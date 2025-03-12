@@ -8,7 +8,6 @@ import unittest
 
 
 from nixt.cmnd    import command
-from nixt.errors  import Errors
 from nixt.handler import Event, Handler
 
 
