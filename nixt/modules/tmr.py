@@ -7,9 +7,10 @@
 import time as ttime
 
 
+from ..fleet   import Fleet
 from ..object  import update
 from ..persist import elapsed, find, ident, store, write
-from ..handler import Event, Fleet
+from ..reactor import Event
 from ..thread  import Timer, launch
 from ..time    import NoDate, get_day, get_hour, to_day, today
 

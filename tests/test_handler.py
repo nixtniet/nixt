@@ -8,7 +8,7 @@ import unittest
 
 
 from nixt.cmnd    import command
-from nixt.handler import Event, Handler
+from nixt.reactor import Event, Handler
 
 
 hdl = Handler()

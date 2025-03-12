@@ -19,12 +19,15 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.cmnd    import STARTTIME, Commands, Config, command, parse
 from nixt.errors  import Errors
-from nixt.handler import Client, Event, Handler
 from nixt.main    import enable
 from nixt.object  import Object, fmt, keys
 from nixt.persist import Workdir, elapsed, skel
+from nixt.reactor import Client, Event, Handler
 from nixt.table   import Table
 from nixt.thread  import Thread, later, launch
+
+
+import nixt.modules as MODS
 
 
 Workdir.wdr  = ".test"
@@ -143,6 +146,7 @@ def main():
     global nrcommand
     enable()
     Table.debug = True
+    Table.all(MODS)
     parse(Config, " ".join(sys.argv[1:]))
     nrcommand = len(Commands.names) or 1
     if "b" in Config.opts:
@@ -182,6 +186,6 @@ if __name__ == "__main__":
     if "v" in Config.opts:
         if not list(Errors.errors):
             print("no errors")
-        for line in Errors.errors:
-            print(line)
+        for exc in Errors.errors:
+            print(Errors.format(exc))
         print(f"total: {lap} nrs: {nrs} cmds: {nrcommand} call: {percall}")

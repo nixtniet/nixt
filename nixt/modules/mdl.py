@@ -8,9 +8,10 @@ import datetime
 import time
 
 
+from ..fleet   import Fleet
 from ..persist import elapsed
-from ..handler import Event, Fleet
 from ..object  import Object, construct, keys
+from ..reactor import Event
 from ..thread  import Repeater
 
 

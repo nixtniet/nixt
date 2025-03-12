@@ -15,8 +15,6 @@ from .errors import later
 
 class Thread(threading.Thread):
 
-    bork = True
-
     def __init__(self, func, thrname, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, name, (), {}, daemon=daemon)
         self.name = thrname
@@ -31,8 +29,6 @@ class Thread(threading.Thread):
         try:
             self.result = func(*args)
         except Exception as ex:
-            if Thread.bork:
-                raise ex
             later(ex)
             if args and "ready" in dir(args[0]):
                 args[0].ready()

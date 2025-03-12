@@ -20,11 +20,10 @@ from ..cmnd    import Config as Main
 from ..cmnd    import command
 from ..errors  import debug as ldebug
 from ..errors  import later
-from ..event   import Event
 from ..fleet   import Fleet
 from ..persist import ident, last, store, write
 from ..object  import Default, Object, edit, fmt, keys
-from ..reactor import Client
+from ..reactor import Client, Event
 from ..thread  import launch
 
 
