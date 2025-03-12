@@ -20,9 +20,12 @@ from ..cmnd    import Config as Main
 from ..cmnd    import command
 from ..errors  import debug as ldebug
 from ..errors  import later
+from ..event   import Event
+from ..fleet   import Fleet
 from ..persist import ident, last, store, write
 from ..object  import Default, Object, edit, fmt, keys
-from ..handler import Client, Event, Fleet
+from ..handler import Client
+from ..reactor import Reactor
 from ..thread  import launch
 
 
@@ -163,10 +166,10 @@ class Output:
 "irc"
 
 
-class IRC(Client, Output):
+class IRC(Reactor, Output):
 
     def __init__(self):
-        Client.__init__(self)
+        Reactor.__init__(self)
         Output.__init__(self)
         self.buffer = []
         self.cfg = Config()
@@ -198,6 +201,7 @@ class IRC(Client, Output):
         self.register('QUIT', cb_quit)
         self.register("366", cb_ready)
         self.ident = ident(self)
+        Fleet.add(self)
 
     def announce(self, txt):
         for channel in self.channels:
@@ -489,7 +493,7 @@ class IRC(Client, Output):
         self.events.connected.clear()
         self.events.joined.clear()
         Output.start(self)
-        Client.start(self)
+        Reactor.start(self)
         launch(
                self.doconnect,
                self.cfg.server or "localhost",
@@ -504,7 +508,7 @@ class IRC(Client, Output):
         self.disconnect()
         self.dostop.set()
         self.oput(None, None)
-        Client.stop(self)
+        Reactor.stop(self)
 
     def wait(self):
         self.events.ready.wait()

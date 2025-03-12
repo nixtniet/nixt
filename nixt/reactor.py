@@ -41,7 +41,7 @@ class Reactor:
     def loop(self) -> None:
         while not self.stopped.is_set():
             try:
-                evt = self.queue.get()
+                evt = self.poll()
                 if evt is None:
                     break
                 evt.orig = repr(self)
@@ -52,6 +52,9 @@ class Reactor:
                 self.ready,set()
                 _thread.interrupt_main()
         self.ready.set()
+
+    def poll(self):
+        return self.queue.get()
 
     def put(self, evt) -> None:
         self.queue.put(evt)
