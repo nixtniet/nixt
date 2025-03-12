@@ -11,6 +11,7 @@ import _thread
 
 
 from .errors import later
+from .event  import Event
 from .object import Default
 from .thread import launch, name
 
@@ -19,38 +20,7 @@ lock    = threading.RLock()
 outlock = threading.RLock()
 
 
-class Event(Default):
-
-    def __init__(self):
-        Default.__init__(self)
-        self._ready = threading.Event()
-        self._thr   = None
-        self.ctime  = time.time()
-        self.result = {}
-        self.type   = "event"
-        self.txt    = ""
-
-    def display(self) -> None:
-        Fleet.display(self)
-
-    def done(self) -> None:
-        self.reply("ok")
-
-    def ready(self) -> None:
-        self._ready.set()
-
-    def reply(self, txt) -> None:
-        self.result[time.time()] = txt
-
-    def wait(self) -> None:
-        self._ready.wait()
-        if self._thr:
-            self._thr.join()
-
-
-class Handler:
-
-    threaded = False
+class Handler(Reactor):
 
     def __init__(self):
         self.cbs     = {}
@@ -58,36 +28,21 @@ class Handler:
         self.ready   = threading.Event()
         self.stopped = threading.Event()
 
-    def callback(self, evt) -> None:
-        with lock:
-            func = self.cbs.get(evt.type, None)
-            if not func:
-                evt.ready()
-                return
-            if not Handler.threaded:
-                func(evt)
-                return
-            evt._thr = launch(func, evt, name=(
-                                               evt.txt
-                                               and evt.txt.split()[0]
-                                              ) or name(func)
-
-                             )
-
     def loop(self) -> None:
         while not self.stopped.is_set():
             try:
-                evt = self.queue.get()
+                evt = self.poll()
                 if evt is None:
                     break
                 evt.orig = repr(self)
-                self.callback(evt)
+                func(evt)
             except Exception as ex:
                 later(ex)
-                evt.ready()
-                self.ready,set()
                 _thread.interrupt_main()
         self.ready.set()
+
+    def poll(self) -> Event:
+        return self.queue.get()
 
     def put(self, evt) -> None:
         self.queue.put(evt)
