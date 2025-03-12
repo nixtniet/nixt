@@ -4,6 +4,12 @@
 "fleet"
 
 
+import threading
+
+
+outlock = threading.RLock()
+
+
 class Fleet:
 
     bots = {}
