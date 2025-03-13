@@ -5,7 +5,9 @@
 
 
 NAMES = {
+    "brk": "nixt.modules.dbg",
     "cfg": "nixt.modules.irc",
+    "dbg": "nixt.modules.dbg",
     "dis": "nixt.modules.mdl",
     "dne": "nixt.modules.tdo",
     "dpl": "nixt.modules.rss",
@@ -37,7 +39,8 @@ NAMES = {
 
 
 MD5 = {
-    "nixt.modules.err": "f6d9db233a2b939423d8d4a157f99064",
+    "nixt.modules.dbg": "ffba44a6348e74111a9bec9fb0f17c25",
+    "nixt.modules.err": "12196edea5fc50d9c7214d410656c7af",
     "nixt.modules.flt": "7657a391f5bc4ecc823c0dc248427ed1",
     "nixt.modules.fnd": "e0b3024cdef412bb085bbc179da063d6",
     "nixt.modules.irc": "7e1ad4fbab307bb48277e43261561bed",

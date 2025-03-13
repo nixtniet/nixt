@@ -9,8 +9,8 @@ from ..errors import Errors
 
 def err(event):
     nmr = 0
-    for line in Errors.errors:
-        event.reply(line.strip())
+    for exc in Errors.errors:
+        event.reply(Errors.format(exc))
         nmr += 1
     if not nmr:
         event.reply("no errors")

@@ -4,6 +4,9 @@
 "debug"
 
 
+import time
+
+
 from ..fleet import Fleet
 
 
@@ -13,9 +16,10 @@ def dbg(event):
 
 
 def brk(event):
-    for bot in Fleet.bots:
+    event.reply("borking")
+    for bot in Fleet.bots.values():
+        print(dir(bot))
         if "sock" in dir(bot):
             event.reply("shutdown on {bot.cfg.server}")
+            time.sleep(2.0)
             bot.sock.shutdown(2)
-
-v

@@ -311,7 +311,7 @@ class IRC(Client, Output):
             self.events.joined.set()
         elif cmd == '433':
             self.state.error = txt
-            nck = self.cfg.nick + '_'
+            nck = self.cfg.nick = self.cfg.nick + '_'
             self.docommand('NICK', nck)
         return evt
 
