@@ -22,7 +22,7 @@ from nixt.errors  import Errors
 from nixt.main    import enable
 from nixt.object  import Object, fmt, keys
 from nixt.persist import Workdir, elapsed, skel
-from nixt.reactor import Client, Event, Handler
+from nixt.reactor import Client, Event, Reactor
 from nixt.table   import Table
 from nixt.thread  import Thread, later, launch
 
@@ -151,8 +151,7 @@ def main():
     nrcommand = len(Commands.names) or 1
     if "b" in Config.opts:
         Thread.bork = True
-    if "t" in Config.opts:
-        Handler.threaded = True
+        Reactor.threaded = False
     if "v" in Config.opts:
         banner()
     if "f" not in Config.opts:

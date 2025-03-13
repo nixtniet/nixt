@@ -572,9 +572,7 @@ def cb_notice(evt):
 
 
 def cb_privmsg(evt):
-    print(evt)
     bot = Fleet.get(evt.orig)
-    print(bot)
     if not bot.cfg.commands:
         return
     if evt.txt:

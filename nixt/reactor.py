@@ -25,6 +25,7 @@ outlock = threading.RLock()
 class Reactor:
 
     bork = False
+    threaded = True
 
     def __init__(self):
         self.cbs     = {}
@@ -37,6 +38,9 @@ class Reactor:
             func = self.cbs.get(evt.type, None)
             if not func:
                 evt.ready()
+                return
+            if not Reactor.threaded:
+                func(evt)
                 return
             evt._thr = launch(func, evt, name=(
                                                evt.txt
@@ -82,20 +86,10 @@ class Reactor:
         self.ready.wait()
 
 
-class Handler(Reactor):
-
-    def callback(self, evt) -> None:
-        func = self.cbs.get(evt.type, None)
-        if not func:
-            evt.ready()
-            return
-        func(evt)
-
-
-class Client(Handler):
+class Client(Reactor):
 
     def __init__(self):
-        Handler.__init__(self)
+        Reactor.__init__(self)
         Fleet.add(self)
 
     def announce(self, txt) -> None:

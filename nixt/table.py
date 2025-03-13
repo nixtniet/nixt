@@ -30,7 +30,7 @@ except Exception:
 class Table:
 
     debug  = False
-    ignore = ["dbg", "llm", "rst", "web", "udp", "wsd"]
+    ignore = ["llm", "rst", "web", "udp", "wsd"]
     md5    = MD5
     mods   = {}
 

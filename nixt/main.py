@@ -14,10 +14,10 @@ import _thread
 
 
 from .cmnd    import Commands, Config, command, parse
-from .errors  import Errors, nodebug
+from .errors  import Errors, debug, nodebug
 from .object  import dumps
 from .persist import Workdir, pidname
-from .reactor import Client, Event, Handler
+from .reactor import Client, Event, Reactor
 from .table   import Table
 from .thread  import Thread
 
@@ -160,13 +160,7 @@ def setwd(name, pname="", path=""):
 
 
 def handler(signum, frame):
-    if not Errors.errors:
-        output("no errors")
-    for line in Errors.errors:
-        output(line)
-    sys.exit(0)
-
-
+    _thread.interrupt_main()
 
 
 "scripts"
@@ -192,8 +186,7 @@ def console():
     Config.init = Config.sets.init or Config.init
     if "b" in Config.opts:
         Thread.bork = True
-    if "t" in Config.opts:
-        Handler.threaded = True
+        Reactor.threaded = False
     if "v" in Config.opts:
         banner()
     for _mod, thr in Table.inits(Config.init, Config.pname):
@@ -248,7 +241,8 @@ def srv(event):
 
 
 def tbl(event):
-    nodebug()
+    if not check("-v"):
+        nodebug()
     from . import modules as MODS
     for mod in Table.all(MODS):
         Commands.scan(mod)
@@ -294,8 +288,7 @@ def wrapped(func):
     except (KeyboardInterrupt, EOFError):
         output("")
     for exc in Errors.errors:
-        for line in Errors.full(exc):
-            output(line.strip())
+        debug(Errors.format(exc))
 
 
 def wrap(func):
