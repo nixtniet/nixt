@@ -242,7 +242,7 @@ code, see the nixt/modules directory for examples.
 def spaced(txt):
     res = ""
     for char in txt[:-1]:
-       res += f"{char} "
+        res += f"{char} "
     res += txt[-1]
     return res
 

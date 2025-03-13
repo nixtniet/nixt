@@ -89,9 +89,9 @@ def fns(clz) -> [str]:
         if dirs:
             for dname in sorted(dirs):
                 if dname.count('-') == 2:
-                     ddd = p(rootdir, dname)
-                     for fll in os.listdir(ddd):
-                         yield p(ddd, fll)
+                    ddd = p(rootdir, dname)
+                    for fll in os.listdir(ddd):
+                        yield p(ddd, fll)
 
 
 def fntime(daystr) -> int:

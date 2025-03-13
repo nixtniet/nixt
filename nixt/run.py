@@ -14,8 +14,7 @@ import typing
 import _thread
 
 
-lock    = threading.RLock()
-outlock = threading.RLock()
+lock = threading.RLock()
 
 
 class Errors:
@@ -231,6 +230,7 @@ def __dir__():
         'Errors',
         'Reactor',
         'Repeater',
+        'Thread',
         'Timer',
         'debug',
         'later',
