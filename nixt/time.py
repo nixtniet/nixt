@@ -9,7 +9,7 @@ import re
 import time as ttime
 
 
-from .errors import later
+from .run import later
 
 
 class NoDate(Exception):

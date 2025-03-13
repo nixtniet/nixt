@@ -16,16 +16,14 @@ import time
 import _thread
 
 
+from ..client  import Client, Event
 from ..cmnd    import Config as Main
 from ..cmnd    import command
-from ..errors  import debug as ldebug
-from ..errors  import later
 from ..fleet   import Fleet
 from ..persist import ident, last, store, write
 from ..object  import Default, Object, edit, fmt, keys
-from ..reactor import Client, Event
-from ..thread  import launch
-
+from ..run     import later, launch
+from ..run     import debug as ldebug
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]
 NAME    = sys.argv[0].split(os.sep)[-1]

@@ -13,13 +13,12 @@ import time
 import _thread
 
 
+from .client  import Client, Event
 from .cmnd    import Commands, Config, command, parse
-from .errors  import Errors, debug, nodebug
 from .object  import dumps
 from .persist import Workdir, pidname
-from .reactor import Client, Event, Reactor
+from .run     import Errors, Reactor, Thread, debug, nodebug
 from .table   import Table
-from .thread  import Thread
 
 
 p = os.path.join
