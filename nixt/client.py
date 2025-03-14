@@ -4,6 +4,7 @@
 "client"
 
 
+import sys
 import threading
 import time
 
@@ -12,7 +13,21 @@ from .object import Default
 from .run    import Reactor
 
 
+STARTTIME = time.time()
+
+
 outlock = threading.RLock()
+
+
+class Main(Default):
+
+    debug   = False
+    ignore  = 'dbg,llm,mbx,rst,udp,web,wsd'
+    init    = ""
+    md5     = False
+    name    = __package__
+    opts    = Default()
+    verbose = False
 
 
 class Client(Reactor):
@@ -105,9 +120,34 @@ class Fleet:
                 bot.wait()
 
 
+def debug(*args):
+    for arg in args:
+        sys.stderr.write(str(arg))
+        sys.stderr.write("\n")
+        sys.stderr.flush()
+
+
+def nodebug():
+    with open('/dev/null', 'a+', encoding="utf-8") as ses:
+        os.dup2(ses.fileno(), sys.stderr.fileno())
+
+
+def spl(txt) -> str:
+    try:
+        result = txt.split(',')
+    except (TypeError, ValueError):
+        result = txt
+    return [x for x in result if x]
+
+
+
 def __dir__():
     return (
         'Client',
+        'Config',
         'Event',
-        'Fleet'
+        'Fleet',
+        'debug',
+        'ndebug',
+        'spl'
     )

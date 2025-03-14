@@ -60,7 +60,7 @@ class Errors:
 class Reactor:
 
     bork = False
-    threaded = True
+    threaded = False
 
     def __init__(self):
         self.cbs     = {}
@@ -153,18 +153,9 @@ class Thread(threading.Thread):
 "utilititeS"
 
 
-def debug(*args):
-    for arg in args:
-        sys.stderr.write(str(arg))
-        sys.stderr.write("\n")
-        sys.stderr.flush()
-
-
 def later(exc) -> None:
     excp = exc.with_traceback(exc.__traceback__)
     Errors.errors.append(excp)
-
-
 
 
 def launch(func, *args, **kwargs) -> Thread:
@@ -189,19 +180,12 @@ def name(obj) -> str:
     return None
 
 
-def nodebug():
-    with open('/dev/null', 'a+', encoding="utf-8") as ses:
-        os.dup2(ses.fileno(), sys.stderr.fileno())
-
-
 def __dir__():
     return (
         'Errors',
         'Reactor',
         'Thread',
-        'debug',
         'later',
         'launch',
         'name',
-        'nodebug'
     )

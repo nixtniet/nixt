@@ -13,15 +13,12 @@ import time
 import _thread
 
 
-from .client import Client, Event
-from .cmnd   import Commands, Config, command, parse
+from .client import Client, Main, Event, debug, nodebug
+from .cmnd   import Commands, command, parse, scan
 from .disk   import Workdir, pidname
 from .object import dumps
-from .pkg    import all, inits, modules
-from .run    import Errors, Reactor, Thread, debug, nodebug
-
-
-from . import modules as MODS
+from .pkg    import inits, mods
+from .run    import Errors, Reactor, Thread
 
 
 p = os.path.join
@@ -79,7 +76,7 @@ def disable():
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    output(f"{Config.name.upper()} since {tme}")
+    output(f"{Main.name.upper()} since {tme}")
 
 
 def check(txt):
@@ -127,7 +124,7 @@ def md5(mod):
         return str(hashlib.md5(txt).hexdigest())
 
 
-def modules(path) -> [str]:
+def modnames(path) -> [str]:
     return [
             x[:-3] for x in os.listdir(path)
             if x.endswith(".py") and not x.startswith("__")
@@ -151,9 +148,8 @@ def privileges():
     os.setuid(pwnam2.pw_uid)
 
 
-def setwd(name, pname="", path=""):
-    Config.name = name
-    Config.pname = pname or f"{name}.modules"
+def setwd(name, path=""):
+    Main.name = name
     path = path or os.path.expanduser(f"~/.{name}")
     Workdir.wdr = path
 
@@ -170,29 +166,30 @@ def handler(signum, frame):
 
 def background():
     daemon("-v" in sys.argv)
-    setwd(Config.name)
+    setwd(Main.name)
     privileges()
     disable()
-    pidfile(pidname(Config.name))
+    pidfile(pidname(Main.name))
     Commands.add(cmd)
-    inits(Config.init or "irc,rss", Config.pname)
+    inits(Main.init or "irc,rss")
     forever()
 
 
 def console():
     import readline # noqa: F401
-    setwd(Config.name)
+    setwd(Main.name)
     enable()
     Commands.add(cmd)
-    parse(Config, " ".join(sys.argv[1:]))
-    Config.init = Config.sets.init or Config.init
-    if "b" in Config.opts:
+    parse(Main, " ".join(sys.argv[1:]))
+    Main.init = Main.sets.init or Main.init
+    Main.verbose = Main.sets.verbose or Main.verbose
+    if "b" in Main.opts:
         Thread.bork = True
         Reactor.threaded = False
-    if "v" in Config.opts:
+    if "v" in Main.opts:
         banner()
-    for _mod, thr in inits(Config.init, Config.pname):
-        if "w" in Config.opts:
+    for _mod, thr in inits(Main.init):
+        if "w" in Main.opts:
             thr.join()
     csl = Console()
     csl.start()
@@ -202,18 +199,18 @@ def console():
 def control():
     if len(sys.argv) == 1:
         return
-    setwd(Config.name)
-    Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
+    setwd(Main.name)
+    Workdir.wdr = os.path.expanduser(f"~/.{Main.name}")
     enable()
     Commands.add(cmd)
     Commands.add(srv)
     Commands.add(tbl)
-    parse(Config, " ".join(sys.argv[1:]))
+    parse(Main, " ".join(sys.argv[1:]))
     csl = CLI()
     evt = Event()
     evt.orig = repr(csl)
     evt.type = "command"
-    evt.txt = Config.otxt
+    evt.txt = Main.otxt
     command(evt)
     evt.wait()
 
@@ -221,11 +218,11 @@ def control():
 def service():
     signal.signal(signal.SIGHUP, handler)
     nodebug()
-    setwd(Config.name)
+    setwd(Main.name)
     privileges()
-    pidfile(pidname(Config.name))
+    pidfile(pidname(Main.name))
     Commands.add(cmd)
-    inits(Config.init or "irc,rss", Config.pname)
+    inits(Main.init or "irc,rss")
     forever()
 
 
@@ -233,20 +230,20 @@ def service():
 
 
 def cmd(event):
-    event.reply(",".join(sorted(Commands.names)))
+    event.reply(",".join(sorted([x for x in Commands.names if x not in Main.ignore])))
 
 
 def srv(event):
     import getpass
     name = getpass.getuser()
-    event.reply(TXT % (Config.name.upper(), name, name, name, Config.name))
+    event.reply(TXT % (Main.name.upper(), name, name, name, Main.name))
 
 
 def tbl(event):
-    if not check("-v"):
-        nodebug()
-    for mod in all(MODS):
-        Commands.scan(mod)
+    #if not check("-v"):
+    #    nodebug()
+    for mod in mods():
+        scan(mod)
     event.reply("# This file is placed in the Public Domain.")
     event.reply("")
     event.reply("")
@@ -257,8 +254,8 @@ def tbl(event):
     event.reply("")
     event.reply("")
     event.reply("MD5 = {")
-    for mod in all(MODS):
-        event.reply(f'    "{mod.__name__}": "{md5(mod)}",')
+    for mod in mods():
+        event.reply(f'    "{mod.__name__.split(".")[-1]}": "{md5(mod)}",')
     event.reply("}")
     event.reply
 
@@ -288,7 +285,7 @@ def wrapped(func):
         func()
     except (KeyboardInterrupt, EOFError):
         output("")
-    if "v" in Config.opts:
+    if "v" in Main.opts:
         for exc in Errors.errors:
            debug(Errors.format(exc))
 
@@ -308,8 +305,10 @@ def wrap(func):
 
 
 def main():
+    if check("z"):
+        Main.debug = True
     if check("v"):
-        setattr(Config.opts, "v", True)
+        setattr(Main.opts, "v", True)
         enable()
     if check("c"):
         wrap(console)

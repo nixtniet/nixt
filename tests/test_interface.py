@@ -18,7 +18,6 @@ import nixt.lookup
 import nixt.main
 import nixt.object
 import nixt.run
-import nixt.table
 import nixt.time
 
 
@@ -33,7 +32,6 @@ PACKAGE = [
     'main',
     'object',
     'run',
-    'table',
     'time'
 ]
 

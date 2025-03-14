@@ -4,7 +4,7 @@
 "man page"
 
 
-from ..cmnd import Config
+from ..client import Main
 
 
 TXT = """%s
@@ -248,11 +248,12 @@ def spaced(txt):
 
 
 def man(event):
+    name = Main.name
     event.reply(TXT % tuple(
-                            [spaced(Config.name.upper()), "="*(2*len(Config.name)-1), Config.name, Config.name.upper()]
-                            + 4* [Config.name]
-                            + 5*[Config.name.upper()]
-                            + 34*[Config.name]
-                            + [Config.name.upper()]
+                            [spaced(name.upper()), "="*(2*len(name)-1), name, name.upper()]
+                            + 4* [name]
+                            + 5*[name.upper()]
+                            + 34*[name]
+                            + [name.upper()]
                            )
                )

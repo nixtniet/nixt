@@ -5,7 +5,6 @@
 
 
 import inspect
-import time
 import typing
 
 
@@ -13,58 +12,16 @@ from .object import Default
 from .pkg    import load
 
 
-STARTTIME = time.time()
-
-
-NAMES = {
-    "ask": "llm",
-    "brk": "dbg",
-    "cfg": "irc",
-    "dbg": "dbg",
-    "dis": "mdl",
-    "dne": "tdo",
-    "dpl": "rss",
-    "eml": "mbx",
-    "err": "err",
-    "exp": "rss",
-    "flt": "flt",
-    "fnd": "fnd",
-    "imp": "rss",
-    "log": "log",
-    "man": "man",
-    "mbx": "mbx",
-    "mod": "mod",
-    "mre": "irc",
-    "nme": "rss",
-    "now": "mdl",
-    "pwd": "irc",
-    "rem": "rss",
-    "req": "req",
-    "res": "rss",
-    "rss": "rss",
-    "slg": "slg",
-    "syn": "rss",
-    "tdo": "tdo",
-    "thr": "thr",
-    "tmr": "tmr",
-    "udp": "udp",
-    "upt": "upt",
-    "wsd": "wsd"
-}
-
-
-class Config(Default):
-
-    init  = ""
-    name  = Default.__module__.split(".")[0]
-    pname = f"{name}.modules"
-    opts  = Default()
+try:
+    from .lookup import NAMES
+except Exception:
+    NAMES = None
 
 
 class Commands:
 
     cmds = {}
-    names = NAMES
+    names = NAMES or {} 
 
     @staticmethod
     def add(func, mod=None) -> None:
@@ -77,25 +34,13 @@ class Commands:
         func = Commands.cmds.get(cmd, None)
         if not func:
             name = Commands.names.get(cmd, None)
+            if not name:
+                return
             mod = load(name)
-            scan(mod)
-            func = Commands.cmds.get(cmd)
+            if mod:
+                scan(mod)
+                func = Commands.cmds.get(cmd)
         return func
-
-    @staticmethod
-    def getname(cmd) -> None:
-        return Commands.names.get(cmd)
-
-
-def scan(mod) -> None:
-    for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
-        if key.startswith("cb"):
-            continue
-        if 'event' in cmdz.__code__.co_varnames:
-            Commands.add(cmdz, mod)
-
-
-"callbacks"
 
 
 def command(evt) -> None:
@@ -105,9 +50,6 @@ def command(evt) -> None:
         func(evt)
         evt.display()
     evt.ready()
-
-
-"utilities"
 
 
 def parse(obj, txt=None) -> None:
@@ -169,10 +111,18 @@ def parse(obj, txt=None) -> None:
         obj.txt = obj.cmd or ""
 
 
+def scan(mod) -> None:
+    for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
+        if key.startswith("cb"):
+            continue
+        if 'event' in cmdz.__code__.co_varnames:
+            Commands.add(cmdz, mod)
+
+
 def __dir__():
     return (
-        'STARTTIME',
         'Commands',
         'command',
-        'parse'
+        'parse',
+        'scan'
     )

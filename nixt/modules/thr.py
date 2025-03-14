@@ -8,7 +8,7 @@ import threading
 import time
 
 
-from ..cmnd   import STARTTIME
+from ..client import STARTTIME
 from ..disk   import elapsed
 from ..object import Object, update
 

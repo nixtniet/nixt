@@ -13,28 +13,26 @@ import sys
 import textwrap
 import threading
 import time
-import _thread
 
 
-from ..client import Client, Event, Fleet
-from ..cmnd   import Config as Main
+from ..client import Client, Main, Event, Fleet
+from ..client import debug as ldebug
 from ..cmnd   import command
 from ..disk   import ident, last, store, write
 from ..object import Default, Object, edit, fmt, keys
 from ..run    import later, launch
-from ..run    import debug as ldebug
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]
 NAME    = sys.argv[0].split(os.sep)[-1]
 
 
-saylock = _thread.allocate_lock()
+saylock = threading.RLock()
 
 
 def debug(txt):
     for ign in IGNORE:
-        if ign in txt:
+        if ign in str(txt):
             return
     ldebug(txt)
 
@@ -203,6 +201,7 @@ class IRC(Client, Output):
             self.oput(channel, txt)
 
     def connect(self, server, port=6667):
+        debug(f"connecting to {server}:{port}")
         self.state.nrconnect += 1
         self.events.connected.clear()
         if self.cfg.password:
@@ -275,6 +274,7 @@ class IRC(Client, Output):
                     OSError,
                     ConnectionResetError
                    ) as ex:
+                later(ex)
                 self.state.error = str(ex)
                 debug(str(ex))
             debug(f"sleeping {self.cfg.sleep} seconds")
@@ -410,6 +410,7 @@ class IRC(Client, Output):
             try:
                 self.some()
             except BlockingIOError as ex:
+                later(ex)
                 time.sleep(1.0)
                 return self.event(str(ex))
             except (
@@ -454,11 +455,11 @@ class IRC(Client, Output):
         self.state.nrsend += 1
 
     def reconnect(self):
-        debug(f"reconnecting to {self.cfg.server}")
+        debug(f"reconnecting to {self.cfg.server}:{self.cfg.port}")
         try:
             self.disconnect()
-        except (ssl.SSLError, OSError):
-            pass
+        except (ssl.SSLError, OSError) as ex:
+            later(ex)
         self.events.connected.clear()
         self.events.joined.clear()
         self.doconnect(self.cfg.server, self.cfg.nick, int(self.cfg.port))

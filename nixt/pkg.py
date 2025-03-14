@@ -1,39 +1,48 @@
 # This file is placed in the Public Domain.
 
 
-"table"
+"package"
 
 
 import importlib
 import importlib.util
+import hashlib
 import os
-import sys
 import threading
 import types
 
 
-from .disk import spl
-from .run  import debug, later, launch
+from .client import Main, debug, spl
+from .run    import later, launch
+
+
+try:
+    from .lookup import MD5
+except Exception:
+    MD5 = {}
+
+
+path = f"{os.path.dirname(__file__)}{os.sep}modules"
+pname = f"{__package__}.modules"
 
 
 initlock = threading.RLock()
 loadlock = threading.RLock()
 
 
-debug = False
-ignore = []
+class MD5Error(Exception):
+
+    pass
 
 
-def all(pkg, mods="") -> [types.ModuleType]:
-    path = pkg.__path__[0]
-    pname = pkg.__name__
+def mods(names="") -> [types.ModuleType]:
     res = []
     for nme in sorted(modules(path)):
-        if nme in ignore:
+        if nme in spl(Main.ignore):
             continue
         if "__" in nme:
             continue
-        if mods and nme not in spl(mods):
+        if names and nme not in spl(names):
             continue
         mod = load(nme)
         if not mod:
@@ -42,7 +51,21 @@ def all(pkg, mods="") -> [types.ModuleType]:
     return res
 
 
-def inits(names, pname) -> [types.ModuleType]:
+def check(name):
+    if not Main.md5:
+        return True
+    mname = f"{pname}.{name}"
+    spec = importlib.util.find_spec(mname)
+    if not spec:
+        return False
+    path = spec.origin
+    if md5(path) == MD5.get(name, None):
+        return True
+    debug(f"{name} md5 doesn't match")
+    return False
+
+
+def inits(names) -> [types.ModuleType]:
     with initlock:
         mods = []
         for name in spl(names):
@@ -57,31 +80,35 @@ def inits(names, pname) -> [types.ModuleType]:
 
 def load(name) -> types.ModuleType:
     with loadlock:
-        for ign in ignore:
-            if ign in name:
-                return
+        if name in Main.ignore:
+            return
         module = None
         try:
-            mname = f"nixt.modules.{name}"
-            module = importlib.import_module(mname, "nixt.modules")
-            if debug:
-                    module.DEBUG = True
+            mname = f"{pname}.{name}"
+            module = importlib.import_module(mname, pname)
+            if Main.debug:
+                module.DEBUG = True
         except Exception as exc:
             later(exc)
         return module
+
+
+def md5(path):
+    with open(path, "r", encoding="utf-8") as file:
+        txt = file.read().encode("utf-8")
+        return str(hashlib.md5(txt).hexdigest())
 
 
 def modules(path) -> [str]:
     return [
             x[:-3] for x in os.listdir(path)
             if x.endswith(".py") and not x.startswith("__") and
-            x not in ignore
+            x not in Main.ignore
            ]
 
 
 def __dir__():
     return (
-        'all',
         'check',
         'inits',
         'load',
