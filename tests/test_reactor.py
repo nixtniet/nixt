@@ -7,17 +7,18 @@
 import unittest
 
 
-from nixt.cmnd    import command
-from nixt.reactor import Event, Handler
+from nixt.client import Event
+from nixt.cmnd   import command
+from nixt.run    import Reactor
 
 
-hdl = Handler()
+hdl = Reactor()
 hdl.register("command", command)
 hdl.start()
 hdl.raw = print
 
 
-class TestHandler(unittest.TestCase):
+class TestReactor(unittest.TestCase):
 
     def test_loop(self):
         e = Event()
@@ -25,4 +26,3 @@ class TestHandler(unittest.TestCase):
         hdl.put(e)
         e.wait()
         self.assertTrue(True)
-

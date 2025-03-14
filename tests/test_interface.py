@@ -11,15 +11,14 @@ import unittest
 
 
 import nixt
+import nixt.client
 import nixt.cmnd
-import nixt.errors
-import nixt.fleet
+import nixt.disk
+import nixt.lookup
 import nixt.main
 import nixt.object
-import nixt.persist
-import nixt.reactor
+import nixt.run
 import nixt.table
-import nixt.thread
 import nixt.time
 
 
@@ -27,15 +26,14 @@ from nixt.object import *
 
 
 PACKAGE = [
+    'client',
     'cmnd',
-    'errors',
-    'fleet',
+    'disk',
+    'lookup',
     'main',
     'object',
-    'persist',
-    'reactor',
+    'run',
     'table',
-    'thread',
     'time'
 ]
 
