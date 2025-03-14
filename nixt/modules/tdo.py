@@ -7,8 +7,8 @@
 import time
 
 
-from ..object  import Object
-from ..persist import elapsed, find, fntime,ident,  store, write
+from ..disk   import elapsed, find, fntime,ident,  store, write
+from ..object import Object
 
 
 class Todo(Object):

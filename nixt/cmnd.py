@@ -66,6 +66,9 @@ class Commands:
                 Commands.add(cmdz, mod)
 
 
+"callbacks"
+
+
 def command(evt) -> None:
     parse(evt)
     func = Commands.get(evt.cmd)
@@ -73,6 +76,9 @@ def command(evt) -> None:
         func(evt)
         evt.display()
     evt.ready()
+
+
+"utilities"
 
 
 def parse(obj, txt=None) -> None:
@@ -132,6 +138,9 @@ def parse(obj, txt=None) -> None:
         obj.txt  = obj.cmd + " " + obj.rest
     else:
         obj.txt = obj.cmd or ""
+
+
+"interface"
 
 
 def __dir__():

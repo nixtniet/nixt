@@ -7,8 +7,8 @@
 import time
 
 
-from ..cmnd    import STARTTIME
-from ..persist import elapsed
+from ..cmnd import STARTTIME
+from ..disk import elapsed
 
 
 def upt(event):

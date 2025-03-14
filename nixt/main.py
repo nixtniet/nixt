@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # This file is placed in the Public Domain.
 
 
@@ -13,12 +14,12 @@ import time
 import _thread
 
 
-from .client  import Client, Event
-from .cmnd    import Commands, Config, command, parse
-from .object  import dumps
-from .persist import Workdir, pidname
-from .run     import Errors, Reactor, Thread, debug, nodebug
-from .table   import Table
+from .client import Client, Event
+from .cmnd   import Commands, Config, command, parse
+from .disk   import Workdir, pidname
+from .object import dumps
+from .run    import Errors, Reactor, Thread, debug, nodebug
+from .table  import Table
 
 
 p = os.path.join
@@ -286,8 +287,9 @@ def wrapped(func):
         func()
     except (KeyboardInterrupt, EOFError):
         output("")
-    for exc in Errors.errors:
-        debug(Errors.format(exc))
+    if "v" in Config.opts:
+        for exc in Errors.errors:
+           debug(Errors.format(exc))
 
 
 def wrap(func):

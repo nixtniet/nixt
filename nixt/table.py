@@ -12,8 +12,8 @@ import threading
 import types
 
 
-from .persist import spl
-from .run     import debug, later, launch
+from .disk import spl
+from .run  import debug, later, launch
 
 
 initlock = threading.RLock()

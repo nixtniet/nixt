@@ -7,11 +7,11 @@
 import time as ttime
 
 
-from ..client  import Event, Fleet
-from ..object  import update
-from ..persist import elapsed, find, ident, store, write
-from ..run     import Timer, launch
-from ..time    import NoDate, get_day, get_hour, to_day, today
+from ..client import Event, Fleet
+from ..disk   import elapsed, find, ident, store, write
+from ..object import update
+from ..run    import launch
+from ..time   import NoDate, Timer, get_day, get_hour, to_day, today
 
 
 def init():
