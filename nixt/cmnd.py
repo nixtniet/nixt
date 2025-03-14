@@ -76,9 +76,9 @@ class Commands:
     def get(cmd) -> typing.Callable:
         func = Commands.cmds.get(cmd, None)
         if not func:
-            name = f"{Config.pname}.{cmd}"
+            name = Commands.names.get(cmd, None)
             mod = load(name)
-            Commands.scan(mod)
+            scan(mod)
             func = Commands.cmds.get(cmd)
         return func
 
@@ -86,13 +86,13 @@ class Commands:
     def getname(cmd) -> None:
         return Commands.names.get(cmd)
 
-    @staticmethod
-    def scan(mod) -> None:
-        for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
-            if key.startswith("cb"):
-                continue
-            if 'event' in cmdz.__code__.co_varnames:
-                Commands.add(cmdz, mod)
+
+def scan(mod) -> None:
+    for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
+        if key.startswith("cb"):
+            continue
+        if 'event' in cmdz.__code__.co_varnames:
+            Commands.add(cmdz, mod)
 
 
 "callbacks"
