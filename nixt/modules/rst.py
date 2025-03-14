@@ -12,9 +12,9 @@ import time
 from http.server  import HTTPServer, BaseHTTPRequestHandler
 
 
-from ..object  import Default, Object
-from ..persist import Workdir, types
-from ..run     import later, launch
+from ..disk   import Workdir, types
+from ..object import Default, Object
+from ..run    import later, launch
 
 
 DEBUG = False

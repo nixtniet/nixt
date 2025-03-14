@@ -6,10 +6,11 @@
 
 import datetime
 import re
+import threading
 import time as ttime
 
 
-from .run import later, launch
+from .run import later, launch, name
 
 
 class NoDate(Exception):
@@ -29,7 +30,7 @@ class Timer:
         self.timer  = None
 
     def run(self) -> None:
-        self.state["latest"] = time.time()
+        self.state["latest"] = ttime.time()
         launch(self.func, *self.args)
 
     def start(self) -> None:
@@ -53,9 +54,6 @@ class Repeater(Timer):
     def run(self) -> None:
         launch(self.start)
         super().run()
-
-
-"parsing"
 
 
 def extract_date(daystr):
@@ -170,9 +168,6 @@ def today():
     return str(datetime.datetime.today()).split()[0]
 
 
-"data"
-
-
 MONTHS = [
     'Bo',
     'Jan',
@@ -198,9 +193,6 @@ FORMATS = [
     "%d-%m",
     "%m-%d",
 ]
-
-
-"interface"
 
 
 def __dir__():

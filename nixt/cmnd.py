@@ -10,16 +10,47 @@ import typing
 
 
 from .object import Default
-from .table  import Table
-
-
-try:
-    from .lookup import NAMES
-except Exception:
-    NAMES = {}
+from .pkg    import load
 
 
 STARTTIME = time.time()
+
+
+NAMES = {
+    "ask": "llm",
+    "brk": "dbg",
+    "cfg": "irc",
+    "dbg": "dbg",
+    "dis": "mdl",
+    "dne": "tdo",
+    "dpl": "rss",
+    "eml": "mbx",
+    "err": "err",
+    "exp": "rss",
+    "flt": "flt",
+    "fnd": "fnd",
+    "imp": "rss",
+    "log": "log",
+    "man": "man",
+    "mbx": "mbx",
+    "mod": "mod",
+    "mre": "irc",
+    "nme": "rss",
+    "now": "mdl",
+    "pwd": "irc",
+    "rem": "rss",
+    "req": "req",
+    "res": "rss",
+    "rss": "rss",
+    "slg": "slg",
+    "syn": "rss",
+    "tdo": "tdo",
+    "thr": "thr",
+    "tmr": "tmr",
+    "udp": "udp",
+    "upt": "upt",
+    "wsd": "wsd"
+}
 
 
 class Config(Default):
@@ -39,18 +70,16 @@ class Commands:
     def add(func, mod=None) -> None:
         Commands.cmds[func.__name__] = func
         if mod:
-            Commands.names[func.__name__] = mod.__name__
+            Commands.names[func.__name__] = mod.__name__.split(".")[-1]
 
     @staticmethod
     def get(cmd) -> typing.Callable:
         func = Commands.cmds.get(cmd, None)
         if not func:
-            name = Commands.names.get(cmd)
-            if name:
-                if Table.check(name):
-                    mod = Table.load(name)
-                    Commands.scan(mod)
-                    func = Commands.cmds.get(cmd)
+            name = f"{Config.pname}.{cmd}"
+            mod = load(name)
+            Commands.scan(mod)
+            func = Commands.cmds.get(cmd)
         return func
 
     @staticmethod
@@ -138,9 +167,6 @@ def parse(obj, txt=None) -> None:
         obj.txt  = obj.cmd + " " + obj.rest
     else:
         obj.txt = obj.cmd or ""
-
-
-"interface"
 
 
 def __dir__():

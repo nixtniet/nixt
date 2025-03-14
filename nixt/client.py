@@ -105,9 +105,6 @@ class Fleet:
                 bot.wait()
 
 
-"interface"
-
-
 def __dir__():
     return (
         'Client',

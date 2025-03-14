@@ -193,9 +193,6 @@ def dumps(*args, **kw) -> str:
     return json.dumps(*args, **kw)
 
 
-"interface"
-
-
 def __dir__():
     return (
         'Default',

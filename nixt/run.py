@@ -194,9 +194,6 @@ def nodebug():
         os.dup2(ses.fileno(), sys.stderr.fileno())
 
 
-"interface"
-
-
 def __dir__():
     return (
         'Errors',

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # This file is placed in the Public Domain.
 
 
@@ -18,8 +17,11 @@ from .client import Client, Event
 from .cmnd   import Commands, Config, command, parse
 from .disk   import Workdir, pidname
 from .object import dumps
+from .pkg    import all, inits, modules
 from .run    import Errors, Reactor, Thread, debug, nodebug
-from .table  import Table
+
+
+from . import modules as MODS
 
 
 p = os.path.join
@@ -173,7 +175,7 @@ def background():
     disable()
     pidfile(pidname(Config.name))
     Commands.add(cmd)
-    Table.inits(Config.init or "irc,rss", Config.pname)
+    inits(Config.init or "irc,rss", Config.pname)
     forever()
 
 
@@ -189,7 +191,7 @@ def console():
         Reactor.threaded = False
     if "v" in Config.opts:
         banner()
-    for _mod, thr in Table.inits(Config.init, Config.pname):
+    for _mod, thr in inits(Config.init, Config.pname):
         if "w" in Config.opts:
             thr.join()
     csl = Console()
@@ -223,7 +225,7 @@ def service():
     privileges()
     pidfile(pidname(Config.name))
     Commands.add(cmd)
-    Table.inits(Config.init or "irc,rss", Config.pname)
+    inits(Config.init or "irc,rss", Config.pname)
     forever()
 
 
@@ -243,8 +245,7 @@ def srv(event):
 def tbl(event):
     if not check("-v"):
         nodebug()
-    from . import modules as MODS
-    for mod in Table.all(MODS):
+    for mod in all(MODS):
         Commands.scan(mod)
     event.reply("# This file is placed in the Public Domain.")
     event.reply("")
@@ -256,7 +257,7 @@ def tbl(event):
     event.reply("")
     event.reply("")
     event.reply("MD5 = {")
-    for key, mod in sorted(Table.mods.items()):
+    for mod in all(MODS):
         event.reply(f'    "{mod.__name__}": "{md5(mod)}",')
     event.reply("}")
     event.reply

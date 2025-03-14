@@ -22,7 +22,7 @@ from nixt.cmnd   import STARTTIME, Commands, Config, command, parse
 from nixt.disk   import Workdir, elapsed, skel
 from nixt.main   import enable
 from nixt.object import Object, fmt, keys
-from nixt.table  import Table
+from nixt.pkg    import all
 from nixt.run    import Errors, Reactor, Thread, later, launch
 
 
@@ -144,8 +144,7 @@ def main():
     global nrs
     global nrcommand
     enable()
-    Table.debug = True
-    Table.all(MODS)
+    all(MODS)
     parse(Config, " ".join(sys.argv[1:]))
     nrcommand = len(Commands.names) or 1
     if "b" in Config.opts:

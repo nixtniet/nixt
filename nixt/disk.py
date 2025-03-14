@@ -231,9 +231,6 @@ def write(obj, pth):
     return pth
 
 
-"interface"
-
-
 def __dir__():
     return (
         'DecodeError',
