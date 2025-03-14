@@ -8,8 +8,8 @@ import inspect
 import typing
 
 
-from .object import Default
-from .pkg    import load
+from .object  import Default
+from .modules import load
 
 
 try:
@@ -50,6 +50,17 @@ def command(evt) -> None:
         func(evt)
         evt.display()
     evt.ready()
+
+
+def scan(mod) -> None:
+    for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
+        if key.startswith("cb"):
+            continue
+        if 'event' in cmdz.__code__.co_varnames:
+            Commands.add(cmdz, mod)
+
+
+"utilities"
 
 
 def parse(obj, txt=None) -> None:
@@ -109,14 +120,6 @@ def parse(obj, txt=None) -> None:
         obj.txt  = obj.cmd + " " + obj.rest
     else:
         obj.txt = obj.cmd or ""
-
-
-def scan(mod) -> None:
-    for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
-        if key.startswith("cb"):
-            continue
-        if 'event' in cmdz.__code__.co_varnames:
-            Commands.add(cmdz, mod)
 
 
 def __dir__():

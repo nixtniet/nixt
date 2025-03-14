@@ -10,15 +10,16 @@ import pathlib
 import signal
 import sys
 import time
+import types
 import _thread
 
 
-from .client import Client, Main, Event, debug, nodebug
-from .cmnd   import Commands, command, parse, scan
-from .disk   import Workdir, pidname
-from .object import dumps
-from .pkg    import inits, mods
-from .run    import Errors, Reactor, Thread
+from .client  import Client, Main, Event, debug, nodebug, spl
+from .cmnd    import Commands, command, parse, scan
+from .disk    import Workdir, pidname
+from .modules import load, mods
+from .object  import dumps
+from .run     import Errors, Reactor, Thread, launch
 
 
 p = os.path.join
@@ -116,6 +117,18 @@ def forever():
             time.sleep(0.1)
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
+
+
+def inits(names) -> [types.ModuleType]:
+    mods = []
+    for name in spl(names):
+        mod = load(name)
+        if not mod:
+            continue
+        if "init" in dir(mod):
+            thr = launch(mod.init)
+        mods.append((mod, thr))
+    return mods
 
 
 def md5(mod):
