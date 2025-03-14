@@ -77,10 +77,13 @@ class Reactor:
             if not Reactor.threaded:
                 func(evt)
                 return
-            evt._thr = launch(func, evt, name=(
-                                               evt.txt
-                                               and evt.txt.split()[0]
-                                              ) or name(func)
+            evt._thr = launch(
+                              func,
+                              evt,
+                              name=(
+                                    evt.txt
+                                    and evt.txt.split()[0]
+                                   ) or name(func)
 
                              )
 

@@ -19,7 +19,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from ..fleet   import Fleet
+from ..client  import Fleet
 from ..object  import Object, fmt, update
 from ..persist import elapsed, find, fntime, ident, last, spl, store, write
 from ..run     import Repeater, launch

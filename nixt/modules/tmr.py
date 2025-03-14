@@ -7,8 +7,7 @@
 import time as ttime
 
 
-from ..client  import Event
-from ..fleet   import Fleet
+from ..client  import Event, Fleet
 from ..object  import update
 from ..persist import elapsed, find, ident, store, write
 from ..run     import Timer, launch

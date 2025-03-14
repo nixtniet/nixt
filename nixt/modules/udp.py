@@ -11,7 +11,7 @@ import threading
 import time
 
 
-from ..fleet  import Fleet
+from ..client import Fleet
 from ..object import Object
 from ..run    import launch
 
