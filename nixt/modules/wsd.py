@@ -3,10 +3,12 @@
 
 "wijs, wijsheid, wijs!"
 
+
 from random import SystemRandom
 
 
 rand = SystemRandom()
+
 
 def wsd(event):
     event.reply(rand.choice(TXT.split("\n")).strip()[2:])

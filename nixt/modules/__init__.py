@@ -14,9 +14,9 @@ import types
 import typing
 
 
-from ..clients import Main
-from ..runtime import later, launch
-from ..utility import debug, parse, spl
+from ..client import Main
+from ..run    import later, launch
+from ..utils  import debug, parse, spl
 
 
 try:

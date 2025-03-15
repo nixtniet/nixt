@@ -10,9 +10,9 @@ import threading
 import time
 
 
-from .objects import Default
-from .runtime import Reactor
-from .utility import parse
+from .object import Default
+from .run    import Reactor
+from .utils  import parse
  
 
 STARTTIME = time.time()

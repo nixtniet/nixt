@@ -8,7 +8,7 @@ import os
 import sys
 
 
-from .objects import Default
+from .object import Default
 
 
 def debug(*args):
