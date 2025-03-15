@@ -56,6 +56,8 @@ class Commands:
             name = Commands.names.get(cmd, None)
             if not name:
                 return
+            if not check(name):
+                return
             mod = load(name)
             if mod:
                 scan(mod)

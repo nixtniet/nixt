@@ -25,7 +25,7 @@ class Main(Default):
     debug   = False
     ignore  = 'llm,mbx,rst,udp,web,wsd'
     init    = ""
-    md5     = False
+    md5     = True
     name    = __package__
     opts    = Default()
     verbose = False
