@@ -8,7 +8,7 @@ import unittest
 
 
 from nixt.clients import Event
-from nixt.command import command
+from nixt.modules import command
 from nixt.runtime import Reactor
 
 

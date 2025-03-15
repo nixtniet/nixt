@@ -12,12 +12,12 @@ import unittest
 
 import nixt
 import nixt.clients
-import nixt.command
-import nixt.lookups
+import nixt.modules
 import nixt.objects
 import nixt.persist
 import nixt.runtime
 import nixt.timings
+import nixt.utility
 
 
 from nixt.objects import *
@@ -25,12 +25,12 @@ from nixt.objects import *
 
 PACKAGE = [
     'clients',
-    'command',
-    'lookups',
+    'modules',
     'objects',
     'persist',
     'runtime',
-    'timings'
+    'timings',
+    'utility'
 ]
 
 
