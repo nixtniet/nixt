@@ -4,8 +4,6 @@
 "client"
 
 
-import os
-import sys
 import threading
 import time
 
@@ -23,7 +21,7 @@ outlock = threading.RLock()
 class Main(Default):
 
     debug   = False
-    ignore  = 'llm,mbx,rst,udp,web,wsd'
+    ignore  = 'dbg,llm,mbx,rst,udp,web,wsd'
     init    = ""
     md5     = True
     name    = __package__
