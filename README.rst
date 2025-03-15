@@ -193,7 +193,7 @@ and add the following for ``hello world``
 save this and recreate the dispatch table
 
 |
-| ``$ nixt tbl > nixt/lookup.py``
+| ``$ nixt tbl > nixt/modules/tbl.py``
 |
 
 ``nixt`` can execute the ``hello`` command now.

@@ -129,7 +129,6 @@ def spl(txt) -> str:
     return [x for x in result if x]
 
 
-
 def __dir__():
     return (
         'debug',
