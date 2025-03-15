@@ -197,6 +197,8 @@ FORMATS = [
 
 def __dir__():
     return (
+        'Repeater',
+        'Timer',
         'extract_date',
         'get_day',
         'get_hour',

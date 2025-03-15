@@ -12,7 +12,6 @@ import time
 
 from .object import Default
 from .run    import Reactor
-from .utils  import parse
  
 
 STARTTIME = time.time()
@@ -130,6 +129,5 @@ def __dir__():
         'Fleet',
         'debug',
         'ndebug',
-        'parse',
         'spl'
     )
