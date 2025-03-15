@@ -11,28 +11,26 @@ import unittest
 
 
 import nixt
-import nixt.client
-import nixt.cmnd
-import nixt.disk
-import nixt.lookup
-import nixt.main
-import nixt.object
-import nixt.run
-import nixt.time
+import nixt.clients
+import nixt.command
+import nixt.lookups
+import nixt.objects
+import nixt.persist
+import nixt.runtime
+import nixt.timings
 
 
-from nixt.object import *
+from nixt.objects import *
 
 
 PACKAGE = [
-    'client',
-    'cmnd',
-    'disk',
-    'lookup',
-    'main',
-    'object',
-    'run',
-    'time'
+    'clients',
+    'command',
+    'lookups',
+    'objects',
+    'persist',
+    'runtime',
+    'timings'
 ]
 
 
