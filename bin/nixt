@@ -18,12 +18,12 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client, Main, Event, debug, nodebug, spl
-from nixt.command import Commands, command, parse, scan
-from nixt.modules import load, mods
+from nixt.clients import Client, Main, Event
+from nixt.modules import Commands, command, load, mods, scan
 from nixt.objects import dumps
 from nixt.persist import Workdir, pidname
 from nixt.runtime import Errors, Reactor, Thread, launch
+from nixt.utility import debug, nodebug, parse, spl
 
 
 p = os.path.join

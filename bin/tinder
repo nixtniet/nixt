@@ -17,13 +17,12 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import STARTTIME, Client, Event, Main
-from nixt.command import Commands, command, parse
-from nixt.modules import mods
+from nixt.clients import STARTTIME, Client, Event, Main, parse
+from nixt.modules import Commands, command, mods
 from nixt.objects import Object, fmt, keys
 from nixt.persist import Workdir, elapsed, skel
 from nixt.runtime import Errors, Reactor, Thread, later, launch
-
+from nixt.utility import spl
 
 Main.debug  = True
 Workdir.wdr = ".test"
@@ -36,6 +35,7 @@ percall   = 1
 
 
 events = []
+ignore = "dbg,"
 paylock = _thread.allocate_lock()
 
 
@@ -108,6 +108,8 @@ def payload(clt, cmds):
     if "s" in Main.opts:
         rand.shuffle(cmdz)
     for cmd in cmdz:
+        if cmd in spl(ignore):
+            continue
         examples = getattr(cmds, cmd)
         for example in examples:
             event = Event()
@@ -141,11 +143,6 @@ def main():
     global nrcommand
     parse(Main, " ".join(sys.argv[1:]))
     nrcommand = len(Commands.names) or 1
-    if "t" in Main.opts:
-        Reactor.threaded = True
-    if "b" in Main.opts:
-        Thread.bork = True
-        Reactor.threaded = False
     if "v" in Main.opts:
         banner()
     if "f" not in Main.opts:

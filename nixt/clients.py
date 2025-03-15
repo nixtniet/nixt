@@ -12,7 +12,8 @@ import time
 
 from .objects import Default
 from .runtime import Reactor
-
+from .utility import parse
+ 
 
 STARTTIME = time.time()
 
@@ -121,27 +122,6 @@ class Fleet:
                 bot.wait()
 
 
-def debug(*args):
-    for arg in args:
-        sys.stderr.write(str(arg))
-        sys.stderr.write("\n")
-        sys.stderr.flush()
-
-
-def nodebug():
-    with open('/dev/null', 'a+', encoding="utf-8") as ses:
-        os.dup2(ses.fileno(), sys.stderr.fileno())
-
-
-def spl(txt) -> str:
-    try:
-        result = txt.split(',')
-    except (TypeError, ValueError):
-        result = txt
-    return [x for x in result if x]
-
-
-
 def __dir__():
     return (
         'Client',
@@ -150,5 +130,6 @@ def __dir__():
         'Fleet',
         'debug',
         'ndebug',
+        'parse',
         'spl'
     )
