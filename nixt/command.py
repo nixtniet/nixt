@@ -8,12 +8,12 @@ import inspect
 import typing
 
 
-from .object  import Default
+from .objects import Default
 from .modules import load
 
 
 try:
-    from .lookup import NAMES
+    from .lookups import NAMES
 except Exception:
     NAMES = None
 

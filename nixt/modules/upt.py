@@ -7,8 +7,8 @@
 import time
 
 
-from ..client import STARTTIME
-from ..disk   import elapsed
+from ..clients import STARTTIME
+from ..persist import elapsed
 
 
 def upt(event):

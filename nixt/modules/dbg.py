@@ -7,7 +7,7 @@
 import time
 
 
-from ..client import Fleet
+from ..clients import Fleet
 
 
 def dbg(event):

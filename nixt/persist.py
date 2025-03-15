@@ -13,7 +13,7 @@ import time
 import typing
 
 
-from .object import Object, dumps, fqn, loads, search, update
+from .objects import Object, dumps, fqn, loads, search, update
 
 
 p    = os.path.join

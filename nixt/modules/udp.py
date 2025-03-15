@@ -11,9 +11,9 @@ import threading
 import time
 
 
-from ..client import Fleet
-from ..object import Object
-from ..run    import launch
+from ..clients import Fleet
+from ..objects import Object
+from ..runtime import launch
 
 
 DEBUG = True

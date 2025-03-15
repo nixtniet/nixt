@@ -4,13 +4,14 @@
 "client"
 
 
+import os
 import sys
 import threading
 import time
 
 
-from .object import Default
-from .run    import Reactor
+from .objects import Default
+from .runtime import Reactor
 
 
 STARTTIME = time.time()
@@ -22,7 +23,7 @@ outlock = threading.RLock()
 class Main(Default):
 
     debug   = False
-    ignore  = 'dbg,llm,mbx,rst,udp,web,wsd'
+    ignore  = 'llm,mbx,rst,udp,web,wsd'
     init    = ""
     md5     = False
     name    = __package__

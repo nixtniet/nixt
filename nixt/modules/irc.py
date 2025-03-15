@@ -15,12 +15,12 @@ import threading
 import time
 
 
-from ..client import Client, Main, Event, Fleet
-from ..client import debug as ldebug
-from ..cmnd   import command
-from ..disk   import ident, last, store, write
-from ..object import Default, Object, edit, fmt, keys
-from ..run    import later, launch
+from ..clients import Client, Main, Event, Fleet
+from ..clients import debug as ldebug
+from ..command import command
+from ..objects import Default, Object, edit, fmt, keys
+from ..persist import ident, last, store, write
+from ..runtime import later, launch
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]

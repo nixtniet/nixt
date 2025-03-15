@@ -12,12 +12,12 @@ import threading
 import types
 
 
-from ..client import Main, debug, spl
-from ..run    import later, launch
+from ..clients import Main, debug, spl
+from ..runtime import later, launch
 
 
 try:
-    from ..lookup import MD5
+    from ..lookups import MD5
 except Exception:
     MD5 = {}
 

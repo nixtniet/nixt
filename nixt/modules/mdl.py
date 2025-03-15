@@ -8,10 +8,10 @@ import datetime
 import time
 
 
-from ..client import Event, Fleet
-from ..disk   import elapsed
-from ..object import Object, construct, keys
-from ..time   import Repeater
+from ..clients import Event, Fleet
+from ..objects import Object, construct, keys
+from ..persist import elapsed
+from ..timings import Repeater
 
 
 DAY = 24*60*60

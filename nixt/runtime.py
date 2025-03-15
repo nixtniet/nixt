@@ -59,9 +59,6 @@ class Errors:
 
 class Reactor:
 
-    bork = False
-    threaded = False
-
     def __init__(self):
         self.cbs     = {}
         self.queue   = queue.Queue()
@@ -73,9 +70,6 @@ class Reactor:
             func = self.cbs.get(evt.type, None)
             if not func:
                 evt.ready()
-                return
-            if not Reactor.threaded:
-                func(evt)
                 return
             evt._thr = launch(
                               func,
@@ -99,8 +93,7 @@ class Reactor:
                 _thread.interrupt_main()
             except Exception as ex:
                 later(ex)
-                if Reactor.bork:
-                    _thread.interrupt_main()
+                _thread.interrupt_main()
         self.ready.set()
 
     def poll(self):
@@ -144,6 +137,7 @@ class Thread(threading.Thread):
             later(ex)
             if args and "ready" in dir(args[0]):
                 args[0].ready()
+            _thread.interrupt_main()
 
     def join(self, timeout=None) -> typing.Any:
         super().join(timeout)

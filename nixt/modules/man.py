@@ -4,7 +4,7 @@
 "man page"
 
 
-from ..client import Main
+from ..clients import Main
 
 
 TXT = """%s

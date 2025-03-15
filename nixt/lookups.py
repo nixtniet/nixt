@@ -5,7 +5,9 @@
 
 
 NAMES = {
+    "brk": "dbg",
     "cfg": "irc",
+    "dbg": "dbg",
     "dis": "mdl",
     "dne": "tdo",
     "dpl": "rss",
@@ -35,19 +37,20 @@ NAMES = {
 
 
 MD5 = {
-    "err": "a03975196578a5b9b7fb455a637f465a",
-    "flt": "f56c2016cad990bb24e448ec2ef861f0",
-    "fnd": "dc9e99e127b17b54eac34e1dfae36b17",
-    "irc": "6b81ced3cd172be85968fa26605a958b",
-    "log": "6100d6513bb84318b91693ee3ae2791b",
-    "man": "aa9c5df53602a03aba8ee29a38460994",
-    "mdl": "256e959ac9fbd75c3e1b9a07bbdcc697",
+    "dbg": "d800668fb9c7cf9bc78f4441f3ad7ba7",
+    "err": "b61d8cc4e0d4538467891d61edc1313a",
+    "flt": "3d72750becd5ade22650ea778225b05b",
+    "fnd": "4fc28252221ec33d69eb1a556a6a9166",
+    "irc": "c53d81fa1e4558f97c15624507d48580",
+    "log": "3e7abd19217645a68d3081aea56750ac",
+    "man": "2c313973698f8b1de5f6ba06962e7718",
+    "mdl": "b37cd5ed9673758ee9e297d9aee6ca0d",
     "mod": "82d9b50b3a2a446fbb857de7192b8f28",
     "req": "a0013d5e8582b1cb56854d17e9c66a95",
-    "rss": "88c45567cda948c8203a182fc46cbd9a",
+    "rss": "0dee9b7e458d6dab13170acef9a03315",
     "slg": "01ffe5fb93617a6a870882e074155846",
-    "tdo": "453b653e8ce2d39a04719a31b0d9411d",
-    "thr": "f413582c20c0adec4ee03d2f1fb21054",
-    "tmr": "863f49c3a5a816c24940c55a7c2e7c6d",
-    "upt": "67c0f6e5c6665539424c128027f31b96",
+    "tdo": "25c9ab21c0b64f6d8bc53dbbd6581c77",
+    "thr": "9200d88331c411a819fa9b2c40d8599c",
+    "tmr": "7ecbbc1febe1c82ae0b2f18b1e24c53e",
+    "upt": "c6445b996f9873a9436bc8450ea36c56",
 }

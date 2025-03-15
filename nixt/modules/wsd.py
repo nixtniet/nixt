@@ -1,7 +1,18 @@
 # This file is placed in the Public Domain.
 
 
-"""| wijsheid, wijs !
+"wijs, wijsheid, wijs!"
+
+from random import SystemRandom
+
+
+rand = SystemRandom()
+
+def wsd(event):
+    event.reply(rand.choice(TXT.split("\n")).strip()[2:])
+
+
+TXT = """| wijsheid, wijs !
 
 | OVERDRACHT
 | ==========
@@ -182,13 +193,3 @@
 | duiding
 | coding
 """
-
-
-from random import SystemRandom
-
-
-rand = SystemRandom()
-
-
-def wsd(event):
-    event.reply(rand.choice(__doc__.split("\n")).strip()[2:])
