@@ -22,7 +22,7 @@ from nixt.client  import Client, Main, Event
 from nixt.object  import dumps
 from nixt.disk    import Workdir, pidname
 from nixt.modules import Commands, command, load, mods, scan
-from nixt.run     import Errors, Reactor, Thread, launch
+from nixt.run     import Errors, launch
 from nixt.utils   import debug, nodebug, parse, spl
 
 
@@ -301,7 +301,7 @@ def wrapped(func):
         output("")
     if "v" in Main.opts:
         for exc in Errors.errors:
-           debug(Errors.format(exc))
+            debug(Errors.format(exc))
 
 
 def wrap(func):

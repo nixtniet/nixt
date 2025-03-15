@@ -9,9 +9,10 @@ import os
 import time
 
 
-from ..disk   import elapsed, find, ident, store, write
+from ..disk   import find, ident, store, write
 from ..object import Object, fmt, keys, update
 from ..time   import extract_date
+from ..utils  import elapsed
 
 
 class Email(Object):
@@ -19,9 +20,6 @@ class Email(Object):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.text = ""
-
-
-"utilities"
 
 
 def todate(date):
@@ -117,9 +115,6 @@ def mbx(event):
         nr += 1
     if nr:
         event.reply("ok %s" % nr)
-
-
-"data"
 
 
 MONTH = {

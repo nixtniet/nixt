@@ -8,10 +8,11 @@ import time as ttime
 
 
 from ..client import Event, Fleet
-from ..disk   import elapsed, find, ident, store, write
+from ..disk   import find, ident, store, write
 from ..object import update
 from ..run    import launch
 from ..time   import NoDate, Timer, get_day, get_hour, to_day, today
+from ..utils  import elapsed
 
 
 def init():
