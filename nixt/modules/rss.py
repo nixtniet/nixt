@@ -22,7 +22,8 @@ from urllib.parse import quote_plus, urlencode
 from ..client import Fleet
 from ..disk   import find, fntime, ident, last, store, write
 from ..object import Object, fmt, update
-from ..run    import Repeater, launch
+from ..thread import launch
+from ..time   import Repeater
 from ..utils  import elapsed, spl
 
 

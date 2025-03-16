@@ -8,9 +8,11 @@ import threading
 import time
 
 
-from ..client import STARTTIME
 from ..object import Object, update
 from ..utils  import elapsed
+
+
+from . import STARTTIME
 
 
 def thr(event):

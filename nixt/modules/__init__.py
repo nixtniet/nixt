@@ -10,12 +10,14 @@ import inspect
 import hashlib
 import os
 import threading
+import time
 import types
 import typing
 
 
+from ..error  import later
+from ..fleet  import Fleet
 from ..object import Default
-from ..run    import later
 from ..utils  import debug, spl
 
 
@@ -23,6 +25,9 @@ try:
     from .tbl import NAMES, MD5
 except Exception:
     NAMES = MD5 = {}
+
+
+STARTTIME = time.time()
 
 
 path = f"{os.path.dirname(__file__)}"
@@ -81,7 +86,7 @@ def command(evt) -> None:
     func = Commands.get(evt.cmd)
     if func:
         func(evt)
-        evt.display()
+        Fleet.display(evt)
     evt.ready()
 
 
@@ -216,6 +221,7 @@ def modules(path) -> [str]:
 
 def __dir__():
     return (
+        'STARTTIME',
         'Commands',
         'check',
         'command',
