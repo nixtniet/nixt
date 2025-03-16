@@ -4,6 +4,7 @@
 "locate objects"
 
 
+import datetime
 import os
 import pathlib
 import time
@@ -11,7 +12,7 @@ import typing
 
 
 from .disk   import read
-from .object import Object
+from .object import Object, fqn, search, update
 
 
 p = os.path.join

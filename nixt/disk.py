@@ -6,9 +6,13 @@
 
 import json
 import pathlib
+import threading
 
 
 from .object import loads, dumps, update
+
+
+lock = threading.RLock()
 
 
 class DecodeError(Exception):
@@ -35,7 +39,6 @@ def write(obj, pth):
     with lock:
         cdir(pth)
         txt = dumps(obj, indent=4)
-        Cache.objs[pth] = obj
         with open(pth, 'w', encoding='utf-8') as ofile:
             ofile.write(txt)
     return pth

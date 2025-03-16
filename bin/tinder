@@ -18,7 +18,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client  import Client
-from nixt.disk    import Workdir, skel
+from nixt.find    import Workdir, skel
 from nixt.error   import Errors, later
 from nixt.event   import Event
 from nixt.modules import STARTTIME, Main, Commands, command, mods, parse
