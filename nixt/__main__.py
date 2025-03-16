@@ -18,8 +18,8 @@ sys.path.insert(0, os.getcwd())
 
 
 from .client  import Client
-from .disk    import Workdir, pidname
 from .error   import Errors
+from .find    import Workdir, pidname
 from .event   import Event
 from .modules import Commands, Main, command, load, mods, parse, scan
 from .object  import dumps
@@ -320,9 +320,12 @@ def wrap(func):
 
 
 def main():
+    if check("a"):
+        mods()
     if check("v"):
         setattr(Main.opts, "v", True)
         enable()
+
     if check("c"):
         wrap(console)
     elif check("d"):
