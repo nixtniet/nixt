@@ -114,7 +114,7 @@ class Timer:
         self.timer  = None
 
     def run(self) -> None:
-        self.state["latest"] = ttime.time()
+        self.state["latest"] = time.time()
         launch(self.func, *self.args)
 
     def start(self) -> None:
@@ -123,8 +123,8 @@ class Timer:
         timer.sleep  = self.sleep
         timer.state  = self.state
         timer.func   = self.func
-        timer.state["starttime"] = ttime.time()
-        timer.state["latest"]    = ttime.time()
+        timer.state["starttime"] = time.time()
+        timer.state["latest"]    = time.time()
         timer.start()
         self.timer   = timer
 

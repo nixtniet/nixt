@@ -10,7 +10,7 @@ import time
 
 from ..client import Event, Fleet
 from ..object import Object, construct, keys
-from ..time   import Repeater
+from ..run    import Repeater
 from ..utils  import elapsed
 
 
