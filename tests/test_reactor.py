@@ -7,9 +7,9 @@
 import unittest
 
 
-from nixt.client  import Event
+from nixt.event   import Event
 from nixt.modules import command
-from nixt.run     import Reactor
+from nixt.reactor import Reactor
 
 
 hdl = Reactor()
