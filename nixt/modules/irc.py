@@ -22,7 +22,7 @@ from ..run    import later, launch
 from ..utils  import debug as ldebug
 
 
-from . import command
+from . import Main, command
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]

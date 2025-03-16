@@ -14,7 +14,7 @@ import types
 import typing
 
 
-from ..client import Main
+from ..object import Default
 from ..run    import later
 from ..utils  import debug, parse, spl
 
@@ -36,6 +36,17 @@ loadlock = threading.RLock()
 class MD5Error(Exception):
 
     pass
+
+
+class Main(Default):
+
+    debug   = False
+    ignore  = 'dbg,llm,mbx,rst,udp,web,wsd'
+    init    = ""
+    md5     = True
+    name    = __package__
+    opts    = Default()
+    verbose = False
 
 
 class Commands:

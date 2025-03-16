@@ -18,17 +18,6 @@ STARTTIME = time.time()
 outlock = threading.RLock()
 
 
-class Main(Default):
-
-    debug   = False
-    ignore  = 'dbg,llm,mbx,rst,udp,web,wsd'
-    init    = ""
-    md5     = True
-    name    = __package__
-    opts    = Default()
-    verbose = False
-
-
 class Client(Reactor):
 
     def __init__(self):

@@ -18,10 +18,10 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.client  import Client, Main, Event
+from nixt.client  import Client, Event
 from nixt.object  import dumps
 from nixt.disk    import Workdir, pidname
-from nixt.modules import Commands, command, load, mods, scan
+from nixt.modules import Commands, Main, command, load, mods, scan
 from nixt.run     import Errors, launch
 from nixt.utils   import debug, nodebug, parse, spl
 
