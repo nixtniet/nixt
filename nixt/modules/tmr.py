@@ -12,7 +12,7 @@ from ..event  import Event
 from ..fleet  import Fleet
 from ..object import update
 from ..thread import launch
-from ..time   import Timer
+from ..timer  import Timer
 from ..utils  import NoDate, get_day, get_hour, to_day, today
 
 

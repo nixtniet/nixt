@@ -23,7 +23,7 @@ from ..client import Fleet
 from ..disk   import find, fntime, ident, last, store, write
 from ..object import Object, fmt, update
 from ..thread import launch
-from ..time   import Repeater
+from ..timer  import Repeater
 from ..utils  import elapsed, spl
 
 
