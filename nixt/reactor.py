@@ -6,10 +6,11 @@
 
 import queue
 import threading
+import _thread
 
 
 from .error  import later
-from .thread import launch
+from .thread import launch, name
 
 
 lock = threading.RLock()
@@ -74,7 +75,6 @@ class Reactor:
 
     def wait(self) -> None:
         self.ready.wait()
-
 
 
 def __dir__():

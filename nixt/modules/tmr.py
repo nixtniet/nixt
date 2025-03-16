@@ -4,22 +4,23 @@
 "timers"
 
 
-import time as ttime
+import time
 
 
-from ..client import Event, Fleet
 from ..disk   import find, ident, store, write
+from ..event  import Event
+from ..fleet  import Fleet
 from ..object import update
-from ..run    import launch
-from ..time   import NoDate, Timer, get_day, get_hour, to_day, today
-from ..utils  import elapsed
+from ..thread import launch
+from ..time   import Timer
+from ..utils  import NoDate, get_day, get_hour, to_day, today
 
 
 def init():
     for _fn, obj in find("timer"):
         if "time" not in dir(obj):
             continue
-        diff = float(obj.time) - ttime.time()
+        diff = float(obj.time) - time.time()
         if diff > 0:
             evt = Event()
             update(evt, obj)
@@ -32,7 +33,7 @@ def tmr(event):
     if not event.rest:
         nmr = 0
         for _fn, obj in find('timer'):
-            lap = float(obj.time) - ttime.time()
+            lap = float(obj.time) - time.time()
             if lap > 0:
                 event.reply(f'{nmr} {obj.txt} {elapsed(lap)}')
                 nmr += 1
@@ -51,7 +52,7 @@ def tmr(event):
         else:
             line += word + " "
     if seconds:
-        target = ttime.time() + seconds
+        target = time.time() + seconds
     else:
         try:
             target = get_day(event.rest)
@@ -60,11 +61,11 @@ def tmr(event):
         hour =  get_hour(event.rest)
         if hour:
             target += hour
-    if not target or ttime.time() > target:
+    if not target or time.time() > target:
         event.reply("already passed given time.")
         return result
     event.time = target
-    diff = target - ttime.time()
+    diff = target - time.time()
     event.reply("ok " +  elapsed(diff))
     del event.args
     event.reply(event.rest)
