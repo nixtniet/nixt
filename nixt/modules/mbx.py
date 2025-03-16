@@ -9,10 +9,10 @@ import os
 import time
 
 
-from ..disk   import find, ident, store, write
+from ..disk   import write
+from ..find   import find, ident, store
 from ..object import Object, fmt, keys, update
-from ..time   import extract_date
-from ..utils  import elapsed
+from ..utils  import elapsed, extract_date
 
 
 class Email(Object):
