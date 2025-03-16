@@ -44,7 +44,7 @@ class Main(Default):
     ignore  = 'dbg,llm,mbx,rst,udp,web,wsd'
     init    = ""
     md5     = True
-    name    = __package__
+    name    = __package__.split(".")[0]
     opts    = Default()
     verbose = False
 
