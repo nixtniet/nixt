@@ -15,8 +15,8 @@ import nixt.client
 import nixt.disk
 import nixt.modules
 import nixt.object
+import nixt.parse
 import nixt.run
-import nixt.time
 import nixt.utils
 
 
@@ -25,11 +25,11 @@ from nixt.object import *
 
 PACKAGE = [
     'client',
+    'disk',
     'modules',
     'object',
-    'disk',
+    'parse',
     'run',
-    'time',
     'utils'
 ]
 

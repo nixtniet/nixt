@@ -15,8 +15,9 @@ import threading
 import time
 
 
-from ..client import Client, Event, Fleet
+from ..client import Client, Fleet
 from ..disk   import ident, last, store, write
+from ..event  import Event
 from ..object import Default, Object, edit, fmt, keys
 from ..run    import later, launch
 from ..utils  import debug as ldebug

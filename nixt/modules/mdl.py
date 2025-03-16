@@ -8,7 +8,8 @@ import datetime
 import time
 
 
-from ..client import Event, Fleet
+from ..client import Fleet
+from ..event  import Event
 from ..object import Object, construct, keys
 from ..run    import Repeater
 from ..utils  import elapsed
