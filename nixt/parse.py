@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"time"
+"parsing"
 
 
 import datetime
@@ -10,7 +10,8 @@ import threading
 import time as ttime
 
 
-from .run import later, launch, name
+from .object import Default
+from .run    import later, launch, name
 
 
 class NoDate(Exception):
@@ -18,42 +19,66 @@ class NoDate(Exception):
     pass
 
 
-class Timer:
+def parse(obj, txt=None) -> None:
+    if txt is None:
+        if "txt" in dir(obj):
+            txt = obj.txt
+        else:
+            txt = ""
+    args = []
+    obj.args   = []
+    obj.cmd    = ""
+    obj.gets   = Default()
+    obj.index  = None
+    obj.mod    = ""
+    obj.opts   = ""
+    obj.result = {}
+    obj.sets   = Default()
+    obj.silent = Default()
+    obj.txt    = txt or ""
+    obj.otxt   = obj.txt
+    _nr = -1
+    for spli in obj.otxt.split():
+        if spli.startswith("-"):
+            try:
+                obj.index = int(spli[1:])
+            except ValueError:
+                obj.opts += spli[1:]
+            continue
+        if "-=" in spli:
+            key, value = spli.split("-=", maxsplit=1)
+            setattr(obj.silent, key, value)
+            setattr(obj.gets, key, value)
+            continue
+        elif "==" in spli:
+            key, value = spli.split("==", maxsplit=1)
+            setattr(obj.gets, key, value)
+            continue
+        if "=" in spli:
+            key, value = spli.split("=", maxsplit=1)
+            if key == "mod":
+                if obj.mod:
+                    obj.mod += f",{value}"
+                else:
+                    obj.mod = value
+                continue
+            setattr(obj.sets, key, value)
+            continue
+        _nr += 1
+        if _nr == 0:
+            obj.cmd = spli
+            continue
+        args.append(spli)
+    if args:
+        obj.args = args
+        obj.txt  = obj.cmd or ""
+        obj.rest = " ".join(obj.args)
+        obj.txt  = obj.cmd + " " + obj.rest
+    else:
+        obj.txt = obj.cmd or ""
 
-    def __init__(self, sleep, func, *args, thrname=None, **kwargs):
-        self.args   = args
-        self.func   = func
-        self.kwargs = kwargs
-        self.sleep  = sleep
-        self.name   = thrname or kwargs.get("name", name(func))
-        self.state  = {}
-        self.timer  = None
 
-    def run(self) -> None:
-        self.state["latest"] = ttime.time()
-        launch(self.func, *self.args)
-
-    def start(self) -> None:
-        timer = threading.Timer(self.sleep, self.run)
-        timer.name   = self.name
-        timer.sleep  = self.sleep
-        timer.state  = self.state
-        timer.func   = self.func
-        timer.state["starttime"] = ttime.time()
-        timer.state["latest"]    = ttime.time()
-        timer.start()
-        self.timer   = timer
-
-    def stop(self) -> None:
-        if self.timer:
-            self.timer.cancel()
-
-
-class Repeater(Timer):
-
-    def run(self) -> None:
-        launch(self.start)
-        super().run()
+"time"
 
 
 def extract_date(daystr):
@@ -168,6 +193,9 @@ def today():
     return str(datetime.datetime.today()).split()[0]
 
 
+"data"
+
+
 MONTHS = [
     'Bo',
     'Jan',
@@ -197,12 +225,11 @@ FORMATS = [
 
 def __dir__():
     return (
-        'Repeater',
-        'Timer',
         'extract_date',
         'get_day',
         'get_hour',
         'get_time',
+        'parse',
         'parse_time',
         'to_day',
         'today'

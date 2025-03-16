@@ -22,8 +22,9 @@ from nixt.client  import Client, Event
 from nixt.object  import dumps
 from nixt.disk    import Workdir, pidname
 from nixt.modules import Commands, Main, command, load, mods, scan
+from nixt.parse   import parse
 from nixt.run     import Errors, launch
-from nixt.utils   import debug, nodebug, parse, spl
+from nixt.utils   import debug, nodebug, spl
 
 
 p = os.path.join

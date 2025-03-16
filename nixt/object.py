@@ -28,9 +28,6 @@ class Default(Object):
         return self.__dict__.get(key, "")
 
 
-"methods"
-
-
 def construct(obj, *args, **kwargs) -> None:
     if args:
         val = args[0]

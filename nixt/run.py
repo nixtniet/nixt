@@ -15,46 +15,6 @@ import _thread
 lock = threading.RLock()
 
 
-class Errors:
-
-    name = __file__.rsplit("/", maxsplit=2)[-2]
-    errors = []
-
-    @staticmethod
-    def format(exc) -> str:
-        exctype, excvalue, trb = type(exc), exc, exc.__traceback__
-        trace = traceback.extract_tb(trb)
-        result = ""
-        for i in trace:
-            fname = i[0]
-            if fname.endswith(".py"):
-                fname = fname[:-3]
-            linenr = i[1]
-            plugfile = fname.split("/")
-            mod = []
-            for i in plugfile[::-1]:
-                mod.append(i)
-                if Errors.name in i or "bin" in i:
-                    break
-            ownname = '.'.join(mod[::-1])
-            if ownname.endswith("__"):
-                continue
-            if ownname.startswith("<"):
-                continue
-            result += f"{ownname}:{linenr} "
-        del trace
-        res = f"{exctype} {result[:-1]} {excvalue}"
-        return res
-
-    @staticmethod
-    def full(exc) -> str:
-        return traceback.format_exception(
-            type(exc),
-            exc,
-            exc.__traceback__
-        )
-
-
 class Reactor:
 
     def __init__(self):
@@ -142,7 +102,82 @@ class Thread(threading.Thread):
         return self.result
 
 
-"utilititeS"
+class Timer:
+
+    def __init__(self, sleep, func, *args, thrname=None, **kwargs):
+        self.args   = args
+        self.func   = func
+        self.kwargs = kwargs
+        self.sleep  = sleep
+        self.name   = thrname or kwargs.get("name", name(func))
+        self.state  = {}
+        self.timer  = None
+
+    def run(self) -> None:
+        self.state["latest"] = ttime.time()
+        launch(self.func, *self.args)
+
+    def start(self) -> None:
+        timer = threading.Timer(self.sleep, self.run)
+        timer.name   = self.name
+        timer.sleep  = self.sleep
+        timer.state  = self.state
+        timer.func   = self.func
+        timer.state["starttime"] = ttime.time()
+        timer.state["latest"]    = ttime.time()
+        timer.start()
+        self.timer   = timer
+
+    def stop(self) -> None:
+        if self.timer:
+            self.timer.cancel()
+
+
+class Repeater(Timer):
+
+    def run(self) -> None:
+        launch(self.start)
+        super().run()
+
+
+class Errors:
+
+    name = __file__.rsplit("/", maxsplit=2)[-2]
+    errors = []
+
+    @staticmethod
+    def format(exc) -> str:
+        exctype, excvalue, trb = type(exc), exc, exc.__traceback__
+        trace = traceback.extract_tb(trb)
+        result = ""
+        for i in trace:
+            fname = i[0]
+            if fname.endswith(".py"):
+                fname = fname[:-3]
+            linenr = i[1]
+            plugfile = fname.split("/")
+            mod = []
+            for i in plugfile[::-1]:
+                mod.append(i)
+                if Errors.name in i or "bin" in i:
+                    break
+            ownname = '.'.join(mod[::-1])
+            if ownname.endswith("__"):
+                continue
+            if ownname.startswith("<"):
+                continue
+            result += f"{ownname}:{linenr} "
+        del trace
+        res = f"{exctype} {result[:-1]} {excvalue}"
+        return res
+
+    @staticmethod
+    def full(exc) -> str:
+        return traceback.format_exception(
+            type(exc),
+            exc,
+            exc.__traceback__
+        )
 
 
 def later(exc) -> None:
@@ -176,8 +211,10 @@ def __dir__():
     return (
         'Errors',
         'Reactor',
+        'Repeater',
         'Thread',
+        'Timer',
         'later',
         'launch',
-        'name',
+        'name'
     )

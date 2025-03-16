@@ -111,10 +111,6 @@ class Fleet:
 def __dir__():
     return (
         'Client',
-        'Config',
         'Event',
-        'Fleet',
-        'debug',
-        'ndebug',
-        'spl'
+        'Fleet'
     )

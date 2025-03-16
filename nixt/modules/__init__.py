@@ -15,8 +15,9 @@ import typing
 
 
 from ..object import Default
+from ..parse  import parse
 from ..run    import later
-from ..utils  import debug, parse, spl
+from ..utils  import debug, spl
 
 
 try:
