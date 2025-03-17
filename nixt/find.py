@@ -11,72 +11,13 @@ import time
 import typing
 
 
-from .disk   import read
-from .object import Object, fqn, search, update
+from .cache   import Cache
+from .disk    import read
+from .object  import Object, fqn, search, update
+from .workdir import long, store
 
 
 p = os.path.join
-
-
-class Workdir:
-
-    name = __file__.rsplit(os.sep, maxsplit=2)[-2]
-    wdr  = ""
-
-
-class Cache:
-
-    objs = {}
-
-    @staticmethod
-    def add(path, obj) -> None:
-        Cache.objs[path] = obj
-
-    @staticmethod
-    def get(path) -> typing.Any:
-        return Cache.objs.get(path, None)
-
-    @staticmethod
-    def typed(matcher) -> [typing.Any]:
-        for key in Cache.objs:
-            if matcher not in key:
-                continue
-            yield Cache.objs.get(key)
-
-
-"paths"
-
-
-def long(name) -> str:
-    split = name.split(".")[-1].lower()
-    res = name
-    for names in types():
-        if split == names.split(".")[-1].lower():
-            res = names
-            break
-    return res
-
-
-def pidname(name) -> str:
-    return p(Workdir.wdr, f"{name}.pid")
-
-
-def skel() -> str:
-    path = pathlib.Path(store())
-    path.mkdir(parents=True, exist_ok=True)
-    return path
-
-
-def store(pth="") -> str:
-    return p(Workdir.wdr, "store", pth)
-
-
-def strip(pth, nmr=2) -> str:
-    return os.sep.join(pth.split(os.sep)[-nmr:])
-
-
-def types() -> [str]:
-    return os.listdir(store())
 
 
 "find"
@@ -145,14 +86,30 @@ def last(obj, selector=None) -> Object:
     return res
 
 
+def search(obj, selector, matching=None) -> bool:
+    res = False
+    if not selector:
+        return res
+    for key, value in items(selector):
+        val = getattr(obj, key, None)
+        if not val:
+            continue
+        if matching and value == val:
+            res = True
+        elif str(value).lower() in str(val).lower() or value == "match":
+            res = True
+        else:
+            res = False
+            break
+    return res
+
+
 def __dir__():
     return (
-        'Workdir',
         'fns',
         'fntime',
         'find',
         'last',
         'ident',
-        'pidname',
-        'types'
+        'search'
     )

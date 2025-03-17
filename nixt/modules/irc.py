@@ -15,15 +15,15 @@ import threading
 import time
 
 
-from ..client import Client, Fleet
-from ..disk   import write
-from ..error  import later
-from ..event  import Event
-from ..find   import ident, last, store
-from ..object import Default, Object, edit, fmt, keys
-from ..thread import launch
-from ..utils  import debug as ldebug
-
+from ..client  import Client, Fleet
+from ..disk    import write
+from ..error   import later
+from ..event   import Event
+from ..find    import ident, last
+from ..object  import Default, Object, edit, fmt, keys
+from ..thread  import launch
+from ..utils   import debug as ldebug
+from ..workdir import store
 
 from . import Main, command
 

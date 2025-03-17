@@ -18,7 +18,6 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client  import Client
-from nixt.find    import Workdir, skel
 from nixt.error   import Errors, later
 from nixt.event   import Event
 from nixt.modules import STARTTIME, Main, Commands, command, mods, parse
@@ -26,6 +25,7 @@ from nixt.object  import Object, fmt, keys
 from nixt.reactor import Reactor
 from nixt.thread  import Thread, launch
 from nixt.utils   import elapsed, spl
+from nixt.workdir import Workdir, skel
 
 
 Main.debug  = True
