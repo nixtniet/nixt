@@ -21,8 +21,12 @@ from ..object import Default
 from ..utils  import debug, spl
 
 
+md5sum = ""
+
+
 try:
-    from .tbl import NAMES, MD5
+    if not md5sum or check("tbl", md5sum):
+        from .tbl import NAMES, MD5
 except Exception:
     NAMES = MD5 = {}
 
@@ -176,15 +180,17 @@ def mods(names="") -> [types.ModuleType]:
     return res
 
 
-def check(name):
+def check(name, md5sum=""):
+    print(Main.md5, name, md5sum)
     if not Main.md5:
         return True
     mname = f"{pname}.{name}"
     spec = importlib.util.find_spec(mname)
     if not spec:
+        debug(f"can't find {mname}")
         return False
     path = spec.origin
-    if md5(path) == MD5.get(name, None):
+    if (md5sum or md5(path)) == MD5.get(name, None):
         return True
     debug(f"{name} md5 doesn't match")
     return False

@@ -218,6 +218,7 @@ def control():
     Workdir.wdr = os.path.expanduser(f"~/.{Main.name}")
     enable()
     Commands.add(cmd)
+    Commands.add(md5)
     Commands.add(srv)
     Commands.add(tbl)
     parse(Main, " ".join(sys.argv[1:]))
@@ -248,6 +249,11 @@ def cmd(event):
     event.reply(",".join(sorted([x for x in Commands.names if x not in Main.ignore])))
 
 
+def md5sum(event):
+    table = mods("tbl")[0]
+    event.reply(f"check {md5(table)}")
+
+
 def srv(event):
     import getpass
     name = getpass.getuser()
@@ -271,6 +277,7 @@ def tbl(event):
     event.reply("MD5 = {")
     for mod in mods():
         event.reply(f'    "{mod.__name__.split(".")[-1]}": "{md5(mod)}",')
+    md5sum(event)
     event.reply("}")
     event.reply
 
