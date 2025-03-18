@@ -136,7 +136,7 @@ def inits(names) -> [types.ModuleType]:
     return mods
 
 
-def md5(mod):
+def md5sum(mod):
     with open(mod.__file__, "r", encoding="utf-8") as file:
         txt = file.read().encode("utf-8")
         return str(hashlib.md5(txt).hexdigest())
@@ -249,9 +249,10 @@ def cmd(event):
     event.reply(",".join(sorted([x for x in Commands.names if x not in Main.ignore])))
 
 
-def md5sum(event):
+def md5(event):
     table = mods("tbl")[0]
-    event.reply(f"check {md5(table)}")
+    print(table)
+    event.reply(md5sum(table))
 
 
 def srv(event):
@@ -276,10 +277,8 @@ def tbl(event):
     event.reply("")
     event.reply("MD5 = {")
     for mod in mods():
-        event.reply(f'    "{mod.__name__.split(".")[-1]}": "{md5(mod)}",')
-    md5sum(event)
+        event.reply(f'    "{mod.__name__.split(".")[-1]}": "{md5sum(mod)}",')
     event.reply("}")
-    event.reply
 
 
 "data"

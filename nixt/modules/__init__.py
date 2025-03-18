@@ -18,24 +18,25 @@ import typing
 from ..error  import later
 from ..fleet  import Fleet
 from ..object import Default
-from ..utils  import debug, spl
+from ..utils  import debug, md5sum, spl
 
 
-md5sum = ""
+checksum = "599df56d6ce34c95ee4499a5e025c66f"
+
+
+path = f"{os.path.dirname(__file__)}"
+pname = f"{__package__}"
 
 
 try:
-    if not md5sum or check("tbl", md5sum):
+    pth = os.path.join(path, "tbl.py")
+    if not checksum or (md5sum(pth) == checksum):
         from .tbl import NAMES, MD5
 except Exception:
     NAMES = MD5 = {}
 
 
 STARTTIME = time.time()
-
-
-path = f"{os.path.dirname(__file__)}"
-pname = f"{__package__}"
 
 
 initlock = threading.RLock()
@@ -164,35 +165,14 @@ def scan(mod) -> None:
 "utilities"
 
 
-def mods(names="") -> [types.ModuleType]:
-    res = []
-    for nme in sorted(modules(path)):
-        if nme in spl(Main.ignore):
-            continue
-        if "__" in nme:
-            continue
-        if names and nme not in spl(names):
-            continue
-        mod = load(nme)
-        if not mod:
-            continue
-        res.append(mod)
-    return res
-
-
-def check(name, md5sum=""):
-    print(Main.md5, name, md5sum)
-    if not Main.md5:
-        return True
+def check(name, checksum=""):
     mname = f"{pname}.{name}"
     spec = importlib.util.find_spec(mname)
     if not spec:
-        debug(f"can't find {mname}")
         return False
     path = spec.origin
-    if (md5sum or md5(path)) == MD5.get(name, None):
+    if md5sum(path) == (checksum or MD5.get(name, None)):
         return True
-    debug(f"{name} md5 doesn't match")
     return False
 
 
@@ -211,10 +191,22 @@ def load(name) -> types.ModuleType:
         return module
 
 
-def md5(path):
-    with open(path, "r", encoding="utf-8") as file:
-        txt = file.read().encode("utf-8")
-        return str(hashlib.md5(txt).hexdigest())
+
+
+def mods(names="") -> [types.ModuleType]:
+    res = []
+    for nme in sorted(modules(path)):
+        if nme in spl(Main.ignore):
+            continue
+        if "__" in nme:
+            continue
+        if names and nme not in spl(names):
+            continue
+        mod = load(nme)
+        if not mod:
+            continue
+        res.append(mod)
+    return res
 
 
 def modules(mdir="") -> [str]:

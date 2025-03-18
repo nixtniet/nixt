@@ -5,6 +5,7 @@
 
 
 import datetime
+import hashlib
 import os
 import re
 import sys
@@ -54,6 +55,11 @@ def elapsed(seconds, short=True) -> str:
     txt = txt.strip()
     return txt
 
+
+def md5sum(path):
+    with open(path, "r", encoding="utf-8") as file:
+        txt = file.read().encode("utf-8")
+        return str(hashlib.md5(txt).hexdigest())
 
 
 def spl(txt) -> str:
@@ -229,6 +235,7 @@ def __dir__():
         'get_day',
         'get_hour',
         'get_time',
+        'md5sum',
         'nodebug',
         'parse_time',
         'to_day',
