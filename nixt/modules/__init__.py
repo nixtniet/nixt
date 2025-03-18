@@ -21,11 +21,14 @@ from ..object import Default
 from ..utils  import debug, md5sum, spl
 
 
-checksum = "599df56d6ce34c95ee4499a5e025c66f"
+checksum = "f99f554cf59a493a009760ce9e9bc76f"
 
 
 path = f"{os.path.dirname(__file__)}"
 pname = f"{__package__}"
+
+
+NAMES = MD5 = {}
 
 
 try:
@@ -33,7 +36,7 @@ try:
     if not checksum or (md5sum(pth) == checksum):
         from .tbl import NAMES, MD5
 except Exception:
-    NAMES = MD5 = {}
+    pass
 
 
 STARTTIME = time.time()

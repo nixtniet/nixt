@@ -251,7 +251,6 @@ def cmd(event):
 
 def md5(event):
     table = mods("tbl")[0]
-    print(table)
     event.reply(md5sum(table))
 
 

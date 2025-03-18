@@ -17,6 +17,7 @@ from ..timer   import Timer
 from ..utils   import NoDate, elapsed, get_day, get_hour, to_day, today
 from ..workdir import store
 
+
 def init():
     for _fn, obj in find("timer"):
         if "time" not in dir(obj):

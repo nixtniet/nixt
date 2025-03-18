@@ -30,7 +30,7 @@ class Thread(threading.Thread):
         try:
             self.result = func(*args)
         except Exception as ex:
-            later(ex)
+            later(ex, str(func))
             if args and "ready" in dir(args[0]):
                 args[0].ready()
             _thread.interrupt_main()
