@@ -9,7 +9,7 @@ import pathlib
 import threading
 
 
-from .object import loads, dumps, update
+from .object import load, dump, update
 
 
 lock = threading.RLock()
@@ -29,7 +29,7 @@ def read(obj, pth):
     with lock:
         with open(pth, 'r', encoding='utf-8') as ofile:
             try:
-                obj2 = loads(ofile.read())
+                obj2 = load(ofile)
                 update(obj, obj2)
             except json.decoder.JSONDecodeError as ex:
                 raise DecodeError(pth) from ex
@@ -39,9 +39,8 @@ def read(obj, pth):
 def write(obj, pth):
     with lock:
         cdir(pth)
-        txt = dumps(obj, indent=4)
         with open(pth, 'w', encoding='utf-8') as ofile:
-            ofile.write(txt)
+            dump(obj, ofile, indent=4)
     return pth
 
 

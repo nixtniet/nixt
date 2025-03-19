@@ -18,6 +18,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client  import Client
+from nixt.error   import Errors
 from nixt.event   import Event
 from nixt.modules import STARTTIME, Main, Commands, command, mods, parse
 from nixt.object  import Object, fmt, keys
@@ -171,6 +172,8 @@ def main():
 
 if __name__ == "__main__":
     wrap(main)
+    for exc in Errors.errors:
+        print(Errors.format(exc))
     endtime = time.time()
     lap = elapsed(endtime-STARTTIME)
     percall = (endtime-STARTTIME)/(nrs*nrcommand)

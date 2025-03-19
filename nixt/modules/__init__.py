@@ -20,7 +20,7 @@ from ..object import Default
 from ..utils  import debug, md5sum, spl
 
 
-checksum = "9868c07cd93a35249a10f791cfc13687"
+checksum = "64878c531bcee4980eae300e23323de4"
 
 
 path = f"{os.path.dirname(__file__)}"

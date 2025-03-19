@@ -13,6 +13,7 @@ NAMES = {
     "dne": "tdo",
     "dpl": "rss",
     "eml": "mbx",
+    "err": "err",
     "exp": "rss",
     "flt": "flt",
     "fnd": "fnd",
@@ -42,6 +43,7 @@ NAMES = {
 
 MD5 = {
     "dbg": "3e8f37c77b8e0a68a3812b8f2d91673e",
+    "err": "c41b0a0b1aaaae11249a767e3fb365d4",
     "flt": "7657a391f5bc4ecc823c0dc248427ed1",
     "fnd": "abbf7f2601b5d14f4f80e87c25fbe4d0",
     "irc": "b65970704659bca5e8d759e555bb65e8",
@@ -58,7 +60,7 @@ MD5 = {
     "tbl": "d41d8cd98f00b204e9800998ecf8427e",
     "tdo": "ff882598f1958a571d68726a876dd66b",
     "thr": "e24a99fce3e81eff1fe58f78ff49ab5a",
-    "tmr": "2bb2efe9538ae265e218328855c07f19",
+    "tmr": "a920b43a7347f881de0ff83264e124e6",
     "udp": "0a14a64ed847a3e0a2d583dcec819661",
     "upt": "a673a80f2085ea2705a391c245c0ab57",
     "web": "093b007ee6369d23812c72c780b0b708",

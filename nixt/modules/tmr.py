@@ -71,7 +71,7 @@ def tmr(event):
     event.reply("ok " +  elapsed(diff))
     del event.args
     event.reply(event.rest)
-    timer = Timer(diff, event.display)
+    timer = Timer(diff, Fleet.display, event)
     update(timer, event)
     write(timer, store(ident(timer)))
     launch(timer.start)
