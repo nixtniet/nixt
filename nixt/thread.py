@@ -11,9 +11,6 @@ import typing
 import _thread
 
 
-from .error import later
-
-
 class Thread(threading.Thread):
 
     def __init__(self, func, thrname, *args, daemon=True, **kwargs):
@@ -27,13 +24,7 @@ class Thread(threading.Thread):
 
     def run(self) -> None:
         func, args = self.queue.get()
-        try:
-            self.result = func(*args)
-        except Exception as ex:
-            later(ex, str(func))
-            if args and "ready" in dir(args[0]):
-                args[0].ready()
-            _thread.interrupt_main()
+        self.result = func(*args)
 
     def join(self, timeout=None) -> typing.Any:
         super().join(timeout)

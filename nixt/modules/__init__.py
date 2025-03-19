@@ -15,13 +15,12 @@ import types
 import typing
 
 
-from ..error  import later
 from ..fleet  import Fleet
 from ..object import Default
 from ..utils  import debug, md5sum, spl
 
 
-checksum = "f99f554cf59a493a009760ce9e9bc76f"
+checksum = "7b3c02955a5b93459aae6b3572026660"
 
 
 path = f"{os.path.dirname(__file__)}"
@@ -35,8 +34,8 @@ try:
     pth = os.path.join(path, "tbl.py")
     if not checksum or (md5sum(pth) == checksum):
         from .tbl import NAMES, MD5
-except Exception:
-    pass
+except ImportError:
+     pass
 
 
 STARTTIME = time.time()
@@ -176,6 +175,7 @@ def check(name, checksum=""):
     path = spec.origin
     if md5sum(path) == (checksum or MD5.get(name, None)):
         return True
+    debug(f"{name} failed md5sum check")
     return False
 
 
@@ -184,13 +184,10 @@ def load(name) -> types.ModuleType:
         if name in Main.ignore:
             return
         module = None
-        try:
-            mname = f".{name}"
-            module = importlib.import_module(mname, pname)
-            if Main.debug:
-                module.DEBUG = True
-        except Exception as exc:
-            later(exc)
+        mname = f".{name}"
+        module = importlib.import_module(mname, pname)
+        if Main.debug:
+            module.DEBUG = True
         return module
 
 

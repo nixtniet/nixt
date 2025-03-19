@@ -17,7 +17,6 @@ import time
 
 from ..client  import Client, Fleet
 from ..disk    import write
-from ..error   import later
 from ..event   import Event
 from ..find    import ident, last
 from ..object  import Default, Object, edit, fmt, keys
@@ -246,8 +245,6 @@ class IRC(Client, Output):
                 BrokenPipeError
                ) as _ex:
             pass
-        except Exception as ex:
-            later(ex)
 
     def display(self, evt):
         for txt in evt.result:
@@ -279,7 +276,6 @@ class IRC(Client, Output):
                     OSError,
                     ConnectionResetError
                    ) as ex:
-                later(ex)
                 self.state.error = str(ex)
                 debug(str(ex))
             debug(f"sleeping {self.cfg.sleep} seconds")
@@ -415,7 +411,6 @@ class IRC(Client, Output):
             try:
                 self.some()
             except BlockingIOError as ex:
-                later(ex)
                 time.sleep(1.0)
                 return self.event(str(ex))
             except (
@@ -426,7 +421,6 @@ class IRC(Client, Output):
                     ConnectionResetError,
                     BrokenPipeError
                    ) as ex:
-                later(ex)
                 self.stop()
                 debug("handler stopped")
                 evt = self.event(str(ex))
@@ -453,7 +447,6 @@ class IRC(Client, Output):
                     ConnectionResetError,
                     BrokenPipeError
                    ) as ex:
-                later(ex)
                 self.stop()
                 return
         self.state.last = time.time()
@@ -461,10 +454,7 @@ class IRC(Client, Output):
 
     def reconnect(self):
         debug(f"reconnecting to {self.cfg.server}:{self.cfg.port}")
-        try:
-            self.disconnect()
-        except (ssl.SSLError, OSError) as ex:
-            later(ex)
+        self.disconnect()
         self.events.connected.clear()
         self.events.joined.clear()
         self.doconnect(self.cfg.server, self.cfg.nick, int(self.cfg.port))

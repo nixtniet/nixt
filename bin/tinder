@@ -18,7 +18,6 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client  import Client
-from nixt.error   import Errors, later
 from nixt.event   import Event
 from nixt.modules import STARTTIME, Main, Commands, command, mods, parse
 from nixt.object  import Object, fmt, keys
@@ -135,8 +134,6 @@ def wrap(function):
         function()
     except (KeyboardInterrupt, EOFError):
         pass
-    except Exception as ex:
-        later(ex)
     finally:
         if old3:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old3)
@@ -178,8 +175,4 @@ if __name__ == "__main__":
     lap = elapsed(endtime-STARTTIME)
     percall = (endtime-STARTTIME)/(nrs*nrcommand)
     if "v" in Main.opts:
-        if not list(Errors.errors):
-            print("no errors")
-        for exc in Errors.errors:
-            print(Errors.format(exc))
         print(f"total: {lap} nrs: {nrs} cmds: {nrcommand} call: {percall}")

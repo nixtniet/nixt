@@ -9,7 +9,6 @@ NAMES = {
     "dis": "mdl",
     "dne": "tdo",
     "dpl": "rss",
-    "err": "err",
     "exp": "rss",
     "flt": "flt",
     "fnd": "fnd",
@@ -35,10 +34,9 @@ NAMES = {
 
 
 MD5 = {
-    "err": "c41b0a0b1aaaae11249a767e3fb365d4",
     "flt": "7657a391f5bc4ecc823c0dc248427ed1",
     "fnd": "abbf7f2601b5d14f4f80e87c25fbe4d0",
-    "irc": "7fd4433ccc14ba471def0d935de61ff3",
+    "irc": "b65970704659bca5e8d759e555bb65e8",
     "log": "799118a89d0649453e30b23d2570ef02",
     "man": "1182aec1049fc74607eb9efd3e00d9d7",
     "mdl": "99a1e5441f6e8fcad3104a41f36f1a57",

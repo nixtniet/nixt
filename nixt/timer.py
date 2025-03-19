@@ -24,7 +24,7 @@ class Timer:
 
     def run(self) -> None:
         self.state["latest"] = time.time()
-        launch(self.func, *self.args)
+        self.func(*self.args)
 
     def start(self) -> None:
         timer = threading.Timer(self.sleep, self.run)

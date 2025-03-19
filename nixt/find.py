@@ -13,7 +13,7 @@ import typing
 
 from .cache   import Cache
 from .disk    import read
-from .object  import Object, fqn, search, update
+from .object  import Object, fqn, items, search, update
 from .workdir import long, store
 
 

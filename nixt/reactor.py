@@ -9,7 +9,6 @@ import threading
 import _thread
 
 
-from .error  import later
 from .thread import launch, name
 
 
@@ -30,29 +29,15 @@ class Reactor:
             if not func:
                 evt.ready()
                 return
-            evt._thr = launch(
-                              func,
-                              evt,
-                              name=(
-                                    evt.txt
-                                    and evt.txt.split()[0]
-                                   ) or name(func)
-
-                             )
+            func(evt)
 
     def loop(self) -> None:
         while not self.stopped.is_set():
-            try:
-                evt = self.poll()
-                if evt is None:
-                    break
-                evt.orig = repr(self)
-                self.callback(evt)
-            except (KeyboardInterrupt, EOFError):
-                _thread.interrupt_main()
-            except Exception as ex:
-                later(ex)
-                _thread.interrupt_main()
+            evt = self.poll()
+            if evt is None:
+                break
+            evt.orig = repr(self)
+            self.callback(evt)
         self.ready.set()
 
     def poll(self):

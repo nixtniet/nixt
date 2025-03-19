@@ -18,12 +18,11 @@ sys.path.insert(0, os.getcwd())
 
 
 from .client  import Client
-from .error   import Errors
 from .event   import Event
 from .modules import Commands, Main, command, load, mods, modules, parse, scan
 from .object  import dumps
 from .thread  import launch
-from .utils   import debug, nodebug, spl
+from .utils   import debug, spl
 from .workdir import Workdir, pidname
 
 
@@ -233,7 +232,6 @@ def control():
 
 def service():
     signal.signal(signal.SIGHUP, handler)
-    nodebug()
     setwd(Main.name)
     privileges()
     pidfile(pidname(Main.name))
@@ -261,8 +259,8 @@ def srv(event):
 
 
 def tbl(event):
-    if not check("-v"):
-        nodebug()
+    import nixt.modules
+    nixt.modules.checksum = ""
     for mod in mods():
         scan(mod)
     event.reply("# This file is placed in the Public Domain.")
@@ -305,9 +303,6 @@ def wrapped(func):
         func()
     except (KeyboardInterrupt, EOFError):
         output("")
-    if "v" in Main.opts:
-        for exc in Errors.errors:
-            debug(Errors.format(exc))
 
 
 def wrap(func):

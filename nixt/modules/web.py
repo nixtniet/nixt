@@ -25,7 +25,6 @@ def init():
         server = HTTP((Cfg.hostname, int(Cfg.port)), HTTPHandler)
     except OSError as ex:
         server = None
-        later(ex)
     if server is not None:
         server.start()
     return server
@@ -65,7 +64,6 @@ class HTTP(HTTPServer, Object):
     def error(self, _request, _addr):
         exctype, excvalue, _trb = sys.exc_info()
         exc = exctype(excvalue)
-        later(exc)
 
 
 class HTTPHandler(BaseHTTPRequestHandler):
@@ -117,7 +115,6 @@ class HTTPHandler(BaseHTTPRequestHandler):
                 self.raw(img)
             except (TypeError, FileNotFoundError, IsADirectoryError) as ex:
                 self.send_response(404)
-                later(ex)
                 self.end_headers()
             return
         try:
@@ -128,7 +125,6 @@ class HTTPHandler(BaseHTTPRequestHandler):
             self.send(html2(txt))
         except (TypeError, FileNotFoundError, IsADirectoryError) as ex:
             self.send_response(404)
-            later(ex)
             self.end_headers()
 
 
