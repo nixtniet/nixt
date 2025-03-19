@@ -12,7 +12,6 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from ..error  import later
 from ..object import Default, Object
 from ..thread import launch
 
@@ -21,12 +20,8 @@ DEBUG = False
 
 
 def init():
-    try:
-        server = HTTP((Cfg.hostname, int(Cfg.port)), HTTPHandler)
-    except OSError as ex:
-        server = None
-    if server is not None:
-        server.start()
+    server = HTTP((Cfg.hostname, int(Cfg.port)), HTTPHandler)
+    server.start()
     return server
 
 

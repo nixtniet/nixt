@@ -18,6 +18,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from .client  import Client
+from .error   import Errors
 from .event   import Event
 from .modules import Commands, Main, command, load, mods, modules, parse, scan
 from .object  import dumps
@@ -261,6 +262,7 @@ def srv(event):
 def tbl(event):
     import nixt.modules
     nixt.modules.checksum = ""
+    Main.ignore = ""
     for mod in mods():
         scan(mod)
     event.reply("# This file is placed in the Public Domain.")
@@ -303,7 +305,8 @@ def wrapped(func):
         func()
     except (KeyboardInterrupt, EOFError):
         output("")
-
+    for exc in Errors.errors:
+        print(Errors.format(exc))
 
 def wrap(func):
     import termios

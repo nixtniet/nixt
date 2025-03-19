@@ -20,7 +20,7 @@ from ..object import Default
 from ..utils  import debug, md5sum, spl
 
 
-checksum = "7b3c02955a5b93459aae6b3572026660"
+checksum = "9868c07cd93a35249a10f791cfc13687"
 
 
 path = f"{os.path.dirname(__file__)}"
@@ -53,7 +53,7 @@ class MD5Error(Exception):
 class Main(Default):
 
     debug   = False
-    ignore  = 'dbg,llm,mbx,rst,udp,web,wsd'
+    ignore  = 'llm,mbx,rst,udp,web,wsd'
     init    = ""
     md5     = True
     name    = __package__.split(".")[0]

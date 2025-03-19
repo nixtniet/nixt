@@ -9,6 +9,7 @@ import threading
 import _thread
 
 
+from .error  import later
 from .thread import launch, name
 
 
@@ -37,7 +38,11 @@ class Reactor:
             if evt is None:
                 break
             evt.orig = repr(self)
-            self.callback(evt)
+            try:
+                self.callback(evt)
+            except Exception as ex:
+                later(ex)
+                _thread.interrupt_main()
         self.ready.set()
 
     def poll(self):

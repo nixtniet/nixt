@@ -23,8 +23,15 @@ class Thread(threading.Thread):
         self.queue.put((func, args))
 
     def run(self) -> None:
-        func, args = self.queue.get()
-        self.result = func(*args)
+        try:
+            func, args = self.queue.get()
+            self.result = func(*args)
+        except Exception as ex:
+           try:
+               args[0].ready()
+           except (IndexError, AttributeError):
+               pass
+           raise
 
     def join(self, timeout=None) -> typing.Any:
         super().join(timeout)

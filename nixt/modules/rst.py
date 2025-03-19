@@ -12,7 +12,6 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from ..error   import later
 from ..object  import Default, Object
 from ..thread  import launch
 from ..workdir import Workdir, types
@@ -22,13 +21,8 @@ DEBUG = False
 
 
 def init():
-    try:
-        rest = REST((Config.hostname, int(Config.port)), RESTHandler)
-    except OSError as ex:
-        later(ex)
-        rest = None
-    if rest is not None:
-        rest.start()
+    rest = REST((Config.hostname, int(Config.port)), RESTHandler)
+    rest.start()
     return rest
 
 
