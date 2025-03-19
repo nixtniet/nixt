@@ -155,12 +155,6 @@ def hook(objdict) -> Object:
     return obj
 
 
-def load(fpt, *args, **kw) -> Object:
-    kw["cls"] = Decoder
-    kw["object_hook"] = hook
-    return json.load(fpt, *args, **kw)
-
-
 def loads(string, *args, **kw) -> Object:
     kw["cls"] = Decoder
     kw["object_hook"] = hook
@@ -189,11 +183,6 @@ class Encoder(json.JSONEncoder):
                 return vars(o)
             except TypeError:
                 return repr(o)
-
-
-def dump(*args, **kw) -> str:
-    kw["cls"] = Encoder
-    return json.dump(*args, **kw)
 
 
 def dumps(*args, **kw) -> str:

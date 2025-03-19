@@ -8,6 +8,7 @@ import threading
 import time
 
 
+from .fleet  import Fleet
 from .object import Default
 
 
@@ -21,6 +22,9 @@ class Event(Default):
         self.result = {}
         self.type   = "event"
         self.txt    = ""
+
+    def display(self):
+        Fleet.display(self)
 
     def done(self) -> None:
         self.reply("ok")

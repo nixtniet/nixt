@@ -9,6 +9,7 @@ import importlib.util
 import inspect
 import hashlib
 import os
+import sys
 import threading
 import time
 import types
@@ -21,7 +22,7 @@ from ..utils  import debug, md5sum, spl
 
 
 checksum = "64878c531bcee4980eae300e23323de4"
-
+checksum = ""
 
 path = f"{os.path.dirname(__file__)}"
 pname = f"{__package__}"
@@ -167,13 +168,15 @@ def scan(mod) -> None:
 "utilities"
 
 
-def check(name, checksum=""):
+def check(name, sum=""):
+    if not checksum:
+        return True
     mname = f"{pname}.{name}"
     spec = importlib.util.find_spec(mname)
     if not spec:
         return False
     path = spec.origin
-    if md5sum(path) == (checksum or MD5.get(name, None)):
+    if md5sum(path) == (sum or MD5.get(name, None)):
         return True
     debug(f"{name} failed md5sum check")
     return False
@@ -184,13 +187,19 @@ def load(name) -> types.ModuleType:
         if name in Main.ignore:
             return
         module = None
-        mname = f".{name}"
-        module = importlib.import_module(mname, pname)
+        mname = f"{pname}.{name}"
+        module = sys.modules.get(mname, None)
+        if not module:
+            pth = os.path.join(path, f"{name}.py")
+            if not os.path.exists(pth):
+                return None
+            spec = importlib.util.spec_from_file_location(mname, pth)
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[mname] = module
+            spec.loader.exec_module(module)
         if Main.debug:
             module.DEBUG = True
         return module
-
-
 
 
 def mods(names="") -> [types.ModuleType]:

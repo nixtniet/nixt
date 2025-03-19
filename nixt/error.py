@@ -36,6 +36,9 @@ class Errors:
             result += f"{ownname}:{linenr} "
         del trace
         res = f"{exctype} {result[:-1]} {excvalue}"
+        if "__notes__" in dir(exc):
+            for note in exc.__notes__:
+                res += f" {note}"
         return res
 
     @staticmethod
@@ -47,7 +50,7 @@ class Errors:
         )
 
 
-def later(exc) -> None:
+def later(exc, txt="") -> None:
     Errors.errors.append(exc)
 
 

@@ -307,8 +307,8 @@ def wrapped(func):
     except (KeyboardInterrupt, EOFError):
         output("")
     for exc in Errors.errors:
-        for line in Errors.full(exc):
-            print(line.strip())
+        print(Errors.format(exc))
+
 
 def wrap(func):
     import termios

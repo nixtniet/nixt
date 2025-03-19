@@ -19,15 +19,14 @@ from ..workdir import store
 
 
 def init():
-    for _fn, obj in find("timer"):
-        if "time" not in dir(obj):
-            continue
+    for fnm, obj in find("timer"):
         diff = float(obj.time) - time.time()
         if diff > 0:
-            evt = Event()
-            update(evt, obj)
-            timer = Timer(diff, Fleet.announce, evt.rest)
+            timer = Timer(diff, Fleet.announce, obj.rest)
             timer.start()
+        else:
+            obj.__deleted__ = True
+            write(obj, fnm)
 
 
 def tmr(event):
@@ -71,7 +70,7 @@ def tmr(event):
     event.reply("ok " +  elapsed(diff))
     del event.args
     event.reply(event.rest)
-    timer = Timer(diff, Fleet.display, event)
+    timer = Timer(diff, event.display)
     update(timer, event)
     write(timer, store(ident(timer)))
     launch(timer.start)

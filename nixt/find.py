@@ -20,9 +20,6 @@ from .workdir import long, store
 p = os.path.join
 
 
-"find"
-
-
 def fns(clz) -> [str]:
     pth = store(clz)
     for rootdir, dirs, _files in os.walk(pth, topdown=False):

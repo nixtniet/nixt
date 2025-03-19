@@ -8,12 +8,14 @@ import threading
 import time
 
 
+from .object import Object
 from .thread import launch, name
 
 
-class Timer:
+class Timer(Object):
 
     def __init__(self, sleep, func, *args, thrname=None, **kwargs):
+        Object.__init__(self)
         self.args   = args
         self.func   = func
         self.kwargs = kwargs
