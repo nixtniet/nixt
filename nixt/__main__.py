@@ -23,7 +23,7 @@ from .event   import Event
 from .modules import Commands, Main, command, load, mods, modules, parse, scan
 from .object  import dumps
 from .thread  import launch
-from .utils   import debug, spl
+from .utils   import debug, nodebug, spl
 from .workdir import Workdir, pidname
 
 
@@ -233,6 +233,7 @@ def control():
 
 def service():
     signal.signal(signal.SIGHUP, handler)
+    nodebug()
     setwd(Main.name)
     privileges()
     pidfile(pidname(Main.name))
@@ -306,7 +307,8 @@ def wrapped(func):
     except (KeyboardInterrupt, EOFError):
         output("")
     for exc in Errors.errors:
-        print(Errors.format(exc))
+        for line in Errors.full(exc):
+            print(line.strip())
 
 def wrap(func):
     import termios
