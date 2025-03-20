@@ -7,7 +7,6 @@
 import importlib
 import importlib.util
 import inspect
-import hashlib
 import os
 import sys
 import threading

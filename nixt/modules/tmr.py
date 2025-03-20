@@ -8,8 +8,7 @@ import time
 
 
 from ..disk    import write
-from ..event   import Event
-from ..find    import find, ident, store
+from ..find    import find, ident
 from ..fleet   import Fleet
 from ..object  import update
 from ..thread  import launch

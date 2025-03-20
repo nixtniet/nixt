@@ -30,7 +30,7 @@ class Thread(threading.Thread):
             func, args = self.queue.get()
             self.result = func(*args)
         except Exception as ex:
-           later(ex, self.name)
+           later(ex)
            _thread.interrupt_main()
 
     def join(self, timeout=None) -> typing.Any:

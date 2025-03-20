@@ -10,7 +10,7 @@ import _thread
 
 
 from .error  import later
-from .thread import launch, name
+from .thread import launch
 
 
 lock = threading.RLock()

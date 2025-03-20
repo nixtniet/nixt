@@ -23,7 +23,7 @@ from .event   import Event
 from .modules import Commands, Main, command, load, mods, modules, parse, scan
 from .object  import dumps
 from .thread  import launch
-from .utils   import debug, nodebug, spl
+from .utils   import nodebug, spl
 from .workdir import Workdir, pidname
 
 

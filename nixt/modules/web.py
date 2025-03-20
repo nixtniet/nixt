@@ -12,6 +12,7 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
+from ..error  import later
 from ..object import Default, Object
 from ..thread import launch
 
@@ -59,6 +60,7 @@ class HTTP(HTTPServer, Object):
     def error(self, _request, _addr):
         exctype, excvalue, _trb = sys.exc_info()
         exc = exctype(excvalue)
+        later(exc)
 
 
 class HTTPHandler(BaseHTTPRequestHandler):
@@ -108,7 +110,7 @@ class HTTPHandler(BaseHTTPRequestHandler):
                 ext = self.path[-3]
                 self.write_header(f"image/{ext}", len(img))
                 self.raw(img)
-            except (TypeError, FileNotFoundError, IsADirectoryError) as ex:
+            except (TypeError, FileNotFoundError, IsADirectoryError):
                 self.send_response(404)
                 self.end_headers()
             return
@@ -118,7 +120,7 @@ class HTTPHandler(BaseHTTPRequestHandler):
                 file.close()
             self.write_header("text/html")
             self.send(html2(txt))
-        except (TypeError, FileNotFoundError, IsADirectoryError) as ex:
+        except (TypeError, FileNotFoundError, IsADirectoryError):
             self.send_response(404)
             self.end_headers()
 

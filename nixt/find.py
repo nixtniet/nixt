@@ -6,14 +6,12 @@
 
 import datetime
 import os
-import pathlib
 import time
-import typing
 
 
 from .cache   import Cache
 from .disk    import read
-from .object  import Object, fqn, items, search, update
+from .object  import Object, fqn, items, update
 from .workdir import long, store
 
 

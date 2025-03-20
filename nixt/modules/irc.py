@@ -446,7 +446,7 @@ class IRC(Client, Output):
                     ssl.SSLZeroReturnError,
                     ConnectionResetError,
                     BrokenPipeError
-                   ) as ex:
+                   ):
                 self.stop()
                 return
         self.state.last = time.time()

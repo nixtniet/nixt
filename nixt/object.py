@@ -105,24 +105,6 @@ def keys(obj) -> [str]:
     return list(obj.__dict__.keys())
 
 
-def search(obj, selector, matching=None) -> bool:
-    res = False
-    if not selector:
-        return res
-    for key, value in items(selector):
-        val = getattr(obj, key, None)
-        if not val:
-            continue
-        if matching and value == val:
-            res = True
-        elif str(value).lower() in str(val).lower() or value == "match":
-            res = True
-        else:
-            res = False
-            break
-    return res
-
-
 def update(obj, data) -> None:
     if not isinstance(data, type({})):
         obj.__dict__.update(vars(data))
@@ -202,7 +184,6 @@ def __dir__():
         'items',
         'keys',
         'loads',
-        'search',
         'update',
         'values'
     )
