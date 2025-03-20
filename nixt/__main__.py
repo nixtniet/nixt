@@ -328,7 +328,8 @@ def main():
     if check("a"):
         Main.ignore = ""
         Main.init   = ",".join(modules())
-        mods()
+        for mod in mods():
+            mod.DEBUG = False
     if check("v"):
         setattr(Main.opts, "v", True)
         enable()
