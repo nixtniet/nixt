@@ -12,7 +12,7 @@ import time
 from .cache   import Cache
 from .disk    import read
 from .object  import Object, fqn, items, update
-from .workdir import long, store
+from .workdir import long, skel, store
 
 
 p = os.path.join
@@ -43,6 +43,7 @@ def fntime(daystr) -> int:
 
 
 def find(clz, selector=None, deleted=False, matching=False) -> [Object]:
+    skel()
     res = []
     clz = long(clz)
     for pth in fns(clz):

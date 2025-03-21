@@ -47,7 +47,7 @@ class CLI(Client):
 class Console(CLI):
 
     def announce(self, txt):
-        pass
+        output(txt)
 
     def callback(self, evt):
         CLI.callback(self, evt)
@@ -262,8 +262,6 @@ def srv(event):
 
 def tbl(event):
     import nixt.modules
-    nixt.modules.checksum = ""
-    Main.ignore = ""
     for mod in mods():
         scan(mod)
     event.reply("# This file is placed in the Public Domain.")
