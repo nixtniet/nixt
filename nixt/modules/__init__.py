@@ -13,36 +13,28 @@ import threading
 import time
 import types
 import typing
+import _thread
 
 
+from ..error  import later
 from ..fleet  import Fleet
 from ..object import Default
 from ..utils  import debug, md5sum, spl
 
 
+initlock = threading.RLock()
+loadlock = threading.RLock()
+
+
 checksum = "64878c531bcee4980eae300e23323de4"
 checksum = ""
 
-path = f"{os.path.dirname(__file__)}"
+
+path  = f"{os.path.dirname(__file__)}"
 pname = f"{__package__}"
 
 
-NAMES = MD5 = {}
-
-
-try:
-    pth = os.path.join(path, "tbl.py")
-    if not checksum or (md5sum(pth) == checksum):
-        from .tbl import NAMES, MD5
-except ImportError:
-     pass
-
-
 STARTTIME = time.time()
-
-
-initlock = threading.RLock()
-loadlock = threading.RLock()
 
 
 class MD5Error(Exception):
@@ -63,8 +55,9 @@ class Main(Default):
 
 class Commands:
 
-    cmds = {}
-    names = NAMES or {} 
+    cmds  = {}
+    md5   = {}
+    names = {}
 
     @staticmethod
     def add(func, mod=None) -> None:
@@ -74,6 +67,10 @@ class Commands:
 
     @staticmethod
     def get(cmd) -> typing.Callable:
+        if not Commands.names:
+            tbl = gettbl("NAMES")
+            if tbl:
+                Commands.names.update(tbl)
         func = Commands.cmds.get(cmd, None)
         if not func:
             name = Commands.names.get(cmd, None)
@@ -170,15 +167,39 @@ def scan(mod) -> None:
 def check(name, sum=""):
     if not checksum:
         return True
+    if not Commands.md5:
+        md5s = gettbl("MD5")
+        if md5s:
+            Commands.md5.update(md5s)
     mname = f"{pname}.{name}"
-    spec = importlib.util.find_spec(mname)
+    pth = os.path.abspath(mname.replace(".", os.sep) + ".py")
+    spec = importlib.util.spec_from_file_location(mname, pth)
     if not spec:
         return False
-    path = spec.origin
-    if md5sum(path) == (sum or MD5.get(name, None)):
+    if md5sum(pth) == (sum or MD5.get(name, None)):
         return True
     debug(f"{name} failed md5sum check")
     return False
+
+
+def getmod(name):
+    mname = f"{pname}.{name}"
+    pth = os.path.abspath(mname.replace(".", os.sep) + ".py")
+    spec = importlib.util.spec_from_file_location(mname, pth)
+    if not spec:
+        return None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def gettbl(name):
+    pth = os.path.join(path, "tbl.py")
+    mname = f"{pname}.tbl"
+    if not checksum or (md5sum(pth) == checksum):
+        mod = getmod("tbl")
+        if mod:
+            return getattr(mod, name, None)
 
 
 def load(name) -> types.ModuleType:
@@ -225,12 +246,17 @@ def modules(mdir="") -> [str]:
            ]
 
 
+"interface"
+
+
 def __dir__():
     return (
         'STARTTIME',
         'Commands',
         'check',
         'command',
+        'getmod',
+        'gettbl',
         'inits',
         'load',
         'modules',

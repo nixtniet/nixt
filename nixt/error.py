@@ -50,7 +50,7 @@ class Errors:
         )
 
 
-def later(exc, txt="") -> None:
+def later(exc) -> None:
     Errors.errors.append(exc)
 
 

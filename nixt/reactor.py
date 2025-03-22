@@ -30,11 +30,7 @@ class Reactor:
             if not func:
                 evt.ready()
                 return
-            try:
-                evt._thr = launch(func, evt, name=evt.cmd)
-            except Exception as ex:
-                later(ex)
-                evt.ready()
+            evt._thr = launch(func, evt, name=evt.cmd)
 
     def loop(self) -> None:
         while not self.stopped.is_set():

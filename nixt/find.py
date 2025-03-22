@@ -18,6 +18,9 @@ from .workdir import long, skel, store
 p = os.path.join
 
 
+"find"
+
+
 def fns(clz) -> [str]:
     pth = store(clz)
     for rootdir, dirs, _files in os.walk(pth, topdown=False):
@@ -98,6 +101,9 @@ def search(obj, selector, matching=None) -> bool:
             res = False
             break
     return res
+
+
+"interface"
 
 
 def __dir__():
