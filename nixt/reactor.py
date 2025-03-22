@@ -18,6 +18,8 @@ lock = threading.RLock()
 
 class Reactor:
 
+    bork = False
+
     def __init__(self):
         self.cbs     = {}
         self.queue   = queue.Queue()
@@ -42,7 +44,8 @@ class Reactor:
                 self.callback(evt)
             except Exception as ex:
                 later(ex)
-                _thread.interrupt_main()
+                if Reactor.bork:
+                    _thread.interrupt_main()
         self.ready.set()
 
     def poll(self):

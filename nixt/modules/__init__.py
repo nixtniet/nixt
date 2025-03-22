@@ -45,7 +45,7 @@ class MD5Error(Exception):
 class Main(Default):
 
     debug   = False
-    ignore  = 'llm,mbx,rst,udp,web,wsd'
+    ignore  = 'brk,dbg,mbx,udp'
     init    = ""
     md5     = True
     name    = __package__.split(".")[0]
@@ -197,9 +197,11 @@ def gettbl(name):
     pth = os.path.join(path, "tbl.py")
     mname = f"{pname}.tbl"
     if not checksum or (md5sum(pth) == checksum):
-        mod = getmod("tbl")
-        if mod:
-            return getattr(mod, name, None)
+        try:
+            mod = getmod("tbl")
+        except FileNotFoundError:
+            return 
+        return getattr(mod, name, None)
 
 
 def load(name) -> types.ModuleType:

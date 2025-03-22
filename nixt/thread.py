@@ -16,6 +16,8 @@ from .error import later
 
 class Thread(threading.Thread):
 
+    bork = False
+
     def __init__(self, func, thrname, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, name, (), {}, daemon=daemon)
         self.name = thrname
@@ -31,7 +33,8 @@ class Thread(threading.Thread):
             self.result = func(*args)
         except Exception as ex:
            later(ex)
-           _thread.interrupt_main()
+           if Thread.bork:
+               _thread.interrupt_main()
 
     def join(self, timeout=None) -> typing.Any:
         super().join(timeout)
@@ -39,7 +42,9 @@ class Thread(threading.Thread):
 
 
 def launch(func, *args, **kwargs) -> Thread:
-    nme = kwargs.get("name", name(func))
+    nme = kwargs.get("name")
+    if not nme:
+        nme= name(func)
     thread = Thread(func, nme, *args, **kwargs)
     thread.start()
     return thread
