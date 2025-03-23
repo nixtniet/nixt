@@ -144,7 +144,7 @@ def main():
     global nrs
     global nrcommand
     parse(Main, " ".join(sys.argv[1:]))
-    nrcommand = len(Commands.names) or 1
+    nrcommand = 0
     if "v" in Main.opts:
         banner()
     if "f" not in Main.opts:
@@ -158,17 +158,22 @@ def main():
     for _nr in range(nrs):
         thrs.append(launch(payload, clt, pre))
     for thr in thrs:
-       thr.join()
+       nr = thr.join()
+       nrcommand += nr
+    thrs = []
     for _nr in range(nrs):
         thrs.append(launch(payload, clt, param))
     for thr in thrs:
-       thr.join()
+       nr = thr.join()
+       nrcommand += nr
+    thrs = []
     for _nr in range(nrs):
         thrs.append(launch(payload, clt, post))
     for thr in thrs:
-       thr.join()
+       nr = thr.join()
+       nrcommand += nr
+    nrz = len(events)
     consume(events)
-
 
 if __name__ == "__main__":
     wrap(main)
@@ -176,6 +181,6 @@ if __name__ == "__main__":
         print(Errors.format(exc))
     endtime = time.time()
     lap = elapsed(endtime-STARTTIME)
-    percall = (endtime-STARTTIME)/(nrs*nrcommand)
+    percall = (endtime-STARTTIME)/(nrcommand)
     if "v" in Main.opts:
-        print(f"total: {lap} nrs: {nrs} cmds: {nrcommand} call: {percall}")
+        print(f"total: {lap} nrs: {nrs} cmds: {nrcommand} call: %.6fs" % percall)

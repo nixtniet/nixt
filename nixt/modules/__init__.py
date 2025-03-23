@@ -90,7 +90,7 @@ def command(evt) -> None:
     func = Commands.get(evt.cmd)
     if func:
         func(evt)
-        Fleet.display(evt)
+        evt.display()
     evt.ready()
 
 
@@ -184,12 +184,16 @@ def check(name, sum=""):
 
 def getmod(name):
     mname = f"{pname}.{name}"
+    mod = sys.modules.get(mname, None)
+    if mod:
+        return mod
     pth = os.path.abspath(mname.replace(".", os.sep) + ".py")
     spec = importlib.util.spec_from_file_location(mname, pth)
     if not spec:
         return None
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
+    sys.modules[mname] = mod
     return mod
 
 
