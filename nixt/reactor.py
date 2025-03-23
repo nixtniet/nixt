@@ -18,7 +18,7 @@ lock = threading.RLock()
 
 class Reactor:
 
-    bork = False
+    bork = True
 
     def __init__(self):
         self.cbs     = {}

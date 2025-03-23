@@ -16,7 +16,7 @@ from .error import later
 
 class Thread(threading.Thread):
 
-    bork = False
+    bork = True
 
     def __init__(self, func, thrname, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, name, (), {}, daemon=daemon)
