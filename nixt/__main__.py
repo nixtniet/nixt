@@ -262,7 +262,7 @@ def srv(event):
 
 
 def tbl(event):
-    import nixt.modules
+    from . import modules
     for mod in mods():
         scan(mod)
     event.reply("# This file is placed in the Public Domain.")
