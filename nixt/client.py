@@ -4,8 +4,8 @@
 "client"
 
 
-from .fleet   import Fleet
-from .reactor import Reactor
+from .fleet import Fleet
+from .run   import Reactor
  
 
 class Client(Reactor):

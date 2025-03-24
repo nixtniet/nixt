@@ -18,12 +18,10 @@ sys.path.insert(0, os.getcwd())
 
 
 from .client  import Client
-from .error   import Errors
 from .event   import Event
 from .modules import Commands, Main, command, load, mods, modules, parse, scan
 from .object  import dumps
-from .reactor import Reactor
-from .thread  import Thread, launch
+from .run     import Errors, Reactor, Thread, launch
 from .utils   import nodebug, spl
 from .workdir import Workdir, pidname
 
