@@ -9,7 +9,7 @@ import time
 
 
 from .object import Object
-from .thread import launch, name
+from .run    import launch, name
 
 
 class Timer(Object):

@@ -6,7 +6,7 @@
 
 from ..fleet  import Fleet
 from ..object import fmt
-from ..thread import name
+from ..run    import name
 
 
 def flt(event):

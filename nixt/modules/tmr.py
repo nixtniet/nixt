@@ -8,13 +8,12 @@ import time
 
 
 from ..disk    import write
-from ..find    import find, ident
+from ..find    import find, ident, store
 from ..fleet   import Fleet
 from ..object  import update
-from ..thread  import launch
+from ..run     import launch
 from ..timer   import Timer
 from ..utils   import NoDate, elapsed, get_day, get_hour, to_day, today
-from ..workdir import store
 
 
 def init():

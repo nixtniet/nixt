@@ -18,11 +18,11 @@ import time
 from ..client  import Client, Fleet
 from ..disk    import write
 from ..event   import Event
-from ..find    import ident, last
+from ..find    import ident, last, store
 from ..object  import Default, Object, edit, fmt, keys
-from ..thread  import launch
+from ..run     import launch
 from ..utils   import debug as ldebug
-from ..workdir import store
+
 
 from . import Main, command
 

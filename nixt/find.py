@@ -6,16 +6,57 @@
 
 import datetime
 import os
+import pathlib
 import time
 
 
 from .cache   import Cache
 from .disk    import read
 from .object  import Object, fqn, items, update
-from .workdir import long, skel, store
 
 
 p = os.path.join
+
+
+class Workdir:
+
+    name = __file__.rsplit(os.sep, maxsplit=2)[-2]
+    wdr  = ""
+
+
+"paths"
+
+
+def long(name) -> str:
+    split = name.split(".")[-1].lower()
+    res = name
+    for names in types():
+        if split == names.split(".")[-1].lower():
+            res = names
+            break
+    return res
+
+
+def pidname(name) -> str:
+    return p(Workdir.wdr, f"{name}.pid")
+
+
+def skel() -> str:
+    path = pathlib.Path(store())
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def store(pth="") -> str:
+    return p(Workdir.wdr, "store", pth)
+
+
+def strip(pth, nmr=2) -> str:
+    return os.sep.join(pth.split(os.sep)[-nmr:])
+
+
+def types() -> [str]:
+    return os.listdir(store())
 
 
 "find"
@@ -108,10 +149,17 @@ def search(obj, selector, matching=None) -> bool:
 
 def __dir__():
     return (
+        'Workdir',
         'fns',
         'fntime',
         'find',
-        'last',
         'ident',
+        'last',
+        'long',
+        'pidname',
         'search'
+        'skel',
+        'store',
+        'strip',
+        'types'
     )

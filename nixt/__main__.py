@@ -19,11 +19,11 @@ sys.path.insert(0, os.getcwd())
 
 from .client  import Client
 from .event   import Event
+from .find    import Workdir, pidname
 from .modules import Commands, Main, command, load, mods, modules, parse, scan
 from .object  import dumps
 from .run     import Errors, Reactor, Thread, launch
 from .utils   import nodebug, spl
-from .workdir import Workdir, pidname
 
 
 p = os.path.join
@@ -46,7 +46,7 @@ class CLI(Client):
 class Console(CLI):
 
     def announce(self, txt):
-        output(txt)
+        pass
 
     def callback(self, evt):
         CLI.callback(self, evt)
