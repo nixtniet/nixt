@@ -11,7 +11,6 @@ import unittest
 
 
 import nixt
-import nixt.cache
 import nixt.client
 import nixt.disk
 import nixt.event
@@ -27,7 +26,6 @@ from nixt.object import *
 
 
 PACKAGE = [
-    'cache',
     'client',
     'disk',
     'event',

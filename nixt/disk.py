@@ -7,9 +7,9 @@
 import json
 import pathlib
 import threading
+import typing
 
 
-from .cache  import Cache
 from .object import loads, dumps, update
 
 
@@ -19,6 +19,26 @@ lock = threading.RLock()
 class DecodeError(Exception):
 
     pass
+
+
+class Cache:
+
+    objs = {}
+
+    @staticmethod
+    def add(path, obj) -> None:
+        Cache.objs[path] = obj
+
+    @staticmethod
+    def get(path) -> typing.Any:
+        return Cache.objs.get(path, None)
+
+    @staticmethod
+    def typed(matcher) -> [typing.Any]:
+        for key in Cache.objs:
+            if matcher not in key:
+                continue
+            yield Cache.objs.get(key)
 
 
 def cdir(pth) -> None:
@@ -49,6 +69,7 @@ def write(obj, pth):
 
 def __dir__():
     return (
+        'Cache',
         'DecodeError',
         'cdir',
         'read',
