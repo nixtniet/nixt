@@ -9,6 +9,7 @@ import pathlib
 import threading
 
 
+from .cache  import Cache
 from .object import loads, dumps, update
 
 
@@ -42,6 +43,7 @@ def write(obj, pth):
         txt = dumps(obj, indent=4)
         with open(pth, 'w', encoding='utf-8') as ofile:
             ofile.write(txt)
+        Cache.add(pth, obj)
     return pth
 
 
