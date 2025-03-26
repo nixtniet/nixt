@@ -4,7 +4,6 @@
 "modules"
 
 
-import hashlib
 import importlib
 import importlib.util
 import inspect
@@ -14,12 +13,10 @@ import threading
 import time
 import types
 import typing
-import _thread
 
 
-from ..fleet  import Fleet
 from ..object import Default
-from ..run    import later, launch
+from ..run    import launch
 from ..utils  import debug, md5sum, spl
 
 
@@ -200,7 +197,6 @@ def getmod(name):
 
 def gettbl(name):
     pth = os.path.join(path, "tbl.py")
-    mname = f"{pname}.tbl"
     if not checksum or (md5sum(pth) == checksum):
         try:
             mod = getmod("tbl")

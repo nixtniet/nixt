@@ -9,7 +9,6 @@ import os
 import queue
 import socket
 import ssl
-import sys
 import textwrap
 import threading
 import time
