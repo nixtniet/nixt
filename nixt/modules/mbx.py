@@ -71,7 +71,7 @@ def eml(event):
     for key in keys(event.silent):
         if key in args:
             args.remove(key)
-    args = set(args)        
+    args = set(args)
     result = sorted(find("email", event.gets), key=lambda x: extract_date(todate(getattr(x[1], "Date", ""))))
     if event.index:
         o = result[event.index][1]

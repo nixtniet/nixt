@@ -4,13 +4,11 @@
 "main program"
 
 
-import hashlib
 import os
 import pathlib
 import signal
 import sys
 import time
-import types
 import _thread
 
 
@@ -20,10 +18,10 @@ sys.path.insert(0, os.getcwd())
 from .client  import Client
 from .event   import Event
 from .find    import Workdir, pidname
-from .modules import Commands, Main, command, load, mods, modules, parse, scan
+from .modules import Commands, Main, command, inits, mods, modules, parse, scan
 from .object  import dumps
-from .run     import Errors, Reactor, Thread, launch
-from .utils   import nodebug, spl
+from .run     import Errors, Reactor, Thread
+from .utils   import md5sum, nodebug
 
 
 p = os.path.join
@@ -121,31 +119,6 @@ def forever():
             time.sleep(0.1)
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
-
-
-def inits(names) -> [types.ModuleType]:
-    mods = []
-    for name in spl(names):
-        mod = load(name)
-        if not mod:
-            continue
-        if "init" in dir(mod):
-            thr = launch(mod.init)
-        mods.append((mod, thr))
-    return mods
-
-
-def md5sum(mod):
-    with open(mod.__file__, "r", encoding="utf-8") as file:
-        txt = file.read().encode("utf-8")
-        return str(hashlib.md5(txt).hexdigest())
-
-
-def modnames(path) -> [str]:
-    return [
-            x[:-3] for x in os.listdir(path)
-            if x.endswith(".py") and not x.startswith("__")
-           ]
 
 
 def pidfile(filename):

@@ -19,7 +19,7 @@ class Config:
 
     bork    = True
     debug   = False
-    name    = __package__.split(".")[0]
+    name    = __package__.split('.', maxsplit=1)[0]
     verbose = False
 
 
@@ -91,9 +91,9 @@ class Thread(threading.Thread):
             func, args = self.queue.get()
             self.result = func(*args)
         except Exception as ex:
-           later(ex)
-           if Config.bork:
-               _thread.interrupt_main()
+            later(ex)
+            if Config.bork:
+                _thread.interrupt_main()
 
     def join(self, timeout=None) -> typing.Any:
         super().join(timeout)

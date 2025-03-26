@@ -156,7 +156,8 @@ def __dir__():
         'last',
         'long',
         'pidname',
-        'search'
+        'search',
+        'setwd',
         'skel',
         'store',
         'strip',

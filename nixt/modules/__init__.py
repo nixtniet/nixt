@@ -4,6 +4,7 @@
 "modules"
 
 
+import hashlib
 import importlib
 import importlib.util
 import inspect
@@ -18,7 +19,7 @@ import _thread
 
 from ..fleet  import Fleet
 from ..object import Default
-from ..run    import later
+from ..run    import later, launch
 from ..utils  import debug, md5sum, spl
 
 
@@ -48,7 +49,7 @@ class Main(Default):
     ignore  = 'brk,dbg,mbx,udp'
     init    = ""
     md5     = True
-    name    = __package__.split(".")[0]
+    name    = __package__.split('.', maxsplit=1)[0]
     opts    = Default()
     verbose = False
 
@@ -176,7 +177,7 @@ def check(name, sum=""):
     spec = importlib.util.spec_from_file_location(mname, pth)
     if not spec:
         return False
-    if md5sum(pth) == (sum or MD5.get(name, None)):
+    if md5sum(pth) == (sum or Commands.md5.get(name, None)):
         return True
     debug(f"{name} failed md5sum check")
     return False
@@ -204,8 +205,20 @@ def gettbl(name):
         try:
             mod = getmod("tbl")
         except FileNotFoundError:
-            return 
+            return
         return getattr(mod, name, None)
+
+
+def inits(names) -> [types.ModuleType]:
+    mods = []
+    for name in spl(names):
+        mod = load(name)
+        if not mod:
+            continue
+        if "init" in dir(mod):
+            thr = launch(mod.init)
+        mods.append((mod, thr))
+    return mods
 
 
 def load(name) -> types.ModuleType:
@@ -265,6 +278,7 @@ def __dir__():
         'gettbl',
         'inits',
         'load',
+        'md5sum',
         'modules',
         'mods',
         'md5',

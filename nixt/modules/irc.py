@@ -28,7 +28,6 @@ from . import Main, command
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]
-NAME    = sys.argv[0].split(os.sep)[-1]
 
 
 saylock = threading.RLock()
