@@ -299,9 +299,6 @@ def main():
         Main.init   = ",".join(modules())
         for mod in mods():
             mod.DEBUG = False
-    if check("n"):
-        Reactor.bork = False
-        Thread.bork = False
     if check("v"):
         setattr(Main.opts, "v", True)
         enable()

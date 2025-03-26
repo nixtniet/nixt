@@ -15,14 +15,6 @@ import _thread
 lock = threading.RLock()
 
 
-class Config:
-
-    bork    = True
-    debug   = False
-    name    = __package__.split('.', maxsplit=1)[0]
-    verbose = False
-
-
 class Reactor:
 
     def __init__(self):
@@ -53,8 +45,7 @@ class Reactor:
                 self.callback(evt)
             except Exception as ex:
                 later(ex)
-                if Config.bork:
-                    _thread.interrupt_main()
+                _thread.interrupt_main()
         self.ready.set()
 
     def poll(self):
@@ -96,8 +87,7 @@ class Thread(threading.Thread):
             self.result = func(*args)
         except Exception as ex:
             later(ex)
-            if Config.bork:
-                _thread.interrupt_main()
+            _thread.interrupt_main()
 
     def join(self, timeout=None) -> typing.Any:
         super().join(timeout)
