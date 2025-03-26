@@ -37,7 +37,11 @@ class Reactor:
             if not func:
                 evt.ready()
                 return
-            evt._thr = launch(func, evt, name=evt.cmd)
+            if evt.txt:
+                cmd = evt.txt.split(maxsplit=1)[0]
+            else:
+                cmd = name(func)
+            evt._thr = launch(func, evt, name=cmd)
 
     def loop(self) -> None:
         while not self.stopped.is_set():

@@ -223,7 +223,7 @@ def cmd(event):
 
 def md5(event):
     table = mods("tbl")[0]
-    event.reply(md5sum(table))
+    event.reply(md5sum(table.__file__))
 
 
 def srv(event):
@@ -247,7 +247,7 @@ def tbl(event):
     event.reply("")
     event.reply("MD5 = {")
     for mod in mods():
-        event.reply(f'    "{mod.__name__.split(".")[-1]}": "{md5sum(mod)}",')
+        event.reply(f'    "{mod.__name__.split(".")[-1]}": "{md5sum(mod.__file__)}",')
     event.reply("}")
 
 
