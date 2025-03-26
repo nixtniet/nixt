@@ -9,9 +9,9 @@ import os
 import time
 
 
-from ..disk    import write
 from ..find    import find, ident, store
 from ..object  import Object, fmt, keys, update
+from ..persist import write
 from ..utils   import elapsed, extract_date
 
 

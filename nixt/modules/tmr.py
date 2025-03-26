@@ -7,10 +7,10 @@
 import time
 
 
-from ..disk    import write
 from ..find    import find, ident, store
 from ..fleet   import Fleet
 from ..object  import update
+from ..persist import write
 from ..run     import launch
 from ..timer   import Timer
 from ..utils   import NoDate, elapsed, get_day, get_hour, to_day, today

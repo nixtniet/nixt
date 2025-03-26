@@ -7,9 +7,9 @@
 import time
 
 
-from ..disk    import write
 from ..find    import find, fntime, ident, store
 from ..object  import Object
+from ..persist import write
 from ..utils   import elapsed
 
 
