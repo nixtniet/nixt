@@ -12,12 +12,12 @@ import unittest
 
 import nixt
 import nixt.client
-import nixt.disk
 import nixt.event
 import nixt.client
 import nixt.fleet
 import nixt.modules
 import nixt.object
+import nixt.persist
 import nixt.run
 import nixt.utils
 
@@ -27,12 +27,12 @@ from nixt.object import *
 
 PACKAGE = [
     'client',
-    'disk',
     'event',
     'find',
     'fleet',
     'modules',
     'object',
+    'persist',
     'run',
     'utils'
 ]
