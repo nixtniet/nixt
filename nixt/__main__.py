@@ -15,13 +15,12 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from .client  import Client
-from .event   import Event
-from .find    import Workdir, pidname
+from .clients import Client
 from .modules import Commands, Main, command, inits, mods, modules, parse, scan
-from .object  import dumps
-from .run     import Errors, Reactor, Thread
-from .utils   import md5sum, nodebug
+from .objects import dumps
+from .persist import Workdir, pidname
+from .runtime import Errors, Event, Thread
+from .utility import md5sum, nodebug
 
 
 p = os.path.join

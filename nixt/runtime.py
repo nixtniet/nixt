@@ -15,7 +15,35 @@ import _thread
 lock = threading.RLock()
 
 
-class Reactor:
+class Event:
+
+    def __init__(self):
+        self._ready = threading.Event()
+        self._thr   = None
+        self.ctime  = time.time()
+        self.result = {}
+        self.type   = "event"
+        self.txt    = ""
+
+    def __getattr__(self, key):
+        return self.__dict__.get(key, "")
+
+    def done(self) -> None:
+        self.reply("ok")
+
+    def ready(self) -> None:
+        self._ready.set()
+
+    def reply(self, txt) -> None:
+        self.result[time.time()] = txt
+
+    def wait(self) -> None:
+        self._ready.wait()
+        if self._thr:
+            self._thr.join()
+
+
+class Handler:
 
     def __init__(self):
         self.cbs     = {}
@@ -94,6 +122,44 @@ class Thread(threading.Thread):
         return self.result
 
 
+class Timer:
+
+    def __init__(self, sleep, func, *args, thrname=None, **kwargs):
+        self.args   = args
+        self.func   = func
+        self.kwargs = kwargs
+        self.sleep  = sleep
+        self.name   = thrname or kwargs.get("name", name(func))
+        self.state  = {}
+        self.timer  = None
+
+    def run(self) -> None:
+        self.state["latest"] = time.time()
+        self.func(*self.args)
+
+    def start(self) -> None:
+        timer = threading.Timer(self.sleep, self.run)
+        timer.name   = self.name
+        timer.sleep  = self.sleep
+        timer.state  = self.state
+        timer.func   = self.func
+        timer.state["starttime"] = time.time()
+        timer.state["latest"]    = time.time()
+        timer.start()
+        self.timer   = timer
+
+    def stop(self) -> None:
+        if self.timer:
+            self.timer.cancel()
+
+
+class Repeater(Timer):
+
+    def run(self) -> None:
+        launch(self.start)
+        super().run()
+
+
 class Errors:
 
     name = __file__.rsplit("/", maxsplit=2)[-2]
@@ -136,6 +202,7 @@ class Errors:
             exc.__traceback__
         )
 
+
 def later(exc) -> None:
     Errors.errors.append(exc)
 
@@ -167,8 +234,11 @@ def name(obj) -> str:
 def __dir__():
     return (
         'Errors',
-        'Reactor',
+        'Event',
+        'Handler',
+        'Repeater',
         'Thread',
+        'Timer'
         'later',
         'launch',
         'name'

@@ -14,13 +14,11 @@ import threading
 import time
 
 
-from ..client  import Client, Fleet
-from ..event   import Event
-from ..find    import ident, last, store
-from ..object  import Default, Object, edit, fmt, keys
-from ..persist import write
-from ..run     import launch
-from ..utils   import debug as ldebug
+from ..clients import Client, Fleet
+from ..objects import Default, Object, edit, fmt, keys
+from ..persist import ident, last, store, write
+from ..runtime import Event, launch
+from ..utility import debug as ldebug
 
 
 from . import Main, command

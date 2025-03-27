@@ -1,13 +1,32 @@
 # This file is placed in the Public Domain.
 
 
-"list of clients"
+"client"
 
 
 import threading
 
 
+from .runtime import Handler
+
+
 outlock = threading.RLock()
+
+
+class Client(Handler):
+
+    def __init__(self):
+        Handler.__init__(self)
+        Fleet.add(self)
+
+    def announce(self, txt) -> None:
+        pass
+
+    def raw(self, txt) -> None:
+        raise NotImplementedError("raw")
+
+    def say(self, channel, txt) -> None:
+        self.raw(txt)
 
 
 class Fleet:
@@ -57,5 +76,6 @@ class Fleet:
 
 def __dir__():
     return (
+        'Client',
         'Fleet',
     )

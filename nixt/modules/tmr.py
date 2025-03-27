@@ -7,20 +7,20 @@
 import time
 
 
-from ..find    import find, ident, store
-from ..fleet   import Fleet
-from ..object  import update
-from ..persist import write
-from ..run     import launch
-from ..timer   import Timer
-from ..utils   import NoDate, elapsed, get_day, get_hour, to_day, today
+from ..clients import Fleet
+from ..objects import update
+from ..persist import find, ident, store, write
+from ..runtime import Timer, launch
+from ..utility import NoDate, elapsed, get_day, get_hour, to_day, today
 
 
 def init():
     for fnm, obj in find("timer"):
+        if "time" not in dir(obj):
+            continue
         diff = float(obj.time) - time.time()
         if diff > 0:
-            timer = Timer(diff, Fleet.announce, obj.rest)
+            timer = Timer(diff, Fleet.announce, obj.txt)
             timer.start()
         else:
             obj.__deleted__ = True
@@ -32,6 +32,8 @@ def tmr(event):
     if not event.rest:
         nmr = 0
         for _fn, obj in find('timer'):
+            if "time" not in dir(obj):
+                continue
             lap = float(obj.time) - time.time()
             if lap > 0:
                 event.reply(f'{nmr} {obj.txt} {elapsed(lap)}')
@@ -63,13 +65,13 @@ def tmr(event):
     if not target or time.time() > target:
         event.reply("already passed given time.")
         return result
-    event.time = target
     diff = target - time.time()
-    event.reply("ok " +  elapsed(diff))
-    del event.args
-    event.reply(event.rest)
-    timer = Timer(diff, event.display)
-    update(timer, event)
+    txt = " ".join(event.args[1:])
+    timer = Timer(diff, Fleet.say, event.orig, event.channel, txt)
+    timer.channel = event.channel
+    timer.orig = event.orig
+    timer.time = target
+    timer.txt = txt
     write(timer, store(ident(timer)))
     launch(timer.start)
-    return result
+    event.reply("ok " +  elapsed(diff))

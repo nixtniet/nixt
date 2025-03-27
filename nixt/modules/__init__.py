@@ -15,9 +15,10 @@ import types
 import typing
 
 
-from ..object import Default
-from ..run    import launch
-from ..utils  import debug, md5sum, spl
+from ..clients import Fleet
+from ..objects import Default
+from ..runtime import launch
+from ..utility import debug, md5sum, spl
 
 
 initlock = threading.RLock()
@@ -88,7 +89,7 @@ def command(evt) -> None:
     func = Commands.get(evt.cmd)
     if func:
         func(evt)
-        evt.display()
+        Fleet.display(evt)
     evt.ready()
 
 
