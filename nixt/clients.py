@@ -7,10 +7,22 @@
 import threading
 
 
+from .objects import Default
 from .runtime import Handler
 
 
 outlock = threading.RLock()
+
+
+class Main(Default):
+
+    debug   = False
+    ignore  = 'brk,dbg,mbx,udp'
+    init    = ""
+    md5     = True
+    name    = __package__.split('.', maxsplit=1)[0]
+    opts    = Default()
+    verbose = False
 
 
 class Client(Handler):

@@ -16,7 +16,8 @@ sys.path.insert(0, os.getcwd())
 
 
 from .clients import Client
-from .modules import Commands, Main, command, inits, mods, modules, parse, scan
+from .command import Commands, Main, command, parse, scan
+from .imports import inits, mods, modules
 from .objects import dumps
 from .persist import Workdir, pidname
 from .runtime import Errors, Event, Thread
