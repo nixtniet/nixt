@@ -8,7 +8,6 @@ import time
 
 
 from ..clients import Fleet
-from ..objects import update
 from ..persist import find, ident, store, write
 from ..runtime import Timer, launch
 from ..utility import NoDate, elapsed, get_day, get_hour, to_day, today

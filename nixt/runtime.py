@@ -12,6 +12,9 @@ import typing
 import _thread
 
 
+STARTTIME = time.time()
+
+
 lock = threading.RLock()
 
 
@@ -233,6 +236,7 @@ def name(obj) -> str:
 
 def __dir__():
     return (
+        'STARTTIME',
         'Errors',
         'Event',
         'Handler',

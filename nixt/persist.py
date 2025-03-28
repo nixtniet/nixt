@@ -14,11 +14,11 @@ import time
 
 
 from .objects import Object, fqn, items, update
-from .objects import loads, dumps, update
+from .objects import loads, dumps
 
 
 lock = threading.RLock()
-p = os.path.join
+p    = os.path.join
 
 
 class DecodeError(Exception):
@@ -79,8 +79,6 @@ def write(obj, pth):
             ofile.write(txt)
         Cache.add(pth, obj)
     return pth
-
-
 
 
 "paths"

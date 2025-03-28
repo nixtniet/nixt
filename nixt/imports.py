@@ -12,9 +12,9 @@ import threading
 import types
 
 
-from .command import Main
+from .clients import Main
 from .runtime import launch
-from .utility import spl
+from .utility import debug, md5sum, spl
 
 
 MD5 = {}
@@ -35,7 +35,7 @@ pname = f"{__package__}.modules"
 def check(name, sum=""):
     if not checksum:
         return True
-    if not Commands.md5:
+    if not Main.md5:
         md5s = gettbl("MD5")
         if md5s:
             MD5.update(md5s)
@@ -133,7 +133,6 @@ def modules(mdir="") -> [str]:
 
 def __dir__():
     return (
-        'STARTTIME',
         'check',
         'getmod',
         'gettbl',

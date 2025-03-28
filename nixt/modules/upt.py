@@ -7,7 +7,7 @@
 import time
 
 
-from ..command import STARTTIME
+from ..runtime import STARTTIME
 from ..utility import elapsed
 
 

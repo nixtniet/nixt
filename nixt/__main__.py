@@ -6,25 +6,21 @@
 
 import os
 import pathlib
-import signal
 import sys
 import time
 import _thread
 
 
-sys.path.insert(0, os.getcwd())
-
-
-from .clients import Client
-from .command import Commands, Main, command, parse, scan
+from .clients import Client, Main
+from .command import Commands, command, parse, scan
 from .imports import inits, mods, modules
 from .objects import dumps
 from .persist import Workdir, pidname
-from .runtime import Errors, Event, Thread
+from .runtime import Errors, Event
 from .utility import md5sum, nodebug
 
 
-p = os.path.join
+"cli"
 
 
 def output(txt):
@@ -204,7 +200,7 @@ def control():
 
 
 def service():
-    signal.signal(signal.SIGHUP, handler)
+    #signal.signal(signal.SIGHUP, handler)
     nodebug()
     setwd(Main.name)
     privileges()

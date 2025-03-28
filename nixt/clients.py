@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"client"
+"clients"
 
 
 import threading
@@ -17,7 +17,7 @@ outlock = threading.RLock()
 class Main(Default):
 
     debug   = False
-    ignore  = 'brk,dbg,llm,mbx,udp'
+    ignore  = 'brk,llm,mbx,udp'
     init    = ""
     md5     = True
     name    = __package__.split('.', maxsplit=1)[0]
@@ -90,4 +90,5 @@ def __dir__():
     return (
         'Client',
         'Fleet',
+        'Main'
     )

@@ -5,22 +5,12 @@
 
 
 import inspect
-import time
 import typing
 
 
-from .clients import Fleet, Main
+from .clients import Fleet
 from .imports import check, gettbl, load
 from .objects import Default
-
-
-STARTTIME = time.time()
-
-
-class MD5Error(Exception):
-
-    pass
-
 
 
 class Commands:
@@ -129,8 +119,6 @@ def scan(mod) -> None:
             continue
         if 'event' in cmdz.__code__.co_varnames:
             Commands.add(cmdz, mod)
-
-"interface"
 
 
 def __dir__():
