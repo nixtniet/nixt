@@ -5,7 +5,6 @@
 
 
 NAMES = {
-    "ask": "llm",
     "cfg": "irc",
     "dne": "tdo",
     "dpl": "rss",
@@ -38,7 +37,6 @@ MD5 = {
     "flt": "3d72750becd5ade22650ea778225b05b",
     "fnd": "9065d163357038fc3a2e8987b4fda317",
     "irc": "f41a5d543e4c19a82a2410bbe9a01e72",
-    "llm": "984a197166d2636cf878a883ea1d5e39",
     "log": "5849c21700eca3bb52ae9ae5e1e4212d",
     "man": "2c313973698f8b1de5f6ba06962e7718",
     "mod": "82d9b50b3a2a446fbb857de7192b8f28",
