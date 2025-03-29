@@ -13,7 +13,7 @@ import _thread
 
 from .clients import Client, Main
 from .command import Commands, command, parse, scan, table
-from .imports import inits, mods, modules
+from .modules import inits, mods, modules
 from .objects import dumps
 from .persist import Workdir, pidname
 from .runtime import Errors, Event
@@ -76,7 +76,7 @@ def disable():
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     output(f"{Main.name.upper()} since {tme}")
-    output(",".join(Commands.names))
+    output(",".join(sorted(modules())))
 
 
 def check(txt):

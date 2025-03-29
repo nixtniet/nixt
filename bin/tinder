@@ -18,11 +18,11 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client, Main
-from nixt.command import STARTTIME, Commands, command,parse
-from nixt.imports import mods
+from nixt.command import Commands, command, parse, table
+from nixt.modules import mods, modules
 from nixt.objects import Object, fmt, keys
 from nixt.persist import Workdir, skel
-from nixt.runtime import Errors, Event, Thread, launch
+from nixt.runtime import STARTTIME, Errors, Event, Thread, launch
 from nixt.utility import elapsed, spl
 
 
@@ -91,7 +91,7 @@ class CLI(Client):
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     print(f"{Main.name.upper()} since {tme}")
-    print("loaded " + ",".join(sorted(Commands.names)))
+    print("loaded " + ",".join(sorted(modules())))
 
 
 def consume(evts):
@@ -106,7 +106,7 @@ def consume(evts):
 
 def payload(clt, cmds):
     nmr = 0
-    cmdz = keys(cmds)
+    cmdz = sorted(keys(cmds))
     if "s" in Main.opts:
         rand.shuffle(cmdz)
     for cmd in cmdz:
@@ -136,11 +136,14 @@ def wrap(function):
     finally:
         if old3:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old3)
+    for exc in Errors.errors:
+        print(Errors.format(exc))
 
 
 def main():
     global nrs
     global nrcommand
+    table()
     parse(Main, " ".join(sys.argv[1:]))
     nrcommand = 0
     if "v" in Main.opts:
@@ -173,10 +176,9 @@ def main():
     nrz = len(events)
     consume(events)
 
+
 if __name__ == "__main__":
     wrap(main)
-    for exc in Errors.errors:
-        print(Errors.format(exc))
     endtime = time.time()
     lap = elapsed(endtime-STARTTIME)
     percall = (endtime-STARTTIME)/(nrcommand)
