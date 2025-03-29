@@ -55,7 +55,7 @@ def getmod(name):
     mod = sys.modules.get(mname, None)
     if mod:
         return mod
-    pth = os.path.abspath(mname.replace(".", os.sep) + ".py")
+    pth = os.path.join(path, name + ".py")
     spec = importlib.util.spec_from_file_location(mname, pth)
     if not spec:
         return None

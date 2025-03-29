@@ -12,19 +12,19 @@ import _thread
 
 
 from .clients import Client, Main
-from .command import Commands, command, parse, scan
+from .command import Commands, command, parse, scan, table
 from .imports import inits, mods, modules
 from .objects import dumps
 from .persist import Workdir, pidname
 from .runtime import Errors, Event
-from .utility import md5sum, nodebug
+from .utility import md5sum, nodebug, unbuffered
 
 
 "cli"
 
 
 def output(txt):
-    print(txt)
+    print(txt, flush=True)
 
 
 class CLI(Client):
@@ -76,6 +76,7 @@ def disable():
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     output(f"{Main.name.upper()} since {tme}")
+    output(",".join(Commands.names))
 
 
 def check(txt):
@@ -156,6 +157,7 @@ def background():
     privileges()
     disable()
     pidfile(pidname(Main.name))
+    table()
     Commands.add(cmd)
     inits(Main.init or "irc,rss")
     forever()
@@ -165,6 +167,7 @@ def console():
     import readline # noqa: F401
     setwd(Main.name)
     enable()
+    table()
     Commands.add(cmd)
     parse(Main, " ".join(sys.argv[1:]))
     Main.init = Main.sets.init or Main.init
@@ -183,7 +186,7 @@ def control():
     if len(sys.argv) == 1:
         return
     setwd(Main.name)
-    Workdir.wdr = os.path.expanduser(f"~/.{Main.name}")
+    table()
     enable()
     Commands.add(cmd)
     Commands.add(md5)
@@ -200,9 +203,11 @@ def control():
 
 
 def service():
-    #signal.signal(signal.SIGHUP, handler)
-    nodebug()
     setwd(Main.name)
+    table()
+    nodebug()
+    unbuffered()
+    banner()
     privileges()
     pidfile(pidname(Main.name))
     Commands.add(cmd)
@@ -272,7 +277,7 @@ def wrapped(func):
     except (KeyboardInterrupt, EOFError):
         output("")
     for exc in Errors.errors:
-        print(Errors.format(exc))
+        output(Errors.format(exc))
 
 
 def wrap(func):

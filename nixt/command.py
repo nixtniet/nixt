@@ -27,10 +27,6 @@ class Commands:
 
     @staticmethod
     def get(cmd) -> typing.Callable:
-        if not Commands.names:
-            tbl = gettbl("NAMES")
-            if tbl:
-                Commands.names.update(tbl)
         func = Commands.cmds.get(cmd, None)
         if not func:
             name = Commands.names.get(cmd, None)
@@ -52,6 +48,12 @@ def command(evt) -> None:
         func(evt)
         Fleet.display(evt)
     evt.ready()
+
+
+def table():
+    tbl = gettbl("NAMES")
+    if tbl:
+        Commands.names.update(tbl)
 
 
 def parse(obj, txt=None) -> None:
@@ -127,5 +129,6 @@ def __dir__():
         'Commands',
         'command',
         'parse',
-        'scan'
+        'scan',
+        'table'
     )

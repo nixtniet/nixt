@@ -17,9 +17,9 @@ outlock = threading.RLock()
 class Main(Default):
 
     debug   = False
-    ignore  = 'brk,llm,mbx,udp'
+    ignore  = 'brk,dbg,llm,mbx,udp'
     init    = ""
-    md5     = True
+    md5     = False
     name    = __package__.split('.', maxsplit=1)[0]
     opts    = Default()
     verbose = False

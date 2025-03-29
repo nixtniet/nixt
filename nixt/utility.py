@@ -9,12 +9,48 @@ import hashlib
 import os
 import re
 import sys
+import textwrap
 import time
 
 
 class NoDate(Exception):
 
     pass
+
+
+class TextWrap(textwrap.TextWrapper):
+
+    def __init__(self):
+        super().__init__()
+        self.break_long_words = False
+        self.drop_whitespace = False
+        self.fix_sentence_endings = True
+        self.replace_whitespace = True
+        self.tabsize = 4
+        self.width = 120
+
+
+wrapper = TextWrap()
+
+
+class Unbuffered(object):
+
+    def __init__(self, stream):
+        self.stream = stream
+
+    def __getattr__(self, attr):
+        return getattr(self.stream, attr)
+
+    def write(self, data):
+        for line in wrapper.wrap(data):
+            self.stream.write(line.rstrip())
+            self.stream.write("\n")
+            self.stream.flush()
+
+    def writelines(self, datas):
+        for data in datas:
+            self.write(data)
+
 
 
 def elapsed(seconds, short=True) -> str:
@@ -83,6 +119,10 @@ def debug(*args):
 def nodebug():
     with open('/dev/null', 'a+', encoding="utf-8") as ses:
         os.dup2(ses.fileno(), sys.stderr.fileno())
+
+
+def unbuffered():
+    sys.stdout = Unbuffered(sys.stdout)
 
 
 "time"
