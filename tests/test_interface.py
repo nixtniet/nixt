@@ -13,7 +13,6 @@ import unittest
 import nixt
 import nixt.clients
 import nixt.command
-import nixt.imports
 import nixt.modules
 import nixt.objects
 import nixt.persist
@@ -27,7 +26,6 @@ from nixt.objects import *
 PACKAGE = [
     'clients',
     'command',
-    'imports',
     'modules',
     'objects',
     'persist',
