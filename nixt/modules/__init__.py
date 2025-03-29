@@ -110,7 +110,6 @@ def load(name) -> types.ModuleType:
 def mods(names="") -> [types.ModuleType]:
     res = []
     for nme in sorted(modules(path)):
-        print(nme)
         if names and nme not in spl(names):
             continue
         mod = load(nme)

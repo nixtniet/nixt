@@ -296,7 +296,7 @@ def wrap(func):
 
 def main():
     if check("a"):
-        Main.ignore = ""
+        Main.ignore = "udp"
         Main.init   = ",".join(modules())
         for mod in mods():
             mod.DEBUG = False
