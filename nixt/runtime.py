@@ -18,6 +18,9 @@ STARTTIME = time.time()
 lock = threading.RLock()
 
 
+"handler"
+
+
 class Event:
 
     def __init__(self):
@@ -113,6 +116,9 @@ class Handler:
         self.ready.wait()
 
 
+"threads"
+
+
 class Thread(threading.Thread):
 
     def __init__(self, func, thrname, *args, daemon=True, **kwargs):
@@ -175,6 +181,9 @@ class Repeater(Timer):
         super().run()
 
 
+"errors"
+
+
 class Errors:
 
     name = __file__.rsplit("/", maxsplit=2)[-2]
@@ -218,6 +227,9 @@ class Errors:
         )
 
 
+"utilities"
+
+
 def later(exc) -> None:
     Errors.errors.append(exc)
 
@@ -244,6 +256,9 @@ def name(obj) -> str:
     if '__name__' in dir(obj):
         return f'{obj.__class__.__name__}.{obj.__name__}'
     return None
+
+
+"interface"
 
 
 def __dir__():
