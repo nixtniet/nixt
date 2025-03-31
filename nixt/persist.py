@@ -13,8 +13,7 @@ import typing
 import time
 
 
-from .objects import Object, fqn, items, update
-from .objects import loads, dumps
+from .objects import Object, dumps, fqn, items, loads, update
 
 
 lock = threading.RLock()

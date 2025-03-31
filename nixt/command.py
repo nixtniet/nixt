@@ -125,7 +125,6 @@ def scan(mod) -> None:
 
 def __dir__():
     return (
-        'STARTTIME',
         'Commands',
         'command',
         'parse',
