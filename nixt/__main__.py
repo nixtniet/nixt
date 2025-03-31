@@ -277,7 +277,8 @@ def wrapped(func):
     except (KeyboardInterrupt, EOFError):
         output("")
     for exc in Errors.errors:
-        output(Errors.format(exc))
+        for line in Errors.full(exc):
+            output(line.rstrip())
 
 
 def wrap(func):

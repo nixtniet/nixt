@@ -221,10 +221,10 @@ class Errors:
     @staticmethod
     def full(exc) -> str:
         return traceback.format_exception(
-            type(exc),
-            exc,
-            exc.__traceback__
-        )
+                                          type(exc),
+                                          exc,
+                                          exc.__traceback__
+                                         )
 
 
 "utilities"
@@ -237,7 +237,7 @@ def later(exc) -> None:
 def launch(func, *args, **kwargs) -> Thread:
     nme = kwargs.get("name")
     if not nme:
-        nme= name(func)
+        nme = name(func)
     thread = Thread(func, nme, *args, **kwargs)
     thread.start()
     return thread
