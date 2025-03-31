@@ -23,8 +23,13 @@ from .utility import md5sum, nodebug, unbuffered
 "cli"
 
 
+def doprint(txt):
+    print(txt.rstrip())
+    sys.stdout.flush()
+
+
 def output(txt):
-    print(txt, flush=True)
+    doprint(txt)
 
 
 class CLI(Client):
@@ -62,7 +67,7 @@ def nil(txt):
 
 def enable():
     global output
-    output = print
+    output = doprint
 
 
 def disable():
@@ -206,7 +211,8 @@ def service():
     setwd(Main.name)
     table()
     nodebug()
-    unbuffered()
+    #unbuffered()
+    enable()
     banner()
     privileges()
     pidfile(pidname(Main.name))
@@ -278,7 +284,7 @@ def wrapped(func):
         output("")
     for exc in Errors.errors:
         for line in Errors.full(exc):
-            output(line.rstrip())
+            output(line)
 
 
 def wrap(func):
