@@ -123,7 +123,7 @@ def modules(mdir="") -> [str]:
     return [
             x[:-3] for x in os.listdir(mdir or path)
             if x.endswith(".py") and not x.startswith("__") and
-            x not in Main.ignore
+            x[:-3] not in Main.ignore
            ]
 
 
