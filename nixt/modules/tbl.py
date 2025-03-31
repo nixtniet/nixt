@@ -5,9 +5,7 @@
 
 
 NAMES = {
-    "brk": "dbg",
     "cfg": "irc",
-    "dbg": "dbg",
     "dne": "tdo",
     "dpl": "rss",
     "err": "err",
@@ -35,7 +33,6 @@ NAMES = {
 
 
 MD5 = {
-    "dbg": "d800668fb9c7cf9bc78f4441f3ad7ba7",
     "err": "b61d8cc4e0d4538467891d61edc1313a",
     "flt": "3d72750becd5ade22650ea778225b05b",
     "fnd": "9065d163357038fc3a2e8987b4fda317",
