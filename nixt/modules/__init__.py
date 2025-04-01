@@ -12,7 +12,7 @@ import threading
 import types
 
 
-from ..clients import Main
+from ..objects import Default
 from ..runtime import launch
 from ..utility import debug, md5sum, spl
 
@@ -30,6 +30,17 @@ checksum = ""
 
 path  = os.path.dirname(__file__)
 pname = f"{__package__}"
+
+
+class Main(Default):
+
+    debug   = False
+    ignore  = 'brk,llm,mbx,udp'
+    init    = ""
+    md5     = True
+    name    = __package__.split('.', maxsplit=1)[0]
+    opts    = Default()
+    verbose = False
 
 
 def check(name, sum=""):

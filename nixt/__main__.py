@@ -11,9 +11,9 @@ import time
 import _thread
 
 
-from .clients import Client, Main
+from .clients import Client
 from .command import Commands, command, parse, scan, table
-from .modules import inits, mods, modules
+from .modules import Main, inits, mods, modules
 from .objects import dumps
 from .persist import Workdir, pidname
 from .runtime import Errors, Event
