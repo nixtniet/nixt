@@ -190,7 +190,7 @@ opml
 **PROGRAMMING**
 
 
-``%s`` has it's modules in the package, so edit a file in %s/modules/<name>.py
+``nixt`` has it's modules in the package, so edit a file in nixt/modules/<name>.py
 and add the following for ``hello world``
 
 ::
@@ -199,22 +199,22 @@ and add the following for ``hello world``
         event.reply("hello world !!")
 
 
-save this and recreate the dispatch table
+Save this and recreate the dispatch table
 
 |
-| ``$ %s tbl > %s/lookup.py``
+| ``$ nixt tbl > nixt/modules/tbl.py``
 |
 
-``%s`` can execute the ``hello`` command now.
+``nixt`` can execute the ``hello`` command now.
 
 |
-| ``$ %s hello``
+| ``$ nixt hello``
 | ``hello world !!``
 |
 
-commands run in their own thread, errors are deferred to not have loops
-blocking/breaking on exception and can contain your own written python3
-code, see the nixt/modules directory for examples.
+Commands run in their own thread and the program borks on exit, output gets
+flushed on print so exceptions appear in the systemd logs. Modules can contain
+your own written python3 code, see the nixt/modules directory for examples.
 
 
 **FILES**

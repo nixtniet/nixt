@@ -190,7 +190,7 @@ and add the following for ``hello world``
         event.reply("hello world !!")
 
 
-save this and recreate the dispatch table
+Save this and recreate the dispatch table
 
 |
 | ``$ nixt tbl > nixt/modules/tbl.py``
@@ -203,8 +203,8 @@ save this and recreate the dispatch table
 | ``hello world !!``
 |
 
-commands run in their own thread and the program borks on exit, output gets
-flushed on print so exceptions appear in the systemd logs. modules can contain
+Commands run in their own thread and the program borks on exit, output gets
+flushed on print so exceptions appear in the systemd logs. Modules can contain
 your own written python3 code, see the nixt/modules directory for examples.
 
 
