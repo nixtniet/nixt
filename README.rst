@@ -15,7 +15,7 @@ N I X T
 
 |
 | ``nixt <cmd> [key=val] [key==val]``
-| ``nixt -cvw [init=mod1,mod2]``
+| ``nixt -cvaw [init=mod1,mod2]``
 | ``nixt -d`` 
 | ``nixt -s``
 |
@@ -203,9 +203,9 @@ save this and recreate the dispatch table
 | ``hello world !!``
 |
 
-commands run in their own thread, errors are deferred to not have loops
-blocking/breaking on exception and can contain your own written python3
-code, see the nixt/modules directory for examples.
+commands run in their own thread and the program borks on exit, output gets
+flushed on print so exceptions appear in the systemd logs. modules can contain
+your own written python3 code, see the nixt/modules directory for examples.
 
 
 **FILES**

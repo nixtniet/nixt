@@ -239,7 +239,7 @@ def srv(event):
 
 
 def tbl(event):
-    if check("f"):
+    if not check("f"):
         Commands.names = {}
     for mod in mods(empty=True):
         scan(mod)

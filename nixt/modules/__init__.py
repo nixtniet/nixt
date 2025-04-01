@@ -77,6 +77,8 @@ def getmod(name):
 
 def gettbl(name):
     pth = os.path.join(path, "tbl.py")
+    if not os.path.exists(pth):
+        return {}
     if not checksum or (md5sum(pth) == checksum):
         try:
             mod = getmod("tbl")
@@ -120,8 +122,11 @@ def load(name) -> types.ModuleType:
 def mods(names="", empty=False) -> [types.ModuleType]:
     res = []
     if empty:
-        from . import tbl
-        tbl.NAMES = {}
+        try:
+            from . import tbl
+            tbl.NAMES = {}
+        except ImportError:
+            pass
     for nme in sorted(modules(path)):
         if names and nme not in spl(names):
             continue
