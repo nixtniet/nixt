@@ -35,7 +35,7 @@ pname = f"{__package__}"
 class Main(Default):
 
     debug   = False
-    ignore  = 'brk,llm,mbx,udp'
+    ignore  = 'brk,dbg,llm,mbx,udp'
     init    = ""
     md5     = True
     name    = __package__.split('.', maxsplit=1)[0]
@@ -118,8 +118,11 @@ def load(name) -> types.ModuleType:
         return module
 
 
-def mods(names="") -> [types.ModuleType]:
+def mods(names="", empty=False) -> [types.ModuleType]:
     res = []
+    if empty:
+        from . import tbl
+        tbl.NAMES = {}
     for nme in sorted(modules(path)):
         if names and nme not in spl(names):
             continue
@@ -139,13 +142,4 @@ def modules(mdir="") -> [str]:
 
 
 def __dir__():
-    return (
-        'check',
-        'getmod',
-        'gettbl',
-        'inits',
-        'load',
-        'md5sum',
-        'modules',
-        'mods'
-    )
+    return modules()

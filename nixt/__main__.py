@@ -239,7 +239,9 @@ def srv(event):
 
 
 def tbl(event):
-    for mod in mods():
+    if check("f"):
+        Commands.names = {}
+    for mod in mods(empty=True):
         scan(mod)
     event.reply("# This file is placed in the Public Domain.")
     event.reply("")
