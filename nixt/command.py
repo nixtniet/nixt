@@ -9,7 +9,7 @@ import typing
 
 
 from .clients import Fleet
-from .modules import check, gettbl, load
+from .modules import check, gettbl, load, table
 from .objects import Default
 
 
@@ -48,12 +48,6 @@ def command(evt) -> None:
         func(evt)
         Fleet.display(evt)
     evt.ready()
-
-
-def table():
-    tbl = gettbl("NAMES")
-    if tbl:
-        Commands.names.update(tbl)
 
 
 def parse(obj, txt=None) -> None:
@@ -122,6 +116,11 @@ def scan(mod) -> None:
         if 'event' in cmdz.__code__.co_varnames:
             Commands.add(cmdz, mod)
 
+
+def table():
+    from .modules import NAMES, table
+    table()
+    Commands.names.update(NAMES)
 
 def __dir__():
     return (

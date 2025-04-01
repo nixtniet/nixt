@@ -18,13 +18,14 @@ from ..utility import debug, md5sum, spl
 
 
 MD5 = {}
+NAMES = {}
 
 
 initlock = threading.RLock()
 loadlock = threading.RLock()
 
 
-checksum = "8a0785a84648dced05d2ad3635a66c14"
+checksum = "c8d54dcab25974fe7adce842da2f2c4e"
 
 
 path  = os.path.dirname(__file__)
@@ -43,12 +44,6 @@ class Main(Default):
 
 
 def check(name, sum=""):
-    if not checksum or not Main.md5:
-        return True
-    md5s = gettbl("MD5")
-    if not md5s:
-        return True
-    MD5.update(md5s)
     mname = f"{pname}.{name}"
     pth = os.path.join(path, name + ".py")
     spec = importlib.util.spec_from_file_location(mname, pth)
@@ -143,6 +138,26 @@ def modules(mdir="") -> [str]:
             if x.endswith(".py") and not x.startswith("__") and
             x[:-3] not in Main.ignore
            ]
+
+
+def table():
+    if not checksum or not Main.md5:
+        return True
+    md5s = gettbl("MD5")
+    if not md5s:
+        if Main.md5:
+            print("False")
+            return False
+        return True
+    MD5.update(md5s)
+    names = gettbl("NAMES")
+    if not names:
+        if Main.md5:
+            print("False")
+            return False
+        return True
+    NAMES.update(names)
+    return NAMES
 
 
 def __dir__():
