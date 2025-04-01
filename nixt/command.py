@@ -128,6 +128,5 @@ def __dir__():
         'Commands',
         'command',
         'parse',
-        'scan',
-        'table'
+        'scan'
     )

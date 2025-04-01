@@ -17,7 +17,7 @@ from .modules import inits, mods, modules
 from .objects import dumps
 from .persist import Workdir, pidname
 from .runtime import Errors, Event
-from .utility import md5sum, nodebug, unbuffered
+from .utility import md5sum, nodebug
 
 
 "cli"
@@ -211,7 +211,6 @@ def service():
     setwd(Main.name)
     table()
     nodebug()
-    #unbuffered()
     enable()
     banner()
     privileges()

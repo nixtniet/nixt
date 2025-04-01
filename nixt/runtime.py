@@ -18,7 +18,7 @@ STARTTIME = time.time()
 lock = threading.RLock()
 
 
-"handler"
+"event handler"
 
 
 class Event:

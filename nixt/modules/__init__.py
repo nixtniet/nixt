@@ -25,6 +25,7 @@ loadlock = threading.RLock()
 
 
 checksum = "e2c15172fec9ec76bc5014725976fe7b"
+checksum = ""
 
 
 path  = os.path.dirname(__file__)
@@ -32,12 +33,12 @@ pname = f"{__package__}"
 
 
 def check(name, sum=""):
-    if not checksum:
+    if not checksum or not Main.md5:
         return True
-    if Main.md5:
-        md5s = gettbl("MD5")
-        if md5s:
-            MD5.update(md5s)
+    md5s = gettbl("MD5")
+    if not md5s:
+        return True
+    MD5.update(md5s)
     mname = f"{pname}.{name}"
     pth = os.path.join(path, name + ".py")
     spec = importlib.util.spec_from_file_location(mname, pth)
