@@ -4,16 +4,15 @@
 "disk"
 
 
-import datetime
 import json
 import os
 import pathlib
 import threading
 import typing
-import time
 
 
-from .object import Object, dumps, fqn, items, loads, update
+from .json   import dumps, loads
+from .object import update
 
 
 lock = threading.RLock()

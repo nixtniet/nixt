@@ -5,16 +5,14 @@
 
 
 import datetime
-import json
 import os
 import pathlib
 import threading
-import typing
 import time
 
 
 from .disk   import Cache, read
-from .object import Object, dumps, fqn, items, loads, update
+from .object import Object, fqn, items, update
 
 
 lock = threading.RLock()
