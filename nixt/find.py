@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"persistence"
+"locate objects"
 
 
 import datetime
@@ -13,74 +13,18 @@ import typing
 import time
 
 
-from .objects import Object, dumps, fqn, items, loads, update
+from .disk   import Cache, read
+from .object import Object, dumps, fqn, items, loads, update
 
 
 lock = threading.RLock()
 p    = os.path.join
 
 
-class DecodeError(Exception):
-
-    pass
-
-
 class Workdir:
 
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
     wdr  = ""
-
-
-class Cache:
-
-    objs = {}
-
-    @staticmethod
-    def add(path, obj) -> None:
-        Cache.objs[path] = obj
-
-    @staticmethod
-    def get(path) -> typing.Any:
-        return Cache.objs.get(path, None)
-
-    @staticmethod
-    def typed(matcher) -> [typing.Any]:
-        for key in Cache.objs:
-            if matcher not in key:
-                continue
-            yield Cache.objs.get(key)
-
-
-"disk"
-
-
-def cdir(pth) -> None:
-    path = pathlib.Path(pth)
-    path.parent.mkdir(parents=True, exist_ok=True)
-
-
-def read(obj, pth):
-    with lock:
-        with open(pth, 'r', encoding='utf-8') as ofile:
-            try:
-                obj2 = loads(ofile.read())
-                update(obj, obj2)
-            except json.decoder.JSONDecodeError as ex:
-                raise DecodeError(pth) from ex
-    return pth
-
-
-def write(obj, pth):
-    with lock:
-        cdir(pth)
-        txt = dumps(obj, indent=4)
-        with open(pth, 'w', encoding='utf-8') as ofile:
-            ofile.write(txt)
-        Cache.add(pth, obj)
-    return pth
-
-
-"paths"
 
 
 def long(name) -> str:
@@ -205,8 +149,6 @@ def search(obj, selector, matching=None) -> bool:
 
 def __dir__():
     return (
-        'Cache',
-        'DecodeError',
         'Workdir',
         'cdir',
         'fns',
@@ -216,12 +158,10 @@ def __dir__():
         'last',
         'long',
         'pidname',
-        'read',
         'search',
         'setwd',
         'skel',
         'store',
         'strip',
-        'types',
-        'write'
+        'types'
     )

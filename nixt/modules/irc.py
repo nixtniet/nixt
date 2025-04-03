@@ -14,9 +14,10 @@ import threading
 import time
 
 
-from ..objects import Default, Object, edit, fmt, keys
-from ..persist import ident, last, store, write
-from ..runtime import Client, Event, Fleet, launch
+from ..disk   import write
+from ..object import Default, Object, edit, fmt, keys
+from ..find   import ident, last, store
+from ..run    import Client, Event, Fleet, launch
 
 
 from . import Main, command

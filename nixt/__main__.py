@@ -11,11 +11,11 @@ import time
 import _thread
 
 
-from .objects import dumps
+from .json    import dumps
 from .modules import Main, inits, md5sum, mods, modules, nodebug
 from .modules import Commands, command, parse, scan, table
-from .persist import Workdir, pidname
-from .runtime import Client, Errors, Event
+from .find    import Workdir, pidname
+from .run     import Client, Errors, Event
 
 
 Main.name = __package__.split(".")[0].lower()

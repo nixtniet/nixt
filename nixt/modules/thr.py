@@ -8,8 +8,8 @@ import threading
 import time
 
 
-from ..objects import Object, update
-from ..runtime import STARTTIME
+from ..object import Object, update
+from ..run    import STARTTIME
 
 
 from . import elapsed

@@ -12,8 +12,8 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from ..objects import Default, Object
-from ..runtime import later, launch
+from ..object import Default, Object
+from ..run    import later, launch
 
 
 DEBUG = False

@@ -8,8 +8,8 @@ import datetime
 import time
 
 
-from ..objects import Object, construct, keys
-from ..runtime import Event, Fleet, Repeater
+from ..object import Object, construct, keys
+from ..run    import Event, Fleet, Repeater
 
 
 from . import elapsed

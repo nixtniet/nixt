@@ -7,8 +7,8 @@
 import time
 
 
-from ..persist import find, fntime, long, skel, types
-from ..objects import fmt
+from ..find   import find, fntime, long, skel, types
+from ..object import fmt
 
 
 from . import elapsed
