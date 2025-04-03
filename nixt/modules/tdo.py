@@ -9,7 +9,9 @@ import time
 
 from ..persist import find, fntime, ident, store, write
 from ..objects import Object
-from ..utility import elapsed
+
+
+from . import elapsed
 
 
 class Todo(Object):

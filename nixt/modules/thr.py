@@ -10,7 +10,9 @@ import time
 
 from ..objects import Object, update
 from ..runtime import STARTTIME
-from ..utility import elapsed
+
+
+from . import elapsed
 
 
 def thr(event):
