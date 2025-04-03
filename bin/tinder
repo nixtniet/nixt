@@ -17,16 +17,17 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client
-from nixt.command import Commands, command, parse, table
-from nixt.modules import Main, mods, modules
-from nixt.objects import Object, fmt, keys
-from nixt.persist import Workdir, skel
-from nixt.runtime import STARTTIME, Errors, Event, Thread, launch
-from nixt.utility import elapsed, spl
+from nixt.object import Object, fmt, keys
+from nixt.find   import Workdir, skel
+from nixt.run    import STARTTIME, Client, Errors, Event, Thread, launch
+
+
+from nixt.modules import Commands, command, debug, parse, table
+from nixt.modules import Main, elapsed, mods, modules, spl
 
 
 Main.debug  = True
+Main.md5    = False
 Workdir.wdr = ".test"
 
 
