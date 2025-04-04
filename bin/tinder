@@ -17,13 +17,13 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.object  import Object, fmt, keys
+from nixt.object  import Object, keys
 from nixt.find    import Workdir, skel
 from nixt.handler import STARTTIME, Client, Event
 from nixt.thread  import Errors, Thread, launch
 
 
-from nixt.modules import Commands, command, debug, parse, table
+from nixt.modules import Commands, command, debug, fmt, parse, table
 from nixt.modules import Main, elapsed, mods, modules, spl
 
 

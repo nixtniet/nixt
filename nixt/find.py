@@ -13,7 +13,7 @@ import time
 
 from .cache  import Cache
 from .json   import read
-from .object import Object, fqn, items, update
+from .object import Object, items, update
 
 
 lock = threading.RLock()
@@ -109,6 +109,13 @@ def find(clz, selector=None, deleted=False, matching=False) -> [Object]:
 "methods"
 
 
+def fqn(obj) -> str:
+    kin = str(type(obj)).split()[-1][1:-2]
+    if kin == "type":
+        kin = f"{obj.__module__}.{obj.__name__}"
+    return kin
+
+
 def ident(obj) -> str:
     return p(fqn(obj),*str(datetime.datetime.now()).split())
 
@@ -155,6 +162,7 @@ def __dir__():
         'fns',
         'fntime',
         'find',
+        'fqn',
         'ident',
         'last',
         'long',

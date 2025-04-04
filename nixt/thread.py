@@ -29,6 +29,10 @@ class Thread(threading.Thread):
             self.result = func(*args)
         except Exception as ex:
             later(ex)
+            try:
+                args[0].ready()
+            except (IndexError, AttributeError):
+                pass
             _thread.interrupt_main()
 
     def join(self, timeout=None) -> typing.Any:
