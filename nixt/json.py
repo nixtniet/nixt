@@ -22,6 +22,9 @@ class DecodeError(Exception):
     pass
 
 
+"decoder"
+
+
 class Decoder(json.JSONDecoder):
 
     def __init__(self, *args, **kwargs):
@@ -41,10 +44,9 @@ def hook(objdict) -> Object:
 
 
 def load(*args, **kw):
-    with lock:
-        kw["cls"] = Decoder
-        kw["object_hook"] = hook
-        return json.load(*args, **kw)
+    kw["cls"] = Decoder
+    kw["object_hook"] = hook
+    return json.load(*args, **kw)
 
 
 def loads(*args, **kw) -> Object:
@@ -54,12 +56,16 @@ def loads(*args, **kw) -> Object:
 
 
 def read(obj, pth):
-    with open(pth, "r", encoding="utf-8") as fpt:
-        try:
-            update(obj, load(fpt))
-        except json.decoder.JSONDecodeError as ex:
-            raise DecodeError(pth) from ex
+    with lock:
+        with open(pth, "r", encoding="utf-8") as fpt:
+            try:
+                update(obj, load(fpt))
+            except json.decoder.JSONDecodeError as ex:
+                raise DecodeError(pth) from ex
     return pth
+
+
+"encoder"
 
 
 class Encoder(json.JSONEncoder):
@@ -83,15 +89,9 @@ class Encoder(json.JSONEncoder):
                 return repr(o)
 
 
-def cdir(pth) -> None:
-    path = pathlib.Path(pth)
-    path.parent.mkdir(parents=True, exist_ok=True)
-
-
 def dump(*args, **kw):
-    with lock:
-        kw["cls"] = Encoder
-        json.dump(*args, **kw)
+    kw["cls"] = Encoder
+    json.dump(*args, **kw)
 
 
 def dumps(*args, **kw) -> str:
@@ -100,11 +100,23 @@ def dumps(*args, **kw) -> str:
 
 
 def write(obj, pth):
-    cdir(pth)
-    with open(pth, "w", encoding="utf-8") as fpt:
-        dump(obj, fpt, indent=4)
-        Cache.add(pth, obj)
-    return pth
+    with lock:
+        cdir(pth)
+        with open(pth, "w", encoding="utf-8") as fpt:
+            dump(obj, fpt, indent=4)
+            Cache.add(pth, obj)
+        return pth
+
+
+"utilities"
+
+
+def cdir(pth) -> None:
+    path = pathlib.Path(pth)
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+
+"interface"
 
 
 def __dir__():
