@@ -130,8 +130,6 @@ class Errors:
                 if Errors.name in i or "bin" in i:
                     break
             ownname = '.'.join(mod[::-1])
-            #if ownname.endswith("__"):
-            #    continue
             if ownname.startswith("<"):
                 continue
             result += f"{ownname}:{linenr} "
