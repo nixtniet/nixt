@@ -21,12 +21,12 @@ from urllib.parse import quote_plus, urlencode
 
 from ..find    import find, fntime, ident, last, store
 from ..json    import write
-from ..object  import Object, fmt, update
+from ..object  import Object, update
 from ..handler import Fleet
 from ..thread  import Repeater, launch
 
 
-from . import elapsed, spl
+from . import elapsed, fmt, spl
 
 
 DEBUG = False

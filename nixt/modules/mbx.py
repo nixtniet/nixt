@@ -11,10 +11,10 @@ import time
 
 from ..find   import find, ident, store
 from ..json   import write
-from ..object import Object, fmt, keys, update
+from ..object import Object, keys, update
 
 
-from .    import elapsed
+from .    import elapsed, fmt
 from .tmr import extract_date
 
 
