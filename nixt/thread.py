@@ -40,6 +40,33 @@ class Thread(threading.Thread):
         return self.result
 
 
+def launch(func, *args, **kwargs) -> Thread:
+    nme = kwargs.get("name")
+    if not nme:
+        nme = name(func)
+    thread = Thread(func, nme, *args, **kwargs)
+    thread.start()
+    return thread
+
+
+def name(obj) -> str:
+    typ = type(obj)
+    if '__builtins__' in dir(typ):
+        return obj.__name__
+    if '__self__' in dir(obj):
+        return f'{obj.__self__.__class__.__name__}.{obj.__name__}'
+    if '__class__' in dir(obj) and '__name__' in dir(obj):
+        return f'{obj.__class__.__name__}.{obj.__name__}'
+    if '__class__' in dir(obj):
+        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
+    if '__name__' in dir(obj):
+        return f'{obj.__class__.__name__}.{obj.__name__}'
+    return None
+
+
+"timers"
+
+
 class Timer:
 
     def __init__(self, sleep, func, *args, thrname=None, **kwargs):
@@ -76,6 +103,9 @@ class Repeater(Timer):
     def run(self) -> None:
         launch(self.start)
         super().run()
+
+
+"errors"
 
 
 class Errors:
@@ -125,28 +155,7 @@ def later(exc) -> None:
     Errors.errors.append(exc)
 
 
-def launch(func, *args, **kwargs) -> Thread:
-    nme = kwargs.get("name")
-    if not nme:
-        nme = name(func)
-    thread = Thread(func, nme, *args, **kwargs)
-    thread.start()
-    return thread
-
-
-def name(obj) -> str:
-    typ = type(obj)
-    if '__builtins__' in dir(typ):
-        return obj.__name__
-    if '__self__' in dir(obj):
-        return f'{obj.__self__.__class__.__name__}.{obj.__name__}'
-    if '__class__' in dir(obj) and '__name__' in dir(obj):
-        return f'{obj.__class__.__name__}.{obj.__name__}'
-    if '__class__' in dir(obj):
-        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
-    if '__name__' in dir(obj):
-        return f'{obj.__class__.__name__}.{obj.__name__}'
-    return None
+"interface"
 
 
 def __dir__():
