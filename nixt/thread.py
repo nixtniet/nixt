@@ -112,7 +112,7 @@ class Errors:
 
     name = __file__.rsplit("/", maxsplit=2)[-2]
     errors = []
-
+    
     @staticmethod
     def format(exc) -> str:
         exctype, excvalue, trb = type(exc), exc, exc.__traceback__
@@ -130,8 +130,8 @@ class Errors:
                 if Errors.name in i or "bin" in i:
                     break
             ownname = '.'.join(mod[::-1])
-            if ownname.endswith("__"):
-                continue
+            #if ownname.endswith("__"):
+            #    continue
             if ownname.startswith("<"):
                 continue
             result += f"{ownname}:{linenr} "
