@@ -11,7 +11,8 @@ import threading
 import time
 
 
-from .json   import Cache, read
+from .cache  import Cache
+from .json   import read
 from .object import Object, fqn, items, update
 
 

@@ -10,6 +10,7 @@ import threading
 import typing
 
 
+from .cache  import Cache
 from .object import Object, construct, update
 
 
@@ -19,31 +20,6 @@ lock = threading.RLock()
 class DecodeError(Exception):
 
     pass
-
-
-class Cache:
-
-    objs = {}
-
-    @staticmethod
-    def add(path, obj) -> None:
-        Cache.objs[path] = obj
-
-    @staticmethod
-    def get(path) -> typing.Any:
-        return Cache.objs.get(path, None)
-
-    @staticmethod
-    def typed(matcher) -> [typing.Any]:
-        for key in Cache.objs:
-            if matcher not in key:
-                continue
-            yield Cache.objs.get(key)
-
-
-def cdir(pth) -> None:
-    path = pathlib.Path(pth)
-    path.parent.mkdir(parents=True, exist_ok=True)
 
 
 class Decoder(json.JSONDecoder):
@@ -107,6 +83,11 @@ class Encoder(json.JSONEncoder):
                 return repr(o)
 
 
+def cdir(pth) -> None:
+    path = pathlib.Path(pth)
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+
 def dump(*args, **kw):
     with lock:
         kw["cls"] = Encoder
@@ -128,9 +109,10 @@ def write(obj, pth):
 
 def __dir__():
     return (
-        'Cache',
         'dump',
         'dumps',
         'load',
-        'loads'
+        'loads',
+        'read',
+        'write'
     )

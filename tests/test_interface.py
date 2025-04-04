@@ -11,26 +11,26 @@ import unittest
 
 
 import nixt
-import nixt.clients
-import nixt.command
+import nixt.cache
+import nixt.find
+import nixt.handler
+import nixt.json
 import nixt.modules
-import nixt.objects
-import nixt.persist
-import nixt.runtime
-import nixt.utility
+import nixt.object
+import nixt.thread
 
 
-from nixt.objects import *
+from nixt.object import *
 
 
 PACKAGE = [
-    'clients',
-    'command',
+    'cache',
+    'find',
+    'handler',
+    'json',
     'modules',
-    'objects',
-    'persist',
-    'runtime',
-    'utility'
+    'object',
+    'thread'
 ]
 
 
