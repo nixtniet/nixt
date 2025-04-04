@@ -7,8 +7,8 @@
 import time
 
 
-from ..disk   import write
 from ..find   import find, fntime, ident, store
+from ..json   import write
 from ..object import Object
 
 

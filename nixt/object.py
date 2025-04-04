@@ -4,7 +4,6 @@
 "a clean namespace"
 
 
-import json
 
 
 class Object:
@@ -118,6 +117,7 @@ def values(obj) -> []:
 
 def __dir__():
     return (
+        'Cache',
         'Default',
         'Object',
         'construct',

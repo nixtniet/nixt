@@ -14,7 +14,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 from ..find   import Workdir, types
 from ..object import Default, Object
-from ..run    import later, launch
+from ..thread import later, launch
 
 
 DEBUG = False

@@ -9,8 +9,8 @@ import os
 import time
 
 
-from ..disk   import write
 from ..find   import find, ident, store
+from ..json   import write
 from ..object import Object, fmt, keys, update
 
 

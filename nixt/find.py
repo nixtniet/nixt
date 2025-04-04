@@ -11,7 +11,7 @@ import threading
 import time
 
 
-from .disk   import Cache, read
+from .json   import Cache, read
 from .object import Object, fqn, items, update
 
 
@@ -23,6 +23,9 @@ class Workdir:
 
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
     wdr  = ""
+
+
+"path"
 
 
 def long(name) -> str:
@@ -148,7 +151,6 @@ def search(obj, selector, matching=None) -> bool:
 def __dir__():
     return (
         'Workdir',
-        'cdir',
         'fns',
         'fntime',
         'find',

@@ -13,7 +13,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from ..object import Default, Object
-from ..run    import later, launch
+from ..thread import later, launch
 
 
 DEBUG = False
