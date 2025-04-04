@@ -26,9 +26,6 @@ class Workdir:
     wdr  = ""
 
 
-"path"
-
-
 def long(name) -> str:
     split = name.split(".")[-1].lower()
     res = name
