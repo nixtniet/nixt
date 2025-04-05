@@ -15,7 +15,7 @@ import types
 import typing
 
 
-from ..object  import Default, items, keys
+from ..object  import Object, items, keys
 from ..handler import Fleet
 from ..thread  import launch
 
@@ -33,6 +33,12 @@ checksum = ""
 
 path  = os.path.dirname(__file__)
 pname = f"{__package__}"
+
+
+class Default(Object):
+
+    def __getattr__(self, key):
+        return self.__dict__.get(key, "")
 
 
 class Main(Default):

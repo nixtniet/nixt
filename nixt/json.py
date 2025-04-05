@@ -10,7 +10,6 @@ import threading
 import typing
 
 
-from .cache  import Cache
 from .object import Object, construct, update
 
 
@@ -20,9 +19,6 @@ lock = threading.RLock()
 class DecodeError(Exception):
 
     pass
-
-
-"decoder"
 
 
 class Decoder(json.JSONDecoder):
@@ -65,9 +61,6 @@ def read(obj, pth):
     return pth
 
 
-"encoder"
-
-
 class Encoder(json.JSONEncoder):
 
     def __init__(self, *args, **kwargs):
@@ -104,19 +97,12 @@ def write(obj, pth):
         cdir(pth)
         with open(pth, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)
-            Cache.add(pth, obj)
         return pth
-
-
-"utilities"
 
 
 def cdir(pth) -> None:
     path = pathlib.Path(pth)
     path.parent.mkdir(parents=True, exist_ok=True)
-
-
-"interface"
 
 
 def __dir__():

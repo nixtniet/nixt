@@ -15,13 +15,13 @@ import time
 
 
 from ..json    import write
-from ..object  import Default, Object, items, keys
-from ..find    import ident, last, store
+from ..object  import Object, items, keys
 from ..handler import Client, Event, Fleet
+from ..store   import ident, last, store
 from ..thread  import launch
 
 
-from . import Main, command, edit, fmt
+from . import Default, Main, command, edit, fmt
 from . import debug as ldebug
 
 

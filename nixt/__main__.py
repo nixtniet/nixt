@@ -14,8 +14,8 @@ import _thread
 from .json    import dumps
 from .modules import Main, inits, md5sum, mods, modules, nodebug
 from .modules import Commands, command, parse, scan, table
-from .find    import Workdir, pidname
 from .handler import Client, Event
+from .store   import Workdir, pidname
 from .thread  import Errors
 
 

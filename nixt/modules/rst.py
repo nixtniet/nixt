@@ -12,9 +12,12 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from ..find   import Workdir, types
-from ..object import Default, Object
+from ..object import Object
+from ..store  import Workdir, types
 from ..thread import later, launch
+
+
+from . import Default
 
 
 DEBUG = False
