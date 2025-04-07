@@ -15,8 +15,8 @@ import types
 import typing
 
 
+from ..client  import Fleet
 from ..object  import Object, items, keys
-from ..handler import Fleet
 from ..thread  import launch
 
 

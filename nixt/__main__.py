@@ -11,10 +11,11 @@ import time
 import _thread
 
 
+from .client  import Client
 from .json    import dumps
 from .modules import Main, inits, md5sum, mods, modules, nodebug
 from .modules import Commands, command, parse, scan, table
-from .handler import Client, Event
+from .handler import Event
 from .store   import Workdir, pidname
 from .thread  import Errors
 

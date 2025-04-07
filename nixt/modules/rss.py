@@ -19,9 +19,9 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
+from ..client  import Fleet
 from ..json    import write
 from ..object  import Object, update
-from ..handler import Fleet
 from ..store   import find, fntime, ident, last, store
 from ..thread  import Repeater, launch
 

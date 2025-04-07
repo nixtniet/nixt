@@ -14,9 +14,10 @@ import threading
 import time
 
 
+from ..client  import Client, Fleet
 from ..json    import write
 from ..object  import Object, items, keys
-from ..handler import Client, Event, Fleet
+from ..handler import Event
 from ..store   import ident, last, store
 from ..thread  import launch
 
