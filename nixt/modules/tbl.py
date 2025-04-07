@@ -49,8 +49,8 @@ MD5 = {
     "slg": "6c4f3517e9fe4a5588dbda062712a2eb",
     "tbl": "d41d8cd98f00b204e9800998ecf8427e",
     "tdo": "9f95c0b66e8101ca9d87824fc72c7ee9",
-    "thr": "4a4e78627f5e0b7e0cd8df77959bfdd9",
+    "thr": "3641438976e0b68154edf3a7ce673dde",
     "tmr": "fd95d9500cce892bff8c42fc961f2560",
-    "upt": "14e8a7963ef4d869b9a8616b5d667d07",
+    "upt": "a6f9d6f140d1549cdcf5d2f4cb64bf8f",
     "web": "8092489c828e2dac9370188b3e8dd1f4",
 }

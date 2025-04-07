@@ -7,7 +7,7 @@
 import time
 
 
-from ..handler import STARTTIME
+from ..client import STARTTIME
 
 
 from . import elapsed

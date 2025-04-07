@@ -13,8 +13,7 @@ import _thread
 from .thread import later, launch, name
 
 
-STARTTIME = time.time()
-lock      = threading.RLock()
+lock = threading.RLock()
 
 
 class Event:
