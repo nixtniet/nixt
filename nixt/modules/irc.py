@@ -15,18 +15,14 @@ import time
 
 
 from ..client  import Client, Fleet
+from ..command import Default, Main, command
 from ..handler import Event
 from ..json    import write
 from ..method  import edit, fmt
-from ..object import Object, items, keys
-from ..store import ident, last, store
+from ..object  import Object, items, keys
+from ..store   import ident, last, store
 from ..thread  import launch
 from ..utils   import debug as ldebug
-
-
-from .command import Default, Main, command
-
-
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]

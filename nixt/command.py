@@ -10,10 +10,8 @@ import sys
 import typing
 
 
-from ..client import Default, Fleet, Main
-
-
-from .importer import check, load
+from .client  import Default, Fleet, Main
+from .modules import check, load
 
 
 class Commands:
@@ -121,7 +119,7 @@ def scan(mod) -> None:
 
 
 def table():
-    from nixt.modules.importer import table
+    from .modules import table
     NAMES = table()
     Commands.names.update(NAMES)
 
