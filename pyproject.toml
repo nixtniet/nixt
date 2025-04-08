@@ -37,6 +37,5 @@ classifiers=[
 [tool.setuptools]
 packages = [
     'nixt',
-    'nixt.modules',
-    'nixt.modules.lib'
+    'nixt.modules'
 ]
