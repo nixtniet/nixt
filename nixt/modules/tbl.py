@@ -1,3 +1,4 @@
+{}
 # This file is placed in the Public Domain.
 
 
@@ -5,17 +6,20 @@
 
 
 NAMES = {
+    "brk": "dbg",
     "cfg": "irc",
+    "dbg": "dbg",
     "dis": "mdl",
     "dne": "tdo",
     "dpl": "rss",
+    "eml": "mbx",
     "err": "err",
     "exp": "rss",
     "flt": "flt",
     "fnd": "fnd",
     "imp": "rss",
     "log": "log",
-    "man": "man",
+    "mbx": "mbx",
     "mod": "mod",
     "mre": "irc",
     "nme": "rss",
@@ -35,22 +39,23 @@ NAMES = {
 
 
 MD5 = {
+    "dbg": "6f31b4a428ff8d203fe2521c16175890",
     "err": "989e3d45be316f096b6b932bfed82f28",
-    "flt": "b5c79d1ea97493936b64fadac0c0d87c",
-    "fnd": "2e6f478a43f9ae18afd1d0150b1f784e",
-    "irc": "4b69e2b7c72ecdb6d4fd50d23b41473e",
-    "log": "0e0a87c37a49c63c40ea25893f0ed7af",
-    "man": "8f2d5f47a048353291b311c9fe9f8cd6",
-    "mdl": "ddffbb9f4df9429a926f9b00b0f75d23",
+    "flt": "061703c0a4293e8446ebee248d3501e1",
+    "fnd": "eb0897b1f45e8a12daa93108ed7bb009",
+    "irc": "ba966be1698656ef99f5a3ada84e77b0",
+    "log": "8897cd9335643653dd985b4f4191ca52",
+    "mbx": "4d7dfd0b54c03c4447a352bd224e5cc2",
+    "mdl": "89050ed3b6e1bbfe294acbcd353601d8",
     "mod": "82d9b50b3a2a446fbb857de7192b8f28",
     "req": "a0013d5e8582b1cb56854d17e9c66a95",
-    "rss": "8152369da26909c03f33367f4b919e80",
-    "rst": "c708d3833a6fd78cbebfdb48cd9cefae",
+    "rss": "f1d5a19c166a90242f57798918052c68",
+    "rst": "b830bfc048c0af54d3622ed43df7752e",
     "slg": "6c4f3517e9fe4a5588dbda062712a2eb",
     "tbl": "d41d8cd98f00b204e9800998ecf8427e",
-    "tdo": "9f95c0b66e8101ca9d87824fc72c7ee9",
-    "thr": "3641438976e0b68154edf3a7ce673dde",
-    "tmr": "fd95d9500cce892bff8c42fc961f2560",
-    "upt": "a6f9d6f140d1549cdcf5d2f4cb64bf8f",
-    "web": "8092489c828e2dac9370188b3e8dd1f4",
+    "tdo": "0feecf2cdecb86d340805dd884aca1eb",
+    "thr": "e37a1a590088ac6640f16340495a4605",
+    "tmr": "586c78928fb4bdc71b9e0029ee38116e",
+    "upt": "1b4ea86ae19fe334e7146c3bc9441dd9",
+    "web": "478e8eb5a8cabd1d788b29d182e434fe",
 }

@@ -8,9 +8,7 @@ import time
 
 
 from ..client import STARTTIME
-
-
-from . import elapsed
+from ..utils  import elapsed
 
 
 def upt(event):

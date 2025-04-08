@@ -17,7 +17,7 @@ from ..store  import Workdir, types
 from ..thread import later, launch
 
 
-from . import Default
+from .command import Default
 
 
 DEBUG = False

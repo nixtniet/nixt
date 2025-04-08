@@ -4,7 +4,7 @@
 "man page"
 
 
-from . import Main
+from .command import Main
 
 
 TXT = """%s

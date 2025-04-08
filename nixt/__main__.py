@@ -11,13 +11,19 @@ import time
 import _thread
 
 
+path = os.path.dirname(__file__)
+
+
 from .client  import Client
-from .json    import dumps
-from .modules import Main, inits, md5sum, mods, modules, nodebug
-from .modules import Commands, command, parse, scan, table
 from .handler import Event
+from .json    import dumps 
 from .store   import Workdir, pidname
+from .utils   import nodebug
 from .thread  import Errors
+
+
+from .modules.importer import inits, md5sum, mods, modules
+from .modules.command  import Commands, Main, command, parse, scan, table
 
 
 Main.name = __package__.split(".")[0].lower()

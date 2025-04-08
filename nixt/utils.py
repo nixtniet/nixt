@@ -4,6 +4,10 @@
 "utilities"
 
 
+import os
+import sys
+
+
 def debug(*args):
     for arg in args:
         sys.stderr.write(str(arg))

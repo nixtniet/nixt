@@ -4,9 +4,18 @@
 "importer"
 
 
+import hashlib
 import importlib
 import importlib.util
+import os
+import sys
 import threading
+import types
+
+
+from ..client import Main
+from ..thread import launch
+from ..utils  import debug, spl
 
 
 MD5 = {}
@@ -70,7 +79,7 @@ def inits(names) -> [types.ModuleType]:
             continue
         if "init" in dir(mod):
             thr = launch(mod.init)
-        mods.append((mod, thr))
+            mods.append((mod, thr))
     return mods
 
 
@@ -133,4 +142,4 @@ def table():
     names = gettbl("NAMES")
     if names:
         NAMES.update(names)
-        Commands.names.update(NAMES)
+    return NAMES

@@ -7,10 +7,9 @@
 import time
 
 
-from ..store import find, fntime, long, skel, types
-
-
-from . import elapsed, fmt
+from ..store  import find, fntime, long, skel, types
+from ..utils  import elapsed
+from ..method import fmt
 
 
 def fnd(event):

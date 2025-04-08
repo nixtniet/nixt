@@ -4,6 +4,9 @@
 "methods"
 
 
+from .object import keys
+
+
 def edit(obj, setter, skip=False) -> None:
     for key, val in items(setter):
         if skip and val == "":

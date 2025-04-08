@@ -10,9 +10,7 @@ import time
 
 from ..client import STARTTIME
 from ..object import Object, update
-
-
-from . import elapsed
+from ..utils  import elapsed
 
 
 def thr(event):

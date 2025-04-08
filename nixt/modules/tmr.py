@@ -13,9 +13,7 @@ from ..client import Fleet
 from ..json   import write
 from ..store  import find, ident, store
 from ..thread import Timer, launch
-
-
-from . import elapsed
+from ..utils  import elapsed
 
 
 def init():

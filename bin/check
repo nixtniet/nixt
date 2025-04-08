@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+# This file is in the Public Domain.
+
+
+"check basics"
+
+
+import os
+import sys
+
+
+IGNORE = ["__main__", 'modules']
+NAME = "nixt"
+
+
+def ignore(txt):
+    for ign in IGNORE:
+        if ign in txt:
+            return True
+    return False
+
+
+def popen(txt):
+    for line in os.popen(txt).readlines():
+        if ignore(line):
+             continue
+        print(line.rstrip())
+        sys.stdout.flush()
+
+
+def main():
+    popen(f'grep -R "print(" {NAME}/*.py {NAME}/modules/*.py')
+    popen(f'grep -R "__import__" {NAME}/*.py {NAME}/modules/*.py')
+    popen(f'grep -R "importlib" {NAME}/*.py {NAME}/modules/*.py')
+    popen(f'grep -R "import os" {NAME}/*.py {NAME}/modules/*.py')
+    popen(f'grep -R "import sys" {NAME}/*.py {NAME}/modules/*.py')
+    popen(f'grep -R "import inspect" {NAME}/*.py {NAME}/modules/*.py')
+    popen(f'grep -R "getpass" {NAME}/*.py {NAME}/modules/*.py')
+    popen(f'grep -R {NAME} {NAME}')
+
+
+if __name__ == "__main__":
+    main()

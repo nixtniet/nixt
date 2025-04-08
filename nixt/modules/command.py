@@ -4,25 +4,16 @@
 "commands"
 
 
-
-from .object import Object
-
-
-class Default(Object):
-
-    def __getattr__(self, key):
-        return self.__dict__.get(key, "")
+import inspect
+import os
+import sys
+import typing
 
 
-class Main(Default):
+from ..client import Default, Fleet, Main
 
-    debug   = False
-    ignore  = 'llm,udp,wsd'
-    init    = ""
-    md5     = True
-    name    = sys.argv[0].split(os.sep)[-1].lower()
-    opts    = Default()
-    verbose = False
+
+from .importer import check, load
 
 
 class Commands:
@@ -129,6 +120,12 @@ def scan(mod) -> None:
             Commands.add(cmdz, mod)
 
 
+def table():
+    from nixt.modules.importer import table
+    NAMES = table()
+    Commands.names.update(NAMES)
+
+
 def __dir__():
     return (
         'Default',
@@ -136,5 +133,6 @@ def __dir__():
         'Main',
         'commands',
         'parse',
-        'scan'
+        'scan',
+        'table'
     )

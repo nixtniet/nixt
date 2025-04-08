@@ -4,10 +4,13 @@
 "clients"
 
 
+import os
+import sys
 import threading
 import time
 
 
+from .object  import Object
 from .handler import Handler
 
 
@@ -15,6 +18,23 @@ STARTTIME = time.time()
 
 
 outlock = threading.RLock()
+
+
+class Default(Object):
+
+    def __getattr__(self, key):
+        return self.__dict__.get(key, "")
+
+
+class Main(Default):
+
+    debug   = False
+    ignore  = 'command,importer,llm,udp,wsd'
+    init    = ""
+    md5     = True
+    name    = sys.argv[0].split(os.sep)[-1].lower()
+    opts    = Default()
+    verbose = False
 
 
 class Client(Handler):
