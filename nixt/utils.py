@@ -65,3 +65,12 @@ def spl(txt) -> str:
     except (TypeError, ValueError):
         result = txt
     return [x for x in result if x]
+
+
+def __dir__():
+    return (
+        'debug',
+        'elapsed',
+        'nodebug',
+        'spl'
+    )

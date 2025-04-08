@@ -8,10 +8,13 @@ import inspect
 import os
 import sys
 import typing
+import types
 
 
-from .client  import Default, Fleet, Main
-from .modules import check, load
+from .client  import Fleet
+from .modules import Default, Main, check, load
+from .thread  import launch
+from .utils   import spl
 
 
 class Commands:
@@ -49,6 +52,19 @@ def command(evt) -> None:
         func(evt)
         Fleet.display(evt)
     evt.ready()
+
+
+def inits(names) -> [types.ModuleType]:
+    mods = []
+    for name in spl(names):
+        mod = load(name)
+        if not mod:
+            continue
+        if "init" in dir(mod):
+            thr = launch(mod.init)
+            mods.append((mod, thr))
+    return mods
+
 
 
 def parse(obj, txt=None) -> None:
@@ -128,8 +144,8 @@ def __dir__():
     return (
         'Default',
         'Commands',
-        'Main',
         'commands',
+        'inits',
         'parse',
         'scan',
         'table'

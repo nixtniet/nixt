@@ -2,10 +2,6 @@
 
 
 "modules"
-# This file is placed in the Public Domain.
-
-
-"importer"
 
 
 import hashlib
@@ -17,8 +13,7 @@ import threading
 import types
 
 
-from ..client import Main
-from ..thread import launch
+from ..object import Object
 from ..utils  import debug, spl
 
 
@@ -36,6 +31,23 @@ checksum = ""
 
 path  = os.path.dirname(__file__)
 pname = __package__
+
+
+class Default(Object):
+
+    def __getattr__(self, key):
+        return self.__dict__.get(key, "")
+
+
+class Main(Default):
+
+    debug   = False
+    ignore  = 'llm,udp,wsd'
+    init    = ""
+    md5     = True
+    name    = sys.argv[0].split(os.sep)[-1].lower()
+    opts    = Default()
+    verbose = False
 
 
 def check(name, sum=""):
@@ -74,17 +86,6 @@ def gettbl(name):
             return
         return getattr(mod, name, None)
     return {}
-
-def inits(names) -> [types.ModuleType]:
-    mods = []
-    for name in spl(names):
-        mod = load(name)
-        if not mod:
-            continue
-        if "init" in dir(mod):
-            thr = launch(mod.init)
-            mods.append((mod, thr))
-    return mods
 
 
 def load(name) -> types.ModuleType:
@@ -147,3 +148,7 @@ def table():
     if names:
         NAMES.update(names)
     return NAMES
+
+
+def __dir__():
+    return modules()

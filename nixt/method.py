@@ -50,3 +50,10 @@ def fmt(obj, args=None, skip=None, plain=False) -> str:
         else:
             txt += f'{key}={value} '
     return txt.strip()
+
+
+def __dir__():
+    return (
+        'edit',
+        'fmt'
+    )
