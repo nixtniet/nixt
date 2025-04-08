@@ -156,8 +156,7 @@ def scan(mod) -> None:
             Commands.add(cmdz, mod)
 
 
-
-" utilities"
+"utilities"
 
 
 def check(name, sum=""):
