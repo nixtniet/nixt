@@ -11,12 +11,13 @@ import unittest
 
 
 import nixt
-import nixt.cache
-import nixt.find
+import nixt.client
 import nixt.handler
 import nixt.json
+import nixt.method
 import nixt.modules
 import nixt.object
+import nixt.store
 import nixt.thread
 
 
@@ -24,13 +25,15 @@ from nixt.object import *
 
 
 PACKAGE = [
-    'cache',
-    'find',
+    'client',
     'handler',
     'json',
+    'method',
     'modules',
     'object',
-    'thread'
+    'store',
+    'thread',
+    'utils'
 ]
 
 
