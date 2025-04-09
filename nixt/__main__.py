@@ -12,7 +12,7 @@ import _thread
 
 
 from .client  import Client
-from .error   import Errors
+from .error   import Errors, full
 from .modules import Commands, Main, command, inits, parse, scan, settable
 from .modules import md5sum, mods, modules
 from .persist import dumps 
@@ -288,7 +288,7 @@ def wrapped(func):
     except (KeyboardInterrupt, EOFError):
         output("")
     for exc in Errors.errors:
-        for line in Errors.full(exc):
+        for line in full(exc):
             output(line)
 
 

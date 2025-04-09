@@ -15,6 +15,9 @@ import _thread
 STARTTIME = time.time()
 
 
+from .error import later
+
+
 class Thread(threading.Thread):
 
     def __init__(self, func, thrname, *args, daemon=True, **kwargs):

@@ -46,7 +46,7 @@ class Default(Object):
 class Main(Default):
 
     debug   = False
-    ignore  = 'llm,udp,wsd'
+    ignore  = 'llm,udp,web,wsd'
     init    = ""
     md5     = False
     name    = __package__.split(".", maxsplit=1)[0].lower()

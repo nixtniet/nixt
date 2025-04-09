@@ -4,14 +4,8 @@
 "clients"
 
 
-import threading
-
-
 from .fleet   import Fleet
 from .reactor import Reactor
-
-
-outlock = threading.RLock()
 
 
 class Client(Reactor):
