@@ -66,7 +66,6 @@ def inits(names) -> [types.ModuleType]:
     return mods
 
 
-
 def parse(obj, txt=None) -> None:
     if txt is None:
         if "txt" in dir(obj):

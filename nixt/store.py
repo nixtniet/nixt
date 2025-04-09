@@ -12,6 +12,7 @@ import time
 import typing
 
 
+from .cache  import Cache 
 from .json   import read
 from .object import Object, items, update
 
@@ -24,26 +25,6 @@ class Workdir:
 
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
     wdr  = ""
-
-
-class Cache:
-
-    objs = {}
-
-    @staticmethod
-    def add(path, obj) -> None:
-        Cache.objs[path] = obj
-
-    @staticmethod
-    def get(path) -> typing.Any:
-        return Cache.objs.get(path, None)
-
-    @staticmethod
-    def typed(matcher) -> [typing.Any]:
-        for key in Cache.objs:
-            if matcher not in key:
-                continue
-            yield Cache.objs.get(key)
 
 
 def long(name) -> str:
@@ -175,7 +156,6 @@ def search(obj, selector, matching=None) -> bool:
 
 def __dir__():
     return (
-        'Cache',
         'Workdir',
         'fns',
         'fntime',

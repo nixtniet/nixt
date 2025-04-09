@@ -15,7 +15,7 @@ path = os.path.dirname(__file__)
 
 
 from .client  import Client
-from .command  import Commands, Main, command, inits, parse, scan, table
+from .command import Commands, Main, command, inits, parse, scan, table
 from .handler import Event
 from .json    import dumps 
 from .modules import md5sum, mods, modules
