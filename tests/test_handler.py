@@ -7,11 +7,11 @@
 import unittest
 
 
-from nixt.command import command
-from nixt.handler import Event, Handler
+from nixt.modules import command
+from nixt.reactor import Event, Reactor
 
 
-hdl = Handler()
+hdl = Reactor()
 hdl.register("command", command)
 hdl.start()
 hdl.raw = print
