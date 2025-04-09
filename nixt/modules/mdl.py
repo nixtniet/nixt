@@ -9,8 +9,8 @@ import time
 
 
 from ..client  import Fleet
-from ..handler import Event
 from ..object  import Object, construct, keys
+from ..reactor import Event
 from ..thread  import Repeater
 from ..utils   import elapsed
 

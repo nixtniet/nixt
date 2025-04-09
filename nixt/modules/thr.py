@@ -8,8 +8,8 @@ import threading
 import time
 
 
-from ..client import STARTTIME
 from ..object import Object, update
+from ..thread import STARTTIME
 from ..utils  import elapsed
 
 

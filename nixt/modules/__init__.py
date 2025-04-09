@@ -201,12 +201,16 @@ def command(evt) -> None:
 def inits(names) -> [types.ModuleType]:
     mods = []
     for name in spl(names):
-        mod = load(name)
-        if not mod:
-            continue
-        if "init" in dir(mod):
-            thr = launch(mod.init)
-            mods.append((mod, thr))
+        try:
+            mod = load(name)
+            if not mod:
+                continue
+            if "init" in dir(mod):
+                thr = launch(mod.init)
+                mods.append((mod, thr))
+        except Exception as ex:
+            later(ex)
+            _thread.interrupt_main()
     return mods
 
 

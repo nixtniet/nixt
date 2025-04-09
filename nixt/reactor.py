@@ -10,7 +10,8 @@ import time
 import _thread
 
 
-from .thread import later, launch, name
+from .error  import later
+from .thread import launch, name
 
 
 lock = threading.RLock()
@@ -56,7 +57,7 @@ class Event:
             self._thr.join()
 
 
-class Handler:
+class Reactor:
 
     def __init__(self):
         self.cbs     = {}
@@ -114,5 +115,5 @@ class Handler:
 def __dir__():
     return (
         'Event',
-        'Handler'
+        'Reactor'
     )

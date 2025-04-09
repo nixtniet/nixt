@@ -12,13 +12,13 @@ import _thread
 
 
 from .client  import Client
-from .handler import Event
-from .json    import dumps 
+from .error   import Errors
 from .modules import Commands, Main, command, inits, parse, scan, settable
 from .modules import md5sum, mods, modules
+from .persist import dumps 
+from .reactor import Event
 from .store   import Workdir, pidname
 from .utils   import nodebug
-from .thread  import Errors
 
 
 Main.name = __package__.split(".")[0].lower()

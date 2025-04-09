@@ -7,7 +7,7 @@
 import time
 
 
-from ..client import STARTTIME
+from ..thread import STARTTIME
 from ..utils  import elapsed
 
 

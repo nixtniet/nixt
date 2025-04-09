@@ -4,7 +4,7 @@
 "errors"
 
 
-from ..thread import Errors
+from ..error import Errors
 
 
 def err(event):
