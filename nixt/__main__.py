@@ -119,6 +119,12 @@ def daemon(verbose=False):
     os.nice(10)
 
 
+def errors():
+    for exc in Errors.errors:
+        for line in full(exc):
+            output(line)
+
+
 def forever():
     while True:
         try:
@@ -287,9 +293,7 @@ def wrapped(func):
         func()
     except (KeyboardInterrupt, EOFError):
         output("")
-    for exc in Errors.errors:
-        for line in full(exc):
-            output(line)
+    errors()
 
 
 def wrap(func):
