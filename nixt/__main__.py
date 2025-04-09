@@ -11,13 +11,10 @@ import time
 import _thread
 
 
-path = os.path.dirname(__file__)
-
-
 from .client  import Client
-from .command import Commands, Main, command, inits, parse, scan, table
 from .handler import Event
 from .json    import dumps 
+from .modules import Commands, Main, command, inits, parse, scan, settable
 from .modules import md5sum, mods, modules
 from .store   import Workdir, pidname
 from .utils   import nodebug
@@ -169,7 +166,7 @@ def background():
     privileges()
     disable()
     pidfile(pidname(Main.name))
-    table()
+    settable()
     Commands.add(cmd)
     inits(Main.init or "irc,rss")
     forever()
@@ -179,7 +176,7 @@ def console():
     import readline # noqa: F401
     setwd(Main.name)
     enable()
-    table()
+    settable()
     Commands.add(cmd)
     parse(Main, " ".join(sys.argv[1:]))
     Main.init = Main.sets.init or Main.init
@@ -198,7 +195,7 @@ def control():
     if len(sys.argv) == 1:
         return
     setwd(Main.name)
-    table()
+    settable()
     enable()
     Commands.add(cmd)
     Commands.add(md5)
@@ -216,7 +213,7 @@ def control():
 
 def service():
     setwd(Main.name)
-    table()
+    settable()
     nodebug()
     enable()
     banner()

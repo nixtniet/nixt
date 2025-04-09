@@ -7,7 +7,6 @@
 import json
 import pathlib
 import threading
-import typing
 
 
 from .object import Object, construct, update

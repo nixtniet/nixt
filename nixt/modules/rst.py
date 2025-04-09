@@ -12,7 +12,7 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from ..command import Default
+from ..modules import Default
 from ..object  import Object
 from ..store   import Workdir, types
 from ..thread  import later, launch

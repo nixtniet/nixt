@@ -190,7 +190,7 @@ opml
 **PROGRAMMING**
 
 
-``nixt`` has it's modules in the package, so edit a file in nixt/modules/<name>.py
+``%s`` has it's modules in the package, so edit a file in %s/modules/<name>.py
 and add the following for ``hello world``
 
 ::
@@ -202,13 +202,13 @@ and add the following for ``hello world``
 Save this and recreate the dispatch table
 
 |
-| ``$ nixt tbl > nixt/modules/tbl.py``
+| ``$ %s tbl > %s/modules/tbl.py``
 |
 
-``nixt`` can execute the ``hello`` command now.
+``%s`` can execute the ``hello`` command now.
 
 |
-| ``$ nixt hello``
+| ``$ %s hello``
 | ``hello world !!``
 |
 
@@ -240,18 +240,17 @@ your own written python3 code, see the nixt/modules directory for examples.
 
 
 def spaced(txt):
-    res = ""
-    for char in txt[:-1]:
-        res += f"{char} "
-    res += txt[-1]
-    return res
+    res = []
+    for char in txt:
+        res.append(char)
+    return " ".join(res)
 
 
 def man(event):
     name = Main.name
     event.reply(TXT % tuple(
                             [spaced(name.upper()), "="*(2*len(name)-1), name, name.upper()]
-                            + 4* [name]
+                            + 4*[name]
                             + 5*[name.upper()]
                             + 34*[name]
                             + [name.upper()]

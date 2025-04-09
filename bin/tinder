@@ -18,14 +18,12 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client  import STARTTIME, Client
-from nixt.command import Commands, command, parse, table
 from nixt.handler import Event
-from nixt.modules import Main, mods, modules, spl
-from nixt.method  import fmt
+from nixt.modules import Main, command, modules, parse, settable
 from nixt.object  import Object, keys
 from nixt.store   import Workdir, skel
-from nixt.thread  import Errors, Thread, launch
-from nixt.utils   import debug, elapsed
+from nixt.thread  import Errors, launch
+from nixt.utils   import elapsed, spl
 
 
 Main.debug  = True
@@ -50,6 +48,7 @@ param.dis = [""]
 param.dpl = ["hnrss title,url", ""]
 param.flt = [""]
 param.fnd = ["log", "rss", "config", "todo", ""]
+param.man = [""]
 param.mod = [""]
 param.mre = [""]
 param.nme = ["hnrss hackernews", ""]
@@ -146,7 +145,7 @@ def wrap(function):
 def main():
     global nrs
     global nrcommand
-    table()
+    settable()
     parse(Main, " ".join(sys.argv[1:]))
     nrcommand = 0
     if "v" in Main.opts:
@@ -162,21 +161,20 @@ def main():
     for _nr in range(nrs):
         thrs.append(launch(payload, clt, pre))
     for thr in thrs:
-       nr = thr.join()
-       nrcommand += nr
+        nr = thr.join()
+        nrcommand += nr
     thrs = []
     for _nr in range(nrs):
         thrs.append(launch(payload, clt, param))
     for thr in thrs:
-       nr = thr.join()
-       nrcommand += nr
+        nr = thr.join()
+        nrcommand += nr
     thrs = []
     for _nr in range(nrs):
         thrs.append(launch(payload, clt, post))
     for thr in thrs:
-       nr = thr.join()
-       nrcommand += nr
-    nrz = len(events)
+        nr = thr.join()
+        nrcommand += nr
     consume(events)
 
 
