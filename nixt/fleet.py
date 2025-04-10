@@ -19,6 +19,10 @@ class Fleet:
         Fleet.bots[repr(bot)] = bot
 
     @staticmethod
+    def all() -> []:
+        yield from Fleet.bots.values()
+
+    @staticmethod
     def announce(txt) -> None:
         for bot in Fleet.bots.values():
             bot.announce(txt)

@@ -14,11 +14,12 @@ import threading
 import time
 
 
-from ..client  import Client, Fleet
-from ..persist import write
+from ..client  import Client
+from ..fleet   import Fleet
 from ..method  import edit, fmt
 from ..modules import Default, Main, command
 from ..object  import Object, keys
+from ..persist import write
 from ..reactor import Event
 from ..store   import ident, last, store
 from ..thread  import launch
@@ -182,6 +183,7 @@ class IRC(Client, Output):
         self.state.keeprunning = False
         self.state.lastline = ""
         self.state.nrconnect = 0
+        self.state.nrerror = 0
         self.state.nrsend = 0
         self.state.stopkeep = False
         self.zelf = ''
@@ -327,7 +329,7 @@ class IRC(Client, Output):
             self.state.pongcheck = True
             self.docommand('PING', self.cfg.server)
             if self.state.pongcheck:
-                debug("failed pongcheck, restarting")
+                debug("failed pong check, restarting")
                 self.state.pongcheck = False
                 self.state.keeprunning = False
                 self.events.connected.clear()
@@ -419,6 +421,8 @@ class IRC(Client, Output):
                     BrokenPipeError
                    ) as ex:
                 self.stop()
+                self.state.nrerror += 1
+                self.state.error = str(ex)
                 debug("handler stopped")
                 evt = self.event(str(ex))
                 return evt
@@ -443,7 +447,9 @@ class IRC(Client, Output):
                     ssl.SSLZeroReturnError,
                     ConnectionResetError,
                     BrokenPipeError
-                   ):
+                   ) as ex:
+                self.state.nrerror += 1
+                self.state.error = str(ex)
                 self.stop()
                 return
         self.state.last = time.time()
@@ -520,8 +526,6 @@ def cb_cap(evt):
 
 def cb_error(evt):
     bot = Fleet.get(evt.orig)
-    if not bot.state.nrerror:
-        bot.state.nrerror = 0
     bot.state.nrerror += 1
     bot.state.error = evt.txt
     debug(evt.txt)
@@ -582,6 +586,8 @@ def cb_privmsg(evt):
 def cb_quit(evt):
     bot = Fleet.get(evt.orig)
     debug(f"quit from {bot.cfg.server}")
+    bot.state.nrerror += 1
+    bot.state.error = evt.txt
     if evt.orig and evt.orig in bot.zelf:
         bot.stop()
 
