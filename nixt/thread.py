@@ -7,15 +7,14 @@
 import queue
 import threading
 import time
-import traceback
 import typing
 import _thread
 
 
-STARTTIME = time.time()
-
-
 from .error import later
+
+
+STARTTIME = time.time()
 
 
 class Thread(threading.Thread):

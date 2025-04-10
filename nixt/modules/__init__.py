@@ -13,10 +13,12 @@ import sys
 import threading
 import typing
 import types
+import _thread
 
 
 from ..client import Fleet
-from ..object import Object
+from ..error  import later
+from ..object import Default
 from ..thread import launch
 from ..utils  import debug, spl
 
@@ -37,12 +39,6 @@ path  = os.path.dirname(__file__)
 pname = __package__
 
 
-class Default(Object):
-
-    def __getattr__(self, key):
-        return self.__dict__.get(key, "")
-
-
 class Main(Default):
 
     debug   = False
@@ -57,13 +53,13 @@ class Main(Default):
 "imports"
 
 
-def check(name, sum=""):
+def check(name, hash=""):
     mname = f"{pname}.{name}"
     pth = os.path.join(path, name + ".py")
     spec = importlib.util.spec_from_file_location(mname, pth)
     if not spec:
         return False
-    if md5sum(pth) == (sum or MD5.get(name, None)):
+    if md5sum(pth) == (hash or MD5.get(name, None)):
         return True
     if Main.md5:
         debug(f"{name} failed md5sum check")
@@ -199,7 +195,7 @@ def command(evt) -> None:
 
 
 def inits(names) -> [types.ModuleType]:
-    mods = []
+    modz = []
     for name in spl(names):
         try:
             mod = load(name)
@@ -207,11 +203,11 @@ def inits(names) -> [types.ModuleType]:
                 continue
             if "init" in dir(mod):
                 thr = launch(mod.init)
-                mods.append((mod, thr))
+                modz.append((mod, thr))
         except Exception as ex:
             later(ex)
             _thread.interrupt_main()
-    return mods
+    return modz
 
 
 def parse(obj, txt=None) -> None:

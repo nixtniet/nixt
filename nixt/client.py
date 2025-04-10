@@ -5,6 +5,7 @@
 
 
 from .fleet   import Fleet
+from .object  import Default
 from .reactor import Reactor
 
 
@@ -12,6 +13,7 @@ class Client(Reactor):
 
     def __init__(self):
         Reactor.__init__(self)
+        self.state = Default()
         Fleet.add(self)
 
     def announce(self, txt) -> None:

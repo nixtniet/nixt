@@ -17,8 +17,8 @@ import time
 from ..client  import Client
 from ..fleet   import Fleet
 from ..method  import edit, fmt
-from ..modules import Default, Main, command
-from ..object  import Object, keys
+from ..modules import Main, command
+from ..object  import Default, Object, keys
 from ..persist import write
 from ..reactor import Event
 from ..store   import ident, last, store

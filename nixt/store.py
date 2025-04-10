@@ -11,7 +11,7 @@ import threading
 import time
 
 
-from .cache   import Cache 
+from .cache   import Cache
 from .object  import Object, items, update
 from .persist import read
 
