@@ -13,8 +13,9 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from ..error  import later
-from ..object import Default, Object
+from ..object import Object
 from ..thread import launch
+from .        import Default
 
 
 DEBUG = False

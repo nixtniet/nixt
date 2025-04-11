@@ -19,7 +19,6 @@ VALIDJSON = '{"test": "bla"}'
 
 
 attrs1 = (
-    'Default',
     'Object',
     'construct',
     'dumps',
