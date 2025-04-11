@@ -12,17 +12,14 @@ import time
 import _thread
 
 
-sys.path.insert(0, os.getcwd())
-
-
-from nixt.modules import Client, Commands, Fleet, Main
-from nixt.modules import command, inits, parse, scan, settable
-from nixt.modules import md5sum, mods, modules
-from nixt.objects import Default
-from nixt.persist import dumps
-from nixt.reactor import Event, Reactor
-from nixt.storage import Workdir, pidname
-from nixt.threads import Errors, full
+from .modules import Client, Commands, Fleet, Main
+from .modules import command, inits, parse, scan, settable
+from .modules import md5sum, mods, modules
+from .objects import Default
+from .persist import dumps
+from .reactor import Event, Reactor
+from .storage import Workdir, pidname
+from .threads import Errors, full
 
 
 lock = threading.RLock()
