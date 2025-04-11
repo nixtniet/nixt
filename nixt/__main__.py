@@ -12,10 +12,10 @@ import time
 import _thread
 
 
-from .modules import Client, Commands, Default, Fleet, Main, command, inits
+from .modules import Client, Commands, Main, command, inits
 from .modules import md5sum, mods, modules, parse, scan, settable
 from .persist import dumps
-from .reactor import Event, Reactor
+from .reactor import Event
 from .store   import Workdir, pidname
 from .thread  import Errors, full
 

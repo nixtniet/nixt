@@ -213,7 +213,7 @@ def parse(obj, txt=None) -> None:
             setattr(obj.silent, key, value)
             setattr(obj.gets, key, value)
             continue
-        elif "==" in spli:
+        if "==" in spli:
             key, value = spli.split("==", maxsplit=1)
             setattr(obj.gets, key, value)
             continue

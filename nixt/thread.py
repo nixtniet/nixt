@@ -167,4 +167,3 @@ def __dir__():
         'line'
         'name'
     )
-
