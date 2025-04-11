@@ -7,10 +7,8 @@
 import time
 
 
-from ..threads import STARTTIME
-
-
-from .  import elapsed
+from ..thread import STARTTIME
+from .        import elapsed
 
 
 def upt(event):

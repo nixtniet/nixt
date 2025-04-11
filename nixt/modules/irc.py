@@ -14,12 +14,12 @@ import threading
 import time
 
 
-from ..modules import Main, command
-from ..objects import Default, Object, keys
+from ..modules import Default, Main, command
+from ..object  import Object, keys
 from ..persist import write
 from ..reactor import Event
-from ..storage import ident, last, store
-from ..threads import launch
+from ..store   import ident, last, store
+from ..thread  import launch
 from .         import debug as ldebug
 from .         import Client, Fleet, edit, fmt
 

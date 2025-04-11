@@ -12,14 +12,12 @@ import time
 import _thread
 
 
-from .modules import Client, Commands, Fleet, Main
-from .modules import command, inits, parse, scan, settable
-from .modules import md5sum, mods, modules
-from .objects import Default
+from .modules import Client, Commands, Default, Fleet, Main, command, inits
+from .modules import md5sum, mods, modules, parse, scan, settable
 from .persist import dumps
 from .reactor import Event, Reactor
-from .storage import Workdir, pidname
-from .threads import Errors, full
+from .store   import Workdir, pidname
+from .thread  import Errors, full
 
 
 lock = threading.RLock()

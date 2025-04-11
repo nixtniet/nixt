@@ -10,8 +10,8 @@ import time
 
 
 from ..persist import write
-from ..objects import Object, keys, update
-from ..storage import find, ident, store
+from ..object  import Object, keys, update
+from ..store   import find, ident, store
 
 
 from .tmr import extract_date

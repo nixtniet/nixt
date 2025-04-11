@@ -16,9 +16,9 @@ import types
 import _thread
 
 
-from ..objects import Default, items, keys
+from ..object  import Object, items, keys
 from ..reactor import Reactor
-from ..threads import later, launch
+from ..thread  import later, launch
 
 
 MD5 = {}
@@ -36,6 +36,12 @@ CHECKSUM = ""
 
 
 path = os.path.dirname(__file__)
+
+
+class Default(Object):
+
+    def __getattr__(self, key):
+        return self.__dict__.get(key, "")
 
 
 class Main(Default):

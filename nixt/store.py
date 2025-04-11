@@ -12,7 +12,7 @@ import time
 import typing
 
 
-from .objects import Object, items, update
+from .object  import Object, items, update
 from .persist import read
 
 

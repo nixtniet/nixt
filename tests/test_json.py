@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.objects import Object
+from nixt.object  import Object
 from nixt.persist import dumps, loads
 
 
