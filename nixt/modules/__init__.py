@@ -21,18 +21,16 @@ from ..reactor import Reactor
 from ..thread  import later, launch
 
 
+CHECKSUM = "0f398204c22f8b4409506abcd121725b"
+
+
 MD5 = {}
 NAMES = {}
-
 
 
 lock     = threading.RLock()
 initlock = threading.RLock()
 loadlock = threading.RLock()
-
-
-CHECKSUM = "a89efd6272163ed0c77cc79cdc49bec6"
-CHECKSUM = ""
 
 
 path = os.path.dirname(__file__)
@@ -49,7 +47,7 @@ class Main(Default):
     debug   = False
     ignore  = 'llm,udp,web,wsd'
     init    = ""
-    md5     = False
+    md5     = True
     name    = __name__.split(".", maxsplit=1)[0]
     opts    = Default()
     verbose = False
