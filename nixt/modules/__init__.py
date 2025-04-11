@@ -47,7 +47,7 @@ class Main(Default):
     name    = __name__.split(".")[0]
     opts    = Default()
     verbose = False
-    version = 230
+    version = 231
 
 
 "imports"
