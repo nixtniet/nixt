@@ -21,11 +21,9 @@ from ..reactor import Reactor
 from ..thread  import later, launch
 
 
-CHECKSUM = "0f398204c22f8b4409506abcd121725b"
-
-
-MD5 = {}
-NAMES = {}
+CHECKSUM = "7e3a138075a7dbb6e1eaef54f939a7a7"
+MD5      = {}
+NAMES    = {}
 
 
 lock     = threading.RLock()
@@ -45,7 +43,7 @@ class Default(Object):
 class Main(Default):
 
     debug   = False
-    ignore  = 'llm,udp,web,wsd'
+    ignore  = 'llm,srv,udp,web,wsd'
     init    = ""
     md5     = True
     name    = __name__.split(".", maxsplit=1)[0]
@@ -284,13 +282,18 @@ def getmod(name):
 
 def gettbl(name):
     pth = os.path.join(path, "tbl.py")
-    if os.path.exists(pth) and (not CHECKSUM or (md5sum(pth) == CHECKSUM)):
-        try:
-            mod = getmod("tbl")
-        except FileNotFoundError:
-            return
-        return getattr(mod, name, None)
-    return {}
+    if not os.path.exists(pth):
+        debug("tbl.py is not there")
+        return {}
+    if CHECKSUM and (md5sum(pth) != CHECKSUM):
+        debug("table checksum doesn't match")
+        return {}
+    try:
+        mod = getmod("tbl")
+    except FileNotFoundError:
+        debug("tbl module not found")
+        return
+    return getattr(mod, name, {})
 
 
 def load(name) -> types.ModuleType:

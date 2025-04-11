@@ -12,7 +12,7 @@ import time
 import _thread
 
 
-from .modules import Client, Commands, Main, command, inits
+from .modules import Client, Commands, Main, command, debug, inits
 from .modules import md5sum, mods, modules, parse, scan, settable
 from .persist import dumps
 from .reactor import Event
@@ -47,6 +47,10 @@ class Console(CLI):
         evt.txt = input("> ")
         evt.type = "command"
         return evt
+
+
+def handler(signum, frame):
+    _thread.interrupt_main()
 
 
 "output"
@@ -157,11 +161,37 @@ def setwd(name, path=""):
     Workdir.wdr = path
 
 
-"handlers"
+"commands"
 
 
-def handler(signum, frame):
-    _thread.interrupt_main()
+def cmd(event):
+    event.reply(",".join(sorted([x for x in Commands.names if x not in Main.ignore])))
+
+
+def md5(event):
+    table = mods("tbl")[0]
+    event.reply(md5sum(table.__file__))
+
+
+def tbl(event):
+    if not check("f"):
+        Commands.names = {}
+        Main.ignore = Main.ignore.replace(",srv", "")
+    for mod in mods(empty=True):
+        scan(mod)
+    event.reply("# This file is placed in the Public Domain.")
+    event.reply("")
+    event.reply("")
+    event.reply('"lookup tables"')
+    event.reply("")
+    event.reply("")
+    event.reply(f"NAMES = {dumps(Commands.names, indent=4, sort_keys=True)}")
+    event.reply("")
+    event.reply("")
+    event.reply("MD5 = {")
+    for mod in mods():
+        event.reply(f'    "{mod.__name__.split(".")[-1]}": "{md5sum(mod.__file__)}",')
+    event.reply("}")
 
 
 "scripts"
@@ -206,8 +236,8 @@ def control():
     enable()
     Commands.add(cmd)
     Commands.add(md5)
-    Commands.add(srv)
     Commands.add(tbl)
+    Main.ignore = Main.ignore.replace(",srv", "")
     parse(Main, " ".join(sys.argv[1:]))
     csl = CLI()
     evt = Event()
@@ -229,44 +259,6 @@ def service():
     Commands.add(cmd)
     inits(Main.init or "irc,rss")
     forever()
-
-
-"commands"
-
-
-def cmd(event):
-    event.reply(",".join(sorted([x for x in Commands.names if x not in Main.ignore])))
-
-
-def md5(event):
-    table = mods("tbl")[0]
-    event.reply(md5sum(table.__file__))
-
-
-def srv(event):
-    import getpass
-    name = getpass.getuser()
-    event.reply(TXT % (Main.name.upper(), name, name, name, Main.name))
-
-
-def tbl(event):
-    if not check("f"):
-        Commands.names = {}
-    for mod in mods(empty=True):
-        scan(mod)
-    event.reply("# This file is placed in the Public Domain.")
-    event.reply("")
-    event.reply("")
-    event.reply('"lookup tables"')
-    event.reply("")
-    event.reply("")
-    event.reply(f"NAMES = {dumps(Commands.names, indent=4, sort_keys=True)}")
-    event.reply("")
-    event.reply("")
-    event.reply("MD5 = {")
-    for mod in mods():
-        event.reply(f'    "{mod.__name__.split(".")[-1]}": "{md5sum(mod.__file__)}",')
-    event.reply("}")
 
 
 "runtime"
@@ -296,7 +288,7 @@ def wrap(func):
 
 def main():
     if check("a"):
-        Main.ignore = "udp"
+        Main.ignore = "srv,udp"
         Main.init   = ",".join(modules())
         for mod in mods():
             mod.DEBUG = False
@@ -313,44 +305,5 @@ def main():
         wrapped(control)
 
 
-"data"
-
-
-TXT = """[Unit]
-Description=%s
-After=network-online.target
-
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
-
-
 if __name__ == "__main__":
     main()
-
-
-# This file is placed in the Public Domain.
-
-
-"clients"
-
-
-
-
-def debug(*args):
-    for arg in args:
-        sys.stderr.write(str(arg))
-        sys.stderr.write("\n")
-        sys.stderr.flush()
-
-
-def __dir__():
-    return (
-        'Client'
-        'Fleet',
-    )
