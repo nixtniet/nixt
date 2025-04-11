@@ -36,8 +36,7 @@ PACKAGE = [
     'persist',
     'reactor',
     'store',
-    'thread',
-    'utils'
+    'thread'
 ]
 
 
