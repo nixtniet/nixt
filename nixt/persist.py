@@ -29,6 +29,39 @@ class Decoder(json.JSONDecoder):
         return val
 
 
+class Encoder(json.JSONEncoder):
+
+    def default(self, o) -> str:
+        if isinstance(o, dict):
+            return o.items()
+        if issubclass(type(o), Object):
+            return vars(o)
+        if isinstance(o, list):
+            return iter(o)
+        try:
+            return json.JSONEncoder.default(self, o)
+        except TypeError:
+            try:
+                return vars(o)
+            except TypeError:
+                return repr(o)
+
+
+def cdir(pth) -> None:
+    path = pathlib.Path(pth)
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+
+def dump(*args, **kw):
+    kw["cls"] = Encoder
+    json.dump(*args, **kw)
+
+
+def dumps(*args, **kw) -> str:
+    kw["cls"] = Encoder
+    return json.dumps(*args, **kw)
+
+
 def hook(objdict) -> Object:
     obj = Object()
     construct(obj, objdict)
@@ -57,46 +90,12 @@ def read(obj, pth):
     return pth
 
 
-class Encoder(json.JSONEncoder):
-
-
-    def default(self, o) -> str:
-        if isinstance(o, dict):
-            return o.items()
-        if issubclass(type(o), Object):
-            return vars(o)
-        if isinstance(o, list):
-            return iter(o)
-        try:
-            return json.JSONEncoder.default(self, o)
-        except TypeError:
-            try:
-                return vars(o)
-            except TypeError:
-                return repr(o)
-
-
-def dump(*args, **kw):
-    kw["cls"] = Encoder
-    json.dump(*args, **kw)
-
-
-def dumps(*args, **kw) -> str:
-    kw["cls"] = Encoder
-    return json.dumps(*args, **kw)
-
-
 def write(obj, pth):
     with lock:
         cdir(pth)
         with open(pth, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)
         return pth
-
-
-def cdir(pth) -> None:
-    path = pathlib.Path(pth)
-    path.parent.mkdir(parents=True, exist_ok=True)
 
 
 def __dir__():
@@ -107,6 +106,7 @@ def __dir__():
         'cdir',
         'dump',
         'dumps',
+        'hook',
         'load',
         'loads',
         'read',

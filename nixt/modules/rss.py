@@ -25,7 +25,9 @@ from ..method  import fmt
 from ..object  import Object, update
 from ..store   import find, fntime, ident, last, store
 from ..thread  import Repeater, launch
-from ..utils   import elapsed, spl
+
+
+from . import elapsed, spl
 
 
 DEBUG = False

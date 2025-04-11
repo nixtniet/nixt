@@ -4,6 +4,10 @@
 "clients"
 
 
+import os
+import sys
+
+
 from .fleet   import Fleet
 from .object  import Default
 from .reactor import Reactor
@@ -24,6 +28,18 @@ class Client(Reactor):
 
     def say(self, channel, txt) -> None:
         self.raw(txt)
+
+
+def debug(*args):
+    for arg in args:
+        sys.stderr.write(str(arg))
+        sys.stderr.write("\n")
+        sys.stderr.flush()
+
+
+def nodebug():
+    with open('/dev/null', 'a+', encoding="utf-8") as ses:
+        os.dup2(ses.fileno(), sys.stderr.fileno())
 
 
 def __dir__():

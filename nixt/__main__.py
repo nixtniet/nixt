@@ -11,14 +11,13 @@ import time
 import _thread
 
 
-from .client  import Client
+from .client  import Client, nodebug
 from .error   import Errors, full
 from .modules import Commands, Main, command, inits, parse, scan, settable
 from .modules import md5sum, mods, modules
 from .persist import dumps
 from .reactor import Event
 from .store   import Workdir, pidname
-from .utils   import nodebug
 
 
 class CLI(Client):

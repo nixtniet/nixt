@@ -12,9 +12,9 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from ..error   import later
-from ..object  import Default, Object
-from ..thread  import launch
+from ..error  import later
+from ..object import Default, Object
+from ..thread import launch
 
 
 DEBUG = False

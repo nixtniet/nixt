@@ -15,6 +15,7 @@ import time
 
 
 from ..client  import Client
+from ..client  import debug as ldebug
 from ..fleet   import Fleet
 from ..method  import edit, fmt
 from ..modules import Main, command
@@ -23,7 +24,6 @@ from ..persist import write
 from ..reactor import Event
 from ..store   import ident, last, store
 from ..thread  import launch
-from ..utils   import debug as ldebug
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]
@@ -135,19 +135,23 @@ class Output:
                 break
             if not txt:
                 continue
+            textlist = []
             txtlist = wrapper.wrap(txt)
             if len(txtlist) > 3:
-                self.extend(channel, txtlist)
-                length = len(txtlist)
+                self.extend(channel, txtlist[3:])
+                textlist = txtlist[:3]
+            else:
+                textlist = txtlist
+            _nr = -1
+            for txt in textlist:
+                _nr += 1
+                self.dosay(channel, txt)
+            if len(txtlist) > 3:
+                length = len(txtlist) - 3
                 self.say(
                          channel,
                          f"use !mre to show more (+{length})"
                         )
-                continue
-            _nr = -1
-            for txt in txtlist:
-                _nr += 1
-                self.dosay(channel, txt)
 
     @staticmethod
     def size(chan):
@@ -627,7 +631,8 @@ def mre(event):
         txt = Output.gettxt(event.channel)
         event.reply(txt)
     size = IRC.size(event.channel)
-    event.reply(f'{size} more in cache')
+    if size != 0:
+        event.reply(f'{size} more in cache')
 
 
 def pwd(event):

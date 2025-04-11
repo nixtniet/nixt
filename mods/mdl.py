@@ -12,7 +12,9 @@ from ..client  import Fleet
 from ..object  import Object, construct, keys
 from ..reactor import Event
 from ..thread  import Repeater
-from ..utils   import elapsed
+
+
+from . import elapsed
 
 
 DAY = 24*60*60
