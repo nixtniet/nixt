@@ -12,7 +12,7 @@ import time
 from ..persist import write
 from ..storage import find, ident, store
 from ..threads import Timer, launch
-from .         import Fleet elapsed
+from .         import Fleet, elapsed
 
 
 def init():
