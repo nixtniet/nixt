@@ -15,22 +15,10 @@ from .client  import Client
 from .error   import Errors, full
 from .modules import Commands, Main, command, inits, parse, scan, settable
 from .modules import md5sum, mods, modules
-from .persist import dumps 
+from .persist import dumps
 from .reactor import Event
 from .store   import Workdir, pidname
 from .utils   import nodebug
-
-
-"cli"
-
-
-def doprint(txt):
-    print(txt.rstrip())
-    sys.stdout.flush()
-
-
-def output(txt):
-    doprint(txt)
 
 
 class CLI(Client):
@@ -62,6 +50,15 @@ class Console(CLI):
 "output"
 
 
+def doprint(txt):
+    print(txt.rstrip())
+    sys.stdout.flush()
+
+
+def output(txt):
+    doprint(txt)
+
+
 def nil(txt):
     pass
 
@@ -90,8 +87,8 @@ def check(txt):
     for arg in args:
         if not arg.startswith("-"):
             continue
-        for c in txt:
-            if c in arg:
+        for char in txt:
+            if char in arg:
                 return True
     return False
 
@@ -265,23 +262,6 @@ def tbl(event):
     event.reply("}")
 
 
-"data"
-
-
-TXT = """[Unit]
-Description=%s
-After=network-online.target
-
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
-
-
 "runtime"
 
 
@@ -324,6 +304,23 @@ def main():
         wrapped(service)
     else:
         wrapped(control)
+
+
+"data"
+
+
+TXT = """[Unit]
+Description=%s
+After=network-online.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
 
 
 if __name__ == "__main__":

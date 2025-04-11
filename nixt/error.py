@@ -49,7 +49,7 @@ def line(exc):
             res += f" {note}"
     return res
 
-    
+
 def __dir__():
     (
      'Errors',

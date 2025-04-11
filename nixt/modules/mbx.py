@@ -78,14 +78,14 @@ def eml(event):
     args = set(args)
     result = sorted(find("email", event.gets), key=lambda x: extract_date(todate(getattr(x[1], "Date", ""))))
     if event.index:
-        o = result[event.index][1]
-        tme = getattr(o, "Date", "")
-        event.reply(f'{event.index} {fmt(o, args, plain=True)} {elapsed(time.time() - extract_date(todate(tme)))}')
+        obj = result[event.index]
+        tme = getattr(obj, "Date", "")
+        event.reply(f'{event.index} {fmt(obj, args, plain=True)} {elapsed(time.time() - extract_date(todate(tme)))}')
     else:
-        for fnm, o in result:
+        for _fn, obj in result:
             nrs += 1
-            tme = getattr(o, "Date", "")
-            event.reply(f'{nrs} {fmt(o, args, plain=True)} {elapsed(time.time() - extract_date(todate(tme)))}')
+            tme = getattr(obj, "Date", "")
+            event.reply(f'{nrs} {fmt(obj, args, plain=True)} {elapsed(time.time() - extract_date(todate(tme)))}')
     if not result:
         event.reply("no emails found.")
 
@@ -94,31 +94,31 @@ def mbx(event):
     if not event.args:
         event.reply("mbx <path>")
         return
-    fn = os.path.expanduser(event.args[0])
-    event.reply("reading from %s" % fn)
-    nr = 0
-    if os.path.isdir(fn):
-        thing = mailbox.Maildir(fn, create=False)
-    elif os.path.isfile(fn):
-        thing = mailbox.mbox(fn, create=False)
+    fnm = os.path.expanduser(event.args[0])
+    event.reply("reading from %s" % fnm)
+    if os.path.isdir(fnm):
+        thing = mailbox.Maildir(fnm, create=False)
+    elif os.path.isfile(fnm):
+        thing = mailbox.mbox(fnm, create=False)
     else:
         return
     try:
         thing.lock()
     except FileNotFoundError:
         pass
-    for m in thing:
-        o = Email()
-        update(o, dict(m._headers))
-        o.text = ""
-        for payload in m.walk():
+    nrs = 0
+    for mail in thing:
+        obj = Email()
+        update(obj, dict(mail._headers))
+        obj.text = ""
+        for payload in mail.walk():
             if payload.get_content_type() == 'text/plain':
-                o.text += payload.get_payload()
-        o.text = o.text.replace("\\n", "\n")
-        write(o, store(ident(o)))
-        nr += 1
-    if nr:
-        event.reply("ok %s" % nr)
+                obj.text += payload.get_payload()
+        obj.text = obj.text.replace("\\n", "\n")
+        write(obj, store(ident(obj)))
+        nrs += 1
+    if nrs:
+        event.reply("ok %s" % nrs)
 
 
 MONTH = {

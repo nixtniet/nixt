@@ -22,9 +22,6 @@ class DecodeError(Exception):
 
 class Decoder(json.JSONDecoder):
 
-    def __init__(self, *args, **kwargs):
-        json.JSONDecoder.__init__(self, *args, **kwargs)
-
     def decode(self, s, _w=None):
         val = json.JSONDecoder.decode(self, s)
         if isinstance(val, dict):
@@ -62,8 +59,6 @@ def read(obj, pth):
 
 class Encoder(json.JSONEncoder):
 
-    def __init__(self, *args, **kwargs):
-        json.JSONEncoder.__init__(self, *args, **kwargs)
 
     def default(self, o) -> str:
         if isinstance(o, dict):
@@ -106,6 +101,10 @@ def cdir(pth) -> None:
 
 def __dir__():
     return (
+        'DecodeError',
+        'Decoder',
+        'Encoder',
+        'cdir',
         'dump',
         'dumps',
         'load',
