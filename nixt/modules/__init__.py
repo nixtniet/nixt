@@ -16,16 +16,17 @@ import types
 import _thread
 
 
-from ..client import Fleet, debug
-from ..error  import later
-from ..object import Default
-from ..thread import launch
+from ..objects import Default, items, keys
+from ..reactor import Reactor
+from ..threads import later, launch
 
 
 MD5 = {}
 NAMES = {}
 
 
+
+lock     = threading.RLock()
 initlock = threading.RLock()
 loadlock = threading.RLock()
 
@@ -47,6 +48,72 @@ class Main(Default):
     opts    = Default()
     verbose = False
     version = 231
+
+
+class Fleet:
+
+    bots = {}
+
+    @staticmethod
+    def add(bot) -> None:
+        Fleet.bots[repr(bot)] = bot
+
+    @staticmethod
+    def all() -> []:
+        yield from Fleet.bots.values()
+
+    @staticmethod
+    def announce(txt) -> None:
+        for bot in Fleet.bots.values():
+            bot.announce(txt)
+
+    @staticmethod
+    def display(evt) -> None:
+        with lock:
+            for tme in sorted(evt.result):
+                Fleet.say(evt.orig, evt.channel, evt.result[tme])
+            evt.ready()
+
+    @staticmethod
+    def first() -> None:
+        bots =  list(Fleet.bots.values())
+        res = None
+        if bots:
+            res = bots[0]
+        return res
+
+    @staticmethod
+    def get(orig) -> None:
+        return Fleet.bots.get(orig, None)
+
+    @staticmethod
+    def say(orig, channel, txt) -> None:
+        bot = Fleet.get(orig)
+        if bot:
+            bot.say(channel, txt)
+
+    @staticmethod
+    def wait() -> None:
+        for bot in Fleet.bots.values():
+            if "wait" in dir(bot):
+                bot.wait()
+
+
+class Client(Reactor):
+
+    def __init__(self):
+        Reactor.__init__(self)
+        self.state = Default()
+        Fleet.add(self)
+
+    def announce(self, txt) -> None:
+        pass
+
+    def raw(self, txt) -> None:
+        raise NotImplementedError("raw")
+
+    def say(self, channel, txt) -> None:
+        self.raw(txt)
 
 
 class Commands:
@@ -84,6 +151,13 @@ def command(evt) -> None:
         func(evt)
         Fleet.display(evt)
     evt.ready()
+
+
+def debug(*args):
+    for arg in args:
+        sys.stderr.write(str(arg))
+        sys.stderr.write("\n")
+        sys.stderr.flush()
 
 
 def inits(names) -> [types.ModuleType]:
@@ -325,6 +399,54 @@ def spl(txt) -> str:
     except (TypeError, ValueError):
         result = txt
     return [x for x in result if x]
+
+
+"methods"
+
+
+def edit(obj, setter, skip=False) -> None:
+    for key, val in items(setter):
+        if skip and val == "":
+            continue
+        try:
+            setattr(obj, key, int(val))
+            continue
+        except ValueError:
+            pass
+        try:
+            setattr(obj, key, float(val))
+            continue
+        except ValueError:
+            pass
+        if val in ["True", "true"]:
+            setattr(obj, key, True)
+        elif val in ["False", "false"]:
+            setattr(obj, key, False)
+        else:
+            setattr(obj, key, val)
+
+
+def fmt(obj, args=None, skip=None, plain=False) -> str:
+    if args is None:
+        args = keys(obj)
+    if skip is None:
+        skip = []
+    txt = ""
+    for key in args:
+        if key.startswith("__"):
+            continue
+        if key in skip:
+            continue
+        value = getattr(obj, key, None)
+        if value is None:
+            continue
+        if plain:
+            txt += f"{value} "
+        elif isinstance(value, str) and len(value.split()) >= 2:
+            txt += f'{key}="{value}" '
+        else:
+            txt += f'{key}={value} '
+    return txt.strip()
 
 
 "interface"

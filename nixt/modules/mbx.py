@@ -10,13 +10,12 @@ import time
 
 
 from ..persist import write
-from ..method  import fmt
-from ..object  import Object, keys, update
-from ..store   import find, ident, store
+from ..objects import Object, keys, update
+from ..storage import find, ident, store
 
 
 from .tmr import extract_date
-from .    import elapsed
+from .    import elapsed, fmt
 
 
 class Email(Object):

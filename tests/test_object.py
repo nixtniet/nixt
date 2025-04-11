@@ -7,28 +7,25 @@
 import unittest
 
 
-from nixt.object import Object, items, keys, update, values
+from nixt.objects import Object, items, keys, update, values
 
 
-import nixt.object
+import nixt.objects
 
 
+OBJECT  = Object()
+PACKAGE = nixt.objects
 VALIDJSON = '{"test": "bla"}'
 
 
 attrs1 = (
+    'Default',
     'Object',
-    'Obj',
     'construct',
     'dumps',
-    'edit',
-    'format',
-    'fqn',
     'items',
     'keys',
     'loads',
-    'match',
-    'search',
     'update',
     'values'
 )
@@ -66,10 +63,6 @@ attrs2 = (
     '__repr__',
     '__hash__'
 )
-
-
-OBJECT  = Object()
-PACKAGE = nixt.object
 
 
 class TestObject(unittest.TestCase):
@@ -162,7 +155,7 @@ class TestObject(unittest.TestCase):
         self.assertTrue(okd)
 
     def test_module(self):
-        self.assertEqual(Object().__module__, "nixt.object")
+        self.assertEqual(Object().__module__, "nixt.objects")
 
     def test_register(self):
         obj = Object()

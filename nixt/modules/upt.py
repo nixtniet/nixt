@@ -7,7 +7,7 @@
 import time
 
 
-from ..thread import STARTTIME
+from ..threads import STARTTIME
 
 
 from .  import elapsed

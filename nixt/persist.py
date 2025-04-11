@@ -9,7 +9,7 @@ import pathlib
 import threading
 
 
-from .object import Object, construct, update
+from .objects import Object, construct, update
 
 
 lock = threading.RLock()

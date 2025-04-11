@@ -7,12 +7,12 @@
 import time
 
 
-from ..object  import Object
+from ..objects import Object
 from ..persist import write
-from ..store   import find, fntime, ident, store
+from ..storage import find, fntime, ident, store
 
 
-from .   import elapsed
+from . import elapsed
 
 
 class Todo(Object):

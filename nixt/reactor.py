@@ -10,8 +10,7 @@ import time
 import _thread
 
 
-from .error  import later
-from .thread import launch, name
+from .threads import launch, later, name
 
 
 lock = threading.RLock()

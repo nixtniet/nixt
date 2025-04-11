@@ -19,15 +19,11 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from ..client  import Fleet
 from ..persist import write
-from ..method  import fmt
-from ..object  import Object, update
-from ..store   import find, fntime, ident, last, store
-from ..thread  import Repeater, launch
-
-
-from . import elapsed, spl
+from ..objects import Object, update
+from ..storage import find, fntime, ident, last, store
+from ..threads import Repeater, launch
+from .         import Fleet, elapsed, fmt, spl
 
 
 DEBUG = False
