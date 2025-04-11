@@ -28,6 +28,5 @@ class Client(Reactor):
 
 def __dir__():
     return (
-        'STARTTIME',
         'Client',
     )

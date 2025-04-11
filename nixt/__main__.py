@@ -21,9 +21,6 @@ from .store   import Workdir, pidname
 from .utils   import nodebug
 
 
-Main.name = __package__.split(".")[0].lower()
-
-
 "cli"
 
 

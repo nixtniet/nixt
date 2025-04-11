@@ -36,7 +36,6 @@ checksum = ""
 
 
 path  = os.path.dirname(__file__)
-pname = __package__
 
 
 class Main(Default):
@@ -45,16 +44,17 @@ class Main(Default):
     ignore  = 'llm,udp,web,wsd'
     init    = ""
     md5     = False
-    name    = __package__.split(".", maxsplit=1)[0].lower()
+    name    = __name__.split(".")[0]
     opts    = Default()
     verbose = False
+    version = 230
 
 
 "imports"
 
 
 def check(name, hash=""):
-    mname = f"{pname}.{name}"
+    mname = f"{__name__}.{name}"
     pth = os.path.join(path, name + ".py")
     spec = importlib.util.spec_from_file_location(mname, pth)
     if not spec:
@@ -67,7 +67,7 @@ def check(name, hash=""):
 
 
 def getmod(name):
-    mname = f"{pname}.{name}"
+    mname = f"{__name__}.{name}"
     mod = sys.modules.get(mname, None)
     if mod:
         return mod
@@ -97,7 +97,7 @@ def load(name) -> types.ModuleType:
         if name in Main.ignore:
             return
         module = None
-        mname = f"{pname}.{name}"
+        mname = f"{__name__}.{name}"
         module = sys.modules.get(mname, None)
         if not module:
             pth = os.path.join(path, f"{name}.py")
