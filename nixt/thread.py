@@ -8,8 +8,10 @@ import queue
 import threading
 import time
 import traceback
-import typing
 import _thread
+
+
+from typing import Any
 
 
 STARTTIME = time.time()
@@ -38,7 +40,7 @@ class Thread(threading.Thread):
                 pass
             _thread.interrupt_main()
 
-    def join(self, timeout=None) -> typing.Any:
+    def join(self, timeout=None) -> Any:
         super().join(timeout)
         return self.result
 

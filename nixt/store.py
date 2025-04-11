@@ -9,7 +9,9 @@ import os
 import pathlib
 import threading
 import time
-import typing
+
+
+from typing import Any
 
 
 from .object  import Object, items, update
@@ -35,11 +37,11 @@ class Cache:
         Cache.objs[path] = obj
 
     @staticmethod
-    def get(path) -> typing.Any:
+    def get(path) -> Any:
         return Cache.objs.get(path, None)
 
     @staticmethod
-    def typed(matcher) -> [typing.Any]:
+    def typed(matcher) -> [Any]:
         for key in Cache.objs:
             if matcher not in key:
                 continue

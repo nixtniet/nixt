@@ -22,7 +22,7 @@ class DecodeError(Exception):
 
 class Decoder(json.JSONDecoder):
 
-    def decode(self, s, _w=None):
+    def decode(self, s, _w=None) -> Object:
         val = json.JSONDecoder.decode(self, s)
         if isinstance(val, dict):
             return hook(val)
@@ -52,7 +52,7 @@ def cdir(pth) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
 
 
-def dump(*args, **kw):
+def dump(*args, **kw) -> None:
     kw["cls"] = Encoder
     json.dump(*args, **kw)
 
@@ -68,7 +68,7 @@ def hook(objdict) -> Object:
     return obj
 
 
-def load(*args, **kw):
+def load(*args, **kw) -> Object:
     kw["cls"] = Decoder
     kw["object_hook"] = hook
     return json.load(*args, **kw)
@@ -80,7 +80,7 @@ def loads(*args, **kw) -> Object:
     return json.loads(*args, **kw)
 
 
-def read(obj, pth):
+def read(obj, pth) -> str:
     with lock:
         with open(pth, "r", encoding="utf-8") as fpt:
             try:
@@ -90,7 +90,7 @@ def read(obj, pth):
     return pth
 
 
-def write(obj, pth):
+def write(obj, pth) -> str:
     with lock:
         cdir(pth)
         with open(pth, "w", encoding="utf-8") as fpt:
