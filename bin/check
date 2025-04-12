@@ -9,8 +9,8 @@ import os
 import sys
 
 
-IGNORE = ["__main__", 'modules']
-NAME = "nixt"
+IGNORE = ['__main__','modules']
+NAME   = "nixt"
 
 
 def ignore(txt):

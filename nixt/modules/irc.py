@@ -14,13 +14,14 @@ import threading
 import time
 
 
+from ..client  import Default, Client, Fleet
 from ..object  import Object, keys
 from ..persist import write
 from ..reactor import Event
 from ..store   import ident, last, store
 from ..thread  import launch
 from .         import debug as ldebug
-from .         import Client, Default, Fleet, Main, command, edit, fmt
+from .         import Main, command, edit, fmt
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]

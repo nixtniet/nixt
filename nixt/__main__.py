@@ -12,8 +12,9 @@ import time
 import _thread
 
 
-from .modules import Client, Commands, Main, command, debug, inits
-from .modules import md5sum, mods, modules, parse, scan, settable
+from .client  import Client
+from .modules import Commands, Main, command, debug, inits, md5sum
+from .modules import mods, modules, parse, scan, settable
 from .persist import dumps
 from .reactor import Event
 from .store   import Workdir, pidname
@@ -303,6 +304,9 @@ def main():
         wrapped(service)
     else:
         wrapped(control)
+
+
+"main"
 
 
 if __name__ == "__main__":

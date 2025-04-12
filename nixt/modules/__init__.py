@@ -16,12 +16,13 @@ import types
 import _thread
 
 
+from ..client  import Default, Fleet
 from ..object  import Object, items, keys
 from ..reactor import Reactor
 from ..thread  import later, launch
 
 
-CHECKSUM = "7e3a138075a7dbb6e1eaef54f939a7a7"
+CHECKSUM = "c0f5ae137debc7e2ad202e45864dc114"
 MD5      = {}
 NAMES    = {}
 
@@ -34,12 +35,6 @@ loadlock = threading.RLock()
 path = os.path.dirname(__file__)
 
 
-class Default(Object):
-
-    def __getattr__(self, key):
-        return self.__dict__.get(key, "")
-
-
 class Main(Default):
 
     debug   = False
@@ -50,72 +45,6 @@ class Main(Default):
     opts    = Default()
     verbose = False
     version = 231
-
-
-class Fleet:
-
-    bots = {}
-
-    @staticmethod
-    def add(bot) -> None:
-        Fleet.bots[repr(bot)] = bot
-
-    @staticmethod
-    def all() -> []:
-        yield from Fleet.bots.values()
-
-    @staticmethod
-    def announce(txt) -> None:
-        for bot in Fleet.bots.values():
-            bot.announce(txt)
-
-    @staticmethod
-    def display(evt) -> None:
-        with lock:
-            for tme in sorted(evt.result):
-                Fleet.say(evt.orig, evt.channel, evt.result[tme])
-            evt.ready()
-
-    @staticmethod
-    def first() -> None:
-        bots =  list(Fleet.bots.values())
-        res = None
-        if bots:
-            res = bots[0]
-        return res
-
-    @staticmethod
-    def get(orig) -> None:
-        return Fleet.bots.get(orig, None)
-
-    @staticmethod
-    def say(orig, channel, txt) -> None:
-        bot = Fleet.get(orig)
-        if bot:
-            bot.say(channel, txt)
-
-    @staticmethod
-    def wait() -> None:
-        for bot in Fleet.bots.values():
-            if "wait" in dir(bot):
-                bot.wait()
-
-
-class Client(Reactor):
-
-    def __init__(self):
-        Reactor.__init__(self)
-        self.state = Default()
-        Fleet.add(self)
-
-    def announce(self, txt) -> None:
-        pass
-
-    def raw(self, txt) -> None:
-        raise NotImplementedError("raw")
-
-    def say(self, channel, txt) -> None:
-        self.raw(txt)
 
 
 class Commands:
