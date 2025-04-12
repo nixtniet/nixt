@@ -7,15 +7,13 @@
 import unittest
 
 
-from nixt.event   import Event
+from nixt.handler import Event, Handler
 from nixt.modules import command
-from nixt.reactor import Reactor
 
 
-hdl = Reactor()
+hdl = Handler()
 hdl.register("command", command)
 hdl.start()
-hdl.raw = print
 
 
 class TestHandler(unittest.TestCase):

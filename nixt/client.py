@@ -5,9 +5,9 @@
 
 
 from .fleet   import Fleet
+from .handler import Handler
 from .object  import Object
 from .output  import output
-from .reactor import Reactor
 
 
 class Default(Object):
@@ -16,10 +16,10 @@ class Default(Object):
         return self.__dict__.get(key, "")
 
 
-class Client(Reactor):
+class Client(Handler):
 
     def __init__(self):
-        Reactor.__init__(self)
+        Handler.__init__(self)
         self.state = Default()
         Fleet.add(self)
 

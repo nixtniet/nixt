@@ -16,7 +16,7 @@ import time
 
 from ..client  import Default, Client, Fleet
 from ..disk    import write
-from ..event   import Event
+from ..handler import Event
 from ..object  import Object, keys
 from ..store   import ident, last, store
 from ..thread  import launch
