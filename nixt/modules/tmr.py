@@ -9,10 +9,10 @@ import re
 import time
 
 
-from ..persist import write
-from ..store   import find, ident, store
-from ..thread  import Timer, launch
-from .         import Fleet, elapsed
+from ..disk   import write
+from ..store  import find, ident, store
+from ..thread import Timer, launch
+from .        import Fleet, elapsed
 
 
 def init():

@@ -14,8 +14,8 @@ import time
 from typing import Any
 
 
-from .object  import Object, items, update
-from .persist import read
+from .disk   import read
+from .object import Object, items, update
 
 
 lock = threading.RLock()

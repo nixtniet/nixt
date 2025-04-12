@@ -13,10 +13,11 @@ import _thread
 
 
 from .client  import Client
+from .event   import Event
+from .json    import dumps
 from .modules import Commands, Main, command, debug, inits, md5sum
 from .modules import mods, modules, parse, scan, settable
-from .persist import dumps
-from .reactor import Event
+from .output  import disable, enable, output
 from .store   import Workdir, pidname
 from .thread  import Errors, full
 
@@ -52,32 +53,6 @@ class Console(CLI):
 
 def handler(signum, frame):
     _thread.interrupt_main()
-
-
-"output"
-
-
-def doprint(txt):
-    print(txt.rstrip())
-    sys.stdout.flush()
-
-
-def output(txt):
-    doprint(txt)
-
-
-def nil(txt):
-    pass
-
-
-def enable():
-    global output
-    output = doprint
-
-
-def disable():
-    global output
-    output = nil
 
 
 "utilities"

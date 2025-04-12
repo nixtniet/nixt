@@ -22,7 +22,7 @@ from ..reactor import Reactor
 from ..thread  import later, launch
 
 
-CHECKSUM = "c0f5ae137debc7e2ad202e45864dc114"
+CHECKSUM = "7b3aa07511d3d882d07a62bd8c3b6239"
 MD5      = {}
 NAMES    = {}
 

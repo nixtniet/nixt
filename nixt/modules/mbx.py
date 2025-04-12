@@ -9,9 +9,9 @@ import os
 import time
 
 
-from ..persist import write
-from ..object  import Object, keys, update
-from ..store   import find, ident, store
+from ..disk   import write
+from ..object import Object, keys, update
+from ..store  import find, ident, store
 
 
 from .tmr import extract_date
