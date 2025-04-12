@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nixt"
-version = "231"
+version = "300"
 authors = [
     {name = "Bart Thate", email = "nixtniet@gmail.com" },
 ]
@@ -24,10 +24,6 @@ classifiers=[
 ]
 
 
-[project.scripts]
-"nixt" = "nixt.__main__:main"
-
-
 [project.urls]
 "home" = "https://pypi.org/project/nixt"
 "bugs" = "https://github.com/nixtniet/nixt/issues"
@@ -37,5 +33,4 @@ classifiers=[
 [tool.setuptools]
 packages = [
     'nixt',
-    'nixt.modules'
 ]

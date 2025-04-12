@@ -21,6 +21,26 @@ class DecodeError(Exception):
     pass
 
 
+class Cache:
+
+    objs = {}
+
+    @staticmethod
+    def add(path, obj) -> None:
+        Cache.objs[path] = obj
+
+    @staticmethod
+    def get(path):
+        return Cache.objs.get(path, None)
+
+    @staticmethod
+    def typed(matcher) -> []:
+        for key in Cache.objs:
+            if matcher not in key:
+                continue
+            yield Cache.objs.get(key)
+
+
 def cdir(pth) -> None:
     path = pathlib.Path(pth)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -46,6 +66,7 @@ def write(obj, pth) -> str:
 
 def __dir__():
     return (
+        'Cache',
         'DecodeError',
         'cdir',
         'read',

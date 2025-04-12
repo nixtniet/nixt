@@ -13,11 +13,9 @@ import unittest
 import nixt
 import nixt.client
 import nixt.disk
-import nixt.fleet
 import nixt.handler
-import nixt.modules
+import nixt.json
 import nixt.object
-import nixt.output
 import nixt.store
 import nixt.thread
 
@@ -28,11 +26,9 @@ from nixt.object import *
 PACKAGE = [
     'client',
     'disk',
-    'fleet',
     'handler',
-    'modules',
+    'json',
     'object',
-    'output',
     'store',
     'thread'
 ]

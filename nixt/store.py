@@ -11,7 +11,7 @@ import threading
 import time
 
 
-from .disk   import read
+from .disk   import Cache, read
 from .object import Object, items, update
 
 
@@ -23,26 +23,6 @@ class Workdir:
 
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
     wdr  = ""
-
-
-class Cache:
-
-    objs = {}
-
-    @staticmethod
-    def add(path, obj) -> None:
-        Cache.objs[path] = obj
-
-    @staticmethod
-    def get(path):
-        return Cache.objs.get(path, None)
-
-    @staticmethod
-    def typed(matcher) -> []:
-        for key in Cache.objs:
-            if matcher not in key:
-                continue
-            yield Cache.objs.get(key)
 
 
 "paths"
@@ -58,12 +38,18 @@ def long(name) -> str:
     return res
 
 
+def moddir():
+    return os.path.join(Workdir.wdr, "mods")
+
+
 def pidname(name) -> str:
     return p(Workdir.wdr, f"{name}.pid")
 
 
 def skel() -> str:
     path = pathlib.Path(store())
+    path.mkdir(parents=True, exist_ok=True)
+    path = pathlib.Path(moddir())
     path.mkdir(parents=True, exist_ok=True)
     return path
 
@@ -78,6 +64,10 @@ def strip(pth, nmr=2) -> str:
 
 def types() -> [str]:
     return os.listdir(store())
+
+
+def wdr(pth):
+    return os.path.join(Workdir.wdr, pth)
 
 
 "find"
@@ -186,11 +176,13 @@ def __dir__():
         'ident',
         'last',
         'long',
+        'moddir',
         'pidname',
         'search',
         'setwd',
         'skel',
         'store',
         'strip',
-        'types'
+        'types',
+        'wdr'
     )
