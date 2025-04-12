@@ -15,7 +15,7 @@ import _thread
 from .client  import Client
 from .event   import Event
 from .json    import dumps
-from .modules import Commands, Main, command, debug, inits, md5sum
+from .modules import Commands, Main, command, inits, md5sum
 from .modules import mods, modules, parse, scan, settable
 from .output  import disable, enable, output
 from .store   import Workdir, pidname

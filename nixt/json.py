@@ -7,7 +7,7 @@
 import json
 
 
-from .object import Object, construct, update
+from .object import Object, construct
 
 
 class Decoder(json.JSONDecoder):
