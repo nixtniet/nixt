@@ -4,14 +4,13 @@
 "NIXT"
 
 
-from nixt        import object, json
 from nixt.disk   import read,write
-from nixt.object import *
-from nixt.json   import *
+from nixt.json   import dumps, loads
+from nixt.object import Object as Object
+from nixt.object import construct, items, keys, update, values
 
 
-def __dir__():
-    return (
+__all__ = (
         'Object',
         'construct',
         'dumps',
@@ -23,8 +22,3 @@ def __dir__():
         'values',
         'write'
     )
-
-
-__all__ = __dir__()
-
-    

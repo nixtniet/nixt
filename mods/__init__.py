@@ -17,7 +17,8 @@ import _thread
 
 
 from nixt.client import Default, Fleet
-from nixt.object import Object, items, keys
+from nixt.object import Object as Object
+from nixt.object import items, keys
 from nixt.thread import later, launch
 
 
