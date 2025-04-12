@@ -72,5 +72,5 @@ class Reactor:
 
 def __dir__():
     return (
-        'Reactor'
+        'Reactor',
     )

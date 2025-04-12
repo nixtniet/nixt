@@ -11,9 +11,6 @@ import traceback
 import _thread
 
 
-from typing import Any
-
-
 STARTTIME = time.time()
 
 
@@ -40,7 +37,7 @@ class Thread(threading.Thread):
                 pass
             _thread.interrupt_main()
 
-    def join(self, timeout=None) -> Any:
+    def join(self, timeout=None):
         super().join(timeout)
         return self.result
 
@@ -166,6 +163,6 @@ def __dir__():
         'full',
         'later',
         'launch',
-        'line'
+        'line',
         'name'
     )
