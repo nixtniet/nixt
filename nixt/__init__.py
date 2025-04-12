@@ -12,18 +12,12 @@ from nixt.json   import *
 
 def __dir__():
     return (
-        'Decoder',
-        'Encoder',
         'Object',
         'construct',
-        'dump',
         'dumps',
-        'hook',
         'items',
         'keys',
-        'load',
         'loads',
-        'object',
         'read',
         'update',
         'values',
