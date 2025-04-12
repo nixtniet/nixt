@@ -16,8 +16,9 @@ import types
 import _thread
 
 
-from ..client  import Fleet
-from ..object  import Default, Object, items, keys
+from ..client  import Default
+from ..fleet   import Fleet
+from ..object  import Object, items, keys
 from ..reactor import Reactor
 from ..thread  import later, launch
 

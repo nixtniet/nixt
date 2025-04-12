@@ -5,9 +5,15 @@
 
 
 from .fleet   import Fleet
-from .object  import Default
+from .object  import Object
 from .output  import output
 from .reactor import Reactor
+
+
+class Default(Object):
+
+    def __getattr__(self, key):
+        return self.__dict__.get(key, "")
 
 
 class Client(Reactor):
@@ -30,4 +36,5 @@ class Client(Reactor):
 def __dir__():
     return (
         'Client',
+        'Default'
     )

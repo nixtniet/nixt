@@ -22,12 +22,6 @@ class Object:
         return str(self.__dict__)
 
 
-class Default(Object):
-
-    def __getattr__(self, key):
-        return self.__dict__.get(key, "")
-
-
 def construct(obj, *args, **kwargs) -> None:
     if args:
         val = args[0]
@@ -66,7 +60,6 @@ def values(obj) -> [Any]:
 
 def __dir__():
     return (
-        'Default',
         'Object',
         'construct',
         'items',

@@ -7,7 +7,6 @@
 import os
 import pathlib
 import sys
-import threading
 import time
 import _thread
 
@@ -20,9 +19,6 @@ from .modules import mods, modules, parse, scan, settable
 from .output  import disable, enable, output
 from .store   import Workdir, pidname
 from .thread  import Errors, full
-
-
-lock = threading.RLock()
 
 
 class CLI(Client):
