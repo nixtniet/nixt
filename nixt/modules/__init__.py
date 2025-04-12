@@ -41,7 +41,7 @@ class Main(Default):
     debug   = False
     ignore  = 'llm,srv,udp,web,wsd'
     init    = ""
-    md5     = True
+    md5     = False
     name    = __name__.split(".", maxsplit=1)[0]
     opts    = Default()
     verbose = False
@@ -190,7 +190,7 @@ def check(name, md5=""):
         return False
     if md5sum(pth) == (md5 or MD5.get(name, None)):
         return True
-    if Main.md5:
+    if CHECKSUM and Main.md5:
         debug(f"{name} failed md5sum check")
     return False
 

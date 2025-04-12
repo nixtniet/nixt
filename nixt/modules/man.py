@@ -214,7 +214,7 @@ Save this and recreate the dispatch table
 
 Commands run in their own thread and the program borks on exit, output gets
 flushed on print so exceptions appear in the systemd logs. Modules can contain
-your own written python3 code, see the nixt/modules directory for examples.
+your own written python3 code, see the %s/modules directory for examples.
 
 
 **FILES**
@@ -252,7 +252,7 @@ def man(event):
                             [spaced(name.upper()), "="*(2*len(name)-1), name, name.upper()]
                             + 4*[name]
                             + 5*[name.upper()]
-                            + 34*[name]
+                            + 35*[name]
                             + [name.upper()]
                            )
                )
