@@ -6,9 +6,7 @@
 
 import os
 import pathlib
-import signal
 import sys
-import threading
 import time
 import _thread
 
@@ -19,7 +17,7 @@ from .json    import dumps
 from .modules import Commands, Main, command, inits
 from .modules import md5sum, mods, modules, parse, scan, settable
 from .store   import Workdir, pidname
-from .thread  import Errors, full, launch
+from .thread  import Errors, full
 
 
 "clients"

@@ -17,9 +17,12 @@ import _thread
 
 
 from ..client import Fleet
-from ..object import Object, items, keys
+from ..object import Object
 from ..thread import later, launch
 from ..utils  import spl
+
+
+"defines"
 
 
 CHECKSUM = "7b3aa07511d3d882d07a62bd8c3b6239"
@@ -32,6 +35,9 @@ lock = threading.RLock()
 
 
 path = os.path.dirname(__file__)
+
+
+"config"
 
 
 class Default(Object):
@@ -49,7 +55,10 @@ class Main(Default):
     name    = __name__.split(".", maxsplit=1)[0]
     opts    = Default()
     verbose = False
-    version = 3
+    version = 302
+
+
+"commands"
 
 
 class Commands:
