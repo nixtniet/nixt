@@ -12,8 +12,7 @@ import time
 from ..client import Fleet
 from ..store  import find, path, write
 from ..thread import Timer, launch
-from ..utils  import elapsed
-from .        import debug
+from .        import debug, elapsed
 
 
 class NoDate(Exception):
