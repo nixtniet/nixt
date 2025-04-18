@@ -19,7 +19,6 @@ import _thread
 from ..client import Fleet
 from ..object import Object
 from ..thread import later, launch
-from ..utils  import spl
 
 
 "defines"
@@ -355,6 +354,7 @@ def spl(txt) -> str:
     except (TypeError, ValueError):
         result = txt
     return [x for x in result if x]
+
 
 "interface"
 

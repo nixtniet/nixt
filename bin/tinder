@@ -19,11 +19,10 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.client  import Client
 from nixt.handler import Event
-from nixt.modules import Main, command, modules, parse, settable
+from nixt.modules import Main, command, elapsed, modules, parse, settable, spl
 from nixt.object  import Object, keys
 from nixt.store   import Workdir, skel
 from nixt.thread  import STARTTIME, Errors, full, launch
-from nixt.utils   import elapsed, spl
 
 
 Main.debug  = True
