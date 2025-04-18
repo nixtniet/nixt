@@ -18,7 +18,6 @@ import nixt.modules
 import nixt.object
 import nixt.store
 import nixt.thread
-import nixt.utils
 
 
 from nixt.object import *
@@ -31,8 +30,7 @@ PACKAGE = [
     'object',
     'modules',
     'store',
-    'thread',
-    'utils'
+    'thread'
 ]
 
 
