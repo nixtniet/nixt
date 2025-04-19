@@ -161,7 +161,7 @@ def main():
             shutil.rmtree(Workdir.wdr)
     skel()
     nodebug()
-    inits(",".join(modules()))
+    #inits(",".join(modules()))
     clt = CLI()
     clt.start()
     nrs = Main.index or 1

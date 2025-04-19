@@ -354,7 +354,7 @@ def fmt(obj, args=None, skip=None, plain=False) -> str:
             continue
         if plain:
             txt += f"{value} "
-        elif isinstance(value, str) and len(value.split()) >= 2:
+        elif isinstance(value, str):
             txt += f'{key}="{value}" '
         else:
             txt += f'{key}={value} '

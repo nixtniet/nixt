@@ -49,8 +49,9 @@ class Fleet:
     @staticmethod
     def display(evt) -> None:
         with lock:
+            clt = Fleet.get(evt.orig)
             for tme in sorted(evt.result):
-                Fleet.say(evt.orig, evt.channel, evt.result[tme])
+                clt.say(evt.channel, evt.result[tme])
             evt.ready()
 
     @staticmethod
