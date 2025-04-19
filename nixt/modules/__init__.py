@@ -17,7 +17,7 @@ import _thread
 
 
 from ..client import Fleet
-from ..object import Object, keys
+from ..object import Object, items, keys
 from ..thread import later, launch
 
 
