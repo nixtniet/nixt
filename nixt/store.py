@@ -16,8 +16,14 @@ from .json   import dump, load
 from .object import Object, fqn, items, update
 
 
+"defines"
+
+
 lock = threading.RLock()
 p    = os.path.join
+
+
+"classes"
 
 
 class Error(Exception):
@@ -143,7 +149,7 @@ def fns(clz) -> [str]:
     pth = store(clz)
     for rootdir, dirs, _files in os.walk(pth, topdown=False):
         if dirs:
-            for dname in sorted(dirs):
+            for dname in dirs:
                 if dname.count('-') == 2:
                     ddd = p(rootdir, dname)
                     for fll in os.listdir(ddd):

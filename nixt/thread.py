@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"threads"
+"threading"
 
 
 import queue
@@ -12,6 +12,9 @@ import _thread
 
 
 STARTTIME = time.time()
+
+
+"thread"
 
 
 class Thread(threading.Thread):

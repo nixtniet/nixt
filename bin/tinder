@@ -20,6 +20,7 @@ sys.path.insert(0, os.getcwd())
 from nixt.client  import Client
 from nixt.handler import Event
 from nixt.modules import Main, command, elapsed, modules, parse, settable, spl
+from nixt.modules import inits
 from nixt.object  import Object, keys
 from nixt.store   import Workdir, skel
 from nixt.thread  import STARTTIME, Errors, full, launch
@@ -105,6 +106,11 @@ def consume(evts):
     return done
 
 
+def nodebug():
+    with open('/dev/null', 'a+', encoding="utf-8") as ses:
+        os.dup2(ses.fileno(), sys.stderr.fileno())
+
+
 def payload(clt, cmds):
     nmr = 0
     cmdz = sorted(keys(cmds))
@@ -154,6 +160,8 @@ def main():
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
     skel()
+    nodebug()
+    inits(",".join(modules()))
     clt = CLI()
     clt.start()
     nrs = Main.index or 1

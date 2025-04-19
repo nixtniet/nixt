@@ -24,16 +24,14 @@ from ..thread import later, launch
 "defines"
 
 
+lock = threading.RLock()
+path = os.path.dirname(__file__)
+
+
 CHECKSUM = "7b3aa07511d3d882d07a62bd8c3b6239"
 CHECKSUM = ""
 MD5      = {}
 NAMES    = {}
-
-
-lock = threading.RLock()
-
-
-path = os.path.dirname(__file__)
 
 
 "config"
@@ -55,6 +53,13 @@ class Main(Default):
     opts    = Default()
     verbose = False
     version = 302
+
+
+MODULES  = sorted([
+            x[:-3] for x in os.listdir(path)
+            if x.endswith(".py") and not x.startswith("__") and
+            x[:-3] not in Main.ignore
+           ])
 
 
 "commands"
@@ -202,6 +207,8 @@ def settable():
 
 def check(name, md5=""):
     mname = f"{__name__}.{name}"
+    if sys.modules.get(mname):
+        return False
     pth = os.path.join(path, name + ".py")
     spec = importlib.util.spec_from_file_location(mname, pth)
     if not spec:
@@ -278,7 +285,7 @@ def mods(names="", empty=False) -> [types.ModuleType]:
             tbl.NAMES = {}
         except ImportError:
             pass
-    for nme in sorted(modules(path)):
+    for nme in MODULES:
         if names and nme not in spl(names):
             continue
         mod = load(nme)
@@ -360,4 +367,4 @@ def spl(txt) -> str:
 
 
 def __dir__():
-    return modules()
+    return MODULES

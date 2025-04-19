@@ -36,6 +36,7 @@ class CLI(Client):
 class Console(CLI):
 
     def announce(self, txt):
+        #output(txt)
         pass
 
     def callback(self, evt):
@@ -318,8 +319,6 @@ WantedBy=multi-user.target"""
 def main():
     if check("a"):
         Main.init   = ",".join(modules())
-        for mod in mods():
-            mod.DEBUG = False
     if check("v"):
         setattr(Main.opts, "v", True)
         enable()
