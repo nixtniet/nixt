@@ -186,7 +186,7 @@ def srv(event):
 def tbl(event):
     if not check("f"):
         Commands.names = {}
-    for mod in mods(empty=True):
+    for mod in mods():
         scan(mod)
     event.reply("# This file is placed in the Public Domain.")
     event.reply("")
@@ -231,8 +231,7 @@ def console():
         banner()
     for _mod, thr in inits(Main.init):
         if "w" in Main.opts:
-            if thr.is_alive():
-                thr.join(30.0)
+            thr.join(30.0)
     csl = Console()
     csl.start()
     forever()

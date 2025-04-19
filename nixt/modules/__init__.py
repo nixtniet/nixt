@@ -264,8 +264,8 @@ def load(name) -> types.ModuleType:
                 return None
             spec = importlib.util.spec_from_file_location(mname, pth)
             module = importlib.util.module_from_spec(spec)
-            sys.modules[mname] = module
             spec.loader.exec_module(module)
+            sys.modules[mname] = module
         if Main.debug:
             module.DEBUG = True
         return module
@@ -277,14 +277,8 @@ def md5sum(modpath):
         return str(hashlib.md5(txt).hexdigest())
 
 
-def mods(names="", empty=False) -> [types.ModuleType]:
+def mods(names="") -> [types.ModuleType]:
     res = []
-    if empty:
-        try:
-            from . import tbl
-            tbl.NAMES = {}
-        except ImportError:
-            pass
     for nme in MODULES:
         if names and nme not in spl(names):
             continue
