@@ -13,7 +13,7 @@ import time
 
 
 from .json   import dump, load
-from .object import Object, fqn, items, update
+from .object import Object, items, update
 
 
 "defines"
@@ -218,6 +218,16 @@ def search(obj, selector, matching=None) -> bool:
             res = False
             break
     return res
+
+
+"methods"
+
+
+def fqn(obj) -> str:
+    kin = str(type(obj)).split()[-1][1:-2]
+    if kin == "type":
+        kin = f"{obj.__module__}.{obj.__name__}"
+    return kin
 
 
 "interface"
