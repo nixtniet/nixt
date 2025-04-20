@@ -10,6 +10,9 @@ import json
 from .object import Object, construct
 
 
+"decoder"
+
+
 class Decoder(json.JSONDecoder):
 
     def decode(self, s, _w=None) -> Object:
@@ -17,6 +20,27 @@ class Decoder(json.JSONDecoder):
         if isinstance(val, dict):
             return hook(val)
         return val
+
+
+def hook(objdict) -> Object:
+    obj = Object()
+    construct(obj, objdict)
+    return obj
+
+
+def load(*args, **kw) -> Object:
+    kw["cls"] = Decoder
+    kw["object_hook"] = hook
+    return json.load(*args, **kw)
+
+
+def loads(*args, **kw) -> Object:
+    kw["cls"] = Decoder
+    kw["object_hook"] = hook
+    return json.loads(*args, **kw)
+
+
+"encoder"
 
 
 class Encoder(json.JSONEncoder):
@@ -46,23 +70,6 @@ def dumps(*args, **kw) -> str:
     kw["cls"] = Encoder
     return json.dumps(*args, **kw)
 
-
-def hook(objdict) -> Object:
-    obj = Object()
-    construct(obj, objdict)
-    return obj
-
-
-def load(*args, **kw) -> Object:
-    kw["cls"] = Decoder
-    kw["object_hook"] = hook
-    return json.load(*args, **kw)
-
-
-def loads(*args, **kw) -> Object:
-    kw["cls"] = Decoder
-    kw["object_hook"] = hook
-    return json.loads(*args, **kw)
 
 
 "interface"

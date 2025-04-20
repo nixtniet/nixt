@@ -72,6 +72,9 @@ class Handler:
         self.ready.wait()
 
 
+"event"
+
+
 class Event:
 
     def __init__(self):

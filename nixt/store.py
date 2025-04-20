@@ -23,12 +23,15 @@ lock = threading.RLock()
 p    = os.path.join
 
 
-"classes"
+"exceptions"
 
 
 class Error(Exception):
 
     pass
+
+
+"cache"
 
 
 class Cache:
