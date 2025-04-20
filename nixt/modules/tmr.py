@@ -20,9 +20,6 @@ class NoDate(Exception):
     pass
 
 
-"init"
-
-
 def init():
     for fnm, obj in find("timer"):
         if "time" not in dir(obj):

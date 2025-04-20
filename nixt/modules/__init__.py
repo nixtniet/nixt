@@ -21,9 +21,6 @@ from ..object import Object, items, keys
 from ..thread import later, launch
 
 
-"defines"
-
-
 lock = threading.RLock()
 path = os.path.dirname(__file__)
 
@@ -32,9 +29,6 @@ CHECKSUM = "7b3aa07511d3d882d07a62bd8c3b6239"
 CHECKSUM = ""
 MD5      = {}
 NAMES    = {}
-
-
-"config"
 
 
 class Default(Object):
@@ -53,16 +47,6 @@ class Main(Default):
     opts    = Default()
     verbose = False
     version = 302
-
-
-MODULES  = sorted([
-            x[:-3] for x in os.listdir(path)
-            if x.endswith(".py") and not x.startswith("__") and
-            x[:-3] not in Main.ignore
-           ])
-
-
-"commands"
 
 
 class Commands:
@@ -93,9 +77,6 @@ class Commands:
         return func
 
 
-"callbacks"
-
-
 def command(evt) -> None:
     parse(evt)
     func = Commands.get(evt.cmd)
@@ -103,9 +84,6 @@ def command(evt) -> None:
         func(evt)
         Fleet.display(evt)
     evt.ready()
-
-
-"utilities"
 
 
 def debug(*args):
@@ -326,7 +304,7 @@ def md5sum(modpath):
 
 def mods(names="") -> [types.ModuleType]:
     res = []
-    for nme in MODULES:
+    for nme in modules():
         if names and nme not in spl(names):
             continue
         mod = load(nme)
@@ -337,11 +315,11 @@ def mods(names="") -> [types.ModuleType]:
 
 
 def modules(mdir="") -> [str]:
-    return [
-            x[:-3] for x in os.listdir(mdir or path)
-            if x.endswith(".py") and not x.startswith("__") and
-            x[:-3] not in Main.ignore
-           ]
+    return sorted([
+                   x[:-3] for x in os.listdir(mdir or path)
+                   if x.endswith(".py") and not x.startswith("__") and
+                   x[:-3] not in Main.ignore
+                  ])
 
 
 def table():
@@ -402,8 +380,5 @@ def fmt(obj, args=None, skip=None, plain=False) -> str:
     return txt.strip()
 
 
-"interface"
-
-
 def __dir__():
-    return MODULES
+    return modules()

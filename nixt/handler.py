@@ -72,9 +72,6 @@ class Handler:
         self.ready.wait()
 
 
-"event"
-
-
 class Event:
 
     def __init__(self):
@@ -113,9 +110,6 @@ class Event:
         self._ready.wait()
         if self._thr:
             self._thr.join()
-
-
-"interface"
 
 
 def __dir__():

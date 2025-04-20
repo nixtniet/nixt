@@ -26,9 +26,6 @@ from ..thread import Repeater, launch
 from .        import elapsed, fmt, spl
 
 
-"sefines"
-
-
 DEBUG = False
 
 
@@ -37,16 +34,10 @@ importlock = _thread.allocate_lock()
 skipped    = []
 
 
-"init"
-
-
 def init():
     fetcher = Fetcher()
     fetcher.start()
     return fetcher
-
-
-"classes"
 
 
 class Feed(Object):
@@ -198,9 +189,6 @@ class Parser:
                     setattr(obj, itm, val)
             result.append(obj)
         return result
-
-
-"utilities"
 
 
 def cdata(line):
@@ -361,9 +349,6 @@ def syn(event):
     event.reply(f"{nrs} feeds synced")
 
 
-"opml"
-
-
 class OPML:
 
     @staticmethod
@@ -426,9 +411,6 @@ class OPML:
                 setattr(obj, itm, val.strip())
             result.append(obj)
         return result
-
-
-"utilities"
 
 
 def attrs(obj, txt):

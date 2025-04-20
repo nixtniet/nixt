@@ -20,9 +20,6 @@ from .store   import Workdir, pidname
 from .thread  import Errors, full
 
 
-"clients"
-
-
 class CLI(Client):
 
     def __init__(self):
@@ -48,9 +45,6 @@ class Console(CLI):
         evt.txt = input("> ")
         evt.type = "command"
         return evt
-
-
-"signals"
 
 
 def handler(signum, frame):

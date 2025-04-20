@@ -16,22 +16,13 @@ from .json   import dump, load
 from .object import Object, items, update
 
 
-"defines"
-
-
 lock = threading.RLock()
 p    = os.path.join
-
-
-"exceptions"
 
 
 class Error(Exception):
 
     pass
-
-
-"cache"
 
 
 class Cache:
@@ -52,9 +43,6 @@ class Cache:
             if matcher not in key:
                 continue
             yield Cache.objs.get(key)
-
-
-"disk"
 
 
 def cdir(pth) -> None:
@@ -80,9 +68,6 @@ def write(obj, pth=None) -> str:
         with open(pth, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)
         return pth
-
-
-"paths"
 
 
 class Workdir:
@@ -231,9 +216,6 @@ def fqn(obj) -> str:
     if kin == "type":
         kin = f"{obj.__module__}.{obj.__name__}"
     return kin
-
-
-"interface"
 
 
 def __dir__():

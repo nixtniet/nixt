@@ -19,9 +19,6 @@ class Object:
         return str(self.__dict__)
 
 
-"methods"
-
-
 def construct(obj, *args, **kwargs) -> None:
     if args:
         val = args[0]
@@ -56,17 +53,3 @@ def update(obj, data) -> None:
 
 def values(obj) -> []:
     return obj.__dict__.values()
-
-
-"interface"
-
-
-def __dir__():
-    return (
-        'Object',
-        'construct',
-        'items',
-        'keys',
-        'update',
-        'values'
-    )
