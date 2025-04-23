@@ -25,6 +25,9 @@ class Error(Exception):
     pass
 
 
+"cache"
+
+
 class Cache:
 
     objs = {}
@@ -45,29 +48,7 @@ class Cache:
             yield Cache.objs.get(key)
 
 
-def cdir(pth) -> None:
-    path = pathlib.Path(pth)
-    path.parent.mkdir(parents=True, exist_ok=True)
-
-
-def read(obj, pth) -> str:
-    with lock:
-        with open(pth, "r", encoding="utf-8") as fpt:
-            try:
-                update(obj, load(fpt))
-            except json.decoder.JSONDecodeError as ex:
-                raise Error(pth) from ex
-    return pth
-
-
-def write(obj, pth=None) -> str:
-    with lock:
-        if pth is None:
-            pth = path(obj)
-        cdir(pth)
-        with open(pth, "w", encoding="utf-8") as fpt:
-            dump(obj, fpt, indent=4)
-        return pth
+"paths"
 
 
 class Workdir:
@@ -216,6 +197,37 @@ def fqn(obj) -> str:
     if kin == "type":
         kin = f"{obj.__module__}.{obj.__name__}"
     return kin
+
+
+"disk"
+
+
+def cdir(pth) -> None:
+    path = pathlib.Path(pth)
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+
+def read(obj, pth) -> str:
+    with lock:
+        with open(pth, "r", encoding="utf-8") as fpt:
+            try:
+                update(obj, load(fpt))
+            except json.decoder.JSONDecodeError as ex:
+                raise Error(pth) from ex
+    return pth
+
+
+def write(obj, pth=None) -> str:
+    with lock:
+        if pth is None:
+            pth = path(obj)
+        cdir(pth)
+        with open(pth, "w", encoding="utf-8") as fpt:
+            dump(obj, fpt, indent=4)
+        return pth
+
+
+"interface"
 
 
 def __dir__():

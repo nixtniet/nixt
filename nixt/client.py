@@ -13,6 +13,9 @@ from .handler import Handler
 lock = threading.RLock()
 
 
+"client"
+
+
 class Client(Handler):
 
     def __init__(self):
@@ -27,6 +30,9 @@ class Client(Handler):
 
     def say(self, channel, txt) -> None:
         self.raw(txt)
+
+
+"fleet"
 
 
 class Fleet:
@@ -77,6 +83,9 @@ class Fleet:
         for clt in Fleet.clients.values():
             if "wait" in dir(clt):
                 clt.wait()
+
+
+"interface"
 
 
 def __dir__():

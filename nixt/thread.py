@@ -14,6 +14,9 @@ import _thread
 STARTTIME = time.time()
 
 
+"thread"
+
+
 class Thread(threading.Thread):
 
     def __init__(self, func, thrname, *args, daemon=True, **kwargs):
@@ -71,6 +74,9 @@ def name(obj) -> str:
     return None
 
 
+"timers"
+
+
 class Timer:
 
     def __init__(self, sleep, func, *args, thrname=None, **kwargs):
@@ -107,6 +113,9 @@ class Repeater(Timer):
     def run(self) -> None:
         launch(self.start)
         super().run()
+
+
+"errors"
 
 
 class Errors:
@@ -150,6 +159,9 @@ def line(exc):
         for note in exc.__notes__:
             res += f" {note}"
     return res
+
+
+"interface"
 
 
 def __dir__():

@@ -20,6 +20,9 @@ from .store   import Workdir, pidname
 from .thread  import Errors, full
 
 
+"clients"
+
+
 class CLI(Client):
 
     def __init__(self):
@@ -45,6 +48,9 @@ class Console(CLI):
         evt.txt = input("> ")
         evt.type = "command"
         return evt
+
+
+"interrupt handler"
 
 
 def handler(signum, frame):
@@ -83,7 +89,6 @@ def disable():
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     output(f"{Main.name.upper()} since {tme}")
-    output("loaded " + ",".join(sorted(modules())))
 
 
 def check(txt):
