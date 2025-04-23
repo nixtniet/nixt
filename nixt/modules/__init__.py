@@ -31,6 +31,9 @@ MD5      = {}
 NAMES    = {}
 
 
+"config"
+
+
 class Default(Object):
 
     def __getattr__(self, key):
@@ -47,6 +50,9 @@ class Main(Default):
     opts    = Default()
     verbose = False
     version = 302
+
+
+"commands"
 
 
 class Commands:
@@ -84,6 +90,37 @@ def command(evt) -> None:
         func(evt)
         Fleet.display(evt)
     evt.ready()
+
+
+def inits(names) -> [types.ModuleType]:
+    modz = []
+    for name in sorted(spl(names)):
+        try:
+            mod = load(name)
+            if not mod:
+                continue
+            if "init" in dir(mod):
+                thr = launch(mod.init)
+                modz.append((mod, thr))
+        except Exception as ex:
+            later(ex)
+            _thread.interrupt_main()
+    return modz
+
+
+def scan(mod) -> None:
+    for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
+        if key.startswith("cb"):
+            continue
+        if 'event' in cmdz.__code__.co_varnames:
+            Commands.add(cmdz, mod)
+
+
+def settable():
+    Commands.names.update(table())
+
+
+"utilities"
 
 
 def debug(*args):
@@ -130,22 +167,6 @@ def elapsed(seconds, short=True) -> str:
         txt += f"{sec}s"
     txt = txt.strip()
     return txt
-
-
-def inits(names) -> [types.ModuleType]:
-    modz = []
-    for name in sorted(spl(names)):
-        try:
-            mod = load(name)
-            if not mod:
-                continue
-            if "init" in dir(mod):
-                thr = launch(mod.init)
-                modz.append((mod, thr))
-        except Exception as ex:
-            later(ex)
-            _thread.interrupt_main()
-    return modz
 
 
 def parse(obj, txt=None) -> None:
@@ -213,18 +234,6 @@ def spl(txt) -> str:
     except (TypeError, ValueError):
         result = txt
     return [x for x in result if x]
-
-
-def scan(mod) -> None:
-    for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
-        if key.startswith("cb"):
-            continue
-        if 'event' in cmdz.__code__.co_varnames:
-            Commands.add(cmdz, mod)
-
-
-def settable():
-    Commands.names.update(table())
 
 
 "imports"
@@ -378,6 +387,9 @@ def fmt(obj, args=None, skip=None, plain=False) -> str:
         else:
             txt += f'{key}={value} '
     return txt.strip()
+
+
+"interface"
 
 
 def __dir__():

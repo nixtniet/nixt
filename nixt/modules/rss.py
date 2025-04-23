@@ -349,6 +349,9 @@ def syn(event):
     event.reply(f"{nrs} feeds synced")
 
 
+"opml"
+
+
 class OPML:
 
     @staticmethod
