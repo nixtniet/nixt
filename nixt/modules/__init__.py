@@ -25,8 +25,7 @@ lock = threading.RLock()
 path = os.path.dirname(__file__)
 
 
-CHECKSUM = "7b3aa07511d3d882d07a62bd8c3b6239"
-CHECKSUM = ""
+CHECKSUM = "b4b0510e04946b75f4d323efc62793fb"
 MD5      = {}
 NAMES    = {}
 
@@ -45,7 +44,7 @@ class Main(Default):
     debug   = False
     ignore  = ''
     init    = ""
-    md5     = False
+    md5     = True
     name    = __name__.split(".", maxsplit=1)[0]
     opts    = Default()
     verbose = False
