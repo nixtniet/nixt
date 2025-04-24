@@ -63,6 +63,7 @@ def values(obj) -> []:
 
 def __dir__():
     return (
+        'Object',
         'construct',
         'items',
         'keys',
