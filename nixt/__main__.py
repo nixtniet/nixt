@@ -50,7 +50,7 @@ class Console(CLI):
         return evt
 
 
-"interrupt handler"
+"interrupt"
 
 
 def handler(signum, frame):
@@ -316,7 +316,7 @@ WantedBy=multi-user.target"""
 
 def main():
     if check("a"):
-        Main.init   = ",".join(modules())
+        Main.init = ",".join(modules())
     if check("v"):
         setattr(Main.opts, "v", True)
         enable()

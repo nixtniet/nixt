@@ -15,9 +15,10 @@ import time
 
 
 from ..client  import Client, Fleet
+from ..find    import last
 from ..handler import Event
 from ..object  import Object, keys
-from ..store   import ident, last, path, write 
+from ..store   import ident, path, write 
 from ..thread  import launch
 from .         import debug as ldebug
 from .         import Default, Main, command, edit, fmt

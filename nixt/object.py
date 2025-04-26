@@ -19,9 +19,6 @@ class Object:
         return str(self.__dict__)
 
 
-"methods"
-
-
 def construct(obj, *args, **kwargs) -> None:
     if args:
         val = args[0]
@@ -33,6 +30,13 @@ def construct(obj, *args, **kwargs) -> None:
             update(obj, vars(val))
     if kwargs:
         update(obj, kwargs)
+
+
+def fqn(obj) -> str:
+    kin = str(type(obj)).split()[-1][1:-2]
+    if kin == "type":
+        kin = f"{obj.__module__}.{obj.__name__}"
+    return kin
 
 
 def items(obj) -> []:
@@ -56,17 +60,3 @@ def update(obj, data) -> None:
 
 def values(obj) -> []:
     return obj.__dict__.values()
-
-
-"interface"
-
-
-def __dir__():
-    return (
-        'Object',
-        'construct',
-        'items',
-        'keys',
-        'update',
-        'values',
-    )

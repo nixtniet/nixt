@@ -10,7 +10,8 @@ import time
 
 
 from ..client import Fleet
-from ..store  import find, path, write
+from ..find   import find
+from ..store  import path, write
 from ..thread import Timer, launch
 from .        import debug, elapsed
 
@@ -32,9 +33,6 @@ def init():
         else:
             obj.__deleted__ = True
             write(obj, fnm)
-
-
-"utilities"
 
 
 def extract_date(daystr):
@@ -149,9 +147,6 @@ def today():
     return str(datetime.datetime.today()).split()[0]
 
 
-"commands"
-
-
 def tmr(event):
     result = ""
     if not event.rest:
@@ -200,9 +195,6 @@ def tmr(event):
     write(timer, path(timer))
     launch(timer.start)
     event.reply("ok " +  elapsed(diff))
-
-
-"data"
 
 
 MONTHS = [
