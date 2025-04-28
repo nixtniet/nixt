@@ -7,7 +7,8 @@
 import unittest
 
 
-from nixt.handler import Event, Handler
+from nixt.event   import Event
+from nixt.handler import Handler
 
 
 def hello(event):
