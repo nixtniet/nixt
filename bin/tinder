@@ -18,7 +18,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client  import Client
-from nixt.handler import Event
+from nixt.event   import Event
 from nixt.modules import Main, command, elapsed, modules, parse, settable, spl
 from nixt.modules import inits
 from nixt.object  import Object, keys
