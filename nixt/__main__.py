@@ -12,12 +12,12 @@ import _thread
 
 
 from .client  import Client
-from .errors  import Errors, full
 from .event   import Event
 from .json    import dumps
 from .modules import Commands, Main, command, inits
 from .modules import md5sum, mods, modules, parse, scan, settable
 from .store   import Workdir, pidname
+from .thread  import Errors, full
 
 
 "clients"
