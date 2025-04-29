@@ -23,6 +23,10 @@ class Workdir:
     wdr  = ""
 
 
+def ident(obj) -> str:
+    return p(fqn(obj),*str(datetime.datetime.now()).split())
+
+
 def long(name) -> str:
     split = name.split(".")[-1].lower()
     res = name
@@ -35,6 +39,10 @@ def long(name) -> str:
 
 def moddir():
     return p(Workdir.wdr, "mods")
+
+
+def path(obj):
+    return p(store(ident(obj)))
 
 
 def pidname(name) -> str:
@@ -67,14 +75,6 @@ def types() -> [str]:
 
 def wdr(pth):
     return p(Workdir.wdr, pth)
-
-
-def ident(obj) -> str:
-    return p(fqn(obj),*str(datetime.datetime.now()).split())
-
-
-def path(obj):
-    return p(store(ident(obj)))
 
 
 def __dir__():
