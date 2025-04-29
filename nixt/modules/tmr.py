@@ -10,8 +10,9 @@ import time
 
 
 from ..client import Fleet
+from ..disk   import write
 from ..find   import find
-from ..store  import path, write
+from ..store  import path
 from ..thread import Timer, launch
 from .        import debug, elapsed
 

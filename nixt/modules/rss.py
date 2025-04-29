@@ -20,9 +20,10 @@ from urllib.parse import quote_plus, urlencode
 
 
 from ..client import Fleet
+from ..disk   import write
 from ..find   import find, fntime, last
 from ..object import Object, update
-from ..store  import path, write
+from ..store  import path
 from ..thread import Repeater, launch
 from .        import elapsed, fmt, spl
 

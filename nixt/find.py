@@ -8,8 +8,9 @@ import os
 import time
 
 
+from .disk   import Cache, read
 from .object import Object, fqn, items, update
-from .store  import Cache, long, read, skel, store
+from .store  import long, skel, store
 
 
 p = os.path.join
