@@ -62,7 +62,6 @@ def values(obj) -> []:
     return obj.__dict__.values()
 
 
-
 def __dir__():
     return (
         'Object',

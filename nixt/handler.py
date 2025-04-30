@@ -73,5 +73,5 @@ class Handler:
 
 def __dir__():
     return (
-        'Handler'
+        'Handler',
     )
