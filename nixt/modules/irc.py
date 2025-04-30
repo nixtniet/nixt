@@ -39,18 +39,12 @@ def debug(txt):
     ldebug(txt)
 
 
-"init"
-
-
 def init():
     irc = IRC()
     irc.start()
     irc.events.joined.wait(30.0)
     debug(f'irc at {Config.server}:{Config.port} {Config.channel}')
     return irc
-
-
-"config"
 
 
 class Config(Default):
@@ -78,9 +72,6 @@ class Config(Default):
         self.realname = Config.realname
         self.server = Config.server
         self.username = Config.username
-
-
-"output"
 
 
 class TextWrap(textwrap.TextWrapper):
@@ -167,9 +158,6 @@ class Output:
 
     def start(self):
         launch(self.output)
-
-
-"irc"
 
 
 class IRC(Client, Output):
@@ -516,9 +504,6 @@ class IRC(Client, Output):
 
     def wait(self):
         self.events.ready.wait()
-
-
-"callbacks"
 
 
 def cb_auth(evt):

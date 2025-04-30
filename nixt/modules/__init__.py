@@ -31,9 +31,6 @@ MD5      = {}
 NAMES    = {}
 
 
-"config"
-
-
 class Default(Object):
 
     def __getattr__(self, key):
@@ -50,9 +47,6 @@ class Main(Default):
     opts    = Default()
     verbose = False
     version = 311
-
-
-"commands"
 
 
 class Commands:
