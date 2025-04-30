@@ -27,12 +27,12 @@ class Cache:
     objs = {}
 
     @staticmethod
-    def add(path, obj) -> None:
-        Cache.objs[path] = obj
+    def add(pth, obj) -> None:
+        Cache.objs[pth] = obj
 
     @staticmethod
-    def get(path):
-        return Cache.objs.get(path, None)
+    def get(pth):
+        return Cache.objs.get(pth, None)
 
     @staticmethod
     def typed(matcher) -> []:
@@ -43,8 +43,8 @@ class Cache:
 
 
 def cdir(pth) -> None:
-    path = pathlib.Path(pth)
-    path.parent.mkdir(parents=True, exist_ok=True)
+    pth = pathlib.Path(pth)
+    pth.parent.mkdir(parents=True, exist_ok=True)
 
 
 def read(obj, pth) -> str:

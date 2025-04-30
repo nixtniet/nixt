@@ -50,15 +50,15 @@ def pidname(name) -> str:
 
 
 def skel() -> str:
-    path = pathlib.Path(store())
-    path.mkdir(parents=True, exist_ok=True)
-    path = pathlib.Path(moddir())
-    path.mkdir(parents=True, exist_ok=True)
-    return path
+    pth = pathlib.Path(store())
+    pth.mkdir(parents=True, exist_ok=True)
+    pth = pathlib.Path(moddir())
+    pth.mkdir(parents=True, exist_ok=True)
+    return pth
 
 
-def setwd(path):
-    Workdir.wdr = path
+def setwd(pth):
+    Workdir.wdr = pth
 
 
 def store(pth="") -> str:

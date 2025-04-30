@@ -2,4 +2,3 @@
 
 
 __doc__ = __name__.upper()
-
