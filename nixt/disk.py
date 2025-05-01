@@ -4,17 +4,20 @@
 "disk"
 
 
+import datetime
 import json
+import os
 import pathlib
 import threading
 
 
 from .json   import dump, load
-from .object import update
-from .store  import path
+from .object import fqn, update
+from .store  import store
 
 
 lock = threading.RLock()
+p    = os.path.join
 
 
 class Error(Exception):
@@ -27,12 +30,12 @@ class Cache:
     objs = {}
 
     @staticmethod
-    def add(pth, obj) -> None:
-        Cache.objs[pth] = obj
+    def add(path, obj) -> None:
+        Cache.objs[path] = obj
 
     @staticmethod
-    def get(pth):
-        return Cache.objs.get(pth, None)
+    def get(path):
+        return Cache.objs.get(path, None)
 
     @staticmethod
     def typed(matcher) -> []:
@@ -42,29 +45,38 @@ class Cache:
             yield Cache.objs.get(key)
 
 
-def cdir(pth) -> None:
-    pth = pathlib.Path(pth)
+
+def cdir(path) -> None:
+    pth = pathlib.Path(path)
     pth.parent.mkdir(parents=True, exist_ok=True)
 
 
-def read(obj, pth) -> str:
+def getpath(obj):
+    return p(store(ident(obj)))
+
+
+def ident(obj) -> str:
+    return p(fqn(obj),*str(datetime.datetime.now()).split())
+
+
+def read(obj, path) -> str:
     with lock:
-        with open(pth, "r", encoding="utf-8") as fpt:
+        with open(path, "r", encoding="utf-8") as fpt:
             try:
                 update(obj, load(fpt))
             except json.decoder.JSONDecodeError as ex:
-                raise Error(pth) from ex
-    return pth
+                raise Error(path) from ex
+    return path
 
 
-def write(obj, pth=None) -> str:
+def write(obj, path=None) -> str:
     with lock:
-        if pth is None:
-            pth = path(obj)
-        cdir(pth)
-        with open(pth, "w", encoding="utf-8") as fpt:
+        if path is None:
+            path = getpath(obj)
+        cdir(path)
+        with open(path, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)
-        return pth
+        return path
 
 
 def __dir__():
@@ -72,6 +84,8 @@ def __dir__():
         'Cache',
         'Error',
         'cdir',
+        'getpath',
+        'ident',
         'read',
         'write'
     )

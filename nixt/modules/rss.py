@@ -20,10 +20,9 @@ from urllib.parse import quote_plus, urlencode
 
 
 from ..client import Fleet
-from ..disk   import write
+from ..disk   import getpath, write
 from ..find   import find, fntime, last
 from ..object import Object, update
-from ..store  import path
 from ..thread import Repeater, launch
 from .        import elapsed, fmt, spl
 
@@ -101,7 +100,7 @@ class Fetcher(Object):
                 result.append(fed)
             setattr(self.seen, feed.rss, urls)
             if not self.seenfn:
-                self.seenfn = path(self.seen)
+                self.seenfn = getpath(self.seen)
             write(self.seen, self.seenfn)
         if silent:
             return counter

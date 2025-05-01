@@ -15,12 +15,11 @@ import time
 
 
 from ..client  import Client
-from ..disk    import write
+from ..disk    import getpath, ident, write
 from ..event   import Event
 from ..fleet   import Fleet
 from ..find    import last
 from ..object  import Object, keys
-from ..store   import ident, path
 from ..thread  import launch
 from .         import debug as ldebug
 from .         import Default, Main, command, edit, fmt
@@ -603,7 +602,7 @@ def cfg(event):
                    )
     else:
         edit(config, event.sets)
-        write(config, fnm or path(config))
+        write(config, fnm or getpath(config))
         event.done()
 
 
