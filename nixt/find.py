@@ -13,18 +13,15 @@ from .object import Object, fqn, items, update
 from .store  import long, skel, store
 
 
-p = os.path.join
-
-
 def fns(clz) -> [str]:
     pth = store(clz)
     for rootdir, dirs, _files in os.walk(pth, topdown=False):
         if dirs:
             for dname in dirs:
                 if dname.count('-') == 2:
-                    ddd = p(rootdir, dname)
+                    ddd = os.path.join(rootdir, dname)
                     for fll in os.listdir(ddd):
-                        yield p(ddd, fll)
+                        yield os.path.join(ddd, fll)
 
 
 def fntime(daystr) -> int:

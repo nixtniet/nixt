@@ -326,7 +326,6 @@ def elapsed(seconds, short=True) -> str:
     return txt
 
 
-
 def spl(txt) -> str:
     try:
         result = txt.split(',')
