@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # This file is placed in the Public Domain.
 
 
@@ -15,13 +14,13 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.client  import Client
-from nixt.event   import Event
-from nixt.json    import dumps
-from nixt.modules import Commands, Main, command, inits
-from nixt.modules import md5sum, mods, modules, parse, scan, settable
-from nixt.store   import Workdir, pidname
-from nixt.thread  import Errors, full
+from .client  import Client
+from .event   import Event
+from .json    import dumps
+from .modules import Commands, Main, command, inits
+from .modules import md5sum, mods, modules, parse, scan, settable
+from .store   import Workdir, pidname
+from .thread  import Errors, full
 
 
 class CLI(Client):
