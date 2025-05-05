@@ -42,7 +42,7 @@ def init():
     irc = IRC()
     irc.start()
     irc.events.joined.wait(30.0)
-    debug(f'irc at {Config.server}:{Config.port} {Config.channel}')
+    debug(f'irc at {irc.cfg.server}:{irc.cfg.port} {irc.cfg.channel}')
     return irc
 
 
