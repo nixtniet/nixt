@@ -11,9 +11,6 @@ import time
 import _thread
 
 
-sys.path.insert(0, os.getcwd())
-
-
 from .client  import Client
 from .event   import Event
 from .json    import dumps
