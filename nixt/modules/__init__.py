@@ -40,11 +40,14 @@ class Default(Object):
 class Main(Default):
 
     debug   = False
+    gets    = Default()
     ignore  = ''
     init    = ""
     md5     = True
     name    = __name__.split(".", maxsplit=1)[0]
     opts    = Default()
+    otxt    = ""
+    sets    = Default()
     verbose = False
     version = 311
 

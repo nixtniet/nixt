@@ -8,6 +8,7 @@ import os
 import pathlib
 import sys
 import time
+import typing
 import _thread
 
 
@@ -27,7 +28,7 @@ class CLI(Client):
         self.register("command", command)
 
     def raw(self, txt):
-        output(txt.encode('utf-8', 'replace').decode("utf-8"))
+        out(txt.encode('utf-8', 'replace').decode("utf-8"))
 
 
 class Console(CLI):
@@ -59,7 +60,7 @@ def doprint(txt):
     sys.stdout.flush()
 
 
-def output(txt):
+def out(txt):
     doprint(txt)
 
 
@@ -68,13 +69,13 @@ def nil(txt):
 
 
 def enable():
-    global output
-    output = doprint
+    global out
+    out = doprint
 
 
 def disable():
-    global output
-    output = nil
+    global out
+    out = nil
 
 
 "utilities"
@@ -82,7 +83,7 @@ def disable():
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    output(f"{Main.name.upper()} since {tme}")
+    out(f"{Main.name.upper()} since {tme}")
 
 
 def check(txt):
@@ -118,8 +119,7 @@ def daemon(verbose=False):
 
 def errors():
     for exc in Errors.errors:
-        for line in full(exc):
-            output(line)
+        out(full(exc))
 
 
 def forever():
@@ -270,7 +270,7 @@ def wrapped(func):
     try:
         func()
     except (KeyboardInterrupt, EOFError):
-        output("")
+        out("")
     errors()
 
 

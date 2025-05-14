@@ -14,6 +14,7 @@ class Event:
         self._ready = threading.Event()
         self._thr   = None
         self.ctime  = time.time()
+        self.orig   = ""
         self.result = {}
         self.type   = "event"
         self.txt    = ""

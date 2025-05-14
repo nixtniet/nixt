@@ -59,8 +59,8 @@ class Timer:
         self.args   = args
         self.func   = func
         self.kwargs = kwargs
-        self.sleep  = sleep
         self.name   = thrname or kwargs.get("name", name(func))
+        self.sleep  = sleep
         self.state  = {}
         self.timer  = None
 
@@ -77,7 +77,7 @@ class Timer:
         timer.state["starttime"] = time.time()
         timer.state["latest"]    = time.time()
         timer.start()
-        self.timer   = timer
+        self.timer = timer
 
     def stop(self) -> None:
         if self.timer:
@@ -92,7 +92,7 @@ class Repeater(Timer):
 
 
 def full(exc) -> str:
-    return traceback.format_exception(type(exc),exc,exc.__traceback__)
+    return "".join(traceback.format_exception(type(exc),exc,exc.__traceback__))
 
 
 def later(exc) -> None:
@@ -149,7 +149,7 @@ def name(obj) -> str:
         return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
     if '__name__' in dir(obj):
         return f'{obj.__class__.__name__}.{obj.__name__}'
-    return None
+    return ""
 
 
 def __dir__():

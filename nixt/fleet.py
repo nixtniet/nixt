@@ -5,6 +5,7 @@
 
 
 import threading
+import typing
 
 
 lock = threading.RLock()
@@ -19,8 +20,8 @@ class Fleet:
         Fleet.clients[repr(clt)] = clt
 
     @staticmethod
-    def all() -> []:
-        yield from Fleet.clients.values()
+    def all() -> list[typing.Any]:
+        return sorted(Fleet.clients.values())
 
     @staticmethod
     def announce(txt) -> None:

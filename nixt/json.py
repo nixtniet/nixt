@@ -4,16 +4,17 @@
 "decoder/encoder"
 
 
-import json
+import json as jsn
+import typing
 
 
 from .object import Object, construct
 
 
-class Decoder(json.JSONDecoder):
+class Decoder(jsn.JSONDecoder):
 
     def decode(self, s, _w=None) -> Object:
-        val = json.JSONDecoder.decode(self, s)
+        val = jsn.JSONDecoder.decode(self, s)
         if isinstance(val, dict):
             return hook(val)
         return val
@@ -25,21 +26,21 @@ def hook(objdict) -> Object:
     return obj
 
 
-def load(*args, **kw) -> Object:
+def load(fp, *args, **kw) -> Object:
     kw["cls"] = Decoder
     kw["object_hook"] = hook
-    return json.load(*args, **kw)
+    return jsn.load(fp, *args, **kw)
 
 
-def loads(*args, **kw) -> Object:
+def loads(s, *args, **kw) -> Object:
     kw["cls"] = Decoder
     kw["object_hook"] = hook
-    return json.loads(*args, **kw)
+    return jsn.loads(s, *args, **kw)
 
 
-class Encoder(json.JSONEncoder):
+class Encoder(jsn.JSONEncoder):
 
-    def default(self, o) -> str:
+    def default(self, o) -> typing.Any:
         if isinstance(o, dict):
             return o.items()
         if issubclass(type(o), Object):
@@ -47,7 +48,7 @@ class Encoder(json.JSONEncoder):
         if isinstance(o, list):
             return iter(o)
         try:
-            return json.JSONEncoder.default(self, o)
+            return jsn.JSONEncoder.default(self, o)
         except TypeError:
             try:
                 return vars(o)
@@ -55,14 +56,14 @@ class Encoder(json.JSONEncoder):
                 return repr(o)
 
 
-def dump(*args, **kw) -> None:
+def dump(obj, fp, *args, **kw) -> None:
     kw["cls"] = Encoder
-    json.dump(*args, **kw)
+    jsn.dump(obj, fp, *args, **kw)
 
 
-def dumps(*args, **kw) -> str:
+def dumps(obj, *args, **kw) -> str:
     kw["cls"] = Encoder
-    return json.dumps(*args, **kw)
+    return jsn.dumps(obj, *args, **kw)
 
 
 def __dir__():

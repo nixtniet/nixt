@@ -5,10 +5,11 @@
 
 
 import datetime
-import json
+import json.decoder
 import os
 import pathlib
 import threading
+import types
 
 
 from .json   import dump, load
@@ -38,7 +39,7 @@ class Cache:
         return Cache.objs.get(path, None)
 
     @staticmethod
-    def typed(matcher) -> []:
+    def typed(matcher) -> types.GeneratorType:
         for key in Cache.objs:
             if matcher not in key:
                 continue
