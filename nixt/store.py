@@ -42,7 +42,7 @@ def skel() -> str:
     pth.mkdir(parents=True, exist_ok=True)
     pth = pathlib.Path(moddir())
     pth.mkdir(parents=True, exist_ok=True)
-    return pth
+    return str(pth)
 
 
 def setwd(pth):
@@ -57,7 +57,7 @@ def strip(pth, nmr=2) -> str:
     return os.sep.join(pth.split(os.sep)[-nmr:])
 
 
-def types() -> [str]:
+def types() -> list[str]:
     return os.listdir(store())
 
 

@@ -55,14 +55,14 @@ def find(clz, selector=None, deleted=False, matching=False) -> [Object]:
     return sorted(res, key=lambda x: fntime(x[0]))
 
 
-def last(obj, selector=None) -> Object:
+def last(obj, selector=None) -> str:
     if selector is None:
         selector = {}
     result = sorted(
                     find(fqn(obj), selector),
                     key=lambda x: fntime(x[0])
                    )
-    res = Object()
+    res = None
     if result:
         inp = result[-1]
         update(obj, inp[-1])

@@ -34,8 +34,7 @@ class CLI(Client):
 class Console(CLI):
 
     def announce(self, txt):
-        #output(txt)
-        pass
+        out(txt)
 
     def callback(self, evt):
         CLI.callback(self, evt)

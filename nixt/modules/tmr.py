@@ -10,9 +10,10 @@ import time
 
 
 from ..disk   import getpath, write
-from ..find   import find
+from ..find   import find, last
 from ..fleet  import Fleet
-from ..thread import Timer, launch
+from ..object import Object, items
+from ..thread import Timed, launch
 from .        import debug, elapsed
 
 
@@ -21,18 +22,29 @@ class NoDate(Exception):
     pass
 
 
+class Timers(Object):
+
+    def add(self, timer):
+        setattr(self, str(timer.target), (timer.function, timer.args))
+
+
+timers = Timers()
+
+
 def init():
-    for fnm, obj in find("timer"):
-        if "time" not in dir(obj):
-            continue
-        diff = float(obj.time) - time.time()
+    pth = last(timers)
+    remove = []
+    for tme, tmr in items(timers):
+        diff = float(tme) - time.time()
         if diff > 0:
-            timer = Timer(diff, Fleet.announce, obj.txt)
+            timer = Timed(diff, Fleet.announce, tmr[1][-1])
             timer.start()
-            debug(f"timer at {time.ctime(obj.time)}")
+            debug(f"timer at {time.ctime(float(tme))}")
         else:
-            obj.__deleted__ = True
-            write(obj, fnm)
+            remove.append(tme)
+    for tme in remove:
+        delattr(timers, tme)
+    write(timers, pth)
 
 
 def extract_date(daystr):
@@ -151,12 +163,10 @@ def tmr(event):
     result = ""
     if not event.rest:
         nmr = 0
-        for _fn, obj in find('timer'):
-            if "time" not in dir(obj):
-                continue
-            lap = float(obj.time) - time.time()
+        for tme, obj in items(timers):
+            lap = float(tme) - time.time()
             if lap > 0:
-                event.reply(f'{nmr} {obj.txt} {elapsed(lap)}')
+                event.reply(f'{nmr} {obj[-1][-1]} {elapsed(lap)}')
                 nmr += 1
         if not nmr:
             event.reply("no timers.")
@@ -185,15 +195,14 @@ def tmr(event):
     if not target or time.time() > target:
         event.reply("already passed given time.")
         return result
+    pth = last(timers)
     diff = target - time.time()
     txt = " ".join(event.args[1:])
-    timer = Timer(diff, Fleet.say, event.orig, event.channel, txt)
-    timer.channel = event.channel
-    timer.orig = event.orig
-    timer.time = target
-    timer.txt = txt
-    write(timer, getpath(timer))
-    launch(timer.start)
+    timer = Timed(diff, Fleet.say, event.orig, event.channel, txt)
+    timer.target = target
+    timers.add(timer)
+    write(timers, pth)
+    timer.start()
     event.reply("ok " +  elapsed(diff))
 
 

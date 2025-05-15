@@ -5,10 +5,12 @@
 
 
 import queue
-import threading
 import time
 import traceback
 import _thread
+
+
+from threading import Event, Thread, Timer
 
 
 STARTTIME = time.time()
@@ -20,7 +22,7 @@ class Errors:
     errors = []
 
 
-class Thread(threading.Thread):
+class Thread(Thread):
 
     def __init__(self, func, thrname, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, name, (), {}, daemon=daemon)
@@ -28,7 +30,7 @@ class Thread(threading.Thread):
         self.queue = queue.Queue()
         self.result = None
         self.starttime = time.time()
-        self.stopped = threading.Event()
+        self.stopped = Event()
         self.queue.put((func, args))
 
     def run(self) -> None:
@@ -53,35 +55,18 @@ class Thread(threading.Thread):
         return self.result
 
 
-class Timer:
+class Timed(Timer):
 
     def __init__(self, sleep, func, *args, thrname=None, **kwargs):
+        print(sleep, func, args)
+        Timer.__init__(self, sleep, func, args)
         self.args   = args
         self.func   = func
         self.kwargs = kwargs
         self.name   = thrname or kwargs.get("name", name(func))
         self.sleep  = sleep
         self.state  = {}
-        self.timer  = None
-
-    def run(self) -> None:
-        self.state["latest"] = time.time()
-        self.func(*self.args)
-
-    def start(self) -> None:
-        timer = threading.Timer(self.sleep, self.run)
-        timer.name   = self.name
-        timer.sleep  = self.sleep
-        timer.state  = self.state
-        timer.func   = self.func
-        timer.state["starttime"] = time.time()
-        timer.state["latest"]    = time.time()
-        timer.start()
-        self.timer = timer
-
-    def stop(self) -> None:
-        if self.timer:
-            self.timer.cancel()
+        self.target = time.time() + sleep
 
 
 class Repeater(Timer):
@@ -158,7 +143,7 @@ def __dir__():
         'Errors',
         'Repeater',
         'Thread',
-        'Timer',
+        'Timed',
         'full',
         'later',
         'launch',

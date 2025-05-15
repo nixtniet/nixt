@@ -15,8 +15,8 @@ class Decoder(jsn.JSONDecoder):
 
     def decode(self, s, _w=None) -> Object:
         val = jsn.JSONDecoder.decode(self, s)
-        if isinstance(val, dict):
-            return hook(val)
+        #if isinstance(val, dict):
+        #    return hook(val)
         return val
 
 
@@ -27,13 +27,13 @@ def hook(objdict) -> Object:
 
 
 def load(fp, *args, **kw) -> Object:
-    kw["cls"] = Decoder
+    #kw["cls"] = Decoder
     kw["object_hook"] = hook
     return jsn.load(fp, *args, **kw)
 
 
 def loads(s, *args, **kw) -> Object:
-    kw["cls"] = Decoder
+    #kw["cls"] = Decoder
     kw["object_hook"] = hook
     return jsn.loads(s, *args, **kw)
 

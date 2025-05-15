@@ -23,7 +23,7 @@ def thr(event):
         if getattr(obj, 'current', None):
             thread.name = obj.current
         if getattr(obj, 'sleep', None):
-            uptime = obj.sleep - int(time.time() - obj.state["latest"])
+            uptime = obj.sleep - int(time.time() - obj.target)
         elif getattr(obj, 'starttime', None):
             uptime = int(time.time() - obj.starttime)
         else:
