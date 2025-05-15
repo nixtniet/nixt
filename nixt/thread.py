@@ -55,21 +55,38 @@ class Thread(Thread):
         return self.result
 
 
-class Timed(Timer):
+class Timed:
 
     def __init__(self, sleep, func, *args, thrname=None, **kwargs):
-        print(sleep, func, args)
-        Timer.__init__(self, sleep, func, args)
         self.args   = args
         self.func   = func
         self.kwargs = kwargs
-        self.name   = thrname or kwargs.get("name", name(func))
         self.sleep  = sleep
+        self.name   = thrname or kwargs.get("name", name(func))
         self.state  = {}
-        self.target = time.time() + sleep
+        self.timer  = None
+
+    def run(self) -> None:
+        self.state["latest"] = time.time()
+        self.func(*self.args)
+
+    def start(self) -> None:
+        timer = Timer(self.sleep, self.run)
+        timer.name   = self.name
+        timer.sleep  = self.sleep
+        timer.state  = self.state
+        timer.func   = self.func
+        timer.state["starttime"] = time.time()
+        timer.state["latest"]    = time.time()
+        timer.start()
+        self.timer   = timer
+
+    def stop(self) -> None:
+        if self.timer:
+            self.timer.cancel()
 
 
-class Repeater(Timer):
+class Repeater(Timed):
 
     def run(self) -> None:
         launch(self.start)

@@ -25,7 +25,7 @@ class NoDate(Exception):
 class Timers(Object):
 
     def add(self, timer):
-        setattr(self, str(timer.target), (timer.function, timer.args))
+        setattr(self, str(timer.target), (timer.func, timer.args))
 
 
 timers = Timers()
