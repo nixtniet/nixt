@@ -15,7 +15,7 @@ from .thread import later, launch, name
 lock = threading.RLock()
 
 
-class Handler:
+class Engine:
 
     def __init__(self):
         self.cbs     = {}
@@ -73,5 +73,5 @@ class Handler:
 
 def __dir__():
     return (
-        'Handler',
+        'Engine',
     )

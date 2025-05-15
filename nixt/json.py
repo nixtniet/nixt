@@ -11,33 +11,6 @@ import typing
 from .object import Object, construct
 
 
-class Decoder(jsn.JSONDecoder):
-
-    def decode(self, s, _w=None) -> Object:
-        val = jsn.JSONDecoder.decode(self, s)
-        #if isinstance(val, dict):
-        #    return hook(val)
-        return val
-
-
-def hook(objdict) -> Object:
-    obj = Object()
-    construct(obj, objdict)
-    return obj
-
-
-def load(fp, *args, **kw) -> Object:
-    #kw["cls"] = Decoder
-    kw["object_hook"] = hook
-    return jsn.load(fp, *args, **kw)
-
-
-def loads(s, *args, **kw) -> Object:
-    #kw["cls"] = Decoder
-    kw["object_hook"] = hook
-    return jsn.loads(s, *args, **kw)
-
-
 class Encoder(jsn.JSONEncoder):
 
     def default(self, o) -> typing.Any:
@@ -64,6 +37,22 @@ def dump(obj, fp, *args, **kw) -> None:
 def dumps(obj, *args, **kw) -> str:
     kw["cls"] = Encoder
     return jsn.dumps(obj, *args, **kw)
+
+
+def hook(objdict) -> Object:
+    obj = Object()
+    construct(obj, objdict)
+    return obj
+
+
+def load(fp, *args, **kw) -> Object:
+    kw["object_hook"] = hook
+    return jsn.load(fp, *args, **kw)
+
+
+def loads(s, *args, **kw) -> Object:
+    kw["object_hook"] = hook
+    return jsn.loads(s, *args, **kw)
 
 
 def __dir__():

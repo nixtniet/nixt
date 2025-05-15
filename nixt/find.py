@@ -8,9 +8,9 @@ import os
 import time
 
 
-from .disk   import Cache, read
-from .object import Object, fqn, items, update
-from .store  import long, skel, store
+from .persist import Cache, read
+from .object  import Object, fqn, items, update
+from .store   import long, skel, store
 
 
 def fns(clz) -> [str]:
