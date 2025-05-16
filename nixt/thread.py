@@ -6,6 +6,7 @@
 
 import queue
 import time
+import threading
 import traceback
 import _thread
 
@@ -53,6 +54,17 @@ class Thread(Thread):
                 time.sleep(0.01)
         super().join(timeout)
         return self.result
+
+
+class Timer(threading.Timer):
+
+    def __init__(self, sleep, func, *args, thrname=None, **kwargs):
+        threading.Timer(self, sleep, func, *args, thrname, **kwargs)
+        self.name = ""
+        self.sleep = 0.0
+        self.name = thrname or kwargs.get("name")
+        self.state = {}
+        self.func = None
 
 
 class Timed:
