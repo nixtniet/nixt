@@ -52,7 +52,7 @@ class Main(Default):
     version = 311
 
 
-def check(name, md5=""):
+def check(name, md5="") -> bool:
     if not CHECKSUM:
         return True
     mname = f"{__name__}.{name}"
@@ -69,7 +69,7 @@ def check(name, md5=""):
     return False
 
 
-def getmod(name):
+def getmod(name) -> None|types.ModuleType:
     mname = f"{__name__}.{name}"
     mod = sys.modules.get(mname, None)
     if mod:
@@ -84,7 +84,7 @@ def getmod(name):
     return mod
 
 
-def gettbl(name):
+def gettbl(name) -> None|dict:
     pth = os.path.join(path, "tbl.py")
     if not os.path.exists(pth):
         debug("tbl.py is not there")
@@ -100,7 +100,7 @@ def gettbl(name):
     return getattr(mod, name, {})
 
 
-def load(name) -> types.ModuleType:
+def load(name) -> None|types.ModuleType:
     with lock:
         if name in Main.ignore:
             return
@@ -110,23 +110,26 @@ def load(name) -> types.ModuleType:
         if not module:
             pth = os.path.join(path, f"{name}.py")
             if not os.path.exists(pth):
-                return None
+                return
             spec = importlib.util.spec_from_file_location(mname, pth)
+            if not spec:
+                return
             module = importlib.util.module_from_spec(spec)
+            if not module:
+                return
             spec.loader.exec_module(module)
             sys.modules[mname] = module
-        if Main.debug:
-            module.DEBUG = True
+        setdebug(module)
         return module
 
 
-def md5sum(modpath):
+def md5sum(modpath) -> str:
     with open(modpath, "r", encoding="utf-8") as file:
         txt = file.read().encode("utf-8")
         return str(hashlib.md5(txt).hexdigest())
 
 
-def mods(names="") -> [types.ModuleType]:
+def mods(names="") -> list[types.ModuleType]:
     res = []
     for nme in modules():
         if names and nme not in spl(names):
@@ -138,7 +141,7 @@ def mods(names="") -> [types.ModuleType]:
     return res
 
 
-def modules(mdir="") -> [str]:
+def modules(mdir="") -> list[str]:
     return sorted([
                    x[:-3] for x in os.listdir(mdir or path)
                    if x.endswith(".py") and not x.startswith("__") and
@@ -146,7 +149,13 @@ def modules(mdir="") -> [str]:
                   ])
 
 
-def table():
+@typing.no_type_check
+def setdebug(module):
+    if Main.debug:
+        module.DEBUG = True
+
+
+def table() -> dict:
     md5s = gettbl("MD5")
     if md5s:
         MD5.update(md5s)
@@ -169,7 +178,7 @@ class Commands:
             Commands.names[func.__name__] = mod.__name__.split(".")[-1]
 
     @staticmethod
-    def get(cmd) -> typing.Callable:
+    def get(cmd) -> None|typing.Callable:
         func = Commands.cmds.get(cmd, None)
         if not func:
             name = Commands.names.get(cmd, None)
@@ -193,7 +202,7 @@ def command(evt) -> None:
     evt.ready()
 
 
-def inits(names) -> [types.ModuleType]:
+def inits(names) -> list[types.ModuleType]:
     modz = []
     for name in sorted(spl(names)):
         try:
@@ -276,14 +285,14 @@ def scan(mod) -> None:
             Commands.add(cmdz, mod)
 
 
-def settable():
+def settable() -> None:
     Commands.names.update(table())
 
 
 "utilities"
 
 
-def debug(*args):
+def debug(*args) -> None:
     for arg in args:
         sys.stderr.write(str(arg))
         sys.stderr.write("\n")

@@ -217,10 +217,12 @@ class IRC(Client, Output):
             self.direct('CAP LS 302')
         else:
             addr = socket.getaddrinfo(server, port, socket.AF_INET)[-1][-1]
+            addr = tuple(addr[:2])
+            print(addr)
             self.sock = socket.create_connection(addr)
             self.events.authed.set()
         if self.sock:
-            os.set_inheritable(self.sock.fileno(), os.O_RDWR)
+            os.set_inheritable(self.sock.fileno(), True)
             self.sock.setblocking(True)
             self.sock.settimeout(180.0)
             self.events.connected.set()
