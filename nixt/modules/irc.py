@@ -159,6 +159,21 @@ class Output:
         launch(self.output)
 
 
+class Event(Event):
+
+   def __init__(self):
+        super().__init__()
+        self.args      = []
+        self.arguments = []
+        self.command   = ""
+        self.channel   = ""
+        self.nick      = ""
+        self.origin    = ""
+        self.rawstr    = ""
+        self.rest      = ""
+        self.txt       = ""
+
+
 class IRC(Client, Output):
 
     def __init__(self):
@@ -218,7 +233,6 @@ class IRC(Client, Output):
         else:
             addr = socket.getaddrinfo(server, port, socket.AF_INET)[-1][-1]
             addr = tuple(addr[:2])
-            print(addr)
             self.sock = socket.create_connection(addr)
             self.events.authed.set()
         if self.sock:

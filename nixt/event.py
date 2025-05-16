@@ -13,19 +13,10 @@ class Event:
     def __init__(self):
         self._ready    = threading.Event()
         self._thr      = None
-        self.args      = []
-        self.arguments = []
-        self.command   = ""
-        self.channel   = ""
         self.ctime     = time.time()
-        self.nick      = ""
         self.orig      = ""
-        self.origin    = ""
-        self.rawstr    = ""
-        self.rest      = ""
         self.result    = {}
         self.type      = "event"
-        self.txt       = ""
 
     def __contains__(self, key):
         return key in dir(self)
