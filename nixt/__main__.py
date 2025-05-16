@@ -60,6 +60,7 @@ def doprint(txt):
     sys.stdout.flush()
 
 
+@typing.no_type_check
 def out(txt):
     doprint(txt)
 
@@ -68,11 +69,13 @@ def nil(txt):
     pass
 
 
+@typing.no_type_check
 def enable():
     global out
     out = doprint
 
 
+@typing.no_type_check
 def disable():
     global out
     out = nil
