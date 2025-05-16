@@ -56,11 +56,10 @@ class Thread(Thread):
         return self.result
 
 
-class Timer(threading.Timer):
+class Timy(Timer):
 
     def __init__(self, sleep, func, *args, thrname=None, **kwargs):
-        threading.Timer(self, sleep, func, *args, thrname, **kwargs)
-        self.name = ""
+        Timer.__init__(self, sleep, func, *args, thrname, **kwargs)
         self.sleep = 0.0
         self.name = thrname or kwargs.get("name")
         self.state = {}
@@ -70,6 +69,7 @@ class Timer(threading.Timer):
 class Timed:
 
     def __init__(self, sleep, func, *args, thrname=None, **kwargs):
+        
         self.args   = args
         self.func   = func
         self.kwargs = kwargs
@@ -83,7 +83,7 @@ class Timed:
         self.func(*self.args)
 
     def start(self) -> None:
-        timer = Timer(self.sleep, self.run)
+        timer = Timy(self.sleep, self.run)
         timer.name   = self.name
         timer.sleep  = self.sleep
         timer.state  = self.state

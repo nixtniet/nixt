@@ -26,7 +26,7 @@ path = os.path.dirname(__file__)
 
 
 CHECKSUM = "7066fea9f78450b3331c8c71a4492751"
-#CHECKSUM = ""
+CHECKSUM = ""
 MD5      = {}
 NAMES    = {}
 
