@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"non blocking callback engine"
+"event handler"
 
 
 import queue
@@ -15,7 +15,7 @@ from .thread import later, launch, name
 lock = threading.RLock()
 
 
-class Engine:
+class Handler:
 
     def __init__(self):
         self.cbs     = {}
@@ -73,5 +73,5 @@ class Engine:
 
 def __dir__():
     return (
-        'Engine',
+        'Handler',
     )

@@ -6,14 +6,15 @@
 
 import os
 import time
+import types
 
 
-from .persist import Cache, read
-from .object  import Object, fqn, items, update
-from .store   import long, skel, store
+from .disk   import Cache, read
+from .object import Object, fqn, items, update
+from .store  import long, skel, store
 
 
-def fns(clz) -> [str]:
+def fns(clz) -> types.GeneratorType:
     pth = store(clz)
     for rootdir, dirs, _files in os.walk(pth, topdown=False):
         if dirs:
@@ -24,7 +25,7 @@ def fns(clz) -> [str]:
                         yield os.path.join(ddd, fll)
 
 
-def fntime(daystr) -> int:
+def fntime(daystr) -> float:
     datestr = ' '.join(daystr.split(os.sep)[-2:])
     datestr = datestr.replace("_", " ")
     if '.' in datestr:
@@ -34,10 +35,10 @@ def fntime(daystr) -> int:
     timed = time.mktime(time.strptime(datestr, '%Y-%m-%d %H:%M:%S'))
     if rest:
         timed += float('.' + rest)
-    return timed
+    return float(timed)
 
 
-def find(clz, selector=None, deleted=False, matching=False) -> [Object]:
+def find(clz, selector=None, deleted=False, matching=False) -> list[tuple[str,Object]]:
     skel()
     res = []
     clz = long(clz)
@@ -55,7 +56,7 @@ def find(clz, selector=None, deleted=False, matching=False) -> [Object]:
     return sorted(res, key=lambda x: fntime(x[0]))
 
 
-def last(obj, selector=None) -> str:
+def last(obj, selector=None) -> str|None:
     if selector is None:
         selector = {}
     result = sorted(

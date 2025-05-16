@@ -46,7 +46,6 @@ class Cache:
             yield Cache.objs.get(key)
 
 
-
 def cdir(path) -> None:
     pth = pathlib.Path(path)
     pth.parent.mkdir(parents=True, exist_ok=True)

@@ -9,12 +9,12 @@ import re
 import time
 
 
-from ..persist import getpath, write
-from ..find    import find, last
-from ..fleet   import Fleet
-from ..object  import Object, items
-from ..thread  import Timed, launch
-from .         import debug, elapsed
+from ..disk   import getpath, write
+from ..find   import find, last
+from ..fleet  import Fleet
+from ..object import Object, items
+from ..thread import Timed, launch
+from .        import debug, elapsed
 
 
 class NoDate(Exception):

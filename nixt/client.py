@@ -4,14 +4,14 @@
 "client"
 
 
-from .engine import Engine
-from .fleet  import Fleet
+from .fleet   import Fleet
+from .handler import Handler
 
 
-class Client(Engine):
+class Client(Handler):
 
     def __init__(self):
-        Engine.__init__(self)
+        Handler.__init__(self)
         Fleet.add(self)
 
     def announce(self, txt) -> None:
