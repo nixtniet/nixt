@@ -7,6 +7,7 @@
 import os
 import time
 import types
+import typing
 
 
 from .disk   import Cache, read
@@ -48,12 +49,17 @@ def find(clz, selector=None, deleted=False, matching=False) -> list[tuple[str,Ob
             obj = Object()
             read(obj, pth)
             Cache.add(pth, obj)
-        if not deleted and '__deleted__' in dir(obj) and obj.__deleted__:
+        if not deleted and isdeleted(obj):
             continue
         if selector and not search(obj, selector, matching):
             continue
         res.append((pth, obj))
     return sorted(res, key=lambda x: fntime(x[0]))
+
+
+@typing.no_type_check
+def isdeleted(obj):
+    return '__deleted__' in dir(obj) and obj.__deleted__
 
 
 def last(obj, selector=None) -> str|None:
