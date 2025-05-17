@@ -5,6 +5,7 @@
 
 
 import time
+import typing
 
 
 from ..disk   import write
@@ -20,6 +21,7 @@ class Log(Object):
         self.txt = ''
 
 
+@typing.no_type_check
 def log(event):
     if not event.rest:
         nmr = 0

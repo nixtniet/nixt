@@ -9,6 +9,10 @@ from typing import Any
 
 class Object:
 
+    def __init__(self):
+        object.__init__(self)
+        self.__deleted__ = False
+
     def __contains__(self, key):
         return key in dir(self)
 

@@ -33,7 +33,9 @@ NAMES    = {}
 
 class Default(Object):
 
-    def __getattr__(self, key):
+    def __getattr__(self, key) -> str|typing.Any:
+        if key not in self:
+            setattr(self, key, "")
         return self.__dict__.get(key, "")
 
 
@@ -202,7 +204,7 @@ def command(evt) -> None:
     evt.ready()
 
 
-def inits(names) -> list[types.ModuleType, Thread]:
+def inits(names) -> list[tuple[types.ModuleType,Thread]]:
     modz = []
     for name in sorted(spl(names)):
         try:

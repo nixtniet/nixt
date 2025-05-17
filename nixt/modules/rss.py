@@ -10,6 +10,7 @@ import os
 import re
 import time
 import urllib
+import urllib.parse
 import urllib.request
 import uuid
 import _thread
@@ -24,7 +25,7 @@ from ..find   import find, fntime, last
 from ..fleet  import Fleet
 from ..object import Object, update
 from ..thread import Repeater, launch
-from .        import elapsed, fmt, spl
+from .        import Default, elapsed, fmt, spl
 
 
 DEBUG = False
@@ -41,11 +42,11 @@ def init():
     return fetcher
 
 
-class Feed(Object):
+class Feed(Default):
 
     def __init__(self):
-        Object.__init__(self)
-        self.link = ""
+        Default.__init__(self)
+        self.name = ""
 
 
 class Fetcher(Object):
@@ -242,16 +243,17 @@ class Parser:
         return result
 
 
-class Rss(Object):
+class Rss(Default):
 
     def __init__(self):
-        Object.__init__(self)
+        Default.__init__(self)
         self.display_list = 'title,link,author'
         self.insertid     = None
-        self.rss          = ''
+        self.name         = ""
+        self.rss          = ""
 
 
-class Urls(Object):
+class Urls(Default):
 
     pass
 
@@ -310,7 +312,7 @@ def geturl(url):
     if not url.startswith("http://") and not url.startswith("https://"):
         return ""
     url = urllib.parse.urlunparse(urllib.parse.urlparse(url))
-    req = urllib.request.Request(url)
+    req = urllib.request.Request(str(url))
     req.add_header('User-agent', useragent("rss fetcher"))
     with urllib.request.urlopen(req) as response: # nosec
         response.data = response.read()
@@ -342,10 +344,10 @@ def dpl(event):
         event.reply('dpl <stringinurl> <item1,item2>')
         return
     setter = {'display_list': event.args[1]}
-    for fnm, feed in find("rss", {'rss': event.args[0]}):
-        if feed:
-            update(feed, setter)
-            write(feed, fnm)
+    for fnm,  rss in find("rss", {'rss': event.args[0]}):
+        if rss:
+            update(rss, setter)
+            write(rss, fnm)
     event.done()
 
 
@@ -391,11 +393,11 @@ def imp(event):
                 skipped.append(url)
                 nrskip += 1
                 continue
-            feed = Rss()
-            update(feed, obj)
-            feed.rss = obj.xmlUrl
-            feed.insertid = insertid
-            write(feed)
+            rss = Rss()
+            update(rss, obj)
+            rss.rss = obj.xmlUrl
+            rss.insertid = insertid
+            write(rss)
             nrs += 1
     if nrskip:
         event.reply(f"skipped {nrskip} urls.")
@@ -408,9 +410,11 @@ def nme(event):
         event.reply('nme <stringinurl> <name>')
         return
     selector = {'rss': event.args[0]}
-    for fnm, feed in find("rss", selector):
+    for fnm, rss in find("rss", selector):
+        feed = Rss()
+        update(feed, rss)
         if feed:
-            feed.name = event.args[1]
+            feed.name = str(event.args[1])
             write(feed, fnm)
     event.done()
 
@@ -419,12 +423,14 @@ def rem(event):
     if len(event.args) != 1:
         event.reply('rem <stringinurl>')
         return
-    for fnm, feed in find("rss"):
+    for fnm, rss in find("rss"):
+        feed = Default()
+        update(feed, rss)
         if event.args[0] not in feed.rss:
             continue
         if feed:
             feed.__deleted__ = True
-            write(feed, fnm)
+            write(rss, fnm)
     event.done()
 
 
@@ -432,7 +438,9 @@ def res(event):
     if len(event.args) != 1:
         event.reply('res <stringinurl>')
         return
-    for fnm, feed in find("rss", deleted=True):
+    for fnm, rss in find("rss", deleted=True):
+        feed = Default()
+        update(feed, rss)
         if event.args[0] not in feed.rss:
             continue
         if feed:
@@ -444,13 +452,13 @@ def res(event):
 def rss(event):
     if not event.rest:
         nrs = 0
-        for fnm, feed in find('rss'):
+        for fnm, rss in find('rss'):
             nrs += 1
             elp = elapsed(time.time()-fntime(fnm))
-            txt = fmt(feed)
+            txt = fmt(rss)
             event.reply(f'{nrs} {txt} {elp}')
         if not nrs:
-            event.reply('no rss feed found.')
+            event.reply('no feed found.')
         return
     url = event.args[0]
     if 'http' not in url:
@@ -459,9 +467,9 @@ def rss(event):
     for fnm, result in find("rss", {'rss': url}):
         if result:
             return
-    feed = Rss()
-    feed.rss = event.args[0]
-    write(feed)
+    rss = Rss()
+    rss.rss = event.args[0]
+    write(rss)
     event.done()
 
 

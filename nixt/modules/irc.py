@@ -12,6 +12,7 @@ import ssl
 import textwrap
 import threading
 import time
+import typing
 
 
 from ..client import Client
@@ -38,6 +39,7 @@ def debug(txt):
     ldebug(txt)
 
 
+@typing.no_type_check
 def init():
     irc = IRC()
     irc.start()
@@ -88,29 +90,28 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-class Output:
+class Output(Object):
 
-    cache = Object()
 
     def __init__(self):
+        Object.__init__(self)
+        self.cache  = Default()
         self.dostop = threading.Event()
         self.oqueue = queue.Queue()
 
     def dosay(self, channel, txt):
         raise NotImplementedError
 
-    @staticmethod
-    def extend(channel, txtlist):
-        if channel not in dir(Output.cache):
-            Output.cache[channel] = []
-        chanlist = getattr(Output.cache, channel)
+    def extend(self, channel, txtlist):
+        if channel not in dir(self.cache):
+            self.cache[channel] = []
+        chanlist = getattr(self.cache, channel)
         chanlist.extend(txtlist)
 
-    @staticmethod
-    def gettxt(channel):
+    def gettxt(self, channel):
         txt = None
         try:
-            che = getattr(Output.cache, channel, None)
+            che = getattr(self.cache, channel, None)
             if che:
                 txt = che.pop(0)
         except (KeyError, IndexError):
@@ -118,8 +119,8 @@ class Output:
         return txt
 
     def oput(self, channel, txt):
-        if channel and channel not in dir(Output.cache):
-            setattr(Output.cache, channel, [])
+        if channel and channel not in dir(self.cache):
+            setattr(self.cache, channel, [])
         self.oqueue.put_nowait((channel, txt))
 
     def output(self):
@@ -149,10 +150,9 @@ class Output:
                          f"use !mre to show more (+{length})"
                         )
 
-    @staticmethod
-    def size(chan):
-        if chan in dir(Output.cache):
-            return len(getattr(Output.cache, chan, []))
+    def size(self, chan):
+        if chan in dir(self.cache):
+            return len(getattr(self.cache, chan, []))
         return 0
 
     def start(self):
@@ -174,11 +174,11 @@ class Event(Event):
         self.txt       = ""
 
 
-class IRC(Client, Output):
+class IRC(Output, Client):
 
     def __init__(self):
-        Client.__init__(self)
         Output.__init__(self)
+        Client.__init__(self)
         self.buffer = []
         self.cfg = Config()
         self.channels = []
@@ -215,6 +215,7 @@ class IRC(Client, Output):
         for channel in self.channels:
             self.oput(channel, txt)
 
+    @typing.no_type_check
     def connect(self, server, port=6667):
         debug(f"connecting to {server}:{port}")
         self.state.nrconnect += 1
@@ -630,13 +631,13 @@ def mre(event):
     if 'cache' not in dir(bot):
         event.reply('bot is missing cache')
         return
-    if event.channel not in dir(Output.cache):
+    if event.channel not in dir(bot.cache):
         event.reply(f'no output in {event.channel} cache.')
         return
     for _x in range(3):
-        txt = Output.gettxt(event.channel)
+        txt = bot.gettxt(event.channel)
         event.reply(txt)
-    size = IRC.size(event.channel)
+    size = bot.size(event.channel)
     if size != 0:
         event.reply(f'{size} more in cache')
 

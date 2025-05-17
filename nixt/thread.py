@@ -34,6 +34,13 @@ class Thread(Thread):
         self.stopped = Event()
         self.queue.put((func, args))
 
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        for k in dir(self):
+            yield k
+
     def run(self) -> None:
         try:
             func, args = self.queue.get()
@@ -58,38 +65,31 @@ class Thread(Thread):
 
 class Timy(Timer):
 
-    def __init__(self, sleep, func, *args, thrname=None, **kwargs):
-        Timer.__init__(self, sleep, func, *args, thrname, **kwargs)
-        self.sleep = 0.0
-        self.name = thrname or kwargs.get("name")
-        self.state = {}
-        self.func = None
+    def __init__(self, *args, **kwargs):
+        super().__init__(args, **kwargs)
+        self.state     = {}
+        self.starttime = time.time()
 
 
 class Timed:
 
     def __init__(self, sleep, func, *args, thrname=None, **kwargs):
-        
-        self.args   = args
-        self.func   = func
-        self.kwargs = kwargs
-        self.sleep  = sleep
-        self.name   = thrname or kwargs.get("name", name(func))
-        self.state  = {}
-        self.timer  = None
+        self.args      = args
+        self.func      = func
+        self.kwargs    = kwargs
+        self.sleep     = sleep
+        self.name      = thrname or kwargs.get("name", name(func))
+        self.target    = time.time() + self.sleep
+        self.timer     = None
 
     def run(self) -> None:
-        self.state["latest"] = time.time()
+        self.timer.latest = time.time()
         self.func(*self.args)
 
     def start(self) -> None:
         timer = Timy(self.sleep, self.run)
-        timer.name   = self.name
-        timer.sleep  = self.sleep
-        timer.state  = self.state
-        timer.func   = self.func
+        timer.state["latest"] = time.time()
         timer.state["starttime"] = time.time()
-        timer.state["latest"]    = time.time()
         timer.start()
         self.timer   = timer
 
