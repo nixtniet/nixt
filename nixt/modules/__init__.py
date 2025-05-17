@@ -18,7 +18,7 @@ import _thread
 
 from ..fleet  import Fleet
 from ..object import Object, items, keys
-from ..thread import later, launch
+from ..thread import Thread, later, launch
 
 
 lock = threading.RLock()
@@ -202,7 +202,7 @@ def command(evt) -> None:
     evt.ready()
 
 
-def inits(names) -> list[types.ModuleType]:
+def inits(names) -> list[types.ModuleType, Thread]:
     modz = []
     for name in sorted(spl(names)):
         try:

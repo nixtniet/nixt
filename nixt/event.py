@@ -11,12 +11,13 @@ import time
 class Event:
 
     def __init__(self):
-        self._ready    = threading.Event()
-        self._thr      = None
-        self.ctime     = time.time()
-        self.orig      = ""
-        self.result    = {}
-        self.type      = "event"
+        self._ready = threading.Event()
+        self._thr   = None
+        self.ctime  = time.time()
+        self.orig   = ""
+        self.result = {}
+        self.type   = "event"
+        self.txt    = ""
 
     def __contains__(self, key):
         return key in dir(self)
