@@ -66,7 +66,7 @@ class Thread(Thread):
 class Timy(Timer):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.state     = {}
         self.starttime = time.time()
 
