@@ -1,12 +1,8 @@
 # This file is placed in the Public Domain.
 
 
-"event handler"
-
-
 import queue
 import threading
-import _thread
 
 
 from typing import Callable
@@ -28,7 +24,6 @@ class Handler:
         stopped: threading.Event
 
     def callback(self, evt: Event) -> None: ...
-
     def loop(self): ...
     def poll(self): ...
     def put(self, evt: Event): ...
@@ -36,9 +31,3 @@ class Handler:
     def start(self): ...
     def stop(self): ...
     def wait(self): ...
-
-
-def __dir__():
-    return (
-        'Handler',
-    )

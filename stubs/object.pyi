@@ -18,15 +18,3 @@ def items(obj: Object): ...
 def keys(obj: Object): ...
 def update(obj: Object, data: dict): ...
 def values(obj: Object): ...
-
-
-def __dir__():
-    return (
-        'Object',
-        'construct',
-        'fqn',
-        'items',
-        'keys',
-        'update',
-        'values'
-    )

@@ -1,23 +1,11 @@
 # This file is placed in the Public Domain.
 
 
-"threading"
-
-
-import queue
-import time
 import threading
-import traceback
-import _thread
-
-
-from typing import Any, Callable
 
 
 from threading import Event, Timer
-
-
-STARTTIME = time.time()
+from typing    import Any, Callable
 
 
 class Errors:
@@ -74,18 +62,3 @@ def later(exc: Exception) -> None: ...
 def launch(func: Callable, *args, **kwargs) -> Thread: ...
 def line(exc: Exception) -> str: ...
 def name(obj: Any) -> str: ...
-
-
-def __dir__():
-    return (
-        'STARTTIME',
-        'Errors',
-        'Repeater',
-        'Thread',
-        'Timed',
-        'full',
-        'later',
-        'launch',
-        'line',
-        'name'
-    )

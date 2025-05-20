@@ -1,22 +1,9 @@
 # This file is placed in the Public Domain.
 
 
-"client"
-
-
-from .fleet   import Fleet
-from .handler import Handler
-
-
-class Client(Handler):
+class Client:
 
     def __init__(self): ...
     def announce(self, txt: str) -> None: ...
     def raw(self, txt: str) -> None: ...
     def say(self, channel: str, txt: str) -> None: ...
-
-
-def __dir__():
-    return (
-        'Client',
-    )

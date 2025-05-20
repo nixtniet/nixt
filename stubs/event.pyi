@@ -1,11 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"event"
-
-
 import threading
-import time
 
 
 from typing import Any, Iterator
@@ -34,9 +30,3 @@ class Event:
     def ready(self) -> None: ...
     def reply(self, txt: str) -> None: ...
     def wait(self) -> None: ...
-
-
-def __dir__():
-    return (
-        'Event',
-    )

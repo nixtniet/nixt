@@ -1,11 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"list of clients"
-
-
 import threading
-
 
 from .client import Client
 from .event  import Event
@@ -41,9 +37,3 @@ class Fleet:
 
     @staticmethod
     def wait() -> None: ...
-
-
-def __dir__():
-    return (
-        'Fleet',
-    )
