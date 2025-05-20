@@ -19,7 +19,7 @@ class Workdir:
     wdr  = ""
 
 
-def long(name) -> str:
+def long(name):
     split = name.split(".")[-1].lower()
     res = name
     for names in types():
@@ -33,11 +33,11 @@ def moddir():
     return p(Workdir.wdr, "mods")
 
 
-def pidname(name) -> str:
+def pidname(name):
     return p(Workdir.wdr, f"{name}.pid")
 
 
-def skel() -> str:
+def skel():
     pth = pathlib.Path(store())
     pth.mkdir(parents=True, exist_ok=True)
     pth = pathlib.Path(moddir())
@@ -49,15 +49,15 @@ def setwd(pth):
     Workdir.wdr = pth
 
 
-def store(pth="") -> str:
+def store(pth=""):
     return p(Workdir.wdr, "store", pth)
 
 
-def strip(pth, nmr=2) -> str:
+def strip(pth, nmr=2):
     return os.sep.join(pth.split(os.sep)[-nmr:])
 
 
-def types() -> list[str]:
+def types():
     return os.listdir(store())
 
 

@@ -31,7 +31,7 @@ class Cache:
     objs = {}
 
     @staticmethod
-    def add(path, obj) -> None:
+    def add(path, obj):
         Cache.objs[path] = obj
 
     @staticmethod
@@ -39,14 +39,14 @@ class Cache:
         return Cache.objs.get(path, None)
 
     @staticmethod
-    def typed(matcher) -> types.GeneratorType:
+    def typed(matcher):
         for key in Cache.objs:
             if matcher not in key:
                 continue
             yield Cache.objs.get(key)
 
 
-def cdir(path) -> None:
+def cdir(path):
     pth = pathlib.Path(path)
     pth.parent.mkdir(parents=True, exist_ok=True)
 
@@ -55,11 +55,11 @@ def getpath(obj):
     return p(store(ident(obj)))
 
 
-def ident(obj) -> str:
+def ident(obj):
     return p(fqn(obj),*str(datetime.datetime.now()).split())
 
 
-def read(obj, path) -> str:
+def read(obj, path):
     with lock:
         with open(path, "r", encoding="utf-8") as fpt:
             try:
@@ -69,7 +69,7 @@ def read(obj, path) -> str:
     return path
 
 
-def write(obj, path=None) -> str:
+def write(obj, path=None):
     with lock:
         if path is None:
             path = getpath(obj)

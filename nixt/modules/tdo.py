@@ -5,7 +5,6 @@
 
 
 import time
-import typing
 
 
 from ..disk   import write
@@ -21,7 +20,6 @@ class Todo(Object):
         self.txt = ''
 
 
-@typing.no_type_check
 def dne(event):
     if not event.args:
         event.reply("dne <txt>")

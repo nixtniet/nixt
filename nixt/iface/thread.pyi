@@ -11,7 +11,10 @@ import traceback
 import _thread
 
 
-from threading import Event, Thread, Timer
+from typing import Any, Callable
+
+
+from threading import Event, Timer
 
 
 STARTTIME = time.time()
@@ -23,11 +26,11 @@ class Errors:
     errors: list
 
 
-class Thread(Thread):
+class Thread(threading.Thread):
 
     def __init__(self, func: Callable, thrname: str, *args, daemon: bool=True, **kwargs):
-        name: thrname
-        queue:  queue.Queue()
+        name: str
+        queue:  queue.Queue
         result: Any
         starttime: float
         stopped = Event
@@ -70,7 +73,7 @@ def full(exc: Exception) -> str: ...
 def later(exc: Exception) -> None: ...
 def launch(func: Callable, *args, **kwargs) -> Thread: ...
 def line(exc: Exception) -> str: ...
-def name(obj: Object) -> str: ...
+def name(obj: Any) -> str: ...
 
 
 def __dir__():

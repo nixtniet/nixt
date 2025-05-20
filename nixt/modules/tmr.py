@@ -7,7 +7,6 @@
 import datetime
 import re
 import time
-import typing
 
 
 from ..disk   import getpath, write
@@ -85,7 +84,6 @@ def get_day(daystr):
     raise NoDate(daystr)
 
 
-@typing.no_type_check
 def get_hour(daystr):
     try:
         hmsre = re.search(r'(\d+):(\d+):(\d+)', str(daystr))

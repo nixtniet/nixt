@@ -34,16 +34,16 @@ class Event:
     def __str__(self):
         return str(self.__dict__)
 
-    def done(self) -> None:
+    def done(self):
         self.reply("ok")
 
-    def ready(self) -> None:
+    def ready(self):
         self._ready.set()
 
-    def reply(self, txt) -> None:
+    def reply(self, txt):
         self.result[time.time()] = txt
 
-    def wait(self) -> None:
+    def wait(self):
         self._ready.wait()
         if self._thr:
             self._thr.join()

@@ -9,7 +9,6 @@ import html.parser
 import os
 import re
 import time
-import typing
 import urllib
 import urllib.parse
 import urllib.request
@@ -420,7 +419,6 @@ def nme(event):
     event.done()
 
 
-@typing.no_type_check
 def rem(event):
     if len(event.args) != 1:
         event.reply('rem <stringinurl>')
@@ -436,7 +434,6 @@ def rem(event):
     event.done()
 
 
-@typing.no_type_check
 def res(event):
     if len(event.args) != 1:
         event.reply('res <stringinurl>')

@@ -7,6 +7,10 @@
 import threading
 
 
+from .client import Client
+from .event  import Event
+
+
 lock = threading.RLock()
 
 
@@ -15,7 +19,7 @@ class Fleet:
     clients = {}
 
     @staticmethod
-    def add(clt: str) -> Client: ...
+    def add(clt: Client): ...
 
     @staticmethod
     def all(): ...
@@ -30,8 +34,7 @@ class Fleet:
     def first() -> Client: ...
 
     @staticmethod
-    def get(orig: str) -> Client:
-        return Fleet.clients.get(orig, None)
+    def get(orig: str) -> Client: ...
 
     @staticmethod
     def say(orig: str, channel: str, txt: str) -> None: ...

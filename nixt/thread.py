@@ -41,7 +41,7 @@ class Thread(Thread):
         for k in dir(self):
             yield k
 
-    def run(self) -> None:
+    def run(self):
         try:
             func, args = self.queue.get()
             self.result = func(*args)
@@ -82,18 +82,18 @@ class Timed:
         self.target    = time.time() + self.sleep
         self.timer     = None
 
-    def run(self) -> None:
+    def run(self):
         self.timer.latest = time.time()
         self.func(*self.args)
 
-    def start(self) -> None:
+    def start(self):
         timer = Timy(self.sleep, self.run)
         timer.state["latest"] = time.time()
         timer.state["starttime"] = time.time()
         timer.start()
         self.timer   = timer
 
-    def stop(self) -> None:
+    def stop(self):
         if self.timer:
             self.timer.cancel()
 
@@ -105,15 +105,15 @@ class Repeater(Timed):
         super().run()
 
 
-def full(exc) -> str:
+def full(exc):
     return "".join(traceback.format_exception(type(exc),exc,exc.__traceback__))
 
 
-def later(exc) -> None:
+def later(exc):
     Errors.errors.append(exc)
 
 
-def launch(func, *args, **kwargs) -> Thread:
+def launch(func, *args, **kwargs):
     nme = kwargs.get("name")
     if not nme:
         nme = name(func)
@@ -151,7 +151,7 @@ def line(exc):
     return res
 
 
-def name(obj) -> str:
+def name(obj):
     typ = type(obj)
     if '__builtins__' in dir(typ):
         return obj.__name__

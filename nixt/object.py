@@ -4,9 +4,6 @@
 "a clean namespace"
 
 
-from typing import Any
-
-
 class Object:
 
     def __contains__(self, key):
@@ -22,7 +19,7 @@ class Object:
         return str(self.__dict__)
 
 
-def construct(obj, *args, **kwargs) -> None:
+def construct(obj, *args, **kwargs):
     if args:
         val = args[0]
         if isinstance(val, zip):
@@ -35,33 +32,33 @@ def construct(obj, *args, **kwargs) -> None:
         update(obj, kwargs)
 
 
-def fqn(obj) -> str:
+def fqn(obj):
     kin = str(type(obj)).split()[-1][1:-2]
     if kin == "type":
         kin = f"{obj.__module__}.{obj.__name__}"
     return kin
 
 
-def items(obj) -> list[Any]:
+def items(obj):
     if isinstance(obj,type({})):
         return obj.items()
     return obj.__dict__.items()
 
 
-def keys(obj) -> list[str]:
+def keys(obj):
     if isinstance(obj, type({})):
         return obj.keys()
     return obj.__dict__.keys()
 
 
-def update(obj, data) -> None:
+def update(obj, data):
     if not isinstance(data, type({})):
         obj.__dict__.update(vars(data))
     else:
         obj.__dict__.update(data)
 
 
-def values(obj) -> list[Any]:
+def values(obj):
     return obj.__dict__.values()
 
 

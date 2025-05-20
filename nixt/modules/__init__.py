@@ -11,7 +11,6 @@ import inspect
 import os
 import sys
 import threading
-import typing
 import types
 import _thread
 
@@ -33,7 +32,7 @@ NAMES    = {}
 
 class Default(Object):
 
-    def __getattr__(self, key) -> str|typing.Any:
+    def __getattr__(self, key):
         if key not in self:
             setattr(self, key, "")
         return self.__dict__.get(key, "")
@@ -54,7 +53,7 @@ class Main(Default):
     version = 311
 
 
-def check(name, md5="") -> bool:
+def check(name, md5=""):
     if not CHECKSUM:
         return True
     mname = f"{__name__}.{name}"
@@ -71,7 +70,7 @@ def check(name, md5="") -> bool:
     return False
 
 
-def getmod(name) -> None|types.ModuleType:
+def getmod(name):
     mname = f"{__name__}.{name}"
     mod = sys.modules.get(mname, None)
     if mod:
@@ -86,7 +85,7 @@ def getmod(name) -> None|types.ModuleType:
     return mod
 
 
-def gettbl(name) -> None|dict:
+def gettbl(name):
     pth = os.path.join(path, "tbl.py")
     if not os.path.exists(pth):
         debug("tbl.py is not there")
@@ -102,7 +101,7 @@ def gettbl(name) -> None|dict:
     return getattr(mod, name, {})
 
 
-def load(name) -> None|types.ModuleType:
+def load(name):
     with lock:
         if name in Main.ignore:
             return
@@ -125,13 +124,13 @@ def load(name) -> None|types.ModuleType:
         return module
 
 
-def md5sum(modpath) -> str:
+def md5sum(modpath):
     with open(modpath, "r", encoding="utf-8") as file:
         txt = file.read().encode("utf-8")
         return str(hashlib.md5(txt).hexdigest())
 
 
-def mods(names="") -> list[types.ModuleType]:
+def mods(names=""):
     res = []
     for nme in modules():
         if names and nme not in spl(names):
@@ -143,7 +142,7 @@ def mods(names="") -> list[types.ModuleType]:
     return res
 
 
-def modules(mdir="") -> list[str]:
+def modules(mdir=""):
     return sorted([
                    x[:-3] for x in os.listdir(mdir or path)
                    if x.endswith(".py") and not x.startswith("__") and
@@ -151,13 +150,12 @@ def modules(mdir="") -> list[str]:
                   ])
 
 
-@typing.no_type_check
 def setdebug(module):
     if Main.debug:
         module.DEBUG = True
 
 
-def table() -> dict:
+def table():
     md5s = gettbl("MD5")
     if md5s:
         MD5.update(md5s)
@@ -174,13 +172,13 @@ class Commands:
     names = {}
 
     @staticmethod
-    def add(func, mod=None) -> None:
+    def add(func, mod=None):
         Commands.cmds[func.__name__] = func
         if mod:
             Commands.names[func.__name__] = mod.__name__.split(".")[-1]
 
     @staticmethod
-    def get(cmd) -> None|typing.Callable:
+    def get(cmd):
         func = Commands.cmds.get(cmd, None)
         if not func:
             name = Commands.names.get(cmd, None)
@@ -195,7 +193,7 @@ class Commands:
         return func
 
 
-def command(evt) -> None:
+def command(evt):
     parse(evt)
     func = Commands.get(evt.cmd)
     if func:
@@ -204,7 +202,7 @@ def command(evt) -> None:
     evt.ready()
 
 
-def inits(names) -> list[tuple[types.ModuleType,Thread]]:
+def inits(names):
     modz = []
     for name in sorted(spl(names)):
         try:
@@ -220,7 +218,7 @@ def inits(names) -> list[tuple[types.ModuleType,Thread]]:
     return modz
 
 
-def parse(obj, txt=None) -> None:
+def parse(obj, txt=None):
     if txt is None:
         if "txt" in dir(obj):
             txt = obj.txt
@@ -279,7 +277,7 @@ def parse(obj, txt=None) -> None:
         obj.txt = obj.cmd or ""
 
 
-def scan(mod) -> None:
+def scan(mod):
     for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
         if key.startswith("cb"):
             continue
@@ -287,21 +285,21 @@ def scan(mod) -> None:
             Commands.add(cmdz, mod)
 
 
-def settable() -> None:
+def settable():
     Commands.names.update(table())
 
 
 "utilities"
 
 
-def debug(*args) -> None:
+def debug(*args):
     for arg in args:
         sys.stderr.write(str(arg))
         sys.stderr.write("\n")
         sys.stderr.flush()
 
 
-def elapsed(seconds, short=True) -> str:
+def elapsed(seconds, short=True):
     txt = ""
     nsec = float(seconds)
     if nsec < 1:
@@ -340,7 +338,7 @@ def elapsed(seconds, short=True) -> str:
     return txt
 
 
-def spl(txt) -> str:
+def spl(txt):
     try:
         result = txt.split(',')
     except (TypeError, ValueError):
@@ -351,7 +349,7 @@ def spl(txt) -> str:
 "methods"
 
 
-def edit(obj, setter, skip=False) -> None:
+def edit(obj, setter, skip=False):
     for key, val in items(setter):
         if skip and val == "":
             continue
@@ -373,7 +371,7 @@ def edit(obj, setter, skip=False) -> None:
             setattr(obj, key, val)
 
 
-def fmt(obj, args=None, skip=None, plain=False) -> str:
+def fmt(obj, args=None, skip=None, plain=False):
     if args is None:
         args = keys(obj)
     if skip is None:

@@ -24,8 +24,8 @@ class Handler:
     def __init__(self) -> None:
         cbs:     dict
         queue:   queue.Queue
-        ready:   threading.Event()
-        stopped: threading.Event()
+        ready:   threading.Event
+        stopped: threading.Event
 
     def callback(self, evt: Event) -> None: ...
 

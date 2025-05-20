@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nixt"
-version = "320"
+version = "321"
 authors = [
     {name = "Bart Thate", email = "nixtniet@gmail.com" },
 ]
@@ -35,14 +35,7 @@ classifiers=[
 
 
 [tool.setuptools]
-include-package-data = true
 packages = [
     'nixt',
-    'nixt.iface',
-    'nixt.modules',
+    'nixt.modules'
 ]
-
-
-[tools.setuptools.package-dir]
-nixt = ["*pyi"]
-"nixt-stubs" = "nixt.iface"

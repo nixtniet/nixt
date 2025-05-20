@@ -5,7 +5,6 @@
 
 
 import threading
-import typing
 
 
 lock = threading.RLock()
@@ -16,20 +15,20 @@ class Fleet:
     clients = {}
 
     @staticmethod
-    def add(clt) -> None:
+    def add(clt):
         Fleet.clients[repr(clt)] = clt
 
     @staticmethod
-    def all() -> list[typing.Any]:
+    def all():
         return sorted(Fleet.clients.values())
 
     @staticmethod
-    def announce(txt) -> None:
+    def announce(txt):
         for clt in Fleet.clients.values():
             clt.announce(txt)
 
     @staticmethod
-    def display(evt) -> None:
+    def display(evt):
         with lock:
             clt = Fleet.get(evt.orig)
             for tme in sorted(evt.result):
@@ -37,7 +36,7 @@ class Fleet:
             evt.ready()
 
     @staticmethod
-    def first() -> None:
+    def first():
         clt =  list(Fleet.clients.values())
         res = None
         if clt:
@@ -45,17 +44,17 @@ class Fleet:
         return res
 
     @staticmethod
-    def get(orig) -> None:
+    def get(orig):
         return Fleet.clients.get(orig, None)
 
     @staticmethod
-    def say(orig, channel, txt) -> None:
+    def say(orig, channel, txt):
         clt = Fleet.get(orig)
         if clt:
             clt.say(channel, txt)
 
     @staticmethod
-    def wait() -> None:
+    def wait():
         for clt in Fleet.clients.values():
             if "wait" in dir(clt):
                 clt.wait()

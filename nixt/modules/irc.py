@@ -12,7 +12,6 @@ import ssl
 import textwrap
 import threading
 import time
-import typing
 
 
 from ..client import Client
@@ -39,7 +38,6 @@ def debug(txt):
     ldebug(txt)
 
 
-@typing.no_type_check
 def init():
     irc = IRC()
     irc.start()
@@ -215,7 +213,6 @@ class IRC(Output, Client):
         for channel in self.channels:
             self.oput(channel, txt)
 
-    @typing.no_type_check
     def connect(self, server, port=6667):
         debug(f"connecting to {server}:{port}")
         self.state.nrconnect += 1
