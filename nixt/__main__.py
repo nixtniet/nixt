@@ -54,27 +54,9 @@ def handler(signum, frame):
 "output"
 
 
-def doprint(txt):
+def out(txt):
     print(txt.rstrip())
     sys.stdout.flush()
-
-
-def out(txt):
-    doprint(txt)
-
-
-def nil(txt):
-    pass
-
-
-def enable():
-    global out
-    out = doprint
-
-
-def disable():
-    global out
-    out = nil
 
 
 "utilities"
@@ -202,7 +184,6 @@ def background():
     daemon("-v" in sys.argv)
     setwd(Main.name)
     privileges()
-    disable()
     pidfile(pidname(Main.name))
     settable()
     Commands.add(cmd)
@@ -213,7 +194,6 @@ def background():
 def console():
     import readline # noqa: F401
     setwd(Main.name)
-    enable()
     settable()
     Commands.add(cmd)
     parse(Main, " ".join(sys.argv[1:]))
@@ -234,7 +214,6 @@ def control():
         return
     setwd(Main.name)
     settable()
-    enable()
     Commands.add(cmd)
     Commands.add(md5)
     Commands.add(srv)
@@ -253,7 +232,6 @@ def service():
     setwd(Main.name)
     settable()
     nodebug()
-    enable()
     banner()
     privileges()
     pidfile(pidname(Main.name))
@@ -312,7 +290,6 @@ def main():
         Main.init = ",".join(modules())
     if check("v"):
         setattr(Main.opts, "v", True)
-        enable()
     if check("c"):
         wrap(console)
     elif check("d"):
