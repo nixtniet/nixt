@@ -1,4 +1,4 @@
 # This file is placed in the Public Domain.
 
 
-"interface"
+__doc__ = __name__.upper()

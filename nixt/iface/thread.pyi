@@ -4,11 +4,14 @@
 "threading"
 
 
+import queue
 import time
+import threading
+import traceback
+import _thread
 
 
-from threading import Event, Timer
-from threading import Thread as IThread
+from threading import Event, Thread, Timer
 
 
 STARTTIME = time.time()
@@ -16,38 +19,46 @@ STARTTIME = time.time()
 
 class Errors:
 
-    name = __file__.rsplit("/", maxsplit=2)[-2]
-    errors = []
+    name: str
+    errors: list
 
 
-class Thread(IThread):
+class Thread(Thread):
 
-    def __init__(self, func, thrname, *args, daemon=True, **kwargs): ...
+    def __init__(self, func: Callable, thrname: str, *args, daemon: bool=True, **kwargs):
+        name: thrname
+        queue:  queue.Queue()
+        result: Any
+        starttime: float
+        stopped = Event
+
     def __iter__(self): ...
     def __next__(self): ...
-    def run(self) -> None: ...
+    def run(self): ...
     def join(self, timeout=None): ...
 
 
 class Timy(Timer):
 
-    def __init__(self, *args, **kwargs): ...
+    def __init__(self, *args, **kwargs):
+        state: dict
+        starttime: float
 
 
 class Timed:
 
     def __init__(self, sleep, func, *args, thrname=None, **kwargs):
-        self.args      = args
-        self.func      = func
-        self.kwargs    = kwargs
-        self.sleep     = sleep
-        self.name      = thrname or kwargs.get("name", name(func))
-        self.target    = time.time() + self.sleep
-        self.timer     = None
+        args:   list[Any]
+        func:   Callable
+        kwargs: dict
+        sleep:  float
+        name:   str
+        target: float
+        timer:  Timer
 
-    def run(self) -> None: ...
-    def start(self) -> None: ...
-    def stop(self) -> None: ...
+    def run(self): ...
+    def start(self): ...
+    def stop(self): ...
 
 
 class Repeater(Timed):
@@ -55,8 +66,23 @@ class Repeater(Timed):
     def run(self) -> None: ...
 
 
-def full(exc) -> str: ...
-def later(exc) -> None: ...
-def launch(func, *args, **kwargs) -> Thread: ...
-def line(exc): ...
-def name(obj) -> str: ...
+def full(exc: Exception) -> str: ...
+def later(exc: Exception) -> None: ...
+def launch(func: Callable, *args, **kwargs) -> Thread: ...
+def line(exc: Exception) -> str: ...
+def name(obj: Object) -> str: ...
+
+
+def __dir__():
+    return (
+        'STARTTIME',
+        'Errors',
+        'Repeater',
+        'Thread',
+        'Timed',
+        'full',
+        'later',
+        'launch',
+        'line',
+        'name'
+    )

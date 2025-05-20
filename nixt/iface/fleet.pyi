@@ -4,7 +4,10 @@
 "list of clients"
 
 
-from typing import Any
+import threading
+
+
+lock = threading.RLock()
 
 
 class Fleet:
@@ -12,18 +15,32 @@ class Fleet:
     clients = {}
 
     @staticmethod
-    def add(clt) -> None: ...
+    def add(clt: str) -> Client: ...
+
     @staticmethod
-    def all() -> list[Any]: ...
+    def all(): ...
+
     @staticmethod
-    def announce(txt) -> None: ...
+    def announce(txt: str): ...
+
     @staticmethod
-    def display(evt) -> None: ...
+    def display(evt: Event): ...
+
     @staticmethod
-    def first() -> None: ...
+    def first() -> Client: ...
+
     @staticmethod
-    def get(orig) -> None: ...
+    def get(orig: str) -> Client:
+        return Fleet.clients.get(orig, None)
+
     @staticmethod
-    def say(orig, channel, txt) -> None: ...
+    def say(orig: str, channel: str, txt: str) -> None: ...
+
     @staticmethod
     def wait() -> None: ...
+
+
+def __dir__():
+    return (
+        'Fleet',
+    )
