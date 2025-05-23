@@ -16,7 +16,7 @@ import time
 
 from ..client import Client
 from ..disk   import getpath, ident, write
-from ..event  import Event
+from ..event  import Event as IEvent
 from ..fleet  import Fleet
 from ..find   import last
 from ..object import Object, keys
@@ -157,7 +157,7 @@ class Output(Object):
         launch(self.output)
 
 
-class Event(Event):
+class Event(IEvent):
 
    def __init__(self):
         super().__init__()
