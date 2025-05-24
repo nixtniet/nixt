@@ -15,7 +15,7 @@ import types
 import _thread
 
 
-from ..fleet  import Fleet
+from ..client import Fleet
 from ..object import Object, items, keys
 from ..thread import Thread, later, launch
 

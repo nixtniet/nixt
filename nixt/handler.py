@@ -4,26 +4,31 @@
 "event handler"
 
 
-import queue
-import threading
 import _thread
 
 
+from threading import Event as IEvent
+from threading import RLock
+from queue     import Queue
+from typing    import Callable
+
+
+from .event  import Event
 from .thread import later, launch, name
 
 
-lock = threading.RLock()
+lock = RLock()
 
 
 class Handler:
 
     def __init__(self):
         self.cbs     = {}
-        self.queue   = queue.Queue()
-        self.ready   = threading.Event()
-        self.stopped = threading.Event()
+        self.queue   = Queue() 
+        self.ready   = IEvent()
+        self.stopped = IEvent()
 
-    def callback(self, evt):
+    def callback(self, evt: Event) -> None:
         with lock:
             func = self.cbs.get(evt.type, None)
             if not func:
@@ -52,10 +57,10 @@ class Handler:
     def poll(self):
         return self.queue.get()
 
-    def put(self, evt):
+    def put(self, evt: Event):
         self.queue.put(evt)
 
-    def register(self, typ, cbs):
+    def register(self, typ: str, cbs: Callable):
         self.cbs[typ] = cbs
 
     def start(self):

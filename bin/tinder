@@ -144,8 +144,7 @@ def wrap(function):
         if old3:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old3)
     for exc in Errors.errors:
-        for line in full(exc):
-            print(line.rstrip())
+        print(full(exc))
 
 
 def main():
@@ -184,7 +183,6 @@ def main():
         nr = thr.join()
         nrcommand += nr
     consume(events)
-
 
 if __name__ == "__main__":
     wrap(main)

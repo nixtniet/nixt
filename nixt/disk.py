@@ -12,8 +12,11 @@ import threading
 import types
 
 
+from typing import Dict
+
+
 from .json   import dump, load
-from .object import fqn, update
+from .object import Object, fqn, update
 from .store  import store
 
 
@@ -28,38 +31,38 @@ class Error(Exception):
 
 class Cache:
 
-    objs = {}
+    objs: Dict[str, Object] = {}
 
     @staticmethod
-    def add(path, obj):
+    def add(path: str, obj: Object):
         Cache.objs[path] = obj
 
     @staticmethod
-    def get(path):
+    def get(path: str) -> Object:
         return Cache.objs.get(path, None)
 
     @staticmethod
-    def typed(matcher):
+    def typed(matcher: str) -> list[Object]:
         for key in Cache.objs:
             if matcher not in key:
                 continue
             yield Cache.objs.get(key)
 
 
-def cdir(path):
+def cdir(path: str) -> None:
     pth = pathlib.Path(path)
     pth.parent.mkdir(parents=True, exist_ok=True)
 
 
-def getpath(obj):
+def getpath(obj: Object) -> str:
     return p(store(ident(obj)))
 
 
-def ident(obj):
+def ident(obj: Object) -> str:
     return p(fqn(obj),*str(datetime.datetime.now()).split())
 
 
-def read(obj, path):
+def read(obj: Object, path: str) -> None:
     with lock:
         with open(path, "r", encoding="utf-8") as fpt:
             try:
@@ -69,9 +72,9 @@ def read(obj, path):
     return path
 
 
-def write(obj, path=None):
+def write(obj: Object, path: str = ""):
     with lock:
-        if path is None:
+        if path is "":
             path = getpath(obj)
         cdir(path)
         with open(path, "w", encoding="utf-8") as fpt:

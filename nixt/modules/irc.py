@@ -14,10 +14,9 @@ import threading
 import time
 
 
-from ..client import Client
+from ..client import Client, Fleet
 from ..disk   import getpath, ident, write
 from ..event  import Event as IEvent
-from ..fleet  import Fleet
 from ..find   import last
 from ..object import Object, keys
 from ..thread import launch

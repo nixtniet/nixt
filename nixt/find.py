@@ -9,12 +9,15 @@ import time
 import types
 
 
+from typing import Iterator
+
+
 from .disk   import Cache, read
 from .object import Object, fqn, items, update
 from .store  import long, skel, store
 
 
-def fns(clz):
+def fns(clz: str) -> Iterator[str]:
     pth = store(clz)
     for rootdir, dirs, _files in os.walk(pth, topdown=False):
         if dirs:
@@ -25,7 +28,7 @@ def fns(clz):
                         yield os.path.join(ddd, fll)
 
 
-def fntime(daystr):
+def fntime(daystr: str) -> float:
     datestr = ' '.join(daystr.split(os.sep)[-2:])
     datestr = datestr.replace("_", " ")
     if '.' in datestr:
@@ -38,7 +41,7 @@ def fntime(daystr):
     return float(timed)
 
 
-def find(clz, selector=None, deleted=False, matching=False):
+def find(clz: str, selector: dict={}, deleted: bool=False, matching: bool=False) -> list[tuple[str, Object]]:
     skel()
     res = []
     clz = long(clz)
@@ -56,11 +59,11 @@ def find(clz, selector=None, deleted=False, matching=False):
     return sorted(res, key=lambda x: fntime(x[0]))
 
 
-def isdeleted(obj):
+def isdeleted(obj: Object) -> bool:
     return '__deleted__' in dir(obj) and obj.__deleted__
 
 
-def last(obj, selector=None):
+def last(obj: Object, selector: dict={}) -> Object:
     if selector is None:
         selector = {}
     result = sorted(
@@ -75,7 +78,7 @@ def last(obj, selector=None):
     return res
 
 
-def search(obj, selector, matching=None):
+def search(obj: Object, selector: dict, matching: dict={}) -> bool:
     res = False
     if not selector:
         return res

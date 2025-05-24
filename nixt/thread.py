@@ -11,7 +11,9 @@ import traceback
 import _thread
 
 
-from threading import Event, Thread, Timer
+from threading import Thread as IThread
+from threading import Event, Timer
+from typing    import Any, Callable, Dict
 
 
 STARTTIME = time.time()
@@ -23,9 +25,9 @@ class Errors:
     errors = []
 
 
-class Thread(Thread):
+class Thread(IThread):
 
-    def __init__(self, func, thrname, *args, daemon=True, **kwargs):
+    def __init__(self, func: Callable, thrname: str, *args, daemon: bool=True, **kwargs):
         super().__init__(None, self.run, name, (), {}, daemon=daemon)
         self.name = thrname
         self.queue = queue.Queue()
@@ -65,7 +67,7 @@ class Thread(Thread):
 
 class Timy(Timer):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: list[Any], **kwargs: Dict[str, Any]):
         super().__init__(*args, **kwargs)
         self.state     = {}
         self.starttime = time.time()
@@ -73,7 +75,7 @@ class Timy(Timer):
 
 class Timed:
 
-    def __init__(self, sleep, func, *args, thrname=None, **kwargs):
+    def __init__(self, sleep: float, func: Callable, *args: list[Any], thrname: str = "", **kwargs: Dict[str, Any]):
         self.args      = args
         self.func      = func
         self.kwargs    = kwargs
@@ -105,15 +107,15 @@ class Repeater(Timed):
         super().run()
 
 
-def full(exc):
+def full(exc: Exception) -> str:
     return "".join(traceback.format_exception(type(exc),exc,exc.__traceback__))
 
 
-def later(exc):
+def later(exc: Exception) -> None:
     Errors.errors.append(exc)
 
 
-def launch(func, *args, **kwargs):
+def launch(func: Callable, *args, **kwargs) -> Thread:
     nme = kwargs.get("name")
     if not nme:
         nme = name(func)
@@ -122,7 +124,7 @@ def launch(func, *args, **kwargs):
     return thread
 
 
-def line(exc):
+def line(exc: Exception) -> str:
     exctype, excvalue, trb = type(exc), exc, exc.__traceback__
     trace = traceback.extract_tb(trb)
     result = ""
@@ -151,7 +153,7 @@ def line(exc):
     return res
 
 
-def name(obj):
+def name(obj: Any) -> str:
     typ = type(obj)
     if '__builtins__' in dir(typ):
         return obj.__name__
