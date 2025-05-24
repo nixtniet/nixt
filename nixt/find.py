@@ -70,7 +70,7 @@ def last(obj: Object, selector: dict={}) -> Object:
                     find(fqn(obj), selector),
                     key=lambda x: fntime(x[0])
                    )
-    res = None
+    res = ""
     if result:
         inp = result[-1]
         update(obj, inp[-1])

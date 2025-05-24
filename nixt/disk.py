@@ -74,7 +74,7 @@ def read(obj: Object, path: str) -> None:
 
 def write(obj: Object, path: str = ""):
     with lock:
-        if path is "":
+        if path == "":
             path = getpath(obj)
         cdir(path)
         with open(path, "w", encoding="utf-8") as fpt:
