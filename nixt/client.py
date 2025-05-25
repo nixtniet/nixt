@@ -5,7 +5,7 @@
 
 
 from threading import RLock
-from typing    import Dict
+from typing    import Dict, ValuesView
 
 
 from .event   import Event
@@ -36,12 +36,12 @@ class Fleet:
     clients: Dict[str, Client] = {}
 
     @staticmethod
-    def add(clt: Client):
+    def add(clt: Client) -> None:
         Fleet.clients[repr(clt)] = clt
 
     @staticmethod
-    def all():
-        return sorted(Fleet.clients.values())
+    def all() -> ValuesView:
+        return Fleet.clients.values()
 
     @staticmethod
     def announce(txt: str) -> None:
@@ -49,7 +49,7 @@ class Fleet:
             clt.announce(txt)
 
     @staticmethod
-    def display(evt: Event):
+    def display(evt: Event) -> None:
         with lock:
             clt = Fleet.get(evt.orig)
             if clt:

@@ -4,10 +4,10 @@
 "decoder/encoder"
 
 
-from typing import Any, Iterator, TextIO
-
-
 import json as jsn
+
+
+from typing import Any, Iterator, TextIO
 
 
 from .object import Object, construct

@@ -42,7 +42,7 @@ class Cache:
         return Cache.objs.get(path, None)
 
     @staticmethod
-    def typed(matcher: str) -> Iterator[Object]:
+    def typed(matcher: str) -> Iterator[Object|None]:
         for key in Cache.objs:
             if matcher not in key:
                 continue
@@ -71,7 +71,7 @@ def read(obj: Object, path: str) -> None:
                 raise Error(path) from ex
 
 
-def write(obj: Object, path: str = ""):
+def write(obj: Object, path: str = "") -> str|None:
     with lock:
         if path == "":
             path = getpath(obj)

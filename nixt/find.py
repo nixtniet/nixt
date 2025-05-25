@@ -4,12 +4,10 @@
 "locate"
 
 
-import os
-import time
-import types
-
-
-from typing import Any, Dict, Iterator, no_type_check
+from os      import listdir, sep, walk
+from os.path import join
+from time    import mktime, strptime
+from typing  import Any, Dict, Iterator, no_type_check
 
 
 from .disk   import Cache, read
@@ -19,23 +17,23 @@ from .store  import long, skel, store
 
 def fns(clz: str) -> Iterator[str]:
     pth = store(clz)
-    for rootdir, dirs, _files in os.walk(pth, topdown=False):
+    for rootdir, dirs, _files in walk(pth, topdown=False):
         if dirs:
             for dname in dirs:
                 if dname.count('-') == 2:
-                    ddd = os.path.join(rootdir, dname)
-                    for fll in os.listdir(ddd):
-                        yield os.path.join(ddd, fll)
+                    ddd = join(rootdir, dname)
+                    for fll in listdir(ddd):
+                        yield join(ddd, fll)
 
 
 def fntime(daystr: str) -> float:
-    datestr = ' '.join(daystr.split(os.sep)[-2:])
+    datestr = ' '.join(daystr.split(sep)[-2:])
     datestr = datestr.replace("_", " ")
     if '.' in datestr:
         datestr, rest = datestr.rsplit('.', 1)
     else:
         rest = ''
-    timed = time.mktime(time.strptime(datestr, '%Y-%m-%d %H:%M:%S'))
+    timed = mktime(strptime(datestr, '%Y-%m-%d %H:%M:%S'))
     if rest:
         timed += float('.' + rest)
     return float(timed)

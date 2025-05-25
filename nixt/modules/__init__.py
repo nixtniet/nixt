@@ -15,7 +15,12 @@ import types
 import _thread
 
 
+from types  import ModuleType
+from typing import Any, Callable, Dict, no_type_check
+
+
 from ..client import Fleet
+from ..event  import Event
 from ..object import Default, Object, items, keys
 from ..thread import Thread, later, launch
 
@@ -24,28 +29,27 @@ lock = threading.RLock()
 path = os.path.dirname(__file__)
 
 
-CHECKSUM = "7066fea9f78450b3331c8c71a4492751"
-CHECKSUM = ""
-MD5      = {}
-NAMES    = {}
+CHECKSUM: str = ""
+MD5: Dict[str, str] = {}
+NAMES: Dict[str, str] = {}
 
 
 class Main(Default):
 
-    debug   = False
-    gets    = Default()
-    ignore  = ''
-    init    = ""
-    md5     = True
-    name    = __name__.split(".", maxsplit=1)[0]
-    opts    = Default()
-    otxt    = ""
-    sets    = Default()
-    verbose = False
-    version = 311
+    debug:   bool = False
+    gets :   Default = Default()
+    ignore:  str = ""
+    init:    str = ""
+    md5:     bool = True
+    name:    str = __name__.split(".", maxsplit=1)[0]
+    opts:    Default = Default()
+    otxt:    str = ""
+    sets:    Default = Default()
+    verbose: bool = False
+    version: int = 321
 
 
-def check(name, md5=""):
+def check(name: str, md5: str="") -> bool:
     if not CHECKSUM:
         return True
     mname = f"{__name__}.{name}"
@@ -55,29 +59,30 @@ def check(name, md5=""):
     spec = importlib.util.spec_from_file_location(mname, pth)
     if not spec:
         return False
-    if md5sum(pth) == (md5 or MD5.get(name, None)):
+    if md5sum(pth) == (md5 or MD5.get(name, "")):
         return True
     if CHECKSUM and Main.md5:
         debug(f"{name} failed md5sum check")
     return False
 
 
-def getmod(name):
+def getmod(name: str) -> ModuleType|None:
     mname = f"{__name__}.{name}"
     mod = sys.modules.get(mname, None)
     if mod:
         return mod
     pth = os.path.join(path, name + ".py")
     spec = importlib.util.spec_from_file_location(mname, pth)
-    if not spec:
+    if not spec or not spec.loader:
         return None
     mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    sys.modules[mname] = mod
+    if mod:
+        spec.loader.exec_module(mod)
+        sys.modules[mname] = mod
     return mod
 
 
-def gettbl(name):
+def gettbl(name: str) -> Dict[str, str]|None:
     pth = os.path.join(path, "tbl.py")
     if not os.path.exists(pth):
         debug("tbl.py is not there")
@@ -89,40 +94,40 @@ def gettbl(name):
         mod = getmod("tbl")
     except FileNotFoundError:
         debug("tbl module not found")
-        return
+        return None
     return getattr(mod, name, {})
 
 
-def load(name):
+def load(name: str) -> ModuleType|None:
     with lock:
         if name in Main.ignore:
-            return
+            return None
         module = None
         mname = f"{__name__}.{name}"
         module = sys.modules.get(mname, None)
         if not module:
             pth = os.path.join(path, f"{name}.py")
             if not os.path.exists(pth):
-                return
+                return None
             spec = importlib.util.spec_from_file_location(mname, pth)
-            if not spec:
-                return
+            if not spec or not spec.loader:
+                return None
             module = importlib.util.module_from_spec(spec)
             if not module:
-                return
+                return None
             spec.loader.exec_module(module)
             sys.modules[mname] = module
         setdebug(module)
         return module
 
 
-def md5sum(modpath):
+def md5sum(modpath: str) -> str:
     with open(modpath, "r", encoding="utf-8") as file:
         txt = file.read().encode("utf-8")
         return str(hashlib.md5(txt).hexdigest())
 
 
-def mods(names=""):
+def mods(names: str="") -> list[ModuleType]:
     res = []
     for nme in modules():
         if names and nme not in spl(names):
@@ -134,7 +139,7 @@ def mods(names=""):
     return res
 
 
-def modules(mdir=""):
+def modules(mdir: str="") -> list[str]:
     return sorted([
                    x[:-3] for x in os.listdir(mdir or path)
                    if x.endswith(".py") and not x.startswith("__") and
@@ -142,12 +147,13 @@ def modules(mdir=""):
                   ])
 
 
-def setdebug(module):
+@no_type_check
+def setdebug(module: ModuleType) -> None:
     if Main.debug:
         module.DEBUG = True
 
 
-def table():
+def table() -> Dict[str, str]:
     md5s = gettbl("MD5")
     if md5s:
         MD5.update(md5s)
@@ -159,25 +165,25 @@ def table():
 
 class Commands:
 
-    cmds  = {}
-    md5   = {}
-    names = {}
+    cmds:  Dict[str, Callable] = {}
+    md5:   Dict[str, str] = {}
+    names: Dict[str, str] = {}
 
     @staticmethod
-    def add(func, mod=None):
+    def add(func: Callable, mod: ModuleType|None = None) -> None:
         Commands.cmds[func.__name__] = func
         if mod:
             Commands.names[func.__name__] = mod.__name__.split(".")[-1]
 
     @staticmethod
-    def get(cmd):
+    def get(cmd: str) -> Callable|None:
         func = Commands.cmds.get(cmd, None)
         if not func:
             name = Commands.names.get(cmd, None)
             if not name:
-                return
+                return None
             if Main.md5 and not check(name):
-                return
+                return None
             mod = load(name)
             if mod:
                 scan(mod)
@@ -185,7 +191,7 @@ class Commands:
         return func
 
 
-def command(evt):
+def command(evt: Event) -> None:
     parse(evt)
     func = Commands.get(evt.cmd)
     if func:
@@ -194,7 +200,7 @@ def command(evt):
     evt.ready()
 
 
-def inits(names):
+def inits(names: str) -> list[tuple[ModuleType, Thread]]:
     modz = []
     for name in sorted(spl(names)):
         try:
@@ -210,24 +216,26 @@ def inits(names):
     return modz
 
 
-def parse(obj, txt=None):
+@no_type_check
+def parse(obj: Default, txt: str="") -> None:
     if txt is None:
         if "txt" in dir(obj):
             txt = obj.txt
         else:
             txt = ""
     args = []
-    obj.args   = []
-    obj.cmd    = ""
-    obj.gets   = Default()
-    obj.index  = None
-    obj.mod    = ""
-    obj.opts   = ""
+    obj.args =[]
+    obj.cmd = ""
+    obj.gets = Default()
+    obj.index = None
+    obj.mod = ""
+    obj.opts = ""
     obj.result = {}
-    obj.sets   = Default()
+    obj.sets = Default()
     obj.silent = Default()
-    obj.txt    = txt or ""
-    obj.otxt   = obj.txt
+    obj.txt = ""
+    obj.otxt = obj.txt
+    obj.txt = obj.txt
     _nr = -1
     for spli in obj.otxt.split():
         if spli.startswith("-"):
@@ -269,7 +277,7 @@ def parse(obj, txt=None):
         obj.txt = obj.cmd or ""
 
 
-def scan(mod):
+def scan(mod: ModuleType) -> None:
     for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
         if key.startswith("cb"):
             continue
@@ -277,21 +285,21 @@ def scan(mod):
             Commands.add(cmdz, mod)
 
 
-def settable():
+def settable() -> None:
     Commands.names.update(table())
 
 
 "utilities"
 
 
-def debug(*args):
+def debug(*args: *tuple[str]) -> None:
     for arg in args:
         sys.stderr.write(str(arg))
         sys.stderr.write("\n")
         sys.stderr.flush()
 
 
-def elapsed(seconds, short=True):
+def elapsed(seconds: float, short: bool=True) -> str:
     txt = ""
     nsec = float(seconds)
     if nsec < 1:
@@ -330,18 +338,18 @@ def elapsed(seconds, short=True):
     return txt
 
 
-def spl(txt):
+def spl(txt: str) -> list[str]:
     try:
         result = txt.split(',')
     except (TypeError, ValueError):
-        result = txt
+        result = [txt, ]
     return [x for x in result if x]
 
 
 "methods"
 
 
-def edit(obj, setter, skip=False):
+def edit(obj: Object, setter: Dict[str, str], skip: bool=False) -> None:
     for key, val in items(setter):
         if skip and val == "":
             continue
@@ -363,7 +371,7 @@ def edit(obj, setter, skip=False):
             setattr(obj, key, val)
 
 
-def fmt(obj, args=None, skip=None, plain=False):
+def fmt(obj: Object, args: list=[], skip: list[str] = [], plain: bool=False) -> str:
     if args is None:
         args = keys(obj)
     if skip is None:
@@ -386,5 +394,5 @@ def fmt(obj, args=None, skip=None, plain=False):
     return txt.strip()
 
 
-def __dir__():
+def __dir__() -> list[str]:
     return modules()

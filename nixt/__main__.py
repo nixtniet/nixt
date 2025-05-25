@@ -11,6 +11,9 @@ import time
 import _thread
 
 
+from typing import Callable
+
+
 from .client  import Client
 from .event   import Event
 from .json    import dumps
@@ -26,21 +29,21 @@ class CLI(Client):
         Client.__init__(self)
         self.register("command", command)
 
-    def raw(self, txt):
+    def raw(self, txt) -> None:
         out(txt.encode('utf-8', 'replace').decode("utf-8"))
 
 
 class Console(CLI):
 
-    def announce(self, txt):
+    def announce(self, txt) -> None:
         #out(txt)
         pass
 
-    def callback(self, evt):
+    def callback(self, evt: Event) -> None:
         CLI.callback(self, evt)
         evt.wait()
 
-    def poll(self):
+    def poll(self) -> Event:
         evt = Event()
         evt.txt = input("> ")
         evt.type = "command"
@@ -54,7 +57,7 @@ def handler(signum, frame):
 "output"
 
 
-def out(txt):
+def out(txt) -> None:
     print(txt.rstrip())
     sys.stdout.flush()
 
@@ -62,12 +65,12 @@ def out(txt):
 "utilities"
 
 
-def banner():
+def banner() -> None:
     tme = time.ctime(time.time()).replace("  ", " ")
     out(f"{Main.name.upper()} since {tme}")
 
 
-def check(txt):
+def check(txt: str) -> bool:
     args = sys.argv[1:]
     for arg in args:
         if not arg.startswith("-"):
@@ -78,7 +81,7 @@ def check(txt):
     return False
 
 
-def daemon(verbose=False):
+def daemon(verbose: bool = False) -> None:
     pid = os.fork()
     if pid != 0:
         os._exit(0)
@@ -98,12 +101,12 @@ def daemon(verbose=False):
     os.nice(10)
 
 
-def errors():
+def errors() -> None:
     for exc in Errors.errors:
         out(full(exc))
 
 
-def forever():
+def forever() -> None:
     while True:
         try:
             time.sleep(0.1)
@@ -111,12 +114,12 @@ def forever():
             _thread.interrupt_main()
 
 
-def nodebug():
+def nodebug() -> None:
     with open('/dev/null', 'a+', encoding="utf-8") as ses:
         os.dup2(ses.fileno(), sys.stderr.fileno())
 
 
-def pidfile(filename):
+def pidfile(filename: str) -> None:
     if os.path.exists(filename):
         os.unlink(filename)
     path2 = pathlib.Path(filename)
@@ -125,7 +128,7 @@ def pidfile(filename):
         fds.write(str(os.getpid()))
 
 
-def privileges():
+def privileges() -> None:
     import getpass
     import pwd
     pwnam2 = pwd.getpwnam(getpass.getuser())
@@ -133,7 +136,7 @@ def privileges():
     os.setuid(pwnam2.pw_uid)
 
 
-def setwd(name, path=""):
+def setwd(name: str, path: str = "") -> None:
     Main.name = name
     path = path or os.path.expanduser(f"~/.{name}")
     Workdir.wdr = path
@@ -180,7 +183,7 @@ def tbl(event):
 "scripts"
 
 
-def background():
+def background() -> None:
     daemon("-v" in sys.argv)
     setwd(Main.name)
     privileges()
@@ -191,7 +194,7 @@ def background():
     forever()
 
 
-def console():
+def console() -> None:
     import readline # noqa: F401
     setwd(Main.name)
     settable()
@@ -209,7 +212,7 @@ def console():
     forever()
 
 
-def control():
+def control() -> None:
     if len(sys.argv) == 1:
         return
     setwd(Main.name)
@@ -228,7 +231,7 @@ def control():
     evt.wait()
 
 
-def service():
+def service() -> None:
     setwd(Main.name)
     settable()
     nodebug()
@@ -243,7 +246,7 @@ def service():
 "runtime"
 
 
-def wrapped(func):
+def wrapped(func: Callable) -> None:
     try:
         func()
     except (KeyboardInterrupt, EOFError):
@@ -251,7 +254,7 @@ def wrapped(func):
     errors()
 
 
-def wrap(func):
+def wrap(func: Callable) -> None:
     import termios
     old = None
     try:
@@ -285,7 +288,7 @@ WantedBy=multi-user.target"""
 "main"
 
 
-def main():
+def main() -> None:
     if check("a"):
         Main.init = ",".join(modules())
     if check("v"):

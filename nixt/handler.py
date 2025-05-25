@@ -4,13 +4,11 @@
 "event handler"
 
 
-import _thread
-
-
 from threading import Event as IEvent
 from threading import RLock
 from queue     import Queue
 from typing    import Callable
+from _thread   import interrupt_main
 
 
 from .event  import Event
@@ -51,7 +49,7 @@ class Handler:
             except Exception as ex:
                 self.stopped.set()
                 later(ex)
-                _thread.interrupt_main()
+                interrupt_main()
         self.ready.set()
 
     def poll(self):
