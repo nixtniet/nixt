@@ -217,25 +217,24 @@ def inits(names: str) -> list[tuple[ModuleType, Thread]]:
 
 
 @no_type_check
-def parse(obj: Default, txt: str="") -> None:
-    if txt is None:
+def parse(obj: Object, txt: str="") -> None:
+    if txt == "":
         if "txt" in dir(obj):
             txt = obj.txt
         else:
             txt = ""
     args = []
-    obj.args =[]
-    obj.cmd = ""
-    obj.gets = Default()
-    obj.index = None
-    obj.mod = ""
-    obj.opts = ""
+    obj.args   = []
+    obj.cmd    = ""
+    obj.gets   = Default()
+    obj.index  = None
+    obj.mod    = ""
+    obj.opts   = ""
     obj.result = {}
-    obj.sets = Default()
+    obj.sets   = Default()
     obj.silent = Default()
-    obj.txt = ""
-    obj.otxt = obj.txt
-    obj.txt = obj.txt
+    obj.txt    = txt
+    obj.otxt   = obj.txt
     _nr = -1
     for spli in obj.otxt.split():
         if spli.startswith("-"):
