@@ -10,7 +10,7 @@ import threading
 
 
 lock = threading.RLock()
-p    = os.path.join
+j    = os.path.join
 
 
 class Workdir:
@@ -30,11 +30,11 @@ def long(name: str) -> str:
 
 
 def moddir() -> str:
-    return p(Workdir.wdr, "mods")
+    return j(Workdir.wdr, "mods")
 
 
 def pidname(name) -> str:
-    return p(Workdir.wdr, f"{name}.pid")
+    return j(Workdir.wdr, f"{name}.pid")
 
 
 def skel() -> str:
@@ -50,11 +50,11 @@ def setwd(pth) -> None:
 
 
 def store(pth="") -> str:
-    return p(Workdir.wdr, "store", pth)
+    return j(Workdir.wdr, "store", pth)
 
 
 def strip(pth, nmr=2) -> str:
-    return os.sep.join(pth.split(os.sep)[-nmr:])
+    return j(pth.split(os.sep)[-nmr:])
 
 
 def types() -> list[str]:
@@ -62,7 +62,7 @@ def types() -> list[str]:
 
 
 def wdr(pth) -> str:
-    return p(Workdir.wdr, pth)
+    return j(Workdir.wdr, pth)
 
 
 def __dir__():

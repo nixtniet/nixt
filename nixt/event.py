@@ -4,9 +4,11 @@
 "event"
 
 
-from threading import Event as IEvent
-from time      import time
-from typing    import Any, Iterator
+import threading
+import time
+
+
+from typing import Any, Iterator
 
 
 from .object import Default
@@ -16,7 +18,7 @@ class Event(Default):
 
     def __init__(self):
         Default.__init__(self)
-        self._ready = IEvent()
+        self._ready = threading.Event()
         self._thr   = None
         self.ctime  = time()
         self.orig   = ""
@@ -31,7 +33,7 @@ class Event(Default):
         self._ready.set()
 
     def reply(self, txt: str) -> None:
-        self.result[time()] = txt
+        self.result[time.time()] = txt
 
     def wait(self) -> None:
         self._ready.wait()

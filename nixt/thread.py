@@ -11,10 +11,7 @@ import traceback
 import _thread
 
 
-from queue     import Queue
-from threading import Thread as IThread
-from threading import Event, Timer
-from typing    import Any, Callable, Dict
+from typing import Any, Callable, Dict
 
 
 STARTTIME = time.time()
@@ -26,17 +23,15 @@ class Errors:
     errors: list[Exception] = []
 
 
-
-
-class Thread(IThread):
+class Thread(threading.Thread):
 
     def __init__(self, func: Callable, thrname: str, *args, daemon: bool=True, **kwargs):
         super().__init__(None, self.run, thrname, (), daemon=daemon)
         self.name = thrname
-        self.queue: Queue = Queue()
+        self.queue: queue.Queue = queue.Queue()
         self.result = None
         self.starttime = time.time()
-        self.stopped = Event()
+        self.stopped = threading.Event()
         self.queue.put((func, args))
 
     def __iter__(self):
@@ -68,7 +63,7 @@ class Thread(IThread):
         return self.result
 
 
-class Timy(Timer):
+class Timy(threading.Timer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -78,7 +73,7 @@ class Timy(Timer):
 
 class Timed:
 
-    def __init__(self, sleep: float, func: Callable, *args: list[Any], thrname: str, **kwargs):
+    def __init__(self, sleep: float, func: Callable, *args: list[Any], thrname: str = "", **kwargs):
         self.args      = args
         self.func      = func
         self.kwargs    = kwargs

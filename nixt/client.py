@@ -4,7 +4,9 @@
 "client"
 
 
-from threading import RLock
+import threading
+
+
 from typing    import Dict, ValuesView
 
 
@@ -12,7 +14,7 @@ from .event   import Event
 from .handler import Handler
 
 
-lock = RLock()
+lock = threading.RLock()
 
 
 class Client(Handler):
