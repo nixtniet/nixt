@@ -63,7 +63,7 @@ param.ver = [""]
 
 
 pre = Object()
-pre.cfg = ["cfg nick=mekker", ""]
+pre.cfg = ["nick=mekker", ""]
 pre.imp = ["tests/feeds.opml", ""]
 pre.log = ["bla", ""]
 pre.rss = ["http://hnrss.org/newest", ""]

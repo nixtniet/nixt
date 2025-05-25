@@ -16,7 +16,7 @@ import _thread
 
 
 from ..client import Fleet
-from ..object import Object, items, keys
+from ..object import Default, Object, items, keys
 from ..thread import Thread, later, launch
 
 
@@ -30,25 +30,17 @@ MD5      = {}
 NAMES    = {}
 
 
-class Default(Object):
-
-    def __getattr__(self, key):
-        if key not in self:
-            setattr(self, key, "")
-        return self.__dict__.get(key, "")
-
-
 class Main(Default):
 
     debug   = False
-    gets    = Default
+    gets    = Default()
     ignore  = ''
     init    = ""
     md5     = True
     name    = __name__.split(".", maxsplit=1)[0]
-    opts    = Default
+    opts    = Default()
     otxt    = ""
-    sets    = Default
+    sets    = Default()
     verbose = False
     version = 311
 

@@ -12,7 +12,7 @@ import threading
 import types
 
 
-from typing import Dict, Generator
+from typing import Dict, Iterator
 
 
 from .json   import dump, load
@@ -42,7 +42,7 @@ class Cache:
         return Cache.objs.get(path, None)
 
     @staticmethod
-    def typed(matcher: str) -> Generator[Object|None]:
+    def typed(matcher: str) -> Iterator[Object]:
         for key in Cache.objs:
             if matcher not in key:
                 continue
