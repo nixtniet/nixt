@@ -9,7 +9,7 @@ import time
 import types
 
 
-from typing import Iterator
+from typing import Any, Dict, Iterator, no_type_check
 
 
 from .disk   import Cache, read
@@ -59,11 +59,12 @@ def find(clz: str, selector: dict={}, deleted: bool=False, matching: bool=False)
     return sorted(res, key=lambda x: fntime(x[0]))
 
 
+@no_type_check
 def isdeleted(obj: Object) -> bool:
     return '__deleted__' in dir(obj) and obj.__deleted__
 
 
-def last(obj: Object, selector: dict={}) -> Object:
+def last(obj: Object, selector: Dict[str, Any] = {}) -> Object|str:
     if selector is None:
         selector = {}
     result = sorted(
@@ -78,7 +79,7 @@ def last(obj: Object, selector: dict={}) -> Object:
     return res
 
 
-def search(obj: Object, selector: dict, matching: dict={}) -> bool:
+def search(obj: Object, selector: dict, matching: bool) -> bool:
     res = False
     if not selector:
         return res

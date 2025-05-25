@@ -57,7 +57,7 @@ def strip(pth, nmr=2) -> str:
     return os.sep.join(pth.split(os.sep)[-nmr:])
 
 
-def types() -> str:
+def types() -> list[str]:
     return os.listdir(store())
 
 

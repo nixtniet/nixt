@@ -12,7 +12,7 @@ import threading
 import types
 
 
-from typing import Dict
+from typing import Dict, Generator
 
 
 from .json   import dump, load
@@ -38,11 +38,11 @@ class Cache:
         Cache.objs[path] = obj
 
     @staticmethod
-    def get(path: str) -> Object:
+    def get(path: str) -> Object|None:
         return Cache.objs.get(path, None)
 
     @staticmethod
-    def typed(matcher: str) -> list[Object]:
+    def typed(matcher: str) -> Generator[Object|None]:
         for key in Cache.objs:
             if matcher not in key:
                 continue
@@ -69,7 +69,6 @@ def read(obj: Object, path: str) -> None:
                 update(obj, load(fpt))
             except json.decoder.JSONDecodeError as ex:
                 raise Error(path) from ex
-    return path
 
 
 def write(obj: Object, path: str = ""):

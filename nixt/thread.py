@@ -11,6 +11,7 @@ import traceback
 import _thread
 
 
+from queue     import Queue
 from threading import Thread as IThread
 from threading import Event, Timer
 from typing    import Any, Callable, Dict
@@ -22,15 +23,17 @@ STARTTIME = time.time()
 class Errors:
 
     name = __file__.rsplit("/", maxsplit=2)[-2]
-    errors = []
+    errors: list[Exception] = []
+
+
 
 
 class Thread(IThread):
 
     def __init__(self, func: Callable, thrname: str, *args, daemon: bool=True, **kwargs):
-        super().__init__(None, self.run, name, (), {}, daemon=daemon)
+        super().__init__(None, self.run, thrname, (), daemon=daemon)
         self.name = thrname
-        self.queue = queue.Queue()
+        self.queue: Queue = Queue()
         self.result = None
         self.starttime = time.time()
         self.stopped = Event()
@@ -67,7 +70,7 @@ class Thread(IThread):
 
 class Timy(Timer):
 
-    def __init__(self, *args: list[Any], **kwargs: Dict[str, Any]):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.state     = {}
         self.starttime = time.time()
@@ -75,7 +78,7 @@ class Timy(Timer):
 
 class Timed:
 
-    def __init__(self, sleep: float, func: Callable, *args: list[Any], thrname: str = "", **kwargs: Dict[str, Any]):
+    def __init__(self, sleep: float, func: Callable, *args: list[Any], thrname: str, **kwargs):
         self.args      = args
         self.func      = func
         self.kwargs    = kwargs
@@ -135,9 +138,9 @@ def line(exc: Exception) -> str:
         linenr = i[1]
         plugfile = fname.split("/")
         mod = []
-        for i in plugfile[::-1]:
-            mod.append(i)
-            if Errors.name in i or "bin" in i:
+        for ii in list(plugfile[::-1]):
+            mod.append(ii)
+            if Errors.name in ii or "bin" in ii:
                 break
         ownname = '.'.join(mod[::-1])
         if ownname.endswith("__"):

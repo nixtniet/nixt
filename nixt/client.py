@@ -5,6 +5,7 @@
 
 
 from threading import RLock
+from typing    import Dict
 
 
 from .event   import Event
@@ -32,7 +33,7 @@ class Client(Handler):
 
 class Fleet:
 
-    clients = {}
+    clients: Dict[str, Client] = {}
 
     @staticmethod
     def add(clt: Client):
@@ -43,7 +44,7 @@ class Fleet:
         return sorted(Fleet.clients.values())
 
     @staticmethod
-    def announce(txt: str):
+    def announce(txt: str) -> None:
         for clt in Fleet.clients.values():
             clt.announce(txt)
 
@@ -51,12 +52,13 @@ class Fleet:
     def display(evt: Event):
         with lock:
             clt = Fleet.get(evt.orig)
-            for tme in sorted(evt.result):
-                clt.say(evt.channel, evt.result[tme])
+            if clt:
+                for tme in sorted(evt.result):
+                    clt.say(evt.channel, evt.result[tme])
             evt.ready()
 
     @staticmethod
-    def first() -> Client:
+    def first() -> Client|None:
         clt =  list(Fleet.clients.values())
         res = None
         if clt:
@@ -64,8 +66,8 @@ class Fleet:
         return res
 
     @staticmethod
-    def get(orig: str) -> Client:
-            return Fleet.clients.get(orig, None)
+    def get(orig: str) -> Client|None:
+        return Fleet.clients.get(orig, None)
 
     @staticmethod
     def say(orig: str, channel: str, txt: str) -> None:

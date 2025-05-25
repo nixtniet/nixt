@@ -4,7 +4,7 @@
 "decoder/encoder"
 
 
-from typing import Any, TextIO
+from typing import Any, Iterator, TextIO
 
 
 import json as jsn
@@ -15,7 +15,7 @@ from .object import Object, construct
 
 class Encoder(jsn.JSONEncoder):
 
-    def default(self, o: Any) -> str:
+    def default(self, o: Any) -> Any:
         if isinstance(o, dict):
             return o.items()
         if issubclass(type(o), Object):
