@@ -7,9 +7,6 @@
 import threading
 
 
-from typing import Dict, ValuesView
-
-
 from .event   import Event
 from .handler import Handler
 
@@ -23,35 +20,35 @@ class Client(Handler):
         Handler.__init__(self)
         Fleet.add(self)
 
-    def announce(self, txt: str) -> None:
+    def announce(self, txt):
         pass
 
-    def raw(self, txt: str) -> None:
+    def raw(self, txt):
         raise NotImplementedError("raw")
 
-    def say(self, channel: str, txt: str) -> None:
+    def say(self, channel, txt):
         self.raw(txt)
 
 
 class Fleet:
 
-    clients: Dict[str, Client] = {}
+    clients = {}
 
     @staticmethod
-    def add(clt: Client) -> None:
+    def add(clt):
         Fleet.clients[repr(clt)] = clt
 
     @staticmethod
-    def all() -> ValuesView:
+    def all():
         return Fleet.clients.values()
 
     @staticmethod
-    def announce(txt: str) -> None:
+    def announce(txt):
         for clt in Fleet.clients.values():
             clt.announce(txt)
 
     @staticmethod
-    def display(evt: Event) -> None:
+    def display(evt):
         with lock:
             clt = Fleet.get(evt.orig)
             if clt:
@@ -60,7 +57,7 @@ class Fleet:
             evt.ready()
 
     @staticmethod
-    def first() -> Client | None:
+    def first():
         clt =  list(Fleet.clients.values())
         res = None
         if clt:
@@ -68,17 +65,17 @@ class Fleet:
         return res
 
     @staticmethod
-    def get(orig: str) -> Client | None:
+    def get(orig):
         return Fleet.clients.get(orig, None)
 
     @staticmethod
-    def say(orig: str, channel: str, txt: str) -> None:
+    def say(orig, channel, txt):
         clt = Fleet.get(orig)
         if clt:
             clt.say(channel, txt)
 
     @staticmethod
-    def wait() -> None:
+    def wait():
         for clt in Fleet.clients.values():
             if "wait" in dir(clt):
                 clt.wait()

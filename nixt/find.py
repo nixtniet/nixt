@@ -8,9 +8,6 @@ import os
 import time
 
 
-from typing import Any, Dict, Iterator, no_type_check
-
-
 from .disk   import Cache, read
 from .object import Object, fqn, items, update
 from .store  import long, skel, store
@@ -19,7 +16,7 @@ from .store  import long, skel, store
 j = os.path.join
 
 
-def fns(clz: str) -> Iterator[str]:
+def fns(clz):
     pth = store(clz)
     for rootdir, dirs, _files in os.walk(pth, topdown=False):
         if dirs:
@@ -30,7 +27,7 @@ def fns(clz: str) -> Iterator[str]:
                         yield j(ddd, fll)
 
 
-def fntime(daystr: str) -> float:
+def fntime(daystr):
     datestr = ' '.join(daystr.split(os.sep)[-2:])
     datestr = datestr.replace("_", " ")
     if '.' in datestr:
@@ -43,13 +40,7 @@ def fntime(daystr: str) -> float:
     return float(timed)
 
 
-def find(
-         clz: str,
-         selector: Dict[str, str] = {},
-         deleted: bool = False,
-         matching: bool = False
-        ) -> list[tuple[str, Object]]:
-
+def find(clz, selector={}, deleted=False, matching=False):
     skel()
     res = []
     clz = long(clz)
@@ -67,18 +58,14 @@ def find(
     return sorted(res, key=lambda x: fntime(x[0]))
 
 
-@no_type_check
-def isdeleted(obj: Object) -> bool:
+def isdeleted(obj):
     return '__deleted__' in dir(obj) and obj.__deleted__
 
 
-def last(obj: Object, selector: Dict[str, Any] = {}) -> str:
+def last(obj, selector={}):
     if selector is None:
         selector = {}
-    result = sorted(
-                    find(fqn(obj), selector),
-                    key=lambda x: fntime(x[0])
-                   )
+    result = sorted(find(fqn(obj), selector), key=lambda x: fntime(x[0]))
     res = ""
     if result:
         inp = result[-1]
@@ -87,12 +74,7 @@ def last(obj: Object, selector: Dict[str, Any] = {}) -> str:
     return res
 
 
-def search(
-           obj: Object,
-           selector: Dict[str, str],
-           matching: bool = False
-          ) -> bool:
-
+def search(obj, selector, matching=False):
     res = False
     if not selector:
         return res

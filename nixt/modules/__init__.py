@@ -15,10 +15,6 @@ import types
 import _thread
 
 
-from types  import ModuleType
-from typing import Any, Callable, Dict, no_type_check
-
-
 from ..client import Fleet
 from ..event  import Event
 from ..object import Default, Object, items, keys
@@ -29,27 +25,27 @@ lock = threading.RLock()
 path = os.path.dirname(__file__)
 
 
-CHECKSUM: str = ""
-MD5: Dict[str, str] = {}
-NAMES: Dict[str, str] = {}
+CHECKSUM = ""
+MD5      = {}
+NAMES    = {}
 
 
 class Main(Default):
 
-    debug:   bool = False
-    gets :   Default = Default()
-    ignore:  str = ""
-    init:    str = ""
-    md5:     bool = True
-    name:    str = __name__.split(".", maxsplit=1)[0]
-    opts:    Default = Default()
-    otxt:    str = ""
-    sets:    Default = Default()
-    verbose: bool = False
-    version: int = 321
+    debug   = False
+    gets    = Default()
+    ignore  = ""
+    init    = ""
+    md5     = True
+    name    = __name__.split(".", maxsplit=1)[0]
+    opts    = Default()
+    otxt    = ""
+    sets    = Default()
+    verbose = False
+    version = 321
 
 
-def check(name: str, md5: str="") -> bool:
+def check(name, md5=""):
     if not CHECKSUM:
         return True
     mname = f"{__name__}.{name}"
@@ -66,7 +62,7 @@ def check(name: str, md5: str="") -> bool:
     return False
 
 
-def getmod(name: str) -> ModuleType|None:
+def getmod(name):
     mname = f"{__name__}.{name}"
     mod = sys.modules.get(mname, None)
     if mod:
@@ -82,7 +78,7 @@ def getmod(name: str) -> ModuleType|None:
     return mod
 
 
-def gettbl(name: str) -> Dict[str, str]|None:
+def gettbl(name):
     pth = os.path.join(path, "tbl.py")
     if not os.path.exists(pth):
         debug("tbl.py is not there")
@@ -98,7 +94,7 @@ def gettbl(name: str) -> Dict[str, str]|None:
     return getattr(mod, name, {})
 
 
-def load(name: str) -> ModuleType|None:
+def load(name):
     with lock:
         if name in Main.ignore:
             return None
@@ -121,13 +117,13 @@ def load(name: str) -> ModuleType|None:
         return module
 
 
-def md5sum(modpath: str) -> str:
+def md5sum(modpath):
     with open(modpath, "r", encoding="utf-8") as file:
         txt = file.read().encode("utf-8")
         return str(hashlib.md5(txt).hexdigest())
 
 
-def mods(names: str="") -> list[ModuleType]:
+def mods(names):
     res = []
     for nme in modules():
         if names and nme not in spl(names):
@@ -139,7 +135,7 @@ def mods(names: str="") -> list[ModuleType]:
     return res
 
 
-def modules(mdir: str="") -> list[str]:
+def modules(mdir=""):
     return sorted([
                    x[:-3] for x in os.listdir(mdir or path)
                    if x.endswith(".py") and not x.startswith("__") and
@@ -147,13 +143,12 @@ def modules(mdir: str="") -> list[str]:
                   ])
 
 
-@no_type_check
-def setdebug(module: ModuleType) -> None:
+def setdebug(module):
     if Main.debug:
         module.DEBUG = True
 
 
-def table() -> Dict[str, str]:
+def table():
     md5s = gettbl("MD5")
     if md5s:
         MD5.update(md5s)
@@ -165,18 +160,18 @@ def table() -> Dict[str, str]:
 
 class Commands:
 
-    cmds:  Dict[str, Callable] = {}
-    md5:   Dict[str, str] = {}
-    names: Dict[str, str] = {}
+    cmds  = {}
+    md5   = {}
+    names = {}
 
     @staticmethod
-    def add(func: Callable, mod: ModuleType|None = None) -> None:
+    def add(func, mod=None):
         Commands.cmds[func.__name__] = func
         if mod:
             Commands.names[func.__name__] = mod.__name__.split(".")[-1]
 
     @staticmethod
-    def get(cmd: str) -> Callable|None:
+    def get(cmd):
         func = Commands.cmds.get(cmd, None)
         if not func:
             name = Commands.names.get(cmd, None)
@@ -191,7 +186,7 @@ class Commands:
         return func
 
 
-def command(evt: Event) -> None:
+def command(evt):
     parse(evt)
     func = Commands.get(evt.cmd)
     if func:
@@ -200,7 +195,7 @@ def command(evt: Event) -> None:
     evt.ready()
 
 
-def inits(names: str) -> list[tuple[ModuleType, Thread]]:
+def inits(names):
     modz = []
     for name in sorted(spl(names)):
         try:
@@ -216,8 +211,7 @@ def inits(names: str) -> list[tuple[ModuleType, Thread]]:
     return modz
 
 
-@no_type_check
-def parse(obj: Object, txt: str="") -> None:
+def parse(obj, txt=""):
     if txt == "":
         if "txt" in dir(obj):
             txt = obj.txt
@@ -276,7 +270,7 @@ def parse(obj: Object, txt: str="") -> None:
         obj.txt = obj.cmd or ""
 
 
-def scan(mod: ModuleType) -> None:
+def scan(mod):
     for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
         if key.startswith("cb"):
             continue
@@ -284,21 +278,21 @@ def scan(mod: ModuleType) -> None:
             Commands.add(cmdz, mod)
 
 
-def settable() -> None:
+def settable():
     Commands.names.update(table())
 
 
 "utilities"
 
 
-def debug(*args: *tuple[str]) -> None:
+def debug(*args):
     for arg in args:
         sys.stderr.write(str(arg))
         sys.stderr.write("\n")
         sys.stderr.flush()
 
 
-def elapsed(seconds: float, short: bool=True) -> str:
+def elapsed(seconds, short=True):
     txt = ""
     nsec = float(seconds)
     if nsec < 1:
@@ -337,7 +331,7 @@ def elapsed(seconds: float, short: bool=True) -> str:
     return txt
 
 
-def spl(txt: str) -> list[str]:
+def spl(txt):
     try:
         result = txt.split(',')
     except (TypeError, ValueError):
@@ -348,7 +342,7 @@ def spl(txt: str) -> list[str]:
 "methods"
 
 
-def edit(obj: Object, setter: Dict[str, str], skip: bool=False) -> None:
+def edit(obj, setter, skip):
     for key, val in items(setter):
         if skip and val == "":
             continue
@@ -370,10 +364,10 @@ def edit(obj: Object, setter: Dict[str, str], skip: bool=False) -> None:
             setattr(obj, key, val)
 
 
-def fmt(obj: Object, args: list=[], skip: list[str] = [], plain: bool=False) -> str:
-    if args is None:
+def fmt(obj, args=[], skip=[], plain=False):
+    if args == []:
         args = keys(obj)
-    if skip is None:
+    if skip == []:
         skip = []
     txt = ""
     for key in args:
@@ -393,5 +387,5 @@ def fmt(obj: Object, args: list=[], skip: list[str] = [], plain: bool=False) -> 
     return txt.strip()
 
 
-def __dir__() -> list[str]:
+def __dir__():
     return modules()

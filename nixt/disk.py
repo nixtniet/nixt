@@ -12,9 +12,6 @@ import threading
 import types
 
 
-from typing import Dict, Iterator
-
-
 from .json   import dump, load
 from .object import Object, fqn, update
 from .store  import store
@@ -31,38 +28,38 @@ class Error(Exception):
 
 class Cache:
 
-    objs: Dict[str, Object] = {}
+    objs = {}
 
     @staticmethod
-    def add(path: str, obj: Object):
+    def add(path, obj):
         Cache.objs[path] = obj
 
     @staticmethod
-    def get(path: str) -> Object|None:
+    def get(path):
         return Cache.objs.get(path, None)
 
     @staticmethod
-    def typed(matcher: str) -> Iterator[Object|None]:
+    def typed(matcher):
         for key in Cache.objs:
             if matcher not in key:
                 continue
             yield Cache.objs.get(key)
 
 
-def cdir(path: str) -> None:
+def cdir(path):
     pth = pathlib.Path(path)
     pth.parent.mkdir(parents=True, exist_ok=True)
 
 
-def getpath(obj: Object) -> str:
+def getpath(obj):
     return j(store(ident(obj)))
 
 
-def ident(obj: Object) -> str:
+def ident(obj):
     return j(fqn(obj),*str(datetime.datetime.now()).split())
 
 
-def read(obj: Object, path: str) -> None:
+def read(obj, path):
     with lock:
         with open(path, "r", encoding="utf-8") as fpt:
             try:
@@ -71,7 +68,7 @@ def read(obj: Object, path: str) -> None:
                 raise Error(path) from ex
 
 
-def write(obj: Object, path: str = "") -> str:
+def write(obj, path):
     with lock:
         if path == "":
             path = getpath(obj)
