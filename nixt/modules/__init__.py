@@ -364,10 +364,10 @@ def edit(obj, setter, skip=True):
             setattr(obj, key, val)
 
 
-def fmt(obj, args=[], skip=[], plain=False):
-    if args == []:
+def fmt(obj, args=None, skip=None, plain=False):
+    if args is None:
         args = keys(obj)
-    if skip == []:
+    if skip is None:
         skip = []
     txt = ""
     for key in args:

@@ -13,7 +13,7 @@ from .object import Default
 
 class Event(Default):
 
-    def __init__(self) -> None:
+    def __init__(self):
         Default.__init__(self)
         self._ready = threading.Event()
         self._thr   = None
@@ -23,16 +23,16 @@ class Event(Default):
         self.type   = "event"
         self.txt    = ""
 
-    def done(self) -> None:
+    def done(self):
         self.reply("ok")
 
-    def ready(self) -> None:
+    def ready(self):
         self._ready.set()
 
-    def reply(self, txt: str) -> None:
+    def reply(self, txt):
         self.result[time.time()] = txt
 
-    def wait(self) -> None:
+    def wait(self):
         self._ready.wait()
         if self._thr:
             self._thr.join()

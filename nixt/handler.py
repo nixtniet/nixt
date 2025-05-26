@@ -9,7 +9,6 @@ import threading
 import _thread
 
 
-from .event  import Event
 from .thread import later, launch, name
 
 
@@ -20,7 +19,7 @@ class Handler:
 
     def __init__(self):
         self.cbs     = {}
-        self.queue   = queue.Queue() 
+        self.queue   = queue.Queue()
         self.ready   = threading.Event()
         self.stopped = threading.Event()
 

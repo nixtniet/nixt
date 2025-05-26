@@ -9,11 +9,10 @@ import json.decoder
 import os
 import pathlib
 import threading
-import types
 
 
 from .json   import dump, load
-from .object import Object, fqn, update
+from .object import fqn, update
 from .store  import store
 
 

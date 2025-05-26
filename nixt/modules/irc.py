@@ -19,10 +19,10 @@ from ..disk   import getpath, ident, write
 from ..event  import Event as IEvent
 from ..fleet  import Fleet
 from ..find   import last
-from ..object import Object, keys
+from ..object import Default, Object, keys
 from ..thread import launch
 from .        import debug as ldebug
-from .        import Default, Main, command, edit, fmt
+from .        import Main, command, edit, fmt
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]
@@ -159,7 +159,7 @@ class Output(Object):
 
 class Event(IEvent):
 
-   def __init__(self):
+    def __init__(self):
         super().__init__()
         self.args      = []
         self.arguments = []
