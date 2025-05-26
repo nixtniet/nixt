@@ -8,7 +8,7 @@ import os
 import time
 
 
-from typing  import Any, Dict, Iterator, no_type_check
+from typing import Any, Dict, Iterator, no_type_check
 
 
 from .disk   import Cache, read
@@ -43,7 +43,13 @@ def fntime(daystr: str) -> float:
     return float(timed)
 
 
-def find(clz: str, selector: dict={}, deleted: bool=False, matching: bool=False) -> list[tuple[str, Object]]:
+def find(
+         clz: str,
+         selector: Dict[str, str] = {},
+         deleted: bool = False,
+         matching: bool = False
+        ) -> list[tuple[str, Object]]:
+
     skel()
     res = []
     clz = long(clz)
@@ -66,7 +72,7 @@ def isdeleted(obj: Object) -> bool:
     return '__deleted__' in dir(obj) and obj.__deleted__
 
 
-def last(obj: Object, selector: Dict[str, Any] = {}) -> Object|str:
+def last(obj: Object, selector: Dict[str, Any] = {}) -> str:
     if selector is None:
         selector = {}
     result = sorted(
@@ -81,7 +87,12 @@ def last(obj: Object, selector: Dict[str, Any] = {}) -> Object|str:
     return res
 
 
-def search(obj: Object, selector: dict, matching: bool) -> bool:
+def search(
+           obj: Object,
+           selector: Dict[str, str],
+           matching: bool = False
+          ) -> bool:
+
     res = False
     if not selector:
         return res

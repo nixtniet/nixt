@@ -21,7 +21,7 @@ from .store  import store
 
 
 lock = threading.RLock()
-p    = os.path.join
+j    = os.path.join
 
 
 class Error(Exception):
@@ -55,11 +55,11 @@ def cdir(path: str) -> None:
 
 
 def getpath(obj: Object) -> str:
-    return p(store(ident(obj)))
+    return j(store(ident(obj)))
 
 
 def ident(obj: Object) -> str:
-    return p(fqn(obj),*str(datetime.datetime.now()).split())
+    return j(fqn(obj),*str(datetime.datetime.now()).split())
 
 
 def read(obj: Object, path: str) -> None:
@@ -71,7 +71,7 @@ def read(obj: Object, path: str) -> None:
                 raise Error(path) from ex
 
 
-def write(obj: Object, path: str = "") -> str|None:
+def write(obj: Object, path: str = "") -> str:
     with lock:
         if path == "":
             path = getpath(obj)

@@ -10,8 +10,8 @@ import threading
 import traceback
 import _thread
 
-
-from typing import Any, Callable, Dict
+from threading import Event
+from typing    import Any, Callable, Dict
 
 
 STARTTIME = time.time()
@@ -25,13 +25,28 @@ class Errors:
 
 class Thread(threading.Thread):
 
-    def __init__(self, func: Callable, thrname: str, *args, daemon: bool=True, **kwargs):
-        super().__init__(None, self.run, thrname, (), daemon=daemon)
-        self.name = thrname
-        self.queue: queue.Queue = queue.Queue()
-        self.result = None
-        self.starttime = time.time()
-        self.stopped = threading.Event()
+    def __init__(
+                 self,
+                 func: Callable,
+                 thrname: str,
+                 *args,
+                 daemon: bool = True,
+                 **kwargs
+                ) -> None:
+
+        super().__init__(
+                         None,
+                         self.run,
+                         thrname,
+                         (),
+                         daemon=daemon
+                        )
+
+        self.name:      str         = thrname
+        self.queue:     queue.Queue = queue.Queue()
+        self.result:    Any         = None
+        self.starttime: float       = time.time()
+        self.stopped:   Event       = Event()
         self.queue.put((func, args))
 
     def __iter__(self):
@@ -41,7 +56,7 @@ class Thread(threading.Thread):
         for k in dir(self):
             yield k
 
-    def run(self):
+    def run(self) -> None:
         try:
             func, args = self.queue.get()
             self.result = func(*args)
@@ -53,8 +68,8 @@ class Thread(threading.Thread):
                 pass
             _thread.interrupt_main()
 
-    def join(self, timeout=None):
-        if timeout is not None:
+    def join(self, timeout: float | None = 0.0) -> Any:
+        if timeout != 0.0:
             while 1:
                 if not self.is_alive():
                     break
@@ -73,14 +88,22 @@ class Timy(threading.Timer):
 
 class Timed:
 
-    def __init__(self, sleep: float, func: Callable, *args: list[Any], thrname: str = "", **kwargs):
-        self.args      = args
-        self.func      = func
-        self.kwargs    = kwargs
-        self.sleep     = sleep
-        self.name      = thrname or kwargs.get("name", name(func))
-        self.target    = time.time() + self.sleep
-        self.timer     = None
+    def __init__(
+                 self,
+                 sleep:    float,
+                 func:     Callable,
+                 *args:    *tuple[list[Any]],
+                 thrname:  str  = "",
+                 **kwargs: Dict[str, Any] 
+                ) -> None:
+
+        self.args:   tuple[list[Any]] = args
+        self.func:   Callable         = func
+        self.kwargs: Dict[str, Any]   = kwargs
+        self.sleep:  float            = sleep
+        self.name:   str              = thrname or name(func)
+        self.target: float            = time.time() + self.sleep
+        self.timer:  Timy | None      = None
 
     def run(self):
         self.timer.latest = time.time()
@@ -106,7 +129,13 @@ class Repeater(Timed):
 
 
 def full(exc: Exception) -> str:
-    return "".join(traceback.format_exception(type(exc),exc,exc.__traceback__))
+    return "".join(
+                   traceback.format_exception(
+                                              type(exc),
+                                              exc,
+                                              exc.__traceback__
+                                             )
+                  )
 
 
 def later(exc: Exception) -> None:

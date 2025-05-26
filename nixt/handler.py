@@ -9,23 +9,23 @@ import threading
 import _thread
 
 
-from typing import Callable
+from typing import Callable, Dict
 
 
 from .event  import Event
 from .thread import later, launch, name
 
 
-lock = threading.RLock()
+lock: threading.RLock = threading.RLock()
 
 
 class Handler:
 
-    def __init__(self):
-        self.cbs     = {}
-        self.queue   = queue.Queue() 
-        self.ready   = threading.Event()
-        self.stopped = threading.Event()
+    def __init__(self) -> None:
+        self.cbs:      Dict[str, Callable] = {}
+        self.queue:    queue.Queue         = queue.Queue() 
+        self.ready:    threading.Event     = threading.Event()
+        self.stopped:  threading.Event     = threading.Event()
 
     def callback(self, evt: Event) -> None:
         with lock:
@@ -39,7 +39,7 @@ class Handler:
                 cmd = name(func)
             evt._thr = launch(func, evt, name=cmd)
 
-    def loop(self):
+    def loop(self) -> None:
         while not self.stopped.is_set():
             try:
                 evt = self.poll()
@@ -53,25 +53,25 @@ class Handler:
                 _thread.interrupt_main()
         self.ready.set()
 
-    def poll(self):
+    def poll(self) -> Event:
         return self.queue.get()
 
-    def put(self, evt: Event):
+    def put(self, evt: Event) -> None:
         self.queue.put(evt)
 
-    def register(self, typ: str, cbs: Callable):
+    def register(self, typ: str, cbs: Callable) -> None:
         self.cbs[typ] = cbs
 
-    def start(self):
+    def start(self) -> None:
         self.stopped.clear()
         self.ready.clear()
         launch(self.loop)
 
-    def stop(self):
+    def stop(self) -> None:
         self.stopped.set()
         self.queue.put(None)
 
-    def wait(self):
+    def wait(self) -> None:
         self.ready.wait()
 
 

@@ -7,7 +7,7 @@
 import threading
 
 
-from typing    import Dict, ValuesView
+from typing import Dict, ValuesView
 
 
 from .event   import Event
@@ -60,7 +60,7 @@ class Fleet:
             evt.ready()
 
     @staticmethod
-    def first() -> Client|None:
+    def first() -> Client | None:
         clt =  list(Fleet.clients.values())
         res = None
         if clt:
@@ -68,7 +68,7 @@ class Fleet:
         return res
 
     @staticmethod
-    def get(orig: str) -> Client|None:
+    def get(orig: str) -> Client | None:
         return Fleet.clients.get(orig, None)
 
     @staticmethod
@@ -82,7 +82,6 @@ class Fleet:
         for clt in Fleet.clients.values():
             if "wait" in dir(clt):
                 clt.wait()
-
 
 
 def __dir__():

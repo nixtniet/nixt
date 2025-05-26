@@ -31,12 +31,12 @@ class Encoder(jsn.JSONEncoder):
                 return repr(o)
 
 
-def dump(obj: Object, fp: TextIO, *args, **kw):
+def dump(obj: Object, fp: TextIO, *args, **kw) -> None:
     kw["cls"] = Encoder
     jsn.dump(obj, fp, *args, **kw)
 
 
-def dumps(obj: Object, *args, **kw):
+def dumps(obj: Object, *args, **kw) -> str:
     kw["cls"] = Encoder
     return jsn.dumps(obj, *args, **kw)
 

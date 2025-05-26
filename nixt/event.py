@@ -4,11 +4,14 @@
 "event"
 
 
-import threading
 import time
 
 
-from typing import Any, Iterator
+from threading import Event as IEvent
+from threading import Thread
+
+
+from typing import Any, Dict, Iterator
 
 
 from .object import Default
@@ -16,15 +19,15 @@ from .object import Default
 
 class Event(Default):
 
-    def __init__(self):
+    def __init__(self) -> None:
         Default.__init__(self)
-        self._ready = threading.Event()
-        self._thr   = None
-        self.ctime  = time()
-        self.orig   = ""
-        self.result = {}
-        self.type   = "event"
-        self.txt    = ""
+        self._ready: IEvent           = IEvent()
+        self._thr:   Thread | None    = None
+        self.ctime:  float            = time.time()
+        self.orig:   str              = ""
+        self.result: Dict[float, str] = {}
+        self.type:   str              = "event"
+        self.txt :   str              = ""
 
     def done(self) -> None:
         self.reply("ok")
