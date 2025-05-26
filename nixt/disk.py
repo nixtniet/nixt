@@ -68,7 +68,7 @@ def read(obj, path):
                 raise Error(path) from ex
 
 
-def write(obj, path):
+def write(obj, path=""):
     with lock:
         if path == "":
             path = getpath(obj)

@@ -15,8 +15,8 @@ import types
 import _thread
 
 
-from ..client import Fleet
 from ..event  import Event
+from ..fleet  import Fleet
 from ..object import Default, Object, items, keys
 from ..thread import Thread, later, launch
 
@@ -342,7 +342,7 @@ def spl(txt):
 "methods"
 
 
-def edit(obj, setter, skip):
+def edit(obj, setter, skip=True):
     for key, val in items(setter):
         if skip and val == "":
             continue

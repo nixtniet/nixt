@@ -9,9 +9,9 @@ import re
 import time
 
 
-from ..client import Fleet
 from ..disk   import getpath, write
 from ..find   import find, last
+from ..fleet  import Fleet
 from ..object import Object, items
 from ..thread import Timed, launch
 from .        import debug, elapsed
