@@ -16,7 +16,7 @@ j    = os.path.join
 class Workdir:
 
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
-    wdrr = ""
+    wdr = ""
 
 
 def long(name):
