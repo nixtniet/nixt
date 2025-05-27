@@ -45,119 +45,6 @@ class Main(Default):
     version = 321
 
 
-def check(name, md5=""):
-    if not CHECKSUM:
-        return True
-    mname = f"{__name__}.{name}"
-    if sys.modules.get(mname):
-        return False
-    pth = os.path.join(path, name + ".py")
-    spec = importlib.util.spec_from_file_location(mname, pth)
-    if not spec:
-        return False
-    if md5sum(pth) == (md5 or MD5.get(name, "")):
-        return True
-    if CHECKSUM and Main.md5:
-        debug(f"{name} failed md5sum check")
-    return False
-
-
-def getmod(name):
-    mname = f"{__name__}.{name}"
-    mod = sys.modules.get(mname, None)
-    if mod:
-        return mod
-    pth = os.path.join(path, name + ".py")
-    spec = importlib.util.spec_from_file_location(mname, pth)
-    if not spec or not spec.loader:
-        return None
-    mod = importlib.util.module_from_spec(spec)
-    if mod:
-        spec.loader.exec_module(mod)
-        sys.modules[mname] = mod
-    return mod
-
-
-def gettbl(name):
-    pth = os.path.join(path, "tbl.py")
-    if not os.path.exists(pth):
-        debug("tbl.py is not there")
-        return {}
-    if CHECKSUM and (md5sum(pth) != CHECKSUM):
-        debug("table checksum doesn't match")
-        return {}
-    try:
-        mod = getmod("tbl")
-    except FileNotFoundError:
-        debug("tbl module not found")
-        return None
-    return getattr(mod, name, {})
-
-
-def load(name):
-    with lock:
-        if name in Main.ignore:
-            return None
-        module = None
-        mname = f"{__name__}.{name}"
-        module = sys.modules.get(mname, None)
-        if not module:
-            pth = os.path.join(path, f"{name}.py")
-            if not os.path.exists(pth):
-                return None
-            spec = importlib.util.spec_from_file_location(mname, pth)
-            if not spec or not spec.loader:
-                return None
-            module = importlib.util.module_from_spec(spec)
-            if not module:
-                return None
-            spec.loader.exec_module(module)
-            sys.modules[mname] = module
-        setdebug(module)
-        return module
-
-
-def md5sum(modpath):
-    with open(modpath, "r", encoding="utf-8") as file:
-        txt = file.read().encode("utf-8")
-        return str(hashlib.md5(txt).hexdigest())
-
-
-def mods(names):
-    res = []
-    for nme in modules():
-        if names and nme not in spl(names):
-            continue
-        mod = load(nme)
-        if not mod:
-            continue
-        res.append(mod)
-    return res
-
-
-def modules(mdir=""):
-    return sorted([
-                   x[:-3] for x in os.listdir(mdir or path)
-                   if x.endswith(".py") and not x.startswith("__") and
-                   x[:-3] not in Main.ignore
-                  ])
-
-
-def setdebug(module):
-    if Main.debug:
-        module.DEBUG = True
-
-
-def table():
-    md5s = gettbl("MD5")
-    if md5s:
-        MD5.update(md5s)
-    names = gettbl("NAMES")
-    if names:
-        NAMES.update(names)
-    return NAMES
-
-
 class Commands:
 
     cmds  = {}
@@ -280,6 +167,122 @@ def scan(mod):
 
 def settable():
     Commands.names.update(table())
+
+
+"modules"
+
+
+def check(name, md5=""):
+    if not CHECKSUM:
+        return True
+    mname = f"{__name__}.{name}"
+    if sys.modules.get(mname):
+        return False
+    pth = os.path.join(path, name + ".py")
+    spec = importlib.util.spec_from_file_location(mname, pth)
+    if not spec:
+        return False
+    if md5sum(pth) == (md5 or MD5.get(name, "")):
+        return True
+    if CHECKSUM and Main.md5:
+        debug(f"{name} failed md5sum check")
+    return False
+
+
+def getmod(name):
+    mname = f"{__name__}.{name}"
+    mod = sys.modules.get(mname, None)
+    if mod:
+        return mod
+    pth = os.path.join(path, name + ".py")
+    spec = importlib.util.spec_from_file_location(mname, pth)
+    if not spec or not spec.loader:
+        return None
+    mod = importlib.util.module_from_spec(spec)
+    if mod:
+        spec.loader.exec_module(mod)
+        sys.modules[mname] = mod
+    return mod
+
+
+def gettbl(name):
+    pth = os.path.join(path, "tbl.py")
+    if not os.path.exists(pth):
+        debug("tbl.py is not there")
+        return {}
+    if CHECKSUM and (md5sum(pth) != CHECKSUM):
+        debug("table checksum doesn't match")
+        return {}
+    try:
+        mod = getmod("tbl")
+    except FileNotFoundError:
+        debug("tbl module not found")
+        return None
+    return getattr(mod, name, {})
+
+
+def load(name):
+    with lock:
+        if name in Main.ignore:
+            return None
+        module = None
+        mname = f"{__name__}.{name}"
+        module = sys.modules.get(mname, None)
+        if not module:
+            pth = os.path.join(path, f"{name}.py")
+            if not os.path.exists(pth):
+                return None
+            spec = importlib.util.spec_from_file_location(mname, pth)
+            if not spec or not spec.loader:
+                return None
+            module = importlib.util.module_from_spec(spec)
+            if not module:
+                return None
+            spec.loader.exec_module(module)
+            sys.modules[mname] = module
+        setdebug(module)
+        return module
+
+
+def md5sum(modpath):
+    with open(modpath, "r", encoding="utf-8") as file:
+        txt = file.read().encode("utf-8")
+        return str(hashlib.md5(txt).hexdigest())
+
+
+def mods(names):
+    res = []
+    for nme in modules():
+        if names and nme not in spl(names):
+            continue
+        mod = load(nme)
+        if not mod:
+            continue
+        res.append(mod)
+    return res
+
+
+def modules(mdir=""):
+    return sorted([
+                   x[:-3] for x in os.listdir(mdir or path)
+                   if x.endswith(".py") and not x.startswith("__") and
+                   x[:-3] not in Main.ignore
+                  ])
+
+
+def setdebug(module):
+    if Main.debug:
+        module.DEBUG = True
+
+
+def table():
+    md5s = gettbl("MD5")
+    if md5s:
+        MD5.update(md5s)
+    names = gettbl("NAMES")
+    if names:
+        NAMES.update(names)
+    return NAMES
 
 
 "utilities"
