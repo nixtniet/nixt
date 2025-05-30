@@ -25,7 +25,7 @@ lock = threading.RLock()
 path = os.path.dirname(__file__)
 
 
-CHECKSUM = ""
+CHECKSUM = "f7cae876b7666c7591f87e7c1b7e7772"
 MD5      = {}
 NAMES    = {}
 
@@ -258,7 +258,7 @@ def md5sum(modpath):
         return str(hashlib.md5(txt).hexdigest())
 
 
-def mods(names):
+def mods(names=""):
     res = []
     for nme in modules():
         if names and nme not in spl(names):
