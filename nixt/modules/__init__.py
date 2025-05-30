@@ -17,7 +17,7 @@ import _thread
 
 from ..event  import Event
 from ..fleet  import Fleet
-from ..object import Default, Object, items, keys
+from ..object import Object, items, keys
 from ..thread import Thread, later, launch
 
 
@@ -28,6 +28,14 @@ path = os.path.dirname(__file__)
 CHECKSUM = ""
 MD5      = {}
 NAMES    = {}
+
+
+class Default(Object):
+
+    def __getattr__(self, key):
+        if key not in self:
+            setattr(self, key, "")
+        return self.__dict__.get(key, "")
 
 
 class Main(Default):
@@ -388,6 +396,9 @@ def fmt(obj, args=None, skip=None, plain=False):
         else:
             txt += f'{key}={value} '
     return txt.strip()
+
+
+"interface"
 
 
 def __dir__():

@@ -40,10 +40,12 @@ def fntime(daystr):
     return float(timed)
 
 
-def find(clz, selector={}, deleted=False, matching=False):
+def find(clz, selector=None, deleted=False, matching=False):
     skel()
     res = []
     clz = long(clz)
+    if selector is None:
+        selector = {}
     for pth in fns(clz):
         obj = Cache.get(pth)
         if not obj:
@@ -62,7 +64,7 @@ def isdeleted(obj):
     return '__deleted__' in dir(obj) and obj.__deleted__
 
 
-def last(obj, selector={}):
+def last(obj, selector=None):
     if selector is None:
         selector = {}
     result = sorted(find(fqn(obj), selector), key=lambda x: fntime(x[0]))

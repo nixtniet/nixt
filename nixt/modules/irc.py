@@ -19,10 +19,10 @@ from ..disk   import getpath, ident, write
 from ..event  import Event as IEvent
 from ..fleet  import Fleet
 from ..find   import last
-from ..object import Default, Object, keys
+from ..object import Object, keys
 from ..thread import launch
 from .        import debug as ldebug
-from .        import Main, command, edit, fmt
+from .        import Default, Main, command, edit, fmt
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]
