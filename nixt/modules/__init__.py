@@ -185,7 +185,7 @@ def check(name, md5=""):
         return True
     mname = f"{__name__}.{name}"
     if sys.modules.get(mname):
-        return False
+        return True
     pth = os.path.join(path, name + ".py")
     spec = importlib.util.spec_from_file_location(mname, pth)
     if not spec:

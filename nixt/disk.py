@@ -11,8 +11,8 @@ import pathlib
 import threading
 
 
-from .json   import dump, load
 from .object import fqn, update
+from .serial import dump, load
 from .store  import store
 
 
