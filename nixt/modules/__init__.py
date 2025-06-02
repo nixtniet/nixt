@@ -11,14 +11,12 @@ import inspect
 import os
 import sys
 import threading
-import types
 import _thread
 
 
-from ..event  import Event
 from ..fleet  import Fleet
 from ..object import Object, items, keys
-from ..thread import Thread, later, launch
+from ..thread import later, launch
 
 
 lock = threading.RLock()
