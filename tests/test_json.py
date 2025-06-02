@@ -7,8 +7,8 @@
 import unittest
 
 
-from nixt.json   import dumps, loads
 from nixt.object import Object
+from nixt.serial import dumps, loads
 
 
 VALIDJSON = "{'test': 'bla'}"
