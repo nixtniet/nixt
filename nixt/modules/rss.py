@@ -9,6 +9,7 @@ import html.parser
 import http.client
 import os
 import re
+import sys
 import time
 import urllib
 import urllib.parse
@@ -25,7 +26,7 @@ from ..disk   import getpath, write
 from ..find   import find, fntime, last
 from ..fleet  import Fleet
 from ..object import Object, update
-from ..thread import Repeater, launch
+from ..thread import Repeater, launch, line
 from .        import Default, elapsed, fmt, spl
 
 
@@ -281,7 +282,9 @@ def getfeed(url, items):
         return result
     try:
         rest = geturl(url)
-    except (ValueError, HTTPError, URLError):
+    except (http.client.HTTPException, ValueError, HTTPError, URLError) as ex:
+        print(f"{url} {ex}")
+        sys.stdout.flush()
         return result
     if rest:
         if url.endswith('atom'):
@@ -310,17 +313,12 @@ def gettinyurl(url):
 
 
 def geturl(url):
-    if not url.startswith("http://") and not url.startswith("https://"):
-        return ""
     url = urllib.parse.urlunparse(urllib.parse.urlparse(url))
     req = urllib.request.Request(str(url))
     req.add_header('User-agent', useragent("rss fetcher"))
-    try:
-        with urllib.request.urlopen(req) as response: # nosec
-            response.data = response.read()
-            return response
-    except http.client.HTTPException:
-        return ""
+    with urllib.request.urlopen(req) as response: # nosec
+        response.data = response.read()
+        return response
 
 
 def shortid():
