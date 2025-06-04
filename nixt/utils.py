@@ -5,14 +5,20 @@
 
 
 import logging
+import os
+import sys
 
 
 from .modules import Main
 
 
-def init():
-    logging.basicConfig(stream=sys.stderr)
-    logging.getLogger().setLevel(LEVELS.get(Main.loglevel or "debug"))
+def level(loglevel="debug"):
+    if loglevel != "none":
+        os.environ["PYTHONUNBUFFERED"] = "yoo"
+        format_short = "%(message)-80s"
+        datefmt = '%H:%M:%S'
+        logging.basicConfig(stream=sys.stderr, datefmt=datefmt, format=format_short)
+        logging.getLogger().setLevel(LEVELS.get(loglevel))
 
 
 
@@ -23,3 +29,9 @@ LEVELS = {'debug': logging.DEBUG,
           'error': logging.ERROR,
           'critical': logging.CRITICAL
          }
+
+
+def __dir__():
+    return (
+        'level',
+    )

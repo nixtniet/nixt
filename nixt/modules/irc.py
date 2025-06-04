@@ -5,6 +5,7 @@
 
 
 import base64
+import logging
 import os
 import queue
 import socket
@@ -35,7 +36,7 @@ def debug(txt):
     for ign in IGNORE:
         if ign in str(txt):
             return
-    ldebug(txt)
+    logging.debug(txt)
 
 
 def init():

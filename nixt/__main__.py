@@ -18,6 +18,7 @@ from .modules import md5sum, mods, modules, parse, scan, settable
 from .serial  import dumps
 from .paths   import Workdir, pidname
 from .thread  import Errors, full
+from .utils   import level
 
 
 class CLI(Client):
@@ -64,7 +65,7 @@ def out(txt):
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    out(f"{Main.name.upper()} since {tme}")
+    out(f"{Main.name.upper()} since {tme} ({Main.level})")
 
 
 def check(txt):
@@ -199,6 +200,7 @@ def console():
     parse(Main, " ".join(sys.argv[1:]))
     Main.init = Main.sets.init or Main.init
     Main.verbose = Main.sets.verbose or Main.verbose
+    level(Main.level or "debug")
     if "v" in Main.opts:
         banner()
     for _mod, thr in inits(Main.init):
@@ -232,6 +234,7 @@ def service():
     setwd(Main.name)
     settable()
     nodebug()
+    level(Main.level or "none")
     banner()
     privileges()
     pidfile(pidname(Main.name))
