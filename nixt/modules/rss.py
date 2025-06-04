@@ -21,7 +21,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from ..store  import find, fntime, getpath, last, write
+from ..disk   import getpath, write
+from ..find   import find, fntime, last
 from ..fleet  import Fleet
 from ..object import Object, update
 from ..thread import Repeater, launch
