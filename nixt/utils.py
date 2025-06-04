@@ -22,6 +22,15 @@ def level(loglevel="debug"):
 
 
 
+def rlog(level, txt, ignore=None):
+    if ignore is None:
+        ignore = []
+    for ign in ignore:
+        if ign in str(txt):
+            return
+    logging.log(LEVELS.get(level), txt)
+
+
 LEVELS = {'debug': logging.DEBUG,
           'info': logging.INFO,
           'warning': logging.WARNING,
@@ -34,4 +43,5 @@ LEVELS = {'debug': logging.DEBUG,
 def __dir__():
     return (
         'level',
+        'rlog'
     )

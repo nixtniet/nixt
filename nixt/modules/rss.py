@@ -28,6 +28,7 @@ from ..find   import find, fntime, last
 from ..fleet  import Fleet
 from ..object import Object, update
 from ..thread import Repeater, launch, line
+from ..utils  import rlog
 from .        import Default, elapsed, fmt, spl
 
 
@@ -284,7 +285,7 @@ def getfeed(url, items):
     try:
         rest = geturl(url)
     except (http.client.HTTPException, ValueError, HTTPError, URLError) as ex:
-        logging.debug(f"{url} {ex}")
+        rlog("error", f"{url} {ex}")
         return result
     if rest:
         if url.endswith('atom'):

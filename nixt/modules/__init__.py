@@ -43,7 +43,7 @@ class Main(Default):
     gets    = Default()
     ignore  = ""
     init    = ""
-    level   = "debug"
+    level   = "warn"
     md5     = True
     name    = __name__.split(".", maxsplit=1)[0]
     opts    = Default()
