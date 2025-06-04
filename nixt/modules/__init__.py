@@ -24,6 +24,7 @@ path = os.path.dirname(__file__)
 
 
 CHECKSUM = "fe21a528ff210a40415f8520531c9448"
+CHECKSUM = ""
 MD5      = {}
 NAMES    = {}
 
@@ -42,6 +43,7 @@ class Main(Default):
     gets    = Default()
     ignore  = ""
     init    = ""
+    level   = "debug"
     md5     = True
     name    = __name__.split(".", maxsplit=1)[0]
     opts    = Default()

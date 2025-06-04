@@ -7,6 +7,7 @@
 import html
 import html.parser
 import http.client
+import logging
 import os
 import re
 import sys
@@ -283,8 +284,7 @@ def getfeed(url, items):
     try:
         rest = geturl(url)
     except (http.client.HTTPException, ValueError, HTTPError, URLError) as ex:
-        print(f"{url} {ex}")
-        sys.stdout.flush()
+        logging.debug(f"{url} {ex}")
         return result
     if rest:
         if url.endswith('atom'):

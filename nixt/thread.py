@@ -24,7 +24,7 @@ class Thread(threading.Thread):
 
     def __init__(self, func, thrname, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, thrname, (), daemon=daemon)
-        self.name      = thrname
+        self.name   = thrname or kwargs.get("name", name(func))
         self.queue     = queue.Queue()
         self.result    = None
         self.starttime = time.time()
@@ -62,8 +62,10 @@ class Thread(threading.Thread):
 
 class Timy(threading.Timer):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, sleep, func, *args, **kwargs):
+        super().__init__(sleep, func)
+        self.setName(kwargs.get("name", name(func)))
+        self.sleep     = sleep
         self.state     = {}
         self.starttime = time.time()
 
@@ -84,7 +86,8 @@ class Timed:
         self.func(*self.args)
 
     def start(self):
-        timer = Timy(self.sleep, self.run)
+        self.kwargs["name"] = self.name
+        timer = Timy(self.sleep, self.run, *self.args, **self.kwargs)
         timer.state["latest"] = time.time()
         timer.state["starttime"] = time.time()
         timer.start()
