@@ -16,7 +16,7 @@ from .event   import Event
 from .modules import Commands, Main, command, inits
 from .modules import md5sum, mods, modules, parse, scan, settable
 from .serial  import dumps
-from .store   import Workdir, pidname
+from .paths   import Workdir, pidname
 from .thread  import Errors, full
 
 

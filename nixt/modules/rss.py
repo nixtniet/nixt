@@ -6,6 +6,7 @@
 
 import html
 import html.parser
+import http.client
 import os
 import re
 import time
@@ -20,8 +21,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from ..disk   import getpath, write
-from ..find   import find, fntime, last
+from ..store  import find, fntime, getpath, last, write
 from ..fleet  import Fleet
 from ..object import Object, update
 from ..thread import Repeater, launch
@@ -314,9 +314,13 @@ def geturl(url):
     url = urllib.parse.urlunparse(urllib.parse.urlparse(url))
     req = urllib.request.Request(str(url))
     req.add_header('User-agent', useragent("rss fetcher"))
-    with urllib.request.urlopen(req) as response: # nosec
-        response.data = response.read()
-        return response
+    try:
+        with urllib.request.urlopen(req) as response: # nosec
+            response.data = response.read()
+            return response
+    except http.client.HTTPException:
+        return ""
+
 
 def shortid():
     return str(uuid.uuid4())[:8]

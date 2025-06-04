@@ -22,7 +22,7 @@ from nixt.event   import Event
 from nixt.modules import Main, command, elapsed, modules, parse, settable, spl
 from nixt.modules import inits
 from nixt.object  import Object, keys
-from nixt.store   import Workdir, skel
+from nixt.paths   import Workdir, skel
 from nixt.thread  import STARTTIME, Errors, full, launch
 
 

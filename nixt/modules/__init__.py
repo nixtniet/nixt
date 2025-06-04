@@ -23,7 +23,7 @@ lock = threading.RLock()
 path = os.path.dirname(__file__)
 
 
-CHECKSUM = "f7cae876b7666c7591f87e7c1b7e7772"
+CHECKSUM = "fe21a528ff210a40415f8520531c9448"
 MD5      = {}
 NAMES    = {}
 
@@ -48,7 +48,7 @@ class Main(Default):
     otxt    = ""
     sets    = Default()
     verbose = False
-    version = 321
+    version = 323
 
 
 class Commands:
