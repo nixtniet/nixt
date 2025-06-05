@@ -34,8 +34,7 @@ def find(clz, selector=None, deleted=False, matching=False):
             continue
         if selector and not search(obj, selector, matching):
             continue
-        res.append((pth, obj))
-    return sorted(res, key=lambda x: fntime(x[0]))
+        yield pth, obj
 
 
 def fns(clz):

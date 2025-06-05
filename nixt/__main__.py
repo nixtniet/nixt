@@ -14,7 +14,7 @@ import _thread
 from .client  import Client
 from .event   import Event
 from .modules import Commands, Main, command, inits
-from .modules import md5sum, mods, level, modules, parse, scan, settable
+from .modules import md5sum, mods, level, modules, parse, rlog, scan, settable
 from .serial  import dumps
 from .paths   import Workdir, pidname
 from .thread  import Errors, full
@@ -56,7 +56,7 @@ def handler(signum, frame):
 
 def out(txt):
     print(txt.rstrip())
-    sys.stdout.flush()
+    #sys.stdout.flush()
 
 
 "utilities"
@@ -221,6 +221,7 @@ def control():
     Commands.add(srv)
     Commands.add(tbl)
     parse(Main, " ".join(sys.argv[1:]))
+    level(Main.level or "warn")
     csl = CLI()
     evt = Event()
     evt.orig = repr(csl)
