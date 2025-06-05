@@ -14,11 +14,10 @@ import _thread
 from .client  import Client
 from .event   import Event
 from .modules import Commands, Main, command, inits
-from .modules import md5sum, mods, modules, parse, scan, settable
+from .modules import md5sum, mods, level, modules, parse, scan, settable
 from .serial  import dumps
 from .paths   import Workdir, pidname
 from .thread  import Errors, full
-from .utils   import level
 
 
 class CLI(Client):
@@ -234,7 +233,6 @@ def control():
 def service():
     setwd(Main.name)
     settable()
-    #nodebug()
     level(Main.level or "none")
     banner()
     privileges()

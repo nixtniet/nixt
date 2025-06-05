@@ -15,8 +15,8 @@ import nixt.client
 import nixt.handler
 import nixt.modules
 import nixt.object
+import nixt.paths
 import nixt.serial
-import nixt.store
 import nixt.thread
 
 
@@ -28,8 +28,8 @@ PACKAGE = [
     'handler',
     'object',
     'modules',
+    'paths',
     'serial',
-    'store',
     'thread'
 ]
 

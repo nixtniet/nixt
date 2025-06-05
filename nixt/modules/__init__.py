@@ -8,15 +8,20 @@ import hashlib
 import importlib
 import importlib.util
 import inspect
+import logging
 import os
 import sys
 import threading
+import time
 import _thread
 
 
 from ..fleet  import Fleet
 from ..object import Object, items, keys
 from ..thread import later, launch
+
+
+STARTTIME = time.time()
 
 
 lock = threading.RLock()

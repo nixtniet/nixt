@@ -11,9 +11,6 @@ import traceback
 import _thread
 
 
-STARTTIME = time.time()
-
-
 class Errors:
 
     name   = __file__.rsplit("/", maxsplit=2)[-2]
@@ -174,7 +171,6 @@ def name(obj):
 
 def __dir__():
     return (
-        'STARTTIME',
         'Errors',
         'Repeater',
         'Thread',
