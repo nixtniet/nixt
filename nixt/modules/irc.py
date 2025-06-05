@@ -22,9 +22,8 @@ from ..find   import last
 from ..fleet  import Fleet
 from ..object import Object, keys
 from ..thread import launch
-from ..utils  import rlog
 from .        import debug as ldebug
-from .        import Default, Main, command, edit, fmt
+from .        import Default, Main, command, edit, fmt, rlog
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]
