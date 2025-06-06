@@ -45,7 +45,7 @@ class Main(Default):
 
     debug   = False
     gets    = Default()
-    ignore  = ""
+    ignore  = "now,req"
     init    = ""
     level   = "warn"
     md5     = True
@@ -91,7 +91,8 @@ def command(evt):
     if func:
         func(evt)
         Fleet.display(evt)
-    evt.ready()
+    else:
+        evt.ready()
 
 
 def inits(names):

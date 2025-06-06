@@ -81,7 +81,7 @@ def write(obj, path=""):
         cdir(path)
         with open(path, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)
-        Cache.update(path, obj)
+        #Cache.update(path, obj)
         return path
 
 

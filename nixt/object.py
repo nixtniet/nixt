@@ -40,27 +40,26 @@ def fqn(obj):
 
 
 def items(obj):
-    try:
-        return obj.__dict__.items()
-    except AttributeError:
+    if isinstance(obj, dict):
         return obj.items()
+    return obj.__dict__.items()
 
 
 def keys(obj):
-    try:
-        return obj.__dict__.keys()
-    except AttributeError:
+    if isinstance(obj, dict):
         return obj.keys()
+    return obj.__dict__.keys()
 
 
 def update(obj, data):
-    try:
-        obj.__dict__.update(vars(data))
-    except TypeError:
-        obj.__dict__.update(data)
+    if isinstance(data, dict):
+        return obj.__dict__.update(data)
+    obj.__dict__.update(vars(data))
 
 
 def values(obj):
+    if isinstance(obj, dict):
+        return obj.values()
     return obj.__dict__.values()
 
 

@@ -40,12 +40,10 @@ def find(clz, selector=None, deleted=False, matching=False):
 def fns(clz):
     pth = store(clz)
     for rootdir, dirs, _files in os.walk(pth, topdown=False):
-        if dirs:
-            for dname in dirs:
-                if dname.count('-') == 2:
-                    ddd = j(rootdir, dname)
-                    for fll in os.listdir(ddd):
-                        yield j(ddd, fll)
+        for dname in dirs:
+            ddd = j(rootdir, dname)
+            for fll in os.listdir(ddd):
+                yield j(ddd, fll)
 
 
 def fntime(daystr):
