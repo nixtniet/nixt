@@ -15,15 +15,14 @@ import threading
 import time
 
 
-from ..client import Client
-from ..disk   import getpath, ident, write
-from ..event  import Event as IEvent
-from ..find   import last
-from ..fleet  import Fleet
-from ..object import Object, keys
-from ..thread import launch
-from .        import debug as ldebug
-from .        import Default, Main, command, edit, fmt, rlog
+from ..client  import Client
+from ..event   import Event as IEvent
+from ..find    import last
+from ..fleet   import Fleet
+from ..object  import Object, keys
+from ..persist import getpath, ident, write
+from ..thread  import launch
+from .         import Default, Main, command, edit, fmt, rlog
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]
@@ -31,26 +30,20 @@ IGNORE  = ["PING", "PONG", "PRIVMSG"]
 
 saylock = threading.RLock()
 
-
-def debug(txt):
-    for ign in IGNORE:
-        if ign in str(txt):
-            return
-    logging.debug(txt)
-
+#saylock = _thread.allocate_lock()
 
 def init():
     irc = IRC()
     irc.start()
     irc.events.joined.wait(30.0)
-    rlog("debug", f'irc at {irc.cfg.server}:{irc.cfg.port} {irc.cfg.channel}')
+    rlog("debug", fmt(irc.cfg, skip=["password"]))
     return irc
 
 
 class Config(Default):
 
     channel = f'#{Main.name}'
-    commands = True
+    commands = False
     control = '!'
     nick = Main.name
     password = ""

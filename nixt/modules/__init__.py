@@ -11,7 +11,6 @@ import inspect
 import logging
 import os
 import sys
-import threading
 import time
 import _thread
 
@@ -24,11 +23,12 @@ from ..thread import later, launch
 STARTTIME = time.time()
 
 
-lock = threading.RLock()
+lock = _thread.allocate_lock()
 path = os.path.dirname(__file__)
 
 
-CHECKSUM = "2765c39f81bda21019349a10bcea48cd"
+CHECKSUM = "ddbf810f4e00cd1604a57e90452c1670"
+CHECKSUM = ""
 MD5      = {}
 NAMES    = {}
 
@@ -45,16 +45,16 @@ class Main(Default):
 
     debug   = False
     gets    = Default()
-    ignore  = "now,req"
+    ignore  = ""
     init    = ""
-    level   = "warn"
+    level   = "debug"
     md5     = True
     name    = __name__.split(".", maxsplit=1)[0]
     opts    = Default()
     otxt    = ""
     sets    = Default()
     verbose = False
-    version = 323
+    version = 324
 
 
 class Commands:
@@ -90,7 +90,7 @@ def command(evt):
     func = Commands.get(evt.cmd)
     if func:
         func(evt)
-        Fleet.display(evt)
+        evt.display()
     else:
         evt.ready()
 
@@ -198,39 +198,28 @@ def check(name, md5=""):
     if md5sum(pth) == (md5 or MD5.get(name, "")):
         return True
     if CHECKSUM and Main.md5:
-        debug(f"{name} failed md5sum check")
+        rlog("debug", f"{name} failed md5sum check")
     return False
-
-
-def getmod(name):
-    mname = f"{__name__}.{name}"
-    mod = sys.modules.get(mname, None)
-    if mod:
-        return mod
-    pth = os.path.join(path, name + ".py")
-    spec = importlib.util.spec_from_file_location(mname, pth)
-    if not spec or not spec.loader:
-        return None
-    mod = importlib.util.module_from_spec(spec)
-    if mod:
-        spec.loader.exec_module(mod)
-        sys.modules[mname] = mod
-    return mod
 
 
 def gettbl(name):
     pth = os.path.join(path, "tbl.py")
     if not os.path.exists(pth):
-        debug("tbl.py is not there")
+        rlog("debug", "tbl.py is not there")
         return {}
     if CHECKSUM and (md5sum(pth) != CHECKSUM):
-        debug("table checksum doesn't match")
+        rlog("debug", "table checksum doesn't match")
         return {}
-    try:
-        mod = getmod("tbl")
-    except FileNotFoundError:
-        debug("tbl module not found")
-        return None
+    mname = f"{__name__}.tbl"
+    mod = sys.modules.get(mname, None)
+    if not mod:
+        spec = importlib.util.spec_from_file_location(mname, pth)
+        if not spec or not spec.loader:
+                return {}
+        mod = importlib.util.module_from_spec(spec)
+        if mod:
+            spec.loader.exec_module(mod)
+            sys.modules[mname] = mod
     return getattr(mod, name, {})
 
 
@@ -253,7 +242,8 @@ def load(name):
                 return None
             spec.loader.exec_module(module)
             sys.modules[mname] = module
-        setdebug(module)
+        if Main.debug:
+            module.DEBUG = True
         return module
 
 
@@ -281,11 +271,6 @@ def modules(mdir=""):
                    if x.endswith(".py") and not x.startswith("__") and
                    x[:-3] not in Main.ignore
                   ])
-
-
-def setdebug(module):
-    if Main.debug:
-        module.DEBUG = True
 
 
 def table():
@@ -321,13 +306,6 @@ def rlog(level, txt, ignore=None):
 
 
 "utilities"
-
-
-def debug(*args):
-    for arg in args:
-        sys.stderr.write(str(arg))
-        sys.stderr.write("\n")
-        sys.stderr.flush()
 
 
 def elapsed(seconds, short=True):
@@ -402,7 +380,7 @@ def edit(obj, setter, skip=True):
             setattr(obj, key, val)
 
 
-def fmt(obj, args=None, skip=None, plain=False):
+def fmt(obj, args=None, skip=None, plain=False, empty=False):
     if args is None:
         args = keys(obj)
     if skip is None:
@@ -415,6 +393,8 @@ def fmt(obj, args=None, skip=None, plain=False):
             continue
         value = getattr(obj, key, None)
         if value is None:
+            continue
+        if not empty and not value:
             continue
         if plain:
             txt += f"{value} "

@@ -6,11 +6,6 @@
 
 import os
 import pathlib
-import threading
-
-
-lock = threading.RLock()
-j    = os.path.join
 
 
 class Workdir:
@@ -30,11 +25,11 @@ def long(name):
 
 
 def moddir():
-    return j(Workdir.wdr, "mods")
+    return os.path.join(Workdir.wdr, "mods")
 
 
 def pidname(name):
-    return j(Workdir.wdr, f"{name}.pid")
+    return os.path.join(Workdir.wdr, f"{name}.pid")
 
 
 def skel():
@@ -45,16 +40,12 @@ def skel():
     return str(pth)
 
 
-def setwd(pth):
-    Workdir.wdr = pth
-
-
 def store(pth=""):
-    return j(Workdir.wdr, "store", pth)
+    return os.path.join(Workdir.wdr, "store", pth)
 
 
 def strip(pth, nmr=2):
-    return j(pth.split(os.sep)[-nmr:])
+    return os.path.join(pth.split(os.sep)[-nmr:])
 
 
 def types():
@@ -62,7 +53,7 @@ def types():
 
 
 def wdr(pth):
-    return j(Workdir.wdr, pth)
+    return os.path.join(Workdir.wdr, pth)
 
 
 def __dir__():
@@ -71,7 +62,6 @@ def __dir__():
         'long',
         'moddir',
         'pidname',
-        'setwd',
         'skel',
         'store',
         'strip',

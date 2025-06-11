@@ -7,21 +7,17 @@
 import queue
 import time
 import threading
-import traceback
 import _thread
 
 
-class Errors:
-
-    name   = __file__.rsplit("/", maxsplit=2)[-2]
-    errors = []
+from .errors import later
 
 
 class Thread(threading.Thread):
 
     def __init__(self, func, thrname, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, thrname, (), daemon=daemon)
-        self.name   = thrname or kwargs.get("name", name(func))
+        self.name      = thrname or kwargs.get("name", name(func))
         self.queue     = queue.Queue()
         self.result    = None
         self.starttime = time.time()
@@ -52,7 +48,7 @@ class Thread(threading.Thread):
             while 1:
                 if not self.is_alive():
                     break
-                time.sleep(0.01)
+                time.sleep(0.1)
         super().join(timeout)
         return self.result
 
@@ -102,56 +98,13 @@ class Repeater(Timed):
         super().run()
 
 
-def full(exc):
-    return "".join(
-                   traceback.format_exception(
-                                              type(exc),
-                                              exc,
-                                              exc.__traceback__
-                                             )
-                  )
-
-
-def later(exc):
-    Errors.errors.append(exc)
-
-
 def launch(func, *args, **kwargs):
-    nme = kwargs.get("name")
+    nme = kwargs.get("name", None)
     if not nme:
         nme = name(func)
     thread = Thread(func, nme, *args, **kwargs)
     thread.start()
     return thread
-
-
-def line(exc):
-    exctype, excvalue, trb = type(exc), exc, exc.__traceback__
-    trace = traceback.extract_tb(trb)
-    result = ""
-    for i in trace:
-        fname = i[0]
-        if fname.endswith(".py"):
-            fname = fname[:-3]
-        linenr = i[1]
-        plugfile = fname.split("/")
-        mod = []
-        for ii in list(plugfile[::-1]):
-            mod.append(ii)
-            if Errors.name in ii or "bin" in ii:
-                break
-        ownname = '.'.join(mod[::-1])
-        if ownname.endswith("__"):
-            continue
-        if ownname.startswith("<"):
-            continue
-        result += f"{ownname}:{linenr} "
-    del trace
-    res = f"{exctype} {result[:-1]} {excvalue}"
-    if "__notes__" in dir(exc):
-        for note in exc.__notes__:
-            res += f" {note}"
-    return res
 
 
 def name(obj):
@@ -171,13 +124,9 @@ def name(obj):
 
 def __dir__():
     return (
-        'Errors',
         'Repeater',
         'Thread',
         'Timed',
-        'full',
-        'later',
         'launch',
-        'line',
         'name'
     )

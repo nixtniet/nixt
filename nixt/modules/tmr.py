@@ -9,12 +9,12 @@ import re
 import time
 
 
-from ..disk   import write
-from ..find   import last
-from ..fleet  import Fleet
-from ..object import Object, items
-from ..thread import Timed
-from .        import debug, elapsed
+from ..find    import last
+from ..fleet   import Fleet
+from ..object  import Object, items
+from ..persist import write
+from ..thread  import Timed
+from .         import elapsed, rlog
 
 
 class NoDate(Exception):
@@ -39,7 +39,7 @@ def init():
         if diff > 0:
             timer = Timed(diff, Fleet.announce, tmr[1][-1])
             timer.start()
-            debug(f"timer at {time.ctime(float(tme))}")
+            rlog("debug", f"timer at {time.ctime(float(tme))}")
         else:
             remove.append(tme)
     for tme in remove:

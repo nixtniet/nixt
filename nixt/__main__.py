@@ -12,12 +12,12 @@ import _thread
 
 
 from .client  import Client
+from .errors  import Errors, full
 from .event   import Event
-from .modules import Commands, Main, command, inits
+from .modules import Commands, Main, command, fmt, inits
 from .modules import md5sum, mods, level, modules, parse, rlog, scan, settable
 from .serial  import dumps
-from .paths   import Workdir, pidname
-from .thread  import Errors, full
+from .paths   import Workdir, pidname, skel
 
 
 class CLI(Client):
@@ -55,8 +55,8 @@ def handler(signum, frame):
 
 
 def out(txt):
-    print(txt.rstrip())
-    #sys.stdout.flush()
+    print(txt)
+    sys.stdout.flush()
 
 
 "utilities"
@@ -64,7 +64,8 @@ def out(txt):
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    out(f"{Main.name.upper()} since {tme} ({Main.level.upper()})")
+    out(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
+    out(fmt(Main, skip=["args", "cmd", "gets", "otxt", "result", "sets", "silent", "txt", "version"]))
 
 
 def check(txt):
@@ -111,11 +112,6 @@ def forever():
             _thread.interrupt_main()
 
 
-def nodebug():
-    with open('/dev/null', 'a+', encoding="utf-8") as ses:
-        os.dup2(ses.fileno(), sys.stderr.fileno())
-
-
 def pidfile(filename):
     if os.path.exists(filename):
         os.unlink(filename)
@@ -137,6 +133,7 @@ def setwd(name, path=""):
     Main.name = name
     path = path or os.path.expanduser(f"~/.{name}")
     Workdir.wdr = path
+    skel()
 
 
 "commands"
@@ -221,7 +218,7 @@ def control():
     Commands.add(srv)
     Commands.add(tbl)
     parse(Main, " ".join(sys.argv[1:]))
-    level(Main.level or "warn")
+    level(Main.level or "debug")
     csl = CLI()
     evt = Event()
     evt.orig = repr(csl)
@@ -234,7 +231,7 @@ def control():
 def service():
     setwd(Main.name)
     settable()
-    level(Main.level or "none")
+    level(Main.level or "debug")
     banner()
     privileges()
     pidfile(pidname(Main.name))

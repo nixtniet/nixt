@@ -9,15 +9,15 @@ import json.decoder
 import os
 import pathlib
 import threading
+import _thread
 
 
-from .object import fqn, update
+from .object import Object, fqn, update
 from .serial import dump, load
 from .paths  import store
 
 
-lock = threading.RLock()
-j    = os.path.join
+lock = _thread.allocate_lock()
 
 
 class Error(Exception):
@@ -58,11 +58,11 @@ def cdir(path):
 
 
 def getpath(obj):
-    return j(store(ident(obj)))
+    return os.path.join(store(ident(obj)))
 
 
 def ident(obj):
-    return j(fqn(obj),*str(datetime.datetime.now()).split())
+    return os.path.join(fqn(obj),*str(datetime.datetime.now()).split())
 
 
 def read(obj, path):
@@ -81,7 +81,7 @@ def write(obj, path=""):
         cdir(path)
         with open(path, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)
-        #Cache.update(path, obj)
+        Cache.update(path, obj)
         return path
 
 

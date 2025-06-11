@@ -7,10 +7,10 @@
 import time
 
 
-from ..disk   import write
-from ..object import Object, update
-from ..find   import find, fntime
-from .        import elapsed
+from ..find    import find, fntime
+from ..object  import Object, update
+from ..persist import write
+from .         import elapsed
 
 
 class Todo(Object):

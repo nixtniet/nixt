@@ -4,12 +4,6 @@
 "client"
 
 
-from threading import RLock
-
-
-lock = RLock()
-
-
 class Fleet:
 
     clients = {}
@@ -26,15 +20,6 @@ class Fleet:
     def announce(txt):
         for clt in Fleet.clients.values():
             clt.announce(txt)
-
-    @staticmethod
-    def display(evt):
-        with lock:
-            clt = Fleet.get(evt.orig)
-            if clt:
-                for tme in sorted(evt.result):
-                    clt.say(evt.channel, evt.result[tme])
-            evt.ready()
 
     @staticmethod
     def first():
