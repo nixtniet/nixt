@@ -44,6 +44,7 @@ class Handler:
                     break
                 evt.orig = repr(self)
                 self.callback(evt)
+                self.queue.task_done()
             except (KeyboardInterrupt, EOFError):
                 _thread.interrupt_main()
             except Exception as ex:
@@ -66,11 +67,12 @@ class Handler:
         launch(self.loop)
 
     def stop(self):
-        self.stopped.set()
+        #self.stopped.set()
         self.queue.put(None)
 
     def wait(self):
         self.ready.wait()
+        self.queue.join()
 
 
 def __dir__():
