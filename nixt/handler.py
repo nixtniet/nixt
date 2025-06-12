@@ -20,6 +20,7 @@ class Handler:
 
     def __init__(self):
         self.cbs     = {}
+        self.events  = []
         self.queue   = queue.Queue()
         self.ready   = threading.Event()
         self.stopped = threading.Event()
@@ -35,6 +36,7 @@ class Handler:
             else:
                 cmd = name(func)
             evt._thr = launch(func, evt, name=cmd)
+            self.events.append(evt)
 
     def loop(self):
         while not self.stopped.is_set():
@@ -44,7 +46,6 @@ class Handler:
                     break
                 evt.orig = repr(self)
                 self.callback(evt)
-                self.queue.task_done()
             except (KeyboardInterrupt, EOFError):
                 _thread.interrupt_main()
             except Exception as ex:
@@ -67,12 +68,11 @@ class Handler:
         launch(self.loop)
 
     def stop(self):
-        #self.stopped.set()
+        self.stopped.set()
         self.queue.put(None)
 
     def wait(self):
         self.ready.wait()
-        self.queue.join()
 
 
 def __dir__():

@@ -183,9 +183,6 @@ def main():
     for thr in thrs:
         nr = thr.join()
         nrcommand += nr
-    #clt.stop()
-    #clt.wait()
-    #clt.stop()
     consume(events)
 
 if __name__ == "__main__":
