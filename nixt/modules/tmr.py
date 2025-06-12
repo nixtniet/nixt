@@ -13,7 +13,7 @@ from ..find    import last
 from ..fleet   import Fleet
 from ..object  import Object, items
 from ..persist import write
-from ..thread  import Timed
+from ..timers  import Timed
 from .         import elapsed, rlog
 
 

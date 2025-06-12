@@ -20,7 +20,6 @@ class Handler:
 
     def __init__(self):
         self.cbs     = {}
-        self.events  = []
         self.queue   = queue.Queue()
         self.ready   = threading.Event()
         self.stopped = threading.Event()
@@ -36,7 +35,6 @@ class Handler:
             else:
                 cmd = name(func)
             evt._thr = launch(func, evt, name=cmd)
-            self.events.append(evt)
 
     def loop(self):
         while not self.stopped.is_set():

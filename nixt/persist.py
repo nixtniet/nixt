@@ -1,18 +1,17 @@
 # This file is placed in the Public Domain.
 
 
-"persistence"
+"disk"
 
 
 import datetime
 import json.decoder
 import os
 import pathlib
-import threading
 import _thread
 
 
-from .object import Object, fqn, update
+from .object import fqn, update
 from .serial import dump, load
 from .paths  import store
 

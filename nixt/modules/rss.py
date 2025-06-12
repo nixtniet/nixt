@@ -7,10 +7,8 @@
 import html
 import html.parser
 import http.client
-import logging
 import os
 import re
-import sys
 import time
 import urllib
 import urllib.parse
@@ -23,12 +21,12 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from ..errors  import line
 from ..find    import find, fntime, last
 from ..fleet   import Fleet
 from ..object  import Object, update
 from ..persist import getpath, write
-from ..thread  import Repeater, launch
+from ..thread  import launch
+from ..timers  import Repeater
 from .         import Default, elapsed, fmt, rlog, spl
 
 
