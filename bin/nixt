@@ -12,13 +12,13 @@ import time
 import _thread
 
 
-from nixt.client  import Client
+from nixt.clients import Client
 from nixt.handler import Event
-from nixt.log     import level, rlog
-from nixt.method  import fmt, parse
-from nixt.object  import dumps
+from nixt.logging import level, rlog
+from nixt.methods import fmt, parse
+from nixt.objects import dumps
 from nixt.persist import Workdir, pidname, skel
-from nixt.thread  import Errors, full
+from nixt.threads import Errors, full
 
 
 from nixts import CHECKSUM, Commands, Main, command, inits

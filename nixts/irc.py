@@ -14,14 +14,13 @@ import threading
 import time
 
 
-from nixt.client  import Client
-from nixt.fleet   import Fleet
+from nixt.clients import Client, Fleet
 from nixt.handler import Event as IEvent
-from nixt.log     import rlog
-from nixt.method  import edit, fmt
-from nixt.object  import Default, Object, keys
+from nixt.logging import rlog
+from nixt.methods import edit, fmt
+from nixt.objects import Default, Object, keys
 from nixt.persist import getpath, ident, last, write
-from nixt.thread  import launch
+from nixt.threads import launch
 from .            import Main, command
 
 

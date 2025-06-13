@@ -4,7 +4,7 @@
 "methods"
 
 
-from .object import Default, items, keys
+from .objects import Default, items, keys
 
 
 def edit(obj, setter, skip=True):

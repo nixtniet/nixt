@@ -10,6 +10,25 @@ import _thread
 lock = _thread.allocate_lock()
 
 
+from .handler import Handler
+
+
+class Client(Handler):
+
+    def __init__(self):
+        Handler.__init__(self)
+        Fleet.add(self)
+
+    def announce(self, txt):
+        pass
+
+    def raw(self, txt):
+        raise NotImplementedError("raw")
+
+    def say(self, channel, txt):
+        self.raw(txt)
+
+
 class Fleet:
 
     clients = {}
@@ -62,5 +81,6 @@ class Fleet:
 
 def __dir__():
     return (
-        'Fleet',
+        'Client',
+        'Fleet'
     )

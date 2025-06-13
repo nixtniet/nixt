@@ -10,7 +10,7 @@ import time
 import _thread
 
 
-from .thread import later, launch, name
+from .threads import later, launch, name
 
 
 lock = _thread.allocate_lock()
@@ -73,7 +73,6 @@ class Handler:
         self.ready.wait()
 
 
-
 class Event:
 
     def __init__(self):
@@ -120,5 +119,5 @@ class Event:
 def __dir__():
     return (
         'Event',
-        'Handler',
+        'Handler'
     )

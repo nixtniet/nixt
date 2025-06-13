@@ -12,7 +12,7 @@ import time
 import _thread
 
 
-from .object import Object, dump, fqn, items, load, update
+from .objects import Object, dump, fqn, items, load, update
 
 
 lock = _thread.allocate_lock()
@@ -207,6 +207,9 @@ def search(obj, selector, matching=False):
             res = False
             break
     return res
+
+
+"interface'
 
 
 def __dir__():

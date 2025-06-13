@@ -14,12 +14,12 @@ import time
 import _thread
 
 
-from nixt.fleet  import Fleet
-from nixt.log    import rlog
-from nixt.method import parse
-from nixt.object import Default
-from nixt.thread import later, launch
-from nixt.utils  import spl
+from nixt.clients import Fleet
+from nixt.logging import rlog
+from nixt.methods import parse
+from nixt.objects import Default
+from nixt.threads import later, launch
+from nixt.utility import spl
 
 
 STARTTIME = time.time()

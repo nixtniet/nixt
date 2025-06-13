@@ -1,14 +1,14 @@
 # This file is placed in the Public Domain.
 
 
-"timers"
+"timer/repeater"
 
 
 import threading
 import time
 
 
-from .thread import launch, name
+from .threads import launch, name
 
 
 class Timy(threading.Timer):
@@ -42,7 +42,7 @@ class Timed:
         timer.state["latest"] = time.time()
         timer.state["starttime"] = time.time()
         timer.start()
-        self.timer   = timer
+        self.timer = timer
 
     def stop(self):
         if self.timer:
@@ -51,7 +51,7 @@ class Timed:
 
 class Repeater(Timed):
 
-    def run(self) -> None:
+    def run(self):
         launch(self.start)
         super().run()
 

@@ -21,14 +21,14 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.fleet  import Fleet
-from nixt.log    import rlog
-from nixt.method import fmt
-from nixt.object import Default, Object, update
+from nixt.clients import Fleet
+from nixt.logging import rlog
+from nixt.methods import fmt
+from nixt.objects import Default, Object, update
 from nixt.persist import find, fntime, getpath, last, write
-from nixt.thread import launch
-from nixt.timers import Repeater
-from nixt.utils  import elapsed, spl
+from nixt.repeats import Repeater
+from nixt.threads import launch
+from nixt.utility import elapsed, spl
 
 
 DEBUG = False
@@ -36,6 +36,7 @@ DEBUG = False
 
 fetchlock  = _thread.allocate_lock()
 importlock = _thread.allocate_lock()
+errors     = []
 skipped    = []
 
 
@@ -279,12 +280,13 @@ def cdata(line):
 
 def getfeed(url, items):
     result = [Object(), Object()]
-    if DEBUG:
+    if DEBUG or url in errors:
         return result
     try:
         rest = geturl(url)
     except (http.client.HTTPException, ValueError, HTTPError, URLError) as ex:
         rlog("error", f"{url} {ex}")
+        errors.append(url)
         return result
     if rest:
         if url.endswith('atom'):
