@@ -18,7 +18,7 @@ from nixt.handler import Event
 from nixt.log     import level, rlog
 from nixt.method  import fmt, parse
 from nixt.object  import dumps
-from nixt.workdir import Workdir, pidname, skel
+from nixt.persist import Workdir, pidname, skel
 
 
 from nixts import Commands, Main, command, inits

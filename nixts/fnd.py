@@ -7,9 +7,8 @@
 import time
 
 
-from nixt.find    import find, fntime
 from nixt.method  import fmt
-from nixt.workdir import long, skel, types
+from nixt.persist import find, fntime, long, skel, types
 from nixt.utils   import elapsed
 
 
