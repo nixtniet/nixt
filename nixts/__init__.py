@@ -15,6 +15,7 @@ import time
 import _thread
 
 
+from nixt.fleet  import Fleet
 from nixt.object import Object, items, keys
 from nixt.thread import later, launch
 
@@ -24,7 +25,7 @@ STARTTIME = time.time()
 
 lock = _thread.allocate_lock()
 path = os.path.dirname(__file__)
-print(path)
+
 
 CHECKSUM = "ddbf810f4e00cd1604a57e90452c1670"
 CHECKSUM = ""
@@ -89,9 +90,8 @@ def command(evt):
     func = Commands.get(evt.cmd)
     if func:
         func(evt)
-        evt.display()
-    else:
-        evt.ready()
+        Fleet.display(evt)
+    evt.ready()
 
 
 def inits(names):

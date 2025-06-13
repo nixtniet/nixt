@@ -4,6 +4,12 @@
 "client"
 
 
+import _thread
+
+
+lock = _thread.allocate_lock()
+
+
 class Fleet:
 
     clients = {}
@@ -20,6 +26,14 @@ class Fleet:
     def announce(txt):
         for clt in Fleet.clients.values():
             clt.announce(txt)
+
+    @staticmethod
+    def display(evt):
+        with lock:
+            clt = Fleet.get(evt.orig)
+            if clt:
+                for tme in sorted(evt.result):
+                    clt.say(evt.channel, evt.result[tme])
 
     @staticmethod
     def first():

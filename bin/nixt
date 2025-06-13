@@ -14,7 +14,7 @@ import _thread
 
 from nixt.client  import Client
 from nixt.errors  import Errors, full
-from nixt.event   import Event
+from nixt.handler import Event
 from nixt.object  import dumps
 from nixt.workdir import Workdir, pidname, skel
 

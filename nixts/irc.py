@@ -16,9 +16,9 @@ import time
 
 from nixt.client  import Client
 from nixt.disk    import getpath, ident, write
-from nixt.event   import Event as IEvent
 from nixt.find    import last
 from nixt.fleet   import Fleet
+from nixt.handler import Event as IEvent
 from nixt.object  import Object, keys
 from nixt.thread  import launch
 from .            import Default, Main, command, edit, fmt, rlog
