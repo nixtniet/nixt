@@ -15,8 +15,8 @@ import time
 import _thread
 
 
-from ..object import Object, items, keys
-from ..thread import later, launch
+from nixt.object import Object, items, keys
+from nixt.thread import later, launch
 
 
 STARTTIME = time.time()
