@@ -25,8 +25,8 @@ from nixt.thread  import launch
 from nixt.workdir import Workdir, skel
 
 
-from nixtmods import Main, command, elapsed, modules, parse, settable, spl
-from nixtmods import STARTTIME, inits
+from nixts import Main, command, elapsed, modules, parse, settable, spl
+from nixts import STARTTIME, inits
 
 
 Main.debug  = True

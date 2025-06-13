@@ -24,7 +24,7 @@ STARTTIME = time.time()
 
 lock = _thread.allocate_lock()
 path = os.path.dirname(__file__)
-
+print(path)
 
 CHECKSUM = "ddbf810f4e00cd1604a57e90452c1670"
 CHECKSUM = ""
