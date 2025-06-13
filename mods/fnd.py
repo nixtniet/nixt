@@ -7,9 +7,9 @@
 import time
 
 
-from ..find  import find, fntime
-from ..paths import long, skel, types
-from .       import elapsed, fmt
+from ..find    import find, fntime
+from ..workdir import long, skel, types
+from .         import elapsed, fmt
 
 
 def fnd(event):

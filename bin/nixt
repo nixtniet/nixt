@@ -21,7 +21,7 @@ from nixt.event   import Event
 from nixt.modules import Commands, Main, command, fmt, inits
 from nixt.modules import md5sum, mods, level, modules, parse, rlog, scan, settable
 from nixt.object  import dumps
-from nixt.paths   import Workdir, pidname, skel
+from nixt.workdir import Workdir, pidname, skel
 
 
 class CLI(Client):

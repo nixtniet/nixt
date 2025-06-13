@@ -11,8 +11,8 @@ import pathlib
 import _thread
 
 
-from .object import dump, fqn, load, update
-from .paths  import store
+from .object  import dump, fqn, load, update
+from .workdir import store
 
 
 lock = _thread.allocate_lock()
