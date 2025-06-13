@@ -21,8 +21,11 @@ from nixt.object  import dumps
 from nixt.persist import Workdir, pidname, skel
 
 
-from nixts import Commands, Main, command, inits
+from nixts import CHECKSUM, Commands, Main, command, inits
 from nixts import md5sum, mods, modules, settable
+
+
+CHECKSUM2 = "97aedb9b6ef11d63e4c0c9b8acdef380"
 
 
 Main.name = 'nixt'
@@ -293,6 +296,9 @@ WantedBy=multi-user.target"""
 
 
 def main():
+    if CHECKSUM != CHECKSUM2:
+        out("checksums don't match")
+        os._exit(1)
     if check("a"):
         Main.init = ",".join(modules())
     if check("v"):
