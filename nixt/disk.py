@@ -11,8 +11,7 @@ import pathlib
 import _thread
 
 
-from .object import fqn, update
-from .serial import dump, load
+from .object import dump, fqn, load, update
 from .paths  import store
 
 

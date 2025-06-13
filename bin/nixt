@@ -18,10 +18,10 @@ sys.path.insert(0, os.getcwd())
 from nixt.client  import Client
 from nixt.errors  import Errors, full
 from nixt.event   import Event
-from nixt.paths   import Workdir, pidname, skel
 from nixt.modules import Commands, Main, command, fmt, inits
 from nixt.modules import md5sum, mods, level, modules, parse, rlog, scan, settable
-from nixt.serial  import dumps
+from nixt.object  import dumps
+from nixt.paths   import Workdir, pidname, skel
 
 
 class CLI(Client):

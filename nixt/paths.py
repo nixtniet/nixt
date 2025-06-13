@@ -12,8 +12,7 @@ import time
 import _thread
 
 
-from .object import Object, fqn, items, update
-from .serial import dump, load
+from .object import Object, dump, fqn, items, load, update
 
 
 lock = _thread.allocate_lock()
