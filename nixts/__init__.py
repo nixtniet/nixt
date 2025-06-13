@@ -47,7 +47,7 @@ class Main(Default):
     otxt    = ""
     sets    = Default()
     verbose = False
-    version = 324
+    version = 330
 
 
 class Commands:
@@ -118,6 +118,7 @@ def check(name, md5=""):
     if not CHECKSUM:
         return True
     mname = f"{__name__}.{name}"
+    print(mname)
     if sys.modules.get(mname):
         return True
     pth = os.path.join(path, name + ".py")

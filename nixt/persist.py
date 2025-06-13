@@ -209,7 +209,7 @@ def search(obj, selector, matching=False):
     return res
 
 
-"interface'
+"interface"
 
 
 def __dir__():
