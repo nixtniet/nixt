@@ -24,10 +24,12 @@ from urllib.parse import quote_plus, urlencode
 from nixt.disk   import getpath, write
 from nixt.find   import find, fntime, last
 from nixt.fleet  import Fleet
-from nixt.object import Object, update
+from nixt.log    import rlog
+from nixt.method import fmt
+from nixt.object import Default, Object, update
 from nixt.thread import launch
 from nixt.timers import Repeater
-from .           import Default, elapsed, fmt, rlog, spl
+from nixt.utils  import elapsed, spl
 
 
 DEBUG = False

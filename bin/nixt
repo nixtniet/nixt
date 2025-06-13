@@ -15,12 +15,14 @@ import _thread
 from nixt.client  import Client
 from nixt.errors  import Errors, full
 from nixt.handler import Event
+from nixt.log     import level, rlog
+from nixt.method  import fmt, parse
 from nixt.object  import dumps
 from nixt.workdir import Workdir, pidname, skel
 
 
-from nixts import Commands, Main, command, fmt, inits
-from nixts import md5sum, mods, level, modules, parse, rlog, scan, settable
+from nixts import Commands, Main, command, inits
+from nixts import md5sum, mods, modules, settable
 
 
 Main.name = 'nixt'
@@ -163,7 +165,7 @@ def tbl(event):
     if not check("f"):
         Commands.names = {}
     for mod in mods():
-        scan(mod)
+        Commands.scan(mod)
     event.reply("# This file is placed in the Public Domain.")
     event.reply("")
     event.reply("")
