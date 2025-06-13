@@ -28,8 +28,7 @@ lock = _thread.allocate_lock()
 path = os.path.dirname(__file__)
 
 
-CHECKSUM = "ddbf810f4e00cd1604a57e90452c1670"
-CHECKSUM = ""
+CHECKSUM = "97aedb9b6ef11d63e4c0c9b8acdef380"
 MD5      = {}
 NAMES    = {}
 
