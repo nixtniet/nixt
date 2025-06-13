@@ -15,8 +15,9 @@ import _thread
 
 
 from nixt.fleet  import Fleet
+from nixt.log    import rlog
 from nixt.method import parse
-from nixt.object import Default, Object, items, keys
+from nixt.object import Default
 from nixt.thread import later, launch
 from nixt.utils  import spl
 
