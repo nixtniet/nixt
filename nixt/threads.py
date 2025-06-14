@@ -91,7 +91,7 @@ def full(exc):
                                               exc,
                                               exc.__traceback__
                                              )
-                  )
+                  ).rstrip()
 
 
 def later(exc):

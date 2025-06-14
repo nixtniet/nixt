@@ -28,7 +28,7 @@ from nixts import md5sum, mods, modules, settable
 CHECKSUM2 = "b906e4666edd13719d077b404dc13c2a"
 
 
-Main.name = sys.argv[0].lower()
+Main.name = sys.argv[0].split(os.sep)[-1].lower()
 
 
 class CLI(Client):
@@ -297,7 +297,7 @@ WantedBy=multi-user.target"""
 
 def main():
     if CHECKSUM != CHECKSUM2:
-        out("checksums don't match")
+        out("checksum mismatch")
         os._exit(1)
     if check("a"):
         Main.init = ",".join(modules())
