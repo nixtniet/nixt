@@ -12,7 +12,8 @@ import time
 import _thread
 
 
-from .objects import Object, dump, fqn, items, load, update
+from .object import Object, dump, fqn, items, load, update
+from .path   import store
 
 
 lock = _thread.allocate_lock()
@@ -81,9 +82,6 @@ def write(obj, path=""):
             dump(obj, fpt, indent=4)
         Cache.update(path, obj)
         return path
-
-
-"interface"
 
 
 def __dir__():

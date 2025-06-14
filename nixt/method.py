@@ -4,7 +4,7 @@
 "methods"
 
 
-from .objects import Default, items, keys
+from .object import Default, items, keys
 
 
 def edit(obj, setter, skip=True):
@@ -111,9 +111,6 @@ def parse(obj, txt=""):
         obj.txt  = obj.cmd + " " + obj.rest
     else:
         obj.txt = obj.cmd or ""
-
-
-"interface"
 
 
 def __dir__():

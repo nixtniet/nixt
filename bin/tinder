@@ -17,17 +17,16 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client
+from nixt.client  import Client
 from nixt.handler import Event
-from nixt.methods  import parse
-from nixt.objects import Object, keys
-from nixt.persist import Workdir, skel
-from nixt.threads import Errors, full, launch
-from nixt.utility import elapsed, spl
+from nixt.method  import parse
+from nixt.object  import Object, keys
+from nixt.path    import Workdir, skel
+from nixt.thread  import Errors, full, launch
+from nixt.utils   import elapsed, spl
 
 
-from nixts import Main, command, modules, settable
-from nixts import STARTTIME, inits
+from nixts import STARTTIME, Main, command, modules, settable
 
 
 Main.debug  = True

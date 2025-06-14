@@ -8,9 +8,9 @@ import os
 import time
 
 
-from .objects import Object, fqn, update
-from .persist import Cache, read
-from .workdir import long, store
+from .disk   import Cache, read
+from .object import Object, fqn, items, update
+from .path   import long, store
 
 
 def find(clz, selector=None, deleted=False, matching=False):
@@ -80,9 +80,6 @@ def search(obj, selector, matching=False):
             res = False
             break
     return res
-
-
-"interface"
 
 
 def __dir__():

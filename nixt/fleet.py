@@ -1,32 +1,6 @@
 # This file is placed in the Public Domain.
 
 
-"clients"
-
-
-import _thread
-
-
-from .handler import Handler
-
-
-class Client(Handler):
-
-    def __init__(self):
-        Handler.__init__(self)
-        self.lock = _thread.allocate_lock()
-        Fleet.add(self)
-
-    def announce(self, txt):
-        pass
-
-    def raw(self, txt):
-        raise NotImplementedError("raw")
-
-    def say(self, channel, txt):
-        self.raw(txt)
-
-
 "fleet"
 
 
@@ -79,13 +53,3 @@ class Fleet:
         for clt in Fleet.clients.values():
             if "wait" in dir(clt):
                 clt.wait()
-
-
-"interface"
-
-
-def __dir__():
-    return (
-        'Client',
-        'Fleet'
-    )
