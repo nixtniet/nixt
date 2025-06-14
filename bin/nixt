@@ -13,19 +13,19 @@ import _thread
 
 
 from nixt.client  import Client
-from nixt.handler import Event
-from nixt.method  import fmt, parse
+from nixt.errors  import Errors, full
+from nixt.event   import Event
 from nixt.object  import dumps
 from nixt.path    import Workdir, pidname, skel
-from nixt.thread  import Errors, full
-from nixt.utils   import level, rlog
 
 
-from nixts import CHECKSUM, Commands, Main, command, inits
-from nixts import md5sum, mods, modules, settable
+from nixts.method import fmt, parse
+from nixts.utils  import level, rlog
+from nixts        import CHECKSUM, Commands, Main, command, inits
+from nixts        import md5sum, mods, modules, settable
 
 
-CHECKSUM2 = "b906e4666edd13719d077b404dc13c2a"
+CHECKSUM2 = "a894b2f81f332fe1ee55806dff2e595d"
 
 
 Main.name = sys.argv[0].split(os.sep)[-1].lower()

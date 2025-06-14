@@ -15,10 +15,12 @@ import _thread
 
 
 from nixt.fleet  import Fleet
-from nixt.method import parse
 from nixt.object import Default
 from nixt.thread import later, launch
-from nixt.utils  import rlog, spl
+
+
+from nixts.method import parse
+from nixts.utils  import rlog, spl
 
 
 STARTTIME = time.time()
@@ -28,7 +30,7 @@ lock = _thread.allocate_lock()
 path = os.path.dirname(__file__)
 
 
-CHECKSUM = "b906e4666edd13719d077b404dc13c2a"
+CHECKSUM = "a894b2f81f332fe1ee55806dff2e595d"
 MD5      = {}
 NAMES    = {}
 
@@ -133,10 +135,10 @@ def check(name, md5=""):
 def gettbl(name):
     pth = os.path.join(path, "tbl.py")
     if not os.path.exists(pth):
-        rlog("error", "tbl.py is not there")
+        rlog("error", "tbl.py is not there, run 'nixt tbl > nixts/tbl.py'")
         return {}
     if CHECKSUM and (md5sum(pth) != CHECKSUM):
-        rlog("error", "checksum failed (tbl)")
+        rlog("error", "checksum failed, run 'nixt md5' and edit CHECKSUM in nixts/__init__.py and bin/nixt")
         return {}
     mname = f"{__name__}.tbl"
     mod = sys.modules.get(mname, None)

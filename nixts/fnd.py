@@ -7,10 +7,12 @@
 import time
 
 
-from nixt.find   import find, fntime
-from nixt.method import fmt
-from nixt.path   import long, skel, types
-from nixt.utils  import elapsed
+from nixt.find import find, fntime
+from nixt.path import long, skel, types
+
+
+from nixts.method import fmt
+from nixts.utils  import elapsed
 
 
 def fnd(event):

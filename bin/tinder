@@ -18,14 +18,15 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client  import Client
+from nixt.errors  import Errors, full
 from nixt.handler import Event
-from nixt.method  import parse
 from nixt.object  import Object, keys
 from nixt.path    import Workdir, skel
-from nixt.thread  import Errors, full, launch
-from nixt.utils   import elapsed, spl
+from nixt.thread  import launch
 
 
+from nixts.method  import parse
+from nixts.utils   import elapsed, spl
 from nixts import STARTTIME, Main, command, modules, settable
 
 
@@ -93,6 +94,14 @@ class CLI(Client):
             print(txt)
 
 
+class Pool:
+
+    clients = []
+
+
+pool = Pool()
+
+
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     print(f"{Main.name.upper()} since {tme}")
@@ -118,17 +127,18 @@ def payload(clt, cmds):
     cmdz = sorted(keys(cmds))
     if "s" in Main.opts:
         rand.shuffle(cmdz)
-    for cmd in cmdz:
-        if cmd in spl(ignore):
-            continue
-        examples = getattr(cmds, cmd)
-        for example in examples:
-            event = Event()
-            event.txt = cmd + " " + example
-            event.type = "command"
-            events.append(event)
-            clt.put(event)
-            nmr += 1
+    for clt in Pool.clients:
+        for cmd in cmdz:
+            if cmd in spl(ignore):
+                continue
+            examples = getattr(cmds, cmd)
+            for example in examples:
+                event = Event()
+                event.txt = cmd + " " + example
+                event.type = "command"
+                events.append(event)
+                clt.put(event)
+                nmr += 1
     return nmr
 
 
@@ -163,8 +173,10 @@ def main():
     skel()
     nodebug()
     #inits(",".join(modules()))
-    clt = CLI()
-    clt.start()
+    for nr in range(6):
+        clt = CLI()
+        clt.start()
+        Pool.clients.append(clt)
     nrs = Main.index or 1
     thrs = []
     for _nr in range(nrs):

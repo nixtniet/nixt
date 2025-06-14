@@ -14,7 +14,9 @@ from nixt.find   import last
 from nixt.object import Object, items
 from nixt.disk   import write
 from nixt.timer  import Timed
-from nixt.utils  import elapsed, rlog
+
+
+from nixts.utils  import elapsed, rlog
 
 
 class NoDate(Exception):

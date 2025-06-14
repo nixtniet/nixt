@@ -19,11 +19,13 @@ from nixt.disk    import getpath, ident, write
 from nixt.find    import last
 from nixt.fleet   import  Fleet
 from nixt.handler import Event as IEvent
-from nixt.method  import edit, fmt
 from nixt.object  import Default, Object, keys
 from nixt.thread  import launch
-from nixt.utils   import rlog
-from .            import Main, command
+
+
+from .method import edit, fmt
+from .utils  import rlog
+from .       import Main, command
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]

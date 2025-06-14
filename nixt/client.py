@@ -15,8 +15,8 @@ class Client(Handler):
 
     def __init__(self):
         Handler.__init__(self)
-        self.lock = _thread.allocate_lock()
         Fleet.add(self)
+        self.lock = _thread.allocate_lock()
 
     def announce(self, txt):
         pass
