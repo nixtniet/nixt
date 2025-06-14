@@ -13,19 +13,17 @@ import _thread
 from .threads import later, launch, name
 
 
-lock = _thread.allocate_lock()
-
-
 class Handler:
 
     def __init__(self):
+        self.cblock  = _thread.allocate_lock()
         self.cbs     = {}
         self.queue   = queue.Queue()
         self.ready   = threading.Event()
         self.stopped = threading.Event()
 
     def callback(self, evt):
-        with lock:
+        with self.cblock:
             func = self.cbs.get(evt.type, None)
             if not func:
                 evt.ready()
@@ -73,6 +71,9 @@ class Handler:
         self.ready.wait()
 
 
+"event"
+
+
 class Event:
 
     def __init__(self):
@@ -114,6 +115,9 @@ class Event:
         self._ready.wait()
         if self._thr:
             self._thr.join()
+
+
+"interface"
 
 
 def __dir__():

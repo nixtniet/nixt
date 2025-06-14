@@ -1,13 +1,10 @@
 # This file is placed in the Public Domain.
 
 
-"client"
+"clients"
 
 
 import _thread
-
-
-lock = _thread.allocate_lock()
 
 
 from .handler import Handler
@@ -17,6 +14,7 @@ class Client(Handler):
 
     def __init__(self):
         Handler.__init__(self)
+        self.lock = _thread.allocate_lock()
         Fleet.add(self)
 
     def announce(self, txt):
@@ -27,6 +25,9 @@ class Client(Handler):
 
     def say(self, channel, txt):
         self.raw(txt)
+
+
+"fleet"
 
 
 class Fleet:
@@ -48,11 +49,12 @@ class Fleet:
 
     @staticmethod
     def display(evt):
-        with lock:
-            clt = Fleet.get(evt.orig)
-            if clt:
-                for tme in sorted(evt.result):
-                    clt.say(evt.channel, evt.result[tme])
+        clt = Fleet.get(evt.orig)
+        if not clt:
+            return
+        with clt.lock:
+            for tme in sorted(evt.result):
+                clt.say(evt.channel, evt.result[tme])
 
     @staticmethod
     def first():
@@ -77,6 +79,9 @@ class Fleet:
         for clt in Fleet.clients.values():
             if "wait" in dir(clt):
                 clt.wait()
+
+
+"interface"
 
 
 def __dir__():

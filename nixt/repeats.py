@@ -56,6 +56,9 @@ class Repeater(Timed):
         super().run()
 
 
+"interface"
+
+
 def __dir__():
     return (
         'Repeater',
