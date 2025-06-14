@@ -30,7 +30,7 @@ lock = _thread.allocate_lock()
 path = os.path.dirname(__file__)
 
 
-CHECKSUM = "a894b2f81f332fe1ee55806dff2e595d"
+CHECKSUM = "4e3f02ad08d1780b8de0d0a98b5cc7f2"
 MD5      = {}
 NAMES    = {}
 
@@ -128,17 +128,17 @@ def check(name, md5=""):
     if md5sum(pth) == (md5 or MD5.get(name, "")):
         return True
     if CHECKSUM and Main.md5:
-        rlog("error", f"md5sum failed ({name})")
+        rlog("error", f"{name} md5sum failed.")
     return False
 
 
 def gettbl(name):
     pth = os.path.join(path, "tbl.py")
     if not os.path.exists(pth):
-        rlog("error", "tbl.py is not there, run 'nixt tbl > nixts/tbl.py'")
+        rlog("error", f"tbl.py is not there.")
         return {}
     if CHECKSUM and (md5sum(pth) != CHECKSUM):
-        rlog("error", "checksum failed, run 'nixt md5' and edit CHECKSUM in nixts/__init__.py and bin/nixt")
+        rlog("error", f"tbl.py checksum failed.")
         return {}
     mname = f"{__name__}.tbl"
     mod = sys.modules.get(mname, None)

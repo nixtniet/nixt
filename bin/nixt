@@ -25,7 +25,7 @@ from nixts        import CHECKSUM, Commands, Main, command, inits
 from nixts        import md5sum, mods, modules, settable
 
 
-CHECKSUM2 = "a894b2f81f332fe1ee55806dff2e595d"
+CHECKSUM2 = "4e3f02ad08d1780b8de0d0a98b5cc7f2"
 
 
 Main.name = sys.argv[0].split(os.sep)[-1].lower()

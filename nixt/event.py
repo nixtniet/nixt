@@ -8,9 +8,13 @@ import threading
 import time
 
 
-class Event:
+from .object import Default
+
+
+class Event(Default):
 
     def __init__(self):
+        Default.__init__(self)
         self._ready = threading.Event()
         self._thr   = None
         self.ctime  = time.time()
@@ -18,23 +22,6 @@ class Event:
         self.result = {}
         self.type   = "event"
         self.txt    = ""
-
-    def __contains__(self, key):
-        return key in dir(self)
-
-    def __getattr__(self, key):
-        if key not in self:
-            setattr(self, key, "")
-        return self.__dict__.get(key, "")
-
-    def __iter__(self):
-        return iter(self.__dict__)
-
-    def __len__(self):
-        return len(self.__dict__)
-
-    def __str__(self):
-        return str(self.__dict__)
 
     def done(self):
         self.reply("ok")
@@ -54,5 +41,4 @@ class Event:
 def __dir__():
     return (
         'Event',
-        'Handler'
     )

@@ -126,7 +126,6 @@ def __dir__():
         'dump',
         'dumps',
         'fqn',
-        'hook',
         'items',
         'keys',
         'load',

@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"workdir"
+"parhs"
 
 
 import os
@@ -24,18 +24,12 @@ def long(name):
     return res
 
 
-def moddir():
-    return os.path.join(Workdir.wdr, "mods")
-
-
 def pidname(name):
     return os.path.join(Workdir.wdr, f"{name}.pid")
 
 
 def skel():
     pth = pathlib.Path(store())
-    pth.mkdir(parents=True, exist_ok=True)
-    pth = pathlib.Path(moddir())
     pth.mkdir(parents=True, exist_ok=True)
     return str(pth)
 
@@ -56,15 +50,11 @@ def wdr(pth):
     return os.path.join(Workdir.wdr, pth)
 
 
-"interface"
-
-
 def __dir__():
     return (
         'Workdir',
         'long',
         'ident',
-        'moddir',
         'pidname',
         'skel',
         'store',

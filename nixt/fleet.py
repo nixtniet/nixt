@@ -4,6 +4,12 @@
 "fleet"
 
 
+import _thread
+
+
+lock = _thread.allocate_lock()
+
+
 class Fleet:
 
     clients = {}
@@ -23,10 +29,8 @@ class Fleet:
 
     @staticmethod
     def display(evt):
-        clt = Fleet.get(evt.orig)
-        if not clt:
-            return
-        with clt.lock:
+        with lock:
+            clt = Fleet.get(evt.orig)
             for tme in sorted(evt.result):
                 clt.say(evt.channel, evt.result[tme])
 
@@ -53,3 +57,9 @@ class Fleet:
         for clt in Fleet.clients.values():
             if "wait" in dir(clt):
                 clt.wait()
+
+
+def __dir__():
+    return (
+        'Fleet',
+    )
