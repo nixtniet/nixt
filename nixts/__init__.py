@@ -15,11 +15,10 @@ import _thread
 
 
 from nixt.clients import Fleet
-from nixt.logging import rlog
 from nixt.methods import parse
 from nixt.objects import Default
 from nixt.threads import later, launch
-from nixt.utility import spl
+from nixt.utility import rlog, spl
 
 
 STARTTIME = time.time()

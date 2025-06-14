@@ -14,11 +14,11 @@ import _thread
 
 from nixt.clients import Client
 from nixt.handler import Event
-from nixt.logging import level, rlog
 from nixt.methods import fmt, parse
 from nixt.objects import dumps
 from nixt.persist import Workdir, pidname, skel
 from nixt.threads import Errors, full
+from nixt.utility import level, rlog
 
 
 from nixts import CHECKSUM, Commands, Main, command, inits

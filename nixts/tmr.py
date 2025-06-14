@@ -11,10 +11,9 @@ import time
 
 from nixt.persist import last, write
 from nixt.clients import Fleet
-from nixt.logging import rlog
 from nixt.objects import Object, items
 from nixt.repeats import Timed
-from nixt.utility import elapsed
+from nixt.utility import elapsed, rlog
 
 
 class NoDate(Exception):

@@ -16,11 +16,11 @@ import time
 
 from nixt.clients import Client, Fleet
 from nixt.handler import Event as IEvent
-from nixt.logging import rlog
 from nixt.methods import edit, fmt
 from nixt.objects import Default, Object, keys
 from nixt.persist import getpath, ident, last, write
 from nixt.threads import launch
+from nixt.utility import rlog
 from .            import Main, command
 
 
