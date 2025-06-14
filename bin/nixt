@@ -25,10 +25,10 @@ from nixts import CHECKSUM, Commands, Main, command, inits
 from nixts import md5sum, mods, modules, settable
 
 
-CHECKSUM2 = "97aedb9b6ef11d63e4c0c9b8acdef380"
+CHECKSUM2 = "b906e4666edd13719d077b404dc13c2a"
 
 
-Main.name = 'nixt'
+Main.name = sys.argv[0].lower()
 
 
 class CLI(Client):
@@ -200,14 +200,14 @@ def background():
 
 def console():
     import readline # noqa: F401
-    setwd(Main.name)
-    settable()
-    Commands.add(cmd)
     parse(Main, " ".join(sys.argv[1:]))
     Main.init = Main.sets.init or Main.init
     Main.verbose = Main.sets.verbose or Main.verbose
     Main.level   = Main.sets.level or Main.level or "warn"
+    Commands.add(cmd)
     level(Main.level or "debug")
+    setwd(Main.name)
+    settable()
     if "v" in Main.opts:
         banner()
     for _mod, thr in inits(Main.init):
@@ -221,14 +221,14 @@ def console():
 def control():
     if len(sys.argv) == 1:
         return
+    parse(Main, " ".join(sys.argv[1:]))
+    level(Main.level or "debug")
     setwd(Main.name)
     settable()
     Commands.add(cmd)
     Commands.add(md5)
     Commands.add(srv)
     Commands.add(tbl)
-    parse(Main, " ".join(sys.argv[1:]))
-    level(Main.level or "debug")
     csl = CLI()
     evt = Event()
     evt.orig = repr(csl)
@@ -239,9 +239,9 @@ def control():
 
 
 def service():
+    level(Main.level or "debug")
     setwd(Main.name)
     settable()
-    level(Main.level or "debug")
     banner()
     privileges()
     pidfile(pidname(Main.name))

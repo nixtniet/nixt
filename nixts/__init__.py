@@ -28,7 +28,7 @@ lock = _thread.allocate_lock()
 path = os.path.dirname(__file__)
 
 
-CHECKSUM = "97aedb9b6ef11d63e4c0c9b8acdef380"
+CHECKSUM = "b906e4666edd13719d077b404dc13c2a"
 MD5      = {}
 NAMES    = {}
 
@@ -117,7 +117,6 @@ def check(name, md5=""):
     if not CHECKSUM:
         return True
     mname = f"{__name__}.{name}"
-    print(mname)
     if sys.modules.get(mname):
         return True
     pth = os.path.join(path, name + ".py")
@@ -127,17 +126,17 @@ def check(name, md5=""):
     if md5sum(pth) == (md5 or MD5.get(name, "")):
         return True
     if CHECKSUM and Main.md5:
-        rlog("debug", f"{name} failed md5sum check")
+        rlog("error", f"md5sum failed ({name})")
     return False
 
 
 def gettbl(name):
     pth = os.path.join(path, "tbl.py")
     if not os.path.exists(pth):
-        rlog("debug", "tbl.py is not there")
+        rlog("error", "tbl.py is not there")
         return {}
     if CHECKSUM and (md5sum(pth) != CHECKSUM):
-        rlog("debug", "table checksum doesn't match")
+        rlog("error", "checksum failed (tbl)")
         return {}
     mname = f"{__name__}.tbl"
     mod = sys.modules.get(mname, None)
