@@ -19,14 +19,13 @@ from nixt.object  import dumps
 from nixt.path    import Workdir, pidname, skel
 
 
-from nixts.method import fmt, parse
-from nixts.utils  import level, rlog
-from nixts        import CHECKSUM, Commands, Main, command, inits
-from nixts        import md5sum, mods, modules, settable
+from nixts import fmt, level, parse, rlog
+from nixts import CHECKSUM, Commands, Main, command, inits
+from nixts import md5sum, mods, modules, settable
 
 
 CHECKSUM2 = "4e3f02ad08d1780b8de0d0a98b5cc7f2"
-
+CHECKSUM2 = ""
 
 Main.name = sys.argv[0].split(os.sep)[-1].lower()
 
