@@ -12,12 +12,16 @@ import unittest
 
 import nixt
 import nixt.client
-import nixt.disk
+import nixt.errors
+import nixt.event
+import nixt.find
 import nixt.fleet
 import nixt.handler
 import nixt.object
+import nixt.path
+import nixt.persist
 import nixt.thread
-import nixt.workdir
+import nixt.timer
 
 
 from nixt.object import *
@@ -25,12 +29,16 @@ from nixt.object import *
 
 PACKAGE = [
     'client',
-    'disk',
+    'errors',
+    'event',
+    'find',
     'fleet',
     'handler',
     'object',
+    'path',
+    'persist',
     'thread',
-    'workdir'
+    'timer'
 ]
 
 

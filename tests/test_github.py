@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"no tests"
+"github feed test"
 
 
 import unittest

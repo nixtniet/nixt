@@ -7,16 +7,13 @@
 import unittest
 
 
-from nixt.handler import Event, Handler
-
-
-def hello(event):
-    event.reply("hello!")
-    event.ready()
+from nixt.event   import Event
+from nixt.handler import Handler
+from nixts        import command
 
 
 hdl = Handler()
-hdl.register("hello", hello)
+hdl.register("command", command)
 hdl.start()
 
 
@@ -24,7 +21,7 @@ class TestHandler(unittest.TestCase):
 
     def test_loop(self):
         e = Event()
-        e.type = "hello"
+        e.txt = "dbg"
         hdl.put(e)
         e.wait()
         self.assertTrue(True)
