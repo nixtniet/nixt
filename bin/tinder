@@ -17,15 +17,15 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.client import Client
-from nixt.errors import Errors, full
-from nixt.event  import Event
-from nixt.object import Object, keys
-from nixt.path   import Workdir, skel
-from nixt.thread import launch
+from nixt.client  import Client
+from nixt.event   import Event
+from nixt.fleet   import Fleet
+from nixt.object  import Object, keys
+from nixt.path    import Workdir, skel
+from nixt.thread  import Errors, full, launch
 
 
-from nixts import elapsed, parse, spl
+from nixts import elapsed, fmt, parse, spl
 from nixts import STARTTIME, Main, command, modules, settable
 
 
@@ -93,14 +93,6 @@ class CLI(Client):
             print(txt)
 
 
-class Pool:
-
-    clients = []
-
-
-pool = Pool()
-
-
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     print(f"{Main.name.upper()} since {tme}")
@@ -108,25 +100,28 @@ def banner():
 
 
 def consume(evts):
-    done = []
-    for event in evts:
-        event.wait()
-        done.append(event)
-    for todo in done:
-        events.remove(todo)
+    while True:
+        done = []
+        for event in evts:
+            if "x" in Main.opts:
+                if event._thr:
+                    if event._thr.is_alive():
+                        time.sleep(0.01)
+                        continue
+            event.wait()
+            done.append(event)
+        for todo in done:
+            events.remove(todo)
+        if len(events) == 0:
+            break
+    
 
-
-def nodebug():
-    with open('/dev/null', 'a+', encoding="utf-8") as ses:
-        os.dup2(ses.fileno(), sys.stderr.fileno())
-
-
-def payload(clt, cmds):
+def payload(clts, cmds):
     nmr = 0
     cmdz = sorted(keys(cmds))
     if "s" in Main.opts:
         rand.shuffle(cmdz)
-    for clt in Pool.clients:
+    for clt in clts:
         for cmd in cmdz:
             if cmd in spl(ignore):
                 continue
@@ -135,6 +130,7 @@ def payload(clt, cmds):
                 event = Event()
                 event.txt = cmd + " " + example
                 event.type = "command"
+                event.orig = repr(clt)
                 events.append(event)
                 clt.put(event)
                 nmr += 1
@@ -170,32 +166,39 @@ def main():
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
     skel()
-    nodebug()
-    #inits(",".join(modules()))
-    for nr in range(6):
+    if "x" in Main.opts:
+        nrcpu = os.cpu_count()
+    else:
+        nrcpu = 1
+    for x in range(nrcpu):
         clt = CLI()
         clt.start()
-        Pool.clients.append(clt)
+    clts = Fleet.all()
     nrs = Main.index or 1
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, clt, pre))
+        thrs.append(launch(payload, clts, pre))
     for thr in thrs:
         nr = thr.join()
-        nrcommand += nr
+        if nr:
+            nrcommand += nr
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, clt, param))
+        thrs.append(launch(payload, clts, param))
     for thr in thrs:
         nr = thr.join()
-        nrcommand += nr
+        if nr:
+            nrcommand += nr
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, clt, post))
+        thrs.append(launch(payload, clts, post))
     for thr in thrs:
         nr = thr.join()
-        nrcommand += nr
+        if nr:
+            nrcommand += nr
     consume(events)
+    Fleet.shutdown()
+
 
 if __name__ == "__main__":
     wrap(main)
