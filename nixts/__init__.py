@@ -46,7 +46,7 @@ class Main(Default):
     otxt    = ""
     sets    = Default()
     verbose = False
-    version = 101
+    version = 333
 
 
 class Commands:
@@ -88,10 +88,10 @@ class Commands:
 def command(evt):
     parse(evt)
     func = Commands.get(evt.cmd)
-    if func:
-        func(evt)
-        Fleet.display(evt)
-    evt.ready()
+    if not func:
+        return evt.ready()
+    func(evt)
+    Fleet.display(evt)
 
 
 def inits(names):
@@ -133,10 +133,10 @@ def check(name, md5=""):
 def gettbl(name):
     pth = os.path.join(path, "tbl.py")
     if not os.path.exists(pth):
-        rlog("error", f"tbl.py is not there.")
+        rlog("error", "tbl.py is not there.")
         return {}
     if CHECKSUM and (md5sum(pth) != CHECKSUM):
-        rlog("error", f"tbl.py checksum failed.")
+        rlog("error", "tbl.py checksum failed.")
         return {}
     mname = f"{__name__}.tbl"
     mod = sys.modules.get(mname, None)
@@ -324,7 +324,7 @@ def parse(obj, txt=""):
         obj.txt = obj.cmd or ""
 
 
-"utilities"
+"logging"
 
 
 LEVELS = {'debug': logging.DEBUG,
@@ -334,6 +334,26 @@ LEVELS = {'debug': logging.DEBUG,
           'error': logging.ERROR,
           'critical': logging.CRITICAL
          }
+
+
+def level(loglevel="debug"):
+    if loglevel != "none":
+        format_short = "%(message)-80s"
+        datefmt = '%H:%M:%S'
+        logging.basicConfig(stream=sys.stderr, datefmt=datefmt, format=format_short)
+        logging.getLogger().setLevel(LEVELS.get(loglevel))
+
+
+def rlog(level, txt, ignore=None):
+    if ignore is None:
+        ignore = []
+    for ign in ignore:
+        if ign in str(txt):
+            return
+    logging.log(LEVELS.get(level), txt)
+
+
+"utilities"
 
 
 def elapsed(seconds, short=True):
@@ -373,23 +393,6 @@ def elapsed(seconds, short=True):
         txt += f"{sec}s"
     txt = txt.strip()
     return txt
-
-
-def level(loglevel="debug"):
-    if loglevel != "none":
-        format_short = "%(message)-80s"
-        datefmt = '%H:%M:%S'
-        logging.basicConfig(stream=sys.stderr, datefmt=datefmt, format=format_short)
-        logging.getLogger().setLevel(LEVELS.get(loglevel))
-
-
-def rlog(level, txt, ignore=None):
-    if ignore is None:
-        ignore = []
-    for ign in ignore:
-        if ign in str(txt):
-            return
-    logging.log(LEVELS.get(level), txt)
 
 
 def spl(txt):

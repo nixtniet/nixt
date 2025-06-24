@@ -21,15 +21,13 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.client  import Fleet
-from nixt.find    import find, fntime, last
-from nixt.object  import Default, Object, update
-from nixt.persist import getpath, write
-from nixt.thread  import launch
-from nixt.timer   import Repeater
-
-
-from . import elapsed, fmt, rlog, spl
+from nixt.disk   import getpath, write
+from nixt.fleet  import Fleet
+from nixt.find   import find, fntime, last
+from nixt.object import Default, Object, update
+from nixt.thread import launch
+from nixt.timer  import Repeater
+from .           import elapsed, fmt, rlog, spl
 
 
 DEBUG = False
@@ -361,7 +359,7 @@ def exp(event):
     with importlock:
         event.reply(TEMPLATE)
         nrs = 0
-        for _fn, ooo in find("rss"):
+        for _fn, ooo in sorted(find("rss"), key=lambda x: fntime(x[0])):
             nrs += 1
             obj = Rss()
             update(obj, ooo)

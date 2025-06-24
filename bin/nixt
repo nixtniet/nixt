@@ -12,22 +12,27 @@ import time
 import _thread
 
 
+sys.path.insert(0, os.getcwd())
+
+
 from nixt.client  import Client
-from nixt.errors  import Errors, full
 from nixt.event   import Event
-from nixt.object  import dumps
+from nixt.fleet   import Fleet
 from nixt.path    import Workdir, pidname, skel
+from nixt.serial  import dumps
+from nixt.thread  import Errors, full
 
 
-from nixts import fmt, level, parse, rlog
+from nixts import level, parse
 from nixts import CHECKSUM, Commands, Main, command, inits
 from nixts import md5sum, mods, modules, settable
 
 
-CHECKSUM2 = "4e3f02ad08d1780b8de0d0a98b5cc7f2"
-CHECKSUM2 = ""
+Main.name = 'nixt'
 
-Main.name = sys.argv[0].split(os.sep)[-1].lower()
+
+CHECKSUM2 = "5206bffdc9dbf7a0967565deaabc2144"
+CHECKSUM2 = ""
 
 
 class CLI(Client):
@@ -36,6 +41,9 @@ class CLI(Client):
         Client.__init__(self)
         self.register("command", command)
 
+    def dosay(self, channel, txt):
+        self.raw(txt)
+
     def raw(self, txt):
         out(txt.encode('utf-8', 'replace').decode("utf-8"))
 
@@ -43,7 +51,6 @@ class CLI(Client):
 class Console(CLI):
 
     def announce(self, txt):
-        #out(txt)
         pass
 
     def callback(self, evt):
@@ -195,6 +202,7 @@ def background():
     Commands.add(cmd)
     inits(Main.init or "irc,rss")
     forever()
+    Fleet.shutdown()
 
 
 def console():
@@ -215,6 +223,7 @@ def console():
     csl = Console()
     csl.start()
     forever()
+    Fleet.shutdown()
 
 
 def control():
@@ -229,12 +238,14 @@ def control():
     Commands.add(srv)
     Commands.add(tbl)
     csl = CLI()
+    csl.start()
     evt = Event()
     evt.orig = repr(csl)
     evt.type = "command"
     evt.txt = Main.otxt
     command(evt)
     evt.wait()
+    Fleet.shutdown()
 
 
 def service():
@@ -247,6 +258,7 @@ def service():
     Commands.add(cmd)
     inits(Main.init or "irc,rss")
     forever()
+    Fleet.shutdown()
 
 
 "runtime"

@@ -1,19 +1,19 @@
 # This file is placed in the Public Domain.
 
 
-"disk"
+"persistence"
 
 
 import datetime
 import json.decoder
 import os
 import pathlib
-import time
 import _thread
 
 
-from .object import Object, dump, fqn, items, load, update
+from .object import fqn, update
 from .path   import store
+from .serial import dump, load
 
 
 lock = _thread.allocate_lock()

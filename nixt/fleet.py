@@ -4,12 +4,6 @@
 "fleet"
 
 
-import _thread
-
-
-lock = _thread.allocate_lock()
-
-
 class Fleet:
 
     clients = {}
@@ -24,19 +18,22 @@ class Fleet:
 
     @staticmethod
     def announce(txt):
-        for clt in Fleet.clients.values():
+        for clt in Fleet.all():
             clt.announce(txt)
 
     @staticmethod
+    def dispatch(evt):
+        bot = Fleet.get(evt.orig)
+        bot.put(evt)
+
+    @staticmethod
     def display(evt):
-        with lock:
-            clt = Fleet.get(evt.orig)
-            for tme in sorted(evt.result):
-                clt.say(evt.channel, evt.result[tme])
+        clt = Fleet.get(evt.orig)
+        clt.display(evt)
 
     @staticmethod
     def first():
-        clt =  list(Fleet.clients.values())
+        clt =  list(Fleet.all())
         res = None
         if clt:
             res = clt[0]
@@ -53,8 +50,14 @@ class Fleet:
             clt.say(channel, txt)
 
     @staticmethod
+    def shutdown():
+        for clt in Fleet.all():
+            clt.oqueue.join()
+            clt.stop()
+
+    @staticmethod
     def wait():
-        for clt in Fleet.clients.values():
+        for clt in Fleet.all():
             if "wait" in dir(clt):
                 clt.wait()
 

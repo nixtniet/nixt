@@ -10,8 +10,7 @@ import time
 import _thread
 
 
-from .errors import later
-from .thread import launch, name
+from .thread import later, launch, name
 
 
 class Handler:
@@ -33,11 +32,14 @@ class Handler:
                 cmd = evt.txt.split(maxsplit=1)[0]
             else:
                 cmd = name(func)
-            evt._thr = launch(func, evt, name=cmd)
+            evt._thr = launch(func, evt, name=cmd, daemon=True)
 
     def loop(self):
         while not self.stopped.is_set():
             try:
+                if threading.active_count() > 50:
+                    time.sleep(0.01)
+                    continue
                 evt = self.poll()
                 if evt is None:
                     break
