@@ -11,9 +11,11 @@ import pathlib
 import _thread
 
 
-from .object import fqn, update
+from nixt.object import fqn, update
+from nixt.serial import dump, load
+
+
 from .path   import store
-from .serial import dump, load
 
 
 lock = _thread.allocate_lock()
