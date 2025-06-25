@@ -11,6 +11,9 @@ import traceback
 import _thread
 
 
+lock = threading.RLock()
+
+
 class Errors:
 
     name   = __file__.rsplit("/", maxsplit=2)[-2]
@@ -58,13 +61,14 @@ class Thread(threading.Thread):
 
 
 def full(exc):
-    return "".join(
-                   traceback.format_exception(
-                                              type(exc),
-                                              exc,
-                                              exc.__traceback__
-                                             )
-                  ).rstrip()
+    with lock:
+        return "".join(
+                       traceback.format_exception(
+                                                  type(exc),
+                                                  exc,
+                                                  exc.__traceback__
+                                                 )
+                      ).rstrip()
 
 
 def launch(func, *args, **kwargs):
@@ -77,7 +81,8 @@ def launch(func, *args, **kwargs):
 
 
 def later(exc):
-    Errors.errors.append(exc)
+    with lock:
+        Errors.errors.append(exc)
 
 
 def line(exc):

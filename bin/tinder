@@ -114,7 +114,12 @@ def consume(evts):
             events.remove(todo)
         if len(events) == 0:
             break
-    
+
+
+def errors():
+    for exc in Errors.errors:
+        print(full(exc))
+
 
 def payload(clts, cmds):
     nmr = 0
@@ -137,21 +142,28 @@ def payload(clts, cmds):
     return nmr
 
 
-def wrap(function):
-    old3 = None
+def wrapped(func):
     try:
-        old3 = termios.tcgetattr(sys.stdin.fileno())
+        func()
+    except (KeyboardInterrupt, EOFError):
+        print("")
+    errors()
+
+
+def wrap(func):
+    import termios
+    old = None
+    try:
+        old = termios.tcgetattr(sys.stdin.fileno())
     except termios.error:
         pass
     try:
-        function()
-    except (KeyboardInterrupt, EOFError):
-        pass
+        wrapped(func)
     finally:
-        if old3:
-            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old3)
-    for exc in Errors.errors:
-        print(full(exc))
+        if old:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+
+
 
 
 def main():
