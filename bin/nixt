@@ -16,8 +16,8 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client  import Client
-from nixt.event   import Event
 from nixt.fleet   import Fleet
+from nixt.handler import Event
 from nixt.path    import Workdir, pidname, skel
 from nixt.serial  import dumps
 from nixt.thread  import Errors, full
