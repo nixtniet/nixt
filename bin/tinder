@@ -21,12 +21,12 @@ from nixt.client  import Client
 from nixt.handler import Event
 from nixt.fleet   import Fleet
 from nixt.object  import Object, keys
+from nixt.path   import Workdir, skel
 from nixt.thread  import Errors, full, launch
-from nixts.path   import Workdir, skel
 
 
-from nixtm import elapsed, fmt, parse, spl
-from nixtm import STARTTIME, Main, command, modules, settable
+from nixts import elapsed, fmt, parse, spl
+from nixts import STARTTIME, Main, command, modules, settable
 
 
 Main.debug  = True
