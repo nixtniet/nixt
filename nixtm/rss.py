@@ -21,13 +21,11 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.default import Default
+from nixt.cache   import getpath, find, fntime, last, write
 from nixt.fleet   import Fleet
-from nixt.object  import Object, update
+from nixt.object  import Default, Object, update
 from nixt.thread  import launch
 from nixt.timer   import Repeater
-from nixts.disk   import getpath, write
-from nixts.find   import find, fntime, last
 from .            import elapsed, fmt, rlog, spl
 
 
@@ -53,12 +51,28 @@ class Feed(Default):
         self.name = ""
 
 
+class Rss(Default):
+
+    def __init__(self):
+        Default.__init__(self)
+        self.display_list = 'title,link,author'
+        self.insertid     = None
+        self.name         = ""
+        self.rss          = ""
+
+
+class Urls(Default):
+
+    pass
+
+
+seen = Urls()
+
+
 class Fetcher(Object):
 
     def __init__(self):
         self.dosave = False
-        self.seen = Urls()
-        self.seenfn = None
 
     @staticmethod
     def display(obj):
@@ -84,7 +98,7 @@ class Fetcher(Object):
     def fetch(self, feed, silent=False):
         with fetchlock:
             result = []
-            seen = getattr(self.seen, feed.rss, [])
+            see = getattr(seen, feed.rss, [])
             urls = []
             counter = 0
             for obj in reversed(getfeed(feed.rss, feed.display_list)):
@@ -98,15 +112,12 @@ class Fetcher(Object):
                 else:
                     uurl = fed.link
                 urls.append(uurl)
-                if uurl in seen:
+                if uurl in see:
                     continue
                 if self.dosave:
                     write(fed)
                 result.append(fed)
-            setattr(self.seen, feed.rss, urls)
-            if not self.seenfn:
-                self.seenfn = getpath(self.seen)
-            write(self.seen, self.seenfn)
+            setattr(seen, feed.rss, urls)
         if silent:
             return counter
         txt = ''
@@ -125,11 +136,9 @@ class Fetcher(Object):
             thrs.append(launch(self.fetch, feed, silent))
         return thrs
 
-    def start(self, repeat=True):
-        self.seenfn = last(self.seen)
-        if repeat:
-            repeater = Repeater(300.0, self.run)
-            repeater.start()
+    def start(self):
+        repeater = Repeater(300.0, self.run)
+        repeater.start()
 
 
 class OPML:
@@ -246,20 +255,6 @@ class Parser:
             result.append(obj)
         return result
 
-
-class Rss(Default):
-
-    def __init__(self):
-        Default.__init__(self)
-        self.display_list = 'title,link,author'
-        self.insertid     = None
-        self.name         = ""
-        self.rss          = ""
-
-
-class Urls(Default):
-
-    pass
 
 
 "utilities"

@@ -14,6 +14,7 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
+from nixt.cache   import Cache, find, getpath
 from nixt.client  import Client
 from nixt.handler import Event
 from nixt.object  import update
@@ -24,7 +25,10 @@ from nixtm import Commands, Main
 from nixtm import command, fmt, inits, level, mods, parse
 
 
-from nixtm.rss import Fetcher, OPML, shortid
+from nixtm.rss import Fetcher, OPML, Rss, shortid
+
+
+Main.name = "nixtfetch"
 
 
 importlock = _thread.allocate_lock()

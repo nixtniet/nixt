@@ -15,9 +15,8 @@ import time
 import _thread
 
 
-from nixt.default import Default
 from nixt.fleet   import Fleet
-from nixt.object  import items, keys
+from nixt.object  import Default, items, keys
 from nixt.thread  import later, launch
 
 
