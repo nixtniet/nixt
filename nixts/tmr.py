@@ -9,11 +9,11 @@ import re
 import time
 
 
+from nixt.disk   import write
+from nixt.find   import last
 from nixt.fleet  import Fleet
 from nixt.object import Object, items
 from nixt.timer  import Timed
-from nixts.disk  import write
-from nixts.find  import last
 from .           import elapsed, rlog
 
 

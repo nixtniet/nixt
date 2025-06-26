@@ -18,16 +18,14 @@ sys.path.insert(0, os.getcwd())
 from nixt.client  import Client
 from nixt.fleet   import Fleet
 from nixt.handler import Event
+from nixt.path    import Workdir, pidname, skel
 from nixt.serial  import dumps
 from nixt.thread  import Errors, full
 
 
-from nixts.path import Workdir, pidname, skel
-
-
-from nixtm import level, parse
-from nixtm import CHECKSUM, Commands, Main, command, inits
-from nixtm import md5sum, mods, modules, settable
+from nixts import level, parse
+from nixts import CHECKSUM, Commands, Main, command, inits
+from nixts import md5sum, mods, modules, settable
 
 
 Main.name = 'nixt'

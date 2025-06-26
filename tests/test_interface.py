@@ -11,8 +11,8 @@ import unittest
 
 
 import nixt
+import nixt.cache
 import nixt.client
-import nixt.default
 import nixt.disk
 import nixt.find
 import nixt.fleet
@@ -28,8 +28,8 @@ from nixt.object import *
 
 
 PACKAGE = [
+    'cache',
     'client',
-    'default',
     'disk',
     'find',
     'fleet',
