@@ -171,7 +171,6 @@ def main():
     global nrcommand
     settable()
     parse(Main, " ".join(sys.argv[1:]))
-    nrcommand = 0
     if "v" in Main.opts:
         banner()
     if "f" not in Main.opts:

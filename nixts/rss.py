@@ -21,12 +21,13 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.cache   import find, fntime, write
-from nixt.fleet   import Fleet
-from nixt.object  import Default, Object, update
+from nixt.cache   import find, fntime, last, write
+from nixt.client  import Fleet
+from nixt.object  import Object, update
+from nixt.path    import getpath
 from nixt.thread  import launch
 from nixt.timer   import Repeater
-from .            import elapsed, fmt, rlog, spl
+from .            import Default, elapsed, fmt, rlog, spl
 
 
 DEBUG = False
@@ -51,28 +52,12 @@ class Feed(Default):
         self.name = ""
 
 
-class Rss(Default):
-
-    def __init__(self):
-        Default.__init__(self)
-        self.display_list = 'title,link,author'
-        self.insertid     = None
-        self.name         = ""
-        self.rss          = ""
-
-
-class Urls(Default):
-
-    pass
-
-
-seen = Urls()
-
-
 class Fetcher(Object):
 
     def __init__(self):
         self.dosave = False
+        self.seen = Urls()
+        self.seenfn = None
 
     @staticmethod
     def display(obj):
@@ -98,7 +83,7 @@ class Fetcher(Object):
     def fetch(self, feed, silent=False):
         with fetchlock:
             result = []
-            see = getattr(seen, feed.rss, [])
+            seen = getattr(self.seen, feed.rss, [])
             urls = []
             counter = 0
             for obj in reversed(getfeed(feed.rss, feed.display_list)):
@@ -112,12 +97,15 @@ class Fetcher(Object):
                 else:
                     uurl = fed.link
                 urls.append(uurl)
-                if uurl in see:
+                if uurl in seen:
                     continue
                 if self.dosave:
-                    write(fed)
+                    write(fed, getpath(fed))
                 result.append(fed)
-            setattr(seen, feed.rss, urls)
+            setattr(self.seen, feed.rss, urls)
+            if not self.seenfn:
+                self.seenfn = getpath(self.seen)
+            write(self.seen, self.seenfn)
         if silent:
             return counter
         txt = ''
@@ -136,9 +124,11 @@ class Fetcher(Object):
             thrs.append(launch(self.fetch, feed, silent))
         return thrs
 
-    def start(self):
-        repeater = Repeater(300.0, self.run)
-        repeater.start()
+    def start(self, repeat=True):
+        self.seenfn = last(self.seen)
+        if repeat:
+            repeater = Repeater(300.0, self.run)
+            repeater.start()
 
 
 class OPML:
@@ -256,6 +246,20 @@ class Parser:
         return result
 
 
+class Rss(Default):
+
+    def __init__(self):
+        Default.__init__(self)
+        self.display_list = 'title,link,author'
+        self.insertid     = None
+        self.name         = ""
+        self.rss          = ""
+
+
+class Urls(Default):
+
+    pass
+
 
 "utilities"
 
@@ -355,7 +359,7 @@ def exp(event):
     with importlock:
         event.reply(TEMPLATE)
         nrs = 0
-        for _fn, ooo in sorted(find("rss"), key=lambda x: fntime(x[0])):
+        for _fn, ooo in find("rss"):
             nrs += 1
             obj = Rss()
             update(obj, ooo)
@@ -397,7 +401,7 @@ def imp(event):
             update(rss, obj)
             rss.rss = obj.xmlUrl
             rss.insertid = insertid
-            write(rss)
+            write(rss, getpath(rss))
             nrs += 1
     if nrskip:
         event.reply(f"skipped {nrskip} urls.")
@@ -469,7 +473,7 @@ def rss(event):
             return
     rss = Rss()
     rss.rss = event.args[0]
-    write(rss)
+    write(rss, getpath(rss))
     event.done()
 
 

@@ -16,7 +16,7 @@ import _thread
 
 
 from nixt.fleet   import Fleet
-from nixt.object  import Default, items, keys
+from nixt.object  import Object, items, keys
 from nixt.thread  import later, launch
 
 
@@ -33,6 +33,14 @@ MD5      = {}
 NAMES    = {}
 
 
+class Default(Object):
+
+    def __getattr__(self, key):
+        if key not in self:
+            setattr(self, key, "")
+        return self.__dict__.get(key, "")
+
+
 class Main(Default):
 
     debug   = False
@@ -46,7 +54,7 @@ class Main(Default):
     otxt    = ""
     sets    = Default()
     verbose = False
-    version = 333
+    version = 102
 
 
 class Commands:
@@ -88,10 +96,10 @@ class Commands:
 def command(evt):
     parse(evt)
     func = Commands.get(evt.cmd)
-    if not func:
-        return evt.ready()
-    func(evt)
-    Fleet.display(evt)
+    if func:
+        func(evt)
+        Fleet.display(evt)
+    evt.ready()
 
 
 def inits(names):
@@ -133,10 +141,10 @@ def check(name, md5=""):
 def gettbl(name):
     pth = os.path.join(path, "tbl.py")
     if not os.path.exists(pth):
-        rlog("error", "tbl.py is not there.")
+        rlog("error", f"tbl.py is not there.")
         return {}
     if CHECKSUM and (md5sum(pth) != CHECKSUM):
-        rlog("error", "tbl.py checksum failed.")
+        rlog("error", f"tbl.py checksum failed.")
         return {}
     mname = f"{__name__}.tbl"
     mod = sys.modules.get(mname, None)
@@ -324,7 +332,7 @@ def parse(obj, txt=""):
         obj.txt = obj.cmd or ""
 
 
-"logging"
+"utilities"
 
 
 LEVELS = {'debug': logging.DEBUG,
@@ -334,26 +342,6 @@ LEVELS = {'debug': logging.DEBUG,
           'error': logging.ERROR,
           'critical': logging.CRITICAL
          }
-
-
-def level(loglevel="debug"):
-    if loglevel != "none":
-        format_short = "%(message)-80s"
-        datefmt = '%H:%M:%S'
-        logging.basicConfig(stream=sys.stderr, datefmt=datefmt, format=format_short)
-        logging.getLogger().setLevel(LEVELS.get(loglevel))
-
-
-def rlog(level, txt, ignore=None):
-    if ignore is None:
-        ignore = []
-    for ign in ignore:
-        if ign in str(txt):
-            return
-    logging.log(LEVELS.get(level), txt)
-
-
-"utilities"
 
 
 def elapsed(seconds, short=True):
@@ -393,6 +381,23 @@ def elapsed(seconds, short=True):
         txt += f"{sec}s"
     txt = txt.strip()
     return txt
+
+
+def level(loglevel="debug"):
+    if loglevel != "none":
+        format_short = "%(message)-80s"
+        datefmt = '%H:%M:%S'
+        logging.basicConfig(stream=sys.stderr, datefmt=datefmt, format=format_short)
+        logging.getLogger().setLevel(LEVELS.get(loglevel))
+
+
+def rlog(level, txt, ignore=None):
+    if ignore is None:
+        ignore = []
+    for ign in ignore:
+        if ign in str(txt):
+            return
+    logging.log(LEVELS.get(level), txt)
 
 
 def spl(txt):

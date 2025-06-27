@@ -15,9 +15,11 @@ class Timy(threading.Timer):
 
     def __init__(self, sleep, func, *args, **kwargs):
         super().__init__(sleep, func)
-        self.naem      = kwargs.get("name", name(func))
+        self.name      = kwargs.get("name", name(func))
         self.sleep     = sleep
         self.state     = {}
+        self.state["latest"]    = time.time()
+        self.state["starttime"] = self.state.latest 
         self.starttime = time.time()
 
 
@@ -38,10 +40,8 @@ class Timed:
 
     def start(self):
         self.kwargs["name"] = self.name
-        self.timer = Timy(self.sleep, self.run, *self.args, **self.kwargs)
-        self.timer.state["latest"] = time.time()
-        self.timer.state["starttime"] = time.time()
-        self.timer.start()
+        timer = Timy(self.sleep, self.run, *self.args, **self.kwargs)
+        timer.start()
         self.timer = timer
 
     def stop(self):

@@ -6,7 +6,9 @@
 
 from nixt.fleet  import Fleet
 from nixt.thread import name
-from .           import fmt
+
+
+from . import fmt
 
 
 def flt(event):

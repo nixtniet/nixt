@@ -14,7 +14,6 @@ import nixt
 import nixt.cache
 import nixt.client
 import nixt.disk
-import nixt.find
 import nixt.fleet
 import nixt.handler
 import nixt.object
@@ -31,7 +30,6 @@ PACKAGE = [
     'cache',
     'client',
     'disk',
-    'find',
     'fleet',
     'handler',
     'object',
