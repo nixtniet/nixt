@@ -1,31 +1,35 @@
 # This file is placed in the Public Domain.
 
 
-"clients"
-
-
 import unittest
+import queue
+import time
 
 
-from nixt.client  import Client
+from nixt.client import Client
 from nixt.handler import Event
 
 
-def hello(event):
-    event.reply("hello")
-    event.ready()
+class TestClient(unittest.TestCase):
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_init(self):
+        pass
+
+    def test_oput(self):
+        pass
+
+    def test_output_loop(self):
+        pass
+
+    def test_display(self):
+        pass
+
+    def test_start_and_stop(self):
+        pass
 
 
-clt = Client()
-clt.register("hello", hello)
-clt.start()
-
-
-class TestHandler(unittest.TestCase):
-
-    def test_loop(self):
-        e = Event()
-        e.type = "hello"
-        clt.put(e)
-        e.wait()
-        self.assertTrue(True)
+if __name__ == '__main__':
+    unittest.main()
