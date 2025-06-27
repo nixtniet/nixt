@@ -15,12 +15,12 @@ class Timy(threading.Timer):
 
     def __init__(self, sleep, func, *args, **kwargs):
         super().__init__(sleep, func)
-        self.name      = kwargs.get("name", name(func))
-        self.sleep     = sleep
-        self.state     = {}
+        self.name               = kwargs.get("name", name(func))
+        self.sleep              = sleep
+        self.state              = {}
         self.state["latest"]    = time.time()
-        self.state["starttime"] = self.state.latest 
-        self.starttime = time.time()
+        self.state["starttime"] = time.time() 
+        self.starttime          = time.time()
 
 
 class Timed:
