@@ -4,7 +4,6 @@
 "persistence"
 
 
-import datetime
 import json.decoder
 import os
 import pathlib
@@ -12,12 +11,9 @@ import _thread
 
 
 from .cache  import Cache
-from .object import fqn, update
-from .path   import store
+from .object import Object, fqn, items, update
+from .path   import long, store
 from .serial import dump, load
-
-
-lock = _thread.allocate_lock()
 
 
 class Error(Exception):
@@ -25,17 +21,63 @@ class Error(Exception):
     pass
 
 
+lock = _thread.allocate_lock()
+
+
 def cdir(path):
     pth = pathlib.Path(path)
     pth.parent.mkdir(parents=True, exist_ok=True)
 
 
-def getpath(obj):
-    return os.path.join(store(ident(obj)))
+def find(clz, selector=None, deleted=False, matching=False):
+    clz = long(clz)
+    if selector is None:
+        selector = {}
+    for pth in fns(clz):
+        obj = Cache.get(pth)
+        if not obj:
+            obj = Object()
+            read(obj, pth)
+            Cache.add(pth, obj)
+        if '__deleted__' in dir(obj) and obj.__deleted__:
+            continue
+        if selector and not search(obj, selector, matching):
+            continue
+        yield pth, obj
 
 
-def ident(obj):
-    return os.path.join(fqn(obj),*str(datetime.datetime.now()).split())
+def fns(clz):
+    pth = store(clz)
+    for rootdir, dirs, _files in os.walk(pth, topdown=False):
+        for dname in dirs:
+            ddd = os.path.join(rootdir, dname)
+            for fll in os.listdir(ddd):
+                yield os.path.join(ddd, fll)
+
+
+def fntime(daystr):
+    datestr = ' '.join(daystr.split(os.sep)[-2:])
+    datestr = datestr.replace("_", " ")
+    if '.' in datestr:
+        datestr, rest = datestr.rsplit('.', 1)
+    else:
+        rest = ''
+    timed = time.mktime(time.strptime(datestr, '%Y-%m-%d %H:%M:%S'))
+    if rest:
+        timed += float('.' + rest)
+    return float(timed)
+
+
+def last(obj, selector=None):
+    if selector is None:
+        selector = {}
+    result = sorted(find(fqn(obj), selector), key=lambda x: fntime(x[0]))
+    res = ""
+    if result:
+        inp = result[-1]
+        update(obj, inp[-1])
+        res = inp[0]
+    return res
 
 
 def read(obj, path):
@@ -47,14 +89,30 @@ def read(obj, path):
                 raise Error(path) from ex
 
 
-def write(obj, path=""):
+
+def search(obj, selector, matching=False):
+    res = False
+    if not selector:
+        return res
+    for key, value in items(selector):
+        val = getattr(obj, key, None)
+        if not val:
+            continue
+        if matching and value == val:
+            res = True
+        elif str(value).lower() in str(val).lower() or value == "match":
+            res = True
+        else:
+            res = False
+            break
+    return res
+
+
+def write(obj, path):
     with lock:
-        if path == "":
-            path = getpath(obj)
         cdir(path)
         with open(path, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)
-        Cache.update(path, obj)
         return path
 
 
@@ -63,8 +121,13 @@ def __dir__():
         'Cache',
         'Error',
         'cdir',
+        'find',
+        'fns',
+        'fntime',
+        'last',
         'getpath',
         'ident',
         'read',
+        'search',
         'write'
     )

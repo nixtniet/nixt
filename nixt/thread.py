@@ -11,7 +11,8 @@ import traceback
 import _thread
 
 
-lock = threading.RLock()
+launchlock = threading.RLock()
+lock       = threading.RLock()
 
 
 class Errors:
@@ -51,11 +52,11 @@ class Thread(threading.Thread):
             _thread.interrupt_main()
 
     def join(self, timeout=0.0):
-        if timeout != 0.0:
-            while 1:
-                if not self.is_alive():
-                    break
-                time.sleep(0.1)
+        #if timeout != 0.0:
+        #    while 1:
+        #        if not self.is_alive():
+        #            break
+        #        time.sleep(0.1)
         super().join(timeout)
         return self.result
 
@@ -72,12 +73,13 @@ def full(exc):
 
 
 def launch(func, *args, **kwargs):
-    nme = kwargs.get("name", None)
-    if not nme:
-        nme = name(func)
-    thread = Thread(func, nme, *args, **kwargs)
-    thread.start()
-    return thread
+    with launchlock:
+        nme = kwargs.get("name", None)
+        if not nme:
+            nme = name(func)
+        thread = Thread(func, nme, *args, **kwargs)
+        thread.start()
+        return thread
 
 
 def later(exc):

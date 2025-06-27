@@ -4,14 +4,26 @@
 "parhs"
 
 
+import datetime
 import os
 import pathlib
+
+
+from .object import fqn
 
 
 class Workdir:
 
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
     wdr = ""
+
+
+def getpath(obj):
+    return ident(obj)
+
+
+def ident(obj):
+    return os.path.join(fqn(obj),*str(datetime.datetime.now()).split())
 
 
 def long(name):

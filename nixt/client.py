@@ -29,10 +29,10 @@ class Client(Handler):
     def display(self, evt):
         with self.olock:
             if self.ostop.is_set():
+                evt.ready()
                 return
             for tme in sorted(evt.result):
                 self.dosay(evt.channel, evt.result[tme])
-            evt.ready()
 
     def dosay(self, channel, txt):
         self.say(channel, txt)
@@ -48,7 +48,7 @@ class Client(Handler):
                     break
                 self.display(evt)
                 self.oqueue.task_done()
-                evt.ready()
+                #evt.ready()
             except (KeyboardInterrupt, EOFError):
                 _thread.interrupt_main()
             except Exception as ex:
