@@ -7,7 +7,8 @@
 import time
 
 
-from nixt.cache  import find, fntime, write
+from nixt.cache  import write
+from nixt.find   import find, fntime
 from nixt.object import Object
 from nixt.path   import getpath
 
