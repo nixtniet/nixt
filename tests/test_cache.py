@@ -6,7 +6,9 @@ import time
 import os
 
 
-from nixt.cache import Cache, find, fntime, isdeleted, last, search, read, write
+from nixt.cache  import Cache
+from nixt.disk   import read, write
+from nixt.find   import find, fntime, isdeleted, last, search
 from nixt.object import Object, fqn
 
 

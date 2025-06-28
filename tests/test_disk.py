@@ -7,9 +7,10 @@ import shutil
 import time
 
 
-from nixt.disk import cdir, find, fns, last, read, write, search, Error
+from nixt.disk   import Error, cdir, read, write
+from nixt.find   import find, fns, last, search
 from nixt.object import Object, fqn
-from nixt.path import store, long
+from nixt.path   import store, long
 
 
 TEST_STORE = ".test_store"
