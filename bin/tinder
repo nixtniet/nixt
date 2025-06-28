@@ -21,7 +21,7 @@ from nixt.client  import Client
 from nixt.handler import Event
 from nixt.fleet   import Fleet
 from nixt.object  import Object, keys
-from nixt.path   import Workdir, skel
+from nixt.path    import Workdir, skel
 from nixt.thread  import Errors, full, launch
 
 
@@ -164,8 +164,6 @@ def wrap(func):
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
-
-
 def main():
     global nrs
     global nrcommand
@@ -208,7 +206,7 @@ def main():
         if nr:
             nrcommand += nr
     consume(events)
-    Fleet.shutdown()
+    #Fleet.shutdown()
 
 
 if __name__ == "__main__":
