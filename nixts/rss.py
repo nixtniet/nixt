@@ -21,13 +21,14 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.cache   import find, fntime, last, write
-from nixt.client  import Fleet
-from nixt.object  import Object, update
-from nixt.path    import getpath
-from nixt.thread  import launch
-from nixt.timer   import Repeater
-from .            import Default, elapsed, fmt, rlog, spl
+from nixt.client import Fleet
+from nixt.disk   import write
+from nixt.find   import find, fntime, last
+from nixt.object import Object, update
+from nixt.path   import getpath
+from nixt.thread import launch
+from nixt.timer  import Repeater
+from .           import Default, elapsed, fmt, rlog, spl
 
 
 DEBUG = False
@@ -470,6 +471,7 @@ def rss(event):
         return
     for fnm, result in find("rss", {'rss': url}):
         if result:
+            event.reply(f"{url} is known")
             return
     rss = Rss()
     rss.rss = event.args[0]

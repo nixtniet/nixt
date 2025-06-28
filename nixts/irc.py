@@ -13,8 +13,9 @@ import threading
 import time
 
 
-from nixt.cache   import last, write
 from nixt.client  import Client
+from nixt.disk    import write
+from nixt.find    import last
 from nixt.fleet   import Fleet
 from nixt.handler import Event as IEvent
 from nixt.object  import Object, keys

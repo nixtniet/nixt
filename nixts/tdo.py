@@ -7,7 +7,8 @@
 import time
 
 
-from nixt.cache  import find, fntime, write
+from nixt.disk   import write
+from nixt.find   import find, fntime
 from nixt.object import Object, update
 from nixt.path   import getpath
 from .           import elapsed
@@ -29,7 +30,7 @@ def dne(event):
     for fnm, obj in find('todo', selector):
         nmr += 1
         obj.__deleted__ = True
-        write(obj, fnm)
+        write(obj, getpath(fobj))
         event.done()
         break
     if not nmr:

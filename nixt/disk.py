@@ -37,7 +37,7 @@ def fns(clz):
                 yield os.path.join(ddd, fll)
 
 
-def fetch(obj, path):
+def read(obj, path):
     with lock:
         with open(path, "r", encoding="utf-8") as fpt:
             try:
@@ -46,7 +46,7 @@ def fetch(obj, path):
                 raise Error(path) from ex
 
 
-def sync(obj, path):
+def write(obj, path):
     with lock:
         cdir(path)
         with open(path, "w", encoding="utf-8") as fpt:

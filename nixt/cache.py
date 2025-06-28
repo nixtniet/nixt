@@ -10,8 +10,7 @@ import threading
 import time
 
 
-from .disk   import fetch, sync
-from .object import fqn, items, keys, update
+from .object import Object, items, keys, update
 
 
 lock      = threading.RLock()
@@ -33,12 +32,7 @@ class Cache:
 
     @staticmethod
     def get(path):
-        obj = Cache.objs.get(path, None)
-        if not obj:
-            obj = Object()
-            fetch(obj, path)
-            Cache.add(path, obj)
-        return obj
+        return Cache.objs.get(path, None)
 
     @staticmethod
     def long(name):
@@ -72,28 +66,7 @@ class Cache:
             Cache.add(path, obj)
 
 
-def read(obj, path):
-    val = Cache.get(path)
-    if not val:
-        fetch(obj, path)
-    else:
-        update(obj, val)
-
-
-def write(obj, path):
-    Cache.update(path, obj)
-    sync(obj, path)
-    return path
-
-
 def __dir__():
     return (
         'Cache',
-        'find',
-        'fns',
-        'fntime',
-        'last',
-        'read',
-        'search',
-        'write'
     )

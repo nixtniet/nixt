@@ -19,7 +19,7 @@ class Workdir:
 
 
 def getpath(obj):
-    return ident(obj)
+    return store(ident(obj))
 
 
 def ident(obj):

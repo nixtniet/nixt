@@ -5,19 +5,25 @@
 
 
 import os
+import time
 
 
-from .cache  import Cache, read
-from .object import items, update
-from .path   import long, store
+from .cache  import Cache
+from .disk   import read
+from .object import Object, fqn, items, update
+from .path   import long, store, strip
 
 
 def find(clz, selector=None, deleted=False, matching=False):
     clz = long(clz)
     if selector is None:
         selector = {}
-    for pth in Cache.typed(clz):
+    for pth in fns(clz):
         obj = Cache.get(pth)
+        if not obj:
+            obj = Object()
+            read(obj, pth)
+            Cache.add(pth, obj)
         if deleted and isdeleted(obj):
             continue
         if selector and not search(obj, selector, matching):

@@ -8,4 +8,4 @@ from . import Main
 
 
 def ver(event):
-    event.reply(str(Main.version))
+    event.reply(f"{Main.name.upper()} {Main.version}")
