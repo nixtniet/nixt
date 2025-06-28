@@ -103,11 +103,11 @@ def consume(evts):
     while True:
         done = []
         for event in evts:
-            if "x" in Main.opts:
-                if event._thr:
-                    if event._thr.is_alive():
-                        time.sleep(0.01)
-                        continue
+            #if "x" in Main.opts:
+            #    if event._thr:
+            #        if event._thr.is_alive():
+            #            time.sleep(0.01)
+            #            continue
             event.wait()
             done.append(event)
         for todo in done:
