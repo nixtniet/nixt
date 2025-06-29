@@ -28,6 +28,7 @@ class Client(Handler):
         with self.olock:
             for tme in sorted(evt.result):
                 self.dosay(evt.channel, evt.result[tme])
+            evt.ready()
 
     def dosay(self, channel, txt):
         self.say(channel, txt)
@@ -57,7 +58,6 @@ class Buffered(Client):
                     break
                 self.display(evt)
                 self.oqueue.task_done()
-                #evt.ready()
             except (KeyboardInterrupt, EOFError):
                 _thread.interrupt_main()
             except Exception as ex:

@@ -11,7 +11,7 @@ import time
 from .cache  import Cache
 from .disk   import read
 from .object import Object, fqn, items, update
-from .path   import long, store, strip
+from .path   import long, store
 
 
 def find(clz, selector=None, deleted=False, matching=False):

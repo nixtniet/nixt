@@ -5,13 +5,11 @@
 
 
 import json.decoder
-import os
 import pathlib
 import _thread
 
 
-from .object import Object, fqn, items, update
-from .path   import long, store
+from .object import update
 from .serial import dump, load
 
 
@@ -26,15 +24,6 @@ lock = _thread.allocate_lock()
 def cdir(path):
     pth = pathlib.Path(path)
     pth.parent.mkdir(parents=True, exist_ok=True)
-
-
-def fns(clz):
-    pth = store(clz)
-    for rootdir, dirs, _files in os.walk(pth, topdown=False):
-        for dname in dirs:
-            ddd = os.path.join(rootdir, dname)
-            for fll in os.listdir(ddd):
-                yield os.path.join(ddd, fll)
 
 
 def read(obj, path):
@@ -58,6 +47,6 @@ def __dir__():
     return (
         'Error',
         'cdir',
-        'fetch',
-        'sync'
+        'read',
+        'write'
     )

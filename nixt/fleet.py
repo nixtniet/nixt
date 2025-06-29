@@ -52,7 +52,8 @@ class Fleet:
     @staticmethod
     def shutdown():
         for clt in Fleet.all():
-            clt.oqueue.join()
+            if "oqueue" in dir(clt):
+                clt.oqueue.join()
             clt.stop()
 
     @staticmethod

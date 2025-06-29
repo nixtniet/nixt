@@ -202,7 +202,6 @@ def background():
     Commands.add(cmd)
     inits(Main.init or "irc,rss")
     forever()
-    Fleet.shutdown()
 
 
 def console():
@@ -223,7 +222,6 @@ def console():
     csl = Console()
     csl.start()
     forever()
-    Fleet.shutdown()
 
 
 def control():
@@ -245,7 +243,6 @@ def control():
     evt.txt = Main.otxt
     command(evt)
     evt.wait()
-    Fleet.shutdown()
 
 
 def service():
@@ -258,7 +255,6 @@ def service():
     Commands.add(cmd)
     inits(Main.init or "irc,rss")
     forever()
-    Fleet.shutdown()
 
 
 "runtime"

@@ -4,57 +4,20 @@
 "cache"
 
 
-import datetime
-import os
-import threading
-import time
-
-
-from .object import Object, items, keys, update
-
-
-lock      = threading.RLock()
-writelock = threading.RLock()
+from .object import update
 
 
 class Cache:
 
-    names = []
     objs = {}
 
     @staticmethod
     def add(path, obj):
-        with lock:
-            Cache.objs[path] = obj
-            typ = path.split(os.sep)[0]
-            if typ not in Cache.names:
-                Cache.names.append(typ)
+        Cache.objs[path] = obj
 
     @staticmethod
     def get(path):
         return Cache.objs.get(path, None)
-
-    @staticmethod
-    def long(name):
-        split = name.split(".")[-1].lower()
-        res = name
-        for names in Cache.types():
-            if split == names.split(".")[-1].lower():
-                res = names
-                break
-        return res
-
-    @staticmethod
-    def typed(matcher):
-        with lock:
-            for key in keys(Cache.objs):
-                if matcher not in key:
-                     continue
-                yield key
-
-    @staticmethod
-    def types():
-        return Cache.names
 
     @staticmethod
     def update(path, obj):

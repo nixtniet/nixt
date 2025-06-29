@@ -31,7 +31,6 @@ def construct(obj, *args, **kwargs):
     if kwargs:
         update(obj, kwargs)
 
-
 def fqn(obj):
     kin = str(type(obj)).split()[-1][1:-2]
     if kin == "type":
@@ -65,10 +64,8 @@ def values(obj):
 
 def __dir__():
     return (
-        'Default',
         'Object',
         'construct',
-        'fmt',
         'fqn',
         'items',
         'keys',
