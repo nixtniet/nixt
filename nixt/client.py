@@ -19,8 +19,6 @@ class Client(Handler):
     def __init__(self):
         Handler.__init__(self)
         self.olock  = threading.RLock()
-        self.oqueue = queue.Queue()
-        self.ostop  = threading.Event()
         Fleet.add(self)
 
     def announce(self, txt):
@@ -28,14 +26,25 @@ class Client(Handler):
 
     def display(self, evt):
         with self.olock:
-            if self.ostop.is_set():
-                evt.ready()
-                return
             for tme in sorted(evt.result):
                 self.dosay(evt.channel, evt.result[tme])
 
     def dosay(self, channel, txt):
         self.say(channel, txt)
+
+    def raw(self, txt):
+        raise NotImplementedError("raw")
+
+    def say(self, channel, txt):
+        self.raw(txt)
+
+
+class Buffered(Client):
+
+    def __init__(self):
+        Client.__init__(self)
+        self.oqueue = queue.Queue()
+        self.ostop  = threading.Event()
 
     def oput(self, evt):
         self.oqueue.put(evt)
@@ -55,12 +64,6 @@ class Client(Handler):
                 later(ex)
                 _thread.interrupt_main()
 
-    def raw(self, txt):
-        raise NotImplementedError("raw")
-
-    def say(self, channel, txt):
-        self.raw(txt)
-
     def start(self):
         launch(self.output)
         super().start()
@@ -73,5 +76,6 @@ class Client(Handler):
 
 def __dir__():
     return (
-        'Client',
+        'Buffered',
+        'Client'
     )
