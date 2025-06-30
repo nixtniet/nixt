@@ -23,9 +23,9 @@ from nixt.serial  import dumps
 from nixt.thread  import Errors, full
 
 
-from nixts import level, parse
-from nixts import CHECKSUM, Commands, Main, command, inits
-from nixts import md5sum, mods, modules, settable
+from mods import level, parse
+from mods import CHECKSUM, Commands, Main, command, inits
+from mods import md5sum, mods, modules, settable
 
 
 Main.name = 'nixt'
