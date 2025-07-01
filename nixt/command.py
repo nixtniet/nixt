@@ -14,9 +14,9 @@ import time
 import _thread
 
 
-from .clients import Fleet
-from .objects import Default
-from .threads import later, launch
+from .client  import Fleet
+from .object  import Default
+from .thread  import later, launch
 from .utility import rlog, spl
 
 

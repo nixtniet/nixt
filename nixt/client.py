@@ -10,7 +10,7 @@ import _thread
 
 
 from .handler import Handler
-from .threads import later, launch
+from .thread  import later, launch
 
 
 class Client(Handler):

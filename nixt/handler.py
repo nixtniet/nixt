@@ -10,8 +10,8 @@ import time
 import _thread
 
 
-from .objects import Object
-from .threads import later, launch, name
+from .object import Object
+from .thread import later, launch, name
 
 
 class Handler:
