@@ -24,7 +24,6 @@ STARTTIME = time.time()
 
 
 lock  = _thread.allocate_lock()
-path  = os.path.join(os.path.dirname(__file__), "modules")
 
 
 CHECKSUM = "5206bffdc9dbf7a0967565deaabc2144"
@@ -44,6 +43,7 @@ class Main(Default):
     name    = __name__.split(".", maxsplit=1)[0]
     opts    = Default()
     otxt    = ""
+    paths   = []
     sets    = Default()
     verbose = False
     version = 10
@@ -94,11 +94,11 @@ def command(evt):
     evt.ready()
 
 
-def inits(names):
+def inits(path, names):
     modz = []
     for name in sorted(spl(names)):
         try:
-            mod = load(name)
+            mod = load(path, name)
             if not mod:
                 continue
             if "init" in dir(mod):
@@ -172,7 +172,7 @@ def parse(obj, txt=""):
 "imports"
 
 
-def check(name, md5=""):
+def check(path, name, md5=""):
     if not CHECKSUM:
         return True
     mname = f"{__name__}.{name}"
@@ -189,7 +189,7 @@ def check(name, md5=""):
     return False
 
 
-def gettbl(name):
+def gettbl(path, name):
     pth = os.path.join(path, "tbl.py")
     if not os.path.exists(pth):
         rlog("error", "tbl.py is not there.")
@@ -207,10 +207,10 @@ def gettbl(name):
         if mod:
             spec.loader.exec_module(mod)
             sys.modules[mname] = mod
-    return getattr(mod, name, {})
+    return mod
 
 
-def load(name):
+def load(path, name):
     with lock:
         if name in Main.ignore:
             return None
@@ -240,35 +240,35 @@ def md5sum(modpath):
         return str(hashlib.md5(txt).hexdigest())
 
 
-def mods(names=""):
+def mods(path, names=""):
     res = []
-    for nme in modules():
+    for nme in modules(path):
         if names and nme not in spl(names):
             continue
-        mod = load(nme)
+        mod = load(path, nme)
         if not mod:
             continue
         res.append(mod)
     return res
 
 
-def modules(mdir=""):
+def modules(path):
     return sorted([
-                   x[:-3] for x in os.listdir(mdir or path)
+                   x[:-3] for x in os.listdir(path)
                    if x.endswith(".py") and not x.startswith("__") and
                    x[:-3] not in Main.ignore
                   ])
 
 
-def settable():
-    Commands.names.update(table())
+def settable(path):
+    Commands.names.update(table(path))
 
 
-def table():
-    md5s = gettbl("MD5")
+def table(path):
+    md5s = gettbl(path, "MD5")
     if md5s:
         MD5.update(md5s)
-    names = gettbl("NAMES")
+    names = gettbl(path, "NAMES")
     if names:
         NAMES.update(names)
     return NAMES
