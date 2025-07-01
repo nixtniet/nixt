@@ -12,23 +12,14 @@ import time
 import _thread
 
 
-sys.path.insert(0, os.getcwd())
-
-
-from nixt.client  import Client
-from nixt.fleet   import Fleet
+from nixt.clients import Client
+from nixt.command import CHECKSUM, Commands, Main, command, inits, parse
+from nixt.command import md5sum, mods, modules, settable
 from nixt.handler import Event
-from nixt.path    import Workdir, pidname, skel
-from nixt.serial  import dumps
-from nixt.thread  import Errors, full
-
-
-from mods import level, parse
-from mods import CHECKSUM, Commands, Main, command, inits
-from mods import md5sum, mods, modules, settable
-
-
-Main.name = 'nixt'
+from nixt.objects import dumps
+from nixt.persist import Workdir, pidname, skel
+from nixt.threads import Errors, full
+from nixt.utility import level
 
 
 CHECKSUM2 = "5206bffdc9dbf7a0967565deaabc2144"
@@ -41,9 +32,6 @@ class CLI(Client):
         Client.__init__(self)
         self.register("command", command)
 
-    def dosay(self, channel, txt):
-        self.raw(txt)
-
     def raw(self, txt):
         out(txt.encode('utf-8', 'replace').decode("utf-8"))
 
@@ -51,6 +39,7 @@ class CLI(Client):
 class Console(CLI):
 
     def announce(self, txt):
+        #out(txt)
         pass
 
     def callback(self, evt):
@@ -236,7 +225,6 @@ def control():
     Commands.add(srv)
     Commands.add(tbl)
     csl = CLI()
-    csl.start()
     evt = Event()
     evt.orig = repr(csl)
     evt.type = "command"
