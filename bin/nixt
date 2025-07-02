@@ -149,7 +149,7 @@ def cmd(event):
 
 
 def md5(event):
-    table = mods("tbl")[0]
+    table = mods(path, "tbl")[0]
     event.reply(md5sum(table.__file__))
 
 
@@ -187,7 +187,7 @@ def background():
     setwd(Main.name)
     privileges()
     pidfile(pidname(Main.name))
-    settable()
+    settable("mods")
     Commands.add(cmd)
     inits(Main.init or "irc,rss")
     forever()
@@ -202,7 +202,7 @@ def console():
     Commands.add(cmd)
     level(Main.level or "debug")
     setwd(Main.name)
-    settable()
+    settable("mods")
     if "v" in Main.opts:
         banner()
     for _mod, thr in inits(Main.init):
@@ -219,7 +219,7 @@ def control():
     parse(Main, " ".join(sys.argv[1:]))
     level(Main.level or "debug")
     setwd(Main.name)
-    settable()
+    settable("mods")
     Commands.add(cmd)
     Commands.add(md5)
     Commands.add(srv)
@@ -236,7 +236,7 @@ def control():
 def service():
     level(Main.level or "debug")
     setwd(Main.name)
-    settable()
+    settable("mods")
     banner()
     privileges()
     pidfile(pidname(Main.name))
@@ -295,7 +295,7 @@ def main():
         out("checksum mismatch")
         os._exit(1)
     if check("a"):
-        Main.init = ",".join(modules())
+        Main.init = ",".join(Commands.names)
     if check("v"):
         setattr(Main.opts, "v", True)
     if check("c"):

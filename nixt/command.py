@@ -43,7 +43,7 @@ class Main(Default):
     name    = __name__.split(".", maxsplit=1)[0]
     opts    = Default()
     otxt    = ""
-    paths   = []
+    paths   = ["mods"]
     sets    = Default()
     verbose = False
     version = 10
@@ -94,11 +94,11 @@ def command(evt):
     evt.ready()
 
 
-def inits(path, names):
+def inits(names):
     modz = []
     for name in sorted(spl(names)):
         try:
-            mod = load(path, name)
+            mod = load(name)
             if not mod:
                 continue
             if "init" in dir(mod):
@@ -172,24 +172,33 @@ def parse(obj, txt=""):
 "imports"
 
 
-def check(path, name, md5=""):
+def check(name, md5=""):
     if not CHECKSUM:
         return True
-    mname = f"{__name__}.{name}"
     if sys.modules.get(mname):
         return True
-    pth = os.path.join(path, name + ".py")
-    spec = importlib.util.spec_from_file_location(mname, pth)
-    if not spec:
-        return False
-    if md5sum(pth) == (md5 or MD5.get(name, "")):
-        return True
-    if CHECKSUM and Main.md5:
-        rlog("error", f"{name} md5sum failed.")
+    for path in Main.paths:
+        mname = f"{getname(path)}.{name}"
+        pth = os.path.join(path, name + ".py")
+        spec = importlib.util.spec_from_file_location(mname, pth)
+        if not spec:
+            continue
+        if md5sum(pth) == (md5 or MD5.get(name, "")):
+            return True
+        if CHECKSUM and Main.md5:
+            rlog("error", f"{name} md5sum failed.")
     return False
 
 
-def gettbl(path, name):
+def getname(path):
+    try:
+        pname = path.split(os.sep)[-2]
+    except IndexError:
+        pname = path
+    return pname
+
+
+def gettbl(path):
     pth = os.path.join(path, "tbl.py")
     if not os.path.exists(pth):
         rlog("error", "tbl.py is not there.")
@@ -197,7 +206,7 @@ def gettbl(path, name):
     if CHECKSUM and (md5sum(pth) != CHECKSUM):
         rlog("error", "tbl.py checksum failed.")
         return {}
-    mname = f"{__name__}.tbl"
+    mname = f"{getname(path)}.tbl"
     mod = sys.modules.get(mname, None)
     if not mod:
         spec = importlib.util.spec_from_file_location(mname, pth)
@@ -210,17 +219,18 @@ def gettbl(path, name):
     return mod
 
 
-def load(path, name):
+def load(name):
     with lock:
         if name in Main.ignore:
             return None
-        module = None
-        mname = f"{__name__}.{name}"
-        module = sys.modules.get(mname, None)
-        if not module:
+        for path in Main.paths:
+            mname = f"{getname(path)}.{name}"
+            module = sys.modules.get(mname, None)
+            if module:
+                return module
             pth = os.path.join(path, f"{name}.py")
             if not os.path.exists(pth):
-                return None
+                continue
             spec = importlib.util.spec_from_file_location(mname, pth)
             if not spec or not spec.loader:
                 return None
@@ -240,15 +250,16 @@ def md5sum(modpath):
         return str(hashlib.md5(txt).hexdigest())
 
 
-def mods(path, names=""):
+def mods(names=""):
     res = []
-    for nme in modules(path):
-        if names and nme not in spl(names):
-            continue
-        mod = load(path, nme)
-        if not mod:
-            continue
-        res.append(mod)
+    for path in Main.paths:
+        for nme in modules(path):
+            if names and nme not in spl(names):
+                continue
+            mod = load(nme)
+            if not mod:
+                continue
+            res.append(mod)
     return res
 
 
@@ -265,12 +276,9 @@ def settable(path):
 
 
 def table(path):
-    md5s = gettbl(path, "MD5")
-    if md5s:
-        MD5.update(md5s)
-    names = gettbl(path, "NAMES")
-    if names:
-        NAMES.update(names)
+    tbl = gettbl(path)
+    MD5.update(getattr(tbl, "MD5", {}))
+    NAMES.update(getattr(tbl, "NAMES", {}))
     return NAMES
 
 
