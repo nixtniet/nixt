@@ -4,7 +4,7 @@
 import unittest
 
 
-from nixt.object  import Object
+from nixt.objects import Object
 from nixt.persist import Cache
 
 

@@ -13,11 +13,11 @@ import threading
 import time
 
 
-from nixt.client  import Buffered, Fleet
+from nixt.clients import Buffered, Fleet
 from nixt.handler import Event as IEvent
-from nixt.object  import Object, edit, fmt, keys
+from nixt.objects import Object, edit, fmt, keys
 from nixt.persist import getpath, ident, last, write
-from nixt.thread  import launch
+from nixt.threads import launch
 from .            import Default, Main, command, rlog
 
 

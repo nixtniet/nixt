@@ -9,10 +9,10 @@ import re
 import time
 
 
-from nixt.client  import Fleet
-from nixt.object  import Object, items
+from nixt.clients import Fleet
+from nixt.objects import Object, items
 from nixt.persist import getpath, last, write
-from nixt.thread  import Timed
+from nixt.threads import Timed
 from .            import elapsed, rlog
 
 

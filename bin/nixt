@@ -12,11 +12,11 @@ import time
 import _thread
 
 
-from nixt.client  import Client
+from nixt.clients import Client
 from nixt.handler import Event
-from nixt.object  import dumps
+from nixt.objects import dumps
 from nixt.persist import Workdir, pidname, skel, types
-from nixt.thread  import Errors, full
+from nixt.threads import Errors, full
 
 
 from mods import CHECKSUM, Commands, Main, command, inits, parse
