@@ -16,8 +16,7 @@ N I X T
 
 ::
 
-    >>> from nixt.object import Object
-    >>> from nixt.json   import dumps, loads
+    >>> from nixt.objects import Object, dumps, loads
     >>> o = Object()
     >>> o.a = "b"
     >>> print(loads(dumps(o)))
@@ -29,8 +28,7 @@ N I X T
 
 ``NIXT`` has all you need to program a unix cli program, such as disk
 perisistence for configuration files, event handler to handle the
-client/server connection, deferred exception handling to not crash
-on an error, etc.
+client/server connection, etc.
 
 ``NIXT`` contains python3 code to program objects in a functional way.
 it provides an "clean namespace" Object class that only has dunder
@@ -41,7 +39,7 @@ makes storing and reading to/from json possible.
 **INSTALL**
 
 
-installation is done with pipx
+installation is done with pip
 
 |
 | ``$ pip install nixt``
