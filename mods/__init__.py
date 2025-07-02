@@ -46,7 +46,7 @@ class Main(Default):
     otxt    = ""
     sets    = Default()
     verbose = False
-    version = 10
+    version = 340
 
 
 class Commands:
