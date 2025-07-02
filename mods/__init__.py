@@ -18,7 +18,6 @@ import _thread
 from nixt.client  import Fleet
 from nixt.object  import Default
 from nixt.thread  import later, launch
-from nixt.utility import rlog, spl
 
 
 STARTTIME = time.time()

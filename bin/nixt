@@ -17,11 +17,10 @@ from nixt.handler import Event
 from nixt.object  import dumps
 from nixt.persist import Workdir, pidname, skel, types
 from nixt.thread  import Errors, full
-from nixt.utility import level
 
 
 from mods import CHECKSUM, Commands, Main, command, inits, parse
-from mods import md5sum, mods, modules, settable
+from mods import level, md5sum, mods, modules, settable
 
 
 CHECKSUM2 = "5206bffdc9dbf7a0967565deaabc2144"
@@ -154,7 +153,7 @@ def cmd(event):
 
 
 def ls(event):
-    event.reply(",".join(types()))
+    event.reply(",".join([x.split(".")[-1].lower() for x in types()]))
 
 
 def md5(event):

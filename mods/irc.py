@@ -18,8 +18,7 @@ from nixt.handler import Event as IEvent
 from nixt.object  import Object, edit, fmt, keys
 from nixt.persist import getpath, ident, last, write
 from nixt.thread  import launch
-from nixt.utility import rlog
-from .            import Default, Main, command
+from .            import Default, Main, command, rlog
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]

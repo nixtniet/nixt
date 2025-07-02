@@ -25,7 +25,7 @@ from nixt.client  import Fleet
 from nixt.object  import Default, Object, fmt, update
 from nixt.persist import find, fntime, getpath, last, write
 from nixt.thread  import Repeater, launch
-from nixt.utility import elapsed, rlog, spl
+from .            import elapsed, rlog, spl
 
 
 DEBUG = False

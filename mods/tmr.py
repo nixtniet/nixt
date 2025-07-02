@@ -13,7 +13,7 @@ from nixt.client  import Fleet
 from nixt.object  import Object, items
 from nixt.persist import getpath, last, write
 from nixt.thread  import Timed
-from nixt.utility import elapsed, rlog
+from .            import elapsed, rlog
 
 
 class NoDate(Exception):

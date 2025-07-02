@@ -9,7 +9,7 @@ import time
 
 from nixt.object  import fmt
 from nixt.persist import find, fntime, long, skel, types
-from nixt.utility import elapsed
+from .            import elapsed
 
 
 def fnd(event):
