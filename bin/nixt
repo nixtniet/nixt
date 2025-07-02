@@ -26,6 +26,9 @@ CHECKSUM2 = "5206bffdc9dbf7a0967565deaabc2144"
 CHECKSUM2 = ""
 
 
+path = "omds"
+
+
 class CLI(Client):
 
     def __init__(self):

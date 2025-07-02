@@ -43,7 +43,7 @@ class Main(Default):
     name    = __name__.split(".", maxsplit=1)[0]
     opts    = Default()
     otxt    = ""
-    paths   = ["mods"]
+    path    = "mods"
     sets    = Default()
     verbose = False
     version = 10
@@ -68,9 +68,9 @@ class Commands:
             name = Commands.names.get(cmd, None)
             if not name:
                 return None
-            if Main.md5 and not check(name):
+            if Main.md5 and not check(Main.path, name):
                 return None
-            mod = load(name)
+            mod = load(Main.path, name)
             if mod:
                 Commands.scan(mod)
                 func = Commands.cmds.get(cmd)
@@ -172,21 +172,20 @@ def parse(obj, txt=""):
 "imports"
 
 
-def check(name, md5=""):
+def check(path, name, md5=""):
     if not CHECKSUM:
         return True
     if sys.modules.get(mname):
         return True
-    for path in Main.paths:
-        mname = f"{getname(path)}.{name}"
-        pth = os.path.join(path, name + ".py")
-        spec = importlib.util.spec_from_file_location(mname, pth)
-        if not spec:
-            continue
-        if md5sum(pth) == (md5 or MD5.get(name, "")):
-            return True
-        if CHECKSUM and Main.md5:
-            rlog("error", f"{name} md5sum failed.")
+    mname = f"{getname(path)}.{name}"
+    pth = os.path.join(path, name + ".py")
+    spec = importlib.util.spec_from_file_location(mname, pth)
+    if not spec:
+        return False
+    if md5sum(pth) == (md5 or MD5.get(name, "")):
+        return True
+    if CHECKSUM and Main.md5:
+        rlog("error", f"{name} md5sum failed.")
     return False
 
 
@@ -219,26 +218,25 @@ def gettbl(path):
     return mod
 
 
-def load(name):
+def load(path, name):
     with lock:
         if name in Main.ignore:
             return None
-        for path in Main.paths:
-            mname = f"{getname(path)}.{name}"
-            module = sys.modules.get(mname, None)
-            if module:
-                return module
-            pth = os.path.join(path, f"{name}.py")
-            if not os.path.exists(pth):
-                continue
-            spec = importlib.util.spec_from_file_location(mname, pth)
-            if not spec or not spec.loader:
-                return None
-            module = importlib.util.module_from_spec(spec)
-            if not module:
-                return None
-            spec.loader.exec_module(module)
-            sys.modules[mname] = module
+        mname = f"{getname(path)}.{name}"
+        module = sys.modules.get(mname, None)
+        if module:
+            return module
+        pth = os.path.join(path, f"{name}.py")
+        if not os.path.exists(pth):
+            return None
+        spec = importlib.util.spec_from_file_location(mname, pth)
+        if not spec or not spec.loader:
+            return None
+        module = importlib.util.module_from_spec(spec)
+        if not module:
+            return None
+        spec.loader.exec_module(module)
+        sys.modules[mname] = module
         if Main.debug:
             module.DEBUG = True
         return module
@@ -250,16 +248,15 @@ def md5sum(modpath):
         return str(hashlib.md5(txt).hexdigest())
 
 
-def mods(names=""):
+def mods(path, names=""):
     res = []
-    for path in Main.paths:
-        for nme in modules(path):
-            if names and nme not in spl(names):
-                continue
-            mod = load(nme)
-            if not mod:
-                continue
-            res.append(mod)
+    for nme in modules(path):
+        if names and nme not in spl(names):
+            continue
+        mod = load(nme)
+        if not mod:
+            continue
+        res.append(mod)
     return res
 
 
