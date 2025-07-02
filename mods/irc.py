@@ -14,12 +14,12 @@ import time
 
 
 from nixt.client  import Buffered, Fleet
-from nixt.command import Default, Main, command
 from nixt.handler import Event as IEvent
 from nixt.object  import Object, edit, fmt, keys
 from nixt.persist import getpath, ident, last, write
 from nixt.thread  import launch
 from nixt.utility import rlog
+from .            import Default, Main, command
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]

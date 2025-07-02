@@ -12,7 +12,6 @@ import unittest
 
 import nixt
 import nixt.client
-import nixt.command
 import nixt.handler
 import nixt.object
 import nixt.persist
@@ -25,7 +24,6 @@ from nixt.object import *
 
 PACKAGE = [
     'client',
-    'command',
     'handler',
     'object',
     'persist',

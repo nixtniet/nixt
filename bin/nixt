@@ -13,20 +13,22 @@ import _thread
 
 
 from nixt.client  import Client
-from nixt.command import CHECKSUM, Commands, Main, command, inits, parse
-from nixt.command import md5sum, mods, modules, settable
 from nixt.handler import Event
 from nixt.object  import dumps
-from nixt.persist import Workdir, pidname, skel
+from nixt.persist import Workdir, pidname, skel, types
 from nixt.thread  import Errors, full
 from nixt.utility import level
+
+
+from mods import CHECKSUM, Commands, Main, command, inits, parse
+from mods import md5sum, mods, modules, settable
 
 
 CHECKSUM2 = "5206bffdc9dbf7a0967565deaabc2144"
 CHECKSUM2 = ""
 
 
-path = "omds"
+Main.name = "nixt"
 
 
 class CLI(Client):
@@ -151,6 +153,10 @@ def cmd(event):
     event.reply(",".join(sorted([x for x in Commands.names if x not in Main.ignore])))
 
 
+def ls(event):
+    event.reply(",".join(types()))
+
+
 def md5(event):
     table = mods(path, "tbl")[0]
     event.reply(md5sum(table.__file__))
@@ -190,7 +196,7 @@ def background():
     setwd(Main.name)
     privileges()
     pidfile(pidname(Main.name))
-    settable("mods")
+    settable()
     Commands.add(cmd)
     inits(Main.init or "irc,rss")
     forever()
@@ -203,9 +209,10 @@ def console():
     Main.verbose = Main.sets.verbose or Main.verbose
     Main.level   = Main.sets.level or Main.level or "warn"
     Commands.add(cmd)
+    Commands.add(ls)
     level(Main.level or "debug")
     setwd(Main.name)
-    settable("mods")
+    settable()
     if "v" in Main.opts:
         banner()
     for _mod, thr in inits(Main.init):
@@ -222,8 +229,9 @@ def control():
     parse(Main, " ".join(sys.argv[1:]))
     level(Main.level or "debug")
     setwd(Main.name)
-    settable("mods")
+    settable()
     Commands.add(cmd)
+    Commands.add(ls)
     Commands.add(md5)
     Commands.add(srv)
     Commands.add(tbl)
@@ -239,7 +247,7 @@ def control():
 def service():
     level(Main.level or "debug")
     setwd(Main.name)
-    settable("mods")
+    settable()
     banner()
     privileges()
     pidfile(pidname(Main.name))
@@ -298,7 +306,7 @@ def main():
         out("checksum mismatch")
         os._exit(1)
     if check("a"):
-        Main.init = ",".join(Commands.names)
+        Main.init = ",".join(modules())
     if check("v"):
         setattr(Main.opts, "v", True)
     if check("c"):
