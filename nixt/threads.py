@@ -17,7 +17,7 @@ lock       = threading.RLock()
 
 class Thread(threading.Thread):
 
-    def __init__(self, func, thrname, *args, daemon=True, **kwargs):
+    def __init__(self, func, thrname, *args, daemon=False, **kwargs):
         super().__init__(None, self.run, thrname, (), daemon=daemon)
         self.name      = thrname or kwargs.get("name", name(func))
         self.queue     = queue.Queue()
@@ -65,6 +65,18 @@ def name(obj):
     if '__name__' in dir(obj):
         return f'{obj.__class__.__name__}.{obj.__name__}'
     return ""
+
+
+def hook(exc_type, exc_value, exc_traceback, thread):
+    traceback.print_exception(
+                               type(exc),
+                               exc,
+                               exc.__traceback__
+                              )
+    sys.exit()
+
+
+threading.excepthook = hook
 
 
 class Timy(threading.Timer):

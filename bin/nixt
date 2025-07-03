@@ -236,6 +236,7 @@ def control():
     evt.type = "command"
     evt.txt = Main.otxt
     command(evt)
+    Fleet.display(evt)
     #evt.wait()
 
 

@@ -6,6 +6,7 @@
 
 import queue
 import threading
+import time
 import _thread
 
 
@@ -17,25 +18,23 @@ class CLI(Handler):
 
     def __init__(self):
         Handler.__init__(self)
+        self.olock  = threading.RLock()
         Fleet.add(self)
 
     def announce(self, txt):
         pass
 
     def display(self, *args):
-        evt = args[0]
-        for tme in sorted(evt.result):
-            self.dosay(evt.channel, evt.result[tme])
+        with self.olock:
+            evt = args[0]
+            for tme in sorted(evt.result):
+                self.dosay(evt.channel, evt.result[tme])
 
     def dosay(self, channel, txt):
         self.say(channel, txt)
 
     def raw(self, txt):
         raise NotImplementedError("raw")
-
-    def register(self, cmd, cbs):
-        cbs.post = self.display
-        super().register(cmd, cbs)
 
     def say(self, channel, txt):
         self.raw(txt)
@@ -45,7 +44,6 @@ class Client(CLI):
 
     def __init__(self):
         CLI.__init__(self)
-        self.olock  = threading.RLock()
         self.oqueue = queue.Queue()
         self.oready = threading.Event()
         self.ostop  = threading.Event()
@@ -58,15 +56,16 @@ class Client(CLI):
             evt = self.oqueue.get()
             if evt is None:
                 self.oqueue.task_done()
-                continue
+                break
             self.display(evt)
             self.oqueue.task_done()
         self.oready.set()
 
     def start(self):
-        self.oready.clear()
-        launch(self.output)
         super().start()
+        self.oready.clear()
+        self.ostop.clear()
+        launch(self.output)
 
     def stop(self):
         super().stop()
@@ -75,8 +74,8 @@ class Client(CLI):
         self.oready.wait()
 
     def wait(self):
-        super().wait()
         self.oqueue.join()
+        super().wait()
 
 
 class Fleet:
@@ -104,7 +103,7 @@ class Fleet:
     @staticmethod
     def display(evt):
         clt = Fleet.get(evt.orig)
-        clt.display(evt)
+        clt.oput(evt)
 
     @staticmethod
     def first():
@@ -131,6 +130,7 @@ class Fleet:
 
     @staticmethod
     def wait():
+        time.sleep(0.1)
         for clt in Fleet.all():
             clt.wait()
 

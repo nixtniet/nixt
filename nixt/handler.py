@@ -36,11 +36,13 @@ class Handler:
             with self.lock:
                 event = self.poll()
                 if event is None:
+                    self.queue.task_done()
                     break
                 if not self.available(event):
                     continue
                 event.orig = repr(self)
                 self.callback(event)
+                self.queue.task_done()
         self.ready.set()
 
     def poll(self):
@@ -52,9 +54,9 @@ class Handler:
     def register(self, typ, cbs):
         self.cbs[typ] = cbs
 
-    def start(self):
+    def start(self, daemon=True):
         self.stopped.clear()
-        launch(self.loop)
+        launch(self.loop, daemon=daemon)
 
     def stop(self):
         self.stopped.set()
