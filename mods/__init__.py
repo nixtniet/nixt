@@ -91,6 +91,8 @@ def command(evt):
     if func:
         func(evt)
         Fleet.display(evt)
+    else:
+        evt.ready()
 
 
 def inits(names):

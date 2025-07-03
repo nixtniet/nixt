@@ -68,6 +68,7 @@ class Event(Object):
 
     def __init__(self):
         Object.__init__(self)
+        self._ready  = threading.Event()
         self._thr    = None
         self.channel = ""
         self.ctime   = time.time()
@@ -80,10 +81,14 @@ class Event(Object):
     def done(self):
         self.reply("ok")
 
+    def ready(self):
+        self._ready.set()
+
     def reply(self, txt):
         self.result[time.time()] = txt
 
     def wait(self, timeout=None):
+        self._ready.wait()
         if self._thr:
             self._thr.join()
 

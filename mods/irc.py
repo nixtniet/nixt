@@ -97,7 +97,7 @@ class IRC(Client):
     def __init__(self):
         Client.__init__(self)
         self.buffer = []
-        self.cache = {}
+        self.cache = Object()
         self.cfg = Config()
         self.channels = []
         self.events = Object()

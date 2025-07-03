@@ -29,6 +29,7 @@ class CLI(Handler):
             evt = args[0]
             for tme in sorted(evt.result):
                 self.dosay(evt.channel, evt.result[tme])
+            evt.ready()
 
     def dosay(self, channel, txt):
         self.say(channel, txt)

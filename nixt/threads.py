@@ -17,7 +17,7 @@ lock       = threading.RLock()
 
 class Thread(threading.Thread):
 
-    def __init__(self, func, thrname, *args, daemon=False, **kwargs):
+    def __init__(self, func, thrname, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, thrname, (), daemon=daemon)
         self.name      = thrname or kwargs.get("name", name(func))
         self.queue     = queue.Queue()
