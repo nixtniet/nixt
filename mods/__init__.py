@@ -37,7 +37,7 @@ class Main(Default):
 
     debug   = False
     gets    = Default()
-    ignore  = "dbg,"
+    ignore  = ""
     init    = ""
     level   = "debug"
     md5     = True
@@ -90,21 +90,18 @@ def command(evt):
     func = Commands.get(evt.cmd)
     if func:
         func(evt)
+        Fleet.display(evt)
 
 
 def inits(names):
     modz = []
     for name in sorted(spl(names)):
-        try:
-            mod = load(name)
-            if not mod:
-                continue
-            if "init" in dir(mod):
-                thr = launch(mod.init)
-                modz.append((mod, thr))
-        except Exception as ex:
-            later(ex)
-            _thread.interrupt_main()
+        mod = load(name)
+        if not mod:
+            continue
+        if "init" in dir(mod):
+            thr = launch(mod.init)
+            modz.append((mod, thr))
     return modz
 
 

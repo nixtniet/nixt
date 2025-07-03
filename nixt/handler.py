@@ -29,7 +29,7 @@ class Handler:
 
     def callback(self, event):
         func = self.cbs.get(event.type, None)
-        event._thr = launch(func, event)
+        event._thr = launch(func, event, daemon=True)
 
     def loop(self):
         while not self.stopped.is_set():

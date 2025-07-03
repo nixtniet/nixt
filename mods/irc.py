@@ -13,7 +13,7 @@ import threading
 import time
 
 
-from nixt.clients import Buffered, Fleet
+from nixt.clients import Client, Fleet
 from nixt.handler import Event as IEvent
 from nixt.objects import Object, edit, fmt, keys
 from nixt.persist import getpath, ident, last, write
@@ -92,10 +92,10 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-class IRC(Buffered):
+class IRC(Client):
 
     def __init__(self):
-        Buffered.__init__(self)
+        Client.__init__(self)
         self.buffer = []
         self.cache = {}
         self.cfg = Config()
@@ -474,7 +474,7 @@ class IRC(Buffered):
         self.events.ready.clear()
         self.events.connected.clear()
         self.events.joined.clear()
-        Buffered.start(self)
+        Client.start(self)
         launch(
                self.doconnect,
                self.cfg.server or "localhost",

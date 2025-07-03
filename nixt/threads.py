@@ -17,7 +17,7 @@ lock       = threading.RLock()
 
 class Thread(threading.Thread):
 
-    def __init__(self, func, thrname, *args, daemon=False, **kwargs):
+    def __init__(self, func, thrname, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, thrname, (), daemon=daemon)
         self.name      = thrname or kwargs.get("name", name(func))
         self.queue     = queue.Queue()
@@ -36,8 +36,6 @@ class Thread(threading.Thread):
     def run(self):
         func, args = self.queue.get()
         self.result = func(*args)
-        if "post" in dir(func):
-            func.post(*args)
 
     def join(self, timeout=None):
         super().join(timeout)
@@ -67,9 +65,6 @@ def name(obj):
     if '__name__' in dir(obj):
         return f'{obj.__class__.__name__}.{obj.__name__}'
     return ""
-
-
-"timers"
 
 
 class Timy(threading.Timer):
@@ -115,9 +110,6 @@ class Repeater(Timed):
     def run(self):
         launch(self.start)
         super().run()
-
-
-"errors"
 
 
 class Errors:
@@ -169,9 +161,6 @@ def line(exc):
         for note in exc.__notes__:
             res += f" {note}"
     return res
-
-
-"interface"
 
 
 def __dir__():

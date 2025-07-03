@@ -135,12 +135,9 @@ class Fleet:
             clt.wait()
 
 
-Buffered = Client
-
-
 def __dir__():
     return (
-        'Buffered',
+        'CLI',
         'Client',
         'Fleet'
     )

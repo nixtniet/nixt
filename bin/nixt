@@ -60,10 +60,6 @@ class Console(CLI):
         return evt
 
 
-def handler(signum, frame):
-    _thread.interrupt_main()
-
-
 "output"
 
 
@@ -118,11 +114,7 @@ def errors():
 
 def forever():
     while True:
-        try:
-            time.sleep(0.1)
-        except (KeyboardInterrupt, EOFError) as ex:
-            print("exit")
-            _thread.interrupt_main()
+        time.sleep(0.1)
 
 
 def pidfile(filename):
@@ -244,7 +236,7 @@ def control():
     evt.type = "command"
     evt.txt = Main.otxt
     command(evt)
-    evt.wait()
+    #evt.wait()
 
 
 def service():
@@ -267,7 +259,6 @@ def wrapped(func):
         func()
     except (KeyboardInterrupt, EOFError):
         out("")
-    errors()
 
 
 def wrap(func):
