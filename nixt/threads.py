@@ -67,13 +67,9 @@ def name(obj):
     return ""
 
 
-def hook(exc_type, exc_value, exc_traceback, thread):
-    traceback.print_exception(
-                               type(exc),
-                               exc,
-                               exc.__traceback__
-                              )
-    sys.exit()
+def hook(args):
+    traceback.print_exception(*args[:-1])
+    _thread.interrupt_main()
 
 
 threading.excepthook = hook

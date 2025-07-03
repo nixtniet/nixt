@@ -22,27 +22,23 @@ class Handler:
         self.queue   = queue.Queue()
         self.ready   = threading.Event()
         self.stopped = threading.Event()
-        self.threshold = 50
 
     def available(self, evt):
         return evt.type in self.cbs
 
     def callback(self, event):
         func = self.cbs.get(event.type, None)
-        event._thr = launch(func, event, daemon=True)
+        event._thr = launch(func, event, daemon=False)
 
     def loop(self):
         while not self.stopped.is_set():
-            with self.lock:
-                event = self.poll()
-                if event is None:
-                    self.queue.task_done()
-                    break
-                if not self.available(event):
-                    continue
-                event.orig = repr(self)
-                self.callback(event)
-                self.queue.task_done()
+            event = self.poll()
+            if event is None:
+                break
+            if not self.available(event):
+                continue
+            event.orig = repr(self)
+            self.callback(event)
         self.ready.set()
 
     def poll(self):
@@ -64,7 +60,8 @@ class Handler:
         self.ready.wait()
 
     def wait(self):
-        self.queue.join()
+        pass
+        #self.queue.join()
 
 
 class Event(Object):
