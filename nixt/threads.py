@@ -34,14 +34,10 @@ class Thread(threading.Thread):
             yield k
 
     def run(self):
-        try:
-            func, args = self.queue.get()
-            self.result = func(*args)
-            if "post" in dir(func):
-                func.post(*args)
-        except Exception as ex:
-            later(ex)
-            _thread.interrupt_main()
+        func, args = self.queue.get()
+        self.result = func(*args)
+        if "post" in dir(func):
+            func.post(*args)
 
     def join(self, timeout=None):
         super().join(timeout)

@@ -12,7 +12,10 @@ import time
 import _thread
 
 
-from nixt.clients import Client
+sys.path.insert(0, os.getcwd())
+
+
+from nixt.clients import Client, Fleet
 from nixt.handler import Event
 from nixt.objects import dumps
 from nixt.persist import Workdir, pidname, skel, types
@@ -117,7 +120,8 @@ def forever():
     while True:
         try:
             time.sleep(0.1)
-        except (KeyboardInterrupt, EOFError):
+        except (KeyboardInterrupt, EOFError) as ex:
+            print("exit")
             _thread.interrupt_main()
 
 

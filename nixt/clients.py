@@ -17,17 +17,15 @@ class CLI(Handler):
 
     def __init__(self):
         Handler.__init__(self)
-        self.olock  = threading.RLock()
         Fleet.add(self)
 
     def announce(self, txt):
         pass
 
     def display(self, *args):
-        with self.olock:
-            evt = args[0]
-            for tme in sorted(evt.result):
-                self.dosay(evt.channel, evt.result[tme])
+        evt = args[0]
+        for tme in sorted(evt.result):
+            self.dosay(evt.channel, evt.result[tme])
 
     def dosay(self, channel, txt):
         self.say(channel, txt)
@@ -43,13 +41,11 @@ class CLI(Handler):
         self.raw(txt)
 
 
-"buffered"
-
-
 class Client(CLI):
 
     def __init__(self):
         CLI.__init__(self)
+        self.olock  = threading.RLock()
         self.oqueue = queue.Queue()
         self.oready = threading.Event()
         self.ostop  = threading.Event()
@@ -59,18 +55,12 @@ class Client(CLI):
 
     def output(self):
         while not self.ostop.is_set():
-            try:
-                evt = self.oqueue.get()
-                if evt is None:
-                    self.oqueue.task_done()
-                    continue
-                self.display(evt)
+            evt = self.oqueue.get()
+            if evt is None:
                 self.oqueue.task_done()
-            except (KeyboardInterrupt, EOFError):
-                _thread.interrupt_main()
-            except Exception as ex:
-                later(ex)
-                _thread.interrupt_main()
+                continue
+            self.display(evt)
+            self.oqueue.task_done()
         self.oready.set()
 
     def start(self):
@@ -79,17 +69,14 @@ class Client(CLI):
         super().start()
 
     def stop(self):
+        super().stop()
         self.ostop.set()
         self.oqueue.put(None)
         self.oready.wait()
-        super().stop()
 
     def wait(self):
         super().wait()
         self.oqueue.join()
-
-
-"fleet"
 
 
 class Fleet:
@@ -149,9 +136,6 @@ class Fleet:
 
 
 Buffered = Client
-
-
-"interface"
 
 
 def __dir__():

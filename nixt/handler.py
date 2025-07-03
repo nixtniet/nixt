@@ -34,19 +34,13 @@ class Handler:
     def loop(self):
         while not self.stopped.is_set():
             with self.lock:
-                try:
-                    event = self.poll()
-                    if event is None or not self.available(event):
-                        self.queue.task_done()
-                        continue
-                    event.orig = repr(self)
-                    self.callback(event)
-                    self.queue.task_done()
-                except (KeyboardInterrupt, EOFError):
-                    _thread.interrupt_main()
-                except Exception as ex:
-                    later(ex)
-                    _thread.interrupt_main()
+                event = self.poll()
+                if event is None:
+                    break
+                if not self.available(event):
+                    continue
+                event.orig = repr(self)
+                self.callback(event)
         self.ready.set()
 
     def poll(self):
@@ -71,9 +65,6 @@ class Handler:
         self.queue.join()
 
 
-"event"
-
-
 class Event(Object):
 
     def __init__(self):
@@ -96,9 +87,6 @@ class Event(Object):
     def wait(self, timeout=None):
         if self._thr:
             self._thr.join()
-
-
-"interface"
 
 
 def __dir__():

@@ -92,6 +92,7 @@ class CLI(Client):
     def raw(self, txt):
         if "v" in Main.opts:
             print(txt)
+            sys.stdout.flush()
 
 
 def banner():
