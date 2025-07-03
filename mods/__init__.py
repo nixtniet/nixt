@@ -90,8 +90,6 @@ def command(evt):
     func = Commands.get(evt.cmd)
     if func:
         func(evt)
-        Fleet.display(evt)
-    evt.ready()
 
 
 def inits(names):

@@ -47,7 +47,7 @@ class Console(CLI):
         pass
 
     def callback(self, evt):
-        CLI.callback(self, evt)
+        super().callback(evt)
         evt.wait()
 
     def poll(self):

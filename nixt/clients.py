@@ -13,7 +13,7 @@ from .handler import Handler
 from .threads import later, launch
 
 
-class Client(Handler):
+class CLI(Handler):
 
     def __init__(self):
         Handler.__init__(self)
@@ -23,17 +23,21 @@ class Client(Handler):
     def announce(self, txt):
         pass
 
-    def display(self, evt):
+    def display(self, *args):
         with self.olock:
+            evt = args[0]
             for tme in sorted(evt.result):
                 self.dosay(evt.channel, evt.result[tme])
-            evt.ready()
 
     def dosay(self, channel, txt):
         self.say(channel, txt)
 
     def raw(self, txt):
         raise NotImplementedError("raw")
+
+    def register(self, cmd, cbs):
+        cbs.post = self.display
+        super().register(cmd, cbs)
 
     def say(self, channel, txt):
         self.raw(txt)
@@ -42,11 +46,12 @@ class Client(Handler):
 "buffered"
 
 
-class Buffered(Client):
+class Client(CLI):
 
     def __init__(self):
-        Client.__init__(self)
+        CLI.__init__(self)
         self.oqueue = queue.Queue()
+        self.oready = threading.Event()
         self.ostop  = threading.Event()
 
     def oput(self, evt):
@@ -57,7 +62,8 @@ class Buffered(Client):
             try:
                 evt = self.oqueue.get()
                 if evt is None:
-                    break
+                    self.oqueue.task_done()
+                    continue
                 self.display(evt)
                 self.oqueue.task_done()
             except (KeyboardInterrupt, EOFError):
@@ -65,15 +71,22 @@ class Buffered(Client):
             except Exception as ex:
                 later(ex)
                 _thread.interrupt_main()
+        self.oready.set()
 
     def start(self):
+        self.oready.clear()
         launch(self.output)
         super().start()
 
     def stop(self):
         self.ostop.set()
         self.oqueue.put(None)
+        self.oready.wait()
         super().stop()
+
+    def wait(self):
+        super().wait()
+        self.oqueue.join()
 
 
 "fleet"
@@ -127,15 +140,15 @@ class Fleet:
     @staticmethod
     def shutdown():
         for clt in Fleet.all():
-            if "oqueue" in dir(clt):
-                clt.oqueue.join()
             clt.stop()
 
     @staticmethod
     def wait():
         for clt in Fleet.all():
-            if "wait" in dir(clt):
-                clt.wait()
+            clt.wait()
+
+
+Buffered = Client
 
 
 "interface"

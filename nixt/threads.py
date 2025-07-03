@@ -17,7 +17,7 @@ lock       = threading.RLock()
 
 class Thread(threading.Thread):
 
-    def __init__(self, func, thrname, *args, daemon=True, **kwargs):
+    def __init__(self, func, thrname, *args, daemon=False, **kwargs):
         super().__init__(None, self.run, thrname, (), daemon=daemon)
         self.name      = thrname or kwargs.get("name", name(func))
         self.queue     = queue.Queue()
@@ -37,15 +37,13 @@ class Thread(threading.Thread):
         try:
             func, args = self.queue.get()
             self.result = func(*args)
+            if "post" in dir(func):
+                func.post(*args)
         except Exception as ex:
             later(ex)
-            try:
-                args[0].ready()
-            except (IndexError, AttributeError):
-                pass
             _thread.interrupt_main()
 
-    def join(self, timeout=0.0):
+    def join(self, timeout=None):
         super().join(timeout)
         return self.result
 

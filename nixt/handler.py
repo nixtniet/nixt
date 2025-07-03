@@ -17,38 +17,36 @@ from .threads import later, launch, name
 class Handler:
 
     def __init__(self):
-        self.cblock  = _thread.allocate_lock()
+        self.lock  = _thread.allocate_lock()
         self.cbs     = {}
         self.queue   = queue.Queue()
         self.ready   = threading.Event()
         self.stopped = threading.Event()
         self.threshold = 50
 
-    def callback(self, evt):
-        with self.cblock:
-            func = self.cbs.get(evt.type, None)
-            if not func:
-                evt.ready()
-                return
-            if evt.txt:
-                cmd = evt.txt.split(maxsplit=1)[0]
-            else:
-                cmd = name(func)
-            evt._thr = launch(func, evt, name=cmd, daemon=True)
+    def available(self, evt):
+        return evt.type in self.cbs
+
+    def callback(self, event):
+        func = self.cbs.get(event.type, None)
+        event._thr = launch(func, event)
 
     def loop(self):
         while not self.stopped.is_set():
-            try:
-                evt = self.poll()
-                if evt is None:
-                    break
-                evt.orig = repr(self)
-                self.callback(evt)
-            except (KeyboardInterrupt, EOFError):
-                _thread.interrupt_main()
-            except Exception as ex:
-                later(ex)
-                _thread.interrupt_main()
+            with self.lock:
+                try:
+                    event = self.poll()
+                    if event is None or not self.available(event):
+                        self.queue.task_done()
+                        continue
+                    event.orig = repr(self)
+                    self.callback(event)
+                    self.queue.task_done()
+                except (KeyboardInterrupt, EOFError):
+                    _thread.interrupt_main()
+                except Exception as ex:
+                    later(ex)
+                    _thread.interrupt_main()
         self.ready.set()
 
     def poll(self):
@@ -62,15 +60,15 @@ class Handler:
 
     def start(self):
         self.stopped.clear()
-        self.ready.clear()
         launch(self.loop)
 
     def stop(self):
         self.stopped.set()
         self.queue.put(None)
+        self.ready.wait()
 
     def wait(self):
-        self.ready.wait()
+        self.queue.join()
 
 
 "event"
@@ -80,7 +78,6 @@ class Event(Object):
 
     def __init__(self):
         Object.__init__(self)
-        self._ready  = threading.Event()
         self._thr    = None
         self.channel = ""
         self.ctime   = time.time()
@@ -93,16 +90,12 @@ class Event(Object):
     def done(self):
         self.reply("ok")
 
-    def ready(self):
-        self._ready.set()
-
     def reply(self, txt):
         self.result[time.time()] = txt
 
     def wait(self, timeout=None):
         if self._thr:
             self._thr.join()
-        self._ready.wait(timeout)
 
 
 "interface"
