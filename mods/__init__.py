@@ -92,7 +92,6 @@ def command(evt):
         evt.ready()
         return
     func(evt)
-    print(evt)
     Fleet.display(evt)
 
 

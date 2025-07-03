@@ -23,8 +23,8 @@ class Handler:
         self.ready   = threading.Event()
         self.stopped = threading.Event()
 
-    def available(self, evt):
-        return evt.type in self.cbs
+    def available(self, event):
+        return event.type in self.cbs
 
     def callback(self, event):
         func = self.cbs.get(event.type, None)
@@ -36,16 +36,18 @@ class Handler:
             if event is None:
                 break
             if not self.available(event):
+                self.queue.task_done()
                 continue
             event.orig = repr(self)
             self.callback(event)
+            self.queue.task_done()
         self.ready.set()
 
     def poll(self):
         return self.queue.get()
 
-    def put(self, evt):
-        self.queue.put(evt)
+    def put(self, event):
+        self.queue.put(event)
 
     def register(self, typ, cbs):
         self.cbs[typ] = cbs
@@ -60,8 +62,7 @@ class Handler:
         self.ready.wait()
 
     def wait(self):
-        pass
-        #self.queue.join()
+        self.queue.join()
 
 
 "event"
