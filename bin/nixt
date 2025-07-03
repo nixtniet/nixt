@@ -15,7 +15,7 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client, Fleet
+from nixt.clients import CLI, Client, Fleet
 from nixt.handler import Event
 from nixt.objects import dumps
 from nixt.persist import Workdir, pidname, skel, types
@@ -33,10 +33,10 @@ CHECKSUM2 = ""
 Main.name = "nixt"
 
 
-class CLI(Client):
+class CLI(CLI):
 
     def __init__(self):
-        Client.__init__(self)
+        super().__init__()
         self.register("command", command)
 
     def raw(self, txt):
@@ -236,8 +236,7 @@ def control():
     evt.type = "command"
     evt.txt = Main.otxt
     command(evt)
-    Fleet.display(evt)
-    #evt.wait()
+    evt.wait()
 
 
 def service():

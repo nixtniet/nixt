@@ -24,12 +24,11 @@ class CLI(Handler):
     def announce(self, txt):
         pass
 
-    def display(self, *args):
+    def display(self, event):
         with self.olock:
-            evt = args[0]
-            for tme in sorted(evt.result):
-                self.dosay(evt.channel, evt.result[tme])
-            evt.ready()
+            for tme in sorted(event.result):
+                self.dosay(event.channel, event.result[tme])
+            event.ready()
 
     def dosay(self, channel, txt):
         self.say(channel, txt)
@@ -79,6 +78,9 @@ class Client(CLI):
         super().wait()
 
 
+"fleet"
+
+
 class Fleet:
 
     clients = {}
@@ -104,7 +106,7 @@ class Fleet:
     @staticmethod
     def display(evt):
         clt = Fleet.get(evt.orig)
-        clt.oput(evt)
+        clt.display(evt)
 
     @staticmethod
     def first():
@@ -134,6 +136,9 @@ class Fleet:
         time.sleep(0.1)
         for clt in Fleet.all():
             clt.wait()
+
+
+"interface"
 
 
 def __dir__():

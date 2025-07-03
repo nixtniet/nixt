@@ -88,11 +88,12 @@ class Commands:
 def command(evt):
     parse(evt)
     func = Commands.get(evt.cmd)
-    if func:
-        func(evt)
-        Fleet.display(evt)
-    else:
+    if not func:
         evt.ready()
+        return
+    func(evt)
+    print(evt)
+    Fleet.display(evt)
 
 
 def inits(names):

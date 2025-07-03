@@ -75,6 +75,9 @@ def hook(args):
 threading.excepthook = hook
 
 
+"timer/repeater"
+
+
 class Timy(threading.Timer):
 
     def __init__(self, sleep, func, *args, **kwargs):
@@ -118,6 +121,9 @@ class Repeater(Timed):
     def run(self):
         launch(self.start)
         super().run()
+
+
+"errors"
 
 
 class Errors:
@@ -169,6 +175,9 @@ def line(exc):
         for note in exc.__notes__:
             res += f" {note}"
     return res
+
+
+"interface"
 
 
 def __dir__():
