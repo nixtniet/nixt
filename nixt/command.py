@@ -76,7 +76,6 @@ def inits(names):
     modz = []
     for name in sorted(spl(names)):
         path = os.path.join(Main.modpath, name + ".py")
-        print(path)
         mod = load(path, name)
         if not mod:
             continue

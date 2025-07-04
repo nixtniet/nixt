@@ -21,8 +21,8 @@ from nixt.command import Main, Commands, command, inits, modules, parse, scan
 from nixt.errors  import Errors, full
 from nixt.event   import Event
 from nixt.fleet   import Fleet
+from nixt.object  import dumps
 from nixt.persist import Workdir, pidname, skel, types
-from nixt.serial  import dumps
 from nixt.thread  import hook
 from nixt.utils   import level, rlog
 
@@ -182,6 +182,7 @@ def console():
     Main.init = Main.sets.init or Main.init
     Main.verbose = Main.sets.verbose or Main.verbose
     Main.level   = Main.sets.level or Main.level or "warn"
+    level(Main.level)
     setwd(Main.name)
     Commands.add(cmd)
     Commands.add(ls)

@@ -489,8 +489,8 @@ class IRC(Output):
 
     def stop(self):
         self.state.stopkeep = True
+        Output.stop(self)
         self.disconnect()
-        super().stop
 
     def wait(self):
         self.events.ready.wait()

@@ -69,7 +69,7 @@ class Output(Client):
         launch(self.output)
 
     def stop(self):
-        super().stop()
+        Client.stop(self)
         self.ostop.set()
         self.oqueue.put(None)
         self.oready.wait()

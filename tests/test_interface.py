@@ -20,7 +20,6 @@ import nixt.event
 import nixt.fleet
 import nixt.object
 import nixt.persist
-import nixt.serial
 import nixt.thread
 import nixt.timer
 
@@ -37,7 +36,6 @@ PACKAGE = [
     'event',
     'fleet',
     'object',
-    'serial',
     'persist',
     'thread',
     'timer'
