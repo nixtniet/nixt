@@ -4,7 +4,6 @@
 "a clean namespace"
 
 
-import json
 
 
 class Object:

@@ -11,7 +11,7 @@ import time
 
 
 from .disk   import Cache, read
-from .object import Object, fqn, update
+from .object import Object, fqn, items, update
 
 
 class Workdir:

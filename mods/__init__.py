@@ -15,7 +15,6 @@ import time
 import _thread
 
 
-from nixt.error  import later
 from nixt.fleet  import Fleet
 from nixt.object import Default
 from nixt.thread import launch

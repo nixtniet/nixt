@@ -6,12 +6,10 @@
 
 import queue
 import threading
-import time
 import _thread
 
 
-from .object import Object
-from .thread import launch, name
+from .thread import launch
 
 
 class Handler:

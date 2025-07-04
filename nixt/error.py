@@ -4,7 +4,11 @@
 "errors"
 
 
+import threading
 import traceback
+
+
+lock = threading.RLock()
 
 
 class Errors:
