@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"handler"
+"callback engine"
 
 
 import queue
@@ -12,7 +12,7 @@ import _thread
 from .thread import launch
 
 
-class Handler:
+class Engine:
 
     def __init__(self):
         self.lock = _thread.allocate_lock()
@@ -65,5 +65,5 @@ class Handler:
 
 def __dir__():
     return (
-        'Handler',
+        'Engine',
     )

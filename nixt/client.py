@@ -8,15 +8,15 @@ import queue
 import threading
 
 
-from .fleet   import Fleet
-from .handler import Handler
-from .thread  import launch
+from .engine import Engine
+from .fleet  import Fleet
+from .thread import launch
 
 
-class Client(Handler):
+class Client(Engine):
 
     def __init__(self):
-        Handler.__init__(self)
+        Engine.__init__(self)
         self.olock  = threading.RLock()
         Fleet.add(self)
 
@@ -39,10 +39,10 @@ class Client(Handler):
         self.raw(txt)
 
 
-"buffered"
+"output"
 
 
-class Buffered(Client):
+class Output(Client):
 
     def __init__(self):
         Client.__init__(self)
@@ -85,6 +85,6 @@ class Buffered(Client):
 
 def __dir__():
     return (
-        'Biffered',
-        'Client'
+        'Client',
+        'Output'
     )

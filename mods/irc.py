@@ -13,14 +13,14 @@ import threading
 import time
 
 
-from nixt.client  import Buffered
+from nixt.client  import Output
 from nixt.disk    import write
 from nixt.event   import Event as IEvent
 from nixt.fleet   import Fleet
-from nixt.object  import Default, Object, edit, fmt, keys
+from nixt.object  import Object, keys
 from nixt.persist import getpath, ident, last
 from nixt.thread  import launch
-from .            import Main, command, rlog
+from .            import Default, Main, command, edit, fmt, rlog
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]
@@ -94,10 +94,10 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-class IRC(Buffered):
+class IRC(Output):
 
     def __init__(self):
-        Buffered.__init__(self)
+        output.__init__(self)
         self.buffer = []
         self.cache = Object()
         self.cfg = Config()

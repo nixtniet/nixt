@@ -23,11 +23,11 @@ from urllib.parse import quote_plus, urlencode
 
 from nixt.client  import Fleet
 from nixt.disk    import write
-from nixt.object  import Default, Object, fmt, update
+from nixt.object  import Object, update
 from nixt.persist import find, fntime, getpath, last
 from nixt.timer   import Repeater
 from nixt.thread  import launch
-from .            import elapsed, rlog, spl
+from .            import Default, elapsed, fmt, rlog, spl
 
 
 DEBUG = False
