@@ -15,12 +15,12 @@ import time
 
 from nixt.client  import Output
 from nixt.disk    import write
-from nixt.event   import Event as IEvent
 from nixt.fleet   import Fleet
 from nixt.object  import Object, keys
 from nixt.persist import getpath, ident, last
 from nixt.thread  import launch
 from .            import Default, Main, command, edit, fmt, rlog
+from .            import Event as IEvent
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]
@@ -97,7 +97,7 @@ wrapper = TextWrap()
 class IRC(Output):
 
     def __init__(self):
-        output.__init__(self)
+        Output.__init__(self)
         self.buffer = []
         self.cache = Object()
         self.cfg = Config()
@@ -476,7 +476,7 @@ class IRC(Output):
         self.events.ready.clear()
         self.events.connected.clear()
         self.events.joined.clear()
-        Buffered.start(self)
+        Output.start(self)
         launch(
                self.doconnect,
                self.cfg.server or "localhost",

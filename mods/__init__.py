@@ -18,7 +18,7 @@ import _thread
 
 from nixt.client  import Client
 from nixt.fleet   import Fleet
-from nixt.object  import Object
+from nixt.object  import Object, keys
 from nixt.persist import Workdir, skel
 from nixt.thread  import launch
 
@@ -50,7 +50,7 @@ class Main(Default):
     gets    = Default()
     ignore  = ""
     init    = ""
-    level   = "debug"
+    level   = "warn"
     md5     = True
     name    = __name__.split(".", maxsplit=1)[0]
     opts    = Default()
@@ -149,7 +149,7 @@ def command(evt):
         return
     func(evt)
     Fleet.display(evt)
-
+    evt.ready()
 
 def inits(names):
     modz = []

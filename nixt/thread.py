@@ -4,6 +4,7 @@
 "threading"
 
 
+import logging
 import queue
 import time
 import threading
@@ -42,8 +43,8 @@ class Thread(threading.Thread):
         return self.result
 
 
-def hook(args):
-    traceback.print_exception(*args[:-1])
+def hook(*args):
+    logging.exception('exception', *args[:-2])
     _thread.interrupt_main()
 
 

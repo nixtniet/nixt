@@ -9,6 +9,7 @@ import os
 import pathlib
 import sys
 import time
+import threading
 import _thread
 
 
@@ -17,13 +18,13 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.client  import Client
 from nixt.errors  import Errors, full
-from nixt.event   import Event
 from nixt.fleet   import Fleet
 from nixt.persist import Workdir, pidname, skel, types
 from nixt.serial  import dumps
+from nixt.thread  import hook
 
 
-from mods import CHECKSUM, Commands, Main, command, inits, parse
+from mods import CHECKSUM, Commands, Event, Main, command, inits, parse
 from mods import level, md5sum, mods, modules, settable
 
 
@@ -32,6 +33,9 @@ CHECKSUM2 = ""
 
 
 Main.name = "nixt"
+
+
+sys.excepthook = hook
 
 
 class CLI(Client):
@@ -115,7 +119,10 @@ def errors():
 
 def forever():
     while True:
-        time.sleep(0.01)
+        try:
+            time.sleep(0.01)
+        except (KeyboardInterrupt, EOFError):
+            sys.exit()
 
 
 def pidfile(filename):
@@ -189,8 +196,9 @@ def tbl(event):
 
 def background():
     daemon("-v" in sys.argv)
-    setwd(Main.name)
     privileges()
+    level(Main.level or "debug")
+    setwd(Main.name)
     pidfile(pidname(Main.name))
     settable()
     Commands.add(cmd)
@@ -206,7 +214,6 @@ def console():
     Main.level   = Main.sets.level or Main.level or "warn"
     Commands.add(cmd)
     Commands.add(ls)
-    level(Main.level or "debug")
     setwd(Main.name)
     settable()
     if "v" in Main.opts:
@@ -241,7 +248,7 @@ def control():
 
 
 def service():
-    level(Main.level or "debug")
+    level(Main.level or "warn")
     setwd(Main.name)
     settable()
     banner()

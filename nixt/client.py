@@ -27,7 +27,6 @@ class Client(Engine):
         with self.olock:
             for tme in sorted(event.result):
                 self.dosay(event.channel, event.result[tme])
-            event.ready()
 
     def dosay(self, channel, txt):
         self.say(channel, txt)

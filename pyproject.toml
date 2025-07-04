@@ -14,10 +14,11 @@ authors = [
 ]
 description = "NIXT"
 readme = "README.rst"
-license = { text="Public Domain"}
-classifiers=[
+license-files = [
+    'LICENSE'
+]
+classifiers = [
     'Development Status :: 3 - Alpha',
-    'License :: Public Domain',
     'Operating System :: Unix',
     'Programming Language :: Python :: 3',
     'Topic :: Utilities'
