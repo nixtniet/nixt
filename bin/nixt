@@ -17,7 +17,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client  import Client
-from nixt.command import Main, Commands, command, inits, parse, scan
+from nixt.command import Main, Commands, command, inits, modules, parse, scan
 from nixt.errors  import Errors, full
 from nixt.event   import Event
 from nixt.fleet   import Fleet
@@ -155,35 +155,10 @@ def ls(event):
     event.reply(",".join([x.split(".")[-1].lower() for x in types()]))
 
 
-def md5(event):
-    table = mods(path, "tbl")[0]
-    event.reply(md5sum(table.__file__))
-
-
 def srv(event):
     import getpass
     name = getpass.getuser()
     event.reply(TXT % (Main.name.upper(), name, name, name, Main.name))
-
-
-def tbl(event):
-    if not check("f"):
-        Commands.names = {}
-    for mod in mods():
-        Commands.scan(mod)
-    event.reply("# This file is placed in the Public Domain.")
-    event.reply("")
-    event.reply("")
-    event.reply('"lookup tables"')
-    event.reply("")
-    event.reply("")
-    event.reply(f"NAMES = {dumps(Commands.names, indent=4, sort_keys=True)}")
-    event.reply("")
-    event.reply("")
-    event.reply("MD5 = {")
-    for mod in mods():
-        event.reply(f'    "{mod.__name__.split(".")[-1]}": "{md5sum(mod.__file__)}",')
-    event.reply("}")
 
 
 "scripts"
@@ -229,9 +204,7 @@ def control():
     setwd(Main.name)
     Commands.add(cmd)
     Commands.add(ls)
-    Commands.add(md5)
     Commands.add(srv)
-    Commands.add(tbl)
     scan(Main.modpath)
     csl = CLI()
     evt = Event()
@@ -300,7 +273,7 @@ WantedBy=multi-user.target"""
 
 def main():
     if check("a"):
-        Main.init = ",".join(modules())
+        Main.init = ",".join(modules(Main.modpath))
     if check("v"):
         setattr(Main.opts, "v", True)
     if check("c"):

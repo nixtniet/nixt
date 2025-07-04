@@ -13,6 +13,7 @@ import time
 
 from .fleet  import Fleet
 from .object import Default
+from .thread import launch
 from .utils  import spl
 
 
@@ -74,7 +75,9 @@ def command(evt):
 def inits(names):
     modz = []
     for name in sorted(spl(names)):
-        mod = load(name)
+        path = os.path.join(Main.modpath, name + ".py")
+        print(path)
+        mod = load(path, name)
         if not mod:
             continue
         if "init" in dir(mod):
@@ -96,6 +99,14 @@ def load(path, mname=None):
     spec.loader.exec_module(module)
     sys.modules[mname] = module
     return module
+
+
+def modules(path):
+    return sorted([
+                   x[:-3] for x in os.listdir(path)
+                   if x.endswith(".py") and not x.startswith("__") and
+                   x[:-3] not in Main.ignore
+                  ])
 
 
 def parse(obj, txt=""):
@@ -175,6 +186,7 @@ def __dir__():
         'command',
         'inits',
         'load',
+        'modules',
         'parse',
         'scan'
     )
