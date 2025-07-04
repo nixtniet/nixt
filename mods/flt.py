@@ -6,9 +6,8 @@
 
 from nixt.fleet  import Fleet
 from nixt.thread import name
+from nixt.utils  import fmt
 
-
-from . import fmt
 
 def flt(event):
     clts = list(Fleet.clients.values())

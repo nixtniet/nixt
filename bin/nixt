@@ -17,19 +17,14 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client  import Client
+from nixt.command import Main, Commands, command, inits, parse, scan
 from nixt.errors  import Errors, full
+from nixt.event   import Event
 from nixt.fleet   import Fleet
 from nixt.persist import Workdir, pidname, skel, types
 from nixt.serial  import dumps
 from nixt.thread  import hook
-
-
-from mods import CHECKSUM, Commands, Event, Main, command, inits, parse
-from mods import level, md5sum, mods, modules, settable
-
-
-CHECKSUM2 = "5206bffdc9dbf7a0967565deaabc2144"
-CHECKSUM2 = ""
+from nixt.utils   import level, rlog
 
 
 Main.name = "nixt"
@@ -200,8 +195,8 @@ def background():
     level(Main.level or "debug")
     setwd(Main.name)
     pidfile(pidname(Main.name))
-    settable()
     Commands.add(cmd)
+    scan(Main.modpath)
     inits(Main.init or "irc,rss")
     forever()
 
@@ -212,10 +207,10 @@ def console():
     Main.init = Main.sets.init or Main.init
     Main.verbose = Main.sets.verbose or Main.verbose
     Main.level   = Main.sets.level or Main.level or "warn"
+    setwd(Main.name)
     Commands.add(cmd)
     Commands.add(ls)
-    setwd(Main.name)
-    settable()
+    scan(Main.modpath)    
     if "v" in Main.opts:
         banner()
     for _mod, thr in inits(Main.init):
@@ -232,12 +227,12 @@ def control():
     parse(Main, " ".join(sys.argv[1:]))
     level(Main.level or "debug")
     setwd(Main.name)
-    settable()
     Commands.add(cmd)
     Commands.add(ls)
     Commands.add(md5)
     Commands.add(srv)
     Commands.add(tbl)
+    scan(Main.modpath)
     csl = CLI()
     evt = Event()
     evt.orig = repr(csl)
@@ -250,11 +245,11 @@ def control():
 def service():
     level(Main.level or "warn")
     setwd(Main.name)
-    settable()
     banner()
     privileges()
     pidfile(pidname(Main.name))
     Commands.add(cmd)
+    scan(Main.modpath)
     inits(Main.init or "irc,rss")
     forever()
 
@@ -304,9 +299,6 @@ WantedBy=multi-user.target"""
 
 
 def main():
-    if CHECKSUM != CHECKSUM2:
-        out("checksum mismatch")
-        os._exit(1)
     if check("a"):
         Main.init = ",".join(modules())
     if check("v"):

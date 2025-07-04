@@ -14,13 +14,14 @@ import time
 
 
 from nixt.client  import Output
+from nixt.command import Main, command
 from nixt.disk    import write
+from nixt.event   import Event as IEvent
 from nixt.fleet   import Fleet
-from nixt.object  import Object, keys
+from nixt.object  import Default, Object, keys
 from nixt.persist import getpath, ident, last
 from nixt.thread  import launch
-from .            import Default, Main, command, edit, fmt, rlog
-from .            import Event as IEvent
+from nixt.utils   import edit, fmt, rlog
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]

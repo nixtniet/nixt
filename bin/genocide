@@ -80,8 +80,10 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client  import Client
+from nixt.command import Commands, command, parse
+from nixt.event   import Event
 from nixt.fleet   import Fleet
-from nixt.object  import Object
+from nixt.object  import Default, Object
 from nixt.thread  import hook
 
 
@@ -91,14 +93,6 @@ sys.excepthook = hook
 a = os.path.abspath
 d = os.path.dirname
 p = os.path.join
-
-
-class Default(Object):
-
-    def __getattr__(self, key):
-        if key not in self:
-            setattr(self, key, "")
-        return self.__dict__.get(key, "")
 
 
 class Main(Default):
@@ -117,59 +111,6 @@ class Main(Default):
     version = 340
 
 
-class Event(Object):
-
-    def __init__(self):
-        Object.__init__(self)
-        self._ready  = threading.Event()
-        self._thr    = None
-        self.channel = ""
-        self.ctime   = time.time()
-        self.orig    = ""
-        self.rest    = ""
-        self.result  = {}
-        self.type    = "event"
-        self.txt     = ""
-
-    def done(self):
-        self.reply("ok")
-
-    def ready(self):
-        self._ready.set()
-
-    def reply(self, txt):
-        self.result[time.time()] = txt
-
-    def wait(self, timeout=None):
-        self._ready.wait()
-        if self._thr:
-            self._thr.join()
-
-class Commands:
-
-    cmds  = {}
-    md5   = {}
-    names = {}
-
-    @staticmethod
-    def add(func, mod=None):
-        Commands.cmds[func.__name__] = func
-        if mod:
-            Commands.names[func.__name__] = mod.__name__.split(".")[-1]
-
-    @staticmethod
-    def get(cmd):
-        return Commands.cmds.get(cmd, None)
-
-    @staticmethod
-    def scan(mod):
-        for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
-            if key.startswith("cb"):
-                continue
-            if 'event' in cmdz.__code__.co_varnames:
-                Commands.add(cmdz, mod)
-
-
 class CLI(Client):
 
     def __init__(self):
@@ -179,82 +120,6 @@ class CLI(Client):
     def raw(self, txt):
         print(txt.encode('utf-8', 'replace').decode("utf-8"))
         sys.stdout.flush()
-
-
-"utilities"
-
-
-def command(evt):
-    parse(evt)
-    func = Commands.get(evt.cmd)
-    if not func:
-        evt.ready()
-        return
-    func(evt)
-    Fleet.display(evt)
-    evt.ready()
-
-
-def parse(obj, txt=""):
-    if txt == "":
-        if "txt" in dir(obj):
-            txt = obj.txt
-        else:
-            txt = ""
-    args = []
-    obj.args   = []
-    obj.cmd    = ""
-    obj.gets   = Default()
-    obj.index  = None
-    obj.mod    = ""
-    obj.opts   = ""
-    obj.result = {}
-    obj.sets   = Default()
-    obj.silent = Default()
-    obj.txt    = txt
-    obj.otxt   = obj.txt
-    _nr = -1
-    for spli in obj.otxt.split():
-        if spli.startswith("-"):
-            try:
-                obj.index = int(spli[1:])
-            except ValueError:
-                obj.opts += spli[1:]
-            continue
-        if "-=" in spli:
-            key, value = spli.split("-=", maxsplit=1)
-            setattr(obj.silent, key, value)
-            setattr(obj.gets, key, value)
-            continue
-        if "==" in spli:
-            key, value = spli.split("==", maxsplit=1)
-            setattr(obj.gets, key, value)
-            continue
-        if "=" in spli:
-            key, value = spli.split("=", maxsplit=1)
-            if key == "mod":
-                if obj.mod:
-                    obj.mod += f",{value}"
-                else:
-                    obj.mod = value
-                continue
-            setattr(obj.sets, key, value)
-            continue
-        _nr += 1
-        if _nr == 0:
-            obj.cmd = spli
-            continue
-        args.append(spli)
-    if args:
-        obj.args = args
-        obj.txt  = obj.cmd or ""
-        obj.rest = " ".join(obj.args)
-        obj.txt  = obj.cmd + " " + obj.rest
-    else:
-        obj.txt = obj.cmd or ""
-
-
-"commands"
 
 
 def cmd(event):
@@ -271,11 +136,8 @@ def req(event):
 
 
 def slg(event):
-    TXT = "By law using poison, castrated, tortured, killed, destructed in whole or in part since 4 March 2019. @intlcrimcourt reconsider OTP-CR-117/19 http://bit.ly/gcid3"
+    TXT = "By law using poison, castrated, tortured, killed, destructed in whole/in part since 4 March 2019. @IntlCrimCourt reconsider OTP-CR-117/19 http://otpcr.github.io"
     event.reply(TXT)
-
-
-"main"
 
 
 def main():
