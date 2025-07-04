@@ -4,6 +4,9 @@
 "event"
 
 
+from .object import Object
+
+
 class Event(Object):
 
     def __init__(self):
