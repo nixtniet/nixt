@@ -42,13 +42,6 @@ def pidname(name):
     return os.path.join(Workdir.wdr, f"{name}.pid")
 
 
-def setwd(name, path=""):
-    Main.name = name
-    path = path or os.path.expanduser(f"~/.{name}")
-    Workdir.wdr = path
-    skel()
-
-
 def skel():
     pth = pathlib.Path(store())
     pth.mkdir(parents=True, exist_ok=True)
@@ -161,7 +154,6 @@ def __dir__():
         'ident',
         'pidname',
         'search',
-        'setwd',
         'skel',
         'store',
         'wdr'
