@@ -4,7 +4,7 @@
 "errors"
 
 
-from nixt.threads import Errors, line
+from nixt.error import Errors, line
 
 
 def err(event):

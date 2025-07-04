@@ -15,9 +15,10 @@ import time
 import _thread
 
 
-from nixt.clients import Fleet
-from nixt.objects import Default
-from nixt.threads import later, launch
+from nixt.error  import later
+from nixt.fleet  import Fleet
+from nixt.object import Default
+from nixt.thread import launch
 
 
 STARTTIME = time.time()

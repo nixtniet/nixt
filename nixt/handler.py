@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"event handler"
+"handler"
 
 
 import queue
@@ -10,17 +10,17 @@ import time
 import _thread
 
 
-from .objects import Object
-from .threads import later, launch, name
+from .object import Object
+from .thread import launch, name
 
 
 class Handler:
 
     def __init__(self):
-        self.lock  = _thread.allocate_lock()
-        self.cbs     = {}
-        self.queue   = queue.Queue()
-        self.ready   = threading.Event()
+        self.lock = _thread.allocate_lock()
+        self.cbs = {}
+        self.queue = queue.Queue()
+        self.ready = threading.Event()
         self.stopped = threading.Event()
 
     def available(self, event):
@@ -28,19 +28,16 @@ class Handler:
 
     def callback(self, event):
         func = self.cbs.get(event.type, None)
-        event._thr = launch(func, event, daemon=False)
+        if func:
+            event._thr = launch(func, event)
 
     def loop(self):
         while not self.stopped.is_set():
             event = self.poll()
             if event is None:
                 break
-            if not self.available(event):
-                self.queue.task_done()
-                continue
             event.orig = repr(self)
             self.callback(event)
-            self.queue.task_done()
         self.ready.set()
 
     def poll(self):
@@ -62,39 +59,7 @@ class Handler:
         self.ready.wait()
 
     def wait(self):
-        self.queue.join()
-
-
-"event"
-
-
-class Event(Object):
-
-    def __init__(self):
-        Object.__init__(self)
-        self._ready  = threading.Event()
-        self._thr    = None
-        self.channel = ""
-        self.ctime   = time.time()
-        self.orig    = ""
-        self.rest    = ""
-        self.result  = {}
-        self.type    = "event"
-        self.txt     = ""
-
-    def done(self):
-        self.reply("ok")
-
-    def ready(self):
-        self._ready.set()
-
-    def reply(self, txt):
-        self.result[time.time()] = txt
-
-    def wait(self, timeout=None):
-        self._ready.wait()
-        if self._thr:
-            self._thr.join()
+        pass
 
 
 "interface"
@@ -102,6 +67,5 @@ class Event(Object):
 
 def __dir__():
     return (
-        'Event',
-        'Handler'
+        'Handler',
     )

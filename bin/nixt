@@ -15,11 +15,12 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import CLI, Client, Fleet
-from nixt.handler import Event
-from nixt.objects import dumps
+from nixt.client  import Client
+from nixt.error   import Errors, full
+from nixt.event   import Event
+from nixt.fleet   import Fleet
 from nixt.persist import Workdir, pidname, skel, types
-from nixt.threads import Errors, full
+from nixt.serial  import dumps
 
 
 from mods import CHECKSUM, Commands, Main, command, inits, parse
@@ -33,10 +34,10 @@ CHECKSUM2 = ""
 Main.name = "nixt"
 
 
-class CLI(CLI):
+class CLI(Client):
 
     def __init__(self):
-        super().__init__()
+        Client.__init__(self)
         self.register("command", command)
 
     def raw(self, txt):

@@ -13,12 +13,14 @@ import threading
 import time
 
 
-from nixt.clients import Client, Fleet
-from nixt.handler import Event as IEvent
-from nixt.objects import Object, edit, fmt, keys
-from nixt.persist import getpath, ident, last, write
-from nixt.threads import launch
-from .            import Default, Main, command, rlog
+from nixt.client  import Buffered
+from nixt.disk    import write
+from nixt.event   import Event as IEvent
+from nixt.fleet   import Fleet
+from nixt.object  import Default, Object, edit, fmt, keys
+from nixt.persist import getpath, ident, last
+from nixt.thread  import launch
+from .            import Main, command, rlog
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]
@@ -92,10 +94,10 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-class IRC(Client):
+class IRC(Buffered):
 
     def __init__(self):
-        Client.__init__(self)
+        Buffered.__init__(self)
         self.buffer = []
         self.cache = Object()
         self.cfg = Config()
@@ -474,7 +476,7 @@ class IRC(Client):
         self.events.ready.clear()
         self.events.connected.clear()
         self.events.joined.clear()
-        Client.start(self)
+        Buffered.start(self)
         launch(
                self.doconnect,
                self.cfg.server or "localhost",

@@ -19,7 +19,7 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import CLI, Client, Fleet
+from nixt.clients import Client, Fleet
 from nixt.handler import Event
 from nixt.objects import Object, keys
 from nixt.persist import Workdir, skel
@@ -85,7 +85,7 @@ rand = random.SystemRandom()
 class CLI(Client):
 
     def __init__(self):
-        super().__init__()
+        Client.__init__(self)
         self.register("command", command)
 
     def raw(self, txt):
