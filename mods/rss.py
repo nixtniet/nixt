@@ -22,9 +22,9 @@ from urllib.parse import quote_plus, urlencode
 
 
 from nixt.client  import Fleet
-from nixt.disk    import write
 from nixt.object  import Default, Object, fmt, update
 from nixt.persist import find, fntime, getpath, last
+from nixt.store   import write
 from nixt.timer   import Repeater
 from nixt.thread  import launch
 from nixt.utils   import elapsed, rlog, spl

@@ -33,6 +33,7 @@ class Engine:
         while not self.stopped.is_set():
             event = self.poll()
             if event is None:
+                print("break")
                 break
             event.orig = repr(self)
             self.callback(event)

@@ -15,11 +15,11 @@ import time
 
 from nixt.client  import Output
 from nixt.command import Main, command
-from nixt.disk    import write
 from nixt.event   import Event as IEvent
 from nixt.fleet   import Fleet
 from nixt.object  import Default, Object, edit, fmt, keys
 from nixt.persist import getpath, ident, last
+from nixt.store   import write
 from nixt.thread  import launch
 from nixt.utils   import rlog
 
@@ -403,12 +403,15 @@ class IRC(Output):
                     ConnectionResetError,
                     BrokenPipeError
                    ) as ex:
-                self.stop()
                 self.state.nrerror += 1
                 self.state.error = str(ex)
                 rlog("error", "handler stopped")
-                evt = self.event(str(ex))
-                return evt
+                self.state.stopkeep = False
+                self.state.pongcheck = True
+                #self.stop()
+                return None
+                #evt = self.event(str(ex))
+                #return evt
         try:
             txt = self.buffer.pop(0)
         except IndexError:
@@ -565,7 +568,7 @@ def cb_privmsg(evt):
         if evt.txt:
             evt.txt = evt.txt[0].lower() + evt.txt[1:]
         if evt.txt:
-            command(evt)
+            launch(command, evt)
 
 
 def cb_quit(evt):

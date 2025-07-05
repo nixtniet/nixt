@@ -18,7 +18,7 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.client  import Client
 from nixt.command import Main, Commands, command, inits, modules, parse, scan
-from nixt.errors  import Errors, full
+from nixt.error   import Errors, full
 from nixt.event   import Event
 from nixt.fleet   import Fleet
 from nixt.object  import dumps
