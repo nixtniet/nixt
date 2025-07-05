@@ -12,7 +12,7 @@ import threading
 import time
 
 
-from .object  import Object, dump, fqn, items, load, update
+from .objects import Object, dump, fqn, items, load, update
 
 
 lock = threading.RLock()
@@ -61,6 +61,9 @@ def write(obj, path):
         with open(path, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)
         return path
+
+
+"workdir"
 
 
 class Workdir:
@@ -210,4 +213,3 @@ def __dir__():
         'wdr',
         'write'
     )
-
