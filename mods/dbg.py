@@ -4,11 +4,11 @@
 "debug"
 
 
+import logging
 import time
 
 
-from nixt.error import line
-from nixt.fleet import Fleet
+from nixt.clients import Fleet
 
 
 def dbg(event):
@@ -25,4 +25,4 @@ def brk(event):
             try:
                 clt.sock.shutdown(2)
             except OSError as ex:
-                event.reply(line(ex))
+                logging.exception(ex)

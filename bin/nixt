@@ -2,35 +2,32 @@
 # This file is placed in the Public Domain.
 
 
-"main program"
+"main"
 
 
 import os
 import pathlib
 import sys
 import time
-import threading
-import _thread
 
 
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.client  import Client
+from nixt.clients import Client
 from nixt.command import Main, Commands, command, inits, modules, parse, scan
-from nixt.error   import Errors, full
-from nixt.event   import Event
-from nixt.fleet   import Fleet
-from nixt.object  import dumps
+from nixt.handler import Event
 from nixt.persist import Workdir, pidname, skel, types
-from nixt.thread  import hook
-from nixt.utils   import level, rlog
+from nixt.runtime import level
 
 
-Main.name = "nixt"
+Main.modpath = "mods"
+Main.name = Main.__module__.split(".")[0]
 
 
-sys.excepthook = hook
+def out(txt):
+    print(txt)
+    sys.stdout.flush()
 
 
 class CLI(Client):
@@ -60,20 +57,13 @@ class Console(CLI):
         return evt
 
 
-"output"
-
-
-def out(txt):
-    print(txt)
-    sys.stdout.flush()
-
-
 "utilities"
 
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     out(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
+    out(f"loaded {".".join(modules(Main.modpath))}")
 
 
 def check(txt):
@@ -107,17 +97,12 @@ def daemon(verbose=False):
     os.nice(10)
 
 
-def errors():
-    for exc in Errors.errors:
-        out(full(exc))
-
-
 def forever():
     while True:
         try:
             time.sleep(0.01)
         except (KeyboardInterrupt, EOFError):
-            sys.exit()
+            sys.exit(1)
 
 
 def pidfile(filename):
@@ -228,6 +213,24 @@ def service():
     forever()
 
 
+"data"
+
+
+TXT = """[Unit]
+Description=%s
+After=network-online.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
+
+
+
 "runtime"
 
 
@@ -250,27 +253,6 @@ def wrap(func):
     finally:
         if old:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
-
-
-"data"
-
-
-TXT = """[Unit]
-Description=%s
-After=network-online.target
-
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
-
-
-"main"
-
 
 def main():
     if check("a"):

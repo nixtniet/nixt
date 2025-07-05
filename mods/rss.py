@@ -21,13 +21,10 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.client  import Fleet
-from nixt.object  import Default, Object, fmt, update
-from nixt.persist import find, fntime, getpath, last
-from nixt.store   import write
-from nixt.timer   import Repeater
-from nixt.thread  import launch
-from nixt.utils   import elapsed, rlog, spl
+from nixt.clients import Fleet
+from nixt.objects import Default, Object, fmt, update
+from nixt.persist import find, fntime, getpath, last, write
+from nixt.runtime import Repeater, elapsed, launch, rlog, spl
 
 
 DEBUG = False
@@ -114,7 +111,7 @@ class Fetcher(Object):
             txt = f'[{feedname}] '
         for obj in result:
             txt2 = txt + self.display(obj)
-            for bot in Fleet.clients.values():
+            for bot in Fleet.all():
                 bot.announce(txt2)
         return counter
 
