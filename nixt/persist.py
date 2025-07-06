@@ -18,6 +18,9 @@ from .objects import Object, dump, fqn, items, load, update
 lock = threading.RLock()
 
 
+"cache"
+
+
 class Cache:
 
     objs = {}
@@ -38,6 +41,9 @@ class Cache:
             update(Cache.objs[path], obj)
         else:
             Cache.add(path, obj)
+
+
+"disk"
 
 
 def cdir(path):

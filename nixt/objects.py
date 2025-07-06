@@ -7,6 +7,9 @@
 import json
 
 
+"object"
+
+
 class Object:
 
     def __contains__(self, key):
@@ -20,6 +23,18 @@ class Object:
 
     def __str__(self):
         return str(self.__dict__)
+
+
+"default"
+
+
+class Default(Object):
+
+    def __getattr__(self, key):
+        if key not in self:
+            setattr(self, key, "")
+        return self.__dict__.get(key, "")
+
 
 
 "methods"
@@ -116,18 +131,7 @@ def values(obj):
     return obj.__dict__.values()
 
 
-"default"
-
-
-class Default(Object):
-
-    def __getattr__(self, key):
-        if key not in self:
-            setattr(self, key, "")
-        return self.__dict__.get(key, "")
-
-
-"json"
+"decoder/emcoder"
 
 
 class Encoder(json.JSONEncoder):

@@ -16,31 +16,9 @@ import _thread
 from .objects import Default
 
 
-STARTTIME = time.time()
-
-
 errorlock = threading.RLock()
 launchlock = threading.RLock()
 lock = threading.RLock()
-
-
-"config"
-
-
-class Main(Default):
-
-    debug   = False
-    gets    = Default()
-    ignore  = ""
-    init    = ""
-    level   = "warn"
-    modpath = ""
-    name    = Default.__module__.split(".")[-2]
-    opts    = Default()
-    otxt    = ""
-    sets    = Default()
-    verbose = False
-    version = 103
 
 
 "threads"
@@ -234,8 +212,6 @@ def spl(txt):
 
 def __dir__():
     return (
-        'STARTTIME',
-        'Main',
         'Repeater',
         'Thread',
         'Timed',
