@@ -15,8 +15,9 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client
-from nixt.command import Main, Commands, command, inits, modules, parse, scan
+from nixt.command import Main, Commands, command, inits, parse, scan
 from nixt.handler import Event
+from nixt.imports import modules
 from nixt.persist import Workdir, pidname, skel, types
 from nixt.runtime import level
 

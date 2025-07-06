@@ -292,16 +292,12 @@ class IRC(Output):
             self.state.keeprunning = True
             self.state.latest = time.time()
             time.sleep(self.cfg.sleep)
-            print("sending ping")
             self.docommand('PING', self.cfg.server)
-            print(self.state.pongcheck)
             if self.state.pongcheck:
-                rlog('error', "failed pong check, restarting")
                 self.state.pongcheck = False
                 self.state.keeprunning = False
                 self.events.connected.clear()
-                self.stop()
-                init()
+                launch(init)
                 break
 
     def logon(self, server, nck):
@@ -314,17 +310,6 @@ class IRC(Output):
         if evt.channel and evt.channel not in dir(self.cache):
             setattr(self.cache, evt.channel, [])
         self.oqueue.put_nowait(evt)
-
-    def output(self):
-        while not self.ostop.is_set():
-            evt = self.oqueue.get()
-            if evt is None:
-                break
-            if self.ostop.is_set():
-                break
-            if not evt.result:
-                continue
-            self.display(evt)
 
     def parsing(self, txt):
         rawstr = str(txt)
@@ -393,7 +378,6 @@ class IRC(Output):
             try:
                 self.some()
             except BlockingIOError as ex:
-                print("blocking")
                 time.sleep(1.0)
                 return self.event(str(ex))
             except (
@@ -490,7 +474,7 @@ class IRC(Output):
     def stop(self):
         self.state.stopkeep = True
         Output.stop(self)
-        self.disconnect()
+        #self.disconnect()
 
     def wait(self):
         self.events.ready.wait()

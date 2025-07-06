@@ -4,7 +4,7 @@
 "version"
 
 
-from nixt.runtime import Main
+from nixt.command import Main
 
 
 def ver(event):

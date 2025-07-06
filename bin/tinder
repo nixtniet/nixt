@@ -11,7 +11,6 @@ import queue
 import shutil
 import sys
 import termios
-import threading
 import time
 import _thread
 
@@ -19,20 +18,21 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.client  import Client, Fleet
-from nixt.errors  import Errors, full
-from nixt.object  import Object, keys
+from nixt.clients import Client, Fleet
+from nixt.command import STARTTIME, Main, command, parse, scan
+from nixt.handler import Event
+from nixt.imports import modules
+from nixt.objects import Object, keys
 from nixt.persist import Workdir, skel
-from nixt.thread  import launch
-
-
-from mods import STARTTIME, Event, Main
-from mods import command, elapsed, modules, parse, settable, spl
+from nixt.runtime import elapsed, launch, spl
 
 
 Main.debug  = True
 Main.md5    = False
 Workdir.wdr = ".test"
+
+
+path = "mods"
 
 
 param = Object()
@@ -75,8 +75,10 @@ nrcommand = 1
 percall   = 1
 
 
+events = queue.Queue()
 ignore = "dbg,"
 paylock = _thread.allocate_lock()
+
 
 
 rand = random.SystemRandom()
@@ -91,32 +93,40 @@ class CLI(Client):
     def raw(self, txt):
         if "v" in Main.opts:
             print(txt)
-            sys.stdout.flush()
 
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     print(f"{Main.name.upper()} since {tme}")
-    print("loaded " + ",".join(sorted(modules())))
+    print("loaded " + ",".join(sorted(modules(path))))
 
 
-def payload(clts, cmds):
+def consume(evts):
+    done = []
+    while True:
+        event = events.get()
+        event.wait()
+        if events.qsize() == 0:
+            break
+
+
+def payload(clt, cmds):
+    nmr = 0
     cmdz = sorted(keys(cmds))
     if "s" in Main.opts:
         rand.shuffle(cmdz)
-    nmr = 0
-    for clt in clts:
-        for cmd in cmdz:
-            if cmd in spl(ignore):
-                continue
-            examples = getattr(cmds, cmd)
-            for example in examples:
-                event = Event()
-                event.orig = repr(clt)
-                event.txt = cmd + " " + example
-                event.type = "command"
-                clt.put(event)
-                nmr += 1
+    for cmd in cmdz:
+        if cmd in spl(ignore):
+            continue
+        examples = getattr(cmds, cmd)
+        for example in examples:
+            event = Event()
+            event.orig = repr(clt)
+            event.txt = cmd + " " + example
+            event.type = "command"
+            events.put(event)
+            clt.put(event)
+            nmr += 1
     return nmr
 
 
@@ -138,8 +148,8 @@ def wrap(function):
 def main():
     global nrs
     global nrcommand
-    settable()
     parse(Main, " ".join(sys.argv[1:]))
+    scan(path)
     nrcommand = 0
     if "v" in Main.opts:
         banner()
@@ -147,44 +157,42 @@ def main():
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
     skel()
-    nrclients = 1
-    if 'x' in Main.opts:
-        nrclients = os.cpu_count()
-    for x in range(nrclients):
-        clt = CLI()
-        clt.start()
-    clts = Fleet.all()
+    clt = CLI()
+    clt.start()
     nrs = Main.index or 1
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, clts, pre))
+        thrs.append(launch(payload, clt, pre))
     for thr in thrs:
         nr = thr.join()
         if nr:
             nrcommand += nr
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, clts, param))
+        thrs.append(launch(payload, clt, param))
     for thr in thrs:
         nr = thr.join()
         if nr:
             nrcommand += nr
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, clts, post))
+        thrs.append(launch(payload, clt, post))
     for thr in thrs:
         nr = thr.join()
         if nr:
             nrcommand += nr
-    Fleet.wait()
-    Fleet.shutdown()
+    consume(events)
+    #Fleet.shutdown()
+    #Fleet.wait()
 
 
 if __name__ == "__main__":
     wrap(main)
     endtime = time.time()
     lap = elapsed(endtime-STARTTIME)
+    nrevents = events.qsize()
     percall = (endtime-STARTTIME)/(nrcommand)
     if "v" in Main.opts:
+        if nrevents:
+            print(f"{nrevents} events left.")
         print(f"total: {lap} nrs: {nrs} cmds: {nrcommand} call: %.6fs" % percall)
-        sys.stdout.flush()
