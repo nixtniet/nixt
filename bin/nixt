@@ -5,9 +5,11 @@
 "main"
 
 
+import atexit
 import io
 import os
 import pathlib
+import readline # noqa: F401
 import sys
 import time
 
@@ -15,7 +17,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client
+from nixt.clients import Client, Output
 from nixt.command import Main, Commands, command, inits, parse, scan
 from nixt.handler import Event
 from nixt.imports import modules
@@ -27,15 +29,18 @@ Main.modpath = "mods"
 Main.name = Main.__module__.split(".")[0]
 
 
+cmds = []
+
+
 def out(txt):
     print(txt)
     sys.stdout.flush()
 
 
-class CLI(Client):
+class CLI(Output):
 
     def __init__(self):
-        Client.__init__(self)
+        Output.__init__(self)
         self.register("command", command)
 
     def raw(self, txt):
@@ -49,12 +54,12 @@ class Console(CLI):
         pass
 
     def callback(self, evt):
-        super().callback(evt)
+        CLI.callback(self, evt)
         evt.wait()
 
     def poll(self):
         evt = Event()
-        evt.txt = prompt("> ")
+        evt.txt = input("> ")
         evt.type = "command"
         return evt
 
@@ -63,6 +68,28 @@ def prompt(txt):
     sys.stdout.write(txt)
     sys.stdout.flush()
     return sys.stdin.readline()
+
+
+"completer"
+
+
+def complete(text, state):
+    matches = []
+    if text:
+        matches = [s for s in cmds if s and s.startswith(text)]
+    else:
+        matches = cmds[:]
+    try:
+        return matches[state]
+    except IndexError:
+        return None
+
+
+def setcompleter(commands):
+    cmds.extend(commands)
+    readline.set_completer(complete)
+    readline.parse_and_bind("tab: complete")
+    atexit.register(lambda: readline.set_completer(None))
 
 
 "utilities"
@@ -170,7 +197,6 @@ def background():
 
 
 def console():
-    import readline # noqa: F401
     parse(Main, " ".join(sys.argv[1:]))
     Main.init = Main.sets.init or Main.init
     Main.verbose = Main.sets.verbose or Main.verbose
@@ -185,6 +211,7 @@ def console():
     for _mod, thr in inits(Main.init):
         if "w" in Main.opts:
             thr.join(30.0)
+    setcompleter(Commands.cmds)
     csl = Console()
     csl.start()
     forever()
@@ -246,7 +273,7 @@ def wrapped(func):
     try:
         func()
     except (KeyboardInterrupt, EOFError):
-        out("")
+        out(" ")
 
 
 def wrap(func):
