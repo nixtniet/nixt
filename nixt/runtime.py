@@ -12,8 +12,6 @@ import threading
 import _thread
 
 
-
-
 errorlock = threading.RLock()
 launchlock = threading.RLock()
 lock = threading.RLock()

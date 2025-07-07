@@ -64,12 +64,6 @@ class Console(CLI):
         return evt
 
 
-def prompt(txt):
-    sys.stdout.write(txt)
-    sys.stdout.flush()
-    return sys.stdin.readline()
-
-
 "completer"
 
 
@@ -137,6 +131,7 @@ def forever():
         try:
             time.sleep(0.01)
         except (KeyboardInterrupt, EOFError):
+            out("")
             sys.exit(1)
 
 
@@ -273,7 +268,7 @@ def wrapped(func):
     try:
         func()
     except (KeyboardInterrupt, EOFError):
-        out(" ")
+        out("")
 
 
 def wrap(func):
