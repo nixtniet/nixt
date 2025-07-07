@@ -5,6 +5,7 @@
 "main"
 
 
+import io
 import os
 import pathlib
 import sys
@@ -53,9 +54,15 @@ class Console(CLI):
 
     def poll(self):
         evt = Event()
-        evt.txt = input("> ")
+        evt.txt = prompt("> ")
         evt.type = "command"
         return evt
+
+
+def prompt(txt):
+    sys.stdout.write(txt)
+    sys.stdout.flush()
+    return sys.stdin.readline()
 
 
 "utilities"

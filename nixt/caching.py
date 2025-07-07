@@ -10,7 +10,7 @@ import threading
 import time
 
 
-from .object import fqn, items, update
+from .objects import fqn, items, update
 
 
 class Cache:
