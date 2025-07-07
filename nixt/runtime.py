@@ -9,11 +9,9 @@ import queue
 import sys
 import time
 import threading
-import traceback
 import _thread
 
 
-from .objects import Default
 
 
 errorlock = threading.RLock()
