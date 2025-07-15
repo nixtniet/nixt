@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"persist"
+
+
 import datetime
 import json
 import os

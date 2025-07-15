@@ -1,11 +1,18 @@
 # This file is placed in the Public Domain.
 
 
+"commands"
+
+
 import inspect
+import time
 
 
 from .clients import Fleet
 from .objects import Object
+
+
+STARTTIME = time.time()
 
 
 class Default(Object):
@@ -127,6 +134,7 @@ def scan(pkg):
 
 def __dir__():
      return (
+         'STARTTIME',
          'Commands',
          'Default',
          'Main',
