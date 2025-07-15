@@ -1,9 +1,3 @@
-# This file is placed in the Public Domain.
-
-
-"runtime"
-
-
 import logging
 import queue
 import sys
@@ -15,9 +9,6 @@ import _thread
 errorlock = threading.RLock()
 launchlock = threading.RLock()
 lock = threading.RLock()
-
-
-"logging"
 
 
 LEVELS = {'debug': logging.DEBUG,
@@ -44,10 +35,6 @@ def rlog(loglevel, txt, ignore=None):
         if ign in str(txt):
             return
     logging.log(LEVELS.get(loglevel), txt)
-
-
-
-"threads"
 
 
 class Thread(threading.Thread):
@@ -108,9 +95,6 @@ def name(obj):
     return ""
 
 
-"repeater"
-
-
 class Timy(threading.Timer):
 
     def __init__(self, sleep, func, *args, **kwargs):
@@ -154,9 +138,6 @@ class Repeater(Timed):
     def run(self):
         launch(self.start)
         super().run()
-
-
-"interface"
 
 
 def __dir__():

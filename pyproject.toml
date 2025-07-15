@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nixt"
-version = "350"
+version = "351"
 authors = [
     {name = "Bart Thate", email = "nixtniet@gmail.com" },
 ]

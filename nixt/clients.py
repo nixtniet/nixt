@@ -1,17 +1,8 @@
-# This file is placed in the Public Domain.
-
-
-"clients"
-
-
 import threading
 import time
 
 
 from .handler import Handler
-
-
-"client"
 
 
 class Client(Handler):
@@ -37,9 +28,6 @@ class Client(Handler):
 
     def say(self, channel, txt):
         self.raw(txt)
-
-
-"fleet"
 
 
 class Fleet:
@@ -97,9 +85,6 @@ class Fleet:
         time.sleep(0.1)
         for client in Fleet.all():
             client.wait()
-
-
-"interface"
 
 
 def __dir__():

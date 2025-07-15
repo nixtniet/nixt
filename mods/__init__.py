@@ -1,10 +1,4 @@
-# This file is placed in the Public Domain.
-
-
-"modules"
-
-
-from . import irc, req, rss, slg, thr, ver
+from . import irc, req, rss, slg, thr
 
 
 __all__= (
@@ -12,8 +6,7 @@ __all__= (
         'req',
         'rss',
         'slg',
-        'thr',
-        'ver'
+        'thr'
     )
 
 

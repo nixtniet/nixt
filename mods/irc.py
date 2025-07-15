@@ -15,11 +15,11 @@ import time
 
 
 from nixt.clients import Client, Fleet
-from nixt.command import Main, command
 from nixt.handler import Event as IEvent
 from nixt.objects import Default, Object, edit, fmt, keys
 from nixt.persist import getpath, ident, last, write
 from nixt.runtime import launch, rlog
+
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
@@ -45,6 +45,12 @@ def init():
 
 
 "config"
+
+
+class Main(Default):
+
+
+    name = "nixt"
 
 
 class Config(Default):

@@ -1,13 +1,4 @@
-# This file is placed in the Public Domain.
-
-
-"clean namespace"
-
-
 import json
-
-
-"object"
 
 
 class Object:
@@ -25,19 +16,12 @@ class Object:
         return str(self.__dict__)
 
 
-"default"
-
-
 class Default(Object):
 
     def __getattr__(self, key):
         if key not in self:
             setattr(self, key, "")
         return self.__dict__.get(key, "")
-
-
-
-"methods"
 
 
 def construct(obj, *args, **kwargs):
@@ -131,9 +115,6 @@ def values(obj):
     return obj.__dict__.values()
 
 
-"decoder/emcoder"
-
-
 class Encoder(json.JSONEncoder):
 
     def default(self, o):
@@ -176,9 +157,6 @@ def load(fp, *args, **kw):
 def loads(s, *args, **kw):
     kw["object_hook"] = hook
     return json.loads(s, *args, **kw)
-
-
-"interface"
 
 
 def __dir__():

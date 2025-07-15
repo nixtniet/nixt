@@ -1,9 +1,3 @@
-# This file is placed in the Public Domain.
-
-
-"event handler"
-
-
 import queue
 import threading
 import time
@@ -12,9 +6,6 @@ import _thread
 
 from .objects import Object
 from .runtime import launch
-
-
-"handler"
 
 
 class Handler:
@@ -63,9 +54,6 @@ class Handler:
         pass
 
 
-"event"
-
-
 class Event(Object):
 
     def __init__(self):
@@ -93,9 +81,6 @@ class Event(Object):
         self._ready.wait()
         if self._thr:
             self._thr.join()
-
-
-"interface"
 
 
 def __dir__():

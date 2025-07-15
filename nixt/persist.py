@@ -1,9 +1,3 @@
-# This file is placed in the Public Domain.
-
-
-"persistence"
-
-
 import datetime
 import json
 import os
@@ -16,9 +10,6 @@ from .objects import Object, dump, fqn, items, load, update
 
 
 lock = threading.RLock()
-
-
-"cache"
 
 
 class Cache:
@@ -41,9 +32,6 @@ class Cache:
             update(Cache.objs[path], obj)
         else:
             Cache.add(path, obj)
-
-
-"workdir"
 
 
 class Workdir:
@@ -94,9 +82,6 @@ def types():
 
 def wdr(pth):
     return os.path.join(Workdir.wdr, pth)
-
-
-"find"
 
 
 def find(clz, selector=None, deleted=False, matching=False):
@@ -172,9 +157,6 @@ def search(obj, selector, matching=False):
     return res
 
 
-"disk"
-
-
 def cdir(path):
     pth = pathlib.Path(path)
     pth.parent.mkdir(parents=True, exist_ok=True)
@@ -196,9 +178,6 @@ def write(obj, path):
         with open(path, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)
         return path
-
-
-"interface"
 
 
 def __dir__():
