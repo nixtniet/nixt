@@ -7,5 +7,8 @@
 from nixt.command import Main
 
 
+"commands"
+
+
 def ver(event):
     event.reply(f"{Main.name.upper()} {Main.version}")

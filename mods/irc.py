@@ -5,6 +5,7 @@
 
 
 import base64
+import queue
 import os
 import socket
 import ssl
@@ -13,7 +14,7 @@ import threading
 import time
 
 
-from nixt.clients import Fleet, Output
+from nixt.clients import Client, Fleet
 from nixt.command import Main, command
 from nixt.handler import Event as IEvent
 from nixt.objects import Default, Object, edit, fmt, keys
@@ -21,18 +22,29 @@ from nixt.persist import getpath, ident, last, write
 from nixt.runtime import launch, rlog
 
 
-IGNORE  = ["PING", "PONG", "PRIVMSG"]
+IGNORE = ["PING", "PONG", "PRIVMSG"]
 
 
+initlock = threading.RLock()
 saylock = threading.RLock()
 
 
+"init"
+
+
 def init():
-    irc = IRC()
-    irc.start()
-    irc.events.joined.wait(30.0)
-    rlog("debug", fmt(irc.cfg, skip=["password", "realname", "username"]))
-    return irc
+    with initlock:
+        irc = IRC()
+        irc.start()
+        irc.events.joined.wait(30.0)
+        if irc.events.joined.is_set():
+            rlog("debug", fmt(irc.cfg, skip=["password", "realname", "username"]))
+        else:
+            irc.stop()
+        return irc
+
+
+"config"
 
 
 class Config(Default):
@@ -62,6 +74,9 @@ class Config(Default):
         self.username = Config.username
 
 
+"event"
+
+
 class Event(IEvent):
 
     def __init__(self):
@@ -75,6 +90,9 @@ class Event(IEvent):
         self.rawstr    = ""
         self.rest      = ""
         self.txt       = ""
+
+
+"wrapper"
 
 
 class TextWrap(textwrap.TextWrapper):
@@ -92,9 +110,47 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-class IRC(Output):
+"output"
+
+
+class Output:
 
     def __init__(self):
+        self.oqueue = queue.Queue()
+        self.ostop = threading.Event()
+
+    def oput(self, event):
+        self.oqueue.put(event)
+
+    def output(self):
+        while not self.ostop.is_set():
+            event = self.oqueue.get()
+            if event is None:
+                self.oqueue.task_done()
+                break
+            self.display(event)
+            self.oqueue.task_done()
+
+    def start(self):
+        self.ostop.clear()
+        launch(self.output)
+
+    def stop(self):
+        self.ostop.set()
+        self.oqueue.put(None)
+
+    def wait(self):
+        self.oqueue.join()
+        super().wait()
+
+
+"IRc"
+
+
+class IRC(Output, Client):
+
+    def __init__(self):
+        Client.__init__(self)
         Output.__init__(self)
         self.buffer = []
         self.cache = Object()
@@ -104,6 +160,7 @@ class IRC(Output):
         self.events.authed = threading.Event()
         self.events.connected = threading.Event()
         self.events.joined = threading.Event()
+        self.events.logon = threading.Event()
         self.events.ready = threading.Event()
         self.idents = []
         self.sock = None
@@ -115,6 +172,7 @@ class IRC(Output):
         self.state.nrconnect = 0
         self.state.nrerror = 0
         self.state.nrsend = 0
+        self.state.pongcheck = False
         self.state.sleep = self.cfg.sleep 
         self.state.stopkeep = False
         self.zelf = ''
@@ -135,9 +193,9 @@ class IRC(Output):
             self.say(channel, txt)
 
     def connect(self, server, port=6667):
-        rlog("debug", f"connecting to {server}:{port}")
         self.state.nrconnect += 1
         self.events.connected.clear()
+        self.events.joined.clear()
         if self.cfg.password:
             rlog("debug", "using SASL")
             self.cfg.sasl = True
@@ -159,6 +217,7 @@ class IRC(Output):
             self.sock.setblocking(True)
             self.sock.settimeout(180.0)
             self.events.connected.set()
+            rlog("debug", f"connected {self.cfg.server}:{self.cfg.port} {self.cfg.channel}")
             return True
         return False
 
@@ -218,17 +277,23 @@ class IRC(Output):
         while 1:
             try:
                 if self.connect(server, port):
+                    self.logon(self.cfg.server, self.cfg.nick)
+                    self.events.joined.wait(15.0)
+                    if not self.events.joined.is_set():
+                        self.disconnect()
+                        self.events.joined.set()
+                        continue
                     break
             except (
+                    socket.timeout,
                     ssl.SSLError,
                     OSError,
                     ConnectionResetError
                    ) as ex:
+                self.events.joined.set()
                 self.state.error = str(ex)
-                rlog("error", str(ex))
-            rlog("error", f"sleeping {self.cfg.sleep} seconds")
+                rlog("debug", str(type(ex)) + " " + str(ex))
             time.sleep(self.cfg.sleep)
-        self.logon(server, nck)
 
     def dosay(self, channel, txt):
         self.events.joined.wait()
@@ -294,11 +359,7 @@ class IRC(Output):
             time.sleep(self.cfg.sleep)
             self.docommand('PING', self.cfg.server)
             if self.state.pongcheck:
-                self.state.pongcheck = False
-                self.state.keeprunning = False
-                self.events.connected.clear()
-                launch(init)
-                break
+                self.restart()
 
     def logon(self, server, nck):
         self.events.connected.wait()
@@ -389,8 +450,10 @@ class IRC(Output):
                     BrokenPipeError
                    ) as ex:
                 self.state.nrerror += 1
-                self.state.error = str(ex)
-                rlog("error", self.state.error)
+                self.state.error = str(type(ex)) + " " + str(ex)
+                rlog("debug", self.state.error)
+                self.state.pongcheck = True
+                self.stop()
                 return None
         try:
             txt = self.buffer.pop(0)
@@ -412,8 +475,11 @@ class IRC(Output):
                     ssl.SSLError,
                     ssl.SSLZeroReturnError,
                     ConnectionResetError,
-                    BrokenPipeError
+                    BrokenPipeError,
+                    socket.timeout
                    ) as ex:
+                rlog("debug", str(type(ex)) + " " + str(ex))
+                self.events.joined.set()
                 self.state.nrerror += 1
                 self.state.error = str(ex)
                 self.state.pongcheck = True
@@ -423,11 +489,19 @@ class IRC(Output):
         self.state.nrsend += 1
 
     def reconnect(self):
-        rlog("error", f"reconnecting to {self.cfg.server}:{self.cfg.port}")
+        rlog("debug", f"reconnecting {self.cfg.server:self.cfg.port}")
         self.disconnect()
         self.events.connected.clear()
         self.events.joined.clear()
         self.doconnect(self.cfg.server, self.cfg.nick, int(self.cfg.port))
+
+    def restart(self):
+        self.events.joined.set()
+        self.state.pongcheck = False
+        self.state.keeprunning = False
+        self.state.stopkeep = True
+        self.stop()
+        launch(init)
 
     def size(self, chan):
         if chan in dir(self.cache):
@@ -462,22 +536,26 @@ class IRC(Output):
         self.events.connected.clear()
         self.events.joined.clear()
         Output.start(self)
-        launch(
-               self.doconnect,
-               self.cfg.server or "localhost",
-               self.cfg.nick,
-               int(self.cfg.port or '6667')
-              )
+        Client.start(self)
         if not self.state.keeprunning:
             launch(self.keep)
+        launch(self.doconnect,
+                       self.cfg.server or "localhost",
+                       self.cfg.nick,
+                       int(self.cfg.port) or 6667
+                      )
 
     def stop(self):
         self.state.stopkeep = True
+        Client.stop(self)
         Output.stop(self)
         #self.disconnect()
 
     def wait(self):
         self.events.ready.wait()
+
+
+"callbacks"
 
 
 def cb_auth(evt):
@@ -497,7 +575,7 @@ def cb_error(evt):
     bot = Fleet.get(evt.orig)
     bot.state.nrerror += 1
     bot.state.error = evt.txt
-    rlog("error", evt.txt)
+    rlog('debug', fmt(evt))
 
 
 def cb_h903(evt):
@@ -525,7 +603,7 @@ def cb_ready(evt):
 
 def cb_001(evt):
     bot = Fleet.get(evt.orig)
-    bot.logon()
+    bot.events.logon,set()
 
 
 def cb_notice(evt):
@@ -554,7 +632,7 @@ def cb_privmsg(evt):
 
 def cb_quit(evt):
     bot = Fleet.get(evt.orig)
-    rlog("error", f"quit from {bot.cfg.server}")
+    rlog("debug", f"quit from {bot.cfg.server}")
     bot.state.nrerror += 1
     bot.state.error = evt.txt
     if evt.orig and evt.orig in bot.zelf:

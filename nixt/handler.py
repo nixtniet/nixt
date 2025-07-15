@@ -41,7 +41,6 @@ class Handler:
                 break
             event.orig = repr(self)
             self.callback(event)
-        self.ready.set()
 
     def poll(self):
         return self.queue.get()
@@ -59,7 +58,6 @@ class Handler:
     def stop(self):
         self.stopped.set()
         self.queue.put(None)
-        self.ready.wait()
 
     def wait(self):
         pass
@@ -102,6 +100,6 @@ class Event(Object):
 
 def __dir__():
     return (
-        'Handler',
-        'Event'
+        'Event',
+        'Handler'
     )

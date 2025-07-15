@@ -5,14 +5,12 @@
 
 
 import inspect
-import os
 import time
 
 
 from .clients import Fleet
-from .imports import load, pathtoname
 from .objects import Default
-from .runtime import launch, spl
+from .runtime import launch
 
 
 STARTTIME = time.time()
@@ -28,13 +26,12 @@ class Main(Default):
     ignore  = ""
     init    = ""
     level   = "warn"
-    modpath = ""
     name    = Default.__module__.split(".")[-2]
     opts    = Default()
     otxt    = ""
     sets    = Default()
     verbose = False
-    version = 103
+    version = 341
 
 
 "commands"
@@ -79,12 +76,10 @@ def command(evt):
     evt.ready()
 
 
-def inits(names):
+def inits(pkg, names):
     modz = []
     for name in sorted(spl(names)):
-        path = os.path.join(Main.modpath, name + ".py")
-        mname = pathtoname(path)
-        mod = load(path, mname)
+        mod = getattr(pkg, name, None)
         if not mod:
             continue
         if "init" in dir(mod):
@@ -152,12 +147,62 @@ def parse(obj, txt=""):
         obj.txt = obj.cmd or ""
 
 
-def scan(path):
-    for fnm in os.listdir(path):
-        pth = os.path.join(path, fnm)
-        mod = load(pth)
-        if mod:
-            Commands.scan(mod)
+def scan(pkg):
+    if pkg is None:
+        return
+    for modname in dir(pkg):
+        mod = getattr(pkg, modname)
+        Commands.scan(mod)
+
+
+"utilities"
+
+
+def elapsed(seconds, short=True):
+    txt = ""
+    nsec = float(seconds)
+    if nsec < 1:
+        return f"{nsec:.2f}s"
+    yea = 365*24*60*60
+    week = 7*24*60*60
+    nday = 24*60*60
+    hour = 60*60
+    minute = 60
+    yeas = int(nsec/yea)
+    nsec -= yeas*yea
+    weeks = int(nsec/week)
+    nsec -= weeks*week
+    nrdays = int(nsec/nday)
+    nsec -= nrdays*nday
+    hours = int(nsec/hour)
+    nsec -= hours*hour
+    minutes = int(nsec/minute)
+    nsec -= int(minute*minutes)
+    sec = int(nsec)
+    if yeas:
+        txt += f"{yeas}y"
+    if weeks:
+        nrdays += weeks * 7
+    if nrdays:
+        txt += f"{nrdays}d"
+    if short and txt:
+        return txt.strip()
+    if hours:
+        txt += f"{hours}h"
+    if minutes:
+        txt += f"{minutes}m"
+    if sec:
+        txt += f"{sec}s"
+    txt = txt.strip()
+    return txt
+
+
+def spl(txt):
+    try:
+        result = txt.split(',')
+    except (TypeError, ValueError):
+        result = [txt, ]
+    return [x for x in result if x]
 
 
 "interface"
@@ -168,7 +213,11 @@ def __dir__():
         'STARTTIME',
         'Commands',
         'command',
+        'elapsed',
         'inits',
+        'load',
+        'modules',
         'parse',
-        'scan'
+        'scan',
+        'spl'
     )
