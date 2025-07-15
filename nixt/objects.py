@@ -1,3 +1,6 @@
+# This file is placed in the Public Domain.
+
+
 import json
 
 
@@ -14,14 +17,6 @@ class Object:
 
     def __str__(self):
         return str(self.__dict__)
-
-
-class Default(Object):
-
-    def __getattr__(self, key):
-        if key not in self:
-            setattr(self, key, "")
-        return self.__dict__.get(key, "")
 
 
 def construct(obj, *args, **kwargs):
@@ -161,7 +156,6 @@ def loads(s, *args, **kw):
 
 def __dir__():
     return (
-        'Default',
         'Object',
         'construct',
         'dump',

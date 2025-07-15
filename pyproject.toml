@@ -2,7 +2,7 @@
 
 
 [build-system]
-requires = ["setuptools>=43.0.0", "wheel"]
+requires = ["setuptools>=61.2", "wheel"]
 build-backend = "setuptools.build_meta"
 
 
@@ -29,7 +29,5 @@ classifiers = [
 "source" = "https://github.com/nixtniet/nixt"
 
 
-[tool.setuptools]
-packages = [
-    "nixt",
-]
+[tool.setuptools.packages.find]
+include=['nixt', 'nixt.*']

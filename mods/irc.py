@@ -15,11 +15,11 @@ import time
 
 
 from nixt.clients import Client, Fleet
+from nixt.command import Default, Main, command
 from nixt.handler import Event as IEvent
-from nixt.objects import Default, Object, edit, fmt, keys
+from nixt.objects import Object, edit, fmt, keys
 from nixt.persist import getpath, ident, last, write
 from nixt.runtime import launch, rlog
-
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
@@ -45,12 +45,6 @@ def init():
 
 
 "config"
-
-
-class Main(Default):
-
-
-    name = "nixt"
 
 
 class Config(Default):
@@ -150,7 +144,7 @@ class Output:
         super().wait()
 
 
-"IRc"
+"IRC"
 
 
 class IRC(Output, Client):
@@ -555,7 +549,6 @@ class IRC(Output, Client):
         self.state.stopkeep = True
         Client.stop(self)
         Output.stop(self)
-        #self.disconnect()
 
     def wait(self):
         self.events.ready.wait()
