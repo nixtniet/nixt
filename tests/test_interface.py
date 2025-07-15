@@ -11,7 +11,6 @@ import unittest
 
 
 import nixt
-import nixt.caching
 import nixt.clients
 import nixt.command
 import nixt.handler
@@ -24,13 +23,12 @@ from nixt.objects import *
 
 
 PACKAGE = [
-    'caching',
     'clients',
     'command',
     'handler',
     'objects',
     'persist',
-    'runtime',
+    'runtime'
 ]
 
 

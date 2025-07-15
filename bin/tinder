@@ -19,12 +19,17 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client, Fleet
-from nixt.command import STARTTIME, Main, command, parse, scan
+from nixt.command import STARTTIME, Main, command, elapsed, parse, scan, spl
 from nixt.handler import Event
-from nixt.imports import modules
 from nixt.objects import Object, keys
 from nixt.persist import Workdir, skel
-from nixt.runtime import elapsed, launch, spl
+from nixt.runtime import launch
+
+
+try:
+    import mods as MODS
+except ModuleNotFoundError:
+    MODS = None
 
 
 Main.debug  = True
@@ -32,7 +37,7 @@ Main.md5    = False
 Workdir.wdr = ".test"
 
 
-path = "mods"
+path = MODS.__path__[0]
 
 
 param = Object()
@@ -80,7 +85,6 @@ ignore = "dbg,"
 paylock = _thread.allocate_lock()
 
 
-
 rand = random.SystemRandom()
 
 
@@ -98,7 +102,7 @@ class CLI(Client):
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     print(f"{Main.name.upper()} since {tme}")
-    print("loaded " + ",".join(sorted(modules(path))))
+    print("loaded " + ",".join(sorted(dir(MODS))))
 
 
 def consume(evts):
@@ -149,7 +153,7 @@ def main():
     global nrs
     global nrcommand
     parse(Main, " ".join(sys.argv[1:]))
-    scan(path)
+    scan(MODS)
     nrcommand = 0
     if "v" in Main.opts:
         banner()

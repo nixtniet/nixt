@@ -5,11 +5,8 @@
 "main"
 
 
-import atexit
-import io
 import os
 import pathlib
-import readline # noqa: F401
 import sys
 import time
 
@@ -17,19 +14,21 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client, Output
-from nixt.command import Main, Commands, command, inits, parse, scan
+from nixt.clients import Client
+from nixt.command import Main, Commands
+from nixt.command import command, inits, parse, scan
 from nixt.handler import Event
-from nixt.imports import modules
 from nixt.persist import Workdir, pidname, skel, types
 from nixt.runtime import level
 
 
-Main.modpath = "mods"
+try:
+    import mods as MODS
+except ModuleNotFoundError:
+    MODS = None
+
+
 Main.name = Main.__module__.split(".")[0]
-
-
-cmds = []
 
 
 def out(txt):
@@ -37,10 +36,13 @@ def out(txt):
     sys.stdout.flush()
 
 
-class CLI(Output):
+"clients"
+
+
+class CLI(Client):
 
     def __init__(self):
-        Output.__init__(self)
+        Client.__init__(self)
         self.register("command", command)
 
     def raw(self, txt):
@@ -54,7 +56,7 @@ class Console(CLI):
         pass
 
     def callback(self, evt):
-        CLI.callback(self, evt)
+        super().callback(evt)
         evt.wait()
 
     def poll(self):
@@ -64,35 +66,13 @@ class Console(CLI):
         return evt
 
 
-"completer"
-
-
-def complete(text, state):
-    matches = []
-    if text:
-        matches = [s for s in cmds if s and s.startswith(text)]
-    else:
-        matches = cmds[:]
-    try:
-        return matches[state]
-    except IndexError:
-        return None
-
-
-def setcompleter(commands):
-    cmds.extend(commands)
-    readline.set_completer(complete)
-    readline.parse_and_bind("tab: complete")
-    atexit.register(lambda: readline.set_completer(None))
-
-
 "utilities"
 
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     out(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
-    out(f"loaded {".".join(modules(Main.modpath))}")
+    out(f"loaded {".".join(dir(MODS))}")
 
 
 def check(txt):
@@ -129,9 +109,9 @@ def daemon(verbose=False):
 def forever():
     while True:
         try:
-            time.sleep(0.01)
+            time.sleep(0.1)
         except (KeyboardInterrupt, EOFError):
-            out("")
+            print("")
             sys.exit(1)
 
 
@@ -186,12 +166,13 @@ def background():
     setwd(Main.name)
     pidfile(pidname(Main.name))
     Commands.add(cmd)
-    scan(Main.modpath)
-    inits(Main.init or "irc,rss")
+    scan(MODS)
+    inits(MODS, Main.init or "irc,rss")
     forever()
 
 
 def console():
+    import readline # noqa: F401
     parse(Main, " ".join(sys.argv[1:]))
     Main.init = Main.sets.init or Main.init
     Main.verbose = Main.sets.verbose or Main.verbose
@@ -200,13 +181,12 @@ def console():
     setwd(Main.name)
     Commands.add(cmd)
     Commands.add(ls)
-    scan(Main.modpath)    
+    scan(MODS)    
     if "v" in Main.opts:
         banner()
-    for _mod, thr in inits(Main.init):
+    for _mod, thr in inits(MODS, Main.init):
         if "w" in Main.opts:
             thr.join(30.0)
-    setcompleter(Commands.cmds)
     csl = Console()
     csl.start()
     forever()
@@ -216,12 +196,12 @@ def control():
     if len(sys.argv) == 1:
         return
     parse(Main, " ".join(sys.argv[1:]))
-    level(Main.level or "debug")
+    level(Main.level or "warn")
     setwd(Main.name)
     Commands.add(cmd)
     Commands.add(ls)
     Commands.add(srv)
-    scan(Main.modpath)
+    scan(MODS)
     csl = CLI()
     evt = Event()
     evt.orig = repr(csl)
@@ -238,8 +218,8 @@ def service():
     privileges()
     pidfile(pidname(Main.name))
     Commands.add(cmd)
-    scan(Main.modpath)
-    inits(Main.init or "irc,rss")
+    scan(MODS)
+    inits(MODS, Main.init or "irc,rss")
     forever()
 
 
@@ -258,7 +238,6 @@ ExecStart=/home/%s/.local/bin/%s -s
 
 [Install]
 WantedBy=multi-user.target"""
-
 
 
 "runtime"
@@ -286,7 +265,7 @@ def wrap(func):
 
 def main():
     if check("a"):
-        Main.init = ",".join(modules(Main.modpath))
+        Main.init = ",".join(dir(MODS))
     if check("v"):
         setattr(Main.opts, "v", True)
     if check("c"):
