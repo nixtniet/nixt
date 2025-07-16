@@ -66,7 +66,6 @@ def command(evt):
     evt.ready()
 
 
-
 def parse(obj, txt=""):
     if txt == "":
         if "txt" in dir(obj):
