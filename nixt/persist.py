@@ -18,6 +18,113 @@ from .objects import Object, dump, fqn, items, load, update
 lock = threading.RLock()
 
 
+"cache"
+
+
+class Cache:
+
+    objs = {}
+
+    @staticmethod
+    def add(path, obj):
+        Cache.objs[path] = obj
+
+    @staticmethod
+    def get(path):
+        return Cache.objs.get(path, None)
+
+    @staticmethod
+    def update(path, obj):
+        if not obj:
+            return
+        if path in Cache.objs:
+            update(Cache.objs[path], obj)
+        else:
+            Cache.add(path, obj)
+
+
+"workdir"
+
+
+class Workdir:
+
+    name = __file__.rsplit(os.sep, maxsplit=2)[-2]
+    wdr = ""
+
+
+def getpath(obj):
+    return store(ident(obj))
+
+
+def ident(obj):
+    return os.path.join(fqn(obj),*str(datetime.datetime.now()).split())
+
+
+def long(name):
+    split = name.split(".")[-1].lower()
+    res = name
+    for names in types():
+        if split == names.split(".")[-1].lower():
+            res = names
+            break
+    return res
+
+
+def pidname(name):
+    return os.path.join(Workdir.wdr, f"{name}.pid")
+
+
+def skel():
+    pth = pathlib.Path(store())
+    pth.mkdir(parents=True, exist_ok=True)
+    return str(pth)
+
+
+def store(pth=""):
+    return os.path.join(Workdir.wdr, "store", pth)
+
+
+def strip(pth, nmr=2):
+    return os.path.join(pth.split(os.sep)[-nmr:])
+
+
+def types():
+    return os.listdir(store())
+
+
+def wdr(pth):
+    return os.path.join(Workdir.wdr, pth)
+
+
+"disk"
+
+
+def cdir(path):
+    pth = pathlib.Path(path)
+    pth.parent.mkdir(parents=True, exist_ok=True)
+
+
+def read(obj, path):
+    with lock:
+        with open(path, "r", encoding="utf-8") as fpt:
+            try:
+                update(obj, load(fpt))
+            except json.decoder.JSONDecodeError as ex:
+                ex.add_note(path)
+                raise ex
+
+
+def write(obj, path):
+    with lock:
+        cdir(path)
+        with open(path, "w", encoding="utf-8") as fpt:
+            dump(obj, fpt, indent=4)
+        return path
+
+
+"find"
+
+
 def find(clz, selector=None, deleted=False, matching=False):
     clz = long(clz)
     if selector is None:
@@ -91,100 +198,8 @@ def search(obj, selector, matching=False):
     return res
 
 
-class Workdir:
 
-    name = __file__.rsplit(os.sep, maxsplit=2)[-2]
-    wdr = ""
-
-
-def getpath(obj):
-    return store(ident(obj))
-
-
-def ident(obj):
-    return os.path.join(fqn(obj),*str(datetime.datetime.now()).split())
-
-
-def long(name):
-    split = name.split(".")[-1].lower()
-    res = name
-    for names in types():
-        if split == names.split(".")[-1].lower():
-            res = names
-            break
-    return res
-
-
-def pidname(name):
-    return os.path.join(Workdir.wdr, f"{name}.pid")
-
-
-def skel():
-    pth = pathlib.Path(store())
-    pth.mkdir(parents=True, exist_ok=True)
-    return str(pth)
-
-
-def store(pth=""):
-    return os.path.join(Workdir.wdr, "store", pth)
-
-
-def strip(pth, nmr=2):
-    return os.path.join(pth.split(os.sep)[-nmr:])
-
-
-def types():
-    return os.listdir(store())
-
-
-def wdr(pth):
-    return os.path.join(Workdir.wdr, pth)
-
-
-class Cache:
-
-    objs = {}
-
-    @staticmethod
-    def add(path, obj):
-        Cache.objs[path] = obj
-
-    @staticmethod
-    def get(path):
-        return Cache.objs.get(path, None)
-
-    @staticmethod
-    def update(path, obj):
-        if not obj:
-            return
-        if path in Cache.objs:
-            update(Cache.objs[path], obj)
-        else:
-            Cache.add(path, obj)
-
-
-def cdir(path):
-    pth = pathlib.Path(path)
-    pth.parent.mkdir(parents=True, exist_ok=True)
-
-
-def read(obj, path):
-    with lock:
-        with open(path, "r", encoding="utf-8") as fpt:
-            try:
-                update(obj, load(fpt))
-            except json.decoder.JSONDecodeError as ex:
-                ex.add_note(path)
-                raise ex
-
-
-def write(obj, path):
-    with lock:
-        cdir(path)
-        with open(path, "w", encoding="utf-8") as fpt:
-            dump(obj, fpt, indent=4)
-        return path
-
+"interface"
 
 
 def __dir__():

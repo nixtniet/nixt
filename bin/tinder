@@ -20,10 +20,11 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.clients import Client, Fleet
 from nixt.command import STARTTIME, Commands, Main, command, parse, scan
+from nixt.command import elapsed, spl
 from nixt.handler import Event
 from nixt.objects import Object, keys
 from nixt.persist import Workdir, skel
-from nixt.runtime import elapsed, launch, spl
+from nixt.runtime import launch
 
 
 try:

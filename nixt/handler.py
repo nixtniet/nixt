@@ -60,6 +60,9 @@ class Handler:
         pass
 
 
+"event"
+
+
 class Event(Object):
 
     def __init__(self):
@@ -87,6 +90,9 @@ class Event(Object):
         self._ready.wait()
         if self._thr:
             self._thr.join()
+
+
+"interface"
 
 
 def __dir__():

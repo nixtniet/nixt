@@ -14,9 +14,10 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.clients import Client, Fleet
 from nixt.command import Commands, Default, Main, command, parse, scan
+from nixt.command import elapsed, spl
 from nixt.handler import Event
 from nixt.persist import Workdir, pidname, skel, types
-from nixt.runtime import elapsed, launch, level, spl
+from nixt.runtime import launch, level
 
 
 Main.version = 351
