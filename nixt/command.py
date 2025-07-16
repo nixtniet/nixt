@@ -55,7 +55,7 @@ class Commands:
                 Commands.add(cmdz, mod)
 
 
-"utilities"
+'callbacks"
 
 
 def command(evt):
@@ -67,6 +67,9 @@ def command(evt):
     func(evt)
     Fleet.display(evt)
     evt.ready()
+
+
+"utilities"
 
 
 def elapsed(seconds, short=True):

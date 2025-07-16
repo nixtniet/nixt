@@ -11,9 +11,6 @@ import time
 from .handler import Handler
 
 
-"client"
-
-
 class Client(Handler):
 
     def __init__(self):
@@ -37,9 +34,6 @@ class Client(Handler):
 
     def say(self, channel, txt):
         self.raw(txt)
-
-
-"fleet"
 
 
 class Fleet:

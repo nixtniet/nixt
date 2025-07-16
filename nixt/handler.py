@@ -60,9 +60,6 @@ class Handler:
         pass
 
 
-"event"
-
-
 class Event(Object):
 
     def __init__(self):

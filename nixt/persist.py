@@ -43,6 +43,32 @@ class Cache:
             Cache.add(path, obj)
 
 
+"disk"
+
+
+def cdir(path):
+    pth = pathlib.Path(path)
+    pth.parent.mkdir(parents=True, exist_ok=True)
+
+
+def read(obj, path):
+    with lock:
+        with open(path, "r", encoding="utf-8") as fpt:
+            try:
+                update(obj, load(fpt))
+            except json.decoder.JSONDecodeError as ex:
+                ex.add_note(path)
+                raise ex
+
+
+def write(obj, path):
+    with lock:
+        cdir(path)
+        with open(path, "w", encoding="utf-8") as fpt:
+            dump(obj, fpt, indent=4)
+        return path
+
+
 "workdir"
 
 
@@ -94,32 +120,6 @@ def types():
 
 def wdr(pth):
     return os.path.join(Workdir.wdr, pth)
-
-
-"disk"
-
-
-def cdir(path):
-    pth = pathlib.Path(path)
-    pth.parent.mkdir(parents=True, exist_ok=True)
-
-
-def read(obj, path):
-    with lock:
-        with open(path, "r", encoding="utf-8") as fpt:
-            try:
-                update(obj, load(fpt))
-            except json.decoder.JSONDecodeError as ex:
-                ex.add_note(path)
-                raise ex
-
-
-def write(obj, path):
-    with lock:
-        cdir(path)
-        with open(path, "w", encoding="utf-8") as fpt:
-            dump(obj, fpt, indent=4)
-        return path
 
 
 "find"
@@ -196,7 +196,6 @@ def search(obj, selector, matching=False):
             res = False
             break
     return res
-
 
 
 "interface"
