@@ -6,18 +6,28 @@
 import unittest
 
 
-from nixt.objects import Object, items, keys, update, values
+from nixt.object import Object, items, keys, update, values
 
 
-import nixt.objects
+import nixt.object
 
 
 OBJECT = Object()
-PACKAGE = nixt.objects
+PACKAGE = nixt.object
 VALIDJSON = '{"test": "bla"}'
 
 
-attrs1 = ("Object", "construct", "dumps", "items", "keys", "loads", "update", "values")
+attrs1 = (
+    "Object",
+    "construct",
+    "edit",
+    "fmt",
+    "fqn",
+    "items",
+    "keys",
+    "update",
+    "values"
+)
 
 
 attrs2 = (
@@ -55,6 +65,7 @@ attrs2 = (
 
 
 class TestObject(unittest.TestCase):
+
     def test_attributes(self):
         okd = True
         for meth in attrs2:
@@ -143,7 +154,7 @@ class TestObject(unittest.TestCase):
         self.assertTrue(okd)
 
     def test_module(self):
-        self.assertEqual(Object().__module__, "nixt.objects")
+        self.assertEqual(Object().__module__, "nixt.object")
 
     def test_register(self):
         obj = Object()

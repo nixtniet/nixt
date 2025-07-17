@@ -3,10 +3,12 @@
 
 "json"
 
+
 import unittest
 
 
-from nixt.objects import Object, dumps, loads
+from nixt.object import Object
+from nixt.json   import dumps, loads
 
 
 VALIDJSON = "{'test': 'bla'}"
@@ -14,6 +16,7 @@ VALIDPYTHON = '{"test": "bla"}'
 
 
 class TestDecoder(unittest.TestCase):
+
     def test_loads(self):
         obj = Object()
         obj.test = "bla"
@@ -22,6 +25,7 @@ class TestDecoder(unittest.TestCase):
 
 
 class TestEncoder(unittest.TestCase):
+
     def test_dumps(self):
         obj = Object()
         obj.test = "bla"

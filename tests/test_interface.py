@@ -4,24 +4,48 @@
 
 "interface"
 
+
 import logging
 import sys
 import unittest
 
 
 import nixt
-import nixt.clients
+import nixt.client
 import nixt.command
+import nixt.default
+import nixt.disk
+import nixt.event
+import nixt.find
+import nixt.fleet
 import nixt.handler
-import nixt.objects
-import nixt.persist
+import nixt.json
+import nixt.log
+import nixt.object
+import nixt.path
 import nixt.runtime
+import nixt.utils
 
 
-from nixt.objects import *
+from nixt.object import *
 
 
-PACKAGE = ["clients", "command", "handler", "objects", "persist", "runtime"]
+PACKAGE = [
+    "client",
+    "command",
+    "default",
+    "disk",
+    "event",
+    "find",
+    "fleet",
+    "handler",
+    "json",
+    "log",
+    "object",
+    "path",
+    "runtime",
+    "utils"
+]
 
 
 METHODS = [

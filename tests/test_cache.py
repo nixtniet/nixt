@@ -4,11 +4,12 @@
 import unittest
 
 
-from nixt.objects import Object
-from nixt.persist import Cache
+from nixt.disk   import Cache
+from nixt.object import Object
 
 
 class TestCache(unittest.TestCase):
+
     def setUp(self):
         self.cache = Cache()
         self.cache.objs = {}
