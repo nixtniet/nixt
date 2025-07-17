@@ -4,7 +4,7 @@
 "cli parsing"
 
 
-from .default import Default
+from .config import Default
 
 
 def parse(obj, txt=""):

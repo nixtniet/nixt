@@ -1,7 +1,7 @@
 # this file is placed in the Public Domain.
 
 
-"default"
+"config"
 
 
 from .object import Object
@@ -15,10 +15,16 @@ class Default(Object):
         return self.__dict__.get(key, "")
 
 
+class Config(Default):
+
+    pass
+
+
 "interface"
 
 
 def __dir__():
     return (
         "Default",
+        "Config"
     )

@@ -5,11 +5,13 @@
 
 
 import inspect
+import os
 
 
-from .default import Default
-from .fleet   import Fleet
-from .parse   import parse
+from .config import Default
+from .fleet  import Fleet
+from .parse  import parse
+from .path   import Workdir, skel
 
 
 class Main(Default):
@@ -61,6 +63,13 @@ def scan(pkg):
         Commands.scan(mod)
 
 
+def setwd(name, path=""):
+    Main.name = name
+    path = path or os.path.expanduser(f"~/.{name}")
+    Workdir.wdr = path
+    skel()
+
+
 "interface"
 
 
@@ -69,5 +78,6 @@ def __dir__():
         "Commands",
         "Main",
         "command",
-        "scan"
+        "scan",
+        "setwd"
     )
