@@ -31,13 +31,6 @@ def construct(obj, *args, **kwargs):
         update(obj, kwargs)
 
 
-def fqn(obj):
-    kin = str(type(obj)).split()[-1][1:-2]
-    if kin == "type":
-        kin = f"{obj.__module__}.{obj.__name__}"
-    return kin
-
-
 def items(obj):
     if isinstance(obj, dict):
         return obj.items()
@@ -69,7 +62,6 @@ def __dir__():
     return (
         "Object",
         "construct",
-        "fqn",
         "items",
         "keys",
         "update",

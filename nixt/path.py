@@ -9,12 +9,16 @@ import os
 import pathlib
 
 
-from .object import fqn
-
-
 class Workdir:
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
     wdr = ""
+
+
+def fqn(obj):
+    kin = str(type(obj)).split()[-1][1:-2]
+    if kin == "type":
+        kin = f"{obj.__module__}.{obj.__name__}"
+    return kin
 
 
 def getpath(obj):
@@ -67,6 +71,8 @@ def wdr(pth):
 def __dir__():
     return (
         "Workdir",
+        "fqn",
+        "getpath",
         "long",
         "ident",
         "pidname",
