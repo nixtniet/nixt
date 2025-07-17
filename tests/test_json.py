@@ -3,7 +3,6 @@
 
 "json"
 
-
 import unittest
 
 
@@ -15,7 +14,6 @@ VALIDPYTHON = '{"test": "bla"}'
 
 
 class TestDecoder(unittest.TestCase):
-
     def test_loads(self):
         obj = Object()
         obj.test = "bla"
@@ -24,7 +22,6 @@ class TestDecoder(unittest.TestCase):
 
 
 class TestEncoder(unittest.TestCase):
-
     def test_dumps(self):
         obj = Object()
         obj.test = "bla"

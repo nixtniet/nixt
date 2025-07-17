@@ -6,10 +6,12 @@
 
 import logging
 import queue
-import sys
 import time
 import threading
 import _thread
+
+
+STARTTIME = time.time()
 
 
 errorlock = threading.RLock()
@@ -17,40 +19,10 @@ launchlock = threading.RLock()
 lock = threading.RLock()
 
 
-"logging"
-
-
-LEVELS = {'debug': logging.DEBUG,
-          'info': logging.INFO,
-          'warning': logging.WARNING,
-          'warn': logging.WARNING,
-          'error': logging.ERROR,
-          'critical': logging.CRITICAL
-         }
-
-
-def level(loglevel="debug"):
-    if loglevel != "none":
-        format_short = "%(message)-80s"
-        datefmt = '%H:%M:%S'
-        logging.basicConfig(stream=sys.stderr, datefmt=datefmt, format=format_short)
-        logging.getLogger().setLevel(LEVELS.get(loglevel))
-
-
-def rlog(loglevel, txt, ignore=None):
-    if ignore is None:
-        ignore = []
-    for ign in ignore:
-        if ign in str(txt):
-            return
-    logging.log(LEVELS.get(loglevel), txt)
-
-
 "threads"
 
 
 class Thread(threading.Thread):
-
     def __init__(self, func, thrname, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, thrname, (), daemon=daemon)
         self.name = thrname or kwargs.get("name", name(func))
@@ -94,16 +66,16 @@ def launch(func, *args, **kwargs):
 
 def name(obj):
     typ = type(obj)
-    if '__builtins__' in dir(typ):
+    if "__builtins__" in dir(typ):
         return obj.__name__
-    if '__self__' in dir(obj):
-        return f'{obj.__self__.__class__.__name__}.{obj.__name__}'
-    if '__class__' in dir(obj) and '__name__' in dir(obj):
-        return f'{obj.__class__.__name__}.{obj.__name__}'
-    if '__class__' in dir(obj):
+    if "__self__" in dir(obj):
+        return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
+    if "__class__" in dir(obj) and "__name__" in dir(obj):
+        return f"{obj.__class__.__name__}.{obj.__name__}"
+    if "__class__" in dir(obj):
         return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
-    if '__name__' in dir(obj):
-        return f'{obj.__class__.__name__}.{obj.__name__}'
+    if "__name__" in dir(obj):
+        return f"{obj.__class__.__name__}.{obj.__name__}"
     return ""
 
 
@@ -111,7 +83,6 @@ def name(obj):
 
 
 class Timy(threading.Timer):
-
     def __init__(self, sleep, func, *args, **kwargs):
         super().__init__(sleep, func)
         self.name = kwargs.get("name", name(func))
@@ -123,7 +94,6 @@ class Timy(threading.Timer):
 
 
 class Timed:
-
     def __init__(self, sleep, func, *args, thrname="", **kwargs):
         self.args = args
         self.func = func
@@ -149,7 +119,6 @@ class Timed:
 
 
 class Repeater(Timed):
-
     def run(self):
         launch(self.start)
         super().run()
@@ -160,13 +129,10 @@ class Repeater(Timed):
 
 def __dir__():
     return (
-        'Repeater',
-        'Thread',
-        'Timed',
-        'elapsed',
-        'launch',
-        'level',
-        'name',
-        'rlog',
-        'spl'
+        "STARTTIME",
+        "Repeater",
+        "Thread",
+        "Timed",
+        "launch",
+        "name"
     )

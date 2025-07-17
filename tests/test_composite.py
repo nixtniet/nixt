@@ -3,7 +3,6 @@
 
 "composite"
 
-
 import unittest
 
 
@@ -11,7 +10,6 @@ from nixt.objects import Object
 
 
 class TestComposite(unittest.TestCase):
-
     def testcomposite(self):
         obj = Object()
         obj.obj = Object()

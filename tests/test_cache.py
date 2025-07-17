@@ -9,7 +9,6 @@ from nixt.persist import Cache
 
 
 class TestCache(unittest.TestCase):
-
     def setUp(self):
         self.cache = Cache()
         self.cache.objs = {}

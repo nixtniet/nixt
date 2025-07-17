@@ -1,39 +1,33 @@
 # This file is placed in the Public Domain.
 
 
-"commands"
+"command"
 
 
 import inspect
-import time
 
 
-from .clients import Fleet
-from .objects import Object
+from .default import Default
+from .fleet   import Fleet
 
 
-STARTTIME = time.time()
-
-
-class Default(Object):
-
-    def __getattr__(self, key):
-        if key not in self:
-            setattr(self, key, "")
-        return self.__dict__.get(key, "")
+"config"
 
 
 class Main(Default):
 
-    init  = ''
+    init = ""
     level = "warn"
-    name  = Default.__module__.split(".")[-2]
-    opts  = Default()
+    name = Default.__module__.split(".")[-2]
+    opts = Default()
+
+
+"commands"
 
 
 class Commands:
 
-    cmds  = {}
+    cmds = {}
     names = {}
 
     @staticmethod
@@ -51,11 +45,8 @@ class Commands:
         for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
             if key.startswith("cb"):
                 continue
-            if 'event' in cmdz.__code__.co_varnames:
+            if "event" in cmdz.__code__.co_varnames:
                 Commands.add(cmdz, mod)
-
-
-'callbacks"
 
 
 def command(evt):
@@ -69,48 +60,6 @@ def command(evt):
     evt.ready()
 
 
-"utilities"
-
-
-def elapsed(seconds, short=True):
-    txt = ""
-    nsec = float(seconds)
-    if nsec < 1:
-        return f"{nsec:.2f}s"
-    yea = 365*24*60*60
-    week = 7*24*60*60
-    nday = 24*60*60
-    hour = 60*60
-    minute = 60
-    yeas = int(nsec/yea)
-    nsec -= yeas*yea
-    weeks = int(nsec/week)
-    nsec -= weeks*week
-    nrdays = int(nsec/nday)
-    nsec -= nrdays*nday
-    hours = int(nsec/hour)
-    nsec -= hours*hour
-    minutes = int(nsec/minute)
-    nsec -= int(minute*minutes)
-    sec = int(nsec)
-    if yeas:
-        txt += f"{yeas}y"
-    if weeks:
-        nrdays += weeks * 7
-    if nrdays:
-        txt += f"{nrdays}d"
-    if short and txt:
-        return txt.strip()
-    if hours:
-        txt += f"{hours}h"
-    if minutes:
-        txt += f"{minutes}m"
-    if sec:
-        txt += f"{sec}s"
-    txt = txt.strip()
-    return txt
-
-
 def parse(obj, txt=""):
     if txt == "":
         if "txt" in dir(obj):
@@ -118,17 +67,17 @@ def parse(obj, txt=""):
         else:
             txt = ""
     args = []
-    obj.args   = []
-    obj.cmd    = ""
-    obj.gets   = Default()
-    obj.index  = None
-    obj.mod    = ""
-    obj.opts   = ""
+    obj.args = []
+    obj.cmd = ""
+    obj.gets = Default()
+    obj.index = None
+    obj.mod = ""
+    obj.opts = ""
     obj.result = {}
-    obj.sets   = Default()
+    obj.sets = Default()
     obj.silent = Default()
-    obj.txt    = txt
-    obj.otxt   = obj.txt
+    obj.txt = txt
+    obj.otxt = obj.txt
     _nr = -1
     for spli in obj.otxt.split():
         if spli.startswith("-"):
@@ -163,9 +112,9 @@ def parse(obj, txt=""):
         args.append(spli)
     if args:
         obj.args = args
-        obj.txt  = obj.cmd or ""
+        obj.txt = obj.cmd or ""
         obj.rest = " ".join(obj.args)
-        obj.txt  = obj.cmd + " " + obj.rest
+        obj.txt = obj.cmd + " " + obj.rest
     else:
         obj.txt = obj.cmd or ""
 
@@ -176,26 +125,13 @@ def scan(pkg):
         Commands.scan(mod)
 
 
-def spl(txt):
-    try:
-        result = txt.split(',')
-    except (TypeError, ValueError):
-        result = [txt, ]
-    return [x for x in result if x]
-
-
 "interface"
 
 
 def __dir__():
-     return (
-         'STARTTIME',
-         'Commands',
-         'Default',
-         'Main',
-         'command',
-         'elapsed',
-         'parse',
-         'spl',
-         'scan'
-     )
+    return (
+        "Commands",
+        "command",
+        "parse",
+        "scan"
+    )

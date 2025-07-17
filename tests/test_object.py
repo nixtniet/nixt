@@ -3,7 +3,6 @@
 
 "objects"
 
-
 import unittest
 
 
@@ -13,59 +12,49 @@ from nixt.objects import Object, items, keys, update, values
 import nixt.objects
 
 
-OBJECT  = Object()
+OBJECT = Object()
 PACKAGE = nixt.objects
 VALIDJSON = '{"test": "bla"}'
 
 
-attrs1 = (
-    'Object',
-    'construct',
-    'dumps',
-    'items',
-    'keys',
-    'loads',
-    'update',
-    'values'
-)
+attrs1 = ("Object", "construct", "dumps", "items", "keys", "loads", "update", "values")
 
 
 attrs2 = (
-    '__doc__',
-    '__lt__',
-    '__init__',
-    '__setattr__',
-    '__ne__',
-    '__delattr__',
-    '__eq__',
-    '__dir__',
-    '__new__',
-    '__iter__',
-    '__reduce__',
-    '__class__',
-    '__module__',
-    '__gt__',
-    '__str__',
-    '__init_subclass__',
-    '__reduce_ex__',
-    '__dict__',
-    '__subclasshook__',
-    '__le__',
-    '__contains__',
-    '__weakref__',
-    '__ge__',
-    '__sizeof__',
-    '__getattribute__',
-    '__format__',
-    '__len__',
-    '__getstate__',
-    '__repr__',
-    '__hash__'
+    "__doc__",
+    "__lt__",
+    "__init__",
+    "__setattr__",
+    "__ne__",
+    "__delattr__",
+    "__eq__",
+    "__dir__",
+    "__new__",
+    "__iter__",
+    "__reduce__",
+    "__class__",
+    "__module__",
+    "__gt__",
+    "__str__",
+    "__init_subclass__",
+    "__reduce_ex__",
+    "__dict__",
+    "__subclasshook__",
+    "__le__",
+    "__contains__",
+    "__weakref__",
+    "__ge__",
+    "__sizeof__",
+    "__getattribute__",
+    "__format__",
+    "__len__",
+    "__getstate__",
+    "__repr__",
+    "__hash__",
 )
 
 
 class TestObject(unittest.TestCase):
-
     def test_attributes(self):
         okd = True
         for meth in attrs2:
@@ -95,11 +84,11 @@ class TestObject(unittest.TestCase):
 
     def test_fmt(self):
         obj = Object()
-        self.assertEqual(format(obj), '{}')
+        self.assertEqual(format(obj), "{}")
 
     def test_format(self):
         obj = Object()
-        self.assertEqual(format(obj), '{}')
+        self.assertEqual(format(obj), "{}")
 
     def test_getattribute(self):
         obj = Object()

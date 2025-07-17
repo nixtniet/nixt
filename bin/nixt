@@ -12,12 +12,14 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client, Fleet
-from nixt.command import Commands, Default, Main, command, parse, scan
-from nixt.command import elapsed, spl
-from nixt.handler import Event
-from nixt.persist import Workdir, pidname, skel, types
-from nixt.runtime import launch, level
+from nixt.client  import Client
+from nixt.command import Commands, Main, command, parse, scan
+from nixt.fleet   import Fleet
+from nixt.event   import Event
+from nixt.log     import level
+from nixt.path    import Workdir, pidname, skel, types
+from nixt.runtime import launch
+from nixt.utils   import elapsed, spl
 
 
 Main.version = 351

@@ -21,20 +21,23 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.clients import Fleet
-from nixt.command import Default
-from nixt.objects import Object, fmt, update
-from nixt.persist import find, fntime, getpath, last, write
-from nixt.runtime import Repeater, launch, rlog
+from nixt.default import Default
+from nixt.disk    import write
+from nixt.fleet   import Fleet
+from nixt.find    import find, fntime, last
+from nixt.log     import rlog
+from nixt.object  import Object, fmt, update
+from nixt.path    import getpath
+from nixt.runtime import Repeater, launch
 
 
 DEBUG = False
 
 
-fetchlock  = _thread.allocate_lock()
+fetchlock = _thread.allocate_lock()
 importlock = _thread.allocate_lock()
-errors     = []
-skipped    = []
+errors = []
+skipped = []
 
 
 "init"
@@ -50,24 +53,21 @@ def init():
 
 
 class Feed(Default):
-
     def __init__(self):
         Default.__init__(self)
         self.name = ""
 
 
 class Rss(Default):
-
     def __init__(self):
         Default.__init__(self)
-        self.display_list = 'title,link,author'
-        self.insertid     = None
-        self.name         = ""
-        self.rss          = ""
+        self.display_list = "title,link,author"
+        self.insertid = None
+        self.name = ""
+        self.rss = ""
 
 
 class Urls(Default):
-
     pass
 
 
@@ -75,7 +75,6 @@ class Urls(Default):
 
 
 class Fetcher(Object):
-
     def __init__(self):
         self.dosave = False
         self.seen = Urls()
@@ -84,22 +83,22 @@ class Fetcher(Object):
     @staticmethod
     def display(obj):
         displaylist = ""
-        result = ''
+        result = ""
         try:
-            displaylist = obj.display_list or 'title,link'
+            displaylist = obj.display_list or "title,link"
         except AttributeError:
-            displaylist = 'title,link,author'
+            displaylist = "title,link,author"
         for key in displaylist.split(","):
             if not key:
                 continue
             data = getattr(obj, key, None)
             if not data:
                 continue
-            data = data.replace('\n', ' ')
+            data = data.replace("\n", " ")
             data = striphtml(data.rstrip())
             data = unescape(data)
             result += data.rstrip()
-            result += ' - '
+            result += " - "
         return result[:-2].rstrip()
 
     def fetch(self, feed, silent=False):
@@ -114,8 +113,8 @@ class Fetcher(Object):
                 update(fed, obj)
                 update(fed, feed)
                 url = urllib.parse.urlparse(fed.link)
-                if url.path and not url.path == '/':
-                    uurl = f'{url.scheme}://{url.netloc}/{url.path}'
+                if url.path and not url.path == "/":
+                    uurl = f"{url.scheme}://{url.netloc}/{url.path}"
                 else:
                     uurl = fed.link
                 urls.append(uurl)
@@ -130,10 +129,10 @@ class Fetcher(Object):
             write(self.seen, self.seenfn)
         if silent:
             return counter
-        txt = ''
-        feedname = getattr(feed, 'name', None)
+        txt = ""
+        feedname = getattr(feed, "name", None)
         if feedname:
-            txt = f'[{feedname}] '
+            txt = f"[{feedname}] "
         for obj in result:
             txt2 = txt + self.display(obj)
             for bot in Fleet.all():
@@ -142,7 +141,7 @@ class Fetcher(Object):
 
     def run(self, silent=False):
         thrs = []
-        for _fn, feed in find('rss'):
+        for _fn, feed in find("rss"):
             thrs.append(launch(self.fetch, feed, silent))
         return thrs
 
@@ -157,15 +156,14 @@ class Fetcher(Object):
 
 
 class Parser:
-
     @staticmethod
     def getitem(line, item):
-        lne = ''
-        index1 = line.find(f'<{item}>')
+        lne = ""
+        index1 = line.find(f"<{item}>")
         if index1 == -1:
             return lne
         index1 += len(item) + 2
-        index2 = line.find(f'</{item}>', index1)
+        index2 = line.find(f"</{item}>", index1)
         if index2 == -1:
             return lne
         lne = line[index1:index2]
@@ -178,11 +176,11 @@ class Parser:
         result = []
         stop = False
         while not stop:
-            index1 = text.find(f'<{token}', index)
+            index1 = text.find(f"<{token}", index)
             if index1 == -1:
                 break
             index1 += len(token) + 2
-            index2 = text.find(f'</{token}>', index1)
+            index2 = text.find(f"</{token}>", index1)
             if index2 == -1:
                 break
             lne = text[index1:index2]
@@ -191,7 +189,7 @@ class Parser:
         return result
 
     @staticmethod
-    def parse(txt, toke="item", items='title,link'):
+    def parse(txt, toke="item", items="title,link"):
         result = []
         for line in Parser.getitems(txt, toke):
             line = line.strip()
@@ -211,28 +209,27 @@ class Parser:
 
 
 class OPML:
-
     @staticmethod
     def getnames(line):
-        return [x.split('="')[0]  for x in line.split()]
+        return [x.split('="')[0] for x in line.split()]
 
     @staticmethod
     def getvalue(line, attr):
-        lne = ''
+        lne = ""
         index1 = line.find(f'{attr}="')
         if index1 == -1:
             return lne
         index1 += len(attr) + 2
         index2 = line.find('"', index1)
         if index2 == -1:
-            index2 = line.find('/>', index1)
+            index2 = line.find("/>", index1)
         if index2 == -1:
             return lne
         lne = line[index1:index2]
-        if 'CDATA' in lne:
-            lne = lne.replace('![CDATA[', '')
-            lne = lne.replace(']]', '')
-            #lne = lne[1:-1]
+        if "CDATA" in lne:
+            lne = lne.replace("![CDATA[", "")
+            lne = lne.replace("]]", "")
+            # lne = lne[1:-1]
         return lne
 
     @staticmethod
@@ -241,11 +238,11 @@ class OPML:
         result = []
         stop = False
         while not stop:
-            index1 = line.find(f'<{token} ', index)
+            index1 = line.find(f"<{token} ", index)
             if index1 == -1:
                 return result
             index1 += len(token) + 2
-            index2 = line.find('/>', index1)
+            index2 = line.find("/>", index1)
             if index2 == -1:
                 return result
             result.append(line[index1:index2])
@@ -282,9 +279,9 @@ def attrs(obj, txt):
 
 
 def cdata(line):
-    if 'CDATA' in line:
-        lne = line.replace('![CDATA[', '')
-        lne = lne.replace(']]', '')
+    if "CDATA" in line:
+        lne = line.replace("![CDATA[", "")
+        lne = lne.replace("]]", "")
         lne = lne[1:-1]
         return lne
     return line
@@ -301,27 +298,28 @@ def getfeed(url, items):
         errors.append(url)
         return result
     if rest:
-        if 'link' not in items:
+        if "link" not in items:
             items += ",link"
-        if url.endswith('atom'):
-            result = Parser.parse(str(rest.data, 'utf-8'), 'entry', items) or []
+        if url.endswith("atom"):
+            result = Parser.parse(str(rest.data, "utf-8"), "entry", items) or []
         else:
-            result = Parser.parse(str(rest.data, 'utf-8'), 'item', items) or []
+            result = Parser.parse(str(rest.data, "utf-8"), "item", items) or []
     return result
 
 
 def gettinyurl(url):
     postarray = [
-        ('submit', 'submit'),
-        ('url', url),
+        ("submit", "submit"),
+        ("url", url),
     ]
     postdata = urlencode(postarray, quote_via=quote_plus)
-    req = urllib.request.Request('http://tinyurl.com/create.php',
-                  data=bytes(postdata, 'UTF-8'))
-    req.add_header('User-agent', useragent("rss fetcher"))
-    with urllib.request.urlopen(req) as htm: # nosec
+    req = urllib.request.Request(
+        "http://tinyurl.com/create.php", data=bytes(postdata, "UTF-8")
+    )
+    req.add_header("User-agent", useragent("rss fetcher"))
+    with urllib.request.urlopen(req) as htm:  # nosec
         for txt in htm.readlines():
-            line = txt.decode('UTF-8').strip()
+            line = txt.decode("UTF-8").strip()
             i = re.search('data-clipboard-text="(.*?)"', line, re.M)
             if i:
                 return i.groups()
@@ -331,8 +329,8 @@ def gettinyurl(url):
 def geturl(url):
     url = urllib.parse.urlunparse(urllib.parse.urlparse(url))
     req = urllib.request.Request(str(url))
-    req.add_header('User-agent', useragent("rss fetcher"))
-    with urllib.request.urlopen(req) as response: # nosec
+    req.add_header("User-agent", useragent("rss fetcher"))
+    with urllib.request.urlopen(req) as response:  # nosec
         response.data = response.read()
         return response
 
@@ -342,17 +340,17 @@ def shortid():
 
 
 def striphtml(text):
-    clean = re.compile('<.*?>')
-    return re.sub(clean, '', text)
+    clean = re.compile("<.*?>")
+    return re.sub(clean, "", text)
 
 
 def unescape(text):
-    txt = re.sub(r'\s+', ' ', text)
+    txt = re.sub(r"\s+", " ", text)
     return html.unescape(txt)
 
 
 def useragent(txt):
-    return 'Mozilla/5.0 (X11; Linux x86_64) ' + txt
+    return "Mozilla/5.0 (X11; Linux x86_64) " + txt
 
 
 "commands"
@@ -360,10 +358,10 @@ def useragent(txt):
 
 def dpl(event):
     if len(event.args) < 2:
-        event.reply('dpl <stringinurl> <item1,item2>')
+        event.reply("dpl <stringinurl> <item1,item2>")
         return
-    setter = {'display_list': event.args[1]}
-    for fnm,  rss in find("rss", {'rss': event.args[0]}):
+    setter = {"display_list": event.args[1]}
+    for fnm, rss in find("rss", {"rss": event.args[0]}):
         if rss:
             update(rss, setter)
             write(rss, fnm)
@@ -380,8 +378,8 @@ def exp(event):
             update(obj, ooo)
             name = f"url{nrs}"
             txt = f'<outline name="{name}" display_list="{obj.display_list}" xmlUrl="{obj.rss}"/>'
-            event.reply(" "*12 + txt)
-        event.reply(" "*8 + "</outline>")
+            event.reply(" " * 12 + txt)
+        event.reply(" " * 8 + "</outline>")
         event.reply("    <body>")
         event.reply("</opml>")
 
@@ -401,13 +399,13 @@ def imp(event):
     nrskip = 0
     insertid = shortid()
     with importlock:
-        for obj in prs.parse(txt, 'outline', "name,display_list,xmlUrl"):
+        for obj in prs.parse(txt, "outline", "name,display_list,xmlUrl"):
             url = obj.xmlUrl
             if url in skipped:
                 continue
             if not url.startswith("http"):
                 continue
-            has = list(find("rss", {'rss': url}, matching=True))
+            has = list(find("rss", {"rss": url}, matching=True))
             if has:
                 skipped.append(url)
                 nrskip += 1
@@ -426,9 +424,9 @@ def imp(event):
 
 def nme(event):
     if len(event.args) != 2:
-        event.reply('nme <stringinurl> <name>')
+        event.reply("nme <stringinurl> <name>")
         return
-    selector = {'rss': event.args[0]}
+    selector = {"rss": event.args[0]}
     for fnm, rss in find("rss", selector):
         feed = Rss()
         update(feed, rss)
@@ -440,7 +438,7 @@ def nme(event):
 
 def rem(event):
     if len(event.args) != 1:
-        event.reply('rem <stringinurl>')
+        event.reply("rem <stringinurl>")
         return
     for fnm, rss in find("rss"):
         feed = Default()
@@ -455,7 +453,7 @@ def rem(event):
 
 def res(event):
     if len(event.args) != 1:
-        event.reply('res <stringinurl>')
+        event.reply("res <stringinurl>")
         return
     for fnm, rss in find("rss", deleted=True):
         feed = Default()
@@ -471,19 +469,19 @@ def res(event):
 def rss(event):
     if not event.rest:
         nrs = 0
-        for fnm, rss in find('rss'):
+        for fnm, rss in find("rss"):
             nrs += 1
-            elp = elapsed(time.time()-fntime(fnm))
+            elp = elapsed(time.time() - fntime(fnm))
             txt = fmt(rss)
-            event.reply(f'{nrs} {txt} {elp}')
+            event.reply(f"{nrs} {txt} {elp}")
         if not nrs:
-            event.reply('no feed found.')
+            event.reply("no feed found.")
         return
     url = event.args[0]
-    if 'http://' not in url and "https://" not in url:
-        event.reply('i need an url')
+    if "http://" not in url and "https://" not in url:
+        event.reply("i need an url")
         return
-    for fnm, result in find("rss", {'rss': url}):
+    for fnm, result in find("rss", {"rss": url}):
         if result:
             event.reply(f"{url} is known")
             return
@@ -522,21 +520,21 @@ def elapsed(seconds, short=True):
     nsec = float(seconds)
     if nsec < 1:
         return f"{nsec:.2f}s"
-    yea = 365*24*60*60
-    week = 7*24*60*60
-    nday = 24*60*60
-    hour = 60*60
+    yea = 365 * 24 * 60 * 60
+    week = 7 * 24 * 60 * 60
+    nday = 24 * 60 * 60
+    hour = 60 * 60
     minute = 60
-    yeas = int(nsec/yea)
-    nsec -= yeas*yea
-    weeks = int(nsec/week)
-    nsec -= weeks*week
-    nrdays = int(nsec/nday)
-    nsec -= nrdays*nday
-    hours = int(nsec/hour)
-    nsec -= hours*hour
-    minutes = int(nsec/minute)
-    nsec -= int(minute*minutes)
+    yeas = int(nsec / yea)
+    nsec -= yeas * yea
+    weeks = int(nsec / week)
+    nsec -= weeks * week
+    nrdays = int(nsec / nday)
+    nsec -= nrdays * nday
+    hours = int(nsec / hour)
+    nsec -= hours * hour
+    minutes = int(nsec / minute)
+    nsec -= int(minute * minutes)
     sec = int(nsec)
     if yeas:
         txt += f"{yeas}y"
@@ -558,8 +556,9 @@ def elapsed(seconds, short=True):
 
 def spl(txt):
     try:
-        result = txt.split(',')
+        result = txt.split(",")
     except (TypeError, ValueError):
-        result = [txt, ]
+        result = [
+            txt,
+        ]
     return [x for x in result if x]
-

@@ -3,7 +3,6 @@
 
 "mixin"
 
-
 import unittest
 
 
@@ -11,17 +10,14 @@ from nixt.objects import Object
 
 
 class Mix:
-
     a = "b"
 
 
 class Mixin(Mix, Object):
-
     pass
 
 
 class TestMixin(unittest.TestCase):
-
     def test_mixin(self):
         mix = Mixin()
         self.assertTrue(isinstance(mix, Mixin))

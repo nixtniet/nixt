@@ -14,12 +14,17 @@ import threading
 import time
 
 
-from nixt.clients import Client, Fleet
-from nixt.command import Default, Main, command
-from nixt.handler import Event as IEvent
-from nixt.objects import Object, edit, fmt, keys
-from nixt.persist import getpath, ident, last, write
-from nixt.runtime import launch, rlog
+from nixt.client  import Client
+from nixt.command import Main, command
+from nixt.default import Default
+from nixt.disk    import write
+from nixt.event   import Event as IEvent
+from nixt.find    import last
+from nixt.fleet   import Fleet
+from nixt.log     import rlog
+from nixt.object  import Object, edit, fmt, keys
+from nixt.path    import getpath, ident
+from nixt.runtime import launch
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
@@ -48,17 +53,16 @@ def init():
 
 
 class Config(Default):
-
-    channel = f'#{Main.name}'
+    channel = f"#{Main.name}"
     commands = True
-    control = '!'
+    control = "!"
     nick = Main.name
     password = ""
     port = 6667
     realname = Main.name
     sasl = False
-    server = 'localhost'
-    servermodes = ''
+    server = "localhost"
+    servermodes = ""
     sleep = 60
     username = Main.name
     users = False
@@ -78,25 +82,23 @@ class Config(Default):
 
 
 class Event(IEvent):
-
     def __init__(self):
         super().__init__()
-        self.args      = []
+        self.args = []
         self.arguments = []
-        self.command   = ""
-        self.channel   = ""
-        self.nick      = ""
-        self.origin    = ""
-        self.rawstr    = ""
-        self.rest      = ""
-        self.txt       = ""
+        self.command = ""
+        self.channel = ""
+        self.nick = ""
+        self.origin = ""
+        self.rawstr = ""
+        self.rest = ""
+        self.txt = ""
 
 
 "wrapper"
 
 
 class TextWrap(textwrap.TextWrapper):
-
     def __init__(self):
         super().__init__()
         self.break_long_words = False
@@ -114,7 +116,6 @@ wrapper = TextWrap()
 
 
 class Output:
-
     def __init__(self):
         self.oqueue = queue.Queue()
         self.ostop = threading.Event()
@@ -148,7 +149,6 @@ class Output:
 
 
 class IRC(Output, Client):
-
     def __init__(self):
         Client.__init__(self)
         Output.__init__(self)
@@ -173,18 +173,18 @@ class IRC(Output, Client):
         self.state.nrerror = 0
         self.state.nrsend = 0
         self.state.pongcheck = False
-        self.state.sleep = self.cfg.sleep 
+        self.state.sleep = self.cfg.sleep
         self.state.stopkeep = False
-        self.zelf = ''
-        self.register('903', cb_h903)
-        self.register('904', cb_h903)
-        self.register('AUTHENTICATE', cb_auth)
-        self.register('CAP', cb_cap)
-        self.register('ERROR', cb_error)
-        self.register('LOG', cb_log)
-        self.register('NOTICE', cb_notice)
-        self.register('PRIVMSG', cb_privmsg)
-        self.register('QUIT', cb_quit)
+        self.zelf = ""
+        self.register("903", cb_h903)
+        self.register("904", cb_h903)
+        self.register("AUTHENTICATE", cb_auth)
+        self.register("CAP", cb_cap)
+        self.register("ERROR", cb_error)
+        self.register("LOG", cb_log)
+        self.register("NOTICE", cb_notice)
+        self.register("PRIVMSG", cb_privmsg)
+        self.register("QUIT", cb_quit)
         self.register("366", cb_ready)
         self.ident = ident(self)
 
@@ -206,7 +206,7 @@ class IRC(Output, Client):
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock = ctx.wrap_socket(sock)
             self.sock.connect((server, port))
-            self.direct('CAP LS 302')
+            self.direct("CAP LS 302")
         else:
             addr = socket.getaddrinfo(server, port, socket.AF_INET)[-1][-1]
             addr = tuple(addr[:2])
@@ -217,7 +217,10 @@ class IRC(Output, Client):
             self.sock.setblocking(True)
             self.sock.settimeout(180.0)
             self.events.connected.set()
-            rlog("debug", f"connected {self.cfg.server}:{self.cfg.port} {self.cfg.channel}")
+            rlog(
+                "debug",
+                f"connected {self.cfg.server}:{self.cfg.port} {self.cfg.channel}",
+            )
             return True
         return False
 
@@ -229,11 +232,7 @@ class IRC(Output, Client):
     def disconnect(self):
         try:
             self.sock.shutdown(2)
-        except (
-                ssl.SSLError,
-                OSError,
-                BrokenPipeError
-               ) as _ex:
+        except (ssl.SSLError, OSError, BrokenPipeError) as _ex:
             pass
 
     def display(self, evt):
@@ -252,22 +251,19 @@ class IRC(Output, Client):
                 self.dosay(evt.channel, txt)
             if len(txtlist) > 3:
                 length = len(txtlist) - 3
-                self.say(
-                         evt.channel,
-                         f"use !mre to show more (+{length})"
-                        )
+                self.say(evt.channel, f"use !mre to show more (+{length})")
 
     def docommand(self, cmd, *args):
         with saylock:
             if not args:
                 self.raw(cmd)
             elif len(args) == 1:
-                self.raw(f'{cmd.upper()} {args[0]}')
+                self.raw(f"{cmd.upper()} {args[0]}")
             elif len(args) == 2:
-                txt = ' '.join(args[1:])
-                self.raw(f'{cmd.upper()} {args[0]} :{txt}')
+                txt = " ".join(args[1:])
+                self.raw(f"{cmd.upper()} {args[0]} :{txt}")
             elif len(args) >= 3:
-                txt = ' '.join(args[2:])
+                txt = " ".join(args[2:])
                 self.raw("{cmd.upper()} {args[0]} {args[1]} :{txt}")
             if (time.time() - self.state.last) < 5.0:
                 time.sleep(5.0)
@@ -284,12 +280,7 @@ class IRC(Output, Client):
                         self.events.joined.set()
                         continue
                     break
-            except (
-                    socket.timeout,
-                    ssl.SSLError,
-                    OSError,
-                    ConnectionResetError
-                   ) as ex:
+            except (socket.timeout, ssl.SSLError, OSError, ConnectionResetError) as ex:
                 self.events.joined.set()
                 self.state.error = str(ex)
                 rlog("debug", str(type(ex)) + " " + str(ex))
@@ -297,34 +288,34 @@ class IRC(Output, Client):
 
     def dosay(self, channel, txt):
         self.events.joined.wait()
-        txt = str(txt).replace('\n', '')
-        txt = txt.replace('  ', ' ')
-        self.docommand('PRIVMSG', channel, txt)
+        txt = str(txt).replace("\n", "")
+        txt = txt.replace("  ", " ")
+        self.docommand("PRIVMSG", channel, txt)
 
     def event(self, txt):
         evt = self.parsing(txt)
         cmd = evt.command
-        if cmd == 'PING':
+        if cmd == "PING":
             self.state.pongcheck = True
-            self.docommand('PONG', evt.txt or '')
-        elif cmd == 'PONG':
+            self.docommand("PONG", evt.txt or "")
+        elif cmd == "PONG":
             self.state.pongcheck = False
-        if cmd == '001':
+        if cmd == "001":
             self.state.needconnect = False
             if self.cfg.servermodes:
-                self.docommand(f'MODE {self.cfg.nick} {self.cfg.servermodes}')
+                self.docommand(f"MODE {self.cfg.nick} {self.cfg.servermodes}")
             self.zelf = evt.args[-1]
         elif cmd == "376":
             self.joinall()
-        elif cmd == '002':
+        elif cmd == "002":
             self.state.host = evt.args[2][:-1]
-        elif cmd == '366':
+        elif cmd == "366":
             self.state.error = ""
             self.events.joined.set()
-        elif cmd == '433':
+        elif cmd == "433":
             self.state.error = txt
-            nck = self.cfg.nick = self.cfg.nick + '_'
-            self.docommand('NICK', nck)
+            nck = self.cfg.nick = self.cfg.nick + "_"
+            self.docommand("NICK", nck)
         return evt
 
     def extend(self, channel, txtlist):
@@ -345,7 +336,7 @@ class IRC(Output, Client):
 
     def joinall(self):
         for channel in self.channels:
-            self.docommand('JOIN', channel)
+            self.docommand("JOIN", channel)
 
     def keep(self):
         while not self.stopped.is_set():
@@ -357,15 +348,15 @@ class IRC(Output, Client):
             self.state.keeprunning = True
             self.state.latest = time.time()
             time.sleep(self.cfg.sleep)
-            self.docommand('PING', self.cfg.server)
+            self.docommand("PING", self.cfg.server)
             if self.state.pongcheck:
                 self.restart()
 
     def logon(self, server, nck):
         self.events.connected.wait()
         self.events.authed.wait()
-        self.direct(f'NICK {nck}')
-        self.direct(f'USER {nck} {server} {server} {nck}')
+        self.direct(f"NICK {nck}")
+        self.direct(f"USER {nck} {server} {server} {nck}")
 
     def oput(self, evt):
         if evt.channel and evt.channel not in dir(self.cache):
@@ -374,20 +365,20 @@ class IRC(Output, Client):
 
     def parsing(self, txt):
         rawstr = str(txt)
-        rawstr = rawstr.replace('\u0001', '')
-        rawstr = rawstr.replace('\001', '')
+        rawstr = rawstr.replace("\u0001", "")
+        rawstr = rawstr.replace("\001", "")
         rlog("debug", txt, IGNORE)
         obj = Event()
         obj.args = []
         obj.rawstr = rawstr
-        obj.command = ''
+        obj.command = ""
         obj.arguments = []
         arguments = rawstr.split()
         if arguments:
             obj.origin = arguments[0]
         else:
             obj.origin = self.cfg.server
-        if obj.origin.startswith(':'):
+        if obj.origin.startswith(":"):
             obj.origin = obj.origin[1:]
             if len(arguments) > 1:
                 obj.command = arguments[1]
@@ -396,7 +387,7 @@ class IRC(Output, Client):
                 txtlist = []
                 adding = False
                 for arg in arguments[2:]:
-                    if arg.count(':') <= 1 and arg.startswith(':'):
+                    if arg.count(":") <= 1 and arg.startswith(":"):
                         adding = True
                         txtlist.append(arg[1:])
                         continue
@@ -404,23 +395,23 @@ class IRC(Output, Client):
                         txtlist.append(arg)
                     else:
                         obj.arguments.append(arg)
-                obj.txt = ' '.join(txtlist)
+                obj.txt = " ".join(txtlist)
         else:
             obj.command = obj.origin
             obj.origin = self.cfg.server
         try:
-            obj.nick, obj.origin = obj.origin.split('!')
+            obj.nick, obj.origin = obj.origin.split("!")
         except ValueError:
-            obj.nick = ''
-        target = ''
+            obj.nick = ""
+        target = ""
         if obj.arguments:
             target = obj.arguments[0]
-        if target.startswith('#'):
+        if target.startswith("#"):
             obj.channel = target
         else:
             obj.channel = obj.nick
         if not obj.txt:
-            obj.txt = rawstr.split(':', 2)[-1]
+            obj.txt = rawstr.split(":", 2)[-1]
         if not obj.txt and len(arguments) == 1:
             obj.txt = arguments[1]
         splitted = obj.txt.split()
@@ -442,13 +433,13 @@ class IRC(Output, Client):
                 time.sleep(1.0)
                 return self.event(str(ex))
             except (
-                    OSError,
-                    socket.timeout,
-                    ssl.SSLError,
-                    ssl.SSLZeroReturnError,
-                    ConnectionResetError,
-                    BrokenPipeError
-                   ) as ex:
+                OSError,
+                socket.timeout,
+                ssl.SSLError,
+                ssl.SSLZeroReturnError,
+                ConnectionResetError,
+                BrokenPipeError,
+            ) as ex:
                 self.state.nrerror += 1
                 self.state.error = str(type(ex)) + " " + str(ex)
                 rlog("debug", self.state.error)
@@ -465,19 +456,19 @@ class IRC(Output, Client):
         txt = txt.rstrip()
         rlog("debug", txt, IGNORE)
         txt = txt[:500]
-        txt += '\r\n'
-        txt = bytes(txt, 'utf-8')
+        txt += "\r\n"
+        txt = bytes(txt, "utf-8")
         if self.sock:
             try:
                 self.sock.send(txt)
             except (
-                    OSError,
-                    ssl.SSLError,
-                    ssl.SSLZeroReturnError,
-                    ConnectionResetError,
-                    BrokenPipeError,
-                    socket.timeout
-                   ) as ex:
+                OSError,
+                ssl.SSLError,
+                ssl.SSLZeroReturnError,
+                ConnectionResetError,
+                BrokenPipeError,
+                socket.timeout,
+            ) as ex:
                 rlog("debug", str(type(ex)) + " " + str(ex))
                 self.events.joined.set()
                 self.state.nrerror += 1
@@ -519,11 +510,11 @@ class IRC(Output, Client):
         if not self.sock:
             return
         inbytes = self.sock.recv(512)
-        txt = str(inbytes, 'utf-8')
-        if txt == '':
+        txt = str(inbytes, "utf-8")
+        if txt == "":
             raise ConnectionResetError
         self.state.lastline += txt
-        splitted = self.state.lastline.split('\r\n')
+        splitted = self.state.lastline.split("\r\n")
         for line in splitted[:-1]:
             self.buffer.append(line)
         self.state.lastline = splitted[-1]
@@ -539,11 +530,12 @@ class IRC(Output, Client):
         Client.start(self)
         if not self.state.keeprunning:
             launch(self.keep)
-        launch(self.doconnect,
-                       self.cfg.server or "localhost",
-                       self.cfg.nick,
-                       int(self.cfg.port) or 6667
-                      )
+        launch(
+            self.doconnect,
+            self.cfg.server or "localhost",
+            self.cfg.nick,
+            int(self.cfg.port) or 6667,
+        )
 
     def stop(self):
         self.state.stopkeep = True
@@ -559,41 +551,43 @@ class IRC(Output, Client):
 
 def cb_auth(evt):
     bot = Fleet.get(evt.orig)
-    bot.docommand(f'AUTHENTICATE {bot.cfg.password}')
+    bot.docommand(f"AUTHENTICATE {bot.cfg.password}")
 
 
 def cb_cap(evt):
     bot = Fleet.get(evt.orig)
-    if bot.cfg.password and 'ACK' in evt.arguments:
-        bot.direct('AUTHENTICATE PLAIN')
+    if bot.cfg.password and "ACK" in evt.arguments:
+        bot.direct("AUTHENTICATE PLAIN")
     else:
-        bot.direct('CAP REQ :sasl')
+        bot.direct("CAP REQ :sasl")
 
 
 def cb_error(evt):
     bot = Fleet.get(evt.orig)
     bot.state.nrerror += 1
     bot.state.error = evt.txt
-    rlog('debug', fmt(evt))
+    rlog("debug", fmt(evt))
 
 
 def cb_h903(evt):
     bot = Fleet.get(evt.orig)
-    bot.direct('CAP END')
+    bot.direct("CAP END")
     bot.events.authed.set()
 
 
 def cb_h904(evt):
     bot = Fleet.get(evt.orig)
-    bot.direct('CAP END')
+    bot.direct("CAP END")
     bot.events.authed.set()
 
 
 def cb_kill(evt):
     pass
 
+
 def cb_log(evt):
     pass
+
 
 def cb_ready(evt):
     bot = Fleet.get(evt.orig)
@@ -602,14 +596,14 @@ def cb_ready(evt):
 
 def cb_001(evt):
     bot = Fleet.get(evt.orig)
-    bot.events.logon,set()
+    bot.events.logon, set()
 
 
 def cb_notice(evt):
     bot = Fleet.get(evt.orig)
-    if evt.txt.startswith('VERSION'):
-        txt = f'\001VERSION {Main.name.upper()} 140 - {bot.cfg.username}\001'
-        bot.docommand('NOTICE', evt.channel, txt)
+    if evt.txt.startswith("VERSION"):
+        txt = f"\001VERSION {Main.name.upper()} 140 - {bot.cfg.username}\001"
+        bot.docommand("NOTICE", evt.channel, txt)
 
 
 def cb_privmsg(evt):
@@ -617,10 +611,12 @@ def cb_privmsg(evt):
     if not bot.cfg.commands:
         return
     if evt.txt:
-        if evt.txt[0] in ['!',]:
+        if evt.txt[0] in [
+            "!",
+        ]:
             evt.txt = evt.txt[1:]
-        elif evt.txt.startswith(f'{bot.cfg.nick}:'):
-            evt.txt = evt.txt[len(bot.cfg.nick)+1:]
+        elif evt.txt.startswith(f"{bot.cfg.nick}:"):
+            evt.txt = evt.txt[len(bot.cfg.nick) + 1 :]
         else:
             return
         if evt.txt:
@@ -646,12 +642,12 @@ def cfg(event):
     fnm = last(config)
     if not event.sets:
         event.reply(
-                    fmt(
-                        config,
-                        keys(config),
-                        skip='control,password,realname,sleep,username'.split(",")
-                       )
-                   )
+            fmt(
+                config,
+                keys(config),
+                skip="control,password,realname,sleep,username".split(","),
+            )
+        )
     else:
         edit(config, event.sets)
         write(config, fnm or getpath(config))
@@ -659,31 +655,31 @@ def cfg(event):
 
 def mre(event):
     if not event.channel:
-        event.reply('channel is not set.')
+        event.reply("channel is not set.")
         return
     bot = Fleet.get(event.orig)
-    if 'cache' not in dir(bot):
-        event.reply('bot is missing cache')
+    if "cache" not in dir(bot):
+        event.reply("bot is missing cache")
         return
     if event.channel not in dir(bot.cache):
-        event.reply(f'no output in {event.channel} cache.')
+        event.reply(f"no output in {event.channel} cache.")
         return
     for _x in range(3):
         txt = bot.gettxt(event.channel)
         event.reply(txt)
     size = bot.size(event.channel)
     if size != 0:
-        event.reply(f'{size} more in cache')
+        event.reply(f"{size} more in cache")
 
 
 def pwd(event):
     if len(event.args) != 2:
-        event.reply('pwd <nick> <password>')
+        event.reply("pwd <nick> <password>")
         return
     arg1 = event.args[0]
     arg2 = event.args[1]
-    txt = f'\x00{arg1}\x00{arg2}'
-    enc = txt.encode('ascii')
+    txt = f"\x00{arg1}\x00{arg2}"
+    enc = txt.encode("ascii")
     base = base64.b64encode(enc)
-    dcd = base.decode('ascii')
+    dcd = base.decode("ascii")
     event.reply(dcd)
