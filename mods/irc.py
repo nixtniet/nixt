@@ -15,7 +15,7 @@ import time
 
 
 from nixt.client  import Client
-from nixt.command import Main, command
+from nixt.cmnd    import Main, command
 from nixt.default import Default
 from nixt.disk    import write
 from nixt.event   import Event as IEvent
@@ -24,7 +24,7 @@ from nixt.fleet   import Fleet
 from nixt.log     import rlog
 from nixt.object  import Object, edit, fmt, keys
 from nixt.path    import getpath, ident
-from nixt.runtime import launch
+from nixt.run     import launch
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]

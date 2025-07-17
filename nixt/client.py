@@ -7,14 +7,14 @@
 import threading
 
 
-from .fleet   import Fleet
-from .handler import Handler
+from .fleet  import Fleet
+from .engine import Engine
 
 
-class Client(Handler):
+class Client(Engine):
 
     def __init__(self):
-        Handler.__init__(self)
+        Engine.__init__(self)
         self.olock = threading.RLock()
         Fleet.add(self)
 

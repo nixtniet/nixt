@@ -28,7 +28,7 @@ from nixt.find    import find, fntime, last
 from nixt.log     import rlog
 from nixt.object  import Object, fmt, update
 from nixt.path    import getpath
-from nixt.runtime import Repeater, launch
+from nixt.run     import Repeater, launch
 
 
 DEBUG = False
