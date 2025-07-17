@@ -17,9 +17,6 @@ STARTTIME = time.time()
 lock = threading.RLock()
 
 
-from .utils import spl
-
-
 class Thread(threading.Thread):
     def __init__(self, func, thrname, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, thrname, (), daemon=daemon)
@@ -50,18 +47,6 @@ class Thread(threading.Thread):
     def join(self, timeout=None):
         super().join(timeout)
         return self.result
-
-
-def inits(pkg, names):
-    modz = []
-    for name in sorted(spl(names)):
-        mod = getattr(pkg, name, None)
-        if not mod:
-            continue
-        if "init" in dir(mod):
-            thr = launch(mod.init)
-            modz.append((mod, thr))
-    return modz
 
 
 def launch(func, *args, **kwargs):
@@ -96,7 +81,6 @@ def __dir__():
     return (
         "STARTTIME",
         "Thread",
-        "inits",
         "launch",
         "name"
     )

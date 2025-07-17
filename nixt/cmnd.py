@@ -12,6 +12,8 @@ from .config import Default
 from .fleet  import Fleet
 from .parse  import parse
 from .path   import Workdir, skel
+from .run    import launch
+from .utils  import spl
 
 
 class Main(Default):
@@ -55,6 +57,18 @@ def command(evt):
     func(evt)
     Fleet.display(evt)
     evt.ready()
+
+
+def inits(pkg, names):
+    modz = []
+    for name in sorted(spl(names)):
+        mod = getattr(pkg, name, None)
+        if not mod:
+            continue
+        if "init" in dir(mod):
+            thr = launch(mod.init)
+            modz.append((mod, thr))
+    return modz
 
 
 def scan(pkg):

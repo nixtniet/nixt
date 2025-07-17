@@ -5,7 +5,6 @@
 
 
 import logging
-import sys
 
 
 LEVELS = {
@@ -22,7 +21,7 @@ def level(loglevel="debug"):
     if loglevel != "none":
         format_short = "%(message)-80s"
         datefmt = "%H:%M:%S"
-        logging.basicConfig(stream=sys.stderr, datefmt=datefmt, format=format_short)
+        logging.basicConfig(datefmt=datefmt, format=format_short, force=True)
         logging.getLogger().setLevel(LEVELS.get(loglevel))
 
 

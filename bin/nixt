@@ -12,12 +12,12 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client import Client
-from nixt.cmnd   import Commands, Main, command, parse, scan, setwd
+from nixt.cmnd   import Commands, Main, command, inits, parse, scan, setwd
 from nixt.event  import Event
 from nixt.log    import level
 from nixt.path   import Workdir, pidname, skel, types
-from nixt.run    import inits, launch
-from nixt.utils  import daemon, forever, pidfile, privileges, spl
+from nixt.run    import launch
+from nixt.utils  import spl
 
 
 Main.version = 360
@@ -66,11 +66,60 @@ class Console(CLI):
         out(txt)
 
 
+"utilities"
+
+
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     out(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
     if None:
         out(f'loaded {".".join(dir(MODS))}')
+
+
+def daemon(verbose=False):
+    pid = os.fork()
+    if pid != 0:
+        os._exit(0)
+    os.setsid()
+    pid2 = os.fork()
+    if pid2 != 0:
+        os._exit(0)
+    if not verbose:
+        with open('/dev/null', 'r', encoding="utf-8") as sis:
+            os.dup2(sis.fileno(), sys.stdin.fileno())
+        with open('/dev/null', 'a+', encoding="utf-8") as sos:
+            os.dup2(sos.fileno(), sys.stdout.fileno())
+        with open('/dev/null', 'a+', encoding="utf-8") as ses:
+            os.dup2(ses.fileno(), sys.stderr.fileno())
+    os.umask(0)
+    os.chdir("/")
+    os.nice(10)
+
+
+def forever():
+    while True:
+        try:
+            time.sleep(0.1)
+        except (KeyboardInterrupt, EOFError):
+            print("")
+            sys.exit(1)
+
+
+def pidfile(filename):
+    if os.path.exists(filename):
+        os.unlink(filename)
+    path2 = pathlib.Path(filename)
+    path2.parent.mkdir(parents=True, exist_ok=True)
+    with open(filename, "w", encoding="utf-8") as fds:
+        fds.write(str(os.getpid()))
+
+
+def privileges():
+    import getpass
+    import pwd
+    pwnam2 = pwd.getpwnam(getpass.getuser())
+    os.setgid(pwnam2.pw_gid)
+    os.setuid(pwnam2.pw_uid)
 
 
 "commands"

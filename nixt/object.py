@@ -5,6 +5,7 @@
 
 
 class Object:
+
     def __contains__(self, key):
         return key in dir(self)
 
