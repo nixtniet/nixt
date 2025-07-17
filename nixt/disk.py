@@ -16,9 +16,6 @@ from .object import update
 lock = threading.RLock()
 
 
-"cache"
-
-
 class Cache:
     objs = {}
 
@@ -40,6 +37,11 @@ class Cache:
             Cache.add(path, obj)
 
 
+def cdir(path):
+    pth = pathlib.Path(path)
+    pth.parent.mkdir(parents=True, exist_ok=True)
+
+
 def read(obj, path):
     with lock:
         with open(path, "r", encoding="utf-8") as fpt:
@@ -56,14 +58,6 @@ def write(obj, path):
         with open(path, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)
         return path
-
-
-"utilities"
-
-
-def cdir(path):
-    pth = pathlib.Path(path)
-    pth.parent.mkdir(parents=True, exist_ok=True)
 
 
 "interface"

@@ -8,6 +8,16 @@ import logging
 import sys
 
 
+LEVELS = {
+    "debug": logging.DEBUG,
+    "info": logging.INFO,
+    "warning": logging.WARNING,
+    "warn": logging.WARNING,
+    "error": logging.ERROR,
+    "critical": logging.CRITICAL,
+}
+
+
 def level(loglevel="debug"):
     if loglevel != "none":
         format_short = "%(message)-80s"
@@ -23,19 +33,6 @@ def rlog(loglevel, txt, ignore=None):
         if ign in str(txt):
             return
     logging.log(LEVELS.get(loglevel), txt)
-
-
-"data"
-
-
-LEVELS = {
-    "debug": logging.DEBUG,
-    "info": logging.INFO,
-    "warning": logging.WARNING,
-    "warn": logging.WARNING,
-    "error": logging.ERROR,
-    "critical": logging.CRITICAL,
-}
 
 
 "interface"

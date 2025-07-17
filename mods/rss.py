@@ -26,9 +26,11 @@ from nixt.disk    import write
 from nixt.fleet   import Fleet
 from nixt.find    import find, fntime, last
 from nixt.log     import rlog
-from nixt.object  import Object, fmt, update
+from nixt.method  import fmt
+from nixt.object  import Object, update
 from nixt.path    import getpath
-from nixt.run     import Repeater, launch
+from nixt.run     import launch
+from nixt.timer   import Repeater
 
 
 DEBUG = False

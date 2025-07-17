@@ -1,7 +1,7 @@
-# This file is placed in the Public Domain.
+# this file is placed in the Public Domain.
 
 
-"config"
+"default"
 
 
 from .object import Object
