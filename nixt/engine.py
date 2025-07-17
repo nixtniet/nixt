@@ -9,7 +9,7 @@ import threading
 import _thread
 
 
-from .run import launch
+from .thread import launch
 
 
 class Engine:

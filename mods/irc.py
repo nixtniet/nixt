@@ -24,8 +24,8 @@ from nixt.fleet  import Fleet
 from nixt.log    import rlog
 from nixt.method import edit, fmt
 from nixt.object import Object, keys
-from nixt.path   import getpath, ident
-from nixt.run    import launch
+from nixt.paths  import getpath, ident
+from nixt.thread  import launch
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]

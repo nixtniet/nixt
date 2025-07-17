@@ -15,8 +15,8 @@ from nixt.client import Client
 from nixt.cmnd   import Commands, Main, command, inits, parse, scan, setwd
 from nixt.event  import Event
 from nixt.log    import level
-from nixt.path   import Workdir, pidname, skel, types
-from nixt.run    import launch
+from nixt.paths  import Workdir, pidname, skel, types
+from nixt.thread import launch
 from nixt.utils  import spl
 
 

@@ -11,8 +11,8 @@ import os
 from .config import Default
 from .fleet  import Fleet
 from .parse  import parse
-from .path   import Workdir, skel
-from .run    import launch
+from .paths  import Workdir, skel
+from .thread import launch
 from .utils  import spl
 
 

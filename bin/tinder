@@ -22,8 +22,8 @@ from nixt.client import Client, Fleet
 from nixt.cmnd   import Commands, Main, command, parse, scan
 from nixt.event  import Event
 from nixt.object import Object, keys
-from nixt.path   import Workdir, skel
-from nixt.run    import STARTTIME, launch
+from nixt.paths  import Workdir, skel
+from nixt.thread import STARTTIME, launch
 from nixt.utils  import elapsed, spl
 
 

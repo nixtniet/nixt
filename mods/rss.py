@@ -28,8 +28,8 @@ from nixt.find   import find, fntime, last
 from nixt.log    import rlog
 from nixt.method import fmt
 from nixt.object import Object, update
-from nixt.path   import getpath
-from nixt.run    import launch
+from nixt.paths  import getpath
+from nixt.thread import launch
 from nixt.timer  import Repeater
 
 
