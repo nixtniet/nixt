@@ -7,7 +7,6 @@
 import os
 import pathlib
 import sys
-import time
 
 
 def check(txt):

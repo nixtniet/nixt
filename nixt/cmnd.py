@@ -5,12 +5,10 @@
 
 
 import inspect
-import os
 
 
 from .config import Default
 from .fleet  import Fleet
-from .paths  import Workdir, skel
 from .thread import launch
 from .utils  import spl
 
