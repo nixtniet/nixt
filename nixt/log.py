@@ -34,9 +34,6 @@ def rlog(loglevel, txt, ignore=None):
     logging.log(LEVELS.get(loglevel), txt)
 
 
-"interface"
-
-
 def __dir__():
     return (
         "level",

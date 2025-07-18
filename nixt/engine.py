@@ -58,9 +58,6 @@ class Engine:
         pass
 
 
-"interface"
-
-
 def __dir__():
     return (
         "Engine",

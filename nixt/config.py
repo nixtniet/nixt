@@ -15,9 +15,6 @@ class Default(Object):
         return self.__dict__.get(key, "")
 
 
-"interface"
-
-
 def __dir__():
     return (
         "Default",

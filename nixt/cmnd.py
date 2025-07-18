@@ -5,22 +5,14 @@
 
 
 import inspect
+import os
 
 
 from .config import Default
 from .fleet  import Fleet
+from .paths  import Workdir, skel
 from .thread import launch
 from .utils  import spl
-
-
-class Main(Default):
-
-    init = ""
-    level = "warn"
-    name = Default.__module__.split(".")[-2]
-    opts = Default()
-    verbose = False
-    version = 360
 
 
 class Commands:
@@ -133,9 +125,6 @@ def scan(pkg):
     for modname in dir(pkg):
         mod = getattr(pkg, modname)
         Commands.scan(mod)
-
-
-"interface"
 
 
 def __dir__():

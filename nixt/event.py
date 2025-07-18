@@ -40,9 +40,6 @@ class Event(Object):
             self._thr.join()
 
 
-"interface"
-
-
 def __dir__():
     return (
         "Event",

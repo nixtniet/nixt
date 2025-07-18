@@ -35,7 +35,7 @@ class Thread(threading.Thread):
         func, args = self.queue.get()
         try:
             self.result = func(*args)
-        except (KeyboardInterrupt, EOFError):
+        except (KeyboardInterrupt, EOFError) as ex:
             _thread.interrupt_main()
         except Exception as ex:
             logging.exception(ex)
@@ -69,9 +69,6 @@ def name(obj):
     if "__name__" in dir(obj):
         return f"{obj.__class__.__name__}.{obj.__name__}"
     return ""
-
-
-"interface"
 
 
 def __dir__():

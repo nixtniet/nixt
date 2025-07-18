@@ -60,9 +60,6 @@ def write(obj, path):
         return path
 
 
-"interface"
-
-
 def __dir__():
     return (
         "Cache",

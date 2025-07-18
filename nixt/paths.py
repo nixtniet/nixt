@@ -71,9 +71,6 @@ def wdr(pth):
     return os.path.join(Workdir.wdr, pth)
 
 
-"interface"
-
-
 def __dir__():
     return (
         "Workdir",

@@ -54,9 +54,6 @@ def loads(s, *args, **kw):
     return jsn.loads(s, *args, **kw)
 
 
-"interface"
-
-
 def __dir__():
     return (
         "dump",

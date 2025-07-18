@@ -64,9 +64,6 @@ class Fleet:
             client.wait()
 
 
-"interface"
-
-
 def __dir__():
     return (
         "Fleet",
