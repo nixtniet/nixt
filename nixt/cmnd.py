@@ -22,7 +22,7 @@ class Main(Default):
     name = Default.__module__.split(".")[-2]
     opts = Default()
     verbose = False
-    version = 120    
+    version = 360
 
 
 class Commands:

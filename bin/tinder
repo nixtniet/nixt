@@ -2,7 +2,7 @@
 # This file is placed in the Public Domain.
 
 
-"tinder"
+"simulate clients"
 
 
 import os
@@ -18,22 +18,27 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.client import Client, Fleet
-from nixt.cmnd   import Commands, Main, command, parse, scan
+from nixt.client import Client
+from nixt.cmnd   import Main, command, parse, scan
 from nixt.event  import Event
+from nixt.fleet  import Fleet
 from nixt.object import Object, keys
 from nixt.paths  import Workdir, skel
-from nixt.thread import STARTTIME, launch
+from nixt.thread import launch
 from nixt.utils  import elapsed, spl
 
 
-try:
+if os.path.exists("mods"):
     import mods as MODS
-except ModuleNotFoundError:
+else:
     MODS = None
 
 
+STARTTIME = time.time()
+
+
 Main.debug  = True
+Main.md5    = False
 Workdir.wdr = ".test"
 
 

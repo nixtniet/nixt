@@ -1,7 +1,24 @@
-from . import irc, req, rss, slg, thr
+# This file is placed in the Public Domain.
 
 
-__all__ = ("irc", "req", "rss", "slg", "thr")
+"modules"
+
+
+from . import cmd, dbg, irc, lst, req, rss, slg, srv, thr # noqa: F401
+from . import fnd, ver
+
+
+__all__ = (
+    "cmd",
+    "fnd",
+    "irc",
+    "lst",
+    "req",
+    "rss",
+    "slg",
+    "thr",
+    "ver"
+)
 
 
 def __dir__():
