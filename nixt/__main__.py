@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # This file is placed in the Public Domain.
 
 
@@ -11,16 +10,13 @@ import sys
 import time
 
 
-sys.path.insert(0, os.getcwd())
-
-
-from nixt.client import Client
-from nixt.cmnd   import Commands, command, inits, parse, scan
-from nixt.event  import Event
-from nixt.log    import level
-from nixt.object import Default
-from nixt.paths  import pidname, setwd
-from nixt        import modules as MODS
+from .client import Client
+from .cmnd   import Commands, command, inits, parse, scan
+from .event  import Event
+from .log    import level
+from .object import Default
+from .paths  import pidname, setwd
+from .       import modules as MODS
 
 
 class Main(Default):
@@ -240,4 +236,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
