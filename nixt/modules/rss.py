@@ -21,12 +21,13 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
+from ..cmnd   import Default
 from ..disk   import write
 from ..fleet  import Fleet
 from ..find   import find, fntime, last
 from ..log    import rlog
 from ..method import fmt
-from ..object import Default, Object, update
+from ..object import Object, update
 from ..paths  import getpath
 from ..thread import launch
 from ..timer  import Repeater

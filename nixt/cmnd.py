@@ -8,9 +8,17 @@ import inspect
 
 
 from .fleet  import Fleet
-from .object import Default
+from .object import Object
 from .thread import launch
 from .utils  import spl
+
+
+class Default(Object):
+
+    def __getattr__(self, key):
+        if key not in self:
+            setattr(self, key, "")
+        return self.__dict__.get(key, "")
 
 
 class Commands:

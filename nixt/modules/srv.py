@@ -4,7 +4,7 @@
 "create service file"
 
 
-from ..object import Default
+from ..cmnd import Default
 
 
 class Main:
@@ -24,7 +24,6 @@ ExecStart=/home/%s/.local/bin/%s -s
 
 [Install]
 WantedBy=multi-user.target"""
-
 
 
 def srv(event):
