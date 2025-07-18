@@ -1,7 +1,7 @@
 # this file is placed in the Public Domain.
 
 
-"config"
+"default values"
 
 
 from .object import Object

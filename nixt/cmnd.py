@@ -7,10 +7,10 @@
 import inspect
 
 
-from .config import Default
-from .fleet  import Fleet
-from .thread import launch
-from .utils  import spl
+from .default import Default
+from .fleet   import Fleet
+from .thread  import launch
+from .utils   import spl
 
 
 class Commands:
