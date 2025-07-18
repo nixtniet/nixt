@@ -12,18 +12,19 @@ import unittest
 
 import nixt
 import nixt.client
-import nixt.command
-import nixt.default
+import nixt.cmnd
+import nixt.config
 import nixt.disk
+import nixt.engine
 import nixt.event
 import nixt.find
 import nixt.fleet
-import nixt.handler
 import nixt.json
 import nixt.log
 import nixt.object
-import nixt.path
-import nixt.runtime
+import nixt.paths
+import nixt.thread
+import nixt.timer
 import nixt.utils
 
 
@@ -32,18 +33,19 @@ from nixt.object import *
 
 PACKAGE = [
     "client",
-    "command",
-    "default",
+    "cmnd",
+    "config",
     "disk",
+    "engine",
     "event",
     "find",
     "fleet",
-    "handler",
     "json",
     "log",
     "object",
-    "path",
-    "runtime",
+    "paths",
+    "thread",
+    "timer",
     "utils"
 ]
 
