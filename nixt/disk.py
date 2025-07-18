@@ -5,11 +5,13 @@
 
 
 import json
+import json.decoder
 import pathlib
 import threading
 
 
-from .json   import dump, load
+from .decode import load
+from .encode import dump
 from .object import update
 
 

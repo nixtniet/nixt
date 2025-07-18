@@ -28,8 +28,7 @@ class Thread(threading.Thread):
         return self
 
     def __next__(self):
-        for k in dir(self):
-            yield k
+        yield from dir(self)
 
     def run(self):
         func, args = self.queue.get()

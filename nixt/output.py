@@ -47,7 +47,6 @@ class Output:
 
     def wait(self):
         self.oqueue.join()
-        super().wait()
 
 
 def __dir__():

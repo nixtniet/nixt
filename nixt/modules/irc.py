@@ -5,7 +5,6 @@
 
 
 import base64
-import queue
 import os
 import socket
 import ssl
@@ -15,7 +14,7 @@ import time
 
 
 from ..client import Client
-from ..cmnd   import Default, command
+from ..cmnd   import command
 from ..disk   import write
 from ..event  import Event as IEvent
 from ..find   import last
@@ -26,6 +25,7 @@ from ..object import Object, keys
 from ..output import Output
 from ..paths  import getpath, ident
 from ..thread import launch
+from ..utils  import Default
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
@@ -571,7 +571,7 @@ def cb_ready(evt):
 
 def cb_001(evt):
     bot = Fleet.get(evt.orig)
-    bot.events.logon, set()
+    bot.events.logon.set()
 
 
 def cb_notice(evt):

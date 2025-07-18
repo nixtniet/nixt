@@ -153,7 +153,7 @@ def console():
     level(Main.level)
     setwd(Main.name)
     Commands.add(ver)
-    scan(MODS)    
+    scan(MODS)
     if "v" in Main.opts:
         banner(MODS)
     for _mod, thr in inits(MODS, Main.init):
