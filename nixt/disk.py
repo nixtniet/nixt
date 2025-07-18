@@ -10,9 +10,7 @@ import pathlib
 import threading
 
 
-from .decode import load
-from .encode import dump
-from .object import update
+from .object import dump, load, update
 
 
 lock = threading.RLock()
