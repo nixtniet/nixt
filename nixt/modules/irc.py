@@ -24,6 +24,7 @@ from ..fleet  import Fleet
 from ..log    import rlog
 from ..method import edit, fmt
 from ..object import Object, keys
+from ..output import Output
 from ..paths  import getpath, ident
 from ..thread import launch
 
@@ -118,39 +119,6 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-"output"
-
-
-class Output:
-    def __init__(self):
-        self.oqueue = queue.Queue()
-        self.ostop = threading.Event()
-
-    def oput(self, event):
-        self.oqueue.put(event)
-
-    def output(self):
-        while not self.ostop.is_set():
-            event = self.oqueue.get()
-            if event is None:
-                self.oqueue.task_done()
-                break
-            self.display(event)
-            self.oqueue.task_done()
-
-    def start(self):
-        self.ostop.clear()
-        launch(self.output)
-
-    def stop(self):
-        self.ostop.set()
-        self.oqueue.put(None)
-
-    def wait(self):
-        self.oqueue.join()
-        super().wait()
-
-
 "IRC"
 
 
@@ -159,7 +127,7 @@ class IRC(Output, Client):
         Client.__init__(self)
         Output.__init__(self)
         self.buffer = []
-        self.cache = Object()
+        self.cache = Default()
         self.cfg = Config()
         self.channels = []
         self.events = Object()
@@ -244,6 +212,8 @@ class IRC(Output, Client):
     def display(self, evt):
         for key in sorted(evt.result, key=lambda x: x):
             txt = evt.result.get(key)
+            if not txt:
+                continue
             textlist = []
             txtlist = wrapper.wrap(txt)
             if len(txtlist) > 3:
@@ -326,7 +296,7 @@ class IRC(Output, Client):
 
     def extend(self, channel, txtlist):
         if channel not in dir(self.cache):
-            self.cache[channel] = []
+            setattr(self.cache, channel, [])
         chanlist = getattr(self.cache, channel)
         chanlist.extend(txtlist)
 
