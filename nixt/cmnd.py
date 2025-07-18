@@ -10,7 +10,6 @@ import os
 
 from .config import Default
 from .fleet  import Fleet
-from .parse  import parse
 from .paths  import Workdir, skel
 from .thread import launch
 from .utils  import spl
@@ -22,6 +21,8 @@ class Main(Default):
     level = "warn"
     name = Default.__module__.split(".")[-2]
     opts = Default()
+    verbose = False
+    version = 120    
 
 
 class Commands:
@@ -71,17 +72,69 @@ def inits(pkg, names):
     return modz
 
 
+def parse(obj, txt=""):
+    if txt == "":
+        if "txt" in dir(obj):
+            txt = obj.txt
+        else:
+            txt = ""
+    args = []
+    obj.args = []
+    obj.cmd = ""
+    obj.gets = Default()
+    obj.index = None
+    obj.mod = ""
+    obj.opts = ""
+    obj.result = {}
+    obj.sets = Default()
+    obj.silent = Default()
+    obj.txt = txt
+    obj.otxt = obj.txt
+    _nr = -1
+    for spli in obj.otxt.split():
+        if spli.startswith("-"):
+            try:
+                obj.index = int(spli[1:])
+            except ValueError:
+                obj.opts += spli[1:]
+            continue
+        if "-=" in spli:
+            key, value = spli.split("-=", maxsplit=1)
+            setattr(obj.silent, key, value)
+            setattr(obj.gets, key, value)
+            continue
+        if "==" in spli:
+            key, value = spli.split("==", maxsplit=1)
+            setattr(obj.gets, key, value)
+            continue
+        if "=" in spli:
+            key, value = spli.split("=", maxsplit=1)
+            if key == "mod":
+                if obj.mod:
+                    obj.mod += f",{value}"
+                else:
+                    obj.mod = value
+                continue
+            setattr(obj.sets, key, value)
+            continue
+        _nr += 1
+        if _nr == 0:
+            obj.cmd = spli
+            continue
+        args.append(spli)
+    if args:
+        obj.args = args
+        obj.txt = obj.cmd or ""
+        obj.rest = " ".join(obj.args)
+        obj.txt = obj.cmd + " " + obj.rest
+    else:
+        obj.txt = obj.cmd or ""
+
+
 def scan(pkg):
     for modname in dir(pkg):
         mod = getattr(pkg, modname)
         Commands.scan(mod)
-
-
-def setwd(name, path=""):
-    Main.name = name
-    path = path or os.path.expanduser(f"~/.{name}")
-    Workdir.wdr = path
-    skel()
 
 
 "interface"
@@ -92,6 +145,6 @@ def __dir__():
         "Commands",
         "Main",
         "command",
+        "parse",
         "scan",
-        "setwd"
     )

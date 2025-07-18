@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"runtime"
+"threads"
 
 
 import logging
@@ -9,9 +9,6 @@ import queue
 import time
 import threading
 import _thread
-
-
-STARTTIME = time.time()
 
 
 lock = threading.RLock()
@@ -39,7 +36,7 @@ class Thread(threading.Thread):
         try:
             self.result = func(*args)
         except (KeyboardInterrupt, EOFError) as ex:
-            raise ex
+            _thread.interrupt_main()
         except Exception as ex:
             logging.exception(ex)
             _thread.interrupt_main()
@@ -79,7 +76,6 @@ def name(obj):
 
 def __dir__():
     return (
-        "STARTTIME",
         "Thread",
         "launch",
         "name"
