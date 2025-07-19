@@ -1,3 +1,0 @@
-recursive-exclude tests *
-recursive-exclude nixt/modules *
-exclude nixt/__main__.py

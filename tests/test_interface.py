@@ -18,7 +18,6 @@ import nixt.engine
 import nixt.event
 import nixt.find
 import nixt.fleet
-import nixt.json
 import nixt.log
 import nixt.object
 import nixt.paths
@@ -38,7 +37,6 @@ PACKAGE = [
     "event",
     "find",
     "fleet",
-    "json",
     "log",
     "object",
     "paths",
