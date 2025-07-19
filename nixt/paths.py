@@ -10,6 +10,7 @@ import pathlib
 
 
 class Workdir:
+
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
     wdr = ""
 

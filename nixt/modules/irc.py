@@ -14,7 +14,7 @@ import time
 
 
 from ..client import Client
-from ..cmnd   import command
+from ..cmnd   import Default, command
 from ..disk   import write
 from ..event  import Event as IEvent
 from ..find   import last
@@ -25,7 +25,6 @@ from ..object import Object, keys
 from ..output import Output
 from ..paths  import getpath, ident
 from ..thread import launch
-from ..utils  import Default
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]

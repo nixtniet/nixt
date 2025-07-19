@@ -19,20 +19,16 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client  import Client
-from nixt.cmnd    import Main, command, parse, scan
-from nixt.default import Default
+from nixt.cmnd    import Default, command, parse, scan
 from nixt.event   import Event
 from nixt.fleet   import Fleet
 from nixt.object  import Object, keys
-from nixt.paths   import Workdir, skel
+from nixt.paths   import Workdir, setwd, skel
 from nixt.thread  import launch
 from nixt.utils   import elapsed, spl
 
 
-if os.path.exists("mods"):
-    import mods as MODS
-else:
-    MODS = None
+from nixt import modules as MODS
 
 
 STARTTIME = time.time()
@@ -41,7 +37,10 @@ STARTTIME = time.time()
 class Main(Default):
 
     debug  = True
-    wdr = ".test"
+    name = Default.__module__.split(".")[-2]
+
+
+Workdir.wdr = ".test"
 
 
 path = MODS.__path__[0]
@@ -160,7 +159,10 @@ def main():
     global nrs
     global nrcommand
     parse(Main, " ".join(sys.argv[1:]))
-    scan(MODS)
+    setwd(Main.name,'.test')
+    for mod in scan(MODS):
+        if "Main" in dir(mod):
+            mod.Main.debug = True
     nrcommand = 0
     if "v" in Main.opts:
         banner()

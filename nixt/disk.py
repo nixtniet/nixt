@@ -17,6 +17,7 @@ lock = threading.RLock()
 
 
 class Cache:
+
     objs = {}
 
     @staticmethod

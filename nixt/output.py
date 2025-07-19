@@ -12,10 +12,11 @@ from .thread import launch
 
 
 class Output:
+
     def __init__(self):
-        self.olock = threading.RLock()
+        self.olock  = threading.RLock()
         self.oqueue = queue.Queue()
-        self.ostop = threading.Event()
+        self.ostop  = threading.Event()
 
     def display(self, event):
         with self.olock:
