@@ -3,10 +3,11 @@
 
 "objects"
 
+
 import unittest
 
 
-from nixt.object import Object, items, keys, update, values
+from nixt.object import Object, dumps, items, keys, loads, update, values
 
 
 import nixt.object
@@ -14,7 +15,16 @@ import nixt.object
 
 OBJECT = Object()
 PACKAGE = nixt.object
-VALIDJSON = '{"test": "bla"}'
+VALIDJSON = "{'test': 'bla'}"
+VALIDPYTHON = '{"test": "bla"}'
+
+
+class Mix:
+    a = "b"
+
+
+class Mixin(Mix, Object):
+    pass
 
 
 attrs1 = (
@@ -189,3 +199,36 @@ class TestObject(unittest.TestCase):
                 "value",
             ],
         )
+
+
+class TestDecoder(unittest.TestCase):
+
+    def test_loads(self):
+        obj = Object()
+        obj.test = "bla"
+        oobj = loads(dumps(obj))
+        self.assertEqual(oobj.test, "bla")
+
+
+class TestEncoder(unittest.TestCase):
+
+    def test_dumps(self):
+        obj = Object()
+        obj.test = "bla"
+        self.assertEqual(dumps(obj), VALIDPYTHON)
+
+
+class TestComposite(unittest.TestCase):
+
+    def testcomposite(self):
+        obj = Object()
+        obj.obj = Object()
+        obj.obj.abc = "test"
+        self.assertEqual(obj.obj.abc, "test")
+
+
+class TestMixin(unittest.TestCase):
+
+    def test_mixin(self):
+        mix = Mixin()
+        self.assertTrue(isinstance(mix, Mixin))
