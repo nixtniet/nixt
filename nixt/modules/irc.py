@@ -58,6 +58,7 @@ class Main:
 
 
 class Config(Default):
+
     channel = f"#{Main.name}"
     commands = True
     control = "!"
@@ -87,6 +88,7 @@ class Config(Default):
 
 
 class Event(IEvent):
+
     def __init__(self):
         super().__init__()
         self.args = []
@@ -104,6 +106,7 @@ class Event(IEvent):
 
 
 class TextWrap(textwrap.TextWrapper):
+
     def __init__(self):
         super().__init__()
         self.break_long_words = False
@@ -121,6 +124,7 @@ wrapper = TextWrap()
 
 
 class IRC(Output, Client):
+
     def __init__(self):
         Client.__init__(self)
         Output.__init__(self)
