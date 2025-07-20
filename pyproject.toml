@@ -29,7 +29,8 @@ classifiers = [
 "source" = "https://github.com/nixtniet/nixt"
 
 
-[tool.setuptools]
-packages = [
+[tool.setuptools.packages.find]
+include=[
     'nixt',
+    'nixt.*'
 ]
