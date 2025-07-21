@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.utils import elapsed, spl
+from nixt.utils import spl
 
 
 class TestComposite(unittest.TestCase):
