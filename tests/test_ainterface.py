@@ -19,7 +19,9 @@ import nixt.event
 import nixt.find
 import nixt.fleet
 import nixt.log
+import nixt.method
 import nixt.object
+import nixt.output
 import nixt.paths
 import nixt.thread
 import nixt.timer
@@ -38,7 +40,9 @@ PACKAGE = [
     "find",
     "fleet",
     "log",
+    'method',
     "object",
+    'output',
     "paths",
     "thread",
     "timer",
