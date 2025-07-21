@@ -13,5 +13,5 @@ from nixt.paths import Workdir, setwd
 class TestComposite(unittest.TestCase):
 
     def test_setwd(self):
-        setwd("bla", "bla")
-        self.assertEqual(Workdir.wdr, "bla")
+        setwd("nixt", ".test")
+        self.assertEqual(Workdir.wdr, ".test")
