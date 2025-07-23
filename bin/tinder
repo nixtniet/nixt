@@ -22,7 +22,7 @@ from nixt.client  import Client
 from nixt.cmnd    import command, parse, scan
 from nixt.event   import Event
 from nixt.fleet   import Fleet
-from nixt.object  import Default. Object, keys
+from nixt.object  import Default, Object, keys
 from nixt.paths   import Workdir, setwd, skel
 from nixt.thread  import launch
 from nixt.utils   import elapsed, spl
