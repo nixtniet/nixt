@@ -8,7 +8,7 @@ import inspect
 
 
 from .fleet  import Fleet
-from .object import Object
+from .object import Default
 from .thread import launch
 from .utils  import spl
 
@@ -67,14 +67,6 @@ def scan(pkg):
         Commands.scan(mod)
         mods.append(mod)
     return mods
-
-
-class Default(Object):
-
-    def __getattr__(self, key):
-        if key not in self:
-            setattr(self, key, "")
-        return self.__dict__.get(key, "")
 
 
 def parse(obj, txt=""):
@@ -139,7 +131,6 @@ def parse(obj, txt=""):
 def __dir__():
     return (
         'Commands',
-        'Default',
         'command',
         'parse',
         'scan'

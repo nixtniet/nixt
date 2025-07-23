@@ -8,22 +8,18 @@ import threading
 import time
 
 
-from .object import Object
+from .object import Default
 
 
-class Event(Object):
+class Event(Default):
 
     def __init__(self):
-        Object.__init__(self)
+        Default.__init__(self)
         self._ready = threading.Event()
         self._thr = None
-        self.channel = ""
         self.ctime = time.time()
-        self.orig = ""
-        self.rest = ""
         self.result = {}
         self.type = "event"
-        self.txt = ""
 
     def done(self):
         self.reply("ok")

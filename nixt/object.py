@@ -103,8 +103,17 @@ def loads(s, *args, **kw):
     return json.loads(s, *args, **kw)
 
 
+class Default(Object):
+
+    def __getattr__(self, key):
+        if key not in self:
+            setattr(self, key, "")
+        return self.__dict__.get(key, "")
+
+
 def __dir__():
     return (
+        'Default',
         'Object',
         'construct',
         'dump',

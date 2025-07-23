@@ -11,9 +11,10 @@ import time
 
 
 from .client import Client
-from .cmnd   import Commands, Default, command, inits, parse, scan
+from .cmnd   import Commands, command, inits, parse, scan
 from .event  import Event
 from .log    import level
+from .object import Default
 from .paths  import pidname, setwd
 from .       import modules as MODS
 
