@@ -142,5 +142,5 @@ def __dir__():
         'Default',
         'command',
         'parse',
-        'scan',
+        'scan'
     )
