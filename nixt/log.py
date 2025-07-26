@@ -36,6 +36,6 @@ def rlog(loglevel, txt, ignore=None):
 
 def __dir__():
     return (
-        "level",
-        "rlog"
+        'level',
+        'rlog'
     )

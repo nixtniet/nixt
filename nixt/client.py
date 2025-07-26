@@ -38,5 +38,5 @@ class Client(Engine):
 
 def __dir__():
     return (
-        "Client",
+        'Client',
     )

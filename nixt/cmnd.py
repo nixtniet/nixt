@@ -10,7 +10,6 @@ import inspect
 from .fleet  import Fleet
 from .object import Default
 from .thread import launch
-from .utils  import spl
 
 
 class Commands:
@@ -128,10 +127,21 @@ def parse(obj, txt=""):
         obj.txt = obj.cmd or ""
 
 
+def spl(txt):
+    try:
+        result = txt.split(",")
+    except (TypeError, ValueError):
+        result = [
+            txt,
+        ]
+    return [x for x in result if x]
+
+
 def __dir__():
     return (
         'Commands',
         'command',
         'parse',
-        'scan'
+        'scan',
+        'spl'
     )

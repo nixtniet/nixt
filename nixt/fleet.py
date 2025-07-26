@@ -66,5 +66,5 @@ class Fleet:
 
 def __dir__():
     return (
-        "Fleet",
+        'Fleet',
     )

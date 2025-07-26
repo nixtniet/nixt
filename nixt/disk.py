@@ -63,8 +63,8 @@ def write(obj, path):
 
 def __dir__():
     return (
-        "Cache",
-        "cdir",
-        "read",
-        "write"
+        'Cache',
+        'cdir',
+        'read',
+        'write'
     )

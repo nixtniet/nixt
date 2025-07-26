@@ -38,5 +38,5 @@ class Event(Default):
 
 def __dir__():
     return (
-        "Event",
+        'Event',
     )

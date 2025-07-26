@@ -74,14 +74,14 @@ def wdr(pth):
 
 def __dir__():
     return (
-        "Workdir",
-        "fqn",
-        "getpath",
-        "long",
-        "ident",
-        "pidname",
-        "setwd",
-        "skel",
-        "store",
-        "wdr"
+        'Workdir',
+        'fqn',
+        'getpath',
+        'long',
+        'ident',
+        'pidname',
+        'setwd',
+        'skel',
+        'store',
+        'wdr'
     )

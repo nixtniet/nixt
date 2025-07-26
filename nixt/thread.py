@@ -73,7 +73,7 @@ def name(obj):
 
 def __dir__():
     return (
-        "Thread",
-        "launch",
-        "name"
+        'Thread',
+        'launch',
+        'name'
     )

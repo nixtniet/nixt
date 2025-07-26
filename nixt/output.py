@@ -52,5 +52,5 @@ class Output:
 
 def __dir__():
     return (
-        "Output",
+        'Output',
     )

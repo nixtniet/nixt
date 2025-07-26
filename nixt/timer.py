@@ -58,6 +58,6 @@ class Repeater(Timed):
 
 def __dir__():
     return (
-        "Repeater",
-        "Timed"
+        'Repeater',
+        'Timed'
     )
