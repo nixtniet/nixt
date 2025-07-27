@@ -13,16 +13,17 @@ import unittest
 import nixt
 import nixt.client
 import nixt.cmnd
+import nixt.default
 import nixt.disk
 import nixt.engine
 import nixt.event
 import nixt.find
 import nixt.fleet
-import nixt.log
 import nixt.method
 import nixt.object
 import nixt.output
 import nixt.paths
+import nixt.serial
 import nixt.thread
 import nixt.timer
 import nixt.utils
@@ -34,16 +35,17 @@ from nixt.object import *
 PACKAGE = [
     "client",
     "cmnd",
+    'default',
     "disk",
     "engine",
     "event",
     "find",
     "fleet",
-    "log",
     'method',
     "object",
     'output',
     "paths",
+    'serial',
     "thread",
     "timer",
     "utils"
