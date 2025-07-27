@@ -11,11 +11,13 @@ import time
 
 
 from .client  import Client
-from .cmnd    import Commands, command, inits, parse, scan
+from .cmnd    import Commands, command, scan
 from .default import Default
 from .event   import Event
+from .parse   import parse
 from .paths   import pidname, setwd
-from .utils   import level
+from .thread  import launch
+from .utils   import level, spl
 from .        import modules as MODS
 
 
@@ -68,6 +70,18 @@ def forever():
         except (KeyboardInterrupt, EOFError):
             print("")
             sys.exit(1)
+
+
+def inits(pkg, names):
+    modz = []
+    for name in sorted(spl(names)):
+        mod = getattr(pkg, name, None)
+        if not mod:
+            continue
+        if "init" in dir(mod):
+            thr = launch(mod.init)
+            modz.append((mod, thr))
+    return modz
 
 
 def out(txt):
