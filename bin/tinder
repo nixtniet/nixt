@@ -23,12 +23,11 @@ from nixt.cmnd    import command, scan
 from nixt.default import Default
 from nixt.event   import Event
 from nixt.fleet   import Fleet
-from nixt.find    import elapsed
 from nixt.object  import Object, keys
 from nixt.parse   import parse
 from nixt.paths   import Workdir, setwd, skel
 from nixt.thread  import launch
-from nixt.utils   import spl 
+from nixt.utils   import elapsed, spl 
 
 
 from nixt import modules as MODS

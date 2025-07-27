@@ -58,7 +58,6 @@ def scan(pkg):
 def __dir__():
     return (
         'Commands',
-        'Default',
         'command',
         'scan'
     )

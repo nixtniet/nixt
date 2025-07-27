@@ -24,13 +24,13 @@ from urllib.parse import quote_plus, urlencode
 from ..default import Default
 from ..disk    import write
 from ..fleet   import Fleet
-from ..find    import elapsed, find, fntime, last
+from ..find    import find, fntime, last
 from ..method  import fmt
 from ..object  import Object, update
 from ..paths   import getpath
 from ..thread  import launch
 from ..timer   import Repeater
-from ..utils   import rlog, spl
+from ..utils   import elapsed, rlog, spl
 
 
 DEBUG = False
