@@ -46,9 +46,9 @@ class Console(CLI):
     def announce(self, txt):
         pass
 
-    def callback(self, evt):
-        super().callback(evt)
-        evt.wait()
+    def callback(self, event):
+        super().callback(event)
+        event.wait()
 
     def poll(self):
         evt = Event()

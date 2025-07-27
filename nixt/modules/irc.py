@@ -212,25 +212,25 @@ class IRC(Output, Client):
         except (ssl.SSLError, OSError, BrokenPipeError) as _ex:
             pass
 
-    def display(self, evt):
-        for key in sorted(evt.result, key=lambda x: x):
-            txt = evt.result.get(key)
+    def display(self, event):
+        for key in sorted(event.result, key=lambda x: x):
+            txt = event.result.get(key)
             if not txt:
                 continue
             textlist = []
             txtlist = wrapper.wrap(txt)
             if len(txtlist) > 3:
-                self.extend(evt.channel, txtlist[3:])
+                self.extend(event.channel, txtlist[3:])
                 textlist = txtlist[:3]
             else:
                 textlist = txtlist
             _nr = -1
             for txt in textlist:
                 _nr += 1
-                self.dosay(evt.channel, txt)
+                self.dosay(event.channel, txt)
             if len(txtlist) > 3:
                 length = len(txtlist) - 3
-                self.say(evt.channel, f"use !mre to show more (+{length})")
+                self.say(event.channel, f"use !mre to show more (+{length})")
 
     def docommand(self, cmd, *args):
         with saylock:
@@ -337,10 +337,10 @@ class IRC(Output, Client):
         self.direct(f"NICK {nck}")
         self.direct(f"USER {nck} {server} {server} {nck}")
 
-    def oput(self, evt):
-        if evt.channel and evt.channel not in dir(self.cache):
-            setattr(self.cache, evt.channel, [])
-        self.oqueue.put_nowait(evt)
+    def oput(self, event):
+        if event.channel and event.channel not in dir(self.cache):
+            setattr(self.cache, event.channel, [])
+        self.oqueue.put_nowait(event)
 
     def parsing(self, txt):
         rawstr = str(txt)
