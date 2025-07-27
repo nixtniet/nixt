@@ -48,10 +48,7 @@ class Thread(threading.Thread):
 
 def launch(func, *args, **kwargs):
     with lock:
-        nme = kwargs.get("name", None)
-        if not nme:
-            nme = name(func)
-        thread = Thread(func, nme, *args, **kwargs)
+        thread = Thread(func, None, *args, **kwargs)
         thread.start()
         return thread
 

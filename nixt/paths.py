@@ -83,5 +83,6 @@ def __dir__():
         'setwd',
         'skel',
         'store',
+        'strip',
         'wdr'
     )
