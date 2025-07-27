@@ -25,11 +25,11 @@ from ..cmnd   import spl
 from ..disk   import write
 from ..fleet  import Fleet
 from ..find   import elapsed, find, fntime, last
-from ..log    import rlog
 from ..object import Default, Object, fmt, update
 from ..paths  import getpath
 from ..thread import launch
 from ..timer  import Repeater
+from ..utils  import rlog
 
 
 DEBUG = False

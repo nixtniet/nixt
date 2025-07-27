@@ -19,11 +19,11 @@ from ..disk   import write
 from ..event  import Event as IEvent
 from ..find   import last
 from ..fleet  import Fleet
-from ..log    import rlog
 from ..object import Default, Object, edit, fmt, keys
 from ..output import Output
 from ..paths  import getpath, ident
 from ..thread import launch
+from ..utils  import rlog
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
