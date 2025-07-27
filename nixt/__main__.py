@@ -63,6 +63,17 @@ def banner(mods):
     out(f"loaded {".".join(dir(mods))}")
 
 
+def check(txt):
+    args = sys.argv[1:]
+    for arg in args:
+        if not arg.startswith("-"):
+            continue
+        for char in txt:
+            if char in arg:
+                return True
+    return False
+
+
 def forever():
     while True:
         try:
@@ -89,22 +100,7 @@ def out(txt):
     sys.stdout.flush()
 
 
-def ver(event):
-    event.reply(f"{Main.name.upper()} {Main.version}")
-
-
 "daemon"
-
-
-def check(txt):
-    args = sys.argv[1:]
-    for arg in args:
-        if not arg.startswith("-"):
-            continue
-        for char in txt:
-            if char in arg:
-                return True
-    return False
 
 
 def daemon(verbose=False):
@@ -142,6 +138,13 @@ def privileges():
     pwnam2 = pwd.getpwnam(getpass.getuser())
     os.setgid(pwnam2.pw_gid)
     os.setuid(pwnam2.pw_uid)
+
+
+"commands"
+
+
+def ver(event):
+    event.reply(f"{Main.name.upper()} {Main.version}")
 
 
 "scripts"
