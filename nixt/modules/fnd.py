@@ -8,7 +8,7 @@ import time
 
 
 from ..find   import elapsed, find, fntime
-from ..method import fmt
+from ..object import fmt
 from ..paths  import long, skel, types
 
 
