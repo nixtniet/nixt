@@ -21,15 +21,17 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from ..cmnd   import spl
-from ..disk   import write
-from ..fleet  import Fleet
-from ..find   import elapsed, find, fntime, last
-from ..object import Default, Object, fmt, update
-from ..paths  import getpath
-from ..thread import launch
-from ..timer  import Repeater
-from ..utils  import rlog
+from ..cmnd    import spl
+from ..default import Default
+from ..disk    import write
+from ..fleet   import Fleet
+from ..find    import elapsed, find, fntime, last
+from ..method  import fmt
+from ..object  import Object, update
+from ..paths   import getpath
+from ..thread  import launch
+from ..timer   import Repeater
+from ..utils   import rlog
 
 
 DEBUG = False

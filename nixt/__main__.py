@@ -10,13 +10,13 @@ import sys
 import time
 
 
-from .client import Client
-from .cmnd   import Commands, command, inits, parse, scan
-from .event  import Event
-from .object import Default
-from .paths  import pidname, setwd
-from .utils  import level
-from .       import modules as MODS
+from .client  import Client
+from .cmnd    import Commands, command, inits, parse, scan
+from .default import Default
+from .event   import Event
+from .paths   import pidname, setwd
+from .utils   import level
+from .        import modules as MODS
 
 
 class Main(Default):
