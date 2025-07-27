@@ -4,9 +4,6 @@
 "a clean namespace"
 
 
-import json
-
-
 class Object:
 
     def __contains__(self, key):
