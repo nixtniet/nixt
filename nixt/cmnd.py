@@ -18,7 +18,6 @@ class Commands:
 
     @staticmethod
     def add(func, mod=None):
-        func.post = display
         Commands.cmds[func.__name__] = func
         if mod:
             Commands.names[func.__name__] = mod.__name__.split(".")[-1]
