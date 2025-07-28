@@ -4,7 +4,7 @@
 "create service file"
 
 
-from ..default import Default
+from ..auto import Default
 
 
 class Main:

@@ -4,7 +4,6 @@
 "autoconstruct"
 
 
-
 from .object import Object
 
 

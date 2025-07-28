@@ -4,7 +4,7 @@
 "argparse"
 
 
-from .default import Default
+from .auto import Default
 
 
 def parse(obj, txt=""):
