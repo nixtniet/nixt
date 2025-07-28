@@ -18,6 +18,7 @@ class Commands:
 
     @staticmethod
     def add(func, mod=None):
+        func.post = display
         Commands.cmds[func.__name__] = func
         if mod:
             Commands.names[func.__name__] = mod.__name__.split(".")[-1]
@@ -38,11 +39,9 @@ class Commands:
 def command(evt):
     parse(evt)
     func = Commands.get(evt.cmd)
-    if not func:
-        evt.ready()
-        return
-    func(evt)
-    Fleet.display(evt)
+    if func:
+        func(evt)
+        Fleet.display(evt)
     evt.ready()
 
 
