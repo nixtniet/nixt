@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"autoconstruct"
+"auto construct"
 
 
 from .object import Object
