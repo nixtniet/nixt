@@ -122,7 +122,7 @@ def consume(evts):
             break
 
 
-def payload(clt, cmds):
+def payload(clts, cmds):
     nmr = 0
     cmdz = sorted(keys(cmds))
     if "s" in Main.opts:
@@ -130,15 +130,16 @@ def payload(clt, cmds):
     for cmd in cmdz:
         if cmd in spl(ignore):
             continue
-        examples = getattr(cmds, cmd)
-        for example in examples:
-            event = Event()
-            event.orig = repr(clt)
-            event.txt = cmd + " " + example
-            event.type = "command"
-            events.put(event)
-            clt.put(event)
-            nmr += 1
+        for clt in clts:
+            examples = getattr(cmds, cmd)
+            for example in examples:
+                event = Event()
+                event.orig = repr(clt)
+                event.txt = cmd + " " + example
+                event.type = "command"
+                events.put(event)
+                clt.put(event)
+                nmr += 1
     return nmr
 
 
@@ -172,26 +173,32 @@ def main():
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
     skel()
-    clt = CLI()
-    clt.start()
+    if "z" in Main.opts:
+        nrcpu = os.cpu_count()
+    else:
+        nrcpu = 1
+    for x in range(nrcpu):
+        clt = CLI()
+        clt.start()
+    clts = Fleet.all() 
     nrs = Main.index or 1
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, clt, pre))
+        thrs.append(launch(payload, clts, pre))
     for thr in thrs:
         nr = thr.join()
         if nr:
             nrcommand += nr
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, clt, param))
+        thrs.append(launch(payload, clts, param))
     for thr in thrs:
         nr = thr.join()
         if nr:
             nrcommand += nr
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, clt, post))
+        thrs.append(launch(payload, clts, post))
     for thr in thrs:
         nr = thr.join()
         if nr:
