@@ -28,7 +28,7 @@ class Main(Default):
     name = Default.__module__.split(".")[-2]
     opts = Default()
     verbose = False
-    version = 360
+    version = 361
 
 
 class CLI(Client):
