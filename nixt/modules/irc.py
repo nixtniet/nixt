@@ -13,7 +13,7 @@ import threading
 import time
 
 
-from ..auto   import Default
+from ..auto   import Auto
 from ..client import Client
 from ..cmnd   import command
 from ..disk   import write
@@ -55,10 +55,10 @@ def init():
 
 class Main:
 
-    name = Default.__module__.split(".")[-2]
+    name = Auto.__module__.split(".")[-2]
 
 
-class Config(Default):
+class Config(Auto):
 
     channel = f"#{Main.name}"
     commands = True
@@ -75,7 +75,7 @@ class Config(Default):
     users = False
 
     def __init__(self):
-        Default.__init__(self)
+        Auto.__init__(self)
         self.channel = Config.channel
         self.commands = Config.commands
         self.nick = Config.nick
@@ -127,10 +127,10 @@ wrapper = TextWrap()
 class IRC(Output, Client):
 
     def __init__(self):
-        Client.__init__(self)
         Output.__init__(self)
+        Client.__init__(self)
         self.buffer = []
-        self.cache = Default()
+        self.cache = Auto()
         self.cfg = Config()
         self.channels = []
         self.events = Object()
@@ -518,8 +518,8 @@ class IRC(Output, Client):
 
     def stop(self):
         self.state.stopkeep = True
-        Client.stop(self)
         Output.stop(self)
+        Client.stop(self)
 
     def wait(self):
         self.events.ready.wait()

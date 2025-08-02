@@ -8,13 +8,13 @@ import threading
 import time
 
 
-from .auto import Default
+from .auto import Auto
 
 
-class Event(Default):
+class Event(Auto):
 
     def __init__(self):
-        Default.__init__(self)
+        Auto.__init__(self)
         self._ready = threading.Event()
         self._thr = None
         self.ctime = time.time()

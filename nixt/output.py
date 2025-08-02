@@ -8,12 +8,14 @@ import queue
 import threading
 
 
+from .client import Client
 from .thread import launch
 
 
-class Output:
+class Output(Client):
 
     def __init__(self):
+        Client.__init__(self)
         self.olock  = threading.RLock()
         self.oqueue = queue.Queue()
         self.ostop  = threading.Event()
@@ -41,10 +43,12 @@ class Output:
     def start(self):
         self.ostop.clear()
         launch(self.output)
+        super().start()
 
     def stop(self):
         self.ostop.set()
         self.oqueue.put(None)
+        super.stop()
 
     def wait(self):
         self.oqueue.join()

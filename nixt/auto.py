@@ -7,7 +7,7 @@
 from .object import Object
 
 
-class Default(Object):
+class Auto(Object):
 
     def __getattr__(self, key):
         if key not in self:
@@ -17,5 +17,5 @@ class Default(Object):
 
 def __dir__():
     return (
-        'Default',
+        'Auto',
     )

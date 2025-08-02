@@ -4,12 +4,12 @@
 "create service file"
 
 
-from ..auto import Default
+from ..auto import Auto
 
 
 class Main:
 
-    name = Default.__module__.split(".")[-2]
+    name = Auto.__module__.split(".")[-2]
 
 
 TXT = """[Unit]

@@ -6,7 +6,6 @@
 
 import queue
 import threading
-import _thread
 
 
 from .thread import launch
@@ -15,7 +14,6 @@ from .thread import launch
 class Engine:
 
     def __init__(self):
-        self.lock = _thread.allocate_lock()
         self.cbs = {}
         self.queue = queue.Queue()
         self.ready = threading.Event()

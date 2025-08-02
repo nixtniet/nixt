@@ -4,7 +4,7 @@
 "argparse"
 
 
-from .auto import Default
+from .auto import Auto
 
 
 def parse(obj, txt=""):
@@ -16,13 +16,13 @@ def parse(obj, txt=""):
     args = []
     obj.args = []
     obj.cmd = ""
-    obj.gets = Default()
+    obj.gets = Auto()
     obj.index = None
     obj.mod = ""
     obj.opts = ""
     obj.result = {}
-    obj.sets = Default()
-    obj.silent = Default()
+    obj.sets = Auto()
+    obj.silent = Auto()
     obj.txt = txt
     obj.otxt = obj.txt
     _nr = -1

@@ -10,9 +10,9 @@ import sys
 import time
 
 
+from .auto   import Auto
 from .client import Client
 from .cmnd   import Commands, command, scan
-from .auto   import Default
 from .event  import Event
 from .parse  import parse
 from .paths  import pidname, setwd
@@ -21,12 +21,12 @@ from .utils  import level, spl
 from .       import modules as MODS
 
 
-class Main(Default):
+class Main(Auto):
 
     init = ""
     level = "warn"
-    name = Default.__module__.split(".")[-2]
-    opts = Default()
+    name = Auto.__module__.split(".")[-2]
+    opts = Auto()
     verbose = False
     version = 361
 
