@@ -124,11 +124,10 @@ wrapper = TextWrap()
 "IRC"
 
 
-class IRC(Output, Client):
+class IRC(Output):
 
     def __init__(self):
         Output.__init__(self)
-        Client.__init__(self)
         self.buffer = []
         self.cache = Auto()
         self.cfg = Config()
@@ -506,7 +505,6 @@ class IRC(Output, Client):
         self.events.connected.clear()
         self.events.joined.clear()
         Output.start(self)
-        Client.start(self)
         if not self.state.keeprunning:
             launch(self.keep)
         launch(
@@ -519,7 +517,6 @@ class IRC(Output, Client):
     def stop(self):
         self.state.stopkeep = True
         Output.stop(self)
-        Client.stop(self)
 
     def wait(self):
         self.events.ready.wait()
