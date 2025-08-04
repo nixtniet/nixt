@@ -14,7 +14,6 @@ import time
 
 
 from ..auto   import Auto
-from ..client import Client
 from ..cmnd   import command
 from ..disk   import write
 from ..event  import Event as IEvent
