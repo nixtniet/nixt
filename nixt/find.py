@@ -53,7 +53,6 @@ def fntime(daystr):
 
 
 def isdeleted(obj):
-    print(dir(obj))
     return "__deleted__" in dir(obj) and obj.__deleted__
 
 
