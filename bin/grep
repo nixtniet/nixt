@@ -1,1 +1,1 @@
-grep -R $* nixt nixts ;
+grep -R $* nixt ;

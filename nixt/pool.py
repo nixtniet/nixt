@@ -8,6 +8,8 @@ import os
 import threading
 
 
+from .client import Client
+from .cmnd   import command
 from .fleet  import Fleet
 from .output import Output
 
@@ -20,16 +22,20 @@ class Pool:
     nrlast = 0
 
     @staticmethod
+    def add(clt):
+        Pool.clients.append(clt)
+
+    def init(cls):
+        for x in range(Pool.nrcpu-1):
+            clt = cls()
+            clt.start()
+            Pool.add(clt)
+
+    @staticmethod
     def put(evt):
        with Pool.lock:
-           if not Pool.clients:
-               for task in range(Pool.nrcpu):
-                   clt = Output()
-                   clt.start()
-               Pool.clients = list(Fleet.all())
-           if Pool.nrlast >= Pool.nrcpu:
+           if Pool.nrlast >= Pool.nrcpu-1:
                Pool.nrlast = 0
-           print(Pool.clients)
            Pool.clients[Pool.nrlast].put(evt)
            Pool.nrlast += 1
 

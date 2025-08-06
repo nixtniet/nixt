@@ -27,6 +27,7 @@ from nixt.object import Object, keys
 from nixt.output import Output
 from nixt.parse  import parse
 from nixt.paths  import Workdir, setwd, skel
+from nixt.pool   import Pool
 from nixt.thread import launch
 from nixt.utils  import elapsed, spl 
 
@@ -113,6 +114,9 @@ class CLI(Output):
             print(txt)
 
 
+Pool.init(CLI)
+
+
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     print(f"{Main.name.upper()} since {tme}")
@@ -128,24 +132,25 @@ def consume(evts):
             break
 
 
-def payload(clts, cmds):
+def payload(cmds):
     nmr = 0
     cmdz = sorted(keys(cmds))
     if "s" in Main.opts:
         rand.shuffle(cmdz)
-    for clt in clts:
-        for cmd in cmdz:
-            if cmd in ignore:
-                continue
-            examples = getattr(cmds, cmd)
-            for example in examples:
-                event = Event()
-                event.orig = repr(clt)
-                event.txt = cmd + " " + example
-                event.type = "command"
-                events.put(event)
-                clt.put(event)
-                nmr += 1
+    todo = []
+    for cmd in cmdz:
+        if cmd in ignore:
+            continue
+        examples = getattr(cmds, cmd)
+        for example in examples:
+            event = Event()
+            event.txt = cmd + " " + example
+            event.type = "command"
+            todo.append(event)
+    for event in todo:
+        Pool.put(event)
+        events.put(event)
+        nmr += 1
     return nmr
 
 
@@ -179,32 +184,24 @@ def main():
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
     skel()
-    if "z" in Main.opts:
-        nrcpu = os.cpu_count()
-    else:
-        nrcpu = 1
-    for x in range(nrcpu):
-        clt = CLI()
-        clt.start()
-    clts = Fleet.all() 
     nrs = Main.index or 1
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, clts, pre))
+        thrs.append(launch(payload, pre))
     for thr in thrs:
         nr = thr.join()
         if nr:
             nrcommand += nr
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, clts, param))
+        thrs.append(launch(payload, param))
     for thr in thrs:
         nr = thr.join()
         if nr:
             nrcommand += nr
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, clts, post))
+        thrs.append(launch(payload, post))
     for thr in thrs:
         nr = thr.join()
         if nr:
