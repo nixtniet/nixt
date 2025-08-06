@@ -6,6 +6,7 @@
 
 import threading
 import time
+import _thread
 
 
 from .auto import Auto
@@ -31,9 +32,12 @@ class Event(Auto):
         self.result[time.time()] = txt
 
     def wait(self, timeout=None):
-        self._ready.wait()
-        if self._thr:
-            self._thr.join()
+        try:
+            self._ready.wait()
+            if self._thr:
+                self._thr.join()
+        except (KeyboardInterrupt, EOFError):
+            _thread.interrupt_main()
 
 
 def __dir__():

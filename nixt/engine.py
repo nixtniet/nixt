@@ -44,7 +44,7 @@ class Engine:
     def register(self, typ, cbs):
         self.cbs[typ] = cbs
 
-    def start(self, daemon=True):
+    def start(self, daemon=False):
         self.stopped.clear()
         launch(self.loop, daemon=daemon)
 

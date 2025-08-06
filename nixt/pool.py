@@ -6,6 +6,7 @@
 
 import os
 import threading
+import time
 
 
 from .client import Client
@@ -18,15 +19,16 @@ class Pool:
 
     clients = []
     lock = threading.RLock()
-    nrcpu = os.cpu_count()
+    nrcpu = 1
     nrlast = 0
 
     @staticmethod
     def add(clt):
         Pool.clients.append(clt)
 
-    def init(cls):
-        for x in range(Pool.nrcpu-1):
+    def init(cls, nr=None):
+        Pool.nrcpu = nr or os.cpu_count
+        for x in range(Pool.nrcpu):
             clt = cls()
             clt.start()
             Pool.add(clt)
@@ -36,7 +38,11 @@ class Pool:
        with Pool.lock:
            if Pool.nrlast >= Pool.nrcpu-1:
                Pool.nrlast = 0
-           Pool.clients[Pool.nrlast].put(evt)
+           clt = Pool.clients[Pool.nrlast]
+           if clt.queue.qsize():
+               time.sleep(0.01)
+           else:
+               clt.put(evt)
            Pool.nrlast += 1
 
 

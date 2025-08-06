@@ -16,7 +16,7 @@ lock = threading.RLock()
 
 class Thread(threading.Thread):
 
-    def __init__(self, func, thrname, *args, daemon=True, **kwargs):
+    def __init__(self, func, thrname, *args, daemon=False, **kwargs):
         super().__init__(None, self.run, thrname, (), daemon=daemon)
         self.name = thrname or kwargs.get("name", name(func))
         self.queue = queue.Queue()
@@ -42,8 +42,11 @@ class Thread(threading.Thread):
             _thread.interrupt_main()
 
     def join(self, timeout=None):
-        super().join(timeout)
-        return self.result
+        try:
+            super().join(timeout)
+            return self.result
+        except (KeyboardInterrupt, EOFError):
+            _thread.interrupt_main()
 
 
 def launch(func, *args, **kwargs):
