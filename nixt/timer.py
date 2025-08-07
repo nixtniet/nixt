@@ -11,6 +11,9 @@ import time
 from .thread import launch, name
 
 
+STARTTIME = time.time()
+
+
 class Timy(threading.Timer):
 
     def __init__(self, sleep, func, *args, **kwargs):

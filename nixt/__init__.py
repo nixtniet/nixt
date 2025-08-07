@@ -2,3 +2,4 @@
 
 
 __doc__ = __name__.upper()
+__version__ = 363
