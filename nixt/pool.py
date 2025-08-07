@@ -35,15 +35,12 @@ class Pool:
 
     @staticmethod
     def put(evt):
-       with Pool.lock:
-           if Pool.nrlast >= Pool.nrcpu-1:
-               Pool.nrlast = 0
-           clt = Pool.clients[Pool.nrlast]
-           if clt.queue.qsize():
-               time.sleep(0.01)
-           else:
-               clt.put(evt)
-           Pool.nrlast += 1
+        with Pool.lock:
+            if Pool.nrlast >= Pool.nrcpu-1:
+                Pool.nrlast = 0
+            clt = Pool.clients[Pool.nrlast]
+            clt.put(evt)
+            Pool.nrlast += 1
 
 
 def __dir__():
