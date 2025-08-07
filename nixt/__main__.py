@@ -126,11 +126,7 @@ def check(txt):
 
 def forever():
     while True:
-        try:
-            time.sleep(0.1)
-        except (KeyboardInterrupt, EOFError):
-            print("")
-            sys.exit(1)
+        time.sleep(0.1)
 
 
 def inits(pkg, names):
@@ -256,3 +252,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    os._exit(0)
