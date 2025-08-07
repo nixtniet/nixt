@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.method import edit
+from nixt.func   import edit
 from nixt.object import Object
 
 

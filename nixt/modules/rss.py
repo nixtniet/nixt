@@ -25,7 +25,7 @@ from ..auto   import Auto
 from ..disk   import write
 from ..fleet  import Fleet
 from ..find   import find, fntime, last
-from ..method import fmt
+from ..func   import fmt
 from ..object import Object, update
 from ..paths  import getpath
 from ..thread import launch

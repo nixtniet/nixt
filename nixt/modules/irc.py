@@ -19,7 +19,7 @@ from ..disk   import write
 from ..event  import Event as IEvent
 from ..find   import last
 from ..fleet  import Fleet
-from ..method import edit, fmt
+from ..func   import edit, fmt
 from ..object import Object, keys
 from ..output import Output
 from ..paths  import getpath, ident

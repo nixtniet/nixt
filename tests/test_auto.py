@@ -7,8 +7,8 @@
 import unittest
 
 
-from nixt.auto   import Auto
-from nixt.method import edit
+from nixt.auto import Auto
+from nixt.func import edit
 
 
 class TestMethods(unittest.TestCase):

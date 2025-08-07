@@ -19,7 +19,7 @@ import nixt.engine
 import nixt.event
 import nixt.find
 import nixt.fleet
-import nixt.method
+import nixt.func
 import nixt.object
 import nixt.output
 import nixt.paths
@@ -41,7 +41,7 @@ PACKAGE = [
     "event",
     "find",
     "fleet",
-    'method',
+    'func',
     "object",
     'output',
     "paths",
