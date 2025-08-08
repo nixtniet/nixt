@@ -15,7 +15,7 @@ from .client import Client
 from .cmnd   import Commands, command, scan
 from .event  import Event
 from .parse  import parse
-from .paths  import pidname, setwd
+from .path   import pidname, setwd
 from .thread import launch
 from .utils  import level, spl
 from .       import modules as MODS

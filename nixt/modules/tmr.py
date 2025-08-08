@@ -13,7 +13,7 @@ from ..disk   import write
 from ..find   import find, fntime
 from ..fleet  import Fleet
 from ..object import Object
-from ..paths  import ident, store
+from ..path   import ident, store
 from ..thread import launch
 from ..timer  import Timed
 from ..utils  import elapsed, rlog

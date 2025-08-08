@@ -27,7 +27,7 @@ from ..fleet  import Fleet
 from ..find   import find, fntime, last
 from ..func   import fmt
 from ..object import Object, update
-from ..paths  import getpath
+from ..path   import getpath
 from ..thread import launch
 from ..timer  import Repeater
 from ..utils  import elapsed, rlog, spl

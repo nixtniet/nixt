@@ -22,7 +22,7 @@ from ..fleet  import Fleet
 from ..func   import edit, fmt
 from ..object import Object, keys
 from ..output import Output
-from ..paths  import getpath, ident
+from ..path   import getpath, ident
 from ..thread import launch
 from ..utils  import rlog
 

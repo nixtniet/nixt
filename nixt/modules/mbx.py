@@ -13,7 +13,7 @@ from ..disk   import write
 from ..find   import find, fntime
 from ..func   import fmt
 from ..object import Object
-from ..paths  import ident, store
+from ..path   import ident, store
 from ..utils  import elapsed
 
 
