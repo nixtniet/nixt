@@ -7,8 +7,8 @@
 import unittest
 
 
-from nixt.find  import find
-from nixt.paths import setwd
+from nixt.find import find
+from nixt.path import setwd
 
 
 setwd('.test')

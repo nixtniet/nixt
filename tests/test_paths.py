@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.paths import Workdir, setwd
+from nixt.path import Workdir, setwd
 
 
 class TestComposite(unittest.TestCase):

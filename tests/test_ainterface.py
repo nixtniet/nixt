@@ -22,7 +22,7 @@ import nixt.fleet
 import nixt.func
 import nixt.object
 import nixt.output
-import nixt.paths
+import nixt.path
 import nixt.serial
 import nixt.thread
 import nixt.timer
@@ -44,7 +44,7 @@ PACKAGE = [
     'func',
     "object",
     'output',
-    "paths",
+    "path",
     'serial',
     "thread",
     "timer",
