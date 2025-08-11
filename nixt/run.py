@@ -18,7 +18,10 @@ from .parse  import parse
 from .path   import pidname, setwd
 from .thread import launch
 from .utils  import level, spl
-from .       import modules as MODS
+
+
+if os.path.exists("mods"):
+    from . import modules as MODS
 
 
 class Main(Auto):
@@ -248,8 +251,3 @@ def main():
         wrapped(service)
     else:
         wrapped(control)
-
-
-if __name__ == "__main__":
-    main()
-    os._exit(0)
