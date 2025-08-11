@@ -225,8 +225,10 @@ def main():
         nr = thr.join()
         if nr:
             nrcommand += nr
+    time.sleep(1.0)
     consume(events)
-
+    Fleet.shutdown()
+    
 
 if __name__ == "__main__":
     wrap(main)
@@ -235,7 +237,6 @@ if __name__ == "__main__":
     nrevents = events.qsize()
     percall = (endtime-STARTTIME)/(nrcommand)
     if "v" in Main.opts:
-        if nrevents:
-            print(f"{nrevents} events left.")
+        print(f"{nrevents} events left.")
         print(f"total: {lap} nrs: {nrs} cmds: {nrcommand} call: %.6fs" % percall)
-    os._exit(0) 
+    sys.exit() 
