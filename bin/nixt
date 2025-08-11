@@ -1,1 +1,1 @@
-python3 -m nixt.run $* ;
+python3 -c "import nixt.run ; nixt.run.main() ; import os ; os._exit(0)" $* ;

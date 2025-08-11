@@ -5,6 +5,7 @@
 
 
 import os
+import os.path
 import pathlib
 import sys
 import time
@@ -18,10 +19,6 @@ from .parse  import parse
 from .path   import pidname, setwd
 from .thread import launch
 from .utils  import level, spl
-
-
-if os.path.exists("mods"):
-    from . import modules as MODS
 
 
 class Main(Auto):
@@ -58,6 +55,16 @@ class Console(CLI):
         evt.txt = input("> ")
         evt.type = "command"
         return evt
+
+
+"modules"
+
+
+if os.path.exists(os.path.join(os.path.dirname(__file__), "modules")):
+    from . import modules as MODS
+else:
+    MODS = None
+
 
 
 "daemon"
@@ -190,7 +197,8 @@ def control():
     parse(Main, " ".join(sys.argv[1:]))
     level(Main.level or "warn")
     setwd(Main.name)
-    Commands.scan(MODS.srv)
+    if MODS:
+        Commands.scan(MODS.srv)
     Commands.add(ver)
     scan(MODS)
     csl = CLI()
