@@ -26,16 +26,14 @@ from nixt.fleet  import Fleet
 from nixt.object import Object, keys
 from nixt.output import Output
 from nixt.parse  import parse
-from nixt.paths  import Workdir, setwd, skel
+from nixt.path   import Workdir, setwd, skel
 from nixt.pool   import Pool
 from nixt.thread import launch
+from nixt.timer  import STARTTIME
 from nixt.utils  import elapsed, spl 
 
 
 from nixt import modules as MODS
-
-
-STARTTIME = time.time()
 
 
 class Main(Auto):

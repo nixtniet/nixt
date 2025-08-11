@@ -11,7 +11,7 @@ import time
 
 
 from .auto   import Auto
-from .client import Client
+from .client import Client, Main
 from .cmnd   import Commands, command, scan
 from .event  import Event
 from .parse  import parse
@@ -19,16 +19,6 @@ from .path   import pidname, setwd
 from .thread import launch
 from .utils  import level, spl
 from .       import modules as MODS
-
-
-class Main(Auto):
-
-    init = ""
-    level = "warn"
-    name = Auto.__module__.split(".")[-2]
-    opts = Auto()
-    verbose = False
-    version = 362
 
 
 class CLI(Client):

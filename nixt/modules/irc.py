@@ -14,6 +14,7 @@ import time
 
 
 from ..auto   import Auto
+from ..client import Main
 from ..cmnd   import command
 from ..disk   import write
 from ..event  import Event as IEvent
@@ -50,11 +51,6 @@ def init():
 
 
 "config"
-
-
-class Main:
-
-    name = Auto.__module__.split(".")[-2]
 
 
 class Config(Auto):

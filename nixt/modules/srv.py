@@ -4,12 +4,8 @@
 "create service file"
 
 
-from ..auto import Auto
-
-
-class Main:
-
-    name = Auto.__module__.split(".")[-2]
+from ..auto   import Auto
+from ..client import Main
 
 
 TXT = """[Unit]

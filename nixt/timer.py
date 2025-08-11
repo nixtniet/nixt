@@ -61,6 +61,7 @@ class Repeater(Timed):
 
 def __dir__():
     return (
+        'STARTTIME',
         'Repeater',
         'Timed'
     )
