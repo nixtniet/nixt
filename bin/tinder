@@ -11,6 +11,7 @@ import queue
 import shutil
 import sys
 import termios
+import threading
 import time
 import _thread
 
@@ -27,7 +28,6 @@ from nixt.object import Object, keys
 from nixt.output import Output
 from nixt.parse  import parse
 from nixt.path   import Workdir, setwd, skel
-from nixt.pool   import Pool
 from nixt.thread import launch
 from nixt.timer  import STARTTIME
 from nixt.utils  import elapsed, spl 
@@ -42,9 +42,35 @@ class Main(Auto):
     name = Auto.__module__.split(".")[-2]
 
 
+class Pool:
+
+    clients = []
+    lock = threading.RLock()
+    nrcpu = 1
+    nrlast = 0
+
+    @staticmethod
+    def add(clt):
+        Pool.clients.append(clt)
+
+    def init(cls, nr=None):
+        Pool.nrcpu = nr or os.cpu_count
+        for x in range(Pool.nrcpu):
+            clt = cls()
+            clt.start()
+            Pool.add(clt)
+
+    @staticmethod
+    def put(evt):
+        with Pool.lock:
+            if Pool.nrlast >= Pool.nrcpu-1:
+                Pool.nrlast = 0
+            clt = Pool.clients[Pool.nrlast]
+            clt.put(evt)
+            Pool.nrlast += 1
+
+
 Workdir.wdr = ".test"
-
-
 path = MODS.__path__[0]
 
 
@@ -225,7 +251,7 @@ def main():
         nr = thr.join()
         if nr:
             nrcommand += nr
-    time.sleep(1.0)
+    time.sleep(0.1)
     consume(events)
     Fleet.shutdown()
     
@@ -240,3 +266,15 @@ if __name__ == "__main__":
         print(f"{nrevents} events left.")
         print(f"total: {lap} nrs: {nrs} cmds: {nrcommand} call: %.6fs" % percall)
     sys.exit() 
+# This file is placed in the Public Domain.
+
+
+"client pool"
+
+
+
+
+def __dir__():
+    return (
+        'Pool',
+    )
