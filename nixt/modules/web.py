@@ -4,6 +4,7 @@
 "web"
 
 
+import logging
 import os
 import sys
 import time
@@ -65,7 +66,7 @@ class HTTP(HTTPServer, Object):
     def error(self, _request, _addr):
         exctype, excvalue, _trb = sys.exc_info()
         exc = exctype(excvalue)
-        later(exc)
+        logging.exception(exc)
 
 
 class HTTPHandler(BaseHTTPRequestHandler):

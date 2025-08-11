@@ -10,9 +10,9 @@ import time
 
 
 from ..disk   import write
-from ..find   import find, fntime
+from ..find   import find
 from ..func   import fmt
-from ..object import Object
+from ..object import Object, keys, update
 from ..path   import ident, store
 from ..utils  import elapsed
 

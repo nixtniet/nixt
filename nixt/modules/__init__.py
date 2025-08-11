@@ -9,7 +9,9 @@ from . import irc, rss
 from . import req, slg
 from . import dbg, srv # noqa: F401
 from . import fnd, log, tdo
-from . import mbx, mdl, rst, web, wsd, udp
+from . import mbx, mdl, rst, web
+from . import wsd as wsd
+from . import udp as udp
 from . import upt, ver
 
 

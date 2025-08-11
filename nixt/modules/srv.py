@@ -4,7 +4,6 @@
 "create service file"
 
 
-from ..auto import Auto
 from ..run  import Main
 
 

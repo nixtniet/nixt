@@ -10,9 +10,8 @@ import time
 
 
 from ..disk   import write
-from ..find   import find, fntime
+from ..find   import find
 from ..fleet  import Fleet
-from ..object import Object
 from ..path   import ident, store
 from ..thread import launch
 from ..timer  import Timed

@@ -4,6 +4,7 @@
 "rest"
 
 
+import logging
 import os
 import sys
 import time
@@ -66,7 +67,7 @@ class REST(HTTPServer, Object):
     def error(self, _request, _addr):
         exctype, excvalue, _trb = sys.exc_info()
         exc = exctype(excvalue)
-        later(exc)
+        logging.exception(exc)
 
 
 class RESTHandler(BaseHTTPRequestHandler):
@@ -116,7 +117,7 @@ class RESTHandler(BaseHTTPRequestHandler):
             self.send(html(txt))
         except (TypeError, FileNotFoundError, IsADirectoryError) as ex:
             self.send_response(404)
-            later(ex)
+            logging.exception(ex)
             self.end_headers()
 
     def log(self, code):
