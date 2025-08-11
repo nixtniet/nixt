@@ -4,8 +4,8 @@
 "create service file"
 
 
-from ..auto   import Auto
-from ..client import Main
+from ..auto import Auto
+from ..run  import Main
 
 
 TXT = """[Unit]

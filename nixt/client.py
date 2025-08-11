@@ -7,19 +7,8 @@
 import threading
 
 
-from .auto   import Auto
 from .fleet  import Fleet
 from .engine import Engine
-
-
-class Main(Auto):
-
-    init = ""
-    level = "warn"
-    name = Auto.__module__.split(".")[-2]
-    opts = Auto()
-    verbose = False
-    version = 362
 
 
 class Client(Engine):

@@ -14,7 +14,6 @@ import time
 
 
 from ..auto   import Auto
-from ..client import Main
 from ..cmnd   import command
 from ..disk   import write
 from ..event  import Event as IEvent
@@ -24,6 +23,7 @@ from ..func   import edit, fmt
 from ..object import Object, keys
 from ..output import Output
 from ..path   import getpath, ident
+from ..run    import Main
 from ..thread import launch
 from ..utils  import rlog
 

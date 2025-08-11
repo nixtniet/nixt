@@ -4,8 +4,8 @@
 "version"
 
 
-from .. import __version__
+from ..run import Main
 
 
 def ver(event):
-    event.reply(str(__version__))
+    event.reply(str(Main.version))
