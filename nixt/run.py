@@ -21,6 +21,9 @@ from .thread import launch
 from .utils  import level, spl
 
 
+"config"
+
+
 class Main(Auto):
 
     init = ""
@@ -29,6 +32,9 @@ class Main(Auto):
     opts = Auto()
     verbose = False
     version = 362
+
+
+"clients"
 
 
 class CLI(Client):
@@ -64,7 +70,6 @@ if os.path.exists(os.path.join(os.path.dirname(__file__), "modules")):
     from . import modules as MODS
 else:
     MODS = None
-
 
 
 "daemon"
@@ -110,8 +115,8 @@ def privileges():
 "commands"
 
 
-def ver(event):
-    event.reply(f"{Main.name.upper()} {Main.version}")
+def cmd(event):
+    event.reply(",".join(sorted(Commands.cmds)))
 
 
 "utilities"
@@ -165,7 +170,7 @@ def background():
     level(Main.level or "debug")
     setwd(Main.name)
     pidfile(pidname(Main.name))
-    Commands.add(ver)
+    Commands.add(cmd)
     scan(MODS)
     inits(MODS, Main.init or "irc,rss")
     forever()
@@ -179,7 +184,7 @@ def console():
     Main.level   = Main.sets.level or Main.level or "warn"
     level(Main.level)
     setwd(Main.name)
-    Commands.add(ver)
+    Commands.add(cmd)
     scan(MODS)
     if "v" in Main.opts:
         banner(MODS)
@@ -197,9 +202,7 @@ def control():
     parse(Main, " ".join(sys.argv[1:]))
     level(Main.level or "warn")
     setwd(Main.name)
-    if MODS:
-        Commands.scan(MODS.srv)
-    Commands.add(ver)
+    Commands.add(cmd)
     scan(MODS)
     csl = CLI()
     evt = Event()
@@ -216,7 +219,7 @@ def service():
     banner(MODS)
     privileges()
     pidfile(pidname(Main.name))
-    Commands.add(ver)
+    Commands.add(cmd)
     scan(MODS)
     inits(MODS, Main.init or "irc,rss")
     forever()
@@ -259,3 +262,6 @@ def main():
         wrapped(service)
     else:
         wrapped(control)
+
+
+"no trampoline"

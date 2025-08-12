@@ -8,4 +8,4 @@ from ..cmnd import Commands
 
 
 def cmd(event):
-    event.reply(",".join(sorted(Commands.names)))
+    event.reply(",".join(sorted(Commands.cmds)))

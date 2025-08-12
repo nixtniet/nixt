@@ -7,7 +7,7 @@
 from . import cmd, lst, thr
 from . import irc, rss
 from . import req, slg
-from . import dbg, srv # noqa: F401
+from . import srv # noqa: F401
 from . import fnd, log, tdo
 from . import mbx, mdl, rst, web
 from . import wsd as wsd

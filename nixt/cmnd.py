@@ -44,12 +44,13 @@ def command(evt):
     evt.ready()
 
 
-def scan(pkg):
+def scan(*pkgs):
     mods = []
-    for modname in dir(pkg):
-        mod = getattr(pkg, modname)
-        Commands.scan(mod)
-        mods.append(mod)
+    for pkg in pkgs:
+        for modname in dir(pkg):
+            mod = getattr(pkg, modname)
+            Commands.scan(mod)
+            mods.append(mod)
     return mods
 
 
