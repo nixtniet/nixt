@@ -31,7 +31,7 @@ class Main(Auto):
     name = Auto.__module__.split(".")[-2]
     opts = Auto()
     verbose = False
-    version = 362
+    version = 363
 
 
 "clients"
@@ -125,7 +125,9 @@ def cmd(event):
 def banner(mods):
     tme = time.ctime(time.time()).replace("  ", " ")
     out(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
-    out(f"loaded {",".join(dir(mods))}")
+    mds = modules(mods)
+    if mds:
+        out(f"loaded {",".join(mds)}")
 
 
 def check(txt):
@@ -154,6 +156,10 @@ def inits(pkg, names):
             thr = launch(mod.init)
             modz.append((mod, thr))
     return modz
+
+
+def modules(pkg):
+    return [x for x in dir(pkg) if not x.startswith("__")]
 
 
 def out(txt):
