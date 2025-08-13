@@ -112,61 +112,6 @@ def privileges():
     os.setuid(pwnam2.pw_uid)
 
 
-"commands"
-
-
-def cmd(event):
-    event.reply(",".join(sorted(Commands.cmds)))
-
-
-"utilities"
-
-
-def banner(mods):
-    tme = time.ctime(time.time()).replace("  ", " ")
-    out(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
-    mds = modules(mods)
-    if mds:
-        out(f"loaded {",".join(mds)}")
-
-
-def check(txt):
-    args = sys.argv[1:]
-    for arg in args:
-        if not arg.startswith("-"):
-            continue
-        for char in txt:
-            if char in arg:
-                return True
-    return False
-
-
-def forever():
-    while True:
-        time.sleep(0.1)
-
-
-def inits(pkg, names):
-    modz = []
-    for name in sorted(spl(names)):
-        mod = getattr(pkg, name, None)
-        if not mod:
-            continue
-        if "init" in dir(mod):
-            thr = launch(mod.init)
-            modz.append((mod, thr))
-    return modz
-
-
-def modules(pkg):
-    return [x for x in dir(pkg) if not x.startswith("__")]
-
-
-def out(txt):
-    print(txt)
-    sys.stdout.flush()
-
-
 "scripts"
 
 
@@ -231,6 +176,61 @@ def service():
     forever()
 
 
+"commands"
+
+
+def cmd(event):
+    event.reply(",".join(sorted(Commands.cmds)))
+
+
+"utilities"
+
+
+def banner(mods):
+    tme = time.ctime(time.time()).replace("  ", " ")
+    out(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
+    mds = modules(mods)
+    if mds:
+        out(f"loaded {",".join(mds)}")
+
+
+def check(txt):
+    args = sys.argv[1:]
+    for arg in args:
+        if not arg.startswith("-"):
+            continue
+        for char in txt:
+            if char in arg:
+                return True
+    return False
+
+
+def forever():
+    while True:
+        time.sleep(0.1)
+
+
+def inits(pkg, names):
+    modz = []
+    for name in sorted(spl(names)):
+        mod = getattr(pkg, name, None)
+        if not mod:
+            continue
+        if "init" in dir(mod):
+            thr = launch(mod.init)
+            modz.append((mod, thr))
+    return modz
+
+
+def modules(pkg):
+    return [x for x in dir(pkg) if not x.startswith("__")]
+
+
+def out(txt):
+    print(txt)
+    sys.stdout.flush()
+
+
 "runtime"
 
 
@@ -268,6 +268,3 @@ def main():
         wrapped(service)
     else:
         wrapped(control)
-
-
-"no trampoline"
