@@ -220,7 +220,7 @@ def tbl(event):
     if not check("f"):
         Commands.names = {}
     for mod in mods(empty=True):
-        Commands.scan(mod)
+        scan(mod)
     event.reply("# This file is placed in the Public Domain.")
     event.reply("")
     event.reply("")
