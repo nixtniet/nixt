@@ -166,6 +166,7 @@ def control():
     setwd(Main.name)
     settable()
     Commands.add(cmd)
+    Commands.add(md5)
     Commands.add(tbl)
     Commands.add(ver)
     csl = CLI()
@@ -195,6 +196,12 @@ def service():
 
 def cmd(event):
     event.reply(",".join(sorted(Commands.names)))
+
+
+
+def md5(event):
+    table = mods("tbl")[0]
+    event.reply(md5sum(table.__file__))
 
 
 TXT = """[Unit]
