@@ -13,7 +13,6 @@ import unittest
 import nixt
 import nixt.auto
 import nixt.client
-import nixt.cmnd
 import nixt.disk
 import nixt.engine
 import nixt.event
@@ -35,7 +34,6 @@ from nixt.object import *
 PACKAGE = [
     "auto",
     "client",
-    "cmnd",
     "disk",
     "engine",
     "event",
