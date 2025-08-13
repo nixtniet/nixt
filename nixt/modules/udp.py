@@ -11,10 +11,10 @@ import threading
 import time
 
 
-from nixt.fleet  import Fleet
-from nixt.object import Object
-from nixt.thread import launch
-from nixt.utils  import rlog
+from ..fleet  import Fleet
+from ..object import Object
+from ..thread import launch
+from ..utils  import rlog
 
 
 DEBUG = True

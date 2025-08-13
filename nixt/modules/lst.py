@@ -4,7 +4,7 @@
 "available types"
 
 
-from nixt.path import types
+from ..path import types
 
 
 def ls(event):

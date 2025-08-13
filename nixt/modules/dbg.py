@@ -7,7 +7,7 @@
 import time
 
 
-from nixt.client import Fleet
+from ..fleet import Fleet
 
 
 def dbg(event):

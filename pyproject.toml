@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nixt"
-version = "363"
+version = "370"
 authors = [
     {name = "Bart Thate", email = "nixtniet@gmail.com" },
 ]
@@ -37,4 +37,8 @@ include-package-data = false
 include = [
     'nixt',
     'nixt.*'
+]
+exclude = [
+    'nixt.modules',
+    'nixt.modules.*'
 ]

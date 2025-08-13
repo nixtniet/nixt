@@ -18,15 +18,16 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.auto    import Auto
-from nixt.client  import Client
-from nixt.event   import Event
-from nixt.modules import Main, Commands, command, md5sum, mods, parse, scan
-from nixt.modules import load, modules, settable
-from nixt.path    import pidname, setwd
-from nixt.serial  import dumps
-from nixt.thread  import launch
-from nixt.utils   import level, spl
+from nixt.auto   import Auto
+from nixt.client import Client
+from nixt.cmds   import Commands, command, parse, scan, settable
+from nixt.event  import Event
+from nixt.path   import pidname, setwd
+from nixt.pkg    import load, md5sum, mods, modules
+from nixt.run    import Main
+from nixt.serial import dumps
+from nixt.thread import launch
+from nixt.utils  import level, spl
 
 
 "clients"

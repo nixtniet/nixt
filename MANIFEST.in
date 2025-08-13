@@ -1,5 +1,4 @@
 include bin/clean
 include bin/nixt
-recursive-include mods *
-recursive-exclude nixt/modules *
+recursive-include nixt/modules *.py
 #recursive-exclude tests *

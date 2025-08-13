@@ -9,13 +9,13 @@ import re
 import time
 
 
-from nixt.disk   import write
-from nixt.find   import find
-from nixt.fleet  import Fleet
-from nixt.path   import ident, store
-from nixt.thread import launch
-from nixt.timer  import Timed
-from nixt.utils  import elapsed, rlog
+from ..disk   import write
+from ..find   import find
+from ..fleet  import Fleet
+from ..path   import ident, store
+from ..thread import launch
+from ..timer  import Timed
+from ..utils  import elapsed, rlog
 
 
 def init():

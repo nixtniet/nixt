@@ -9,12 +9,12 @@ import os
 import time
 
 
-from nixt.disk   import write
-from nixt.find   import find
-from nixt.func   import fmt
-from nixt.object import Object, keys, update
-from nixt.path   import ident, store
-from nixt.utils  import elapsed
+from ..disk   import write
+from ..find   import find
+from ..func   import fmt
+from ..object import Object, keys, update
+from ..path   import ident, store
+from ..utils  import elapsed
 
 
 from .tmr import extract_date
