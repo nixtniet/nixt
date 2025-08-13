@@ -5,37 +5,31 @@
 "main"
 
 
+import logging
 import os
 import os.path
 import pathlib
+import signal
 import sys
 import time
+import _thread
 
 
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.auto   import Auto
-from nixt.client import Client
-from nixt.cmnd   import Commands, command, scan
-from nixt.event  import Event
-from nixt.parse  import parse
-from nixt.path   import pidname, setwd
-from nixt.thread import launch
-from nixt.utils  import level, spl
+from nixt.auto    import Auto
+from nixt.client  import Client
+from nixt.event   import Event
+from nixt.modules import Main, Commands, command, md5sum, mods, parse, scan
+from nixt.modules import load, modules
+from nixt.path    import pidname, setwd
+from nixt.serial  import dumps
+from nixt.thread  import launch
+from nixt.utils   import level, spl
 
 
-"config"
-
-
-class Main(Auto):
-
-    init = ""
-    level = "warn"
-    name = Auto.__module__.split(".")[-2]
-    opts = Auto()
-    verbose = False
-    version = 363
+import nixt.modules as MODS
 
 
 "clients"
@@ -67,17 +61,6 @@ class Console(CLI):
         return evt
 
 
-"modules"
-
-
-if os.path.exists(os.path.join(os.path.dirname(__file__), "modules")):
-    from . import modules as MODS
-elif os.path.exists("mods"):
-    import mods as MODS
-else:
-    MODS = None
-
-
 "daemon"
 
 
@@ -99,6 +82,29 @@ def daemon(verbose=False):
     os.umask(0)
     os.chdir("/")
     os.nice(10)
+
+
+def handler(signum, frame):
+    print("handler called!")
+
+
+signal.signal(signal.SIGHUP, handler)
+
+
+def inits(names):
+    modz = []
+    for name in spl(names):
+        try:
+            mod = load(name)
+            if not mod:
+                continue
+            if "init" in dir(mod):
+                thr = launch(mod.init)
+                modz.append((mod, thr))
+        except Exception as ex:
+            logging.exception(ex)
+            _thread.interrupt_main()
+    return modz
 
 
 def pidfile(filename):
@@ -129,8 +135,7 @@ def background():
     pidfile(pidname(Main.name))
     Commands.add(cmd)
     Commands.add(ver)
-    scan(MODS)
-    inits(MODS, Main.init or "irc,rss")
+    inits(Main.init or "irc,rss")
     forever()
 
 
@@ -144,10 +149,9 @@ def console():
     setwd(Main.name)
     Commands.add(cmd)
     Commands.add(ver)
-    scan(MODS)
     if "v" in Main.opts:
         banner(MODS)
-    for _mod, thr in inits(MODS, Main.init):
+    for _mod, thr in inits(Main.init):
         if "w" in Main.opts:
             thr.join(30.0)
     csl = Console()
@@ -162,8 +166,8 @@ def control():
     level(Main.level or "warn")
     setwd(Main.name)
     Commands.add(cmd)
+    Commands.add(tbl)
     Commands.add(ver)
-    scan(MODS)
     csl = CLI()
     evt = Event()
     evt.orig = repr(csl)
@@ -181,8 +185,7 @@ def service():
     pidfile(pidname(Main.name))
     Commands.add(cmd)
     Commands.add(ver)
-    scan(MODS)
-    inits(MODS, Main.init or "irc,rss")
+    inits(Main.init or "irc,rss")
     forever()
 
 
@@ -191,6 +194,46 @@ def service():
 
 def cmd(event):
     event.reply(",".join(sorted(Commands.cmds)))
+
+
+TXT = """[Unit]
+Description=%s
+After=network-online.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
+
+
+def srv(event):
+    import getpass
+    name = getpass.getuser()
+    event.reply(TXT % (Main.name.upper(), name, name, name, Main.name))
+
+
+def tbl(event):
+    if not check("f"):
+        Commands.names = {}
+    for mod in mods(empty=True):
+        Commands.scan(mod)
+    event.reply("# This file is placed in the Public Domain.")
+    event.reply("")
+    event.reply("")
+    event.reply('"lookup tables"')
+    event.reply("")
+    event.reply("")
+    event.reply(f"NAMES = {dumps(Commands.names, indent=4, sort_keys=True)}")
+    event.reply("")
+    event.reply("")
+    event.reply("MD5 = {")
+    for mod in mods():
+        event.reply(f'    "{mod.__name__.split(".")[-1]}": "{md5sum(mod.__file__)}",')
+    event.reply("}")
 
 
 def ver(event):
@@ -203,9 +246,9 @@ def ver(event):
 def banner(mods):
     tme = time.ctime(time.time()).replace("  ", " ")
     out(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
-    mds = modules(mods)
+    mds = sorted(modules())
     if mds:
-        out(f"loaded {",".join(mds)}")
+        out(f"loaded {",".join(Commands.names)}")
 
 
 def check(txt):
@@ -222,22 +265,6 @@ def check(txt):
 def forever():
     while True:
         time.sleep(0.1)
-
-
-def inits(pkg, names):
-    modz = []
-    for name in sorted(spl(names)):
-        mod = getattr(pkg, name, None)
-        if not mod:
-            continue
-        if "init" in dir(mod):
-            thr = launch(mod.init)
-            modz.append((mod, thr))
-    return modz
-
-
-def modules(pkg):
-    return [x for x in dir(pkg) if not x.startswith("__")]
 
 
 def out(txt):
@@ -287,4 +314,3 @@ def main():
 if __name__ == "__main__":
     main()
     os._exit(0)
-

@@ -16,8 +16,9 @@ def popen(txt):
 
 
 try:
-    arg1, arg2 = sys.argv[1:3]
-    popen(f"find ./ -type f -exec sed -i -e 's/{arg1}/{arg2}/g' {{}} ;")
-except (IndexError, ValueError):
-    print("sed <from> <to>")
+    arg1 = sys.argv[1]
+    popen(f"find ./ -type f -exec sed -i -e {arg1} {{}} \\;")
+except (IndexError, ValueError) as ex:
+    print(ex)
+    print("sed <expression>")
     sys.exit(0)

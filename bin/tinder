@@ -33,13 +33,18 @@ from nixt.timer  import STARTTIME
 from nixt.utils  import elapsed, spl 
 
 
-from nixt import modules as MODS
-
-
 class Main(Auto):
 
     debug  = True
     name = Auto.__module__.split(".")[-2]
+
+
+if os.path.exists(os.path.join(os.path.dirname(__file__), "modules")):
+    from . import modules as MODS
+elif os.path.exists("mods"):
+    import mods as MODS
+else:
+    MODS = None
 
 
 class Pool:
@@ -266,15 +271,3 @@ if __name__ == "__main__":
         print(f"{nrevents} events left.")
         print(f"total: {lap} nrs: {nrs} cmds: {nrcommand} call: %.6fs" % percall)
     sys.exit() 
-# This file is placed in the Public Domain.
-
-
-"client pool"
-
-
-
-
-def __dir__():
-    return (
-        'Pool',
-    )
