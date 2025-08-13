@@ -13,19 +13,24 @@ import threading
 import time
 
 
-from ..auto   import Auto
-from ..cmnd   import command
-from ..disk   import write
-from ..event  import Event as IEvent
-from ..find   import last
-from ..fleet  import Fleet
-from ..func   import edit, fmt
-from ..object import Object, keys
-from ..output import Output
-from ..path   import getpath, ident
-from ..run    import Main
-from ..thread import launch
-from ..utils  import rlog
+from nixt.auto   import Auto
+from nixt.cmnd   import command
+from nixt.disk   import write
+from nixt.event  import Event as IEvent
+from nixt.find   import last
+from nixt.fleet  import Fleet
+from nixt.func   import edit, fmt
+from nixt.object import Object, keys
+from nixt.output import Output
+from nixt.path   import getpath, ident
+from nixt.thread import launch
+from nixt.utils  import rlog
+
+
+from . import getmain
+
+
+Main = getmain("Main")
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]

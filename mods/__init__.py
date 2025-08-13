@@ -4,7 +4,15 @@
 "modules"
 
 
-from . import cmd, lst, thr
+import sys
+
+
+def getmain(name):
+    main = sys.modules.get("__main__")
+    return getattr(main, name)
+
+
+from . import lst, thr
 from . import irc, rss
 from . import req, slg
 from . import srv # noqa: F401
@@ -12,11 +20,10 @@ from . import fnd, log, tdo
 from . import mbx, mdl, rst, web
 from . import wsd as wsd
 from . import udp as udp
-from . import upt, ver
+from . import upt
 
 
 __all__ = (
-    'cmd',
     'fnd',
     'irc',
     'log',
@@ -32,7 +39,6 @@ __all__ = (
     'web',
     'udp',
     'upt',
-    'ver',
 #    'wsd'
 )
 

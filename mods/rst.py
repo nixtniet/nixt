@@ -13,11 +13,11 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from ..auto   import Auto
-from ..object import Object
-from ..path   import Workdir, types
-from ..thread import launch
-from ..utils  import rlog
+from nixt.auto   import Auto
+from nixt.object import Object
+from nixt.path   import Workdir, types
+from nixt.thread import launch
+from nixt.utils  import rlog
 
 
 DEBUG = False

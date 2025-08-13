@@ -21,16 +21,16 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from ..auto   import Auto
-from ..disk   import write
-from ..fleet  import Fleet
-from ..find   import find, fntime, last
-from ..func   import fmt
-from ..object import Object, update
-from ..path   import getpath
-from ..thread import launch
-from ..timer  import Repeater
-from ..utils  import elapsed, rlog, spl
+from nixt.auto   import Auto
+from nixt.disk   import write
+from nixt.fleet  import Fleet
+from nixt.find   import find, fntime, last
+from nixt.func   import fmt
+from nixt.object import Object, update
+from nixt.path   import getpath
+from nixt.thread import launch
+from nixt.timer  import Repeater
+from nixt.utils  import elapsed, rlog, spl
 
 
 DEBUG = False

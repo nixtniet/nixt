@@ -4,7 +4,10 @@
 "create service file"
 
 
-from ..run  import Main
+from . import getmain
+
+
+Main = getmain("Main")
 
 
 TXT = """[Unit]
