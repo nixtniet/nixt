@@ -139,11 +139,11 @@ def mods(names="", empty=False) -> [types.ModuleType]:
 
 
 def modules(mdir="") -> [str]:
-    return [
+    return sorted([
             x[:-3] for x in os.listdir(mdir or path)
             if x.endswith(".py") and not x.startswith("__") and
             x[:-3] not in Main.ignore
-           ]
+           ])
 
 
 def table():
@@ -178,6 +178,7 @@ class Commands:
             name = Commands.names.get(cmd, None)
             if not name:
                 return
+            print(name)
             if Main.md5 and not check(name):
                 return
             mod = load(name)

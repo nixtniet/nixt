@@ -22,14 +22,11 @@ from nixt.auto    import Auto
 from nixt.client  import Client
 from nixt.event   import Event
 from nixt.modules import Main, Commands, command, md5sum, mods, parse, scan
-from nixt.modules import load, modules
+from nixt.modules import load, modules, settable
 from nixt.path    import pidname, setwd
 from nixt.serial  import dumps
 from nixt.thread  import launch
 from nixt.utils   import level, spl
-
-
-import nixt.modules as MODS
 
 
 "clients"
@@ -133,6 +130,7 @@ def background():
     level(Main.level or "debug")
     setwd(Main.name)
     pidfile(pidname(Main.name))
+    settable()
     Commands.add(cmd)
     Commands.add(ver)
     inits(Main.init or "irc,rss")
@@ -147,10 +145,11 @@ def console():
     Main.level   = Main.sets.level or Main.level or "warn"
     level(Main.level)
     setwd(Main.name)
+    settable()
     Commands.add(cmd)
     Commands.add(ver)
     if "v" in Main.opts:
-        banner(MODS)
+        banner()
     for _mod, thr in inits(Main.init):
         if "w" in Main.opts:
             thr.join(30.0)
@@ -165,6 +164,7 @@ def control():
     parse(Main, " ".join(sys.argv[1:]))
     level(Main.level or "warn")
     setwd(Main.name)
+    settable()
     Commands.add(cmd)
     Commands.add(tbl)
     Commands.add(ver)
@@ -180,9 +180,10 @@ def control():
 def service():
     level(Main.level or "warn")
     setwd(Main.name)
-    banner(MODS)
+    banner()
     privileges()
     pidfile(pidname(Main.name))
+    settable()
     Commands.add(cmd)
     Commands.add(ver)
     inits(Main.init or "irc,rss")
@@ -193,7 +194,7 @@ def service():
 
 
 def cmd(event):
-    event.reply(",".join(sorted(Commands.cmds)))
+    event.reply(",".join(sorted(Commands.names)))
 
 
 TXT = """[Unit]
@@ -243,12 +244,10 @@ def ver(event):
 "utilities"
 
 
-def banner(mods):
+def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     out(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
-    mds = sorted(modules())
-    if mds:
-        out(f"loaded {",".join(Commands.names)}")
+    out(f"loaded {",".join(modules())}")
 
 
 def check(txt):
@@ -298,7 +297,7 @@ def wrap(func):
 
 def main():
     if check("a"):
-        Main.init = ",".join(dir(MODS))
+        Main.init = ",".join(modules())
     if check("v"):
         setattr(Main.opts, "v", True)
     if check("c"):
