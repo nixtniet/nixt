@@ -11,7 +11,7 @@ import _thread
 
 from .auto   import Auto
 from .fleet  import Fleet
-from .pkg    import check, load, table
+from .pkg    import check, load, gettbl
 from .run    import Main
 from .thread import launch
 from .utils  import spl
@@ -138,5 +138,7 @@ def scan(mod) -> None:
 
 
 def settable():
-    NAMES = table()
-    Commands.names.update(NAMES)
+    tbl = gettbl()
+    names = getattr(tbl, "NAMES", None)
+    if names:
+        Commands.names.update(names)

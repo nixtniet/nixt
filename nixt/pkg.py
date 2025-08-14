@@ -16,16 +16,12 @@ from .run   import Main
 from .utils import rlog, spl
 
 
-NAMES = {}
-MD5 = {}
-
-
 initlock = threading.RLock()
 loadlock = threading.RLock()
 
 
 checksum = "ec2e91056cc56049af4546de374179d7"
-
+checksum = ""
 
 path = os.path.dirname(__file__)
 path = os.path.join(path, "modules")
@@ -45,29 +41,10 @@ def check(name, hash=""):
     return False
 
 
-def getmod(name):
-    mname = f"{pname}.{name}"
-    mod = sys.modules.get(mname, None)
-    if mod:
-        return mod
-    pth = os.path.join(path, name + ".py")
-    spec = importlib.util.spec_from_file_location(mname, pth)
-    if not spec:
-        return None
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    sys.modules[mname] = mod
-    return mod
-
-
-def gettbl(name):
+def gettbl():
     pth = os.path.join(path, "tbl.py")
     if os.path.exists(pth) and (not checksum or (md5sum(pth) == checksum)):
-        try:
-            mod = getmod("tbl")
-        except FileNotFoundError:
-            return
-        return getattr(mod, name, None)
+        return load("tbl")
     return {}
 
 
@@ -101,7 +78,7 @@ def mods(names="", empty=False):
     res = []
     if empty:
         try:
-            from .modules import tbl
+            tbl = gettbl()
             tbl.NAMES = {}
         except ImportError:
             pass
@@ -121,13 +98,3 @@ def modules(mdir=""):
             if x.endswith(".py") and not x.startswith("__") and
             x[:-3] not in Main.ignore
            ])
-
-
-def table():
-    md5s = gettbl("MD5")
-    if md5s:
-        MD5.update(md5s)
-    names = gettbl("NAMES")
-    if names:
-        NAMES.update(names)
-    return NAMES
