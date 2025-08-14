@@ -18,10 +18,11 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
+from nixt.args    import parse
 from nixt.auto    import Auto
 from nixt.client  import Client
 from nixt.event   import Event
-from nixt.modules import Commands, command, parse, scan, settable
+from nixt.modules import Commands, command, scan, table
 from nixt.modules import Main, load, mods, modules
 from nixt.path    import pidname, setwd
 from nixt.serial  import dumps
@@ -130,7 +131,7 @@ def background():
     level(Main.level or "debug")
     setwd(Main.name)
     pidfile(pidname(Main.name))
-    settable()
+    table()
     Commands.add(cmd)
     Commands.add(ver)
     inits(Main.init or "irc,rss")
@@ -145,7 +146,7 @@ def console():
     Main.level   = Main.sets.level or Main.level or "warn"
     level(Main.level)
     setwd(Main.name)
-    settable()
+    table()
     Commands.add(cmd)
     Commands.add(ver)
     if "v" in Main.opts:
@@ -164,7 +165,7 @@ def control():
     parse(Main, " ".join(sys.argv[1:]))
     level(Main.level or "warn")
     setwd(Main.name)
-    settable()
+    table()
     Commands.add(cmd)
     Commands.add(tbl)
     Commands.add(ver)
@@ -183,7 +184,7 @@ def service():
     banner()
     privileges()
     pidfile(pidname(Main.name))
-    settable()
+    table()
     Commands.add(cmd)
     Commands.add(ver)
     inits(Main.init or "irc,rss")

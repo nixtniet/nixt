@@ -14,6 +14,7 @@ import threading
 import _thread
 
 
+from ..args   import parse
 from ..auto   import Auto
 from ..fleet  import Fleet
 from ..thread import launch
@@ -27,9 +28,6 @@ path = os.path.dirname(__file__)
 pname = __package__
 
 
-"config"
-
-
 class Main(Auto):
 
     debug   = False
@@ -41,9 +39,6 @@ class Main(Auto):
     opts    = Auto()
     verbose = False
     version = 370
-
-
-"importing"
 
 
 def load(name):
@@ -88,9 +83,6 @@ def modules(mdir=""):
            ])
 
 
-"commands"
-
-
 class Commands:
 
     cmds  = {}
@@ -117,7 +109,7 @@ class Commands:
         return func
 
 
-def command(evt) -> None:
+def command(evt):
     parse(evt)
     func = Commands.get(evt.cmd)
     if func:
@@ -142,7 +134,7 @@ def inits(names):
     return modz
 
 
-def scan(mod) -> None:
+def scan(mod):
     for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
         if key.startswith("cb"):
             continue
@@ -150,69 +142,7 @@ def scan(mod) -> None:
             Commands.add(cmdz, mod)
 
 
-"utilities"
-
-
-def parse(obj, txt=None) -> None:
-    if txt is None:
-        if "txt" in dir(obj):
-            txt = obj.txt
-        else:
-            txt = ""
-    args = []
-    obj.args   = []
-    obj.cmd    = ""
-    obj.gets   = Auto()
-    obj.index  = None
-    obj.mod    = ""
-    obj.opts   = ""
-    obj.result = {}
-    obj.sets   = Auto()
-    obj.silent = Auto()
-    obj.txt    = txt or ""
-    obj.otxt   = obj.txt
-    _nr = -1
-    for spli in obj.otxt.split():
-        if spli.startswith("-"):
-            try:
-                obj.index = int(spli[1:])
-            except ValueError:
-                obj.opts += spli[1:]
-            continue
-        if "-=" in spli:
-            key, value = spli.split("-=", maxsplit=1)
-            setattr(obj.silent, key, value)
-            setattr(obj.gets, key, value)
-            continue
-        elif "==" in spli:
-            key, value = spli.split("==", maxsplit=1)
-            setattr(obj.gets, key, value)
-            continue
-        if "=" in spli:
-            key, value = spli.split("=", maxsplit=1)
-            if key == "mod":
-                if obj.mod:
-                    obj.mod += f",{value}"
-                else:
-                    obj.mod = value
-                continue
-            setattr(obj.sets, key, value)
-            continue
-        _nr += 1
-        if _nr == 0:
-            obj.cmd = spli
-            continue
-        args.append(spli)
-    if args:
-        obj.args = args
-        obj.txt  = obj.cmd or ""
-        obj.rest = " ".join(obj.args)
-        obj.txt  = obj.cmd + " " + obj.rest
-    else:
-        obj.txt = obj.cmd or ""
-
-
-def settable():
+def table():
     pth = os.path.join(path, "tbl.py")
     if not os.path.exists(pth):
         return
@@ -220,9 +150,6 @@ def settable():
     names = getattr(tbl, "NAMES", None)
     if names:
         Commands.names.update(names)
-
-
-"interface"
 
 
 def __dir__():
