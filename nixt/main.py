@@ -22,9 +22,10 @@ from nixt.client import Client
 from nixt.cmds   import Commands, command, parse, scan, settable
 from nixt.event  import Event
 from nixt.path   import pidname, setwd
-from nixt.pkg    import load, md5sum, mods, modules
+from nixt.pkg    import load, mods, modules
 from nixt.run    import Main
 from nixt.serial import dumps
+from nixt.sums   import md5sum
 from nixt.thread import launch
 from nixt.utils  import level, spl
 
