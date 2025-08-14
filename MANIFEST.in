@@ -1,4 +1,4 @@
-include bin/clean
-include bin/nixt
-recursive-include nixt/modules *.py
-#recursive-exclude tests *
+#include bin/clean
+#include bin/nixt
+recursive-exclude nixt/modules *.py
+recursive-exclude tests *

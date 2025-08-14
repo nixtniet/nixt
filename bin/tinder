@@ -19,32 +19,23 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.auto   import Auto
-from nixt.client import Client
-from nixt.cmnd   import command, scan
-from nixt.event  import Event
-from nixt.fleet  import Fleet
-from nixt.object import Object, keys
-from nixt.output import Output
-from nixt.parse  import parse
-from nixt.path   import Workdir, setwd, skel
-from nixt.thread import launch
-from nixt.timer  import STARTTIME
-from nixt.utils  import elapsed, spl 
+from nixt.auto    import Auto
+from nixt.client  import Client
+from nixt.event   import Event
+from nixt.fleet   import Fleet
+from nixt.modules import Commands, command, mods, parse, scan, settable
+from nixt.object  import Object, keys
+from nixt.output  import Output
+from nixt.path    import Workdir, setwd, skel
+from nixt.thread  import launch
+from nixt.timer   import STARTTIME
+from nixt.utils   import elapsed, spl 
 
 
 class Main(Auto):
 
     debug  = True
     name = Auto.__module__.split(".")[-2]
-
-
-if os.path.exists(os.path.join(os.path.dirname(__file__), "modules")):
-    from . import modules as MODS
-elif os.path.exists("mods"):
-    import mods as MODS
-else:
-    MODS = None
 
 
 class Pool:
@@ -76,7 +67,6 @@ class Pool:
 
 
 Workdir.wdr = ".test"
-path = MODS.__path__[0]
 
 
 param = Object()
@@ -161,7 +151,7 @@ class Buffer(Output):
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     print(f"{Main.name.upper()} since {tme}")
-    print("loaded " + ",".join(sorted(dir(MODS))))
+    print("loaded " + ",".join(sorted(Commands.cmds)))
 
 
 def consume(evts):
@@ -219,7 +209,8 @@ def main():
     global nrcommand
     parse(Main, " ".join(sys.argv[1:]))
     setwd(Main.name,'.test')
-    for mod in scan(MODS):
+    settable()
+    for mod in mods():
         if "Main" in dir(mod):
             mod.Main.debug = True
     nrcommand = 0
