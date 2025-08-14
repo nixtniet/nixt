@@ -1,0 +1,1 @@
+python3 -c "import nixt.main ; nixt.main.main() ; import os ; os._exit(0)" $* ;
