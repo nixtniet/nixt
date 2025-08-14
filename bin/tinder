@@ -23,7 +23,7 @@ from nixt.auto    import Auto
 from nixt.client  import Client
 from nixt.event   import Event
 from nixt.fleet   import Fleet
-from nixt.modules import Commands, command, mods, parse, scan, settable
+from nixt.modules import Commands, command, mods, parse, scan, table
 from nixt.object  import Object, keys
 from nixt.output  import Output
 from nixt.path    import Workdir, setwd, skel
@@ -209,7 +209,7 @@ def main():
     global nrcommand
     parse(Main, " ".join(sys.argv[1:]))
     setwd(Main.name,'.test')
-    settable()
+    table()
     for mod in mods():
         if "Main" in dir(mod):
             mod.Main.debug = True

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # This file is placed in the Public Domain.
 
 
@@ -18,11 +17,10 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.args    import parse
 from nixt.auto    import Auto
 from nixt.client  import Client
 from nixt.event   import Event
-from nixt.modules import Commands, command, scan, table
+from nixt.modules import Commands, command, parse, scan, table
 from nixt.modules import Main, load, mods, modules
 from nixt.path    import pidname, setwd
 from nixt.serial  import dumps
