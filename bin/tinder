@@ -24,9 +24,9 @@ from nixt.client  import Client
 from nixt.event   import Event
 from nixt.fleet   import Fleet
 from nixt.modules import Commands, command, mods, parse, scan, table
+from nixt.modules import Workdir, setwd, skel
 from nixt.object  import Object, keys
 from nixt.output  import Output
-from nixt.path    import Workdir, setwd, skel
 from nixt.thread  import launch
 from nixt.timer   import STARTTIME
 from nixt.utils   import elapsed, spl 

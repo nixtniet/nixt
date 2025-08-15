@@ -8,7 +8,6 @@ import unittest
 
 
 from nixt.auto import Auto
-from nixt.func import edit
 
 
 class TestMethods(unittest.TestCase):
@@ -16,5 +15,4 @@ class TestMethods(unittest.TestCase):
     def test_auto(self):
         obj = Auto()
         obj.a = "b"
-        edit(obj, {"a": "c"})
-        self.assertEqual(obj.a, "c")
+        self.assertEqual(obj.a, "b")

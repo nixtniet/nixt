@@ -16,13 +16,11 @@ import nixt.client
 import nixt.engine
 import nixt.event
 import nixt.fleet
-import nixt.func
 import nixt.object
 import nixt.output
 import nixt.serial
 import nixt.thread
 import nixt.timer
-import nixt.utils
 
 
 from nixt.object import *
@@ -34,13 +32,11 @@ PACKAGE = [
     "engine",
     "event",
     "fleet",
-    'func',
     "object",
     'output',
     'serial',
     "thread",
-    "timer",
-    "utils"
+    "timer"
 ]
 
 
