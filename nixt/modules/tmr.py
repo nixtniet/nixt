@@ -9,13 +9,13 @@ import re
 import time
 
 
-from ..disk   import write
-from ..find   import find
 from ..fleet  import Fleet
-from ..path   import ident, store
 from ..thread import launch
 from ..timer  import Timed
 from ..utils  import elapsed, rlog
+
+
+from . import find, ident, store, write
 
 
 def init():

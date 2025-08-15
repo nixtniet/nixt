@@ -22,15 +22,13 @@ from urllib.parse import quote_plus, urlencode
 
 
 from ..auto   import Auto
-from ..disk   import write
 from ..fleet  import Fleet
-from ..find   import find, fntime, last
 from ..func   import fmt
 from ..object import Object, update
-from ..path   import getpath
 from ..thread import launch
 from ..timer  import Repeater
 from ..utils  import elapsed, rlog, spl
+from .        import find, fntime,  getpath, last, write 
 
 
 DEBUG = False

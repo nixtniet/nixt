@@ -4,7 +4,7 @@
 "available types"
 
 
-from ..path import types
+from . import types
 
 
 def ls(event):

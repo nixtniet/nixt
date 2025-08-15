@@ -17,15 +17,15 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.auto    import Auto
-from nixt.client  import Client
-from nixt.event   import Event
-from nixt.modules import Commands, command, parse, scan, table
-from nixt.modules import Main, load, mods, modules
-from nixt.path    import pidname, setwd
-from nixt.serial  import dumps
-from nixt.thread  import launch
-from nixt.utils   import level, spl
+from .auto    import Auto
+from .client  import Client
+from .event   import Event
+from .modules import Commands, command, parse, scan, table
+from .modules import Main, load, mod, mods, modules
+from .modules import pidname, setwd
+from .serial  import dumps
+from .thread   import launch
+from .utils   import level, spl
 
 
 "clients"
@@ -91,12 +91,12 @@ def inits(names):
     modz = []
     for name in spl(names):
         try:
-            mod = load(name)
-            if not mod:
+            module = mod(name)
+            if not module:
                 continue
-            if "init" in dir(mod):
-                thr = launch(mod.init)
-                modz.append((mod, thr))
+            if "init" in dir(module):
+                thr = launch(module.init)
+                modz.append((module, thr))
         except Exception as ex:
             logging.exception(ex)
             _thread.interrupt_main()

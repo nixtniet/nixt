@@ -15,10 +15,11 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 from ..auto   import Auto
 from ..object import Object
-from ..path   import Workdir, types
 from ..thread import launch
 from ..utils  import rlog
 
+
+from . import Workdir, types
 
 DEBUG = False
 

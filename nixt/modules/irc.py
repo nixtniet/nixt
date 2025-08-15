@@ -14,17 +14,14 @@ import time
 
 
 from ..auto   import Auto
-from ..disk   import write
 from ..event  import Event as IEvent
-from ..find   import last
 from ..fleet  import Fleet
 from ..func   import edit, fmt
 from ..object import Object, keys
 from ..output import Output
-from ..path   import getpath, ident
 from ..thread import launch
 from ..utils  import rlog
-from .        import Main, command
+from .        import Main, command, getpath, ident, last, write
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
