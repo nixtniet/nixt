@@ -4,8 +4,8 @@
 import unittest
 
 
-from nixt.disk   import Cache
-from nixt.object import Object
+from nixt.modules import Cache
+from nixt.object  import Object
 
 
 class TestCache(unittest.TestCase):

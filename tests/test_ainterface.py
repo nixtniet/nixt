@@ -13,15 +13,12 @@ import unittest
 import nixt
 import nixt.auto
 import nixt.client
-import nixt.disk
 import nixt.engine
 import nixt.event
-import nixt.find
 import nixt.fleet
 import nixt.func
 import nixt.object
 import nixt.output
-import nixt.path
 import nixt.serial
 import nixt.thread
 import nixt.timer
@@ -34,15 +31,12 @@ from nixt.object import *
 PACKAGE = [
     "auto",
     "client",
-    "disk",
     "engine",
     "event",
-    "find",
     "fleet",
     'func',
     "object",
     'output',
-    "path",
     'serial',
     "thread",
     "timer",
