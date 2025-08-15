@@ -1,5 +1,0 @@
-#include bin/clean
-#include bin/nixt
-exclude nixt/__main__.py
-recursive-exclude nixt/modules *.py
-recursive-exclude tests *

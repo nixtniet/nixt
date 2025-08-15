@@ -19,6 +19,5 @@ try:
     arg1 = sys.argv[1]
     popen(f"find ./ -type f -exec sed -i -e {arg1} {{}} \\;")
 except (IndexError, ValueError) as ex:
-    print(ex)
     print("sed <expression>")
     sys.exit(0)
