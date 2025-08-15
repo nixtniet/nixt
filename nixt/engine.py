@@ -29,11 +29,14 @@ class Engine:
 
     def loop(self):
         while not self.stopped.is_set():
-            event = self.poll()
-            if event is None:
-                break
-            event.orig = repr(self)
-            self.callback(event)
+            try:
+                event = self.poll()
+                if event is None:
+                    break
+                event.orig = repr(self)
+                self.callback(event)
+            except (KeyboardInterrupt, EOFError):
+                _thread.interrupt_main()
 
     def poll(self):
         return self.queue.get()
@@ -44,7 +47,7 @@ class Engine:
     def register(self, typ, cbs):
         self.cbs[typ] = cbs
 
-    def start(self, daemon=False):
+    def start(self, daemon=True):
         self.stopped.clear()
         launch(self.loop, daemon=daemon)
 

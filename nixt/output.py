@@ -48,7 +48,7 @@ class Output(Client):
     def stop(self):
         self.ostop.set()
         self.oqueue.put(None)
-        super.stop()
+        super().stop()
 
     def wait(self):
         self.oqueue.join()
