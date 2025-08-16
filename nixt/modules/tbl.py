@@ -29,5 +29,7 @@ NAMES = {
     "tdo": "tdo",
     "thr": "thr",
     "tmr": "tmr",
-    "upt": "upt"
+    "udp": "udp",
+    "upt": "upt",
+    "wsd": "wsd"
 }

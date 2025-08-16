@@ -8,4 +8,4 @@ from ..cache import Cache
 
 
 def ls(event):
-    event.reply(",".join([x.split(".")[-1].lower() for x in Cache.types()]))
+    event.reply(",".join([x.split(".")[-1].lower() for x in Cache.types]))
