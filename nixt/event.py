@@ -9,17 +9,17 @@ import time
 import _thread
 
 
-from .auto import Auto
-
-
-class Event(Auto):
+class Event():
 
     def __init__(self):
-        Auto.__init__(self)
         self._ready = threading.Event()
         self._thr = None
+        self.args = []
+        self.channel = ""
         self.ctime = time.time()
+        self.rest = ""
         self.result = {}
+        self.txt = ""
         self.type = "event"
 
     def done(self):
