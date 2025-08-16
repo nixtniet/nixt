@@ -46,6 +46,8 @@ def find(clz, selector=None, deleted=False, matching=False):
     if selector is None:
         selector = {}
     for pth, obj in Cache.objs.items():
+        if clz not in pth.lower():
+            continue
         obj = Cache.get(pth)
         if not deleted and isdeleted(obj):
             continue
@@ -102,7 +104,7 @@ def search(obj, selector, matching=False):
     res = False
     if not selector:
         return res
-    for key, value in items(selector):
+    for key, value in selector.items():
         val = getattr(obj, key, None)
         if not val:
             continue

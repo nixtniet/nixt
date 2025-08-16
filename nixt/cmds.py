@@ -13,6 +13,7 @@ import threading
 import time
 
 
+from .event import Event
 from .fleet import Fleet
 
 
@@ -49,6 +50,16 @@ class Commands:
                 scan(module)
                 func = Commands.cmds.get(cmd)
         return func
+
+
+def cmnd(clt, txt):
+    evt = Event()
+    evt.orig = repr(clt)
+    evt.type = "command"
+    evt.txt = txt
+    command(evt)
+    evt.wait()
+    return evt
 
 
 def command(evt):
@@ -256,6 +267,7 @@ def spl(txt):
 def __dir__():
     return (
         'Commands',
+        'cmnd',
         'command',
         'inits',
         'mod',

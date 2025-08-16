@@ -21,7 +21,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client import Client
-from nixt.cmds   import Commands, command, parse, scan, table
+from nixt.cmds   import Commands, cmnd, command, parse, scan, table
 from nixt.cmds   import mod, mods, modules, spl
 from nixt.event  import Event
 from nixt.fleet  import Fleet
@@ -38,10 +38,10 @@ class Main:
     init    = ""
     level   = "warn"
     md5     = False
-    name    = __file__.rsplit(os.sep, maxsplit=1)[0].lower()
+    name    = __file__.rsplit(os.sep, maxsplit=1)[-1].lower()
     opts    = {}
     verbose = False
-    version = 130
+    version = 390
 
 
 "clients"
@@ -167,6 +167,7 @@ def console():
         if "w" in Main.opts:
             thr.join(30.0)
     csl = Console()
+    cmnd(csl, Main.otxt)
     csl.start(daemon=True)
     forever()
 
@@ -181,12 +182,7 @@ def control():
     Commands.add(tbl)
     Commands.add(ver)
     csl = CLI()
-    evt = Event()
-    evt.orig = repr(csl)
-    evt.type = "command"
-    evt.txt = Main.otxt
-    command(evt)
-    evt.wait()
+    cmnd(csl, Main.otxt)
 
 
 def service():
