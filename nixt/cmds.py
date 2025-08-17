@@ -7,14 +7,16 @@
 import importlib
 import importlib.util
 import inspect
+import logging
 import os
 import sys
 import threading
 import time
+import _thread
 
 
-from .event import Event
-from .fleet import Fleet
+from .fleet  import Fleet
+from .thread import launch
 
 
 STARTTIME = time.time()
@@ -50,6 +52,37 @@ class Commands:
                 scan(module)
                 func = Commands.cmds.get(cmd)
         return func
+
+
+class Event:
+
+    def __init__(self):
+        self._ready = threading.Event()
+        self._thr = None
+        self.args = []
+        self.channel = ""
+        self.ctime = time.time()
+        self.rest = ""
+        self.result = {}
+        self.txt = ""
+        self.type = "event"
+
+    def done(self):
+        self.reply("ok")
+
+    def ready(self):
+        self._ready.set()
+
+    def reply(self, txt):
+        self.result[time.time()] = txt
+
+    def wait(self, timeout=None):
+        try:
+            self._ready.wait()
+            if self._thr:
+                self._thr.join()
+        except (KeyboardInterrupt, EOFError):
+            _thread.interrupt_main()
 
 
 def cmnd(clt, txt):
@@ -267,6 +300,7 @@ def spl(txt):
 def __dir__():
     return (
         'Commands',
+        'Event',
         'cmnd',
         'command',
         'inits',
@@ -278,3 +312,4 @@ def __dir__():
         'spl',
         'tbl'
     )
+

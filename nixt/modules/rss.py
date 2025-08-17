@@ -21,7 +21,6 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.auto   import Auto
 from nixt.cache  import find, fntime,  getpath, last, write 
 from nixt.cmds   import elapsed, spl
 from nixt.fleet  import Fleet
@@ -30,6 +29,9 @@ from nixt.log    import rlog
 from nixt.object import Object, update
 from nixt.thread import launch
 from nixt.timer  import Repeater
+
+
+from . import Auto
 
 
 DEBUG = False

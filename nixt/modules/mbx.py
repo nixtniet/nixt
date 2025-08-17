@@ -114,7 +114,7 @@ def mbx(event):
             if payload.get_content_type() == 'text/plain':
                 obj.text += payload.get_payload()
         obj.text = obj.text.replace("\\n", "\n")
-        write(obj, store(ident(obj)))
+        write(obj, ident(obj))
         nrs += 1
     if nrs:
         event.reply("ok %s" % nrs)

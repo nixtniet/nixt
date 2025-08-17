@@ -88,11 +88,16 @@ def isdeleted(obj):
     return "__deleted__" in dir(obj) and obj.__deleted__
 
 
-def last(obj, selector={}):
-    typ = fqn(obj)
-    paths = sorted(Cache.objs.keys(), key=lambda x: fntime(x))
-    if paths:
-        update(obj, Cache.get(paths[-1]))
+def last(obj, selector=None):
+    if selector is None:
+        selector = {}
+    result = sorted(find(fqn(obj), selector), key=lambda x: fntime(x[0]))
+    res = ""
+    if result:
+        inp = result[-1]
+        update(obj, inp[-1])
+        res = inp[0]
+    return res
 
 
 def read(obj, path):

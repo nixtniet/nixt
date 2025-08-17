@@ -6,6 +6,7 @@
 
 import queue
 import threading
+import _thread
 
 
 from .thread import launch
