@@ -82,6 +82,7 @@ class Fetcher(Object):
     seenfn = None
 
     def __init__(self):
+        Object.__init__(self)
         self.dosave = False
 
     @staticmethod
@@ -107,6 +108,8 @@ class Fetcher(Object):
 
     def fetch(self, feed, silent=False):
         with fetchlock:
+            if not feed.rss:
+                return 0
             result = []
             seen = getattr(Fetcher.seen, feed.rss, [])
             urls = []
