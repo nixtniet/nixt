@@ -24,14 +24,13 @@ from urllib.parse import quote_plus, urlencode
 from nixt.cache  import find, fntime,  getpath, last, write 
 from nixt.cmds   import elapsed, spl
 from nixt.fleet  import Fleet
-from nixt.func   import fmt
 from nixt.log    import rlog
 from nixt.object import Object, update
 from nixt.thread import launch
 from nixt.timer  import Repeater
 
 
-from . import Auto
+from . import Auto, fmt
 
 
 DEBUG = False
@@ -82,10 +81,11 @@ class Urls(Auto):
 
 class Fetcher(Object):
 
+    seen = Urls()
+    seenfn = None
+
     def __init__(self):
         self.dosave = False
-        self.seen = Urls()
-        self.seenfn = None
 
     @staticmethod
     def display(obj):
@@ -111,7 +111,7 @@ class Fetcher(Object):
     def fetch(self, feed, silent=False):
         with fetchlock:
             result = []
-            seen = getattr(self.seen, feed.rss, [])
+            seen = getattr(Fetcher.seen, feed.rss, [])
             urls = []
             counter = 0
             for obj in reversed(getfeed(feed.rss, feed.display_list)):
@@ -130,10 +130,10 @@ class Fetcher(Object):
                 if self.dosave:
                     write(fed, getpath(fed))
                 result.append(fed)
-            setattr(self.seen, feed.rss, urls)
-            if not self.seenfn:
-                self.seenfn = getpath(self.seen)
-            write(self.seen, self.seenfn)
+            setattr(Fetcher.seen, feed.rss, urls)
+            if not Fetcher.seenfn:
+                Fetcher.seenfn = getpath(self.seen)
+            write(Fetcher.seen, Fetcher.seenfn)
         if silent:
             return counter
         txt = ""
@@ -153,7 +153,7 @@ class Fetcher(Object):
         return thrs
 
     def start(self, repeat=True):
-        self.seenfn = last(self.seen)
+        Fetcher.seenfn = last(Fetcher.seen)
         if repeat:
             repeater = Repeater(300.0, self.run)
             repeater.start()

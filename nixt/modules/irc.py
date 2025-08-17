@@ -15,7 +15,7 @@ import time
 
 from nixt.cache  import getpath, ident, last, write
 from nixt.cmds   import command
-from nixt.event  import Event as IEvent
+from nixt.cmds   import Event as IEvent
 from nixt.fleet  import Fleet
 from nixt.log    import rlog
 from nixt.object import keys

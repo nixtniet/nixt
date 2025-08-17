@@ -8,8 +8,7 @@ import datetime
 import time
 
 
-from nixt.cmds import elapsed
-from nixt.event  import Event
+from nixt.cmds import Event, elapsed
 from nixt.fleet  import Fleet
 from nixt.log    import rlog
 from nixt.object import Object, construct, keys
