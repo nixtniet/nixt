@@ -11,10 +11,10 @@ import unittest
 
 
 import nixt
-import nixt.auto
+import nixt.cache
 import nixt.client
+import nixt.cmds
 import nixt.engine
-import nixt.event
 import nixt.fleet
 import nixt.object
 import nixt.output
@@ -26,10 +26,10 @@ from nixt.object import *
 
 
 PACKAGE = [
-    "auto",
+    'cache',
     "client",
+    'cmds',
     "engine",
-    "event",
     "fleet",
     "object",
     'output',
