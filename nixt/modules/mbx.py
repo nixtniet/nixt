@@ -11,11 +11,10 @@ import time
 
 from nixt.cache  import find, ident, write
 from nixt.cmds   import elapsed
-from nixt.object import Object, keys, update
+from nixt.object import Object, fmt, keys, update
 
 
 from .tmr import extract_date
-from .    import fmt
 
 
 class Email(Object):

@@ -24,8 +24,8 @@ from nixt.client import Client
 from nixt.cmds   import Commands, Event, cmnd, command, parse, scan, table
 from nixt.cmds   import mod, mods, modules, spl
 from nixt.fleet  import Fleet
-from nixt.log    import level
 from nixt.thread import launch
+from nixt.utils  import level
 
 
 "config"

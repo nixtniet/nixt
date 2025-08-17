@@ -8,9 +8,9 @@ import time
 
 
 
-from ..cache import Cache, find, fntime
-from ..cmds  import elapsed
-from .       import fmt
+from ..cache  import Cache, find, fntime
+from ..cmds   import elapsed
+from ..object import fmt
 
 
 def fnd(event):

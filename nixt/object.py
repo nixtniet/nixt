@@ -19,6 +19,14 @@ class Object:
         return str(self.__dict__)
 
 
+class Auto(Object):
+
+    def __getattr__(self, key):
+        if key not in self:
+            setattr(self, key, "")
+        return self.__dict__.get(key, "")
+
+
 def construct(obj, *args, **kwargs):
     if args:
         val = args[0]
@@ -30,6 +38,53 @@ def construct(obj, *args, **kwargs):
             update(obj, vars(val))
     if kwargs:
         update(obj, kwargs)
+
+
+def edit(obj, setter, skip=True):
+    for key, val in items(setter):
+        if skip and val == "":
+            continue
+        try:
+            setattr(obj, key, int(val))
+            continue
+        except ValueError:
+            pass
+        try:
+            setattr(obj, key, float(val))
+            continue
+        except ValueError:
+            pass
+        if val in ["True", "true"]:
+            setattr(obj, key, True)
+        elif val in ["False", "false"]:
+            setattr(obj, key, False)
+        else:
+            setattr(obj, key, val)
+
+
+def fmt(obj, args=None, skip=None, plain=False, empty=False):
+    if args is None:
+        args = keys(obj)
+    if skip is None:
+        skip = []
+    txt = ""
+    for key in args:
+        if key.startswith("__"):
+            continue
+        if key in skip:
+            continue
+        value = getattr(obj, key, None)
+        if value is None:
+            continue
+        if not empty and not value:
+            continue
+        if plain:
+            txt += f"{value} "
+        elif isinstance(value, str):
+            txt += f'{key}="{value}" '
+        else:
+            txt += f"{key}={value} "
+    return txt.strip()
 
 
 def items(obj):
@@ -58,8 +113,11 @@ def values(obj):
 
 def __dir__():
     return (
+        'Auto',
         'Object',
         'construct',
+        'edit',
+        'fmt',
         'items',
         'keys',
         'update',

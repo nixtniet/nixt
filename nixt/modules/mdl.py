@@ -8,11 +8,11 @@ import datetime
 import time
 
 
-from nixt.cmds import Event, elapsed
+from nixt.cmds   import Event, elapsed
 from nixt.fleet  import Fleet
-from nixt.log    import rlog
 from nixt.object import Object, construct, keys
 from nixt.timer  import Repeater
+from nixt.utils  import rlog
 
 
 DAY = 24*60*60

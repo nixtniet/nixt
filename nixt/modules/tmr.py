@@ -12,9 +12,9 @@ import time
 from nixt.cache  import find, ident, write
 from nixt.cmds   import elapsed
 from nixt.fleet  import Fleet
-from nixt.log    import rlog
 from nixt.thread import launch
 from nixt.timer  import Timed
+from nixt.utils  import rlog
 
 
 def init():
