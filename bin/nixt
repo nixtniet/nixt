@@ -23,7 +23,7 @@ sys.path.insert(0, os.getcwd())
 from nixt.client import Client, Fleet
 from nixt.cmds   import Commands, Event, cmnd, command, parse, scan, table
 from nixt.cmds   import mod, mods, modules, spl
-from nixt.thread import launch
+from nixt.run    import launch
 from nixt.utils  import level
 
 
@@ -36,7 +36,7 @@ class Main:
     init    = ""
     level   = "warn"
     md5     = False
-    name    = __file__.rsplit(os.sep, maxsplit=1)[-1].lower()
+    name    = Client.__module__.rsplit(".", maxsplit=1)[0].lower()
     opts    = {}
     verbose = False
     version = 390

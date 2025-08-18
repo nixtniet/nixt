@@ -11,7 +11,7 @@ import time
 from nixt.client import Fleet
 from nixt.cmds   import Event, elapsed
 from nixt.object import Object, construct, keys
-from nixt.timer  import Repeater
+from nixt.run    import Repeater
 from nixt.utils  import rlog
 
 

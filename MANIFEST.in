@@ -1,2 +1,5 @@
-exluce nixt __main__.py
+include bin/nixt
+recursive-include mods *
+exclude nixt/__main__.py
 recursive-exclude nixt/modules *
+recursive-exclude tests *

@@ -13,9 +13,9 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.cache  import Cache
+from nixt.disk   import Cache
 from nixt.object import Object
-from nixt.thread import launch
+from nixt.run    import launch
 from nixt.utils  import rlog
 
 

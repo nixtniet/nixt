@@ -15,17 +15,22 @@ import time
 import _thread
 
 
-from .clients import Fleet
-from .threads import launch
+from .client import Fleet
+from .run    import launch
 
 
 STARTTIME = time.time()
 
 
 loadlock = threading.RLock()
-path = os.path.dirname(__file__)
-path = os.path.join(path, "modules")
-pname = f"{__package__}.modules"
+
+if os.path.exists("mods"):
+    path = "mods"
+    pname = "mods"
+else:
+    path = os.path.dirname(__file__)
+    path = os.path.join(path, "modules")
+    pname = f"{__package__}.modules"
 
 
 class Commands:

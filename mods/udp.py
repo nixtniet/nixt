@@ -13,7 +13,7 @@ import time
 
 from nixt.client import Fleet
 from nixt.object import Object
-from nixt.thread import launch
+from nixt.run    import launch
 from nixt.utils  import rlog
 
 

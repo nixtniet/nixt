@@ -4,7 +4,7 @@
 "available types"
 
 
-from nixt.cache import Cache
+from nixt.disk import Cache
 
 
 def ls(event):
