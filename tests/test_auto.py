@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.modules import Auto
+from nixt.object import Auto
 
 
 class TestMethods(unittest.TestCase):

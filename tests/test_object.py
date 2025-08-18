@@ -7,8 +7,7 @@
 import unittest
 
 
-from nixt.object import Object, items, keys, update, values
-from nixt.serial import dumps, loads
+from nixt.object import Object, dumps, items, keys, loads, update, values
 
 
 import nixt.object

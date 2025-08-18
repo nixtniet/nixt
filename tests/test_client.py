@@ -9,9 +9,8 @@ import threading
 import unittest
 
 
-from nixt.client import Client
-from nixt.cmds   import Event
-from nixt.fleet  import Fleet
+from nixt.client import Client, Fleet
+from nixt.engine import Event
 from nixt.object import values
 
 

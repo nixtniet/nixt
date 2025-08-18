@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.timer import Timed
+from nixt.run import Timed
 
 
 def echo(txt):

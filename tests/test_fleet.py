@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.fleet import Fleet
+from nixt.client import Fleet
 
 
 class TestFleet(unittest.TestCase):
