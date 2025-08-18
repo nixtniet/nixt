@@ -4,7 +4,7 @@
 "available types"
 
 
-from ..cache import Cache
+from nixt.cache import Cache
 
 
 def ls(event):

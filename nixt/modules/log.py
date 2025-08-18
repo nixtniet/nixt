@@ -7,11 +7,9 @@
 import time
 
 
+from nixt.cache import find, fntime, ident, write
+from nixt.cmds  import elapsed
 from nixt.object import Object
-
-
-from ..cache import find, fntime, ident, write
-from ..cmds  import elapsed
 
 
 class Log(Object):

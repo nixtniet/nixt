@@ -8,9 +8,9 @@ import time
 
 
 
-from ..cache  import Cache, find, fntime
-from ..cmds   import elapsed
-from ..object import fmt
+from nixt.cache  import Cache, find, fntime
+from nixt.cmds   import elapsed
+from nixt.object import fmt
 
 
 def fnd(event):

@@ -22,8 +22,8 @@ from urllib.parse import quote_plus, urlencode
 
 
 from nixt.cache  import find, fntime, getpath, last, write 
+from nixt.client import Fleet
 from nixt.cmds   import elapsed, spl
-from nixt.fleet  import Fleet
 from nixt.object import Auto, Object, fmt, update
 from nixt.thread import launch
 from nixt.timer  import Repeater

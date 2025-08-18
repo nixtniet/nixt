@@ -15,8 +15,8 @@ import time
 import _thread
 
 
-from .fleet  import Fleet
-from .thread import launch
+from .clients import Fleet
+from .threads import launch
 
 
 STARTTIME = time.time()

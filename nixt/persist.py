@@ -15,6 +15,12 @@ from .object import update
 lock = threading.RLock()
 
 
+class Workdir:
+
+    name = __file__.rsplit(os.sep, maxsplit=2)[-2]
+    wdr = ""
+
+
 class Cache:
 
     objs = {}
@@ -40,6 +46,13 @@ class Cache:
             update(Cache.objs[path], obj)
         else:
             Cache.add(path, obj)
+
+
+def cdir(path):
+    pth = pathlib.Path(path)
+    pth.parent.mkdir(parents=True, exist_ok=True)
+
+
 
 
 def find(clz, selector=None, deleted=False, matching=False):
@@ -104,7 +117,19 @@ def read(obj, path):
     with lock:
         update(obj, Cache.get(path))
 
+def read(obj, path, fromdisk=False):
+    with lock:
+        with open(path, "r", encoding="utf-8") as fpt:
+            try:
+                if fromdisk:
+                    update(obj, load(fpt))
+                else:
+                    update(obj, Cache.get(path))
+            except json.decoder.JSONDecodeError as ex:
+                ex.add_note(path)
+                raise ex
 
+ 
 def search(obj, selector, matching=False):
     res = False
     if not selector:
@@ -123,10 +148,25 @@ def search(obj, selector, matching=False):
     return res
 
 
-def write(obj, path):
+def skel():
+    pth = pathlib.Path(store())
+    pth.mkdir(parents=True, exist_ok=True)
+    return str(pth)
+
+
+def store(pth=""):
+    return os.path.join(Workdir.wdr, "store", pth)
+
+
+def write(obj, path, todisk=False):
     with lock:
+        if todisk:
+            cdir(path)
+            with open(path, "w", encoding="utf-8") as fpt:
+                dump(obj, fpt, indent=4)
         Cache.update(path, obj)
         return path
+
 
 
 def __dir__():
