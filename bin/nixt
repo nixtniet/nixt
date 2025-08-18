@@ -22,9 +22,9 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.client import Client, Fleet
 from nixt.cmds   import Commands, Event, cmnd, command, parse, scan, table
-from nixt.cmds   import mod, mods, modules, spl
+from nixt.cmds   import mod, mods, modules
 from nixt.run    import launch
-from nixt.utils  import level
+from nixt.util   import level, spl
 
 
 "config"

@@ -19,7 +19,7 @@ from nixt.cmds   import command
 from nixt.cmds   import Event as IEvent
 from nixt.object import edit, fmt, keys
 from nixt.run    import launch
-from nixt.utils  import rlog
+from nixt.util   import rlog
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
@@ -49,7 +49,7 @@ def init():
 
 class Main:
 
-   name = __package__.split(".", maxsplit=1)[0].lower()
+   name = Fleet.__module__.split(".", maxsplit=1)[0].lower()
 
 
 class Config:

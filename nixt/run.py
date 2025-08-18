@@ -11,6 +11,9 @@ import threading
 import _thread
 
 
+STARTTIME = time.time()
+
+
 lock = threading.RLock()
 
 
@@ -121,6 +124,7 @@ def name(obj):
 
 def __dir__():
     return (
+        'STARTTIME',
         'Repeater',
         'Thread',
         'Timer',

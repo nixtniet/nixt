@@ -10,8 +10,8 @@ import time
 
 
 from nixt.disk   import find, ident, write
-from nixt.cmds   import elapsed
 from nixt.object import Object, fmt, keys, update
+from nixt.util   import elapsed
 
 
 from .tmr import extract_date

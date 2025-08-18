@@ -16,7 +16,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from nixt.disk   import Cache
 from nixt.object import Object
 from nixt.run    import launch
-from nixt.utils  import rlog
+from nixt.util   import rlog
 
 
 DEBUG = False

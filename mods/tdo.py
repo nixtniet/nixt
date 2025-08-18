@@ -7,8 +7,8 @@
 import time
 
 
-from nixt.cmds import elapsed
 from nixt.disk import find, fntime, ident, write
+from nixt.util import elapsed
 
 
 class Todo:

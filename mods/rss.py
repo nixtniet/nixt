@@ -23,10 +23,9 @@ from urllib.parse import quote_plus, urlencode
 
 from nixt.disk   import find, fntime, getpath, last, write 
 from nixt.client import Fleet
-from nixt.cmds   import elapsed, spl
 from nixt.object import Auto, Object, fmt, update
 from nixt.run    import Repeater, launch
-from nixt.utils  import rlog
+from nixt.util   import elapsed, rlog, spl
 
 
 DEBUG = False

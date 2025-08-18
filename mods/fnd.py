@@ -7,9 +7,9 @@
 import time
 
 
-from nixt.cmds   import elapsed
 from nixt.disk   import Cache, find, fntime
 from nixt.object import fmt
+from nixt.util   import elapsed
 
 
 def fnd(event):
