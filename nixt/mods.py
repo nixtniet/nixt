@@ -12,7 +12,6 @@ import sys
 import threading
 
 
-from .cmds  import Commands
 from .utils import spl
 
 
@@ -64,10 +63,8 @@ def mod(name, debug=False):
         return module
 
 
-def mods(names="", empty=False):
+def mods(names=""):
     res = []
-    if empty:
-        Commands.names = {}
     for nme in sorted(modules(path)):
         if names and nme not in spl(names):
             continue
