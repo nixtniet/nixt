@@ -4,31 +4,16 @@
 "commands"
 
 
-import importlib
-import importlib.util
 import inspect
-import logging
 import os
-import sys
-import threading
-import time
 import _thread
 
 
 from .client import Fleet
+from .event  import Event
+from .mods   import mod, path
+from .parse  import parse
 from .run    import launch
-
-
-loadlock = threading.RLock()
-
-
-if os.path.exists("mods"):
-    path = "mods"
-    pname = "mods"
-else:
-    path = os.path.dirname(__file__)
-    path = os.path.join(path, "modules")
-    pname = f"{__package__}.modules"
 
 
 class Commands:
@@ -55,37 +40,6 @@ class Commands:
                 scan(module)
                 func = Commands.cmds.get(cmd)
         return func
-
-
-class Event:
-
-    def __init__(self):
-        self._ready = threading.Event()
-        self._thr = None
-        self.args = []
-        self.channel = ""
-        self.ctime = time.time()
-        self.rest = ""
-        self.result = {}
-        self.txt = ""
-        self.type = "event"
-
-    def done(self):
-        self.reply("ok")
-
-    def ready(self):
-        self._ready.set()
-
-    def reply(self, txt):
-        self.result[time.time()] = txt
-
-    def wait(self, timeout=None):
-        try:
-            self._ready.wait()
-            if self._thr:
-                self._thr.join()
-        except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
 
 
 def cmnd(clt, txt):
@@ -131,48 +85,6 @@ def scan(mod):
             Commands.add(cmdz, mod)
 
 
-"imports"
-
-
-def mod(name, debug=False):
-    with loadlock:
-        module = None
-        mname = f"{pname}.{name}"
-        module = sys.modules.get(mname, None)
-        if not module:
-            pth = os.path.join(path, f"{name}.py")
-            if not os.path.exists(pth):
-                return None
-            spec = importlib.util.spec_from_file_location(mname, pth)
-            module = importlib.util.module_from_spec(spec)
-            sys.modules[mname] = module
-            spec.loader.exec_module(module)
-        if debug:
-            module.DEBUG = True
-        return module
-
-
-def mods(names="", empty=False):
-    res = []
-    if empty:
-        Commands.names = {}
-    for nme in sorted(modules(path)):
-        if names and nme not in spl(names):
-            continue
-        module = mod(nme)
-        if not mod:
-            continue
-        res.append(module)
-    return res
-
-
-def modules(mdir=""):
-    return sorted([
-            x[:-3] for x in os.listdir(mdir or path)
-            if x.endswith(".py") and not x.startswith("__")
-           ])
-
-
 def table():
     pth = os.path.join(path, "tbl.py")
     if not os.path.exists(pth):
@@ -183,84 +95,13 @@ def table():
         Commands.names.update(names)
 
 
-"parser"
-
-
-def parse(obj, txt=None):
-    if txt is None:
-        if "txt" in dir(obj):
-            txt = obj.txt
-        else:
-            txt = ""
-    args = []
-    obj.args   = []
-    obj.cmd    = ""
-    obj.gets   = {}
-    obj.index  = None
-    obj.mod    = ""
-    obj.opts   = ""
-    obj.result = {}
-    obj.sets   = {}
-    obj.silent = {}
-    obj.txt    = txt or ""
-    obj.otxt   = obj.txt
-    _nr = -1
-    for spli in obj.otxt.split():
-        if spli.startswith("-"):
-            try:
-                obj.index = int(spli[1:])
-            except ValueError:
-                obj.opts += spli[1:]
-            continue
-        if "-=" in spli:
-            key, value = spli.split("-=", maxsplit=1)
-            obj.silent[key] = value
-            obj.gets[key] = value
-            continue
-        elif "==" in spli:
-            key, value = spli.split("==", maxsplit=1)
-            obj.gets[key] = value
-            continue
-        if "=" in spli:
-            key, value = spli.split("=", maxsplit=1)
-            if key == "mod":
-                if obj.mod:
-                    obj.mod += f",{value}"
-                else:
-                    obj.mod = value
-                continue
-            obj.sets[key] = value
-            continue
-        _nr += 1
-        if _nr == 0:
-            obj.cmd = spli
-            continue
-        args.append(spli)
-    if args:
-        obj.args = args
-        obj.txt  = obj.cmd or ""
-        obj.rest = " ".join(obj.args)
-        obj.txt  = obj.cmd + " " + obj.rest
-    else:
-        obj.txt = obj.cmd or ""
-
-
-"interface"
-
 
 def __dir__():
     return (
         'Commands',
-        'Event',
         'cmnd',
         'command',
         'inits',
-        'mod',
-        'mods',
-        'modules',
-        'parse',
         'scan',
-        'spl',
-        'tbl'
+        'table'
     )
-

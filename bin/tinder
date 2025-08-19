@@ -19,12 +19,16 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.client import Client, Fleet, Output
-from nixt.cmds   import STARTTIME, Commands, command, mods, parse, scan, table
-from nixt.cmds   import elapsed, modules, spl 
+from nixt.client import Client
+from nixt.cmds   import Commands, command,  scan, table
 from nixt.engine import Event
+from nixt.fleet import Fleet
+from nixt.mods   import mods, modules
 from nixt.object import Object, keys
-from nixt.run    import launch
+from nixt.output import Output
+from nixt.parse  import parse
+from nixt.run    import STARTTIME, launch
+from nixt.utils  import elapsed, spl
 
 
 "config"

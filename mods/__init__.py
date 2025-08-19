@@ -4,7 +4,7 @@
 "modules"
 
 
-from nixt.cmds import modules
+from nixt.mods import modules
 
 
 def __dir__():
