@@ -12,7 +12,7 @@ import time
 from nixt.disk   import find, ident, write
 from nixt.client import Fleet
 from nixt.run    import Timed, launch
-from nixt.util   import elapsed, rlog
+from nixt.utils  import elapsed, rlog
 
 
 def init():

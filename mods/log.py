@@ -9,7 +9,7 @@ import time
 
 from nixt.disk   import find, fntime, ident, write
 from nixt.object import Object
-from nixt.util   import elapsed
+from nixt.utils  import elapsed
 
 
 class Log(Object):

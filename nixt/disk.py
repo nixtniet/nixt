@@ -114,21 +114,17 @@ def last(obj, selector=None):
     return res
 
 
-def read(obj, path):
-    with lock:
-        update(obj, Cache.get(path))
-
 def read(obj, path, fromdisk=False):
     with lock:
-        with open(path, "r", encoding="utf-8") as fpt:
-            try:
-                if fromdisk:
+        try:
+            if fromdisk:
+                with open(path, "r", encoding="utf-8") as fpt:
                     update(obj, load(fpt))
-                else:
-                    update(obj, Cache.get(path))
-            except json.decoder.JSONDecodeError as ex:
-                ex.add_note(path)
-                raise ex
+            else:
+                update(obj, Cache.get(path))
+        except json.decoder.JSONDecodeError as ex:
+            ex.add_note(path)
+            raise ex
 
  
 def search(obj, selector, matching=False):

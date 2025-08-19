@@ -14,7 +14,7 @@ import time
 from nixt.client import Fleet
 from nixt.object import Object
 from nixt.run    import launch
-from nixt.util   import rlog
+from nixt.utils  import rlog
 
 
 DEBUG = True

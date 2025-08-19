@@ -8,8 +8,8 @@ import threading
 import time
 
 
-from nixt.run  import STARTTIME
-from nixt.util import elapsed
+from nixt.run   import STARTTIME
+from nixt.utils import elapsed
 
 
 def thr(event):

@@ -19,7 +19,7 @@ from nixt.cmds   import command
 from nixt.cmds   import Event as IEvent
 from nixt.object import edit, fmt, keys
 from nixt.run    import launch
-from nixt.util   import rlog
+from nixt.utils  import rlog
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
