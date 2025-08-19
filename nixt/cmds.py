@@ -5,6 +5,7 @@
 
 
 import inspect
+import logging
 import os
 import _thread
 
@@ -14,6 +15,7 @@ from .event  import Event
 from .mods   import mod, path
 from .parse  import parse
 from .run    import launch
+from .utils  import spl
 
 
 class Commands:
@@ -93,7 +95,6 @@ def table():
     names = getattr(tbl, "NAMES", None)
     if names:
         Commands.names.update(names)
-
 
 
 def __dir__():

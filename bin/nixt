@@ -22,6 +22,7 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.client import Client, Fleet
 from nixt.cmds   import Commands, cmnd, command, scan, table
+from nixt.disk   import Cache, Workdir
 from nixt.event  import Event
 from nixt.mods   import mod, mods, modules
 from nixt.parse  import parse
@@ -126,6 +127,10 @@ def pidfile(filename):
     path2.parent.mkdir(parents=True, exist_ok=True)
     with open(filename, "w", encoding="utf-8") as fds:
         fds.write(str(os.getpid()))
+
+
+def pidname(name):
+    return p(Workdir.wdr, f"{name}.pid")
 
 
 def privileges():
@@ -249,6 +254,8 @@ def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     out(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
     out(f"loaded {",".join(modules())}")
+    if check("p"):
+        out(f"workdir is {Workdir.wdr}")
 
 
 def check(txt):
@@ -305,6 +312,9 @@ def main():
         Main.init = ",".join(modules())
     if check("v"):
         Main.opts["v"] = True
+    if check("p"):
+        Workdir.wdr = os.path.expanduser(f"~/.{Main.name}")
+        Cache.disk = True
     if check("c"):
         wrap(console)
     elif check("d"):

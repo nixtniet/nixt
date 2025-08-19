@@ -6,6 +6,7 @@
 
 import threading
 import time
+import _thread
 
 
 class Event:

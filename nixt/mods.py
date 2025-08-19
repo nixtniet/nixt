@@ -4,14 +4,19 @@
 "commands"
 
 
+import hashlib
 import importlib
 import importlib.util
-import inspect
 import os
 import sys
 import threading
 
 
+from .cmds  import Commands
+from .utils import spl
+
+
+checksum = ""
 loadlock = threading.RLock()
 
 
@@ -22,6 +27,23 @@ else:
     path = os.path.dirname(__file__)
     path = os.path.join(path, "modules")
     pname = f"{__package__}.modules"
+
+
+def gettbl(name):
+    pth = os.path.join(path, "tbl.py")
+    if os.path.exists(pth) and (not checksum or (md5sum(pth) == checksum)):
+        try:
+            module = mod("tbl")
+        except FileNotFoundError:
+            return {}
+        return getattr(module, name, None)
+    return {}
+
+
+def md5sum(path):
+    with open(path, "r", encoding="utf-8") as file:
+        txt = file.read().encode("utf-8")
+        return str(hashlib.md5(txt).hexdigest())
 
 
 def mod(name, debug=False):

@@ -5,15 +5,18 @@
 
 
 import datetime
+import json
 import os
+import pathlib
 import threading
 import time
 
 
-from .object import update
+from .object import Object, dump, load, update
 
 
 lock = threading.RLock()
+p    = os.path.join
 
 
 class Workdir:
@@ -24,6 +27,7 @@ class Workdir:
 
 class Cache:
 
+    disk = False
     objs = {}
     types = []
 
@@ -34,10 +38,13 @@ class Cache:
         if typ not in Cache.types:
             Cache.types.append(typ)
 
-
     @staticmethod
     def get(path):
         return Cache.objs.get(path, None)
+
+    @staticmethod
+    def typed(typ):
+        return [x for x in Cache.objs.keys() if typ in x]
 
     @staticmethod
     def update(path, obj):
@@ -54,20 +61,39 @@ def cdir(path):
     pth.parent.mkdir(parents=True, exist_ok=True)
 
 
-
-
-def find(clz, selector=None, deleted=False, matching=False):
+def find(clz, selector=None, deleted=False, matching=False, disk=False):
     if selector is None:
         selector = {}
-    for pth, obj in Cache.objs.items():
-        if clz not in pth.lower():
+    if disk or Cache.disk:
+        paths = sorted(fns(clz))
+    else:
+        paths = Cache.typed(long(clz))
+    for pth  in paths:
+        ppth = strip(pth)
+        if clz not in ppth:
             continue
-        obj = Cache.get(pth)
+        obj = Cache.get(ppth)
+        if not obj:
+            obj = Object()
+            read(obj, ppth)
+            Cache.add(ppth, obj)
         if not deleted and isdeleted(obj):
             continue
         if selector and not search(obj, selector, matching):
             continue
-        yield pth, obj
+        yield ppth, obj
+
+
+def fns(clz):
+    dname = ''
+    pth = store(long(clz))
+    for rootdir, dirs, _files in os.walk(pth, topdown=False):
+        if dirs:
+            for dname in sorted(dirs):
+                if dname.count('-') == 2:
+                    ddd = p(rootdir, dname)
+                    for fll in os.listdir(ddd):
+                        yield p(ddd, fll)
 
 
 def fntime(daystr):
@@ -114,12 +140,24 @@ def last(obj, selector=None):
     return res
 
 
-def read(obj, path, fromdisk=False):
+def long(name):
+    split = name.split(".")[-1].lower()
+    res = name
+    for names in types():
+        if split == names.split(".")[-1].lower():
+            res = names
+            break
+    return res
+
+
+def read(obj, path, disk=False):
     with lock:
         try:
-            if fromdisk:
-                with open(path, "r", encoding="utf-8") as fpt:
+            if disk or Cache.disk:
+                ppath = store(path)
+                with open(ppath, "r", encoding="utf-8") as fpt:
                     update(obj, load(fpt))
+                Cache.update(path, obj)
             else:
                 update(obj, Cache.get(path))
         except json.decoder.JSONDecodeError as ex:
@@ -155,15 +193,23 @@ def store(pth=""):
     return os.path.join(Workdir.wdr, "store", pth)
 
 
-def write(obj, path, todisk=False):
+def strip(pth, nmr=3):
+    return os.sep.join(pth.split(os.sep)[-nmr:])
+
+
+def types() -> [str]:
+    return os.listdir(store())
+
+
+def write(obj, path, disk=False):
     with lock:
-        if todisk:
-            cdir(path)
-            with open(path, "w", encoding="utf-8") as fpt:
+        if disk or Cache.disk:
+            ppath = store(path)
+            cdir(ppath)
+            with open(ppath, "w", encoding="utf-8") as fpt:
                 dump(obj, fpt, indent=4)
         Cache.update(path, obj)
         return path
-
 
 
 def __dir__():
