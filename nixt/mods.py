@@ -15,7 +15,7 @@ import threading
 from .utils import spl
 
 
-checksum = ""
+checksum = "c377ef8673cc26c3dddadafb865b4aefb"
 loadlock = threading.RLock()
 
 

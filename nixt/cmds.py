@@ -12,7 +12,7 @@ import _thread
 
 from .client import Fleet
 from .event  import Event
-from .mods   import mod, path
+from .mods   import checksum, md5sum, mod, path
 from .parse  import parse
 from .run    import launch
 from .utils  import spl
@@ -91,6 +91,9 @@ def table():
     pth = os.path.join(path, "tbl.py")
     if not os.path.exists(pth):
         return
+    if checksum and not md5sum(pth):
+        logging.error("table checksum doesn't match")
+        return 
     tbl = mod("tbl")
     names = getattr(tbl, "NAMES", None)
     if names:
