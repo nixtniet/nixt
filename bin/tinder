@@ -21,9 +21,9 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.client import Client
 from nixt.cmds   import Commands, command,  scan, table
-from nixt.engine import Event
-from nixt.fleet import Fleet
-from nixt.mods   import mods, modules
+from nixt.event  import Event
+from nixt.fleet  import Fleet
+from nixt.mods   import Mods, mods, modules
 from nixt.object import Object, keys
 from nixt.output import Output
 from nixt.parse  import parse
@@ -221,6 +221,8 @@ def wrap(function):
 def main():
     global nrs
     global nrcommand
+    Mods.path = "mods"
+    Mods.pname = "mods"
     parse(Main, " ".join(sys.argv[1:]))
     table()
     for mod in mods():

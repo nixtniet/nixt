@@ -269,7 +269,8 @@ def ver(event):
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     logging.warning(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
-    logging.warning(f"{",".join(Commands.names)}")
+    mds = modules()
+    logging.warning(f"loaded {",".join(mds)} ({len(mds)})")
 
 
 def check(txt):

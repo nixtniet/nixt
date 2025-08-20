@@ -6,7 +6,6 @@
 
 NAMES = {
     "cfg": "irc",
-    "dis": "mdl",
     "dne": "tdo",
     "dpl": "rss",
     "eml": "mbx",
@@ -18,7 +17,6 @@ NAMES = {
     "mbx": "mbx",
     "mre": "irc",
     "nme": "rss",
-    "now": "mdl",
     "pwd": "irc",
     "rem": "rss",
     "req": "req",
@@ -39,15 +37,12 @@ MD5 = {
     "log": "6e13f5310bac92e6eab7a7c1d9bafd52",
     "lst": "216109ce1746902d9f418eb9cf0e8519",
     "mbx": "123902ae4594e77a5d2522a3fbbae063",
-    "mdl": "dac29eaedf119f287e0c89b97bf597f4",
     "req": "793704d64443c4f19512924e294943ea",
     "rss": "8e7b1b9c26160c6288b9233a1672c40a",
-    "rst": "6cb582d25fc10d994a8454c391f85506",
     "slg": "0b71453a0d4dd3b21618c7df3c8cd6a4",
     "tbl": "d41d8cd98f00b204e9800998ecf8427e",
     "tdo": "e44c84040fbddb6f88166b0d5163f1f2",
     "thr": "7e6bd817fd8df35820e0d2aea4dc5591",
     "tmr": "80aa2ba8bc413e4ee12aac3d229459b6",
     "upt": "ceeafab9201ee2bba7289aeeae355acf",
-    "web": "63415a2ffa87a6cb50b385545ba0260a",
 }

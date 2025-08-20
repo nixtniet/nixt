@@ -21,10 +21,10 @@ loadlock = threading.RLock()
 
 class Mods:
 
-    checksum = "e82d6a714110ee15d81171b434c6cfb2"
+    checksum = "7c9e376c008f9c28079eae8528c0ef1b"
     loaded   = []
     md5s     = {}
-    ignore   = ["wsd", "udp"]
+    ignore   = ["mdl", "rst", "udp", "web", "wsd"]
     path     = os.path.dirname(__file__)
     path     = os.path.join(path, "modules")
     pname    = f"{__package__}.modules"
