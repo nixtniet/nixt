@@ -10,7 +10,7 @@ import unittest
 
 
 from nixt.client import Client, Fleet
-from nixt.engine import Event
+from nixt.event  import Event
 from nixt.object import values
 
 
