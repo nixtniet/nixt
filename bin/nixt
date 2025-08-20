@@ -22,7 +22,7 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.client import Client, Fleet
 from nixt.cmds   import Commands, cmnd, command, scan, table
-from nixt.disk   import Cache
+from nixt.disk   import Cache, skel
 from nixt.event  import Event
 from nixt.mods   import Mods, md5sum, mod, mods, modules
 from nixt.parse  import parse
@@ -47,7 +47,7 @@ signal.signal(signal.SIGHUP, handler)
 class Main:
 
     debug   = False
-    ignore  = ["wsd", "udp"]
+    ignore  = ["mdl", "rst", "udp", "web", "wsd"]
     init    = ""
     level   = "warn"
     md5     = False
@@ -325,7 +325,8 @@ def wrap(func):
 
 
 def main():
-    Mods.ignore = ["mdl", "rst", "udp", "web", "wsd"]
+    Mods.ignore = Main.ignore 
+    skel()
     if os.path.exists("mods"):
         Mods.path = "mods"
         Mods.pname = "mods"
