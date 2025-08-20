@@ -15,7 +15,10 @@ import threading
 from .utils import spl
 
 
-checksum = "c377ef8673cc26c3dddadafb865b4aefb"
+MD5 = {}
+
+
+checksum = "b83d74190b5cd93ecc30596ad28fbd2e"
 loadlock = threading.RLock()
 
 
@@ -26,17 +29,6 @@ else:
     path = os.path.dirname(__file__)
     path = os.path.join(path, "modules")
     pname = f"{__package__}.modules"
-
-
-def gettbl(name):
-    pth = os.path.join(path, "tbl.py")
-    if os.path.exists(pth) and (not checksum or (md5sum(pth) == checksum)):
-        try:
-            module = mod("tbl")
-        except FileNotFoundError:
-            return {}
-        return getattr(module, name, None)
-    return {}
 
 
 def md5sum(path):
@@ -54,6 +46,8 @@ def mod(name, debug=False):
             pth = os.path.join(path, f"{name}.py")
             if not os.path.exists(pth):
                 return None
+            if md5sum(pth) == (hash or MD5.get(name, None)):
+                return
             spec = importlib.util.spec_from_file_location(mname, pth)
             module = importlib.util.module_from_spec(spec)
             sys.modules[mname] = module
@@ -80,6 +74,20 @@ def modules(mdir=""):
             x[:-3] for x in os.listdir(mdir or path)
             if x.endswith(".py") and not x.startswith("__")
            ])
+
+
+def sums():
+    pth = os.path.join(path, "tbl.py")
+    if os.path.exists(pth) and (not checksum or (md5sum(pth) == checksum)):
+        try:
+            module = mod("tbl")
+        except FileNotFoundError:
+            return {}
+        sums =  getattr(module, "MD5", None)
+        if sums:
+            MD5.update(sums)
+            return True
+    return False
 
 
 def __dir__():
