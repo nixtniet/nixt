@@ -12,7 +12,7 @@ import _thread
 
 from .client import Fleet
 from .event  import Event
-from .mods   import checksum, mod, path, sums
+from .mods   import Mods, mod, sums
 from .parse  import parse
 from .run    import launch
 from .utils  import spl
@@ -21,7 +21,6 @@ from .utils  import spl
 class Commands:
 
     cmds  = {}
-    md5   = {}
     names = {}
 
     @staticmethod
@@ -88,11 +87,8 @@ def scan(mod):
 
 
 def table():
-    pth = os.path.join(path, "tbl.py")
-    if not os.path.exists(pth):
-        return
-    if checksum and not sums():
-        logging.error("table checksum doesn't match")
+    if Mods.checksum and not sums():
+        logging.error("checksums don't match")
         return 
     tbl = mod("tbl")
     names = getattr(tbl, "NAMES", None)

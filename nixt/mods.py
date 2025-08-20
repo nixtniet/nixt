@@ -7,6 +7,7 @@
 import hashlib
 import importlib
 import importlib.util
+import logging
 import os
 import sys
 import threading
@@ -15,20 +16,18 @@ import threading
 from .utils import spl
 
 
-MD5 = {}
-
-
-checksum = "b83d74190b5cd93ecc30596ad28fbd2e"
 loadlock = threading.RLock()
 
 
-if os.path.exists("mods"):
-    path = "mods"
-    pname = "mods"
-else:
-    path = os.path.dirname(__file__)
-    path = os.path.join(path, "modules")
-    pname = f"{__package__}.modules"
+class Mods:
+
+    checksum = "e82d6a714110ee15d81171b434c6cfb2"
+    loaded   = []
+    md5s     = {}
+    ignore   = ["wsd", "udp"]
+    path     = os.path.dirname(__file__)
+    path     = os.path.join(path, "modules")
+    pname    = f"{__package__}.modules"
 
 
 def md5sum(path):
@@ -40,18 +39,20 @@ def md5sum(path):
 def mod(name, debug=False):
     with loadlock:
         module = None
-        mname = f"{pname}.{name}"
+        mname = f"{Mods.pname}.{name}"
         module = sys.modules.get(mname, None)
         if not module:
-            pth = os.path.join(path, f"{name}.py")
+            pth = os.path.join(Mods.path, f"{name}.py")
             if not os.path.exists(pth):
                 return None
             if md5sum(pth) == (hash or MD5.get(name, None)):
+                logging.error(f"md5 doesn't match on {pth}")
                 return
             spec = importlib.util.spec_from_file_location(mname, pth)
             module = importlib.util.module_from_spec(spec)
             sys.modules[mname] = module
             spec.loader.exec_module(module)
+            Mods.loaded.append(module.__name__.split(".")[-1])
         if debug:
             module.DEBUG = True
         return module
@@ -59,7 +60,7 @@ def mod(name, debug=False):
 
 def mods(names=""):
     res = []
-    for nme in sorted(modules(path)):
+    for nme in sorted(modules(Mods.path)):
         if names and nme not in spl(names):
             continue
         module = mod(nme)
@@ -71,21 +72,22 @@ def mods(names=""):
 
 def modules(mdir=""):
     return sorted([
-            x[:-3] for x in os.listdir(mdir or path)
-            if x.endswith(".py") and not x.startswith("__")
+            x[:-3] for x in os.listdir(mdir or Mods.path)
+            if x.endswith(".py") and not x.startswith("__") and
+            x[:-3] not in Mods.ignore
            ])
 
 
 def sums():
-    pth = os.path.join(path, "tbl.py")
-    if os.path.exists(pth) and (not checksum or (md5sum(pth) == checksum)):
+    pth = os.path.join(Mods.path, "tbl.py")
+    if os.path.exists(pth) and (not Mods.checksum or (md5sum(pth) == Mods.checksum)):
         try:
             module = mod("tbl")
         except FileNotFoundError:
             return {}
         sums =  getattr(module, "MD5", None)
         if sums:
-            MD5.update(sums)
+            Mods.md5s.update(sums)
             return True
     return False
 

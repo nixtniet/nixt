@@ -24,11 +24,21 @@ from nixt.client import Client, Fleet
 from nixt.cmds   import Commands, cmnd, command, scan, table
 from nixt.disk   import Cache
 from nixt.event  import Event
-from nixt.mods   import md5sum, mod, mods, modules
+from nixt.mods   import Mods, md5sum, mod, mods, modules
 from nixt.parse  import parse
 from nixt.paths  import Workdir
 from nixt.run    import launch
 from nixt.utils  import level, spl
+
+
+"handlers"
+
+
+def handler(signum, frame):
+    out("handler called!")
+
+
+signal.signal(signal.SIGHUP, handler)
 
 
 "config"
@@ -37,6 +47,7 @@ from nixt.utils  import level, spl
 class Main:
 
     debug   = False
+    ignore  = ["wsd", "udp"]
     init    = ""
     level   = "warn"
     md5     = False
@@ -96,13 +107,6 @@ def daemon(verbose=False):
     os.umask(0)
     os.chdir("/")
     os.nice(10)
-
-
-def handler(signum, frame):
-    out("handler called!")
-
-
-signal.signal(signal.SIGHUP, handler)
 
 
 def inits(names):
@@ -264,10 +268,8 @@ def ver(event):
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    out(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
-    out(f"loaded {",".join(modules())}")
-    if check("p"):
-        out(f"workdir is {Workdir.wdr}")
+    logging.warning(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
+    logging.warning(f"{",".join(Commands.names)}")
 
 
 def check(txt):
@@ -320,6 +322,9 @@ def wrap(func):
 
 
 def main():
+    if os.path.exists("mods"):
+        Mods.path = "mods"
+        Mods.pname = "mods"
     if check("a"):
         Main.init = ",".join(modules())
     if check("v"):

@@ -29,9 +29,7 @@ NAMES = {
     "tdo": "tdo",
     "thr": "thr",
     "tmr": "tmr",
-    "udp": "udp",
-    "upt": "upt",
-    "wsd": "wsd"
+    "upt": "upt"
 }
 
 
@@ -50,8 +48,6 @@ MD5 = {
     "tdo": "e44c84040fbddb6f88166b0d5163f1f2",
     "thr": "7e6bd817fd8df35820e0d2aea4dc5591",
     "tmr": "80aa2ba8bc413e4ee12aac3d229459b6",
-    "udp": "83dadade14b68dcca287890410b2166a",
     "upt": "ceeafab9201ee2bba7289aeeae355acf",
     "web": "63415a2ffa87a6cb50b385545ba0260a",
-    "wsd": "7bb44c895580b00d0f6bf083e0881267",
 }
