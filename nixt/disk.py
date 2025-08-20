@@ -49,9 +49,6 @@ class Cache:
             Cache.add(path, obj)
 
 
-"disk"
-
-
 def cdir(path):
     pth = pathlib.Path(path)
     pth.parent.mkdir(parents=True, exist_ok=True)
@@ -59,17 +56,17 @@ def cdir(path):
 
 def read(obj, path, disk=False):
     with lock:
-        try:
-            if disk or Cache.disk:
-                ppath = store(path)
-                with open(ppath, "r", encoding="utf-8") as fpt:
+        if disk or Cache.disk:
+            ppath = store(path)
+            with open(ppath, "r", encoding="utf-8") as fpt:
+                try:
                     update(obj, load(fpt))
-                Cache.update(path, obj)
-            else:
-                update(obj, Cache.get(path))
-        except json.decoder.JSONDecodeError as ex:
-            ex.add_note(path)
-            raise ex
+                except json.decoder.JSONDecodeError as ex:
+                    ex.add_note(path)
+                    raise ex
+            Cache.update(path, obj)
+        else:
+            update(obj, Cache.get(path))
 
  
 def skel():
@@ -87,9 +84,6 @@ def write(obj, path, disk=False):
                 dump(obj, fpt, indent=4)
         Cache.update(path, obj)
         return path
-
-
-"interface"
 
 
 def __dir__():

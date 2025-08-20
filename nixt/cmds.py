@@ -12,7 +12,7 @@ import _thread
 
 from .client import Fleet
 from .event  import Event
-from .mods   import checksum, md5sum, mod, path, sums
+from .mods   import checksum, mod, path, sums
 from .parse  import parse
 from .run    import launch
 from .utils  import spl
