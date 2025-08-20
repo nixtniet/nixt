@@ -22,10 +22,11 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.client import Client, Fleet
 from nixt.cmds   import Commands, cmnd, command, scan, table
-from nixt.disk   import Cache, Workdir
+from nixt.disk   import Cache
 from nixt.event  import Event
 from nixt.mods   import mod, mods, modules
 from nixt.parse  import parse
+from nixt.paths  import Workdir
 from nixt.run    import launch
 from nixt.utils  import level, spl
 
@@ -98,7 +99,7 @@ def daemon(verbose=False):
 
 
 def handler(signum, frame):
-    print("handler called!")
+    out("handler called!")
 
 
 signal.signal(signal.SIGHUP, handler)
@@ -312,9 +313,8 @@ def main():
         Main.init = ",".join(modules())
     if check("v"):
         Main.opts["v"] = True
-    if check("p"):
-        Workdir.wdr = os.path.expanduser(f"~/.{Main.name}")
-        Cache.disk = True
+    if check("e"):
+        Cache.disk = False
     if check("c"):
         wrap(console)
     elif check("d"):

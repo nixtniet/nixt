@@ -20,7 +20,7 @@ p    = os.path.join
 
 class Cache:
 
-    disk = False
+    disk = True
     objs = {}
     types = []
 
@@ -55,6 +55,7 @@ class Cache:
 def cdir(path):
     pth = pathlib.Path(path)
     pth.parent.mkdir(parents=True, exist_ok=True)
+
 
 def read(obj, path, disk=False):
     with lock:

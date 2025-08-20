@@ -9,8 +9,10 @@ import re
 import time
 
 
-from nixt.disk   import find, ident, write
+from nixt.disk   import write
 from nixt.client import Fleet
+from nixt.find   import find
+from nixt.paths  import ident
 from nixt.run    import Timed, launch
 from nixt.utils  import elapsed, rlog
 

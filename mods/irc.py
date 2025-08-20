@@ -13,12 +13,14 @@ import threading
 import time
 
 
-from nixt.disk   import getpath, ident, last, write
+from nixt.disk   import write
 from nixt.cmds   import command
 from nixt.cmds   import Event as IEvent
+from nixt.find   import last
 from nixt.fleet  import Fleet
 from nixt.object import edit, fmt, keys
 from nixt.output import Output
+from nixt.paths  import getpath, ident
 from nixt.run    import launch
 from nixt.utils  import rlog
 
