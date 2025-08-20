@@ -24,7 +24,7 @@ class Mods:
     checksum = "7c9e376c008f9c28079eae8528c0ef1b"
     loaded   = []
     md5s     = {}
-    ignore   = ["mdl", "rst", "udp", "web", "wsd"]
+    ignore   = []
     path     = os.path.dirname(__file__)
     path     = os.path.join(path, "modules")
     pname    = f"{__package__}.modules"

@@ -322,7 +322,10 @@ def wrap(func):
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
+
+
 def main():
+    Mods.ignore = ["mdl", "rst", "udp", "web", "wsd"]
     if os.path.exists("mods"):
         Mods.path = "mods"
         Mods.pname = "mods"
