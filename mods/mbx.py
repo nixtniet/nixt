@@ -11,7 +11,8 @@ import time
 
 from nixt.disk   import write
 from nixt.find   import find
-from nixt.object import Object, fmt, keys, update
+from nixt.func   import fmt
+from nixt.object import Object, keys, update
 from nixt.paths  import ident
 from nixt.utils  import elapsed
 

@@ -14,7 +14,8 @@ from nixt.disk   import write
 from nixt.client import Fleet
 from nixt.find   import find
 from nixt.paths  import ident
-from nixt.thread import Timed, launch
+from nixt.thread import launch
+from nixt.timer  import Timed
 from nixt.utils  import elapsed
 
 

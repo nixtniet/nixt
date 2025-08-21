@@ -29,7 +29,7 @@ from nixt.func   import fmt
 from nixt.object import Auto, Object, update
 from nixt.paths  import getpath
 from nixt.thread import launch
-from nixt.timers import Repeater
+from nixt.timer  import Repeater
 from nixt.utils  import elapsed,spl
 
 

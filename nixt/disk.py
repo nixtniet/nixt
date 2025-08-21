@@ -16,7 +16,6 @@ from .serial import dump, load
 
 
 lock = threading.RLock()
-p    = os.path.join
 
 
 class Cache:
