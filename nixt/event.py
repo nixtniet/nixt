@@ -33,9 +33,9 @@ class Event:
 
     def wait(self, timeout=None):
         try:
-            self._ready.wait()
+            self._ready.wait(timeout)
             if self._thr:
-                self._thr.join()
+                self._thr.join(timeout)
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
 

@@ -38,7 +38,7 @@ class Cache:
 
     @staticmethod
     def typed(typ):
-        return [x for x in Cache.objs.keys() if typ in x]
+        return [x for x in Cache.objs if typ in x]
 
     @staticmethod
     def update(path, obj):

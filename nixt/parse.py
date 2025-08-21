@@ -35,7 +35,7 @@ def parse(obj, txt=None):
             obj.silent[key] = value
             obj.gets[key] = value
             continue
-        elif "==" in spli:
+        if "==" in spli:
             key, value = spli.split("==", maxsplit=1)
             obj.gets[key] = value
             continue
@@ -67,4 +67,3 @@ def __dir__():
     return (
         'parse',
     )
-

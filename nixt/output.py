@@ -40,10 +40,10 @@ class Output(Client):
             self.display(event)
             self.oqueue.task_done()
 
-    def start(self):
+    def start(self, daemon=True):
         self.ostop.clear()
         launch(self.output)
-        super().start()
+        super().start(daemon)
 
     def stop(self):
         self.ostop.set()
