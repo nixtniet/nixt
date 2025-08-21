@@ -33,7 +33,7 @@ class Mods:
 def md5sum(path):
     with open(path, "r", encoding="utf-8") as file:
         txt = file.read().encode("utf-8")
-        return str(hashlib.md5(txt).hexdigest())
+        return hashlib.md5(txt).hexdigest()
 
 
 def mod(name, debug=False):
