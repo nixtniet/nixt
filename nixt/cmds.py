@@ -9,10 +9,10 @@ import logging
 import _thread
 
 
-from .client import Fleet
 from .event  import Event
-from .mods   import Mods, mod, sums
+from .fleet  import Fleet
 from .parse  import parse
+from .pkg    import Mods, mod, sums
 from .thread import launch
 from .utils  import spl
 
