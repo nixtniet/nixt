@@ -21,7 +21,7 @@ loadlock = threading.RLock()
 
 class Mods:
 
-    checksum = "7c9e376c008f9c28079eae8528c0ef1b"
+    checksum = "9d933e03285b44922648fd13706d2981"
     loaded   = []
     md5s     = {}
     ignore   = []

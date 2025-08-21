@@ -47,7 +47,7 @@ signal.signal(signal.SIGHUP, handler)
 class Main:
 
     debug   = False
-    ignore  = ["mdl", "rst", "udp", "web", "wsd"]
+    ignore  = ["mbx", "mdl", "rst", "udp", "web", "wsd"]
     init    = ""
     level   = "warn"
     md5     = False
@@ -260,7 +260,7 @@ def tbl(event):
     event.reply("}")
 
 def ver(event):
-    event.reply(str(Main.version))
+    event.reply(f"{Main.name.upper()} {Main.version}")
 
 
 "utilities"
