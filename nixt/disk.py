@@ -10,8 +10,9 @@ import pathlib
 import threading
 
 
-from .object import dump, load, update
+from .object import update
 from .paths  import fqn, store
+from .serial import dump, load
 
 
 lock = threading.RLock()

@@ -45,7 +45,7 @@ def mod(name, debug=False):
             pth = os.path.join(Mods.path, f"{name}.py")
             if not os.path.exists(pth):
                 return None
-            if md5sum(pth) == (hash or MD5.get(name, None)):
+            if md5sum(pth) == (hash or Mods.md5s.get(name, None)):
                 logging.error(f"md5 doesn't match on {pth}")
                 return
             spec = importlib.util.spec_from_file_location(mname, pth)

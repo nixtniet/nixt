@@ -9,7 +9,7 @@ import threading
 
 
 from .client import Client
-from .run    import launch
+from .thread import launch
 
 
 class Output(Client):

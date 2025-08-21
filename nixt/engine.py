@@ -6,12 +6,10 @@
 
 import queue
 import threading
-import time
 import _thread
 
 
-from .object import Auto
-from .run    import launch
+from .thread import launch
 
 
 class Engine:

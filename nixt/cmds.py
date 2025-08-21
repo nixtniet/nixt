@@ -6,7 +6,6 @@
 
 import inspect
 import logging
-import os
 import _thread
 
 
@@ -14,7 +13,7 @@ from .client import Fleet
 from .event  import Event
 from .mods   import Mods, mod, sums
 from .parse  import parse
-from .run    import launch
+from .thread import launch
 from .utils  import spl
 
 
