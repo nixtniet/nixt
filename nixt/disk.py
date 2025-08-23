@@ -10,7 +10,7 @@ import threading
 
 
 from .object import update
-from .paths  import Workdir, fqn
+from .paths  import Workdir, cdir, fqn
 from .serial import dump, load
 
 
@@ -47,10 +47,6 @@ class Cache:
         else:
             Cache.add(path, obj)
 
-
-def cdir(path):
-    pth = pathlib.Path(path)
-    pth.parent.mkdir(parents=True, exist_ok=True)
 
 
 def read(obj, path, disk=False):

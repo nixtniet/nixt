@@ -20,7 +20,7 @@ def find(clz, selector=None, deleted=False, matching=False, disk=False):
     if selector is None:
         selector = {}
     if disk or Cache.disk:
-        paths = sorted(fns(clz))
+        paths = fns(clz)
     else:
         paths = Cache.typed(Workdir.long(clz))
     for pth  in paths:

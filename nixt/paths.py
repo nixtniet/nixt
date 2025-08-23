@@ -6,6 +6,7 @@
 
 import datetime
 import os
+import pathlib
 
 
 class Workdir:
@@ -30,7 +31,13 @@ class Workdir:
 
     @staticmethod
     def types():
+        cdir(Workdir.store())
         return os.listdir(Workdir.store())
+
+
+def cdir(path):
+    pth = pathlib.Path(path)
+    pth.parent.mkdir(parents=True, exist_ok=True)
 
 
 def fqn(obj):
@@ -48,6 +55,12 @@ def ident(obj):
     return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
 
 
+def skel():
+    pth = pathlib.Path(Workdir.store())
+    pth.mkdir(parents=True, exist_ok=True)
+    return str(pth)
+
+
 def strip(pth, nmr=3):
     return os.sep.join(pth.split(os.sep)[-nmr:])
 
@@ -58,8 +71,10 @@ def strip(pth, nmr=3):
 def __dir__():
     return (
         'Workdir',
+        'cdir',
         'fqn',
         'getpath',
         'ident',
+        'skel',
         'strip'
     )

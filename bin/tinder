@@ -26,8 +26,9 @@ from nixt.fleet  import Fleet
 from nixt.object import Object, keys
 from nixt.output import Output
 from nixt.parse  import parse
+from nixt.paths  import Workdir, skel
 from nixt.pkg    import Mods, mods, modules
-from nixt.thread import STARTTIME, launch
+from nixt.run    import STARTTIME, launch
 from nixt.utils  import elapsed, spl
 
 
@@ -44,37 +45,6 @@ class Main:
     opts    = {}
     verbose = False
     version = 390
-
-
-"pool"
-
-
-class Pool:
-
-    clients = []
-    lock = threading.RLock()
-    nrcpu = 1
-    nrlast = 0
-
-    @staticmethod
-    def add(clt):
-        Pool.clients.append(clt)
-
-    def init(cls, nr=None):
-        Pool.nrcpu = nr or os.cpu_count
-        for x in range(Pool.nrcpu):
-            clt = cls()
-            clt.start()
-            Pool.add(clt)
-
-    @staticmethod
-    def put(evt):
-        with Pool.lock:
-            if Pool.nrlast >= Pool.nrcpu-1:
-                Pool.nrlast = 0
-            clt = Pool.clients[Pool.nrlast]
-            clt.put(evt)
-            Pool.nrlast += 1
 
 
 "examples"
@@ -162,6 +132,34 @@ class Buffer(Output):
             print(txt)
 
 
+class Pool:
+
+    clients = []
+    lock = threading.RLock()
+    nrcpu = 1
+    nrlast = 0
+
+    @staticmethod
+    def add(clt):
+        Pool.clients.append(clt)
+
+    def init(cls, nr=None):
+        Pool.nrcpu = nr or os.cpu_count
+        for x in range(Pool.nrcpu):
+            clt = cls()
+            clt.start()
+            Pool.add(clt)
+
+    @staticmethod
+    def put(evt):
+        with Pool.lock:
+            if Pool.nrlast >= Pool.nrcpu-1:
+                Pool.nrlast = 0
+            clt = Pool.clients[Pool.nrlast]
+            clt.put(evt)
+            Pool.nrlast += 1
+
+
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     print(f"{Main.name.upper()} since {tme}")
@@ -223,6 +221,10 @@ def main():
     global nrcommand
     Mods.path = "mods"
     Mods.pname = "mods"
+    if "f" not in Main.opts:
+        if os.path.exists(Workdir.wdr):
+            shutil.rmtree(Workdir.wdr)
+    skel()
     parse(Main, " ".join(sys.argv[1:]))
     table()
     for mod in mods():
@@ -235,7 +237,7 @@ def main():
         nrcpu = os.cpu_count()
     else:
         nrcpu = 1
-    Pool.init(CLI, nrcpu)
+    Pool.init(Buffer, nrcpu)
     nrs = Main.index or 1
     thrs = []
     for _nr in range(nrs):
