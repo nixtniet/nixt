@@ -13,7 +13,6 @@ import threading
 import time
 
 
-from nixt.debug  import rlog
 from nixt.disk   import write
 from nixt.cmds   import command
 from nixt.cmds   import Event as IEvent
@@ -23,7 +22,8 @@ from nixt.func   import edit, fmt
 from nixt.object import keys
 from nixt.output import Output
 from nixt.paths  import getpath, ident
-from nixt.thread import launch
+from nixt.run    import launch
+from nixt.utils  import rlog
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]

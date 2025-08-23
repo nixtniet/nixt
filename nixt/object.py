@@ -19,14 +19,6 @@ class Object:
         return str(self.__dict__)
 
 
-class Auto(Object):
-
-    def __getattr__(self, key):
-        if key not in self:
-            setattr(self, key, "")
-        return self.__dict__.get(key, "")
-
-
 def construct(obj, *args, **kwargs):
     if args:
         val = args[0]
@@ -64,9 +56,11 @@ def values(obj):
     return obj.__dict__.values()
 
 
+"interface"
+
+
 def __dir__():
     return (
-        'Auto',
         'Object',
         'construct',
         'items',

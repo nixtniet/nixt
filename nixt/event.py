@@ -9,7 +9,7 @@ import time
 import _thread
 
 
-from .object import Auto
+from .auto import Auto
 
 
 class Event(Auto):
@@ -39,6 +39,9 @@ class Event(Auto):
                 self._thr.join(timeout)
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
+
+
+"interface"
 
 
 def __dir__():

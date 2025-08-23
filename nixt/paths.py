@@ -13,6 +13,25 @@ class Workdir:
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
     wdr = os.path.expanduser(f"~/.{name}")
 
+    @staticmethod
+    def long(name):
+        split = name.split(".")[-1].lower()
+        res = name
+        for names in Workdir.types():
+            if split == names.split(".")[-1].lower():
+                res = names
+                break
+        return res
+
+    @staticmethod
+    def store(pth=""):
+        return os.path.join(Workdir.wdr, "store", pth)
+
+
+    @staticmethod
+    def types():
+        return os.listdir(Workdir.store())
+
 
 def fqn(obj):
     kin = str(type(obj)).split()[-1][1:-2]
@@ -29,31 +48,18 @@ def ident(obj):
     return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
 
 
-def long(name):
-    split = name.split(".")[-1].lower()
-    res = name
-    for names in types():
-        if split == names.split(".")[-1].lower():
-            res = names
-            break
-    return res
-
-
-def store(pth=""):
-    return os.path.join(Workdir.wdr, "store", pth)
-
-
 def strip(pth, nmr=3):
     return os.sep.join(pth.split(os.sep)[-nmr:])
 
 
-def types():
-    return os.listdir(store())
+"interface"
 
 
 def __dir__():
     return (
-        'Cache',
-        'read',
-        'write'
+        'Workdir',
+        'fqn',
+        'getpath',
+        'ident',
+        'strip'
     )

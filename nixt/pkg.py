@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"commands"
+"package"
 
 
 import hashlib
@@ -90,6 +90,9 @@ def sums():
             Mods.md5s.update(sums)
             return True
     return False
+
+
+"interface"
 
 
 def __dir__():

@@ -4,6 +4,19 @@
 "utilities"
 
 
+import logging
+
+
+class Levels:
+
+    debug    = logging.DEBUG
+    info     = logging.INFO
+    warning  = logging.WARNING
+    warn     = logging.WARNING
+    error    = logging.ERROR
+    critical = logging.CRITICAL
+
+
 def elapsed(seconds, short=True):
     txt = ""
     nsec = float(seconds)
@@ -43,6 +56,23 @@ def elapsed(seconds, short=True):
     return txt
 
 
+def level(loglevel="debug"):
+    if loglevel != "none":
+        format_short = "%(message)-80s"
+        datefmt = "%H:%M:%S"
+        logging.basicConfig(datefmt=datefmt, format=format_short, force=True)
+        logging.getLogger().setLevel(getattr(Levels, loglevel, logging.WARNING))
+
+
+def rlog(loglevel, txt, ignore=None):
+    if ignore is None:
+        ignore = []
+    for ign in ignore:
+        if ign in str(txt):
+            return
+    logging.log(getattr(Levels, loglevel, logging.WARNING), txt)
+
+
 def spl(txt):
     try:
         result = txt.split(",")
@@ -53,8 +83,13 @@ def spl(txt):
     return [x for x in result if x]
 
 
+"interface"
+
+
 def __dir__():
     return (
         'elapsed',
+        'level',
+        'rlog',
         'spl'
     )

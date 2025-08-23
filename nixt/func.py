@@ -54,6 +54,9 @@ def fmt(obj, args=None, skip=None, plain=False, empty=False):
     return txt.strip()
 
 
+"interface"
+
+
 def __dir__():
     return (
         'edit',

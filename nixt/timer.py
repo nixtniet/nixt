@@ -8,7 +8,7 @@ import threading
 import time
 
 
-from .thread import launch, name
+from .run import launch, name
 
 
 class Timy(threading.Timer):
@@ -54,6 +54,9 @@ class Repeater(Timed):
     def run(self):
         launch(self.start)
         super().run()
+
+
+"interface"
 
 
 def __dir__():

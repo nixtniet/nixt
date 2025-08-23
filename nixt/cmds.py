@@ -13,7 +13,7 @@ from .event  import Event
 from .fleet  import Fleet
 from .parse  import parse
 from .pkg    import Mods, mod, sums
-from .thread import launch
+from .run    import launch
 from .utils  import spl
 
 
@@ -93,6 +93,9 @@ def table():
     names = getattr(tbl, "NAMES", None)
     if names:
         Commands.names.update(names)
+
+
+"interface"
 
 
 def __dir__():

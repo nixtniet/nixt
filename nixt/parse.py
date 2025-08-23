@@ -63,6 +63,9 @@ def parse(obj, txt=None):
         obj.txt = obj.cmd or ""
 
 
+"interface"
+
+
 def __dir__():
     return (
         'parse',

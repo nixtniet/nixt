@@ -10,7 +10,7 @@ import time
 
 from .disk   import Cache, read
 from .object import Object, update
-from .paths  import fqn, long, store, strip
+from .paths  import Workdir, fqn, strip
 
 
 p = os.path.join
@@ -22,7 +22,7 @@ def find(clz, selector=None, deleted=False, matching=False, disk=False):
     if disk or Cache.disk:
         paths = sorted(fns(clz))
     else:
-        paths = Cache.typed(long(clz))
+        paths = Cache.typed(Workdir.long(clz))
     for pth  in paths:
         ppth = strip(pth)
         obj = Cache.get(ppth)
@@ -39,7 +39,7 @@ def find(clz, selector=None, deleted=False, matching=False, disk=False):
 
 def fns(clz):
     dname = ''
-    pth = store(long(clz))
+    pth = Workdir.store(Workdir.long(clz))
     for rootdir, dirs, _files in os.walk(pth, topdown=False):
         if dirs:
             for dname in sorted(dirs):
@@ -96,8 +96,12 @@ def search(obj, selector, matching=False):
     return res
 
 
+"interface"
+
+
 def __dir__():
     return (
         'find',
-        'last'
+        'last',
+        'search'
     )

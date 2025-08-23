@@ -36,6 +36,9 @@ class Client(Engine):
         self.raw(txt)
 
 
+"interface"
+
+
 def __dir__():
     return (
         'Client',

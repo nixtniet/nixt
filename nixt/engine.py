@@ -9,7 +9,7 @@ import threading
 import _thread
 
 
-from .thread import launch
+from .run import launch
 
 
 class Engine:
@@ -58,6 +58,9 @@ class Engine:
 
     def wait(self):
         pass
+
+
+"interface"
 
 
 def __dir__():

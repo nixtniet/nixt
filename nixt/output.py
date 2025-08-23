@@ -9,7 +9,7 @@ import threading
 
 
 from .client import Client
-from .thread import launch
+from .run    import launch
 
 
 class Output(Client):
@@ -52,6 +52,9 @@ class Output(Client):
 
     def wait(self):
         self.oqueue.join()
+
+
+"interface"
 
 
 def __dir__():

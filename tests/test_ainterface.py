@@ -11,16 +11,17 @@ import unittest
 
 
 import nixt
+import nixt.auto
 import nixt.client
 import nixt.cmds
 import nixt.disk
 import nixt.engine
 import nixt.event
 import nixt.fleet
-import nixt.mods
 import nixt.object
 import nixt.output
 import nixt.parse
+import nixt.pkg
 import nixt.run
 import nixt.utils
 
@@ -29,16 +30,17 @@ from nixt.object import *
 
 
 PACKAGE = [
+    'auto',
     'client',
     'cmds',
     'disk',
     'engine',
     'event',
     'fleet',
-    'mods',
     'object',
     'output',
     'parse',
+    'pkg',
     'run',
     'utils'
 ]

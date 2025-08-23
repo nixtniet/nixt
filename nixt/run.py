@@ -17,7 +17,7 @@ STARTTIME = time.time()
 lock = threading.RLock()
 
 
-class Thread(threading.Thread):
+class Task(threading.Thread):
 
     def __init__(self, func, thrname, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, thrname, (), daemon=daemon)
@@ -54,7 +54,7 @@ class Thread(threading.Thread):
 
 def launch(func, *args, **kwargs):
     with lock:
-        thread = Thread(func, None, *args, **kwargs)
+        thread = Task(func, None, *args, **kwargs)
         thread.start()
         return thread
 
@@ -74,10 +74,14 @@ def name(obj):
     return ""
 
 
+"interface"
+
+
 def __dir__():
     return (
         'STARTTIME',
-        'Thread',
+        'Task',
         'launch',
         'name'
     )
+
