@@ -1,12 +1,15 @@
 # This file is placed in the Public Domain.
 
 
-"cache"
+"paths"
 
 
 import datetime
 import os
 import pathlib
+
+
+j = os.path.join
 
 
 class Workdir:
@@ -32,7 +35,7 @@ def getpath(obj):
 
 
 def ident(obj):
-    return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
+    return j(fqn(obj), *str(datetime.datetime.now()).split())
 
 
 def long(name):
@@ -52,7 +55,7 @@ def skel():
 
 
 def store(pth=""):
-    return os.path.join(Workdir.wdr, "store", pth)
+    return j(Workdir.wdr, "store", pth)
 
 
 def types():
@@ -62,9 +65,6 @@ def types():
 
 def strip(pth, nmr=3):
     return os.sep.join(pth.split(os.sep)[-nmr:])
-
-
-"interface"
 
 
 def __dir__():

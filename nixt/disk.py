@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"cache"
+"disk"
 
 
 import json
@@ -48,7 +48,6 @@ class Cache:
             Cache.add(path, obj)
 
 
-
 def read(obj, path, disk=False):
     with lock:
         if disk or Cache.disk:
@@ -75,14 +74,9 @@ def write(obj, path, disk=False):
         return path
 
 
-"interface"
-
-
 def __dir__():
     return (
         'Cache',
-        'find',
-        'last',
         'read',
         'write'
     )

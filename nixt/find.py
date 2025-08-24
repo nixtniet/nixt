@@ -10,10 +10,7 @@ import time
 
 from .disk   import Cache, read
 from .object import Object, update
-from .paths  import Workdir, fqn, long, store, strip
-
-
-p = os.path.join
+from .paths  import Workdir, fqn, j, long, store, strip
 
 
 def find(clz, selector=None, deleted=False, matching=False, disk=False):
@@ -44,9 +41,9 @@ def fns(clz):
         if dirs:
             for dname in sorted(dirs):
                 if dname.count('-') == 2:
-                    ddd = p(rootdir, dname)
+                    ddd = j(rootdir, dname)
                     for fll in os.listdir(ddd):
-                        yield p(ddd, fll)
+                        yield j(ddd, fll)
 
 
 def fntime(daystr):
@@ -94,9 +91,6 @@ def search(obj, selector, matching=False):
             res = False
             break
     return res
-
-
-"interface"
 
 
 def __dir__():

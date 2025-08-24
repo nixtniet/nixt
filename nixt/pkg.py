@@ -13,10 +13,11 @@ import sys
 import threading
 
 
+from .paths import j
 from .utils import spl
 
 
-loadlock = threading.RLock()
+lock = threading.RLock()
 
 
 class Mods:
@@ -26,7 +27,7 @@ class Mods:
     md5s     = {}
     ignore   = []
     path     = os.path.dirname(__file__)
-    path     = os.path.join(path, "modules")
+    path     = j(path, "modules")
     pname    = f"{__package__}.modules"
 
 
@@ -37,16 +38,16 @@ def md5sum(path):
 
 
 def mod(name, debug=False):
-    with loadlock:
+    with lock:
         module = None
         mname = f"{Mods.pname}.{name}"
         module = sys.modules.get(mname, None)
         if not module:
-            pth = os.path.join(Mods.path, f"{name}.py")
+            pth = j(Mods.path, f"{name}.py")
             if not os.path.exists(pth):
                 return None
-            if md5sum(pth) == (hash or Mods.md5s.get(name, None)):
-                logging.error(f"md5 doesn't match on {pth}")
+            if md5sum(pth) != Mods.md5s.get(name, None):
+                logging.error(f"{name} md5sum doesn't match")
                 return
             spec = importlib.util.spec_from_file_location(mname, pth)
             module = importlib.util.module_from_spec(spec)
@@ -79,20 +80,17 @@ def modules(mdir=""):
 
 
 def sums():
-    pth = os.path.join(Mods.path, "tbl.py")
+    pth = j(Mods.path, "tbl.py")
     if os.path.exists(pth) and (not Mods.checksum or (md5sum(pth) == Mods.checksum)):
         try:
             module = mod("tbl")
         except FileNotFoundError:
             return {}
-        sums =  getattr(module, "MD5", None)
-        if sums:
-            Mods.md5s.update(sums)
+        sms =  getattr(module, "MD5", None)
+        if sms:
+            Mods.md5s.update(sms)
             return True
     return False
-
-
-"interface"
 
 
 def __dir__():

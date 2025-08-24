@@ -54,11 +54,24 @@ def fmt(obj, args=None, skip=None, plain=False, empty=False):
     return txt.strip()
 
 
-"interface"
+def name(obj):
+    typ = type(obj)
+    if "__builtins__" in dir(typ):
+        return obj.__name__
+    if "__self__" in dir(obj):
+        return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
+    if "__class__" in dir(obj) and "__name__" in dir(obj):
+        return f"{obj.__class__.__name__}.{obj.__name__}"
+    if "__class__" in dir(obj):
+        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
+    if "__name__" in dir(obj):
+        return f"{obj.__class__.__name__}.{obj.__name__}"
+    return ""
 
 
 def __dir__():
     return (
         'edit',
-        'fmt'
+        'fmt',
+        'name'
     )

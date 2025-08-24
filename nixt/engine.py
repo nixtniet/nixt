@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"event handler"
+"callback engine"
 
 
 import queue
@@ -58,9 +58,6 @@ class Engine:
 
     def wait(self):
         pass
-
-
-"interface"
 
 
 def __dir__():

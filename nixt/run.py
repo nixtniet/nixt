@@ -11,10 +11,10 @@ import threading
 import _thread
 
 
+from .func import name
+
+
 STARTTIME = time.time()
-
-
-lock = threading.RLock()
 
 
 class Task(threading.Thread):
@@ -53,35 +53,14 @@ class Task(threading.Thread):
 
 
 def launch(func, *args, **kwargs):
-    with lock:
-        thread = Task(func, None, *args, **kwargs)
-        thread.start()
-        return thread
-
-
-def name(obj):
-    typ = type(obj)
-    if "__builtins__" in dir(typ):
-        return obj.__name__
-    if "__self__" in dir(obj):
-        return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
-    if "__class__" in dir(obj) and "__name__" in dir(obj):
-        return f"{obj.__class__.__name__}.{obj.__name__}"
-    if "__class__" in dir(obj):
-        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
-    if "__name__" in dir(obj):
-        return f"{obj.__class__.__name__}.{obj.__name__}"
-    return ""
-
-
-"interface"
+    thread = Task(func, None, *args, **kwargs)
+    thread.start()
+    return thread
 
 
 def __dir__():
     return (
         'STARTTIME',
         'Task',
-        'launch',
-        'name'
+        'launch'
     )
-

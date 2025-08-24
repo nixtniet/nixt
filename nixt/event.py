@@ -41,9 +41,6 @@ class Event(Auto):
             _thread.interrupt_main()
 
 
-"interface"
-
-
 def __dir__():
     return (
          'Event',

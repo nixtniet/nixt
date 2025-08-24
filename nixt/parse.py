@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"command line parsing"
+"parsing"
 
 
 def parse(obj, txt=None):
@@ -61,9 +61,6 @@ def parse(obj, txt=None):
         obj.txt  = obj.cmd + " " + obj.rest
     else:
         obj.txt = obj.cmd or ""
-
-
-"interface"
 
 
 def __dir__():

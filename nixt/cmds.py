@@ -95,9 +95,6 @@ def table():
         Commands.names.update(names)
 
 
-"interface"
-
-
 def __dir__():
     return (
         'Commands',

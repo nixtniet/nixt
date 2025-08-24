@@ -56,9 +56,6 @@ def values(obj):
     return obj.__dict__.values()
 
 
-"interface"
-
-
 def __dir__():
     return (
         'Object',
