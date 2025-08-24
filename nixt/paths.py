@@ -14,26 +14,6 @@ class Workdir:
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
     wdr = os.path.expanduser(f"~/.{name}")
 
-    @staticmethod
-    def long(name):
-        split = name.split(".")[-1].lower()
-        res = name
-        for names in Workdir.types():
-            if split == names.split(".")[-1].lower():
-                res = names
-                break
-        return res
-
-    @staticmethod
-    def store(pth=""):
-        return os.path.join(Workdir.wdr, "store", pth)
-
-
-    @staticmethod
-    def types():
-        cdir(Workdir.store())
-        return os.listdir(Workdir.store())
-
 
 def cdir(path):
     pth = pathlib.Path(path)
@@ -55,10 +35,29 @@ def ident(obj):
     return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
 
 
+def long(name):
+    split = name.split(".")[-1].lower()
+    res = name
+    for names in types():
+        if split == names.split(".")[-1].lower():
+            res = names
+            break
+    return res
+
+
 def skel():
-    pth = pathlib.Path(Workdir.store())
+    pth = pathlib.Path(store())
     pth.mkdir(parents=True, exist_ok=True)
     return str(pth)
+
+
+def store(pth=""):
+    return os.path.join(Workdir.wdr, "store", pth)
+
+
+def types():
+    cdir(store())
+    return os.listdir(store())
 
 
 def strip(pth, nmr=3):
@@ -75,6 +74,8 @@ def __dir__():
         'fqn',
         'getpath',
         'ident',
+        'long',
         'skel',
+        'store',
         'strip'
     )

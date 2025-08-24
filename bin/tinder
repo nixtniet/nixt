@@ -219,6 +219,7 @@ def wrap(function):
 def main():
     global nrs
     global nrcommand
+    Workdir.wdr = ".test"
     Mods.path = "mods"
     Mods.pname = "mods"
     if "f" not in Main.opts:

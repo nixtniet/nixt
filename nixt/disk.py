@@ -10,7 +10,7 @@ import threading
 
 
 from .object import update
-from .paths  import Workdir, cdir, fqn
+from .paths  import Workdir, cdir, fqn, store
 from .serial import dump, load
 
 
@@ -52,7 +52,7 @@ class Cache:
 def read(obj, path, disk=False):
     with lock:
         if disk or Cache.disk:
-            ppath = Workdir.store(path)
+            ppath = store(path)
             with open(ppath, "r", encoding="utf-8") as fpt:
                 try:
                     update(obj, load(fpt))
@@ -64,16 +64,10 @@ def read(obj, path, disk=False):
             update(obj, Cache.get(path))
 
  
-def skel():
-    pth = pathlib.Path(Workdir.store())
-    pth.mkdir(parents=True, exist_ok=True)
-    return str(pth)
-
-
 def write(obj, path, disk=False):
     with lock:
         if disk or Cache.disk:
-            ppath = Workdir.store(path)
+            ppath = store(path)
             cdir(ppath)
             with open(ppath, "w", encoding="utf-8") as fpt:
                 dump(obj, fpt, indent=4)
