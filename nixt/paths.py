@@ -63,10 +63,6 @@ def types():
     return os.listdir(store())
 
 
-def strip(pth, nmr=3):
-    return os.sep.join(pth.split(os.sep)[-nmr:])
-
-
 def __dir__():
     return (
         'Workdir',
@@ -76,6 +72,5 @@ def __dir__():
         'ident',
         'long',
         'skel',
-        'store',
-        'strip'
+        'store'
     )

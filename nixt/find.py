@@ -10,7 +10,7 @@ import time
 
 from .disk   import Cache, read
 from .object import Object, update
-from .paths  import Workdir, fqn, j, long, store, strip
+from .paths  import Workdir, fqn, j, long, store
 
 
 def find(clz, selector=None, deleted=False, matching=False, disk=False):
@@ -91,6 +91,10 @@ def search(obj, selector, matching=False):
             res = False
             break
     return res
+
+
+def strip(pth, nmr=3):
+    return os.sep.join(pth.split(os.sep)[-nmr:])
 
 
 def __dir__():
