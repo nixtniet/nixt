@@ -21,7 +21,6 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.auto   import Auto
 from nixt.disk   import write 
 from nixt.find   import find, fntime, last
 from nixt.fleet  import Fleet
@@ -54,24 +53,22 @@ def init():
 "classes"
 
 
-class Feed(Auto):
+class Feed:
 
     def __init__(self):
-        Auto.__init__(self)
         self.name = ""
 
 
-class Rss(Auto):
+class Rss:
 
     def __init__(self):
-        Auto.__init__(self)
         self.display_list = "title,link,author"
         self.insertid = None
         self.name = ""
         self.rss = ""
 
 
-class Urls(Auto):
+class Urls:
 
     pass
 

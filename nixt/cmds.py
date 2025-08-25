@@ -86,9 +86,6 @@ def scan(mod):
 
 
 def table():
-    if Mods.checksum and not sums():
-        logging.error("checksums don't match")
-        return
     tbl = mod("tbl")
     names = getattr(tbl, "NAMES", None)
     if names:

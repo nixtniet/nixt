@@ -65,11 +65,10 @@ def level(loglevel="debug"):
 
 
 def rlog(loglevel, txt, ignore=None):
-    if ignore is None:
-        ignore = []
-    for ign in ignore:
-        if ign in str(txt):
-            return
+    if ignore:
+        for ign in ignore:
+            if ign in str(txt):
+                return
     logging.log(getattr(Levels, loglevel, logging.WARNING), txt)
 
 

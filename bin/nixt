@@ -27,7 +27,7 @@ from nixt.event  import Event
 from nixt.fleet  import Fleet
 from nixt.parse  import parse
 from nixt.paths  import Workdir, skel
-from nixt.pkg    import Mods, md5sum, mod, mods, modules
+from nixt.pkg    import Mods, md5sum, mod, mods, modules, sums
 from nixt.run    import launch
 from nixt.utils  import level, spl
 
@@ -51,7 +51,7 @@ class Main:
     ignore  = ["mbx", "mdl", "rst", "udp", "web", "wsd"]
     init    = ""
     level   = "warn"
-    md5     = False
+    md5     = "a0079568835319d811da177a7dfa0f31"
     name    = Client.__module__.rsplit(".", maxsplit=1)[0].lower()
     opts    = {}
     verbose = False
@@ -155,7 +155,8 @@ def background():
     privileges()
     level(Main.level or "debug")
     pidfile(pidname(Main.name))
-    table()
+    if Main.md5 and sums(Main.md5):
+        table()
     Commands.add(cmd)
     Commands.add(ver)
     inits(Main.init or "irc,rss")
@@ -169,7 +170,8 @@ def console():
     Main.verbose = Main.sets.get("verbose", Main.verbose)
     Main.level   = Main.sets.get("level", Main.level or "warn")
     level(Main.level)
-    table()
+    if Main.md5 and sums(Main.md5):
+        table()
     Commands.add(cmd)
     Commands.add(ver)
     if "v" in Main.opts:
@@ -187,8 +189,11 @@ def control():
     if len(sys.argv) == 1:
         return
     parse(Main, " ".join(sys.argv[1:]))
+    Main.verbose = Main.sets.get("verbose", Main.verbose)
+    Main.level   = Main.sets.get("level", Main.level or "warn")
     level(Main.level or "warn")
-    table()
+    if Main.md5 and sums(Main.md5):
+        table()
     Commands.add(cmd)
     Commands.add(md5)
     Commands.add(tbl)
@@ -202,7 +207,8 @@ def service():
     banner()
     privileges()
     pidfile(pidname(Main.name))
-    table()
+    if Main.md5 and sums(Main.md5):
+        table()
     Commands.add(cmd)
     Commands.add(ver)
     inits(Main.init or "irc,rss")

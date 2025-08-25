@@ -22,7 +22,7 @@ lock = threading.RLock()
 
 class Mods:
 
-    checksum = "9d933e03285b44922648fd13706d2981"
+    bork     = False
     loaded   = []
     md5s     = {}
     ignore   = []
@@ -45,10 +45,11 @@ def mod(name, debug=False):
         if not module:
             pth = j(Mods.path, f"{name}.py")
             if not os.path.exists(pth):
-                return None
-            if md5sum(pth) != Mods.md5s.get(name, None):
-                logging.error(f"{name} md5sum doesn't match")
                 return
+            if md5sum(pth) != Mods.md5s.get(name, None):
+                logging.info(f"{name} md5sum doesn't match")
+                if Mods.bork:
+                    return
             spec = importlib.util.spec_from_file_location(mname, pth)
             module = importlib.util.module_from_spec(spec)
             sys.modules[mname] = module
@@ -65,7 +66,7 @@ def mods(names=""):
         if names and nme not in spl(names):
             continue
         module = mod(nme)
-        if not mod:
+        if not module:
             continue
         res.append(module)
     return res
@@ -79,9 +80,9 @@ def modules(mdir=""):
            ])
 
 
-def sums():
+def sums(md5):
     pth = j(Mods.path, "tbl.py")
-    if os.path.exists(pth) and (not Mods.checksum or (md5sum(pth) == Mods.checksum)):
+    if os.path.exists(pth) and (not md5 or (md5sum(pth) == md5)):
         try:
             module = mod("tbl")
         except FileNotFoundError:
