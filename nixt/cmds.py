@@ -12,7 +12,7 @@ import _thread
 from .event  import Event
 from .fleet  import Fleet
 from .parse  import parse
-from .pkg    import Mods, mod, sums
+from .pkg    import Mods, mod
 from .run    import launch
 from .utils  import spl
 

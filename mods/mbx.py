@@ -9,7 +9,7 @@ import os
 import time
 
 
-from nixt.disk   import write
+from nixt.cache  import write
 from nixt.find   import find
 from nixt.func   import fmt
 from nixt.object import Object, keys, update

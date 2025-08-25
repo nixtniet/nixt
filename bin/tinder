@@ -32,9 +32,6 @@ from nixt.run    import STARTTIME, launch
 from nixt.utils  import elapsed, spl
 
 
-"config"
-
-
 class Main:
 
     debug   = False
@@ -45,9 +42,6 @@ class Main:
     opts    = {}
     verbose = False
     version = 390
-
-
-"examples"
 
 
 param = Object()
@@ -98,9 +92,6 @@ paylock = _thread.allocate_lock()
 
 
 rand = random.SystemRandom()
-
-
-"clients"
 
 
 class CLI(Client):
@@ -238,7 +229,7 @@ def main():
         nrcpu = os.cpu_count()
     else:
         nrcpu = 1
-    Pool.init(Buffer, nrcpu)
+    Pool.init(CLI, nrcpu)
     nrs = Main.index or 1
     thrs = []
     for _nr in range(nrs):
@@ -273,6 +264,7 @@ if __name__ == "__main__":
     nrevents = events.qsize()
     percall = (endtime-STARTTIME)/(nrcommand)
     if "v" in Main.opts:
+        print(f"{Pool.nrcpu} cpu used")
         print(f"{nrevents} events left.")
         print(f"total: {lap} nrs: {nrs} cmds: {nrcommand} call: %.6fs" % percall)
     sys.exit() 
