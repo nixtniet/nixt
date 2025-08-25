@@ -13,7 +13,7 @@ import threading
 import time
 
 
-from nixt.disk   import write
+from nixt.cache  import write
 from nixt.cmds   import command
 from nixt.cmds   import Event as IEvent
 from nixt.find   import last

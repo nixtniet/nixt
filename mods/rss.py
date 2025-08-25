@@ -21,7 +21,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.disk   import write 
+from nixt.cache  import write 
 from nixt.find   import find, fntime, last
 from nixt.fleet  import Fleet
 from nixt.func   import fmt

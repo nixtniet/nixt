@@ -9,7 +9,7 @@ import re
 import time
 
 
-from nixt.disk   import write
+from nixt.cache  import write
 from nixt.client import Fleet
 from nixt.find   import find
 from nixt.paths  import ident

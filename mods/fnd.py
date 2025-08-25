@@ -7,7 +7,7 @@
 import time
 
 
-from nixt.disk  import Cache
+from nixt.cache import Cache
 from nixt.find  import find, fntime
 from nixt.func  import fmt
 from nixt.utils import elapsed

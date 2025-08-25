@@ -8,7 +8,7 @@ import os
 import time
 
 
-from .disk   import Cache, read
+from .cache  import Cache, read
 from .object import Object, update
 from .paths  import Workdir, fqn, j, long, store
 

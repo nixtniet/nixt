@@ -20,9 +20,9 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
+from nixt.cache  import Cache
 from nixt.client import Client
 from nixt.cmds   import Commands, cmnd, command, scan, table
-from nixt.disk   import Cache
 from nixt.event  import Event
 from nixt.fleet  import Fleet
 from nixt.parse  import parse
