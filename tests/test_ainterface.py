@@ -11,10 +11,9 @@ import unittest
 
 
 import nixt
-import nixt.auto
+import nixt.cache
 import nixt.client
 import nixt.cmds
-import nixt.disk
 import nixt.engine
 import nixt.event
 import nixt.fleet
@@ -30,10 +29,9 @@ from nixt.object import *
 
 
 PACKAGE = [
-    'auto',
+    'cache',
     'client',
     'cmds',
-    'disk',
     'engine',
     'event',
     'fleet',
