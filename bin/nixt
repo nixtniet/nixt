@@ -48,10 +48,10 @@ signal.signal(signal.SIGHUP, handler)
 class Main:
 
     debug   = False
-    ignore  = ["mbx", "mdl", "rst", "udp", "web", "wsd"]
+    ignore  = ["mbx", "lst", "mdl", "rst", "udp", "web", "wsd"]
     init    = ""
     level   = "warn"
-    md5     = "a0079568835319d811da177a7dfa0f31"
+    md5     = "eb65c2bfcc843dfd220ea1b7a3915293"
     name    = Client.__module__.rsplit(".", maxsplit=1)[0].lower()
     opts    = {}
     verbose = False

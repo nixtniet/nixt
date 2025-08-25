@@ -12,7 +12,6 @@ NAMES = {
     "fnd": "fnd",
     "imp": "rss",
     "log": "log",
-    "ls": "lst",
     "mre": "irc",
     "nme": "rss",
     "pwd": "irc",
@@ -30,16 +29,15 @@ NAMES = {
 
 
 MD5 = {
-    "fnd": "891d52cc128819e494887478f617ee1b",
-    "irc": "96c1789622c256c7600a2bc36fc80cbc",
-    "log": "6e13f5310bac92e6eab7a7c1d9bafd52",
-    "lst": "216109ce1746902d9f418eb9cf0e8519",
+    "fnd": "9e58d9a32e833037178b35daa7510e90",
+    "irc": "1ba37f2bafad9bbde40a9efeb91e54ec",
+    "log": "830d53d78dba7ec8249b21c1acd0c288",
     "req": "793704d64443c4f19512924e294943ea",
-    "rss": "5e7cc225583c431b7f84d0ca061d355e",
+    "rss": "2b2671baa887aa193ba9cd10cb740c08",
     "slg": "0b71453a0d4dd3b21618c7df3c8cd6a4",
     "tbl": "d41d8cd98f00b204e9800998ecf8427e",
-    "tdo": "e44c84040fbddb6f88166b0d5163f1f2",
+    "tdo": "c9af488c85f46829a12be8043de90760",
     "thr": "7e6bd817fd8df35820e0d2aea4dc5591",
-    "tmr": "627ed2cd7e77808de72131fda8d38d3d",
+    "tmr": "a89ae7faf83aa8817c53770df8b6c81d",
     "upt": "ceeafab9201ee2bba7289aeeae355acf",
 }
