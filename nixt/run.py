@@ -19,9 +19,9 @@ STARTTIME = time.time()
 
 class Task(threading.Thread):
 
-    def __init__(self, func, thrname, *args, daemon=True, **kwargs):
-        super().__init__(None, self.run, thrname, (), daemon=daemon)
-        self.name = thrname or kwargs.get("name", name(func))
+    def __init__(self, func, *args, daemon=True, **kwargs):
+        super().__init__(None, self.run, None, (), daemon=daemon)
+        self.name = kwargs.get("name", name(func))
         self.queue = queue.Queue()
         self.result = None
         self.starttime = time.time()
@@ -53,7 +53,7 @@ class Task(threading.Thread):
 
 
 def launch(func, *args, **kwargs):
-    thread = Task(func, None, *args, **kwargs)
+    thread = Task(func, *args, **kwargs)
     thread.start()
     return thread
 
