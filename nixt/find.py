@@ -8,9 +8,9 @@ import os
 import time
 
 
-from .cache  import Cache, read
+from .cache  import Cache, fqn, read
 from .object import Object, update
-from .paths  import Workdir, fqn, j, long, store
+from .paths  import Workdir, j, long, store
 
 
 def find(clz, selector=None, deleted=False, matching=False, disk=False):
@@ -101,5 +101,6 @@ def __dir__():
     return (
         'find',
         'last',
-        'search'
+        'search',
+        'strip'
     )

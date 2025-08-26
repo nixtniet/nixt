@@ -4,13 +4,13 @@
 "disk"
 
 
+import datetime
 import json
-import pathlib
 import threading
 
 
 from .object import update
-from .paths  import Workdir, cdir, fqn, store
+from .paths  import Workdir, cdir, j, store
 from .serial import dump, load
 
 
@@ -48,6 +48,21 @@ class Cache:
             Cache.add(path, obj)
 
 
+def fqn(obj):
+    kin = str(type(obj)).split()[-1][1:-2]
+    if kin == "type":
+        kin = f"{obj.__module__}.{obj.__name__}"
+    return kin
+
+
+def getpath(obj):
+    return ident(obj)
+
+
+def ident(obj):
+    return j(fqn(obj), *str(datetime.datetime.now()).split())
+
+
 def read(obj, path, disk=False):
     with lock:
         if disk or Cache.disk:
@@ -63,8 +78,10 @@ def read(obj, path, disk=False):
             update(obj, Cache.get(path))
 
  
-def write(obj, path, disk=False):
+def write(obj, path=None, disk=False):
     with lock:
+        if path is None:
+            path = getpath(obj)
         if disk or Cache.disk:
             ppath = store(path)
             cdir(ppath)
@@ -77,6 +94,10 @@ def write(obj, path, disk=False):
 def __dir__():
     return (
         'Cache',
+        'cdir',
+        'fqn',
+        'getpath',
+        'ident',
         'read',
         'write'
     )

@@ -26,7 +26,6 @@ from nixt.find   import find, fntime, last
 from nixt.fleet  import Fleet
 from nixt.func   import fmt
 from nixt.object import Object, update
-from nixt.paths  import getpath
 from nixt.run    import launch
 from nixt.timer  import Repeater
 from nixt.utils  import elapsed, rlog, spl
@@ -423,7 +422,7 @@ def imp(event):
             update(rss, obj)
             rss.rss = obj.xmlUrl
             rss.insertid = insertid
-            write(rss, getpath(rss))
+            write(rss)
             nrs += 1
     if nrskip:
         event.reply(f"skipped {nrskip} urls.")
@@ -497,7 +496,7 @@ def rss(event):
             return
     rss = Rss()
     rss.rss = event.args[0]
-    write(rss, getpath(rss))
+    write(rss)
     event.done()
 
 

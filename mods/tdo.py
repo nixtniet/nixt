@@ -9,7 +9,6 @@ import time
 
 from nixt.cache import write
 from nixt.find  import find, fntime
-from nixt.paths import ident
 from nixt.utils import elapsed
 
 
@@ -47,5 +46,5 @@ def tdo(event):
         return
     obj = Todo()
     obj.txt = event.rest
-    write(obj, ident(obj), disk=True)
+    write(obj)
     event.done()

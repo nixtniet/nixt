@@ -229,7 +229,7 @@ def main():
         nrcpu = os.cpu_count()
     else:
         nrcpu = 1
-    Pool.init(CLI, nrcpu)
+    Pool.init(Buffer, nrcpu*2)
     nrs = Main.index or 1
     thrs = []
     for _nr in range(nrs):

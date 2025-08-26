@@ -10,7 +10,6 @@ import time
 from nixt.cache  import write
 from nixt.find   import find, fntime
 from nixt.object import Object
-from nixt.paths  import ident
 from nixt.utils  import elapsed
 
 
@@ -33,5 +32,5 @@ def log(event):
         return
     obj = Log()
     obj.txt = event.rest
-    write(obj, ident(obj))
+    write(obj)
     event.done()

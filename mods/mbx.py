@@ -13,7 +13,6 @@ from nixt.cache  import write
 from nixt.find   import find
 from nixt.func   import fmt
 from nixt.object import Object, keys, update
-from nixt.paths  import ident
 from nixt.utils  import elapsed
 
 
@@ -116,7 +115,7 @@ def mbx(event):
             if payload.get_content_type() == 'text/plain':
                 obj.text += payload.get_payload()
         obj.text = obj.text.replace("\\n", "\n")
-        write(obj, ident(obj))
+        write(obj)
         nrs += 1
     if nrs:
         event.reply("ok %s" % nrs)

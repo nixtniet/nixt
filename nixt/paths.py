@@ -23,21 +23,6 @@ def cdir(path):
     pth.parent.mkdir(parents=True, exist_ok=True)
 
 
-def fqn(obj):
-    kin = str(type(obj)).split()[-1][1:-2]
-    if kin == "type":
-        kin = f"{obj.__module__}.{obj.__name__}"
-    return kin
-
-
-def getpath(obj):
-    return ident(obj)
-
-
-def ident(obj):
-    return j(fqn(obj), *str(datetime.datetime.now()).split())
-
-
 def long(name):
     split = name.split(".")[-1].lower()
     res = name
@@ -67,10 +52,8 @@ def __dir__():
     return (
         'Workdir',
         'cdir',
-        'fqn',
-        'getpath',
-        'ident',
         'long',
         'skel',
-        'store'
+        'store',
+        'types'
     )

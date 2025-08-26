@@ -13,7 +13,7 @@ import threading
 import time
 
 
-from nixt.cache  import write
+from nixt.cache  import getpath, ident, write
 from nixt.cmds   import command
 from nixt.cmds   import Event as IEvent
 from nixt.find   import last
@@ -21,7 +21,6 @@ from nixt.fleet  import Fleet
 from nixt.func   import edit, fmt
 from nixt.object import keys
 from nixt.output import Output
-from nixt.paths  import getpath, ident
 from nixt.run    import launch
 from nixt.utils  import rlog
 
