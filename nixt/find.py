@@ -13,37 +13,37 @@ from .object import Object, update
 from .paths  import Workdir, j, long, store
 
 
-def find(clz, selector=None, deleted=False, matching=False, disk=False):
+def find(clz, selector=None, deleted=False, matching=False):
     if selector is None:
         selector = {}
-    if disk or Cache.disk:
+    if Cache.disk:
         paths = fns(clz)
     else:
         paths = Cache.typed(long(clz))
-    for pth  in paths:
-        ppth = strip(pth)
-        obj = Cache.get(ppth)
+    for pth in paths:
+        obj = Cache.get(pth)
         if not obj:
             obj = Object()
-            read(obj, ppth, disk)
-            Cache.add(ppth, obj)
+            read(obj, pth)
+            Cache.add(pth, obj)
         if not deleted and isdeleted(obj):
             continue
         if selector and not search(obj, selector, matching):
             continue
-        yield ppth, obj
+        yield pth, obj
 
 
 def fns(clz):
     dname = ''
-    pth = store(long(clz))
+    clz = long(clz)
+    pth = store(clz)
     for rootdir, dirs, _files in os.walk(pth, topdown=False):
         if dirs:
             for dname in sorted(dirs):
                 if dname.count('-') == 2:
                     ddd = j(rootdir, dname)
                     for fll in os.listdir(ddd):
-                        yield j(ddd, fll)
+                        yield j(clz, dname, fll)
 
 
 def fntime(daystr):

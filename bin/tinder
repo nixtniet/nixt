@@ -19,6 +19,7 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
+from nixt.cache  import Cache
 from nixt.client import Client
 from nixt.cmds   import Commands, command,  scan, table
 from nixt.event  import Event
@@ -266,5 +267,6 @@ if __name__ == "__main__":
     if "v" in Main.opts:
         print(f"{Pool.nrcpu} cpu used")
         print(f"{nrevents} events left.")
+        print(f"{Cache.types}")
         print(f"total: {lap} nrs: {nrs} cmds: {nrcommand} call: %.6fs" % percall)
     sys.exit() 

@@ -20,6 +20,8 @@ class Workdir:
 
 def cdir(path):
     pth = pathlib.Path(path)
+    if os.path.exists(pth):
+        return
     pth.parent.mkdir(parents=True, exist_ok=True)
 
 

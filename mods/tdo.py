@@ -24,7 +24,7 @@ def dne(event):
         return
     selector = {'txt': event.args[0]}
     nmr = 0
-    for fnm, obj in find('todo', selector, disk=True):
+    for fnm, obj in find('todo', selector):
         nmr += 1
         obj.__deleted__ = True
         write(obj, fnm)
@@ -37,7 +37,7 @@ def dne(event):
 def tdo(event):
     if not event.rest:
         nmr = 0
-        for fnm, obj in find('todo', disk=True):
+        for fnm, obj in find('todo'):
             lap = elapsed(time.time()-fntime(fnm))
             event.reply(f'{nmr} {obj.txt} {lap}')
             nmr += 1
