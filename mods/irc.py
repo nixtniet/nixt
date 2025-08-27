@@ -13,7 +13,7 @@ import threading
 import time
 
 
-from nixt.cache  import getpath, ident, write
+from nixt.cache  import ident, write
 from nixt.cmds   import command
 from nixt.cmds   import Event as IEvent
 from nixt.find   import last
@@ -32,9 +32,6 @@ initlock = threading.RLock()
 saylock = threading.RLock()
 
 
-"init"
-
-
 def init():
     with initlock:
         irc = IRC()
@@ -45,9 +42,6 @@ def init():
         else:
             irc.stop()
         return irc
-
-
-"config"
 
 
 class Main:
@@ -622,7 +616,7 @@ def cfg(event):
         )
     else:
         edit(config, event.sets)
-        write(config, fnm or getpath(config))
+        write(config, fnm or ident(config))
 
 
 def mre(event):

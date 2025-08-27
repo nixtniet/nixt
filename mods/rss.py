@@ -21,7 +21,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.cache  import write 
+from nixt.cache  import ident, write 
 from nixt.find   import find, fntime, last
 from nixt.fleet  import Fleet
 from nixt.func   import fmt
@@ -40,16 +40,10 @@ errors = []
 skipped = []
 
 
-"init"
-
-
 def init():
     fetcher = Fetcher()
     fetcher.start()
     return fetcher
-
-
-"classes"
 
 
 class Feed:
@@ -127,11 +121,11 @@ class Fetcher(Object):
                 if uurl in seen:
                     continue
                 if self.dosave:
-                    write(fed, getpath(fed))
+                    write(fed, ident(fed))
                 result.append(fed)
             setattr(Fetcher.seen, feed.rss, urls)
             if not Fetcher.seenfn:
-                Fetcher.seenfn = getpath(self.seen)
+                Fetcher.seenfn = ident(self.seen)
             write(Fetcher.seen, Fetcher.seenfn)
         if silent:
             return counter

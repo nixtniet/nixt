@@ -6,6 +6,7 @@
 
 import datetime
 import json
+import os
 import threading
 
 
@@ -55,17 +56,13 @@ def fqn(obj):
     return kin
 
 
-def getpath(obj):
-    return ident(obj)
-
-
 def ident(obj):
-    return j(fqn(obj), *str(datetime.datetime.now()).split())
+    return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
 
 
-def read(obj, path, disk=False):
+def read(obj, path):
     with lock:
-        if disk or Cache.disk:
+        if Cache.disk:
             ppath = store(path)
             with open(ppath, "r", encoding="utf-8") as fpt:
                 try:
@@ -78,11 +75,11 @@ def read(obj, path, disk=False):
             update(obj, Cache.get(path))
 
  
-def write(obj, path=None, disk=False):
+def write(obj, path=None):
     with lock:
         if path is None:
-            path = getpath(obj)
-        if disk or Cache.disk:
+            path = ident(obj)
+        if Cache.disk:
             ppath = store(path)
             cdir(ppath)
             with open(ppath, "w", encoding="utf-8") as fpt:
@@ -94,9 +91,7 @@ def write(obj, path=None, disk=False):
 def __dir__():
     return (
         'Cache',
-        'cdir',
         'fqn',
-        'getpath',
         'ident',
         'read',
         'write'
