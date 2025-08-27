@@ -32,17 +32,11 @@ from nixt.run    import launch
 from nixt.utils  import level, spl
 
 
-"handlers"
-
-
 def handler(signum, frame):
     out("handler called!")
 
 
 signal.signal(signal.SIGHUP, handler)
-
-
-"config"
 
 
 class Main:
@@ -51,7 +45,7 @@ class Main:
     ignore  = ["mbx", "lst", "mdl", "rst", "udp", "web", "wsd"]
     init    = ""
     level   = "warn"
-    md5     = "eb65c2bfcc843dfd220ea1b7a3915293"
+    md5     = "e9f255ee6459f6fd56adc380d2705e43"
     name    = Client.__module__.rsplit(".", maxsplit=1)[0].lower()
     opts    = {}
     verbose = False
@@ -155,8 +149,9 @@ def background():
     privileges()
     level(Main.level or "debug")
     pidfile(pidname(Main.name))
-    if Main.md5 and sums(Main.md5):
-        table()
+    if Main.md5 and not sums(Main.md5):
+        logging.error("table sum doesn't match")
+    table()
     Commands.add(cmd)
     Commands.add(ver)
     inits(Main.init or "irc,rss")
@@ -170,12 +165,13 @@ def console():
     Main.verbose = Main.sets.get("verbose", Main.verbose)
     Main.level   = Main.sets.get("level", Main.level or "warn")
     level(Main.level)
-    if Main.md5 and sums(Main.md5):
-        table()
-    Commands.add(cmd)
-    Commands.add(ver)
     if "v" in Main.opts:
         banner()
+    if Main.md5 and not sums(Main.md5, silent=True):
+        logging.error("table sum doesn't match")
+    table(True)
+    Commands.add(cmd)
+    Commands.add(ver)
     for _mod, thr in inits(Main.init):
         if "w" in Main.opts:
             thr.join(30.0)
@@ -192,8 +188,9 @@ def control():
     Main.verbose = Main.sets.get("verbose", Main.verbose)
     Main.level   = Main.sets.get("level", Main.level or "warn")
     level(Main.level or "warn")
-    if Main.md5 and sums(Main.md5):
-        table()
+    if Main.md5 and not sums(Main.md5, silent=True):
+        logging.error("table sum doesn't match")
+    table()
     Commands.add(cmd)
     Commands.add(md5)
     Commands.add(tbl)
@@ -207,8 +204,9 @@ def service():
     banner()
     privileges()
     pidfile(pidname(Main.name))
-    if Main.md5 and sums(Main.md5):
-        table()
+    if Main.md5 and not sums(Main.md5):
+        logging.error("table sum doesn't match")
+    table()
     Commands.add(cmd)
     Commands.add(ver)
     inits(Main.init or "irc,rss")

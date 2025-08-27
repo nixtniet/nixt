@@ -85,8 +85,8 @@ def scan(mod):
             Commands.add(cmdz, mod)
 
 
-def table():
-    tbl = mod("tbl")
+def table(silent=False):
+    tbl = mod("tbl", silent=silent)
     names = getattr(tbl, "NAMES", None)
     if names:
         Commands.names.update(names)

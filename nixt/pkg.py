@@ -37,7 +37,7 @@ def md5sum(path):
         return hashlib.md5(txt).hexdigest()
 
 
-def mod(name, debug=False):
+def mod(name, debug=False, silent=False):
     with lock:
         module = None
         mname = f"{Mods.pname}.{name}"
@@ -47,7 +47,8 @@ def mod(name, debug=False):
             if not os.path.exists(pth):
                 return
             if md5sum(pth) != Mods.md5s.get(name, None):
-                logging.info(f"{name} md5sum doesn't match")
+                if not silent:
+                    logging.info(f"{name} md5sum doesn't match")
                 if Mods.bork:
                     return
             spec = importlib.util.spec_from_file_location(mname, pth)
@@ -60,12 +61,12 @@ def mod(name, debug=False):
         return module
 
 
-def mods(names=""):
+def mods(names="", debug=False, silent=False):
     res = []
     for nme in sorted(modules(Mods.path)):
         if names and nme not in spl(names):
             continue
-        module = mod(nme)
+        module = mod(nme, debug, silent)
         if not module:
             continue
         res.append(module)
@@ -80,11 +81,11 @@ def modules(mdir=""):
            ])
 
 
-def sums(md5):
+def sums(md5, silent=False):
     pth = j(Mods.path, "tbl.py")
     if os.path.exists(pth) and (not md5 or (md5sum(pth) == md5)):
         try:
-            module = mod("tbl")
+            module = mod("tbl", silent=silent)
         except FileNotFoundError:
             return {}
         sms =  getattr(module, "MD5", None)
