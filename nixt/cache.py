@@ -62,7 +62,10 @@ def ident(obj):
 
 def read(obj, path):
     with lock:
-        if Cache.disk:
+        val = Cache.get(path)
+        if val:
+            update(obj, val)
+        elif Cache.disk:
             ppath = store(path)
             with open(ppath, "r", encoding="utf-8") as fpt:
                 try:

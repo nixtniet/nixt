@@ -21,11 +21,8 @@ def find(clz, selector=None, deleted=False, matching=False):
     else:
         paths = Cache.typed(long(clz))
     for pth in paths:
-        obj = Cache.get(pth)
-        if not obj:
-            obj = Object()
-            read(obj, pth)
-            Cache.add(pth, obj)
+        obj = Object()
+        read(obj, pth)
         if not deleted and isdeleted(obj):
             continue
         if selector and not search(obj, selector, matching):

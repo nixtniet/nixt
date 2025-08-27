@@ -147,8 +147,7 @@ class Pool:
         with Pool.lock:
             if Pool.nrlast >= Pool.nrcpu-1:
                 Pool.nrlast = 0
-            clt = Pool.clients[Pool.nrlast]
-            clt.put(evt)
+            Pool.clients[Pool.nrlast].put(evt)
             Pool.nrlast += 1
 
 
