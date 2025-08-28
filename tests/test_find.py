@@ -7,10 +7,9 @@
 import unittest
 
 
-from nixt.cache  import write
+from nixt.cache  import ident, write
 from nixt.find   import find
 from nixt.object import Object
-from nixt.paths  import ident
 
 
 class TestFind(unittest.TestCase):

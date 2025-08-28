@@ -16,11 +16,7 @@ from nixt.utils import elapsed
 
 def fnd(event):
     if not event.rest:
-        if Cache.disk:
-            tps = types()
-        else:
-            tps = Cache.types
-        res = sorted([x.split('.')[-1].lower() for x in tps])
+        res = sorted([x.split('.')[-1].lower() for x in types()])
         if res:
             event.reply(",".join(res))
         return

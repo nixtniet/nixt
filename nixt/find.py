@@ -16,13 +16,13 @@ from .paths  import Workdir, j, long, store
 def find(clz, selector=None, deleted=False, matching=False):
     if selector is None:
         selector = {}
-    if Cache.disk:
-        paths = fns(clz)
-    else:
-        paths = Cache.typed(long(clz))
-    for pth in paths:
-        obj = Object()
-        read(obj, pth)
+    clz = long(clz)
+    for pth in fns(clz):
+        obj = Cache.get(pth)
+        if not obj:
+            obj = Object()
+            read(obj, pth)
+            Cache.add(pth, obj)
         if not deleted and isdeleted(obj):
             continue
         if selector and not search(obj, selector, matching):

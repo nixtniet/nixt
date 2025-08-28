@@ -327,8 +327,6 @@ def wrap(func):
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
-
-
 def main():
     Mods.ignore = Main.ignore 
     skel()
@@ -339,8 +337,6 @@ def main():
         Main.init = ",".join(modules())
     if check("v"):
         Main.opts["v"] = True
-    if check("e"):
-        Cache.disk = False
     if check("c"):
         wrap(console)
     elif check("d"):

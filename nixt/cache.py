@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"disk"
+"cache"
 
 
 import datetime
@@ -20,16 +20,12 @@ lock = threading.RLock()
 
 class Cache:
 
-    disk = True
     objs = {}
     types = []
 
     @staticmethod
     def add(path, obj):
         Cache.objs[path] = obj
-        typ = fqn(obj)
-        if typ not in Cache.types:
-            Cache.types.append(typ)
 
     @staticmethod
     def get(path):
@@ -62,33 +58,25 @@ def ident(obj):
 
 def read(obj, path):
     with lock:
-        val = Cache.get(path)
-        if val:
-            update(obj, val)
-        elif Cache.disk:
-            ppath = store(path)
-            with open(ppath, "r", encoding="utf-8") as fpt:
-                try:
-                    update(obj, load(fpt))
-                except json.decoder.JSONDecodeError as ex:
-                    ex.add_note(path)
-                    raise ex
-            Cache.update(path, obj)
-        else:
-            update(obj, Cache.get(path))
+        ppath = store(path)
+        with open(ppath, "r", encoding="utf-8") as fpt:
+            try:
+                update(obj, load(fpt))
+            except json.decoder.JSONDecodeError as ex:
+                ex.add_note(path)
+                raise ex
+        Cache.update(path, obj)
 
  
 def write(obj, path=None):
     with lock:
         if path is None:
             path = ident(obj)
-        if Cache.disk:
-            ppath = store(path)
-            cdir(ppath)
-            with open(ppath, "w", encoding="utf-8") as fpt:
-                dump(obj, fpt, indent=4)
+        ppath = store(path)
+        cdir(ppath)
+        with open(ppath, "w", encoding="utf-8") as fpt:
+            dump(obj, fpt, indent=4)
         Cache.update(path, obj)
-        return path
 
 
 def __dir__():
