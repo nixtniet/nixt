@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"runtime"
+"threads"
 
 
 import logging
@@ -11,17 +11,14 @@ import threading
 import _thread
 
 
-from .func import name
+lock = threading.RLock()
 
 
-STARTTIME = time.time()
+class Thread(threading.Thread):
 
-
-class Task(threading.Thread):
-
-    def __init__(self, func, *args, daemon=True, **kwargs):
-        super().__init__(None, self.run, None, (), daemon=daemon)
-        self.name = kwargs.get("name", name(func))
+    def __init__(self, func, thrname, *args, daemon=True, **kwargs):
+        super().__init__(None, self.run, thrname, (), daemon=daemon)
+        self.name = thrname or kwargs.get("name", name(func))
         self.queue = queue.Queue()
         self.result = None
         self.starttime = time.time()
@@ -53,14 +50,30 @@ class Task(threading.Thread):
 
 
 def launch(func, *args, **kwargs):
-    thread = Task(func, *args, **kwargs)
-    thread.start()
-    return thread
+    with lock:
+        thread = Thread(func, None, *args, **kwargs)
+        thread.start()
+        return thread
+
+
+def name(obj):
+    typ = type(obj)
+    if "__builtins__" in dir(typ):
+        return obj.__name__
+    if "__self__" in dir(obj):
+        return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
+    if "__class__" in dir(obj) and "__name__" in dir(obj):
+        return f"{obj.__class__.__name__}.{obj.__name__}"
+    if "__class__" in dir(obj):
+        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
+    if "__name__" in dir(obj):
+        return f"{obj.__class__.__name__}.{obj.__name__}"
+    return ""
 
 
 def __dir__():
     return (
-        'STARTTIME',
-        'Task',
-        'launch'
+        'Thread',
+        'launch',
+        'name'
     )

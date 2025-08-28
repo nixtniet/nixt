@@ -56,8 +56,8 @@ def loads(s, *args, **kw):
 
 def __dir__():
     return (
-        'dump',
-        'dumps',
-        'load',
-        'loads'
+       'dump',
+       'dumps',
+       'load',
+       'loads'
     )

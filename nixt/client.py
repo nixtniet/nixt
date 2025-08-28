@@ -1,14 +1,14 @@
 # This file is placed in the Public Domain.
 
 
-"clients"
+"client"
 
 
 import threading
 
 
-from .engine import Engine
 from .fleet  import Fleet
+from .engine import Engine
 
 
 class Client(Engine):
@@ -39,4 +39,5 @@ class Client(Engine):
 def __dir__():
     return (
         'Client',
+        'Main'
     )

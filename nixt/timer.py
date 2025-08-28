@@ -8,7 +8,10 @@ import threading
 import time
 
 
-from .run import launch, name
+from .thread import launch, name
+
+
+STARTTIME = time.time()
 
 
 class Timy(threading.Timer):
@@ -58,6 +61,7 @@ class Repeater(Timed):
 
 def __dir__():
     return (
+        'STARTTIME',
         'Repeater',
         'Timed'
     )
