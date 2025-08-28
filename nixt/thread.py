@@ -11,14 +11,14 @@ import threading
 import _thread
 
 
-lock = threading.RLock()
+STARTTIME = time.time()
 
 
 class Thread(threading.Thread):
 
-    def __init__(self, func, thrname, *args, daemon=True, **kwargs):
-        super().__init__(None, self.run, thrname, (), daemon=daemon)
-        self.name = thrname or kwargs.get("name", name(func))
+    def __init__(self, func, *args, daemon=True, **kwargs):
+        super().__init__(None, self.run, None, (), daemon=daemon)
+        self.name = kwargs.get("name", name(func))
         self.queue = queue.Queue()
         self.result = None
         self.starttime = time.time()
@@ -50,10 +50,9 @@ class Thread(threading.Thread):
 
 
 def launch(func, *args, **kwargs):
-    with lock:
-        thread = Thread(func, None, *args, **kwargs)
-        thread.start()
-        return thread
+    thread = Task(func, *args, **kwargs)
+    thread.start()
+    return thread
 
 
 def name(obj):
@@ -73,6 +72,7 @@ def name(obj):
 
 def __dir__():
     return (
+        'STARTTIME',
         'Thread',
         'launch',
         'name'

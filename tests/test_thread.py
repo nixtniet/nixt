@@ -1,19 +1,23 @@
 # This file is placed in the Public Domain.
 
 
-"thread tests"
+"runtime"
 
 
 import unittest
 
 
-from nixt.object import Object
-from nixt.thread import name
+from nixt.thread import Thread 
 
 
-class TestComposite(unittest.TestCase):
+def func():
+    return "ok"
 
-    def test_name(self):
-        obj = Object()
-        nme = name(obj)
-        self.assertEqual(nme, "nixt.object.Object")
+
+class TestThread(unittest.TestCase):
+
+    def test_construct(self):
+        task = Thread(func)
+        task.start()
+        result = task.join()
+        self.assertEqual(result, "ok")
