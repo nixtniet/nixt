@@ -2,3 +2,7 @@
 
 
 __doc__ = __name__.upper()
+
+
+from .object import *
+from .serial import *

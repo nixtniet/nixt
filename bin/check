@@ -9,7 +9,7 @@ import os
 import sys
 
 
-IGNORE = ["__main__.py"]
+IGNORE = []
 NAME   = "nixt"
 
 
