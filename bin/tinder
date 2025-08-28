@@ -266,6 +266,5 @@ if __name__ == "__main__":
     if "v" in Main.opts:
         print(f"{Pool.nrcpu} cpu used")
         print(f"{nrevents} events left.")
-        print(f"{",".join([x.split(".")[-1] for x in Cache.types])}")
         print(f"total: {lap} nrs: {nrs} cmds: {nrcommand} call: %.6fs" % percall)
     sys.exit() 

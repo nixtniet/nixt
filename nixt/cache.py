@@ -21,7 +21,6 @@ lock = threading.RLock()
 class Cache:
 
     objs = {}
-    types = []
 
     @staticmethod
     def add(path, obj):

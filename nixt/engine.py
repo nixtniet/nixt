@@ -24,9 +24,11 @@ class Engine:
         return event.type in self.cbs
 
     def callback(self, event):
+        if not event.txt:
+            return
         func = self.cbs.get(event.type, None)
         if func:
-            event._thr = launch(func, event)
+            event._thr = launch(func, event, name=event.txt.split()[0])
 
     def loop(self):
         while not self.stopped.is_set():

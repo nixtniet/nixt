@@ -39,7 +39,7 @@ def fns(clz):
             for dname in sorted(dirs):
                 if dname.count('-') == 2:
                     ddd = j(rootdir, dname)
-                    for fll in os.listdir(ddd):
+                    for fll in sorted(os.listdir(ddd), key=lambda x: fntime(x)):
                         yield j(clz, dname, fll)
 
 
@@ -50,7 +50,10 @@ def fntime(daystr):
         datestr, rest = datestr.rsplit(".", 1)
     else:
         rest = ""
-    timed = time.mktime(time.strptime(datestr, "%Y-%m-%d %H:%M:%S"))
+    try:
+        timed = time.mktime(time.strptime(datestr, "%Y-%m-%d %H:%M:%S"))
+    except ValueError:
+        timed = time.mktime(time.strptime(datestr, "%H:%M:%S"))
     if rest:
         timed += float("." + rest)
     return float(timed)
