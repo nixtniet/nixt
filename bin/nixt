@@ -145,6 +145,7 @@ def control():
     table()
     Commands.add(cmd)
     Commands.add(md5)
+    Commands.add(srv)
     Commands.add(tbl)
     Commands.add(ver)
     csl = CLI()
