@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nixt"
-version = "400"
+version = "401"
 authors = [
     {name = "Bart Thate", email = "nixtniet@gmail.com" },
 ]
@@ -30,14 +30,8 @@ classifiers = [
 
 
 [tool.setuptools]
-include-package-data = false
-
-
-[tool.setuptools.packages.find]
-include = [
+packages = [
     'nixt',
-    'nixt.*'
+    'nixt.modules'
 ]
-exclude = [
-    'tests*',
-]
+include-package-data = true
