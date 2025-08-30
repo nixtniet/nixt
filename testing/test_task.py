@@ -7,17 +7,17 @@
 import unittest
 
 
-from nixt.runtime import Thread 
+from nixt.runtime import Task
 
 
 def func():
     return "ok"
 
 
-class TestThread(unittest.TestCase):
+class TestTask(unittest.TestCase):
 
     def test_construct(self):
-        task = Thread(func)
+        task = Task(func)
         task.start()
         result = task.join()
         self.assertEqual(result, "ok")

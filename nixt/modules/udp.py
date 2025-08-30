@@ -12,8 +12,8 @@ import time
 
 
 from ..clients import Fleet
+from ..handler import launch, rlog
 from ..objects import Object
-from ..runtime import launch, rlog
 
 
 DEBUG = True

@@ -9,8 +9,7 @@ import threading
 import time
 
 
-from .handler import Handler
-from .runtime import launch
+from .handler import Handler, launch
 
 
 class Client(Handler):

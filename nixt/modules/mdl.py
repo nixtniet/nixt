@@ -9,10 +9,9 @@ import time
 
 
 from ..clients import Fleet
-from ..command import elapsed
-from ..handler import Event
+from ..handler import Event, rlog
 from ..objects import Object, construct, keys
-from ..runtime import Repeater, rlog
+from .         import Repeater, elapsed
 
 
 DAY = 24*60*60

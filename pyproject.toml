@@ -34,4 +34,4 @@ packages = [
     'nixt',
     'nixt.modules'
 ]
-include-package-data = true
+include-package-data = false

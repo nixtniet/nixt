@@ -20,9 +20,10 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client, Fleet, Output
-from nixt.command import Commands, Main, command, mods, parse, scan, table
+from nixt.command import Commands, command, mods, parse, scan, table
 from nixt.command import elapsed, spl
 from nixt.handler import Event
+from nixt.modules import Main
 from nixt.objects import Object, keys
 from nixt.persist import Workdir, setwd, skel
 from nixt.runtime import STARTTIME, launch
