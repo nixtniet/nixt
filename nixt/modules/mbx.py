@@ -11,7 +11,7 @@ import time
 
 from ..persist import find, ident, store, write
 from ..objects import Object, fmt, keys, update
-from .         import elapsed
+from ..runtime import elapsed
 
 
 from .tmr import extract_date

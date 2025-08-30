@@ -20,10 +20,10 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.clients import Client, Fleet
 from nixt.command import Commands, command, inits, parse, scan, table
-from nixt.handler import Event, level
 from nixt.modules import Main
 from nixt.package import Mods, md5sum, mods, modules, sums
 from nixt.persist import pidname, setwd
+from nixt.runtime import Event, level
 
 
 Mods.ignore = ["wsd",]

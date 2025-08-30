@@ -13,9 +13,9 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from ..handler import launch, rlog
 from ..objects import Object
 from ..persist import Workdir, types
+from ..runtime import launch, rlog
 
 
 DEBUG = False

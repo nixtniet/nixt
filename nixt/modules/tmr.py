@@ -10,9 +10,8 @@ import time
 
 
 from ..clients import Fleet
-from ..handler import launch, rlog
 from ..persist import find, ident, store, write
-from .         import Timed, elapsed
+from ..runtime import Timed, elapsed, launch, rlog
 
 
 def init():

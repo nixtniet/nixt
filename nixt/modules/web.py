@@ -14,7 +14,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from ..objects import Object
-from ..handler import launch, rlog
+from ..runtime import launch, rlog
 
 
 DEBUG = False
