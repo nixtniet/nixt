@@ -20,8 +20,8 @@ import nixt.command
 import nixt.handler
 import nixt.modules
 import nixt.objects
+import nixt.package
 import nixt.persist
-import nixt.runtime
 
 
 from nixt.objects import *
@@ -33,8 +33,8 @@ PACKAGE = [
     'handler',
     'modules',
     'objects',
-    'persist',
-    'runtime'
+    'package',
+    'persist'
 ]
 
 
