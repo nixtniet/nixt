@@ -5,13 +5,10 @@
 
 
 import inspect
-import logging
-import _thread
 
 
 from .clients import Fleet
-from .modular import mod, spl
-from .runtime import launch
+from .kernels import mod
 
 
 class Commands:
@@ -46,22 +43,6 @@ def command(evt):
         func(evt)
         Fleet.display(evt)
     evt.ready()
-
-
-def inits(names):
-    modz = []
-    for name in spl(names):
-        try:
-            module = mod(name)
-            if not module:
-                continue
-            if "init" in dir(module):
-                thr = launch(module.init)
-                modz.append((module, thr))
-        except Exception as ex:
-            logging.exception(ex)
-            _thread.interrupt_main()
-    return modz
 
 
 def scan(module):

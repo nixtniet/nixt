@@ -19,14 +19,14 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client, Fleet
-from nixt.command import Commands, command, inits, parse, scan, table
-from nixt.modular import Mods, md5sum, mods, modules, sums
+from nixt.command import Commands, command,parse, scan, table
+from nixt.kernels import Mods, md5sum, inits, mods, modules, sums
 from nixt.modules import Main
 from nixt.persist import pidname, setwd
 from nixt.runtime import Event, level
 
 
-Mods.ignore = ["wsd",]
+Mods.ignore = ["wsd", "rst", "udp", "web"]
 
 
 class CLI(Client):

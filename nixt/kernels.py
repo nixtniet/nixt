@@ -10,6 +10,10 @@ import logging
 import os
 import sys
 import threading
+import _thread
+
+
+from .runtime import launch
 
 
 loadlock = threading.RLock()
@@ -24,6 +28,22 @@ class Mods:
     path     = os.path.dirname(__file__)
     path     = os.path.join(path, "modules")
     pname    = f"{__package__}.modules"
+
+
+def inits(names):
+    modz = []
+    for name in spl(names):
+        try:
+            module = mod(name)
+            if not module:
+                continue
+            if "init" in dir(module):
+                thr = launch(module.init)
+                modz.append((module, thr))
+        except Exception as ex:
+            logging.exception(ex)
+            _thread.interrupt_main()
+    return modz
 
 
 def md5sum(path):

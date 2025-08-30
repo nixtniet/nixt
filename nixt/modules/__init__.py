@@ -4,7 +4,7 @@
 "modules"
 
 
-from ..modular import modules
+from ..kernels import modules
 
 
 class Main:
