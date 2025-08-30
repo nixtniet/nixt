@@ -20,13 +20,12 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client, Fleet, Output
-from nixt.command import Commands, command, mods, parse, scan, table
-from nixt.command import elapsed, spl
-from nixt.handler import Event
-from nixt.modules import Main
+from nixt.command import Commands, command, parse, scan, table
+from nixt.handler import STARTTIME, Event, launch
+from nixt.modules import Main, elapsed
 from nixt.objects import Object, keys
+from nixt.package import mods, spl
 from nixt.persist import Workdir, setwd, skel
-from nixt.runtime import STARTTIME, launch
 
 
 class Pool:
@@ -82,7 +81,7 @@ param.ver = [""]
 
 pre = Object()
 pre.cfg = ["nick=mekker", ""]
-pre.imp = ["tests/feeds.opml", ""]
+pre.imp = ["testing/feeds.opml", ""]
 pre.log = ["bla", ""]
 pre.rss = ["http://hnrss.org/newest", ""]
 pre.tdo = ["mekker", ""]
