@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.handler import Event
+from nixt.runtime import Event
 
 
 class TestComposite(unittest.TestCase):

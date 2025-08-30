@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.modules import elapsed
+from nixt.runtime import elapsed
 
 
 class TestUtilities(unittest.TestCase):

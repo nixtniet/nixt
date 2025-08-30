@@ -10,8 +10,8 @@ import unittest
 
 
 from nixt.clients import Client, Fleet
-from nixt.handler import Event
 from nixt.objects import values
+from nixt.runtime import Event
 
 
 import nixt.clients

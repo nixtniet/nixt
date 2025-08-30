@@ -7,10 +7,10 @@
 import unittest
 
 
-from nixt.handler import Handler
+from nixt.runtime import Handler
 
 
-class TestEngine(unittest.TestCase):
+class TestHandler(unittest.TestCase):
 
     def testcomposite(self):
         eng = Handler()

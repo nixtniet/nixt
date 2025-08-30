@@ -10,7 +10,7 @@ import _thread
 
 
 from .clients import Fleet
-from .package import mod
+from .modular import mod, spl
 from .runtime import launch
 
 
@@ -138,16 +138,6 @@ def parse(obj, txt=None):
         obj.txt = obj.cmd or ""
 
 
-def spl(txt):
-    try:
-        result = txt.split(",")
-    except (TypeError, ValueError):
-        result = [
-            txt,
-        ]
-    return [x for x in result if x]
-
-
 def __dir__():
     return (
         'Commands',
@@ -159,6 +149,5 @@ def __dir__():
         'modules',
         'parse',
         'scan',
-        'spl',
         'table'
     )

@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.handler import Task
+from nixt.runtime import Task
 
 
 def func():

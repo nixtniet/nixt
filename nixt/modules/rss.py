@@ -22,8 +22,8 @@ from urllib.parse import quote_plus, urlencode
 
 
 from ..clients import Fleet
+from ..modular import spl
 from ..objects import Object, fmt, update
-from ..package import spl
 from ..persist import find, fntime, getpath, last, write
 from ..runtime import Repeater, elapsed, launch, rlog
 

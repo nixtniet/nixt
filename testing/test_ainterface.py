@@ -17,11 +17,11 @@ sys.path.insert(0, os.getcwd())
 import nixt
 import nixt.clients
 import nixt.command
-import nixt.handler
+import nixt.modular
 import nixt.modules
 import nixt.objects
-import nixt.package
 import nixt.persist
+import nixt.runtime
 
 
 from nixt.objects import *
@@ -30,11 +30,11 @@ from nixt.objects import *
 PACKAGE = [
     'clients',
     'command',
-    'handler',
+    'modular',
     'modules',
     'objects',
-    'package',
-    'persist'
+    'persist',
+    'runtime'
 ]
 
 
