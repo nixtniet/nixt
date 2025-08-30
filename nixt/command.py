@@ -35,7 +35,7 @@ class Main:
     otxt     = ""
     sets     = {}
     verbose  = False
-    version  = 130
+    version  = 400
 
 
 class Commands:

@@ -38,3 +38,6 @@ include = [
     'nixt',
     'nixt.*'
 ]
+exclude = [
+    'tests*',
+]
