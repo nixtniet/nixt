@@ -21,39 +21,11 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.clients import Client, Fleet, Output
 from nixt.command import Commands, command, parse, scan, table
-from nixt.modular import mods, spl
+from nixt.kernels import mods
 from nixt.modules import Main
 from nixt.objects import Object, keys
 from nixt.persist import Workdir, setwd, skel
-from nixt.runtime import STARTTIME, Event, elapsed, launch
-
-
-class Pool:
-
-    clients = []
-    lock = threading.RLock()
-    nrcpu = 1
-    nrlast = 0
-
-    @staticmethod
-    def add(clt):
-        Pool.clients.append(clt)
-
-    def init(cls, nr=None):
-        Pool.nrcpu = nr or os.cpu_count
-        for x in range(Pool.nrcpu):
-            clt = cls()
-            clt.start()
-            Pool.add(clt)
-
-    @staticmethod
-    def put(evt):
-        with Pool.lock:
-            if Pool.nrlast >= Pool.nrcpu-1:
-                Pool.nrlast = 0
-            clt = Pool.clients[Pool.nrlast]
-            clt.put(evt)
-            Pool.nrlast += 1
+from nixt.runtime import STARTTIME, Event, elapsed, launch, spl
 
 
 Workdir.wdr = ".test"
@@ -104,8 +76,6 @@ ignore = [
     "dbg",
 ]
 paylock = _thread.allocate_lock()
-
-
 rand = random.SystemRandom()
 
 
@@ -136,6 +106,34 @@ class Buffer(Output):
     def raw(self, txt):
         if "v" in Main.opts:
             print(txt)
+
+
+class Pool:
+
+    clients = []
+    lock = threading.RLock()
+    nrcpu = 1
+    nrlast = 0
+
+    @staticmethod
+    def add(clt):
+        Pool.clients.append(clt)
+
+    def init(cls, nr=None):
+        Pool.nrcpu = nr or os.cpu_count
+        for x in range(Pool.nrcpu):
+            clt = cls()
+            clt.start()
+            Pool.add(clt)
+
+    @staticmethod
+    def put(evt):
+        with Pool.lock:
+            if Pool.nrlast >= Pool.nrcpu-1:
+                Pool.nrlast = 0
+            clt = Pool.clients[Pool.nrlast]
+            clt.put(evt)
+            Pool.nrlast += 1
 
 
 def banner():

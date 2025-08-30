@@ -7,11 +7,11 @@
 import unittest
 
 
-from nixt.modular import Mods
+from nixt.kernels import Kernel
 
 
 class TestPackage(unittest.TestCase):
 
     def test_construct(self):
-        mods = Mods()
-        self.assertEqual(type(mods), Mods)
+        krn = Kernel()
+        self.assertEqual(type(krn), Kernel)

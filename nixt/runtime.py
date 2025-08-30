@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"event handler"
+"runtime"
 
 
 import logging
@@ -11,7 +11,7 @@ import time
 import _thread
 
 
-from .objects import name
+from .objects import Object, name
 
 
 STARTTIME = time.time()
@@ -27,9 +27,10 @@ LEVELS = {
 }
 
 
-class Event:
+class Event(Object):
 
     def __init__(self):
+        Object.__init__(self)
         self._ready = threading.Event()
         self._thr = None
         self.args = []
@@ -106,7 +107,7 @@ class Handler:
         pass
 
 
-class Task(threading.Thread):
+class Thread(threading.Thread):
 
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
@@ -226,7 +227,7 @@ def elapsed(seconds, short=True):
 
 
 def launch(func, *args, **kwargs):
-    thread = Task(func, *args, **kwargs)
+    thread = Thread(func, *args, **kwargs)
     thread.start()
     return thread
 
@@ -248,16 +249,27 @@ def rlog(loglevel, txt, ignore=None):
     logging.log(LEVELS.get(loglevel), txt)
 
 
+def spl(txt):
+    try:
+        result = txt.split(",")
+    except (TypeError, ValueError):
+        result = [
+            txt,
+        ]
+    return [x for x in result if x]
+
+
 def __dir__():
     return (
         'STARTTIME',
         'Event',
         'Handler'
         'Repeater',
-        'Task',
+        'Thread',
         'Timed'
         'launch',
         'level',
         'name',
         'rlog',
+        'spl'
    )

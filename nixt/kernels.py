@@ -19,7 +19,7 @@ from .runtime import launch
 loadlock = threading.RLock()
 
 
-class Mods:
+class Kernel:
 
     checksum = "fd204fbc5dbe4417ccc7f5d0ee9080f6"
     loaded   = []
@@ -55,19 +55,19 @@ def md5sum(path):
 def mod(name, debug=False):
     with loadlock:
         module = None
-        mname = f"{Mods.pname}.{name}"
+        mname = f"{Kernel.pname}.{name}"
         module = sys.modules.get(mname, None)
         if not module:
-            pth = os.path.join(Mods.path, f"{name}.py")
+            pth = os.path.join(Kernel.path, f"{name}.py")
             if not os.path.exists(pth):
                 return None
-            if md5sum(pth) == (hash or Mods.md5s.get(name, None)):
+            if md5sum(pth) == (hash or Kernel.md5s.get(name, None)):
                 logging.error(f"md5 doesn't match on {pth}")
             spec = importlib.util.spec_from_file_location(mname, pth)
             module = importlib.util.module_from_spec(spec)
             sys.modules[mname] = module
             spec.loader.exec_module(module)
-            Mods.loaded.append(module.__name__.split(".")[-1])
+            Kernel.loaded.append(module.__name__.split(".")[-1])
         if debug:
             module.DEBUG = True
         return module
@@ -75,7 +75,7 @@ def mod(name, debug=False):
 
 def mods(names=""):
     res = []
-    for nme in sorted(modules(Mods.path)):
+    for nme in sorted(modules(Kernel.path)):
         if names and nme not in spl(names):
             continue
         module = mod(nme)
@@ -87,9 +87,9 @@ def mods(names=""):
 
 def modules(mdir=""):
     return sorted([
-            x[:-3] for x in os.listdir(mdir or Mods.path)
+            x[:-3] for x in os.listdir(mdir or Kernel.path)
             if x.endswith(".py") and not x.startswith("__") and
-            x[:-3] not in Mods.ignore
+            x[:-3] not in Kernel.ignore
            ])
 
 
@@ -104,7 +104,7 @@ def spl(txt):
 
 
 def sums(md5):
-    pth = os.path.join(Mods.path, "tbl.py")
+    pth = os.path.join(Kernel.path, "tbl.py")
     if os.path.exists(pth) and (not md5 or (md5sum(pth) == md5)):
         try:
             module = mod("tbl")
@@ -112,14 +112,14 @@ def sums(md5):
             return {}
         sms =  getattr(module, "MD5", None)
         if sms:
-            Mods.md5s.update(sms)
+            Kernel.md5s.update(sms)
             return True
     return False
 
 
 def __dir__():
     return (
-        'Mods',
+        'Kernel',
         'mod',
         'mods',
         'modules',
