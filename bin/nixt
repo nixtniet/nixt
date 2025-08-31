@@ -28,6 +28,9 @@ from nixt.runtime import Event, Logging
 Kernel.ignore = ["wsd", "rst", "udp", "web"]
 
 
+checksum = "1d97ac137d929cf07f8992b0ec78cfd8"
+
+
 class CLI(Client):
 
     def __init__(self):
@@ -104,8 +107,7 @@ def background():
     Logging.level(Main.level or "debug")
     Workdir.setwd(Main.name)
     pidfile(Workdir.pidname(Main.name))
-    if Main.md5 and not Kernel.sums(Main.md5):
-        logging.error("table sum doesn't match")
+    Kernel.sums(checksum)
     Commands.table()
     Commands.add(cmd)
     Commands.add(ver)
@@ -119,15 +121,14 @@ def console():
     Main.init = Main.sets.get("init", Main.init)
     Main.verbose = Main.sets.get("verbose", Main.verbose)
     Main.level   = Main.sets.get("level", Main.level or "warn")
+    if "v" in Main.opts:
+        banner()
     Logging.level(Main.level)
     Workdir.setwd(Main.name)
-    if Main.md5 and not Kerne.sums(Main.md5):
-        logging.error("table sum doesn't match")
+    Kernel.sums(checksum)
     Commands.table()
     Commands.add(cmd)
     Commands.add(ver)
-    if "v" in Main.opts:
-        banner()
     for _mod, thr in Kernel.inits(Main.init):
         if "w" in Main.opts:
             thr.join(30.0)
@@ -142,8 +143,7 @@ def control():
     parse(Main, " ".join(sys.argv[1:]))
     Logging.level(Main.level or "warn")
     Workdir.setwd(Main.name)
-    if Main.md5 and not Kernel.sums(Main.md5):
-        logging.error("table sum doesn't match")
+    Kernel.sums(checksum)
     Commands.table()
     Commands.add(cmd)
     Commands.add(md5)
@@ -165,8 +165,7 @@ def service():
     banner()
     privileges()
     pidfile(Workdir.pidname(Main.name))
-    if Main.md5 and not Kernel.sums(Main.md5):
-        logging.error("table sum doesn't match")
+    Kernel.sums(checksum)
     Commands.table()
     Commands.add(cmd)
     Commands.add(ver)
@@ -180,7 +179,7 @@ def cmd(event):
 
 def md5(event):
     tbl = Kernel.mods("tbl")[0]
-    event.reply(kernel.md5sum(tbl.__file__))
+    event.reply(Kernel.md5sum(tbl.__file__))
 
 
 def srv(event):

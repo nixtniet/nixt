@@ -6,6 +6,7 @@
 
 import hashlib
 import importlib
+import importlib.util
 import logging
 import os
 import sys
@@ -21,12 +22,11 @@ loadlock = threading.RLock()
 
 class Main:
 
-    checksum = "fd204fbc5dbe4417ccc7f5d0ee9080f6"
     debug    = False
     gets     = {}
     init     = ""
     level    = "warn"
-    md5      = False
+    md5      = True
     name     = __package__.split(".", maxsplit=1)[0].lower()
     opts     = {}
     otxt     = ""
@@ -37,7 +37,6 @@ class Main:
 
 class Kernel:
 
-    checksum = "fd204fbc5dbe4417ccc7f5d0ee9080f6"
     loaded   = []
     md5s     = {}
     ignore   = []
@@ -77,8 +76,8 @@ class Kernel:
                 pth = os.path.join(Kernel.path, f"{name}.py")
                 if not os.path.exists(pth):
                     return None
-                if Kernel.md5sum(pth) == (hash or Kernel.md5s.get(name, None)):
-                    logging.error(f"md5 doesn't match on {pth}")
+                if name != "tbl" and Kernel.md5sum(pth) != Kernel.md5s.get(name, None):
+                    logging.error(f"md5 error on {pth.split(os.sep)[-1]}")
                 spec = importlib.util.spec_from_file_location(mname, pth)
                 module = importlib.util.module_from_spec(spec)
                 sys.modules[mname] = module
@@ -109,17 +108,25 @@ class Kernel:
                ]) 
 
     @staticmethod
-    def sums(md5):
+    def sums(checksum):
+        if not Main.md5:
+            return True
         pth = os.path.join(Kernel.path, "tbl.py")
-        if os.path.exists(pth) and (not md5 or (Kernel.md5sum(pth) == md5)):
-            try:
-                module = Kernel.mod("tbl")
-            except FileNotFoundError:
-                return {}
-            sms =  getattr(module, "MD5", None)
-            if sms:
-                Kernel.md5s.update(sms)
-                return True
+        if not os.path.exists(pth):
+            logging.error("tbl.py is missing.")
+            return False        
+        if checksum and Kernel.md5sum(pth) != checksum:
+            logging.error("table checksum error.")
+            return False
+        try:
+            module = Kernel.mod("tbl")
+        except FileNotFoundError:
+            logging.error("table is not there.")
+            return {}
+        sms =  getattr(module, "MD5", None)
+        if sms:
+            Kernel.md5s.update(sms)
+            return True
         return False
 
 
