@@ -20,11 +20,11 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client, Fleet, Output
-from nixt.command import Commands, parse
+from nixt.command import Commands
 from nixt.kernels import Kernel, Main
 from nixt.objects import Object, keys
 from nixt.persist import Workdir
-from nixt.runtime import STARTTIME, Event, Thread, Time
+from nixt.runtime import STARTTIME, Event, Logging, Thread, Time
 
 
 Workdir.wdr = ".test"
@@ -194,7 +194,8 @@ def wrap(function):
 def main():
     global nrs
     global nrcommand
-    parse(Main, " ".join(sys.argv[1:]))
+    Commands.parse(Main, " ".join(sys.argv[1:]))
+    Logging.level("error")
     Workdir.setwd(Main.name,'.test')
     Commands.table()
     for mod in Kernel.mods():
@@ -202,7 +203,7 @@ def main():
             mod.Main.debug = True
     nrcommand = 0
     if "v" in Main.opts:
-        banner()
+        Kernel.banner()
     if "f" not in Main.opts:
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
