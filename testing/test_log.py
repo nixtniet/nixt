@@ -7,11 +7,12 @@
 import unittest
 
 
-from nixt.runtime import level
+from nixt.runtime import Logging, rlog
 
 
 class TestLogging(unittest.TestCase):
 
     def test_level(self):
-        level("warn")
+        Logging.level("warn")
+        rlog("warn", "test")
         self.assertEqual("test", "test")

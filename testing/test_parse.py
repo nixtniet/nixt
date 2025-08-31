@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.command import parse
+from nixt.command import Commands
 from nixt.objects import Object
 
 
@@ -15,5 +15,5 @@ class TestParse(unittest.TestCase):
 
     def test_parse(self):
         obj = Object()
-        result = parse(obj, "cmd")
+        result = Commands.parse(obj, "cmd")
         self.assertEqual(result, None)
