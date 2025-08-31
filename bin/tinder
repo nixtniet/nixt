@@ -142,7 +142,6 @@ def banner():
 
 
 def consume(evts):
-    done = []
     while True:
         try:
             event = events.get()
