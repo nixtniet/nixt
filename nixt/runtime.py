@@ -189,7 +189,7 @@ class Timed:
 class Repeater(Timed):
 
     def run(self):
-        launch(self.start)
+        Thread.launch(self.start)
         super().run()
 
 

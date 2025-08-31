@@ -123,10 +123,6 @@ class Workdir:
         Workdir.skel()
         return os.listdir(Workdir.store())
 
-    @staticmethod
-    def wdr(pth):
-        return os.path.join(Workdir.wdr, pth)
-
 
 class Find:
 

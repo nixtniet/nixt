@@ -10,7 +10,7 @@ import time
 
 
 from ..clients import Fleet
-from ..persist import Find
+from ..persist import Disk, Find
 from ..runtime import Thread, Time, Timed, rlog
 
 
@@ -22,7 +22,7 @@ def init():
         if diff > 0:
             timer = Timed(diff, Fleet.announce, obj.txt)
             timer.start()
-            rlogk("debug", f"timer at {time.ctime(obj.time)}")
+            rlog("debug", f"timer at {time.ctime(obj.time)}")
         else:
             obj.__deleted__ = True
             Disk.write(obj, fnm)

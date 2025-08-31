@@ -8,7 +8,7 @@ import time
 
 
 from ..objects import Object
-from ..persist import Disk, Find, Workdir
+from ..persist import Disk, Find
 from ..runtime import Time
 
 
