@@ -125,16 +125,16 @@ class IRC(Output):
         self.state.sleep = self.cfg.sleep
         self.state.stopkeep = False
         self.zelf = ""
-        self.register("903", cb_h903)
-        self.register("904", cb_h903)
-        self.register("AUTHENTICATE", cb_auth)
-        self.register("CAP", cb_cap)
-        self.register("ERROR", cb_error)
-        self.register("LOG", cb_log)
-        self.register("NOTICE", cb_notice)
-        self.register("PRIVMSG", cb_privmsg)
-        self.register("QUIT", cb_quit)
-        self.register("366", cb_ready)
+        self.register("903", Cbs.h903)
+        self.register("904", Cbs.h903)
+        self.register("AUTHENTICATE", Cbs.auth)
+        self.register("CAP", Cbs.cap)
+        self.register("ERROR", Cbs.error)
+        self.register("LOG", Cbs.log)
+        self.register("NOTICE", Cbs.notice)
+        self.register("PRIVMSG", Cbs.privmsg)
+        self.register("QUIT", Cbs.quit)
+        self.register("366", Cbs.ready)
         self.ident = Workdir.ident(self)
 
     def announce(self, txt):
@@ -495,89 +495,91 @@ class IRC(Output):
         self.events.ready.wait()
 
 
-def cb_auth(evt):
-    bot = Fleet.get(evt.orig)
-    bot.docommand(f"AUTHENTICATE {bot.cfg.password}")
+class Cbs:
+
+    def auth(evt):
+        bot = Fleet.get(evt.orig)
+        bot.docommand(f"AUTHENTICATE {bot.cfg.password}")
 
 
-def cb_cap(evt):
-    bot = Fleet.get(evt.orig)
-    if bot.cfg.password and "ACK" in evt.arguments:
-        bot.direct("AUTHENTICATE PLAIN")
-    else:
-        bot.direct("CAP REQ :sasl")
-
-
-def cb_error(evt):
-    bot = Fleet.get(evt.orig)
-    bot.state.nrerror += 1
-    bot.state.error = evt.txt
-    rlog("debug", fmt(evt))
-
-
-def cb_h903(evt):
-    bot = Fleet.get(evt.orig)
-    bot.direct("CAP END")
-    bot.events.authed.set()
-
-
-def cb_h904(evt):
-    bot = Fleet.get(evt.orig)
-    bot.direct("CAP END")
-    bot.events.authed.set()
-
-
-def cb_kill(evt):
-    pass
-
-
-def cb_log(evt):
-    pass
-
-
-def cb_ready(evt):
-    bot = Fleet.get(evt.orig)
-    bot.events.ready.set()
-
-
-def cb_001(evt):
-    bot = Fleet.get(evt.orig)
-    bot.events.logon.set()
-
-
-def cb_notice(evt):
-    bot = Fleet.get(evt.orig)
-    if evt.txt.startswith("VERSION"):
-        txt = f"\001VERSION {Main.name.upper()} 140 - {bot.cfg.username}\001"
-        bot.docommand("NOTICE", evt.channel, txt)
-
-
-def cb_privmsg(evt):
-    bot = Fleet.get(evt.orig)
-    if not bot.cfg.commands:
-        return
-    if evt.txt:
-        if evt.txt[0] in [
-            "!",
-        ]:
-            evt.txt = evt.txt[1:]
-        elif evt.txt.startswith(f"{bot.cfg.nick}:"):
-            evt.txt = evt.txt[len(bot.cfg.nick) + 1 :]
+    def cap(evt):
+        bot = Fleet.get(evt.orig)
+        if bot.cfg.password and "ACK" in evt.arguments:
+            bot.direct("AUTHENTICATE PLAIN")
         else:
+            bot.direct("CAP REQ :sasl")
+
+
+    def error(evt):
+        bot = Fleet.get(evt.orig)
+        bot.state.nrerror += 1
+        bot.state.error = evt.txt
+        rlog("debug", fmt(evt))
+
+
+    def h903(evt):
+        bot = Fleet.get(evt.orig)
+        bot.direct("CAP END")
+        bot.events.authed.set()
+
+
+    def h904(evt):
+        bot = Fleet.get(evt.orig)
+        bot.direct("CAP END")
+        bot.events.authed.set()
+
+
+    def kill(evt):
+        pass
+
+
+    def log(evt):
+        pass
+
+
+    def ready(evt):
+        bot = Fleet.get(evt.orig)
+        bot.events.ready.set()
+
+
+    def h001(evt):
+        bot = Fleet.get(evt.orig)
+        bot.events.logon.set()
+
+
+    def notice(evt):
+        bot = Fleet.get(evt.orig)
+        if evt.txt.startswith("VERSION"):
+            txt = f"\001VERSION {Main.name.upper()} 140 - {bot.cfg.username}\001"
+            bot.docommand("NOTICE", evt.channel, txt)
+
+
+    def privmsg(evt):
+        bot = Fleet.get(evt.orig)
+        if not bot.cfg.commands:
             return
         if evt.txt:
-            evt.txt = evt.txt[0].lower() + evt.txt[1:]
-        if evt.txt:
-            Thread.launch(Commands.command, evt)
+            if evt.txt[0] in [
+                "!",
+            ]:
+                evt.txt = evt.txt[1:]
+            elif evt.txt.startswith(f"{bot.cfg.nick}:"):
+                evt.txt = evt.txt[len(bot.cfg.nick) + 1 :]
+            else:
+                return
+            if evt.txt:
+                evt.txt = evt.txt[0].lower() + evt.txt[1:]
+            if evt.txt:
+                Thread.launch(Commands.command, evt)
 
 
-def cb_quit(evt):
-    bot = Fleet.get(evt.orig)
-    rlog("debug", f"quit from {bot.cfg.server}")
-    bot.state.nrerror += 1
-    bot.state.error = evt.txt
-    if evt.orig and evt.orig in bot.zelf:
-        bot.stop()
+    def quit(evt):
+        bot = Fleet.get(evt.orig)
+        rlog("debug", f"quit from {bot.cfg.server}")
+        bot.state.nrerror += 1
+        bot.state.error = evt.txt
+        if evt.orig and evt.orig in bot.zelf:
+            bot.stop()
 
 
 def cfg(event):

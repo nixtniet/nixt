@@ -29,7 +29,7 @@ class Commands:
             name = Commands.names.get(cmd, None)
             if not name:
                 return
-            module = Kernel.mod(name)
+            module = Kernel.load(name)
             if module:
                 Commands.scan(module)
                 func = Commands.cmds.get(cmd)
@@ -44,6 +44,7 @@ class Commands:
             Fleet.display(evt)
         evt.ready()
 
+    @staticmethod
     def parse(obj, txt=None):
         if txt is None:
             if "txt" in dir(obj):
@@ -112,7 +113,7 @@ class Commands:
 
     @staticmethod
     def table():
-        tbl = Kernel.mod("tbl")
+        tbl = Kernel.load("tbl")
         names = getattr(tbl, "NAMES", None)
         if names:
             Commands.names.update(names)

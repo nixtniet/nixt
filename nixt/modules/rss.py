@@ -148,7 +148,7 @@ class Parser:
     @staticmethod
     def getitem(line, item):
         lne = ""
-        index1 = line.Find.find(f"<{item}>")
+        index1 = line.find(f"<{item}>")
         if index1 == -1:
             return lne
         index1 += len(item) + 2

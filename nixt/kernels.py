@@ -39,6 +39,7 @@ class Main:
 
 class Kernel:
 
+    checksum = ""
     loaded   = []
     md5s     = {}
     ignore   = []
@@ -86,7 +87,7 @@ class Kernel:
         modz = []
         for name in spl(names):
             try:
-                module = Kernel.mod(name)
+                module = Kernel.load(name)
                 if not module:
                     continue
                 if "init" in dir(module):
@@ -104,7 +105,7 @@ class Kernel:
             return hashlib.md5(txt).hexdigest()
 
     @staticmethod
-    def mod(name, debug=False):
+    def load(name, debug=False):
         with loadlock:
             module = None
             mname = f"{Kernel.pname}.{name}"
@@ -130,7 +131,7 @@ class Kernel:
         for nme in sorted(Kernel.modules(Kernel.path)):
             if names and nme not in spl(names):
                 continue
-            module = Kernel.mod(nme)
+            module = Kernel.load(nme)
             if not module:
                 continue
             res.append(module)
@@ -162,18 +163,18 @@ class Kernel:
         os.setuid(pwnam2.pw_uid)
 
     @staticmethod
-    def sums(checksum):
+    def sums():
         if not Main.md5:
             return True
         pth = os.path.join(Kernel.path, "tbl.py")
         if not os.path.exists(pth):
             rlog("warn", "tbl.py is missing.")
             return False        
-        if checksum and Kernel.md5sum(pth) != checksum:
+        if Kernel.checksum and Kernel.md5sum(pth) != Kernel.checksum:
             rlog("warn", "table checksum error.")
             return False
         try:
-            module = Kernel.mod("tbl")
+            module = Kernel.load("tbl")
         except FileNotFoundError:
             rlog("warn", "table is not there.")
             return {}

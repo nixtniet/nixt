@@ -8,7 +8,6 @@
 import json
 import os
 import os.path
-import signal
 import sys
 
 
@@ -22,17 +21,8 @@ from nixt.persist import Workdir
 from nixt.runtime import Event, Logging
 
 
+Kernel.checksum = "1d97ac137d929cf07f8992b0ec78cfd8"
 Kernel.ignore = ["wsd", "rst", "udp", "web"]
-
-
-checksum = "1d97ac137d929cf07f8992b0ec78cfd8"
-
-
-def handler(signum, frame):
-    print("handler called!")
-
-
-signal.signal(signal.SIGHUP, handler)
 
 
 class CLI(Client):
@@ -71,10 +61,9 @@ class Scripts:
         Logging.level(Main.level or "debug")
         Workdir.setwd(Main.name)
         Kernel.pidfile(Workdir.pidname(Main.name))
-        Kernel.sums(checksum)
+        Kernel.sums()
         Commands.table()
-        Commands.add(cmd)
-        Commands.add(ver)
+        Commands.add(Cmds.ver)
         Kernel.inits(Main.init or "irc,rss")
         Kernel.forever()
 
@@ -88,10 +77,9 @@ class Scripts:
         Logging.level(Main.level)
         Workdir.setwd(Main.name)
         Kernel.banner()
-        Kernel.sums(checksum)
+        Kernel.sums()
         Commands.table()
-        Commands.add(cmd)
-        Commands.add(ver)
+        Commands.add(Cmds.ver)
         for _mod, thr in Kernel.inits(Main.init):
             if "w" in Main.opts:
                 thr.join(30.0)
@@ -106,13 +94,12 @@ class Scripts:
         Commands.parse(Main, " ".join(sys.argv[1:]))
         Logging.level(Main.level or "warn")
         Workdir.setwd(Main.name)
-        Kernel.sums(checksum)
+        Kernel.sums()
         Commands.table()
-        Commands.add(cmd)
-        Commands.add(md5)
-        Commands.add(srv)
-        Commands.add(tbl)
-        Commands.add(ver)
+        Commands.add(Cmds.md5)
+        Commands.add(Cmds.srv)
+        Commands.add(Cmds.tbl)
+        Commands.add(Cmds.ver)
         csl = CLI()
         evt = Event()
         evt.orig = repr(csl)
@@ -128,15 +115,56 @@ class Scripts:
         Kernel.banner()
         Kernel.privileges()
         Kernel.pidfile(Workdir.pidname(Main.name))
-        Kernel.sums(checksum)
+        Kernel.sums()
         Commands.table()
-        Commands.add(cmd)
-        Commands.add(ver)
+        Commands.add(Cmds.ver)
         Kernel.inits(Main.init or "irc,rss")
         Kernel.forever()
 
 
-class Mainer:
+class Cmds:
+
+    @staticmethod
+    def cmd(event):
+        event.reply(",".join(sorted(Commands.names)))
+
+    @staticmethod
+    def md5(event):
+        tbl = Kernel.mods("tbl")[0]
+        event.reply(Kernel.md5sum(tbl.__file__))
+
+    @staticmethod
+    def srv(event):
+        import getpass
+        name = getpass.getuser()
+        event.reply(TXT % (Main.name.upper(), name, name, name, Main.name))
+
+    @staticmethod
+    def tbl(event):
+        if not Mainer.check("f"):
+            Commands.names = {}
+        for module in Kernel.mods():
+            Commands.scan(module)
+        event.reply("# This file is placed in the Public Domain.")
+        event.reply("")
+        event.reply("")
+        event.reply('"lookup tables"')
+        event.reply("")
+        event.reply("")
+        event.reply(f"NAMES = {json.dumps(Commands.names, indent=4, sort_keys=True)}")
+        event.reply("")
+        event.reply("")
+        event.reply("MD5 = {")
+        for module in Kernel.mods():
+            event.reply(f'    "{module.__name__.split(".")[-1]}": "{Kernel.md5sum(module.__file__)}",')
+        event.reply("}")
+
+    @staticmethod
+    def ver(event):
+        event.reply(str(Main.version))
+
+
+class Run:
 
     @staticmethod
     def check(txt):
@@ -166,65 +194,25 @@ class Mainer:
         except termios.error:
             pass
         try:
-            Mainer.wrapped(func)
+            Run.wrapped(func)
         finally:
             if old:
                 termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
     @staticmethod
     def main():
-        if Mainer.check("a"):
+        if Run.check("a"):
             Main.init = ",".join(Kernel.modules())
-        if Mainer.check("v"):
+        if Run.check("v"):
             Main.opts["v"] = True
-        if Mainer.check("c"):
-            Mainer.wrap(Scripts.console)
-        elif Mainer.check("d"):
+        if Run.check("c"):
+            Run.wrap(Scripts.console)
+        elif Run.check("d"):
             Scripts.background()
-        elif Mainer.check("s"):
-            Mainer.wrapped(Scripts.service)
+        elif Run.check("s"):
+            Run.wrapped(Scripts.service)
         else:
-            Mainer.wrapped(Scripts.control)
-
-
-def cmd(event):
-    event.reply(",".join(sorted(Commands.names)))
-
-
-def md5(event):
-    tbl = Kernel.mods("tbl")[0]
-    event.reply(Kernel.md5sum(tbl.__file__))
-
-
-def srv(event):
-    import getpass
-    name = getpass.getuser()
-    event.reply(TXT % (Main.name.upper(), name, name, name, Main.name))
-
-
-def tbl(event):
-    if not Mainer.check("f"):
-        Commands.names = {}
-    for module in Kernel.mods():
-        Commands.scan(module)
-    event.reply("# This file is placed in the Public Domain.")
-    event.reply("")
-    event.reply("")
-    event.reply('"lookup tables"')
-    event.reply("")
-    event.reply("")
-    event.reply(f"NAMES = {json.dumps(Commands.names, indent=4, sort_keys=True)}")
-    event.reply("")
-    event.reply("")
-    event.reply("MD5 = {")
-    for module in Kernel.mods():
-        event.reply(f'    "{module.__name__.split(".")[-1]}": "{Kernel.md5sum(module.__file__)}",')
-    event.reply("}")
-
-
-def ver(event):
-    event.reply(str(Main.version))
-
+            Run.wrapped(Scripts.control)
 
 TXT = """[Unit]
 Description=%s
@@ -241,4 +229,4 @@ WantedBy=multi-user.target"""
 
 
 if __name__ == "__main__":
-    Mainer.main()
+    Run.main()

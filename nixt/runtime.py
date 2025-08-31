@@ -195,7 +195,6 @@ class Repeater(Timed):
 
 class Logging:
 
-
     @staticmethod
     def level(loglevel="debug"):
         if loglevel != "none":
