@@ -9,7 +9,7 @@ import os
 import time
 
 
-from ..persist import find, ident, store, write
+from ..persist import Disk, Find
 from ..objects import Object, fmt, keys, update
 from ..runtime import elapsed
 
@@ -71,7 +71,7 @@ def eml(event):
         if key in args:
             args.remove(key)
     args = set(args)
-    result = sorted(find("email", event.gets), key=lambda x: extract_date(todate(getattr(x[1], "Date", ""))))
+    result = sorted(Find.find("email", event.gets), key=lambda x: extract_date(todate(getattr(x[1], "Date", ""))))
     if event.index:
         obj = result[event.index]
         tme = getattr(obj, "Date", "")
@@ -110,7 +110,7 @@ def mbx(event):
             if payload.get_content_type() == 'text/plain':
                 obj.text += payload.get_payload()
         obj.text = obj.text.replace("\\n", "\n")
-        write(obj, store(ident(obj)))
+        Disk.write(obj)
         nrs += 1
     if nrs:
         event.reply("ok %s" % nrs)

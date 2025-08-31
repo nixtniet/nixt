@@ -9,7 +9,7 @@ import threading
 import time
 
 
-from .runtime import Handler, launch
+from .runtime import Handler, Thread
 
 
 class Client(Handler):
@@ -58,7 +58,7 @@ class Output(Client):
 
     def start(self):
         self.ostop.clear()
-        launch(self.output)
+        Thread.launch(self.output)
         super().start()
 
     def stop(self):

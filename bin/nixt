@@ -19,11 +19,10 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client, Fleet
-from nixt.command import Commands, command,parse, scan, table
-from nixt.kernels import Kernel, md5sum, inits, mods, modules, sums
-from nixt.modules import Main
-from nixt.persist import pidname, setwd
-from nixt.runtime import Event, level
+from nixt.command import Commands, parse
+from nixt.kernels import Kernel, Main
+from nixt.persist import Workdir
+from nixt.runtime import Event, Logging
 
 
 Kernel.ignore = ["wsd", "rst", "udp", "web"]
@@ -33,7 +32,7 @@ class CLI(Client):
 
     def __init__(self):
         Client.__init__(self)
-        self.register("command", command)
+        self.register("command", Commands.command)
 
     def raw(self, txt):
         out(txt.encode('utf-8', 'replace').decode("utf-8"))
@@ -102,15 +101,15 @@ def privileges():
 def background():
     daemon("-v" in sys.argv)
     privileges()
-    level(Main.level or "debug")
-    setwd(Main.name)
-    pidfile(pidname(Main.name))
-    if Main.md5 and not sums(Main.md5):
+    Logging.level(Main.level or "debug")
+    Workdir.setwd(Main.name)
+    pidfile(Workdir.pidname(Main.name))
+    if Main.md5 and not Kernel.sums(Main.md5):
         logging.error("table sum doesn't match")
-    table()
+    Commands.table()
     Commands.add(cmd)
     Commands.add(ver)
-    inits(Main.init or "irc,rss")
+    Kernel.inits(Main.init or "irc,rss")
     forever()
 
 
@@ -120,16 +119,16 @@ def console():
     Main.init = Main.sets.get("init", Main.init)
     Main.verbose = Main.sets.get("verbose", Main.verbose)
     Main.level   = Main.sets.get("level", Main.level or "warn")
-    level(Main.level)
-    setwd(Main.name)
-    if Main.md5 and not sums(Main.md5):
+    Logging.level(Main.level)
+    Workdir.setwd(Main.name)
+    if Main.md5 and not Kerne.sums(Main.md5):
         logging.error("table sum doesn't match")
-    table()
+    Commands.table()
     Commands.add(cmd)
     Commands.add(ver)
     if "v" in Main.opts:
         banner()
-    for _mod, thr in inits(Main.init):
+    for _mod, thr in Kernel.inits(Main.init):
         if "w" in Main.opts:
             thr.join(30.0)
     csl = Console()
@@ -141,11 +140,11 @@ def control():
     if len(sys.argv) == 1:
         return
     parse(Main, " ".join(sys.argv[1:]))
-    level(Main.level or "warn")
-    setwd(Main.name)
-    if Main.md5 and not sums(Main.md5):
+    Logging.level(Main.level or "warn")
+    Workdir.setwd(Main.name)
+    if Main.md5 and not Kernel.sums(Main.md5):
         logging.error("table sum doesn't match")
-    table()
+    Commands.table()
     Commands.add(cmd)
     Commands.add(md5)
     Commands.add(srv)
@@ -156,22 +155,22 @@ def control():
     evt.orig = repr(csl)
     evt.type = "command"
     evt.txt = Main.otxt
-    command(evt)
+    Commands.command(evt)
     evt.wait()
 
 
 def service():
-    level(Main.level or "warn")
-    setwd(Main.name)
+    Logging.level(Main.level or "warn")
+    Workdir.setwd(Main.name)
     banner()
     privileges()
-    pidfile(pidname(Main.name))
-    if Main.md5 and not sums(Main.md5):
+    pidfile(Workdir.pidname(Main.name))
+    if Main.md5 and not Kernel.sums(Main.md5):
         logging.error("table sum doesn't match")
-    table()
+    Commands.table()
     Commands.add(cmd)
     Commands.add(ver)
-    inits(Main.init or "irc,rss")
+    Kernel.inits(Main.init or "irc,rss")
     forever()
 
 
@@ -180,8 +179,8 @@ def cmd(event):
 
 
 def md5(event):
-    tbl = mods("tbl")[0]
-    event.reply(md5sum(tbl.__file__))
+    tbl = Kernel.mods("tbl")[0]
+    event.reply(kernel.md5sum(tbl.__file__))
 
 
 def srv(event):
@@ -193,8 +192,8 @@ def srv(event):
 def tbl(event):
     if not check("f"):
         Commands.names = {}
-    for module in mods():
-        scan(module)
+    for module in Kernel.mods():
+        Commands.scan(module)
     event.reply("# This file is placed in the Public Domain.")
     event.reply("")
     event.reply("")
@@ -205,8 +204,8 @@ def tbl(event):
     event.reply("")
     event.reply("")
     event.reply("MD5 = {")
-    for module in mods():
-        event.reply(f'    "{module.__name__.split(".")[-1]}": "{md5sum(module.__file__)}",')
+    for module in Kernel.mods():
+        event.reply(f'    "{module.__name__.split(".")[-1]}": "{Kernel.md5sum(module.__file__)}",')
     event.reply("}")
 
 
@@ -217,7 +216,7 @@ def ver(event):
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     out(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
-    out(f"loaded {",".join(modules())}")
+    out(f"loaded {",".join(Kernel.modules())}")
 
 
 def check(txt):
@@ -268,7 +267,7 @@ def wrap(func):
 
 def main():
     if check("a"):
-        Main.init = ",".join(modules())
+        Main.init = ",".join(Kernel.modules())
     if check("v"):
         Main.opts["v"] = True
     if check("c"):

@@ -8,7 +8,7 @@ import inspect
 
 
 from .clients import Fleet
-from .kernels import mod
+from .kernels import Kernel
 
 
 class Commands:
@@ -29,35 +29,35 @@ class Commands:
             name = Commands.names.get(cmd, None)
             if not name:
                 return
-            module = mod(name)
+            module = Kernel.mod(name)
             if module:
-                scan(module)
+                Commands.scan(module)
                 func = Commands.cmds.get(cmd)
         return func
 
+    @staticmethod
+    def command(evt):
+        parse(evt)
+        func = Commands.get(evt.cmd)
+        if func:
+            func(evt)
+            Fleet.display(evt)
+        evt.ready()
 
-def command(evt):
-    parse(evt)
-    func = Commands.get(evt.cmd)
-    if func:
-        func(evt)
-        Fleet.display(evt)
-    evt.ready()
+    @staticmethod
+    def scan(module):
+        for key, cmdz in inspect.getmembers(module, inspect.isfunction):
+            if key.startswith("cb"):
+                continue
+            if 'event' in cmdz.__code__.co_varnames:
+                Commands.add(cmdz, module)
 
-
-def scan(module):
-    for key, cmdz in inspect.getmembers(module, inspect.isfunction):
-        if key.startswith("cb"):
-            continue
-        if 'event' in cmdz.__code__.co_varnames:
-            Commands.add(cmdz, module)
-
-
-def table():
-    tbl = mod("tbl")
-    names = getattr(tbl, "NAMES", None)
-    if names:
-        Commands.names.update(names)
+    @staticmethod
+    def table():
+        tbl = Kernel.mod("tbl")
+        names = getattr(tbl, "NAMES", None)
+        if names:
+            Commands.names.update(names)
 
 
 def parse(obj, txt=None):
@@ -122,13 +122,5 @@ def parse(obj, txt=None):
 def __dir__():
     return (
         'Commands',
-        'command',
-        'elapsed',
-        'inits',
-        'mod',
-        'mods',
-        'modules',
-        'parse',
-        'scan',
-        'table'
+        'parse'
     )
