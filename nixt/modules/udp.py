@@ -13,7 +13,7 @@ import time
 
 from ..clients import Fleet
 from ..objects import Object
-from ..runtime import launch, rlog
+from ..runtime import Thread, rlog
 
 
 DEBUG = True
@@ -74,7 +74,7 @@ class UDP(Object):
                          )
 
     def start(self):
-        launch(self.loop)
+        Thread.launch(self.loop)
 
 
 def toudp(host, port, txt):

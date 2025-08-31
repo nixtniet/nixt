@@ -14,7 +14,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from ..objects import Object
-from ..runtime import launch, rlog
+from ..runtime import Thread, rlog
 
 
 DEBUG = False
@@ -55,7 +55,7 @@ class HTTP(HTTPServer, Object):
         self.shutdown()
 
     def start(self):
-        launch(self.serve_forever)
+        Thread.launch(self.serve_forever)
         self._status = "ok"
 
     def request(self):

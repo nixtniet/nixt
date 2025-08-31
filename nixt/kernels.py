@@ -91,11 +91,11 @@ class Kernel:
     @staticmethod
     def mods(names=""):
         res = []
-        for nme in sorted(modules(Kernel.path)):
+        for nme in sorted(Kernel.modules(Kernel.path)):
             if names and nme not in spl(names):
                 continue
             module = Kernel.mod(nme)
-            if not mod:
+            if not module:
                 continue
             res.append(module)
         return res

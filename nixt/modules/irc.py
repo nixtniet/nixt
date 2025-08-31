@@ -15,11 +15,11 @@ import time
 
 from ..clients import Fleet, Output
 from ..command import Commands
+from ..kernels import Main
 from ..objects import Object, edit, fmt, keys
 from ..persist import Disk, Find, Workdir
 from ..runtime import Event as IEvent
-from ..runtime import Logging, Thread
-from .         import Main
+from ..runtime import Thread, rlog
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
@@ -35,7 +35,7 @@ def init():
         irc.start()
         irc.events.joined.wait(30.0)
         if irc.events.joined.is_set():
-            Logging.rlog("debug", fmt(irc.cfg, skip=["password", "realname", "username"]))
+            rlog("debug", fmt(irc.cfg, skip=["password", "realname", "username"]))
         else:
             irc.stop()
         return irc
@@ -146,7 +146,7 @@ class IRC(Output):
         self.events.connected.clear()
         self.events.joined.clear()
         if self.cfg.password:
-            Logging.rlog("debug", "using SASL")
+            rlog("debug", "using SASL")
             self.cfg.sasl = True
             self.cfg.port = "6697"
             ctx = ssl.SSLContext(ssl.PROTOCOL_TLS)
@@ -166,7 +166,7 @@ class IRC(Output):
             self.sock.setblocking(True)
             self.sock.settimeout(180.0)
             self.events.connected.set()
-            Logging.rlog(
+            rlog(
                 "debug",
                 f"connected {self.cfg.server}:{self.cfg.port} {self.cfg.channel}",
             )
@@ -234,7 +234,7 @@ class IRC(Output):
             except (socket.timeout, ssl.SSLError, OSError, ConnectionResetError) as ex:
                 self.events.joined.set()
                 self.state.error = str(ex)
-                Logging.rlog("debug", str(type(ex)) + " " + str(ex))
+                rlog("debug", str(type(ex)) + " " + str(ex))
             time.sleep(self.cfg.sleep)
 
     def dosay(self, channel, txt):
@@ -318,7 +318,7 @@ class IRC(Output):
         rawstr = str(txt)
         rawstr = rawstr.replace("\u0001", "")
         rawstr = rawstr.replace("\001", "")
-        Logging.rlog("debug", txt, IGNORE)
+        rlog("debug", txt, IGNORE)
         obj = Event()
         obj.args = []
         obj.rawstr = rawstr
@@ -393,7 +393,7 @@ class IRC(Output):
             ) as ex:
                 self.state.nrerror += 1
                 self.state.error = str(type(ex)) + " " + str(ex)
-                Logging.rlog("debug", self.state.error)
+                rlog("debug", self.state.error)
                 self.state.pongcheck = True
                 self.stop()
                 return None
@@ -405,7 +405,7 @@ class IRC(Output):
 
     def raw(self, txt):
         txt = txt.rstrip()
-        Logging.rlog("debug", txt, IGNORE)
+        rlog("debug", txt, IGNORE)
         txt = txt[:500]
         txt += "\r\n"
         txt = bytes(txt, "utf-8")
@@ -420,7 +420,7 @@ class IRC(Output):
                 BrokenPipeError,
                 socket.timeout,
             ) as ex:
-                Logging.rlog("debug", str(type(ex)) + " " + str(ex))
+                rlog("debug", str(type(ex)) + " " + str(ex))
                 self.events.joined.set()
                 self.state.nrerror += 1
                 self.state.error = str(ex)
@@ -431,7 +431,7 @@ class IRC(Output):
         self.state.nrsend += 1
 
     def reconnect(self):
-        Logging.rlog("debug", f"reconnecting {self.cfg.server:self.cfg.port}")
+        rlog("debug", f"reconnecting {self.cfg.server:self.cfg.port}")
         self.disconnect()
         self.events.connected.clear()
         self.events.joined.clear()
@@ -512,7 +512,7 @@ def cb_error(evt):
     bot = Fleet.get(evt.orig)
     bot.state.nrerror += 1
     bot.state.error = evt.txt
-    Logging.rlog("debug", fmt(evt))
+    rlog("debug", fmt(evt))
 
 
 def cb_h903(evt):
@@ -573,7 +573,7 @@ def cb_privmsg(evt):
 
 def cb_quit(evt):
     bot = Fleet.get(evt.orig)
-    Logging.rlog("debug", f"quit from {bot.cfg.server}")
+    rlog("debug", f"quit from {bot.cfg.server}")
     bot.state.nrerror += 1
     bot.state.error = evt.txt
     if evt.orig and evt.orig in bot.zelf:

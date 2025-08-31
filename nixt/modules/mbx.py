@@ -11,7 +11,7 @@ import time
 
 from ..persist import Disk, Find
 from ..objects import Object, fmt, keys, update
-from ..runtime import elapsed
+from ..runtime import Time
 
 
 from .tmr import extract_date
@@ -75,12 +75,12 @@ def eml(event):
     if event.index:
         obj = result[event.index]
         tme = getattr(obj, "Date", "")
-        event.reply(f'{event.index} {fmt(obj, args, plain=True)} {elapsed(time.time() - extract_date(todate(tme)))}')
+        event.reply(f'{event.index} {fmt(obj, args, plain=True)} {Time.elapsed(time.time() - extract_date(todate(tme)))}')
     else:
         for _fn, obj in result:
             nrs += 1
             tme = getattr(obj, "Date", "")
-            event.reply(f'{nrs} {fmt(obj, args, plain=True)} {elapsed(time.time() - extract_date(todate(tme)))}')
+            event.reply(f'{nrs} {fmt(obj, args, plain=True)} {Time.elapsed(time.time() - extract_date(todate(tme)))}')
     if not result:
         event.reply("no emails found.")
 

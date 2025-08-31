@@ -10,22 +10,22 @@ import time
 
 
 from ..clients import Fleet
-from ..persist import find, ident, store, write
-from ..runtime import Timed, elapsed, launch, rlog
+from ..persist import Find
+from ..runtime import Thread, Time, Timed, rlog
 
 
 def init():
-    for fnm, obj in find("timer"):
+    for fnm, obj in Find.find("timer"):
         if "time" not in dir(obj):
             continue
         diff = float(obj.time) - time.time()
         if diff > 0:
             timer = Timed(diff, Fleet.announce, obj.txt)
             timer.start()
-            rlog("debug", f"timer at {time.ctime(obj.time)}")
+            rlogk("debug", f"timer at {time.ctime(obj.time)}")
         else:
             obj.__deleted__ = True
-            write(obj, fnm)
+            Disk.write(obj, fnm)
 
 
 class NoDate(Exception):
@@ -149,12 +149,12 @@ def tmr(event):
     result = ""
     if not event.rest:
         nmr = 0
-        for _fn, obj in find('timer'):
+        for _fn, obj in Find.find('timer'):
             if "time" not in dir(obj):
                 continue
             lap = float(obj.time) - time.time()
             if lap > 0:
-                event.reply(f'{nmr} {obj.txt} {elapsed(lap)}')
+                event.reply(f'{nmr} {obj.txt} {Time.elapsed(lap)}')
                 nmr += 1
         if not nmr:
             event.reply("no timers.")
@@ -190,9 +190,9 @@ def tmr(event):
     timer.orig = event.orig
     timer.time = target
     timer.txt = txt
-    write(timer, store(ident(timer)))
-    launch(timer.start)
-    event.reply("ok " +  elapsed(diff))
+    Disk.write(timer)
+    Thread.launch(timer.start)
+    event.reply("ok " + Time.elapsed(diff))
 
 
 MONTHS = [

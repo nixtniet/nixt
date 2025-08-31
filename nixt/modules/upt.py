@@ -7,8 +7,8 @@
 import time
 
 
-from ..runtime import STARTTIME, elapsed
+from ..runtime import STARTTIME, Time
 
 
 def upt(event):
-    event.reply(elapsed(time.time()-STARTTIME))
+    event.reply(Time.elapsed(time.time()-STARTTIME))

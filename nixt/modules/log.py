@@ -8,9 +8,8 @@ import time
 
 
 from ..objects import Object
-from ..persist import find, fntime, ident, store, write
-from ..runtime import elapsed
-
+from ..persist import Disk, Find, Workdir
+from ..runtime import Time
 
 class Log(Object):
 
@@ -22,8 +21,8 @@ class Log(Object):
 def log(event):
     if not event.rest:
         nmr = 0
-        for fnm, obj in find('log'):
-            lap = elapsed(time.time() - fntime(fnm))
+        for fnm, obj in Find.find('log'):
+            lap = Time.elapsed(time.time() - Find.fntime(fnm))
             event.reply(f'{nmr} {obj.txt} {lap}')
             nmr += 1
         if not nmr:
@@ -31,5 +30,5 @@ def log(event):
         return
     obj = Log()
     obj.txt = event.rest
-    write(obj, store(ident(obj)))
+    Disk.write(obj)
     event.done()

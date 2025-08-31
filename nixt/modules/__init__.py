@@ -4,8 +4,8 @@
 "modules"
 
 
-from ..kernels import modules
+from ..kernels import Kernel
 
 
 def __dir__():
-    return modules()
+    return Kernel.modules()

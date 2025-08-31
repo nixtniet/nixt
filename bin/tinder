@@ -20,12 +20,11 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client, Fleet, Output
-from nixt.command import Commands, command, parse, scan, table
-from nixt.kernels import mods
-from nixt.modules import Main
+from nixt.command import Commands, parse
+from nixt.kernels import Kernel, Main
 from nixt.objects import Object, keys
-from nixt.persist import Workdir, setwd, skel
-from nixt.runtime import STARTTIME, Event, elapsed, launch, spl
+from nixt.persist import Workdir
+from nixt.runtime import STARTTIME, Event, Thread, Time
 
 
 Workdir.wdr = ".test"
@@ -83,7 +82,7 @@ class CLI(Client):
 
     def __init__(self):
         Client.__init__(self)
-        self.register("command", command)
+        self.register("command", Commands.command)
 
     def dosay(self, channel, txt):
         self.raw(txt)
@@ -98,7 +97,7 @@ class Buffer(Output):
 
     def __init__(self):
         Output.__init__(self)
-        self.register("command", command)
+        self.register("command", Commands.command)
 
     def dosay(self, channel, txt):
         self.raw(txt)
@@ -196,9 +195,9 @@ def main():
     global nrs
     global nrcommand
     parse(Main, " ".join(sys.argv[1:]))
-    setwd(Main.name,'.test')
-    table()
-    for mod in mods():
+    Workdir.setwd(Main.name,'.test')
+    Commands.table()
+    for mod in Kernel.mods():
         if "Main" in dir(mod):
             mod.Main.debug = True
     nrcommand = 0
@@ -207,7 +206,7 @@ def main():
     if "f" not in Main.opts:
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
-    skel()
+    Workdir.skel()
     if "z" in Main.opts:
         nrcpu = os.cpu_count()
     else:
@@ -216,21 +215,21 @@ def main():
     nrs = Main.index or 1
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, pre))
+        thrs.append(Thread.launch(payload, pre))
     for thr in thrs:
         nr = thr.join()
         if nr:
             nrcommand += nr
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, param))
+        thrs.append(Thread.launch(payload, param))
     for thr in thrs:
         nr = thr.join()
         if nr:
             nrcommand += nr
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, post))
+        thrs.append(Thread.launch(payload, post))
     for thr in thrs:
         nr = thr.join()
         if nr:
@@ -243,7 +242,7 @@ def main():
 if __name__ == "__main__":
     wrap(main)
     endtime = time.time()
-    lap = elapsed(endtime-STARTTIME)
+    lap = Time.elapsed(endtime-STARTTIME)
     nrevents = events.qsize()
     percall = (endtime-STARTTIME)/(nrcommand)
     if "v" in Main.opts:

@@ -14,8 +14,8 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from ..objects import Object
-from ..persist import Workdir, types
-from ..runtime import launch, rlog
+from ..persist import Workdir
+from ..runtime import Thread, rlog
 
 
 DEBUG = False
@@ -57,7 +57,7 @@ class REST(HTTPServer, Object):
 
     def start(self):
         self._status = "ok"
-        launch(self.serve_forever)
+        Thread.launch(self.serve_forever)
 
     def request(self):
         self._last = time.time()
@@ -93,7 +93,7 @@ class RESTHandler(BaseHTTPRequestHandler):
         if self.path == "/":
             self.write_header("text/html")
             txt = ""
-            for fnm in types():
+            for fnm in Workdir.types():
                 txt += f'<a href="http://{Config.hostname}:{Config.port}/{fnm}">{fnm}</a><br>\n'
             self.send(html(txt.strip()))
             return

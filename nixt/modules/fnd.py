@@ -23,7 +23,7 @@ def fnd(event):
     clz = Workdir.long(otype)
     nmr = 0
     for fnm, obj in list(Find.find(clz, event.gets)):
-        event.reply(f"{nmr} {fmt(obj)} {Time.elapsed(time.time()-fntime(fnm))}")
+        event.reply(f"{nmr} {fmt(obj)} {Time.elapsed(time.time()-Find.fntime(fnm))}")
         nmr += 1
     if not nmr:
         event.reply("no result")

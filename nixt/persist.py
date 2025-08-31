@@ -43,11 +43,6 @@ class Cache:
 class Disk:
 
     @staticmethod
-    def cdir(path):
-        pth = pathlib.Path(path)
-        pth.parent.mkdir(parents=True, exist_ok=True)
-
-    @staticmethod
     def read(obj, path):
         with lock:
             with open(path, "r", encoding="utf-8") as fpt:
@@ -62,7 +57,7 @@ class Disk:
         with lock:
             if path is None:
                 path = Workdir.getpath(obj)
-            cdir(path)
+            Workdir.cdir(path)
             with open(path, "w", encoding="utf-8") as fpt:
                 dump(obj, fpt, indent=4)
             Cache.update(path, obj)
@@ -75,8 +70,13 @@ class Workdir:
     wdr = ""
 
     @staticmethod
+    def cdir(path):
+        pth = pathlib.Path(path)
+        pth.parent.mkdir(parents=True, exist_ok=True)
+
+    @staticmethod
     def getpath(obj):
-        return Workdir.store(ident(obj))
+        return Workdir.store(Workdir.ident(obj))
 
     @staticmethod
     def ident(obj):
@@ -120,7 +120,7 @@ class Workdir:
 
     @staticmethod
     def types():
-        skel()
+        Workdir.skel()
         return os.listdir(Workdir.store())
 
     @staticmethod
@@ -135,15 +135,15 @@ class Find:
         clz = Workdir.long(clz)
         if selector is None:
             selector = {}
-        for pth in fns(clz):
+        for pth in Find.fns(clz):
             obj = Cache.get(pth)
             if not obj:
                 obj = Object()
-                read(obj, pth)
+                Disk.read(obj, pth)
                 Cache.add(pth, obj)
-            if not deleted and isdeleted(obj):
+            if not deleted and Find.isdeleted(obj):
                 continue
-            if selector and not search(obj, selector, matching):
+            if selector and not Find.search(obj, selector, matching):
                 continue
             yield pth, obj
 
@@ -177,7 +177,7 @@ class Find:
     def last(obj, selector=None):
         if selector is None:
             selector = {}
-        result = sorted(find(fqn(obj), selector), key=lambda x: fntime(x[0]))
+        result = sorted(Find.find(fqn(obj), selector), key=lambda x: Find.fntime(x[0]))
         res = ""
         if result:
             inp = result[-1]

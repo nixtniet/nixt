@@ -4,8 +4,8 @@
 "available types"
 
 
-from ..persist import types
+from ..persist import Workdir
 
 
 def ls(event):
-    event.reply(",".join([x.split(".")[-1].lower() for x in types()]))
+    event.reply(",".join([x.split(".")[-1].lower() for x in Workdir.types()]))
