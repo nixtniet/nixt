@@ -27,7 +27,7 @@ from nixt.run     import STARTTIME, Event, Main, elapsed, launch, level, rlog
 
 if os.path.exists("mods"):
     from mods import Commands, command, parse, table
-    from mods import Mods, getmod
+    from mods import Main, Mods, getmod
 
 
 Mods.path = "mods"

@@ -17,8 +17,8 @@ from nixt.client import Fleet, Output
 from nixt.object import Object, edit, fmt, keys
 from nixt.disk   import Find, Workdir, write
 from nixt.run    import Event as IEvent
-from nixt.run    import Main, launch, rlog
-from .           import command
+from nixt.run    import launch, rlog
+from .           import Main, command
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
