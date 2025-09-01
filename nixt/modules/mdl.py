@@ -8,9 +8,9 @@ import datetime
 import time
 
 
-from ..clients import Fleet
-from ..objects import Object, construct, keys
-from ..runtime import Event, Repeater, elapsed, rlog
+from ..client import Fleet
+from ..object import Object, construct, keys
+from ..run    import Event, Repeater, elapsed, rlog
 
 
 DAY = 24*60*60

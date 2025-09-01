@@ -7,9 +7,9 @@
 import time
 
 
-from ..objects import fmt
-from ..persist import Find, Workdir
-from ..runtime import elapsed
+from ..disk   import Find, Workdir
+from ..object import fmt
+from ..run    import elapsed
 
 
 def fnd(event):

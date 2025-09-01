@@ -11,7 +11,7 @@ import time
 import _thread
 
 
-from .objects import Object, name
+from .object import Object, name
 
 
 STARTTIME = time.time()

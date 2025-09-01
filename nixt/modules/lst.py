@@ -4,7 +4,7 @@
 "available types"
 
 
-from ..persist import Workdir
+from ..disk import Workdir
 
 
 def ls(event):

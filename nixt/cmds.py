@@ -7,7 +7,7 @@
 import inspect
 
 
-from .clients import Fleet
+from .client  import Fleet
 from .modules import mod
 
 

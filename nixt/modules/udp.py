@@ -11,9 +11,9 @@ import threading
 import time
 
 
-from ..clients import Fleet
-from ..objects import Object
-from ..runtime import Thread, rlog
+from ..client import Fleet
+from ..object import Object
+from ..run    import Thread, rlog
 
 
 DEBUG = True

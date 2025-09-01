@@ -9,9 +9,9 @@ import re
 import time
 
 
-from ..clients import Fleet
-from ..persist import Find, write
-from ..runtime import Timed, elapsed, launch, rlog
+from ..disk   import Find, write
+from ..client import Fleet
+from ..run    import Timed, elapsed, launch, rlog
 
 
 def init():

@@ -13,8 +13,8 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from ..objects import Object
-from ..runtime import Thread, rlog
+from ..object import Object
+from ..run    import Thread, rlog
 
 
 DEBUG = False

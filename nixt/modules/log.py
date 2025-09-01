@@ -7,9 +7,9 @@
 import time
 
 
-from ..objects import Object
-from ..persist import Find, write
-from ..runtime import elapsed
+from ..disk   import Find, write
+from ..object import Object
+from ..run    import elapsed
 
 
 class Log(Object):
