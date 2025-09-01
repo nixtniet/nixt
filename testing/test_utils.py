@@ -7,11 +7,11 @@
 import unittest
 
 
-from nixt.runtime import Time
+from nixt.runtime import elapsed
 
 
 class TestUtilities(unittest.TestCase):
 
     def test_elapsed(self):
-        result = Time.elapsed(0)
+        result = elapsed(0)
         self.assertEqual(result, "0.00s")

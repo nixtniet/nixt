@@ -8,7 +8,7 @@ import unittest
 
 
 from nixt.objects import Object
-from nixt.persist import Disk, Find, Workdir
+from nixt.persist import Find, Workdir, write
 
 
 class TestFind(unittest.TestCase):
@@ -18,6 +18,6 @@ class TestFind(unittest.TestCase):
 
     def test_find(self):
         obj = Object()
-        Disk.write(obj)
+        write(obj)
         result = list(Find.find("nixt.object.Object"))
         self.assertNotEqual(len(result), 0)
