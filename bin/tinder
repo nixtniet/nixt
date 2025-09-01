@@ -21,16 +21,16 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.client  import Client, Fleet, Output
 from nixt.disk    import Workdir, setwd
+from nixt.modules import Commands, Main
+from nixt.modules import command, getmod, mod, modules, parse, scan, table
 from nixt.object  import Object, keys
-from nixt.run     import STARTTIME, Event, Main, elapsed, launch, level, rlog
+from nixt.run     import STARTTIME, Event, elapsed, launch, level, rlog, spl
 
 
 if os.path.exists("mods"):
-    from mods import Commands, command, parse, table
-    from mods import Main, Mods, getmod
+    Main.path = "mods"
 
 
-Mods.path = "mods"
 Workdir.wdr = ".test"
 
 
