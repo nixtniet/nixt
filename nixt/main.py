@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # This file is placed in the Public Domain.
 
 
@@ -14,14 +13,11 @@ import time
 import _thread
 
 
-sys.path.insert(0, os.getcwd())
-
-
-from nixt.client  import Client, Fleet
-from nixt.cmds    import Commands, command, parse, scan, table
-from nixt.disk    import Workdir, setwd
-from nixt.pkg     import Mods, md5sum, mod, mods, modules, sums
-from nixt.run     import Event, Main, launch, level, rlog, spl
+from .client  import Client, Fleet
+from .cmds    import Commands, command, parse, scan, table
+from .disk    import Workdir, setwd
+from .pkg     import Mods, md5sum, mod, mods, modules, sums
+from .run     import Event, Main, launch, level, rlog, spl
 
 
 Mods.checksum = "f4ea15054403c23f0112b4f4dc52ecec"
@@ -297,7 +293,3 @@ ExecStart=/home/%s/.local/bin/%s -s
 
 [Install]
 WantedBy=multi-user.target"""
-
-
-if __name__ == "__main__":
-    main()
