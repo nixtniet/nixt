@@ -12,25 +12,10 @@ import sys
 import threading
 
 
-from ..run import rlog, spl
+from .run import rlog, spl
 
 
 lock = threading.RLock()
-
-
-class Main:
-
-    debug    = False
-    gets     = {}
-    init     = ""
-    level    = "warn"
-    md5      = True
-    name     = __package__.split(".", maxsplit=1)[0].lower()
-    opts     = {}
-    otxt     = ""
-    sets     = {}
-    verbose  = False
-    version  = 401
 
 
 class Mods:
@@ -40,7 +25,8 @@ class Mods:
     md5s     = {}
     ignore   = []
     path     = os.path.dirname(__file__)
-    pname    = f"{__package__}"
+    path     = os.path.join(path, "modules")
+    pname    = f"{__package__}.modules"
 
 
 def md5sum(path):
@@ -111,4 +97,12 @@ def sums(checksum):
 
 
 def __dir__():
-    return modules()
+    return (
+       'Mods',
+       'md5sum',
+       'mod',
+       'mods',
+       'modules',
+       'sums'
+    )
+    

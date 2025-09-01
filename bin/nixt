@@ -20,11 +20,12 @@ sys.path.insert(0, os.getcwd())
 from nixt.client  import Client, Fleet
 from nixt.cmds    import Commands, command, parse, scan, table
 from nixt.disk    import Workdir, setwd
-from nixt.modules import Main, Mods, md5sum, mod, mods, modules, sums
+from nixt.modules import Main
+from nixt.pkg     import Mods, md5sum, mod, mods, modules, sums
 from nixt.run     import Event, launch, level, rlog, spl
 
 
-Mods.checksum = "0cb880da88f0823c5b0e039448fe55a2"
+Mods.checksum = "1947c38739529a0889db177a830c07f1"
 Mods.ignore = ["wsd", "rst", "udp", "web"]
 
 

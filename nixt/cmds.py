@@ -7,8 +7,8 @@
 import inspect
 
 
-from .client  import Fleet
-from .modules import mod
+from .client import Fleet
+from .pkg    import mod
 
 
 class Commands:
