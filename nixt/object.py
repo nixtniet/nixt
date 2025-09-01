@@ -4,8 +4,6 @@
 "a clean namespace"
 
 
-
-
 class Object:
 
     def __contains__(self, key):
