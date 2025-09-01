@@ -4,7 +4,6 @@
 "modules"
 
 
-import hashlib
 import importlib
 import importlib.util
 import inspect
@@ -14,7 +13,7 @@ import threading
 
 
 from nixt.client import Fleet
-from nixt.run    import rlog, spl
+from nixt.run    import spl
 
 
 lock = threading.RLock()
