@@ -5,3 +5,8 @@ __doc__ = __name__.upper()
 
 
 from .object import *
+from .object import __dir__
+
+
+__all__ = __dir__()
+
