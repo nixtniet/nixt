@@ -24,24 +24,17 @@ class Main:
 
     debug    = False
     gets     = {}
+    ignore   = ""
     init     = ""
     level    = "warn"
     md5      = True
     name     = __package__.split(".", maxsplit=1)[0].lower()
     opts     = {}
     otxt     = ""
+    path     = ""
     sets     = {}
     verbose  = False
     version  = 410
-
-
-class Mods:
-
-    loaded   = []
-    md5s     = {}
-    ignore   = []
-    path     = os.path.dirname(__file__)
-    pname    = "mods"
 
 
 class Commands:
@@ -76,6 +69,46 @@ def command(evt):
         func(evt)
         Fleet.display(evt)
     evt.ready()
+
+
+def getmod(names=""):
+    res = []
+    for nme in sorted(modules(Main.path)):
+        if names and nme not in spl(names):
+            continue
+        module = mod(nme)
+        if not module:
+            continue
+        res.append(module)
+    return res
+
+
+def mod(name, debug=False):
+    with lock:
+        module = None
+        pname = Main.path.split(os.sep)[-1]
+        mname = f"{pname}.{name}"
+        module = sys.modules.get(mname, None)
+        if not module:
+            pth = os.path.join(Main.path, f"{name}.py")
+            if not os.path.exists(pth):
+                return None
+            spec = importlib.util.spec_from_file_location(mname, pth)
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[mname] = module
+            spec.loader.exec_module(module)
+        return module
+
+
+def modules(mdir=""):
+    pth = mdir or Main.path
+    if not os.path.exists(pth):
+         return []
+    return sorted([
+            x[:-3] for x in os.listdir(mdir or Main.path)
+            if x.endswith(".py") and not x.startswith("__") and
+            x[:-3] not in Main.ignore
+           ])
 
 
 def parse(obj, txt=None):
@@ -150,82 +183,6 @@ def table():
     names = getattr(tbl, "NAMES", None)
     if names:
         Commands.names.update(names)
-
-
-"modules"
-
-
-def md5sum(path):
-    with open(path, "r", encoding="utf-8") as file:
-        txt = file.read().encode("utf-8")
-        return hashlib.md5(txt).hexdigest()
-
-
-def mod(name, debug=False):
-    with lock:
-        module = None
-        mname = f"{Mods.pname}.{name}"
-        module = sys.modules.get(mname, None)
-        if not module:
-            pth = os.path.join(Mods.path, f"{name}.py")
-            if not os.path.exists(pth):
-                return None
-            if name != "tbl" and md5sum(pth) != Mods.md5s.get(name, None):
-                rlog("warn", f"md5 error on {pth.split(os.sep)[-1]}")
-            spec = importlib.util.spec_from_file_location(mname, pth)
-            module = importlib.util.module_from_spec(spec)
-            sys.modules[mname] = module
-            spec.loader.exec_module(module)
-            Mods.loaded.append(module.__name__.split(".")[-1])
-        if debug:
-            module.DEBUG = True
-        return module
-
-
-def getmod(names=""):
-    res = []
-    for nme in sorted(modules(Mods.path)):
-        if names and nme not in spl(names):
-            continue
-        module = mod(nme)
-        if not module:
-            continue
-        res.append(module)
-    return res
-
-
-def modules(mdir=""):
-    pth = mdir or Mods.path
-    if not os.path.exists(pth):
-         return []
-    return sorted([
-            x[:-3] for x in os.listdir(mdir or Mods.path)
-            if x.endswith(".py") and not x.startswith("__") and
-            x[:-3] not in Mods.ignore
-           ]) 
-
-
-def sums(checksum):
-    pth = os.path.join(Mods.path, "tbl.py")
-    if not os.path.exists(pth):
-        rlog("warn", "tbl.py is missing.")
-        return False        
-    if checksum and md5sum(pth) != checksum:
-        rlog("warn", "table checksum error.")
-        return False
-    try:
-        module = mod("tbl")
-    except FileNotFoundError:
-        rlog("warn", "table is not there.")
-        return {}
-    sms =  getattr(module, "MD5", None)
-    if sms:
-        Mods.md5s.update(sms)
-        return True
-    return False
-
-
-"interface"
 
 
 def __dir__():

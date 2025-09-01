@@ -5,6 +5,7 @@
 "main"
 
 
+import hashlib
 import json
 import logging
 import os
@@ -19,18 +20,20 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.client  import Client, Fleet
 from nixt.disk    import Workdir, setwd
+from nixt.modules import Commands, Main
+from nixt.modules import command, getmod, mod, modules, parse, scan, table
 from nixt.run     import Event, launch, level, rlog, spl
-from nixt.serial  import dumps
-
-
-checksum = "f4ea15054403c23f0112b4f4dc52ecec"
-checksum = "ae7466be9546791208a68c673c3f4a69"
 
 
 if os.path.exists("mods"):
-    from mods import Mods, md5sum, getmod, mod, modules, sums
-    from mods import Main, Commands, command, parse, scan, table
-    Mods.ignore = ["wsd", "rst", "udp", "web"]
+    from mods import Commands, Main
+    from mods import command, getmod, mod, modules, parse, scan, table
+
+
+Main.ignore = "wsd,rst,udp,web"
+
+
+checksum = "edf25c5109379f6fc38e11c94c5d4e51"
 
 
 class CLI(Client):
@@ -94,6 +97,12 @@ def forever():
             break
 
 
+def md5sum(path):
+    with open(path, "r", encoding="utf-8") as file:
+        txt = file.read().encode("utf-8")
+        return hashlib.md5(txt).hexdigest()
+
+
 def inits(names):
     modz = []
     for name in spl(names):
@@ -134,10 +143,10 @@ def background():
     daemon("-v" in sys.argv)
     privileges()
     Main.level = Main.sets.get("level", Main.level or "warn")
+    Main.path = Main.sets.get("path", Main.path or "mods")
     level(Main.level or "debug")
     setwd(Main.name)
     pidfile(Workdir.pidname(Main.name))
-    sums(checksum)
     table()
     Commands.add(ver)
     inits(Main.init or "irc,rss")
@@ -149,11 +158,11 @@ def console():
     parse(Main, " ".join(sys.argv[1:]))
     Main.init = Main.sets.get("init", Main.init)
     Main.verbose = Main.sets.get("verbose", Main.verbose)
-    Main.level   = Main.sets.get("level", Main.level or "warn")
+    Main.level = Main.sets.get("level", Main.level or "warn")
+    Main.path = Main.sets.get("path", Main.path or "mods")
     level(Main.level)
     setwd(Main.name)
     banner()
-    sums(checksum)
     table()
     Commands.add(ver)
     for _mod, thr in inits(Main.init):
@@ -168,9 +177,9 @@ def control():
     if len(sys.argv) == 1:
         return
     parse(Main, " ".join(sys.argv[1:]))
+    Main.path = Main.sets.get("path", Main.path or "mods")
     level(Main.level or "warn")
     setwd(Main.name)
-    sums(checksum)
     table()
     Commands.add(cmd)
     Commands.add(md5)
@@ -187,12 +196,12 @@ def control():
 
 
 def service():
+    Main.path = Main.sets.get("path", Main.path or "mods")
     level(Main.level or "warn")
     setwd(Main.name)
     banner()
     privileges()
     pidfile(pidname(Main.name))
-    sums(checksum)
     table()
     Commands.add(ver)
     inits(Main.init or "irc,rss")
@@ -229,12 +238,6 @@ def tbl(event):
     event.reply("")
     event.reply("")
     event.reply(f"NAMES = {json.dumps(Commands.names, indent=4, sort_keys=True)}")
-    event.reply("")
-    event.reply("")
-    event.reply("MD5 = {")
-    for module in getmod():
-        event.reply(f'    "{module.__name__.split(".")[-1]}": "{md5sum(module.__file__)}",')
-    event.reply("}")
 
 
 def ver(event):
