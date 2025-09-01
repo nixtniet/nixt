@@ -20,11 +20,14 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client  import Client, Fleet, Output
-from nixt.cmds    import Commands, command, parse, table
 from nixt.disk    import Workdir, setwd
 from nixt.object  import Object, keys
-from nixt.pkg     import Mods, mods
 from nixt.run     import STARTTIME, Event, Main, elapsed, launch, level, rlog
+
+
+if os.path.exists("mods"):
+    from mods import Commands, command, parse, table
+    from mods import Mods, getmod
 
 
 Mods.path = "mods"
@@ -198,7 +201,7 @@ def main():
     level("error")
     setwd(Main.name,'.test')
     table()
-    for mod in mods():
+    for mod in getmod():
         if "Main" in dir(mod):
             mod.Main.debug = True
     nrcommand = 0

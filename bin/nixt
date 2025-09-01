@@ -18,18 +18,20 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client  import Client, Fleet
-from nixt.cmds    import Commands, command, parse, scan, table
 from nixt.disk    import Workdir, setwd
-from nixt.pkg     import Mods, md5sum, mod, mods, modules, sums
 from nixt.run     import Event, Main, launch, level, rlog, spl
+from nixt.serial  import dumps
 
 
-Mods.checksum = "f4ea15054403c23f0112b4f4dc52ecec"
-Mods.ignore = ["wsd", "rst", "udp", "web"]
+checksum = "f4ea15054403c23f0112b4f4dc52ecec"
+checksum = "ae7466be9546791208a68c673c3f4a69"
 
 
 if os.path.exists("mods"):
-    Mods.path = "mods"
+    from mods import Mods, md5sum, getmod, mod, modules, sums
+    from mods import Commands, command, parse, scan, table
+    Mods.ignore = ["wsd", "rst", "udp", "web"]
+
 
 class CLI(Client):
 
@@ -135,7 +137,7 @@ def background():
     level(Main.level or "debug")
     setwd(Main.name)
     pidfile(Workdir.pidname(Main.name))
-    sums(Mods.checksum)
+    sums(checksum)
     table()
     Commands.add(ver)
     inits(Main.init or "irc,rss")
@@ -151,7 +153,7 @@ def console():
     level(Main.level)
     setwd(Main.name)
     banner()
-    sums(Mods.checksum)
+    sums(checksum)
     table()
     Commands.add(ver)
     for _mod, thr in inits(Main.init):
@@ -168,8 +170,9 @@ def control():
     parse(Main, " ".join(sys.argv[1:]))
     level(Main.level or "warn")
     setwd(Main.name)
-    sums(Mods.checksum)
+    sums(checksum)
     table()
+    Commands.add(cmd)
     Commands.add(md5)
     Commands.add(srv)
     Commands.add(tbl)
@@ -189,7 +192,7 @@ def service():
     banner()
     privileges()
     pidfile(pidname(Main.name))
-    sums(Mods.checksum)
+    sums(checksum)
     table()
     Commands.add(ver)
     inits(Main.init or "irc,rss")
@@ -204,7 +207,7 @@ def cmd(event):
 
 
 def md5(event):
-    tbl = mods("tbl")[0]
+    tbl = mod("tbl")
     event.reply(md5sum(tbl.__file__))
 
 
@@ -217,7 +220,7 @@ def srv(event):
 def tbl(event):
     if not check("f"):
         Commands.names = {}
-    for module in mods():
+    for module in getmod():
         scan(module)
     event.reply("# This file is placed in the Public Domain.")
     event.reply("")
@@ -229,7 +232,7 @@ def tbl(event):
     event.reply("")
     event.reply("")
     event.reply("MD5 = {")
-    for module in mods():
+    for module in getmod():
         event.reply(f'    "{module.__name__.split(".")[-1]}": "{md5sum(module.__file__)}",')
     event.reply("}")
 
@@ -300,3 +303,7 @@ ExecStart=/home/%s/.local/bin/%s -s
 
 [Install]
 WantedBy=multi-user.target"""
+
+
+if __name__ == "__main__":
+    main()

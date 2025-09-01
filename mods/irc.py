@@ -14,11 +14,11 @@ import time
 
 
 from nixt.client import Fleet, Output
-from nixt.cmds   import command
 from nixt.object import Object, edit, fmt, keys
 from nixt.disk   import Find, Workdir, write
 from nixt.run    import Event as IEvent
 from nixt.run    import Main, launch, rlog
+from .           import command
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
