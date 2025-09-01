@@ -33,11 +33,10 @@ NAMES = {
     "upt": "upt"
 }
 
-
 MD5 = {
     "cmd": "642ba5235d2fbb5743ab4f832fddb7cc",
     "fnd": "0dc75573631e831561d4125db80ba489",
-    "irc": "5fda3e9201fb6603ac9712f654c61766",
+    "irc": "9cf10a08feb560b5a462e7b571f5ca33",
     "log": "8639810ed3a3c011724ced704242faea",
     "lst": "81992b596ec9c0474d1666a28f3652b7",
     "mbx": "dcda6c21cc1de8726080142f6411d80a",

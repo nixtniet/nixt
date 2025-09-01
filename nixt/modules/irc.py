@@ -18,8 +18,7 @@ from ..cmds   import command
 from ..object import Object, edit, fmt, keys
 from ..disk   import Find, Workdir, write
 from ..run    import Event as IEvent
-from ..run    import launch, rlog
-from .        import Main
+from ..run    import Main, launch, rlog
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
