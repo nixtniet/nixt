@@ -7,9 +7,9 @@
 import time
 
 
-from ..disk   import Find, Workdir
-from ..object import fmt
-from ..run    import elapsed
+from nixt.disk   import Find, Workdir
+from nixt.object import fmt
+from nixt.run    import elapsed
 
 
 def fnd(event):

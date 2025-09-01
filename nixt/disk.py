@@ -12,7 +12,8 @@ import threading
 import time
 
 
-from .object import Object, dump, fqn, items, load, update
+from .object import Object, fqn, items, update
+from .serial import dump, load
 
 
 lock = threading.RLock()

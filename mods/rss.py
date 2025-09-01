@@ -21,10 +21,10 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from ..client import Fleet
-from ..disk   import Find, Workdir, write
-from ..object import Object, fmt, update
-from ..run    import Repeater, elapsed, launch, rlog, spl
+from nixt.client import Fleet
+from nixt.disk   import Find, Workdir, write
+from nixt.object import Object, fmt, update
+from nixt.run    import Repeater, elapsed, launch, rlog, spl
 
 
 DEBUG = False

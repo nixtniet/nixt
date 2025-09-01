@@ -8,9 +8,9 @@ import datetime
 import time
 
 
-from ..client import Fleet
-from ..object import Object, construct, keys
-from ..run    import Event, Repeater, elapsed, rlog
+from nixt.client import Fleet
+from nixt.object import Object, construct, keys
+from nixt.run    import Event, Repeater, elapsed, rlog
 
 
 DAY = 24*60*60

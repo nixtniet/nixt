@@ -23,10 +23,11 @@ from nixt.client  import Client, Fleet, Output
 from nixt.cmds    import Commands, command, parse, table
 from nixt.disk    import Workdir, setwd
 from nixt.object  import Object, keys
-from nixt.pkg     import mods
+from nixt.pkg     import Mods, mods
 from nixt.run     import STARTTIME, Event, Main, elapsed, launch, level, rlog
 
 
+Mods.path = "mods"
 Workdir.wdr = ".test"
 
 

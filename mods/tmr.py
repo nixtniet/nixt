@@ -9,9 +9,9 @@ import re
 import time
 
 
-from ..disk   import Find, write
-from ..client import Fleet
-from ..run    import Timed, elapsed, launch, rlog
+from nixt.disk   import Find, write
+from nixt.client import Fleet
+from nixt.run    import Timed, elapsed, launch, rlog
 
 
 def init():

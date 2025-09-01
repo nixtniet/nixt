@@ -4,7 +4,7 @@
 "available types"
 
 
-from ..disk import Workdir
+from nixt.disk import Workdir
 
 
 def ls(event):
