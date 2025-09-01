@@ -9,7 +9,7 @@ import time
 
 from ..objects import fmt
 from ..persist import Find, Workdir
-from ..runtime import Time
+from ..runtime import elapsed
 
 
 def fnd(event):
@@ -23,7 +23,7 @@ def fnd(event):
     clz = Workdir.long(otype)
     nmr = 0
     for fnm, obj in list(Find.find(clz, event.gets)):
-        event.reply(f"{nmr} {fmt(obj)} {Time.elapsed(time.time()-Find.fntime(fnm))}")
+        event.reply(f"{nmr} {fmt(obj)} {elapsed(time.time()-Find.fntime(fnm))}")
         nmr += 1
     if not nmr:
         event.reply("no result")

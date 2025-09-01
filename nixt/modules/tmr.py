@@ -10,8 +10,8 @@ import time
 
 
 from ..clients import Fleet
-from ..persist import Disk, Find
-from ..runtime import Thread, Time, Timed, rlog
+from ..persist import Find, write
+from ..runtime import Timed, elapsed, launch, rlog
 
 
 def init():
@@ -25,7 +25,7 @@ def init():
             rlog("debug", f"timer at {time.ctime(obj.time)}")
         else:
             obj.__deleted__ = True
-            Disk.write(obj, fnm)
+            write(obj, fnm)
 
 
 class NoDate(Exception):
@@ -154,7 +154,7 @@ def tmr(event):
                 continue
             lap = float(obj.time) - time.time()
             if lap > 0:
-                event.reply(f'{nmr} {obj.txt} {Time.elapsed(lap)}')
+                event.reply(f'{nmr} {obj.txt} {elapsed(lap)}')
                 nmr += 1
         if not nmr:
             event.reply("no timers.")
@@ -190,9 +190,9 @@ def tmr(event):
     timer.orig = event.orig
     timer.time = target
     timer.txt = txt
-    Disk.write(timer)
-    Thread.launch(timer.start)
-    event.reply("ok " + Time.elapsed(diff))
+    write(timer)
+    launch(timer.start)
+    event.reply("ok " + elapsed(diff))
 
 
 MONTHS = [

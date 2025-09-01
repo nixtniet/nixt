@@ -9,8 +9,8 @@ import time
 
 
 from ..clients import Fleet
-from ..runtime import Event, Repeater, Time, rlog
 from ..objects import Object, construct, keys
+from ..runtime import Event, Repeater, elapsed, rlog
 
 
 DAY = 24*60*60
@@ -33,7 +33,7 @@ def init():
             name = aliases.get(key)
             repeater = Repeater(sec, cbstats, evt, thrname=name)
             repeater.start()
-            rlog("debug", f"{name} at {STARTDATE} {Time.elapsed(time.time()-STARTTIME)}")
+            rlog("debug", f"{name} at {STARTDATE} {elapsed(time.time()-STARTTIME)}")
 
 
 oor = """"Totaal onderliggende doodsoorzaken (aantal)";
@@ -322,7 +322,7 @@ def hourly():
 
 def cbnow(_evt):
     delta = time.time() - STARTTIME
-    txt = Time.elapsed(delta) + " "
+    txt = elapsed(delta) + " "
     for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
@@ -344,20 +344,20 @@ def cbstats(evt):
         delta2 = time.time() - getday()
         thisday = int(delta2/needed)
         txt = "%s %s #%s (%s/%s/%s) every %s" % (
-            Time.elapsed(delta),
+            elapsed(delta),
             getalias(nme).upper(),
             nrtimes,
             thisday,
             nrday,
             nryear,
-            Time.elapsed(needed)
+            elapsed(needed)
         )
         Fleet.announce(txt)
 
 
 def dis(event):
     delta = time.time() - STARTTIME
-    txt = Time.elapsed(delta) + " "
+    txt = elapsed(delta) + " "
     for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
@@ -378,13 +378,13 @@ def now(event):
         nrday = int(DAY/needed)
         thisday = int(DAY % needed)
         txt = "%s %s #%s (%s/%s/%s) every %s" % (
-            Time.elapsed(delta),
+            elapsed(delta),
             getalias(nme),
             nrtimes,
             thisday,
             nrday,
             nryear,
-            Time.elapsed(needed)
+            elapsed(needed)
         )
         event.reply(txt)
 

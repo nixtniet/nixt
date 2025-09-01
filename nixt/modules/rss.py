@@ -22,10 +22,9 @@ from urllib.parse import quote_plus, urlencode
 
 
 from ..clients import Fleet
-from ..kernels import spl
 from ..objects import Object, fmt, update
-from ..persist import Disk, Find, Workdir
-from ..runtime import Repeater, Thread, Time, rlog
+from ..persist import Find, Workdir, write
+from ..runtime import Repeater, elapsed, launch, rlog, spl
 
 
 DEBUG = False
@@ -112,12 +111,12 @@ class Fetcher(Object):
                 if uurl in seen:
                     continue
                 if self.dosave:
-                    Disk.write(fed)
+                    write(fed)
                 result.append(fed)
             setattr(self.seen, feed.rss, urls)
             if not self.seenfn:
-                self.seenfn = Workdir.getpath(self.seen)
-            Disk.write(self.seen, self.seenfn)
+                self.seenfn = Workdir.path(self.seen)
+            write(self.seen, self.seenfn)
         if silent:
             return counter
         txt = ""
@@ -133,7 +132,7 @@ class Fetcher(Object):
     def run(self, silent=False):
         thrs = []
         for _fn, feed in Find.find("rss"):
-            thrs.append(Thread.launch(self.fetch, feed, silent))
+            thrs.append(launch(self.fetch, feed, silent))
         return thrs
 
     def start(self, repeat=True):
@@ -345,7 +344,7 @@ def dpl(event):
     for fnm, feed in Find.find("rss", {"rss": event.args[0]}):
         if feed:
             update(feed, setter)
-            Disk.write(feed, fnm)
+            write(feed, fnm)
     event.done()
 
 
@@ -395,7 +394,7 @@ def imp(event):
             update(feed, obj)
             feed.rss = obj.xmlUrl
             feed.insertid = insertid
-            Disk.write(feed)
+            write(feed)
             nrs += 1
     if nrskip:
         event.reply(f"skipped {nrskip} urls.")
@@ -413,7 +412,7 @@ def nme(event):
         update(feed, fed)
         if feed:
             feed.name = str(event.args[1])
-            Disk.write(feed, fnm)
+            write(feed, fnm)
     event.done()
 
 
@@ -428,7 +427,7 @@ def rem(event):
             continue
         if feed:
             feed.__deleted__ = True
-            Disk.write(feed, fnm)
+            write(feed, fnm)
             event.done()
             break
 
@@ -444,7 +443,7 @@ def res(event):
             continue
         if feed:
             feed.__deleted__ = False
-            Disk.write(feed, fnm)
+            write(feed, fnm)
     event.done()
 
 
@@ -453,7 +452,7 @@ def rss(event):
         nrs = 0
         for fnm, fed in Find.find("rss"):
             nrs += 1
-            elp = Time.elapsed(time.time() - Find.fntime(fnm))
+            elp = elapsed(time.time() - Find.fntime(fnm))
             txt = fmt(fed)
             event.reply(f"{nrs} {txt} {elp}")
         if not nrs:
@@ -469,7 +468,7 @@ def rss(event):
             return
     feed = Rss()
     feed.rss = event.args[0]
-    Disk.write(feed)
+    write(feed)
     event.done()
 
 

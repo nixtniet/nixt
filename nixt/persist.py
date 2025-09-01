@@ -40,30 +40,6 @@ class Cache:
             Cache.add(path, obj)
 
 
-class Disk:
-
-    @staticmethod
-    def read(obj, path):
-        with lock:
-            with open(path, "r", encoding="utf-8") as fpt:
-                try:
-                    update(obj, load(fpt))
-                except json.decoder.JSONDecodeError as ex:
-                    ex.add_note(path)
-                    raise ex
-
-    @staticmethod
-    def write(obj, path=None):
-        with lock:
-            if path is None:
-                path = Workdir.getpath(obj)
-            Workdir.cdir(path)
-            with open(path, "w", encoding="utf-8") as fpt:
-                dump(obj, fpt, indent=4)
-            Cache.update(path, obj)
-            return path
-
-
 class Workdir:
 
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
@@ -73,10 +49,6 @@ class Workdir:
     def cdir(path):
         pth = pathlib.Path(path)
         pth.parent.mkdir(parents=True, exist_ok=True)
-
-    @staticmethod
-    def getpath(obj):
-        return Workdir.store(Workdir.ident(obj))
 
     @staticmethod
     def ident(obj):
@@ -93,14 +65,13 @@ class Workdir:
         return res
 
     @staticmethod
+    def path(obj):
+        return Workdir.store(Workdir.ident(obj))
+
+    @staticmethod
     def pidname(name):
         return os.path.join(Workdir.wdr, f"{name}.pid")
 
-    @staticmethod
-    def setwd(name, path=""):
-        path = path or os.path.expanduser(f"~/.{name}")
-        Workdir.wdr = path
-        Workdir.skel()
 
     @staticmethod
     def skel():
@@ -135,7 +106,7 @@ class Find:
             obj = Cache.get(pth)
             if not obj:
                 obj = Object()
-                Disk.read(obj, pth)
+                read(obj, pth)
                 Cache.add(pth, obj)
             if not deleted and Find.isdeleted(obj):
                 continue
@@ -201,10 +172,41 @@ class Find:
         return res
 
 
+
+
+def read(obj, path):
+    with lock:
+        with open(path, "r", encoding="utf-8") as fpt:
+            try:
+                update(obj, load(fpt))
+            except json.decoder.JSONDecodeError as ex:
+                ex.add_note(path)
+                raise ex
+
+
+def setwd(name, path=""):
+    path = path or os.path.expanduser(f"~/.{name}")
+    Workdir.wdr = path
+    Workdir.skel()
+
+
+def write(obj, path=None):
+    with lock:
+        if path is None:
+            path = Workdir.path(obj)
+        Workdir.cdir(path)
+        with open(path, "w", encoding="utf-8") as fpt:
+            dump(obj, fpt, indent=4)
+        Cache.update(path, obj)
+        return path
+
+
 def __dir__():
     return (
         'Cache',
-        'Disk',
         'Find',
         'Workdir',
+        'read',
+        'setwd',
+        'write'
     )

@@ -8,8 +8,8 @@ import time
 
 
 from ..objects import Object
-from ..persist import Disk, Find
-from ..runtime import Time
+from ..persist import Find, write
+from ..runtime import elapsed
 
 
 class Todo(Object):
@@ -28,7 +28,7 @@ def dne(event):
     for fnm, obj in Find.find('todo', selector):
         nmr += 1
         obj.__deleted__ = True
-        Disk.write(obj, fnm)
+        write(obj, fnm)
         event.done()
         break
     if not nmr:
@@ -39,7 +39,7 @@ def tdo(event):
     if not event.rest:
         nmr = 0
         for fnm, obj in Find.find('todo'):
-            lap = Time.elapsed(time.time()-Find.fntime(fnm))
+            lap = elapsed(time.time()-Find.fntime(fnm))
             event.reply(f'{nmr} {obj.txt} {lap}')
             nmr += 1
         if not nmr:
@@ -47,5 +47,5 @@ def tdo(event):
         return
     obj = Todo()
     obj.txt = event.rest
-    Disk.write(obj)
+    write(obj)
     event.done()

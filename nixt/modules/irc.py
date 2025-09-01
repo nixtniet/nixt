@@ -14,12 +14,12 @@ import time
 
 
 from ..clients import Fleet, Output
-from ..command import Commands
-from ..kernels import Main
+from ..command import command
+from ..configs import Main
 from ..objects import Object, edit, fmt, keys
-from ..persist import Disk, Find, Workdir
+from ..persist import Find, Workdir, write
 from ..runtime import Event as IEvent
-from ..runtime import Thread, rlog
+from ..runtime import launch, rlog
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
@@ -443,7 +443,7 @@ class IRC(Output):
         self.state.keeprunning = False
         self.state.stopkeep = True
         self.stop()
-        Thread.launch(init)
+        launch(init)
 
     def size(self, chan):
         if chan in self.cache:
@@ -479,8 +479,8 @@ class IRC(Output):
         self.events.joined.clear()
         Output.start(self)
         if not self.state.keeprunning:
-            Thread.launch(self.keep)
-        Thread.launch(
+            launch(self.keep)
+        launch(
             self.doconnect,
             self.cfg.server or "localhost",
             self.cfg.nick,
@@ -570,7 +570,7 @@ class Cbs:
             if evt.txt:
                 evt.txt = evt.txt[0].lower() + evt.txt[1:]
             if evt.txt:
-                Thread.launch(Commands.command, evt)
+                launch(command, evt)
 
 
     def quit(evt):
@@ -595,7 +595,7 @@ def cfg(event):
         )
     else:
         edit(config, event.sets)
-        Disk.write(config, fnm or Workdir.getpath(config))
+        write(config, fnm or Workdir.path(config))
 
 
 def mre(event):

@@ -8,7 +8,7 @@ import threading
 import time
 
 
-from ..runtime import STARTTIME, Time
+from ..runtime import STARTTIME, elapsed
 
 
 def thr(event):
@@ -25,7 +25,7 @@ def thr(event):
         result.append((uptime, thread.name))
     res = []
     for uptime, txt in sorted(result, key=lambda x: x[0]):
-        lap = Time.elapsed(uptime)
+        lap = elapsed(uptime)
         res.append(f"{txt}/{lap}")
     if res:
         event.reply(" ".join(res))

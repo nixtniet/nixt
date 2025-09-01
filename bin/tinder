@@ -20,11 +20,12 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client, Fleet, Output
-from nixt.command import Commands
-from nixt.kernels import Kernel, Main
+from nixt.command import Commands, command, parse, table
+from nixt.configs import Main
+from nixt.modules import mods
 from nixt.objects import Object, keys
-from nixt.persist import Workdir
-from nixt.runtime import STARTTIME, Event, Logging, Thread, Time
+from nixt.persist import Workdir, setwd
+from nixt.runtime import STARTTIME, Event, elapsed, launch, level, rlog
 
 
 Workdir.wdr = ".test"
@@ -82,7 +83,7 @@ class CLI(Client):
 
     def __init__(self):
         Client.__init__(self)
-        self.register("command", Commands.command)
+        self.register("command", command)
 
     def dosay(self, channel, txt):
         self.raw(txt)
@@ -97,7 +98,7 @@ class Buffer(Output):
 
     def __init__(self):
         Output.__init__(self)
-        self.register("command", Commands.command)
+        self.register("command", command)
 
     def dosay(self, channel, txt):
         self.raw(txt)
@@ -120,7 +121,7 @@ class Pool:
 
     def init(cls, nr=None):
         Pool.nrcpu = nr or os.cpu_count
-        for x in range(Pool.nrcpu):
+        for x in range(Pool.nrcpu*2):
             clt = cls()
             clt.start()
             Pool.add(clt)
@@ -193,16 +194,16 @@ def wrap(function):
 def main():
     global nrs
     global nrcommand
-    Commands.parse(Main, " ".join(sys.argv[1:]))
-    Logging.level("error")
-    Workdir.setwd(Main.name,'.test')
-    Commands.table()
-    for mod in Kernel.mods():
+    parse(Main, " ".join(sys.argv[1:]))
+    level("error")
+    setwd(Main.name,'.test')
+    table()
+    for mod in mods():
         if "Main" in dir(mod):
             mod.Main.debug = True
     nrcommand = 0
     if "v" in Main.opts:
-        Kernel.banner()
+        banner()
     if "f" not in Main.opts:
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
@@ -215,21 +216,21 @@ def main():
     nrs = Main.index or 1
     thrs = []
     for _nr in range(nrs):
-        thrs.append(Thread.launch(payload, pre))
+        thrs.append(launch(payload, pre))
     for thr in thrs:
         nr = thr.join()
         if nr:
             nrcommand += nr
     thrs = []
     for _nr in range(nrs):
-        thrs.append(Thread.launch(payload, param))
+        thrs.append(launch(payload, param))
     for thr in thrs:
         nr = thr.join()
         if nr:
             nrcommand += nr
     thrs = []
     for _nr in range(nrs):
-        thrs.append(Thread.launch(payload, post))
+        thrs.append(launch(payload, post))
     for thr in thrs:
         nr = thr.join()
         if nr:
@@ -242,7 +243,7 @@ def main():
 if __name__ == "__main__":
     wrap(main)
     endtime = time.time()
-    lap = Time.elapsed(endtime-STARTTIME)
+    lap = elapsed(endtime-STARTTIME)
     nrevents = events.qsize()
     percall = (endtime-STARTTIME)/(nrcommand)
     if "v" in Main.opts:
