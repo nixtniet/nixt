@@ -26,8 +26,7 @@ from nixt.run     import Event, launch, level, rlog, spl
 
 
 if os.path.exists("mods"):
-    from mods import Commands, Main
-    from mods import command, getmod, mod, modules, parse, scan, table
+    Main.path = "mods"
 
 
 Main.ignore = "wsd,rst,udp,web"
