@@ -35,7 +35,7 @@ NAMES = {
 
 MD5 = {
     "fnd": "3ec48e287cbde5d99ee57b476be465cc",
-    "irc": "924c70cb7f8381cb1561a4368fb13d0b",
+    "irc": "d882c7734321578302e6120e14efd986",
     "log": "7a18ca6589e7264717a892eda74d59c8",
     "lst": "a55ddd1a44f65f8c8bde773952add426",
     "mbx": "b81f3602459a8023ee278cfe495c85ea",
