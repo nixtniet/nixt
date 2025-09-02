@@ -121,7 +121,7 @@ def background():
     privileges()
     boot(False)
     pidfile(pidname(NAME))
-    inits(Config.init or "irc,rss")
+    inits(Config.init or "irc,mdl,rss")
     forever()
 
 
@@ -156,7 +156,7 @@ def service():
     privileges()
     boot(False)
     pidfile(pidname(NAME))
-    inits(Config.init or "irc,rss")
+    inits(Config.init or "irc,mdl,rss")
     forever()
 
 
