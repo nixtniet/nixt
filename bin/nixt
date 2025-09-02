@@ -5,41 +5,25 @@
 "main"
 
 
-import hashlib
 import json
 import logging
 import os
 import os.path
 import pathlib
+import signal
 import sys
 import time
-import _thread
 
 
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.client import Client, Fleet
-from nixt.cmds   import Commands
-from nixt.cmds   import command, getmod, mod, modules, parse, scan, table
-from nixt.disk   import Workdir, setwd
-from nixt.run    import NAME, Event, launch, level, rlog, spl
-
-
-Commands.ignore = "udp,wsd"
-
-
-class Main:
-
-    debug    = False
-    gets     = {}
-    init     = ""
-    level    = "warn"
-    opts     = {}
-    otxt     = ""
-    sets     = {}
-    verbose  = False
-    version  = 410
+from nixt.clients import Client, Fleet
+from nixt.command import Commands, Main, command, parse, scan, table
+from nixt.command import inits, md5sum, mods, modules, sums
+from nixt.handler import Event
+from nixt.runtime import level
+from nixt.persist import pidname, setwd
 
 
 class CLI(Client):
@@ -49,7 +33,7 @@ class CLI(Client):
         self.register("command", command)
 
     def raw(self, txt):
-        print(txt.encode('utf-8', 'replace').decode("utf-8"))
+        out(txt.encode('utf-8', 'replace').decode("utf-8"))
 
 
 class Console(CLI):
@@ -66,13 +50,6 @@ class Console(CLI):
         evt.txt = input("> ")
         evt.type = "command"
         return evt
-
-
-def banner():
-    if "v" in Main.opts:
-        tme = time.ctime(time.time()).replace("  ", " ")
-        rlog("warn", f"{NAME.upper()} {Main.version} since {tme} ({Main.level.upper()})")
-        rlog("warn", f"loaded {','.join(modules())}")
 
 
 def daemon(verbose=False):
@@ -95,34 +72,11 @@ def daemon(verbose=False):
     os.nice(10)
 
 
-def forever():
-    while True:
-        try:
-            time.sleep(0.1)
-        except (KeyboardInterrupt, EOFError):
-            break
+def handler(signum, frame):
+    print("handler called!")
 
 
-def md5sum(path):
-    with open(path, "r", encoding="utf-8") as file:
-        txt = file.read().encode("utf-8")
-        return hashlib.md5(txt).hexdigest()
-
-
-def inits(names):
-    modz = []
-    for name in spl(names):
-        try:
-            module = mod(name)
-            if not module:
-                continue
-            if "init" in dir(module):
-                thr = launch(module.init)
-                modz.append((module, thr))
-        except Exception as ex:
-            logging.exception(ex)
-            _thread.interrupt_main()
-    return modz
+signal.signal(signal.SIGHUP, handler)
 
 
 def pidfile(filename):
@@ -142,14 +96,16 @@ def privileges():
     os.setuid(pwnam2.pw_uid)
 
 
-"scripts"
-
-
 def background():
     daemon("-v" in sys.argv)
     privileges()
-    pidfile(Workdir.pidname(NAME))
-    boot()
+    level(Main.level or "debug")
+    setwd(Main.name)
+    pidfile(pidname(Main.name))
+    if Main.md5 and not sums(Main.md5):
+        logging.error("table sum doesn't match")
+    table()
+    Commands.add(cmd)
     Commands.add(ver)
     inits(Main.init or "irc,rss")
     forever()
@@ -158,7 +114,18 @@ def background():
 def console():
     import readline # noqa: F401
     parse(Main, " ".join(sys.argv[1:]))
-    boot()
+    Main.init = Main.sets.get("init", Main.init)
+    Main.verbose = Main.sets.get("verbose", Main.verbose)
+    Main.level   = Main.sets.get("level", Main.level or "warn")
+    level(Main.level)
+    setwd(Main.name)
+    if Main.md5 and not sums(Main.md5):
+        logging.error("table sum doesn't match")
+    table()
+    Commands.add(cmd)
+    Commands.add(ver)
+    if "v" in Main.opts:
+        banner()
     for _mod, thr in inits(Main.init):
         if "w" in Main.opts:
             thr.join(30.0)
@@ -171,10 +138,16 @@ def control():
     if len(sys.argv) == 1:
         return
     parse(Main, " ".join(sys.argv[1:]))
-    boot()
+    level(Main.level or "warn")
+    setwd(Main.name)
+    if Main.md5 and not sums(Main.md5):
+        logging.error("table sum doesn't match")
+    table()
+    Commands.add(cmd)
     Commands.add(md5)
     Commands.add(srv)
     Commands.add(tbl)
+    Commands.add(ver)
     csl = CLI()
     evt = Event()
     evt.orig = repr(csl)
@@ -185,27 +158,18 @@ def control():
 
 
 def service():
-    boot()
-    privileges()
-    pidfile(Workdir.pidname(NAME))
-    inits(Main.init or "irc,rss")
-    forever()
-
-
-def boot():
-    Main.init = Main.sets.get("init", Main.init)
-    Main.verbose = Main.sets.get("verbose", Main.verbose)
-    Main.level = Main.sets.get("level", Main.level or "warn")
-    Commands.path = Main.sets.get("path", Commands.path)
-    level(Main.level)
-    setwd(NAME)
+    level(Main.level or "warn")
+    setwd(Main.name)
     banner()
+    privileges()
+    pidfile(pidname(Main.name))
+    if Main.md5 and not sums(Main.md5):
+        logging.error("table sum doesn't match")
     table()
     Commands.add(cmd)
     Commands.add(ver)
-
-
-"commands"
+    inits(Main.init or "irc,rss")
+    forever()
 
 
 def cmd(event):
@@ -213,20 +177,34 @@ def cmd(event):
 
 
 def md5(event):
-    tbl = mod("tbl")
+    tbl = mods("tbl")[0]
     event.reply(md5sum(tbl.__file__))
+
+
+TXT = """[Unit]
+Description=%s
+After=network-online.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
 
 
 def srv(event):
     import getpass
     name = getpass.getuser()
-    event.reply(TXT % (NAME.upper(), name, name, name, NAME))
+    event.reply(TXT % (Main.name.upper(), name, name, name, Main.name))
 
 
 def tbl(event):
     if not check("f"):
         Commands.names = {}
-    for module in getmod():
+    for module in mods():
         scan(module)
     event.reply("# This file is placed in the Public Domain.")
     event.reply("")
@@ -235,13 +213,22 @@ def tbl(event):
     event.reply("")
     event.reply("")
     event.reply(f"NAMES = {json.dumps(Commands.names, indent=4, sort_keys=True)}")
+    event.reply("")
+    event.reply("")
+    event.reply("MD5 = {")
+    for module in mods():
+        event.reply(f'    "{module.__name__.split(".")[-1]}": "{md5sum(module.__file__)}",')
+    event.reply("}")
 
 
 def ver(event):
     event.reply(str(Main.version))
 
 
-"runtimne"
+def banner():
+    tme = time.ctime(time.time()).replace("  ", " ")
+    out(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
+    out(f"loaded {",".join(modules())}")
 
 
 def check(txt):
@@ -255,11 +242,24 @@ def check(txt):
     return False
 
 
+def forever():
+    while True:
+        try:
+            time.sleep(0.1)
+        except (KeyboardInterrupt, EOFError):
+            break
+
+
+def out(txt):
+    print(txt)
+    sys.stdout.flush()
+
+
 def wrapped(func):
     try:
         func()
     except (KeyboardInterrupt, EOFError):
-        print("")
+        out("")
     Fleet.shutdown()
 
 
@@ -276,12 +276,10 @@ def wrap(func):
         if old:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
+
 def main():
     if check("a"):
         Main.init = ",".join(modules())
-    if check("m"):
-        Commands.path = "mods"
-        Commands.pname = "mods"
     if check("v"):
         Main.opts["v"] = True
     if check("c"):
@@ -292,20 +290,6 @@ def main():
         wrapped(service)
     else:
         wrapped(control)
-
-
-TXT = """[Unit]
-Description=%s
-After=network-online.target
-
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
 
 
 if __name__ == "__main__":

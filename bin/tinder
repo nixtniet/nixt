@@ -19,32 +19,44 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.client import Client, Fleet, Output
-from nixt.cmds   import Commands
-from nixt.cmds   import command, getmod, parse, table
-from nixt.disk   import Workdir, setwd
-from nixt.object import Object, keys
-from nixt.run    import NAME, STARTTIME, Event, elapsed, launch, level
+from nixbot.clients import Client, Fleet, Output
+from nixbot.command import Commands, Main, command, mods, parse, scan, table
+from nixbot.command import elapsed, spl
+from nixbot.handler import Event
+from nixbot.objects import Object, keys
+from nixbot.persist import Workdir, setwd, skel
+from nixbot.runtime import STARTTIME, launch
+
+
+class Pool:
+
+    clients = []
+    lock = threading.RLock()
+    nrcpu = 1
+    nrlast = 0
+
+    @staticmethod
+    def add(clt):
+        Pool.clients.append(clt)
+
+    def init(cls, nr=None):
+        Pool.nrcpu = nr or os.cpu_count
+        for x in range(Pool.nrcpu):
+            clt = cls()
+            clt.start()
+            Pool.add(clt)
+
+    @staticmethod
+    def put(evt):
+        with Pool.lock:
+            if Pool.nrlast >= Pool.nrcpu-1:
+                Pool.nrlast = 0
+            clt = Pool.clients[Pool.nrlast]
+            clt.put(evt)
+            Pool.nrlast += 1
 
 
 Workdir.wdr = ".test"
-
-
-class Main:
-
-    debug    = False
-    gets     = {}
-    init     = ""
-    level    = "warn"
-    opts     = {}
-    otxt     = ""
-    sets     = {}
-    verbose  = False
-    version  = 410
-
-
-if os.path.exists("mods"):
-    Main.path = "mods"
 
 
 param = Object()
@@ -69,7 +81,7 @@ param.ver = [""]
 
 pre = Object()
 pre.cfg = ["nick=mekker", ""]
-pre.imp = ["testing/feeds.opml", ""]
+pre.imp = ["tests/feeds.opml", ""]
 pre.log = ["bla", ""]
 pre.rss = ["http://hnrss.org/newest", ""]
 pre.tdo = ["mekker", ""]
@@ -92,6 +104,8 @@ ignore = [
     "dbg",
 ]
 paylock = _thread.allocate_lock()
+
+
 rand = random.SystemRandom()
 
 
@@ -124,41 +138,14 @@ class Buffer(Output):
             print(txt)
 
 
-class Pool:
-
-    clients = []
-    lock = threading.RLock()
-    nrcpu = 1
-    nrlast = 0
-
-    @staticmethod
-    def add(clt):
-        Pool.clients.append(clt)
-
-    def init(cls, nr=None):
-        Pool.nrcpu = nr or os.cpu_count
-        for x in range(Pool.nrcpu*2):
-            clt = cls()
-            clt.start()
-            Pool.add(clt)
-
-    @staticmethod
-    def put(evt):
-        with Pool.lock:
-            if Pool.nrlast >= Pool.nrcpu-1:
-                Pool.nrlast = 0
-            clt = Pool.clients[Pool.nrlast]
-            clt.put(evt)
-            Pool.nrlast += 1
-
-
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    print(f"{NAME.upper()} since {tme}")
+    print(f"{Main.name.upper()} since {tme}")
     print("loaded " + ",".join(sorted(dir(Commands.names))))
 
 
 def consume(evts):
+    done = []
     while True:
         try:
             event = events.get()
@@ -211,10 +198,9 @@ def main():
     global nrs
     global nrcommand
     parse(Main, " ".join(sys.argv[1:]))
-    level("error")
-    setwd(NAME,'.test')
+    setwd(Main.name,'.test')
     table()
-    for mod in getmod():
+    for mod in mods():
         if "Main" in dir(mod):
             mod.Main.debug = True
     nrcommand = 0
@@ -223,7 +209,7 @@ def main():
     if "f" not in Main.opts:
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
-    Workdir.skel()
+    skel()
     if "z" in Main.opts:
         nrcpu = os.cpu_count()
     else:
