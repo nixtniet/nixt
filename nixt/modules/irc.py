@@ -17,7 +17,7 @@ from ..clients import NAME, Fleet, Output
 from ..command import command
 from ..handler import Event as IEvent
 from ..objects import Object, edit, fmt, keys
-from ..persist import ident, last, write
+from ..persist import getpath, ident, last, write
 from ..runtime import launch, rlog
 
 
@@ -598,7 +598,7 @@ def cfg(event):
         )
     else:
         edit(config, event.sets)
-        write(config, fnm)
+        write(config, fnm or getpath(config))
 
 
 def mre(event):

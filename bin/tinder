@@ -19,13 +19,29 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client, Fleet, Output
-from nixt.command import Commands, Main, command, mods, parse, table
-from nixt.command import elapsed
+from nixt.clients import NAME, Client, Fleet, Output
+from nixt.command import Commands, command, elapsed, mods, parse, table
 from nixt.handler import Event
 from nixt.objects import Object, keys
 from nixt.persist import Workdir, setwd, skel
 from nixt.runtime import STARTTIME, launch
+
+
+Workdir.wdr = ".test"
+
+
+class Config:
+
+    debug    = False
+    gets     = {}
+    init     = ""
+    level    = "warn"
+    md5      = True
+    opts     = {}
+    otxt     = ""
+    sets     = {}
+    verbose  = False
+    version  = 410
 
 
 class Pool:
@@ -120,7 +136,7 @@ class CLI(Client):
         self.raw(txt)
 
     def raw(self, txt):
-        if "v" in Main.opts:
+        if "v" in config.opts:
             print(txt)
 
 
@@ -135,13 +151,13 @@ class Buffer(Output):
         self.raw(txt)
 
     def raw(self, txt):
-        if "v" in Main.opts:
+        if "v" in Config.opts:
             print(txt)
 
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    print(f"{Main.name.upper()} since {tme}")
+    print(f"{NAME.upper()} since {tme}")
     print("loaded " + ",".join(sorted(dir(Commands.names))))
 
 
@@ -161,7 +177,7 @@ def payload(cmds):
     with paylock:
         nmr = 0
         cmdz = sorted(keys(cmds))
-        if "s" in Main.opts:
+        if "s" in Config.opts:
             rand.shuffle(cmdz)
         todo = []
         for cmd in cmdz:
@@ -198,25 +214,24 @@ def wrap(function):
 def main():
     global nrs
     global nrcommand
-    parse(Main, " ".join(sys.argv[1:]))
-    setwd(Main.name,'.test')
+    parse(Config, " ".join(sys.argv[1:]))
     table()
     for mod in mods():
-        if "Main" in dir(mod):
-            mod.Main.debug = True
+        if "DEBUG" in dir(mod):
+            mod.DEBUG = True
     nrcommand = 0
-    if "v" in Main.opts:
+    if "v" in Config.opts:
         banner()
-    if "f" not in Main.opts:
+    if "f" not in Config.opts:
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
     skel()
-    if "z" in Main.opts:
+    if "z" in Config.opts:
         nrcpu = os.cpu_count()
     else:
         nrcpu = 1
     Pool.init(Buffer, nrcpu)
-    nrs = Main.index or 1
+    nrs = Config.index or 1
     thrs = []
     for _nr in range(nrs):
         thrs.append(launch(payload, pre))
@@ -249,7 +264,7 @@ if __name__ == "__main__":
     lap = elapsed(endtime-STARTTIME)
     nrevents = events.qsize()
     percall = (endtime-STARTTIME)/(nrcommand)
-    if "v" in Main.opts:
+    if "v" in Config.opts:
         print(f"{nrevents} events left.")
         print(f"total: {lap} nrs: {nrs} cmds: {nrcommand} call: %.6fs" % percall)
     sys.exit()
