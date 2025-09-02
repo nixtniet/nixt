@@ -26,11 +26,6 @@ from nixt.disk   import Workdir, setwd
 from nixt.run    import Event, launch, level, rlog, spl
 
 
-if os.path.exists("mods"):
-    Main.path = "mods"
-    Main.pname = "mods"
-
-
 class CLI(Client):
 
     def __init__(self):
@@ -277,6 +272,9 @@ def wrap(func):
 def main():
     if check("a"):
         Main.init = ",".join(modules())
+    if check("m"):
+        Main.path = "mods"
+        Main.pname = "mods"
     if check("v"):
         Main.opts["v"] = True
     if check("c"):

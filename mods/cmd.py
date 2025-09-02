@@ -8,4 +8,4 @@ from nixt.cmds import Commands
 
 
 def cmd(event):
-    event.reply(",".join(sorted(Commands.names)))
+    event.reply(",".join(sorted(Commands.names) or "no commands"))
