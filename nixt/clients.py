@@ -13,7 +13,7 @@ from .handler import Handler
 from .runtime import launch
 
 
-NAME = __name__.split(".")[0]
+NAME = __name__.split(".", maxsplit=1)[0]
 
 
 class Client(Handler):

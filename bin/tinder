@@ -20,8 +20,8 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client, Fleet, Output
-from nixt.command import Commands, Main, command, mods, parse, scan, table
-from nixt.command import elapsed, spl
+from nixt.command import Commands, Main, command, mods, parse, table
+from nixt.command import elapsed
 from nixt.handler import Event
 from nixt.objects import Object, keys
 from nixt.persist import Workdir, setwd, skel
@@ -39,6 +39,7 @@ class Pool:
     def add(clt):
         Pool.clients.append(clt)
 
+    @staticmethod
     def init(cls, nr=None):
         Pool.nrcpu = nr or os.cpu_count
         for x in range(Pool.nrcpu):
@@ -240,7 +241,7 @@ def main():
     time.sleep(0.1)
     consume(events)
     Fleet.shutdown()
-    
+
 
 if __name__ == "__main__":
     wrap(main)
@@ -251,4 +252,4 @@ if __name__ == "__main__":
     if "v" in Main.opts:
         print(f"{nrevents} events left.")
         print(f"total: {lap} nrs: {nrs} cmds: {nrcommand} call: %.6fs" % percall)
-    sys.exit() 
+    sys.exit()
