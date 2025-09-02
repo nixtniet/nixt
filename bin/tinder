@@ -19,13 +19,13 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixbot.clients import Client, Fleet, Output
-from nixbot.command import Commands, Main, command, mods, parse, scan, table
-from nixbot.command import elapsed, spl
-from nixbot.handler import Event
-from nixbot.objects import Object, keys
-from nixbot.persist import Workdir, setwd, skel
-from nixbot.runtime import STARTTIME, launch
+from nixt.clients import Client, Fleet, Output
+from nixt.command import Commands, Main, command, mods, parse, scan, table
+from nixt.command import elapsed, spl
+from nixt.handler import Event
+from nixt.objects import Object, keys
+from nixt.persist import Workdir, setwd, skel
+from nixt.runtime import STARTTIME, launch
 
 
 class Pool:
