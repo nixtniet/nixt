@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"running threads"
+"show running threads"
 
 
 import threading

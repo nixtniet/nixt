@@ -55,13 +55,18 @@ def read(obj, path):
                 raise ex
 
 
-def write(obj, path):
+def write(obj, path=None):
     with lock:
+        if path is None:
+            path = getpath(obj)
         cdir(path)
         with open(path, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)
         Cache.update(path, obj)
         return path
+
+
+"paths"
 
 
 class Workdir:
@@ -130,9 +135,7 @@ def wdr(pth):
     return os.path.join(Workdir.wdr, pth)
 
 
-class Find:
-
-    pass
+"find"
 
 
 def find(clz, selector=None, deleted=False, matching=False):

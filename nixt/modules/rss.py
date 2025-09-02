@@ -28,6 +28,12 @@ from ..persist import find, fntime, getpath, last, write
 from ..runtime import Repeater, launch, rlog
 
 
+def init():
+    fetcher = Fetcher()
+    fetcher.start()
+    return fetcher
+
+
 DEBUG = False
 
 
@@ -35,12 +41,6 @@ fetchlock = _thread.allocate_lock()
 importlock = _thread.allocate_lock()
 errors = []
 skipped = []
-
-
-def init():
-    fetcher = Fetcher()
-    fetcher.start()
-    return fetcher
 
 
 class Feed:
@@ -112,7 +112,7 @@ class Fetcher(Object):
                 if uurl in seen:
                     continue
                 if self.dosave:
-                    write(fed, getpath(fed))
+                    write(fed)
                 result.append(fed)
             setattr(self.seen, feed.rss, urls)
             if not self.seenfn:
@@ -194,6 +194,9 @@ class Parser:
         return result
 
 
+"OPML"
+
+
 class OPML:
 
     @staticmethod
@@ -256,6 +259,9 @@ class OPML:
                 setattr(obj, itm, val.strip())
             result.append(obj)
         return result
+
+
+"utilities"
 
 
 def attrs(obj, txt):
@@ -337,6 +343,9 @@ def useragent(txt):
     return "Mozilla/5.0 (X11; Linux x86_64) " + txt
 
 
+"commands"
+
+
 def dpl(event):
     if len(event.args) < 2:
         event.reply("dpl <stringinurl> <item1,item2>")
@@ -395,7 +404,7 @@ def imp(event):
             update(feed, obj)
             feed.rss = obj.xmlUrl
             feed.insertid = insertid
-            write(feed, getpath(feed))
+            write(feed)
             nrs += 1
     if nrskip:
         event.reply(f"skipped {nrskip} urls.")
@@ -428,7 +437,7 @@ def rem(event):
             continue
         if feed:
             feed.__deleted__ = True
-            write(feed, fnm)
+            write(feed)
             event.done()
             break
 
@@ -469,7 +478,7 @@ def rss(event):
             return
     feed = Rss()
     feed.rss = event.args[0]
-    write(feed, getpath(feed))
+    write(feed)
     event.done()
 
 

@@ -105,6 +105,9 @@ def values(obj):
     return obj.__dict__.values()
 
 
+"decode/encode"
+
+
 class Encoder(json.JSONEncoder):
 
     def default(self, o):

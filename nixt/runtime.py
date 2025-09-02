@@ -71,6 +71,9 @@ def name(obj):
     return ""
 
 
+"timer/repeater"
+
+
 class Timy(threading.Timer):
 
     def __init__(self, sleep, func, *args, **kwargs):
@@ -114,6 +117,9 @@ class Repeater(Timed):
     def run(self):
         launch(self.start)
         super().run()
+
+
+"logging"
 
 
 LEVELS = {

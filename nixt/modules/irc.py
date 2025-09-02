@@ -494,6 +494,9 @@ class IRC(Output):
         self.events.ready.wait()
 
 
+"callbacks"
+
+
 def cb_auth(evt):
     bot = Fleet.get(evt.orig)
     bot.docommand(f"AUTHENTICATE {bot.cfg.password}")
@@ -579,6 +582,9 @@ def cb_quit(evt):
         bot.stop()
 
 
+"commands"
+
+
 def cfg(event):
     config = Config()
     fnm = last(config)
@@ -592,7 +598,7 @@ def cfg(event):
         )
     else:
         edit(config, event.sets)
-        write(config, fnm or getpath(config))
+        write(config, fnm)
 
 
 def mre(event):

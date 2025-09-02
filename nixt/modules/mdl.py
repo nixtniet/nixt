@@ -15,13 +15,6 @@ from ..objects import Object, construct, keys
 from ..runtime import Repeater, rlog
 
 
-DAY = 24*60*60
-YEAR = 365*DAY
-SOURCE = "https://github.com/bthate/genocide"
-STARTDATE = "2019-03-04 00:00:00"
-STARTTIME = time.mktime(time.strptime(STARTDATE, "%Y-%m-%d %H:%M:%S"))
-
-
 def init():
     for key in keys(oorzaken):
         if "Psych" not in key:
@@ -36,6 +29,185 @@ def init():
             repeater = Repeater(sec, cbstats, evt, thrname=name)
             repeater.start()
             rlog("debug", f"{name} at {STARTDATE} {elapsed(time.time()-STARTTIME)}")
+
+
+"defines"
+
+
+DAY = 24*60*60
+YEAR = 365*DAY
+SOURCE = "https://github.com/bthate/genocide"
+STARTDATE = "2019-03-04 00:00:00"
+STARTTIME = time.mktime(time.strptime(STARTDATE, "%Y-%m-%d %H:%M:%S"))
+
+
+aliases = {}
+aliases["Nieuwvormingen"] = "cancer"
+aliases["Hart en vaatstelsel"] = "hart"
+aliases["Psychische en gedragsstoornissen"] = "mental"
+aliases["Ademhalingsorganen"] = "breathing"
+aliases["Uitwendige doodsoorzaken"] = "externals"
+aliases["Zenuwstelsel en zintuigen"] = "nerves"
+aliases["Afwijkende klinische bevindingen"] = "NOS"
+aliases["Spijsverteringsorganen"] = "stomach"
+aliases["Endocriene, voedings-, stofwisseling"] = "metabolism"
+aliases["Urogenitaal stelsel"] = "kidney"
+aliases["Infectieuze en parasitaire ziekten"] = "infectious"
+aliases["Botspierstelsel en bindweefsel"] = "muscle"
+aliases["Bloed, bloedvormende organen"] = "blood"
+aliases["Aangeboren afwijkingen"] = "birth"
+aliases["Huid en subcutis"] = "skin"
+aliases["Zwangerschap"] = "pregnancy"
+aliases["Suicide"] = "suicide"
+
+
+demo = Object()
+demo.gehandicapten = 2000000
+demo.ggz = 800000
+demo.population = 17440000
+demo.part = 7000000000 / demo.population
+
+
+jaar = {}
+jaar["WvGGZ"] = 14206
+jaar["Pvp"] = 20088
+jaar["Wzd"] = 25000
+jaar["Wfz"] = 23820
+jaar["totaal"] = 168678
+
+
+oorzaak = Object()
+construct(oorzaak, zip(oor, aantal))
+oorzaken = Object()
+
+
+"utilities"
+
+
+def getalias(txt):
+    result = ""
+    for key, value in aliases.items():
+        if txt.lower() in key.lower():
+            result = value
+            break
+    return result
+
+def getday():
+    day = datetime.datetime.now()
+    day = day.replace(hour=0, minute=0, second=0, microsecond=0)
+    return day.timestamp()
+
+
+def getnr(nme):
+    for k in keys(oorzaken):
+        if nme.lower() in k.lower():
+            return int(getattr(oorzaken, k))
+    return 0
+
+
+def seconds(nrs):
+    if not nrs:
+        return nrs
+    return 60*60*24*365 / float(nrs)
+
+
+def iswanted(k, line):
+    for word in line:
+        if word in k:
+            return True
+    return False
+
+
+def daily():
+    while 1:
+        time.sleep(24*60*60)
+        evt = Event()
+        cbnow(evt)
+
+
+def hourly():
+    while 1:
+        time.sleep(60*60)
+        evt = Event()
+        cbnow(evt)
+
+
+"callbacks"
+
+
+def cbnow(_evt):
+    delta = time.time() - STARTTIME
+    txt = elapsed(delta) + " "
+    for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
+        needed = seconds(getnr(nme))
+        if needed > 60*60:
+            continue
+        nrtimes = int(delta/needed)
+        txt += f"{getalias(nme)} {nrtimes} | "
+    txt += "https://pypi.org/project/genocide"
+    Fleet.announce(txt)
+
+
+def cbstats(evt):
+    nme = evt.rest or "Psych"
+    needed = seconds(getnr(nme))
+    if needed:
+        delta = time.time() - STARTTIME
+        nrtimes = int(delta/needed)
+        nryear = int(YEAR/needed)
+        nrday = int(DAY/needed)
+        delta2 = time.time() - getday()
+        thisday = int(delta2/needed)
+        txt = "%s %s #%s (%s/%s/%s) every %s" % (
+            elapsed(delta),
+            getalias(nme).upper(),
+            nrtimes,
+            thisday,
+            nrday,
+            nryear,
+            elapsed(needed)
+        )
+        Fleet.announce(txt)
+
+
+"commands"
+
+
+def dis(event):
+    delta = time.time() - STARTTIME
+    txt = elapsed(delta) + " "
+    for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
+        needed = seconds(getnr(nme))
+        if needed > 60*60:
+            continue
+        nrtimes = int(delta/needed)
+        txt += f"{getalias(nme)} {nrtimes} | "
+    txt += "https://pypi.org/project/genocide"
+    event.reply(txt)
+
+
+def now(event):
+    nme = event.rest or "Psych"
+    needed = seconds(getnr(nme))
+    if needed:
+        delta = time.time() - STARTTIME
+        nrtimes = int(delta/needed)
+        nryear = int(YEAR/needed)
+        nrday = int(DAY/needed)
+        thisday = int(DAY % needed)
+        txt = "%s %s #%s (%s/%s/%s) every %s" % (
+            elapsed(delta),
+            getalias(nme),
+            nrtimes,
+            thisday,
+            nrday,
+            nryear,
+            elapsed(needed)
+        )
+        event.reply(txt)
+
+
+"data"
 
 
 oor = """"Totaal onderliggende doodsoorzaken (aantal)";
@@ -234,161 +406,7 @@ aantal = """
          """.split(";")
 
 
-aliases = {}
-aliases["Nieuwvormingen"] = "cancer"
-aliases["Hart en vaatstelsel"] = "hart"
-aliases["Psychische en gedragsstoornissen"] = "mental"
-aliases["Ademhalingsorganen"] = "breathing"
-aliases["Uitwendige doodsoorzaken"] = "externals"
-aliases["Zenuwstelsel en zintuigen"] = "nerves"
-aliases["Afwijkende klinische bevindingen"] = "NOS"
-aliases["Spijsverteringsorganen"] = "stomach"
-aliases["Endocriene, voedings-, stofwisseling"] = "metabolism"
-aliases["Urogenitaal stelsel"] = "kidney"
-aliases["Infectieuze en parasitaire ziekten"] = "infectious"
-aliases["Botspierstelsel en bindweefsel"] = "muscle"
-aliases["Bloed, bloedvormende organen"] = "blood"
-aliases["Aangeboren afwijkingen"] = "birth"
-aliases["Huid en subcutis"] = "skin"
-aliases["Zwangerschap"] = "pregnancy"
-aliases["Suicide"] = "suicide"
-
-
-demo = Object()
-demo.gehandicapten = 2000000
-demo.ggz = 800000
-demo.population = 17440000
-demo.part = 7000000000 / demo.population
-
-
-jaar = {}
-jaar["WvGGZ"] = 14206
-jaar["Pvp"] = 20088
-jaar["Wzd"] = 25000
-jaar["Wfz"] = 23820
-jaar["totaal"] = 168678
-
-
-oorzaak = Object()
-construct(oorzaak, zip(oor, aantal))
-oorzaken = Object()
-
-
-def getalias(txt):
-    result = ""
-    for key, value in aliases.items():
-        if txt.lower() in key.lower():
-            result = value
-            break
-    return result
-
-def getday():
-    day = datetime.datetime.now()
-    day = day.replace(hour=0, minute=0, second=0, microsecond=0)
-    return day.timestamp()
-
-
-def getnr(nme):
-    for k in keys(oorzaken):
-        if nme.lower() in k.lower():
-            return int(getattr(oorzaken, k))
-    return 0
-
-
-def seconds(nrs):
-    if not nrs:
-        return nrs
-    return 60*60*24*365 / float(nrs)
-
-
-def iswanted(k, line):
-    for word in line:
-        if word in k:
-            return True
-    return False
-
-
-def daily():
-    while 1:
-        time.sleep(24*60*60)
-        evt = Event()
-        cbnow(evt)
-
-
-def hourly():
-    while 1:
-        time.sleep(60*60)
-        evt = Event()
-        cbnow(evt)
-
-
-def cbnow(_evt):
-    delta = time.time() - STARTTIME
-    txt = elapsed(delta) + " "
-    for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
-        needed = seconds(getnr(nme))
-        if needed > 60*60:
-            continue
-        nrtimes = int(delta/needed)
-        txt += f"{getalias(nme)} {nrtimes} | "
-    txt += "https://pypi.org/project/genocide"
-    Fleet.announce(txt)
-
-
-def cbstats(evt):
-    nme = evt.rest or "Psych"
-    needed = seconds(getnr(nme))
-    if needed:
-        delta = time.time() - STARTTIME
-        nrtimes = int(delta/needed)
-        nryear = int(YEAR/needed)
-        nrday = int(DAY/needed)
-        delta2 = time.time() - getday()
-        thisday = int(delta2/needed)
-        txt = "%s %s #%s (%s/%s/%s) every %s" % (
-            elapsed(delta),
-            getalias(nme).upper(),
-            nrtimes,
-            thisday,
-            nrday,
-            nryear,
-            elapsed(needed)
-        )
-        Fleet.announce(txt)
-
-
-def dis(event):
-    delta = time.time() - STARTTIME
-    txt = elapsed(delta) + " "
-    for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
-        needed = seconds(getnr(nme))
-        if needed > 60*60:
-            continue
-        nrtimes = int(delta/needed)
-        txt += f"{getalias(nme)} {nrtimes} | "
-    txt += "https://pypi.org/project/genocide"
-    event.reply(txt)
-
-
-def now(event):
-    nme = event.rest or "Psych"
-    needed = seconds(getnr(nme))
-    if needed:
-        delta = time.time() - STARTTIME
-        nrtimes = int(delta/needed)
-        nryear = int(YEAR/needed)
-        nrday = int(DAY/needed)
-        thisday = int(DAY % needed)
-        txt = "%s %s #%s (%s/%s/%s) every %s" % (
-            elapsed(delta),
-            getalias(nme),
-            nrtimes,
-            thisday,
-            nrday,
-            nryear,
-            elapsed(needed)
-        )
-        event.reply(txt)
+"boot"
 
 
 def boot():

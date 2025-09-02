@@ -47,5 +47,5 @@ def tdo(event):
         return
     obj = Todo()
     obj.txt = event.rest
-    write(obj, store(ident(obj)))
+    write(obj)
     event.done()
