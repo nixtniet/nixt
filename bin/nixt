@@ -22,8 +22,8 @@ from nixt.clients import Client, Fleet
 from nixt.command import Commands, command, parse, scan, table
 from nixt.command import inits, md5sum, mods, modules, sums
 from nixt.handler import Event
+from nixt.persist import pidname, setwd, skel
 from nixt.runtime import NAME, level
-from nixt.persist import pidname, setwd
 
 
 class Config:
@@ -34,7 +34,6 @@ class Config:
     init     = ""
     level    = "warn"
     md5      = False
-    name     = __name__.split(".", maxsplit=1)[0].lower()
     opts     = {}
     otxt     = ""
     sets     = {}
@@ -115,8 +114,8 @@ def privileges():
 def background():
     daemon("-v" in sys.argv)
     privileges()
-    pidfile(pidname(NAME))
     boot(False)
+    pidfile(pidname(NAME))
     inits(Config.init or "irc,rss")
     forever()
 
@@ -150,8 +149,8 @@ def control():
 
 def service():
     privileges()
-    pidfile(pidname(NAME))
     boot(False)
+    pidfile(pidname(NAME))
     inits(Config.init or "irc,rss")
     forever()
 
