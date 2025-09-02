@@ -92,6 +92,9 @@ class Handler:
         pass
 
 
+"interface"
+
+
 def __dir__():
     return (
         'Event',

@@ -18,12 +18,15 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client, Fleet
+from nixt.clients import NAME, Client, Fleet
 from nixt.command import Commands, command, parse, scan, table
-from nixt.command import inits, md5sum, mods, modules, sums
+from nixt.command import Mods, inits, md5sum, mods, modules, sums
 from nixt.handler import Event
 from nixt.persist import pidname, setwd, skel
-from nixt.runtime import NAME, level
+from nixt.runtime import level
+
+
+Mods.ignore = "rst,udp,web,wsd"
 
 
 class Config:

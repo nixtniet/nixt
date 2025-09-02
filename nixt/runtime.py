@@ -11,7 +11,6 @@ import time
 import _thread
 
 
-NAME = __name__.split(".")[0]
 STARTTIME = time.time()
 
 
@@ -147,6 +146,8 @@ def rlog(loglevel, txt, ignore=None):
             return
     logging.log(LEVELS.get(loglevel), txt)
 
+
+"interface"
 
 
 def __dir__():

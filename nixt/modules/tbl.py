@@ -29,29 +29,23 @@ NAMES = {
     "tdo": "tdo",
     "thr": "thr",
     "tmr": "tmr",
-    "udp": "udp",
-    "upt": "upt",
-    "wsd": "wsd"
+    "upt": "upt"
 }
 
 
 MD5 = {
-    "fnd": "491c747fa2cc0d18577c59fb0e890026",
-    "irc": "83a4ef4329b9fff61d0e9be71b11c09d",
-    "log": "5849c21700eca3bb52ae9ae5e1e4212d",
+    "fnd": "3ec48e287cbde5d99ee57b476be465cc",
+    "irc": "924c70cb7f8381cb1561a4368fb13d0b",
+    "log": "7a18ca6589e7264717a892eda74d59c8",
     "lst": "a55ddd1a44f65f8c8bde773952add426",
-    "mbx": "fd1ffa705878f13fcd108279bd48e87b",
-    "mdl": "db9cec4e7e0e39b458c449e73237905a",
+    "mbx": "b81f3602459a8023ee278cfe495c85ea",
+    "mdl": "35cf8e108af2cdc4f54c7e1106468f6d",
     "req": "793704d64443c4f19512924e294943ea",
-    "rss": "2ae232a55bbb00fd754f972d5fdcbb1e",
-    "rst": "152f5d8400bc2cce03bf11622c716686",
+    "rss": "3636f42de4b552a189ac96aa0d4e2397",
     "slg": "0b71453a0d4dd3b21618c7df3c8cd6a4",
     "tbl": "d41d8cd98f00b204e9800998ecf8427e",
-    "tdo": "b12881ab4103278d7a5ccff787a9043f",
-    "thr": "f7c5fe5e8e7e36452c6b3a39fe0f8f82",
-    "tmr": "22e1baf198f726d45f9686918207d0e5",
-    "udp": "ff009d24d36deda6fd63dd984a206c54",
-    "upt": "fb2ac27489391a75ceefe0b8c36e503d",
-    "web": "93e88d0e5bd4540c23f08b125060ee41",
-    "wsd": "7bb44c895580b00d0f6bf083e0881267",
+    "tdo": "eb68660d6ace0a85672db0538563ea69",
+    "thr": "c79030b79af74f3bcd5d7e82b9d28db4",
+    "tmr": "5b97189187537a5bc206ed957f41237e",
+    "upt": "81ce50f93a845394df0a265099a7b47c",
 }

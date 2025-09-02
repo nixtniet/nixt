@@ -211,6 +211,9 @@ def search(obj, selector, matching=False):
     return res
 
 
+"interface"
+
+
 def __dir__():
     return (
         'Cache',

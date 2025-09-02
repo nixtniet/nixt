@@ -76,9 +76,6 @@ jaar["Wfz"] = 23820
 jaar["totaal"] = 168678
 
 
-oorzaak = Object()
-construct(oorzaak, zip(oor, aantal))
-oorzaken = Object()
 
 
 "utilities"
@@ -407,6 +404,11 @@ aantal = """
 
 
 "boot"
+
+
+oorzaak = Object()
+construct(oorzaak, zip(oor, aantal))
+oorzaken = Object()
 
 
 def boot():

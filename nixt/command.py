@@ -16,7 +16,7 @@ import _thread
 
 
 from .clients import Fleet
-from .runtime import NAME, launch
+from .runtime import launch
 
 
 loadlock = threading.RLock()
@@ -26,7 +26,7 @@ class Mods:
 
     loaded = []
     md5s   = {}
-    ignore = []
+    ignore = ""
     path   = os.path.dirname(__file__)
     path   = os.path.join(path, "modules")
     pname  = f"{__package__}.modules"
@@ -272,6 +272,9 @@ def spl(txt):
             txt,
         ]
     return [x for x in result if x]
+
+
+"interface"
 
 
 def __dir__():

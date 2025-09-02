@@ -13,6 +13,9 @@ from .handler import Handler
 from .runtime import launch
 
 
+NAME = __name__.split(".")[0]
+
+
 class Client(Handler):
 
     def __init__(self):
@@ -80,6 +83,9 @@ class Output(Client):
         self.oqueue.join()
 
 
+"list of clients"
+
+
 class Fleet:
 
     clients = {}
@@ -135,6 +141,9 @@ class Fleet:
         time.sleep(0.1)
         for client in Fleet.all():
             client.wait()
+
+
+"interface"
 
 
 def __dir__():
