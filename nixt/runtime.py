@@ -11,6 +11,7 @@ import time
 import _thread
 
 
+NAME = __name__.split(".")[0]
 STARTTIME = time.time()
 
 

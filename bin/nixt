@@ -19,11 +19,27 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client, Fleet
-from nixt.command import Commands, Main, command, parse, scan, table
+from nixt.command import Commands, command, parse, scan, table
 from nixt.command import inits, md5sum, mods, modules, sums
 from nixt.handler import Event
-from nixt.runtime import level
+from nixt.runtime import NAME, level
 from nixt.persist import pidname, setwd
+
+
+class Config:
+
+    checksum = "fd204fbc5dbe4417ccc7f5d0ee9080f6"
+    debug    = False
+    gets     = {}
+    init     = ""
+    level    = "warn"
+    md5      = False
+    name     = __name__.split(".", maxsplit=1)[0].lower()
+    opts     = {}
+    otxt     = ""
+    sets     = {}
+    verbose  = False
+    version  = 410
 
 
 class CLI(Client):
@@ -99,35 +115,17 @@ def privileges():
 def background():
     daemon("-v" in sys.argv)
     privileges()
-    level(Main.level or "debug")
-    setwd(Main.name)
-    pidfile(pidname(Main.name))
-    if Main.md5 and not sums(Main.md5):
-        logging.error("table sum doesn't match")
-    table()
-    Commands.add(cmd)
-    Commands.add(ver)
-    inits(Main.init or "irc,rss")
+    pidfile(pidname(NAME))
+    boot(False)
+    inits(Config.init or "irc,rss")
     forever()
 
 
 def console():
     import readline # noqa: F401
-    parse(Main, " ".join(sys.argv[1:]))
-    Main.init = Main.sets.get("init", Main.init)
-    Main.verbose = Main.sets.get("verbose", Main.verbose)
-    Main.level   = Main.sets.get("level", Main.level or "warn")
-    level(Main.level)
-    setwd(Main.name)
-    if Main.md5 and not sums(Main.md5):
-        logging.error("table sum doesn't match")
-    table()
-    Commands.add(cmd)
-    Commands.add(ver)
-    if "v" in Main.opts:
-        banner()
-    for _mod, thr in inits(Main.init):
-        if "w" in Main.opts:
+    boot()
+    for _mod, thr in inits(Config.init):
+        if "w" in Config.opts:
             thr.join(30.0)
     csl = Console()
     csl.start(daemon=True)
@@ -137,39 +135,42 @@ def console():
 def control():
     if len(sys.argv) == 1:
         return
-    parse(Main, " ".join(sys.argv[1:]))
-    level(Main.level or "warn")
-    setwd(Main.name)
-    if Main.md5 and not sums(Main.md5):
-        logging.error("table sum doesn't match")
-    table()
-    Commands.add(cmd)
+    boot()
     Commands.add(md5)
     Commands.add(srv)
     Commands.add(tbl)
-    Commands.add(ver)
     csl = CLI()
     evt = Event()
     evt.orig = repr(csl)
     evt.type = "command"
-    evt.txt = Main.otxt
+    evt.txt = Config.otxt
     command(evt)
     evt.wait()
 
 
 def service():
-    level(Main.level or "warn")
-    setwd(Main.name)
-    banner()
     privileges()
-    pidfile(pidname(Main.name))
-    if Main.md5 and not sums(Main.md5):
+    pidfile(pidname(NAME))
+    boot(False)
+    inits(Config.init or "irc,rss")
+    forever()
+
+
+def boot(doparse=True):
+    if doparse:
+        parse(Config, " ".join(sys.argv[1:]))
+    Config.init = Config.sets.get("init", Config.init)
+    Config.verbose = Config.sets.get("verbose", Config.verbose)
+    Config.level   = Config.sets.get("level", Config.level or "warn")
+    level(Config.level)
+    setwd(NAME)
+    if Config.md5 and not sums(Config.md5):
         logging.error("table sum doesn't match")
     table()
     Commands.add(cmd)
     Commands.add(ver)
-    inits(Main.init or "irc,rss")
-    forever()
+    if "v" in Config.opts:
+        banner()
 
 
 def cmd(event):
@@ -198,7 +199,7 @@ WantedBy=multi-user.target"""
 def srv(event):
     import getpass
     name = getpass.getuser()
-    event.reply(TXT % (Main.name.upper(), name, name, name, Main.name))
+    event.reply(TXT % (NAME.upper(), name, name, name, NAME))
 
 
 def tbl(event):
@@ -222,12 +223,12 @@ def tbl(event):
 
 
 def ver(event):
-    event.reply(str(Main.version))
+    event.reply(str(Config.version))
 
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    out(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
+    out(f"{NAME.upper()} {Config.version} since {tme} ({Config.level.upper()})")
     out(f"loaded {",".join(modules())}")
 
 
@@ -279,9 +280,9 @@ def wrap(func):
 
 def main():
     if check("a"):
-        Main.init = ",".join(modules())
+        Config.init = ",".join(modules())
     if check("v"):
-        Main.opts["v"] = True
+        Config.opts["v"] = True
     if check("c"):
         wrap(console)
     elif check("d"):

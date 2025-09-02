@@ -18,7 +18,7 @@ from ..command import Main, command
 from ..handler import Event as IEvent
 from ..objects import Object, edit, fmt, keys
 from ..persist import getpath, ident, last, write
-from ..runtime import launch, rlog
+from ..runtime import NAME, launch, rlog
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
@@ -42,18 +42,18 @@ def init():
 
 class Config:
 
-    channel = f"#{Main.name}"
+    channel = f"#{NAME}"
     commands = True
     control = "!"
-    nick = Main.name
+    nick = NAME
     password = ""
     port = 6667
-    realname = Main.name
+    realname = NAME
     sasl = False
     server = "localhost"
     servermodes = ""
     sleep = 60
-    username = Main.name
+    username = NAME
     users = False
 
     def __init__(self):
@@ -547,7 +547,7 @@ def cb_001(evt):
 def cb_notice(evt):
     bot = Fleet.get(evt.orig)
     if evt.txt.startswith("VERSION"):
-        txt = f"\001VERSION {Main.name.upper()} 140 - {bot.cfg.username}\001"
+        txt = f"\001VERSION {NAME.upper()} 140 - {bot.cfg.username}\001"
         bot.docommand("NOTICE", evt.channel, txt)
 
 

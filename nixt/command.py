@@ -16,26 +16,10 @@ import _thread
 
 
 from .clients import Fleet
-from .runtime import launch
+from .runtime import NAME, launch
 
 
 loadlock = threading.RLock()
-
-
-class Main:
-
-    checksum = "fd204fbc5dbe4417ccc7f5d0ee9080f6"
-    debug    = False
-    gets     = {}
-    init     = ""
-    level    = "warn"
-    md5      = False
-    name     = __package__.split(".", maxsplit=1)[0].lower()
-    opts     = {}
-    otxt     = ""
-    sets     = {}
-    verbose  = False
-    version  = 151
 
 
 class Commands:
@@ -164,7 +148,6 @@ def table():
 
 class Mods:
 
-    checksum = "fd204fbc5dbe4417ccc7f5d0ee9080f6"
     loaded   = []
     md5s     = {}
     ignore   = []
@@ -285,7 +268,6 @@ def spl(txt):
 
 def __dir__():
     return (
-        'Main',
         'Commands',
         'command',
         'elapsed',

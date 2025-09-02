@@ -221,6 +221,6 @@ def __dir__():
         'setwd',
         'store',
         'strip',
-        'types'
+        'types',
         'write'
     )
