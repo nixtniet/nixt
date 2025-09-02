@@ -13,10 +13,8 @@ import threading
 
 
 from nixt.client import Fleet
+from nixt.disk   import Workdir, j
 from nixt.run    import spl
-
-
-import nixt.modules
 
 
 lock = threading.RLock()
@@ -33,8 +31,8 @@ class Main:
     name     = __package__.split(".", maxsplit=1)[0].lower()
     opts     = {}
     otxt     = ""
-    path     = nixt.modules.__path__[0]
-    pname    = "nixt.modules"
+    path     = Workdir.mods()
+    pname    = "mods"
     sets     = {}
     verbose  = False
     version  = 410
@@ -92,7 +90,7 @@ def mod(name, debug=False):
         mname = f"{Main.pname}.{name}"
         module = sys.modules.get(mname, None)
         if not module:
-            pth = os.path.join(Main.path, f"{name}.py")
+            pth = j(Main.path, f"{name}.py")
             if not os.path.exists(pth):
                 return None
             spec = importlib.util.spec_from_file_location(mname, pth)
@@ -188,4 +186,14 @@ def table():
 
 
 def __dir__():
-    return modules()
+    return (
+        'Main',
+        'Commands',
+        'command',
+        'getmod',
+        'mod',
+        'modules',
+        'parse',
+        'scan',
+        'table'
+    )

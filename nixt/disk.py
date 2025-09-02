@@ -17,6 +17,7 @@ from .serial import dump, load
 from .util   import fqn
 
 
+j    = os.path.join
 lock = threading.RLock()
 
 
@@ -54,7 +55,7 @@ class Workdir:
 
     @staticmethod
     def ident(obj):
-        return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
+        return j(fqn(obj), *str(datetime.datetime.now()).split())
 
     @staticmethod
     def long(name):
@@ -67,12 +68,16 @@ class Workdir:
         return res
 
     @staticmethod
+    def mods():
+        return j(Workdir.wdr, "mods")
+
+    @staticmethod
     def path(obj):
         return Workdir.store(Workdir.ident(obj))
 
     @staticmethod
     def pidname(name):
-        return os.path.join(Workdir.wdr, f"{name}.pid")
+        return j(Workdir.wdr, f"{name}.pid")
 
     @staticmethod
     def skel():
@@ -84,11 +89,11 @@ class Workdir:
 
     @staticmethod
     def store(pth=""):
-        return os.path.join(Workdir.wdr, "store", pth)
+        return j(Workdir.wdr, "store", pth)
 
     @staticmethod
     def strip(pth, nmr=2):
-        return os.path.join(pth.split(os.sep)[-nmr:])
+        return j(pth.split(os.sep)[-nmr:])
 
     @staticmethod
     def types():
@@ -120,9 +125,9 @@ class Find:
         pth = Workdir.store(clz)
         for rootdir, dirs, _files in os.walk(pth, topdown=False):
             for dname in dirs:
-                ddd = os.path.join(rootdir, dname)
+                ddd = j(rootdir, dname)
                 for fll in os.listdir(ddd):
-                    yield os.path.join(ddd, fll)
+                    yield j(ddd, fll)
 
     @staticmethod
     def fntime(daystr):
