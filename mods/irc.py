@@ -14,11 +14,12 @@ import time
 
 
 from nixt.client import Fleet, Output
-from nixt.object import Object, edit, fmt, keys
+from nixt.cmds   import Main, command
 from nixt.disk   import Find, Workdir, write
+from nixt.object import Object, keys
 from nixt.run    import Event as IEvent
 from nixt.run    import launch, rlog
-from .           import Main, command
+from nixt.util   import edit, fmt
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
@@ -496,11 +497,12 @@ class IRC(Output):
 
 class Cbs:
 
+    @staticmethod
     def auth(evt):
         bot = Fleet.get(evt.orig)
         bot.docommand(f"AUTHENTICATE {bot.cfg.password}")
 
-
+    @staticmethod
     def cap(evt):
         bot = Fleet.get(evt.orig)
         if bot.cfg.password and "ACK" in evt.arguments:
@@ -508,59 +510,58 @@ class Cbs:
         else:
             bot.direct("CAP REQ :sasl")
 
-
+    @staticmethod
     def error(evt):
         bot = Fleet.get(evt.orig)
         bot.state.nrerror += 1
         bot.state.error = evt.txt
         rlog("debug", fmt(evt))
 
-
+    @staticmethod
     def h903(evt):
         bot = Fleet.get(evt.orig)
         bot.direct("CAP END")
         bot.events.authed.set()
 
 
+    @staticmethod
     def h904(evt):
         bot = Fleet.get(evt.orig)
         bot.direct("CAP END")
         bot.events.authed.set()
 
-
+    @staticmethod
     def kill(evt):
         pass
 
-
+    @staticmethod
     def log(evt):
         pass
 
-
+    @staticmethod
     def ready(evt):
         bot = Fleet.get(evt.orig)
         bot.events.ready.set()
 
-
+    @staticmethod
     def h001(evt):
         bot = Fleet.get(evt.orig)
         bot.events.logon.set()
 
-
+    @staticmethod
     def notice(evt):
         bot = Fleet.get(evt.orig)
         if evt.txt.startswith("VERSION"):
             txt = f"\001VERSION {Main.name.upper()} 140 - {bot.cfg.username}\001"
             bot.docommand("NOTICE", evt.channel, txt)
 
-
+    @staticmethod
     def privmsg(evt):
         bot = Fleet.get(evt.orig)
         if not bot.cfg.commands:
             return
         if evt.txt:
-            if evt.txt[0] in [
-                "!",
-            ]:
+            if evt.txt[0] in ["!",]:
                 evt.txt = evt.txt[1:]
             elif evt.txt.startswith(f"{bot.cfg.nick}:"):
                 evt.txt = evt.txt[len(bot.cfg.nick) + 1 :]
@@ -571,7 +572,7 @@ class Cbs:
             if evt.txt:
                 launch(command, evt)
 
-
+    @staticmethod
     def quit(evt):
         bot = Fleet.get(evt.orig)
         rlog("debug", f"quit from {bot.cfg.server}")

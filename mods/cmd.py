@@ -4,7 +4,7 @@
 "list commands"
 
 
-from . import Commands
+from nixt.cmds import Commands
 
 
 def cmd(event):

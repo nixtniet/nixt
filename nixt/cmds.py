@@ -16,6 +16,9 @@ from nixt.client import Fleet
 from nixt.run    import spl
 
 
+import nixt.modules
+
+
 lock = threading.RLock()
 
 
@@ -30,7 +33,8 @@ class Main:
     name     = __package__.split(".", maxsplit=1)[0].lower()
     opts     = {}
     otxt     = ""
-    path     = ""
+    path     = nixt.modules.__path__[0]
+    pname    = "nixt.modules"
     sets     = {}
     verbose  = False
     version  = 410
@@ -85,8 +89,7 @@ def getmod(names=""):
 def mod(name, debug=False):
     with lock:
         module = None
-        pname = Main.path.split(os.sep)[-1]
-        mname = f"{pname}.{name}"
+        mname = f"{Main.pname}.{name}"
         module = sys.modules.get(mname, None)
         if not module:
             pth = os.path.join(Main.path, f"{name}.py")

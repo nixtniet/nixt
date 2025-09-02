@@ -19,21 +19,11 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.client  import Client, Fleet
-from nixt.disk    import Workdir, pidname, setwd
-from nixt.modules import Commands, Main
-from nixt.modules import command, getmod, mod, modules, parse, scan, table
-from nixt.run     import Event, launch, level, rlog, spl
-
-
-if os.path.exists("mods"):
-    Main.path = "mods"
-
-
-Main.ignore = "wsd,rst,udp,web"
-
-
-checksum = "edf25c5109379f6fc38e11c94c5d4e51"
+from nixt.client import Client, Fleet
+from nixt.cmds   import Commands, Main
+from nixt.cmds   import command, getmod, mod, modules, parse, scan, table
+from nixt.disk   import Workdir, setwd
+from nixt.run    import Event, launch, level, rlog, spl
 
 
 class CLI(Client):
@@ -201,7 +191,7 @@ def service():
     setwd(Main.name)
     banner()
     privileges()
-    pidfile(pidname(Main.name))
+    pidfile(Workdir.pidname(Main.name))
     table()
     Commands.add(ver)
     inits(Main.init or "irc,rss")

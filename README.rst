@@ -186,21 +186,13 @@ and add the following for ``hello world``
 
 
 ``nixt`` uses loading on demand of modules and has a ``tbl`` command to
-generate a table for this.
-
+generate a table.
 
 |
 | ``$ nixt tbl > nixt/modules/tbl.py``
 |
 
-a md5sum can be added to verify the modules md5sums are matching.
-
-|
-| ``$ nixt md5``
-|
-
-put this value in nixt/modules/__init__.py and ``nixt`` can execute the ``hello``
-command now.
+``nixt`` can execute the ``hello`` command now.
 
 |
 | ``$ nixt hello``

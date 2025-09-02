@@ -12,8 +12,9 @@ import threading
 import time
 
 
-from .object import Object, fqn, items, update
+from .object import Object, items, update
 from .serial import dump, load
+from .util   import fqn
 
 
 lock = threading.RLock()
@@ -72,7 +73,6 @@ class Workdir:
     @staticmethod
     def pidname(name):
         return os.path.join(Workdir.wdr, f"{name}.pid")
-
 
     @staticmethod
     def skel():
@@ -171,8 +171,6 @@ class Find:
                 res = False
                 break
         return res
-
-
 
 
 def read(obj, path):
