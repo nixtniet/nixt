@@ -199,6 +199,12 @@ generate a table.
 | ``hello world !!``
 |
 
+Besides creating a table for loading on demand, the ``tbl`` command also
+created md5sum of the available plugins. The ``md5`` command calculates this
+checksum, you can use this value to check if the modules are what you are
+thinking they are. Put the checsum in the program in the CHECKSUM variable.
+
+
 Commands run in their own thread and the program borks on exit, output gets
 flushed on print so exceptions appear in the systemd logs. Modules can contain
 your own written python3 code, see the nixt/modules directory for examples.
