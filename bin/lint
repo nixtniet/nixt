@@ -1,0 +1,1 @@
+pylint -d C,R,W,E0402,E0401 nixt/ bin/nixt bin/tinder
