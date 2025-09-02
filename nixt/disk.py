@@ -45,7 +45,6 @@ class Cache:
 
 class Workdir:
 
-    name = __file__.rsplit(os.sep, maxsplit=2)[-2]
     wdr = ""
 
     @staticmethod
@@ -68,7 +67,7 @@ class Workdir:
         return res
 
     @staticmethod
-    def mods():
+    def mdir():
         return j(Workdir.wdr, "mods")
 
     @staticmethod

@@ -20,18 +20,31 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client import Client, Fleet, Output
-from nixt.cmds   import Commands, Main
+from nixt.cmds   import Commands
 from nixt.cmds   import command, getmod, parse, table
 from nixt.disk   import Workdir, setwd
 from nixt.object import Object, keys
-from nixt.run    import STARTTIME, Event, elapsed, launch, level
+from nixt.run    import NAME, STARTTIME, Event, elapsed, launch, level
+
+
+Workdir.wdr = ".test"
+
+
+class Main:
+
+    debug    = False
+    gets     = {}
+    init     = ""
+    level    = "warn"
+    opts     = {}
+    otxt     = ""
+    sets     = {}
+    verbose  = False
+    version  = 410
 
 
 if os.path.exists("mods"):
     Main.path = "mods"
-
-
-Workdir.wdr = ".test"
 
 
 param = Object()
@@ -141,7 +154,7 @@ class Pool:
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    print(f"{Main.name.upper()} since {tme}")
+    print(f"{NAME.upper()} since {tme}")
     print("loaded " + ",".join(sorted(dir(Commands.names))))
 
 
@@ -199,7 +212,7 @@ def main():
     global nrcommand
     parse(Main, " ".join(sys.argv[1:]))
     level("error")
-    setwd(Main.name,'.test')
+    setwd(NAME,'.test')
     table()
     for mod in getmod():
         if "Main" in dir(mod):

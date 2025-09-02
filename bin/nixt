@@ -20,10 +20,26 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.client import Client, Fleet
-from nixt.cmds   import Commands, Main
+from nixt.cmds   import Commands
 from nixt.cmds   import command, getmod, mod, modules, parse, scan, table
 from nixt.disk   import Workdir, setwd
-from nixt.run    import Event, launch, level, rlog, spl
+from nixt.run    import NAME, Event, launch, level, rlog, spl
+
+
+Commands.ignore = "udp,wsd"
+
+
+class Main:
+
+    debug    = False
+    gets     = {}
+    init     = ""
+    level    = "warn"
+    opts     = {}
+    otxt     = ""
+    sets     = {}
+    verbose  = False
+    version  = 410
 
 
 class CLI(Client):
@@ -55,7 +71,7 @@ class Console(CLI):
 def banner():
     if "v" in Main.opts:
         tme = time.ctime(time.time()).replace("  ", " ")
-        rlog("warn", f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
+        rlog("warn", f"{NAME.upper()} {Main.version} since {tme} ({Main.level.upper()})")
         rlog("warn", f"loaded {','.join(modules())}")
 
 
@@ -132,12 +148,8 @@ def privileges():
 def background():
     daemon("-v" in sys.argv)
     privileges()
-    Main.level = Main.sets.get("level", Main.level or "warn")
-    Main.path = Main.sets.get("path", Main.path or "mods")
-    level(Main.level or "debug")
-    setwd(Main.name)
-    pidfile(Workdir.pidname(Main.name))
-    table()
+    pidfile(Workdir.pidname(NAME))
+    boot()
     Commands.add(ver)
     inits(Main.init or "irc,rss")
     forever()
@@ -146,15 +158,7 @@ def background():
 def console():
     import readline # noqa: F401
     parse(Main, " ".join(sys.argv[1:]))
-    Main.init = Main.sets.get("init", Main.init)
-    Main.verbose = Main.sets.get("verbose", Main.verbose)
-    Main.level = Main.sets.get("level", Main.level or "warn")
-    Main.path = Main.sets.get("path", Main.path or "mods")
-    level(Main.level)
-    setwd(Main.name)
-    banner()
-    table()
-    Commands.add(ver)
+    boot()
     for _mod, thr in inits(Main.init):
         if "w" in Main.opts:
             thr.join(30.0)
@@ -167,15 +171,10 @@ def control():
     if len(sys.argv) == 1:
         return
     parse(Main, " ".join(sys.argv[1:]))
-    Main.path = Main.sets.get("path", Main.path or "mods")
-    level(Main.level or "warn")
-    setwd(Main.name)
-    table()
-    Commands.add(cmd)
+    boot()
     Commands.add(md5)
     Commands.add(srv)
     Commands.add(tbl)
-    Commands.add(ver)
     csl = CLI()
     evt = Event()
     evt.orig = repr(csl)
@@ -186,16 +185,24 @@ def control():
 
 
 def service():
-    Main.path = Main.sets.get("path", Main.path or "mods")
-    level(Main.level or "warn")
-    setwd(Main.name)
-    banner()
+    boot()
     privileges()
-    pidfile(Workdir.pidname(Main.name))
-    table()
-    Commands.add(ver)
+    pidfile(Workdir.pidname(NAME))
     inits(Main.init or "irc,rss")
     forever()
+
+
+def boot():
+    Main.init = Main.sets.get("init", Main.init)
+    Main.verbose = Main.sets.get("verbose", Main.verbose)
+    Main.level = Main.sets.get("level", Main.level or "warn")
+    Commands.path = Main.sets.get("path", Commands.path)
+    level(Main.level)
+    setwd(NAME)
+    banner()
+    table()
+    Commands.add(cmd)
+    Commands.add(ver)
 
 
 "commands"
@@ -213,7 +220,7 @@ def md5(event):
 def srv(event):
     import getpass
     name = getpass.getuser()
-    event.reply(TXT % (Main.name.upper(), name, name, name, Main.name))
+    event.reply(TXT % (NAME.upper(), name, name, name, NAME))
 
 
 def tbl(event):
@@ -273,8 +280,8 @@ def main():
     if check("a"):
         Main.init = ",".join(modules())
     if check("m"):
-        Main.path = "mods"
-        Main.pname = "mods"
+        Commands.path = "mods"
+        Commands.pname = "mods"
     if check("v"):
         Main.opts["v"] = True
     if check("c"):

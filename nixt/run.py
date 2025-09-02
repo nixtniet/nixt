@@ -5,6 +5,7 @@
 
 
 import logging
+import os
 import queue
 import threading
 import time
@@ -14,6 +15,7 @@ import _thread
 from .object import Object, name
 
 
+NAME = os.path.dirname(__file__).split(os.sep)[-1]
 STARTTIME = time.time()
 
 

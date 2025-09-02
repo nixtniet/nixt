@@ -14,12 +14,12 @@ import time
 
 
 from nixt.client import Fleet, Output
-from nixt.cmds   import Main, command
+from nixt.cmds   import command
 from nixt.disk   import Find, Workdir, write
 from nixt.func   import edit, fmt
 from nixt.object import Object, keys
 from nixt.run    import Event as IEvent
-from nixt.run    import launch, rlog
+from nixt.run    import NAME, launch, rlog
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
@@ -43,18 +43,18 @@ def init():
 
 class Config:
 
-    channel = f"#{Main.name}"
+    channel = f"#{NAME}"
     commands = True
     control = "!"
-    nick = Main.name
+    nick = NAME
     password = ""
     port = 6667
-    realname = Main.name
+    realname = NAME
     sasl = False
     server = "localhost"
     servermodes = ""
     sleep = 60
-    username = Main.name
+    username = NAME
     users = False
 
     def __init__(self):
@@ -552,7 +552,7 @@ class Cbs:
     def notice(evt):
         bot = Fleet.get(evt.orig)
         if evt.txt.startswith("VERSION"):
-            txt = f"\001VERSION {Main.name.upper()} 140 - {bot.cfg.username}\001"
+            txt = f"\001VERSION {NAME.upper()} 140 - {bot.cfg.username}\001"
             bot.docommand("NOTICE", evt.channel, txt)
 
     @staticmethod

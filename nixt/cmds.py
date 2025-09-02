@@ -20,28 +20,13 @@ from nixt.run    import spl
 lock = threading.RLock()
 
 
-class Main:
-
-    debug    = False
-    gets     = {}
-    ignore   = ""
-    init     = ""
-    level    = "warn"
-    md5      = True
-    name     = __package__.split(".", maxsplit=1)[0].lower()
-    opts     = {}
-    otxt     = ""
-    path     = Workdir.mods()
-    pname    = "mods"
-    sets     = {}
-    verbose  = False
-    version  = 410
-
-
 class Commands:
 
-    cmds  = {}
-    names = {}
+    cmds   = {}
+    ignore = ""
+    names  = {}
+    path   = Workdir.mdir()
+    pname  = "mods"
 
     @staticmethod
     def add(func, module=None) -> None:
@@ -74,7 +59,7 @@ def command(evt):
 
 def getmod(names=""):
     res = []
-    for nme in sorted(modules(Main.path)):
+    for nme in sorted(modules(Commands.path)):
         if names and nme not in spl(names):
             continue
         module = mod(nme)
@@ -87,10 +72,10 @@ def getmod(names=""):
 def mod(name, debug=False):
     with lock:
         module = None
-        mname = f"{Main.pname}.{name}"
+        mname = f"{Commands.pname}.{name}"
         module = sys.modules.get(mname, None)
         if not module:
-            pth = j(Main.path, f"{name}.py")
+            pth = j(Commands.path, f"{name}.py")
             if not os.path.exists(pth):
                 return None
             spec = importlib.util.spec_from_file_location(mname, pth)
@@ -101,13 +86,13 @@ def mod(name, debug=False):
 
 
 def modules(mdir=""):
-    pth = mdir or Main.path
+    pth = mdir or Commands.path
     if not os.path.exists(pth):
          return []
     return sorted([
-            x[:-3] for x in os.listdir(mdir or Main.path)
+            x[:-3] for x in os.listdir(mdir or Commands.path)
             if x.endswith(".py") and not x.startswith("__") and
-            x[:-3] not in Main.ignore
+            x[:-3] not in spl(Commands.ignore)
            ])
 
 
