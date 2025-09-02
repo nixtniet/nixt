@@ -8,8 +8,8 @@ import time
 
 
 from nixt.disk import Find, Workdir
+from nixt.func import fmt
 from nixt.run  import elapsed
-from nixt.util import fmt
 
 
 def fnd(event):

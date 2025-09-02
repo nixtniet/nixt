@@ -23,9 +23,9 @@ from urllib.parse import quote_plus, urlencode
 
 from nixt.client import Fleet
 from nixt.disk   import Find, Workdir, write
+from nixt.func   import fmt
 from nixt.object import Object, update
 from nixt.run    import Repeater, elapsed, launch, rlog, spl
-from nixt.util   import fmt
 
 
 DEBUG = False

@@ -26,6 +26,11 @@ from nixt.disk   import Workdir, setwd
 from nixt.run    import Event, launch, level, rlog, spl
 
 
+if os.path.exists("mods"):
+    Main.path = "mods"
+    Main.pname = "mods"
+
+
 class CLI(Client):
 
     def __init__(self):
@@ -56,7 +61,7 @@ def banner():
     if "v" in Main.opts:
         tme = time.ctime(time.time()).replace("  ", " ")
         rlog("warn", f"{Main.name.upper()} {Main.version} since {tme} ({Main.level.upper()})")
-        rlog("warn", f"loaded {",".join(modules())}")
+        rlog("warn", f"loaded {','.join(modules())}")
 
 
 def daemon(verbose=False):

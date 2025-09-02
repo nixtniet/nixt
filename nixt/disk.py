@@ -12,9 +12,9 @@ import threading
 import time
 
 
+from .func   import fqn
 from .object import Object, items, update
 from .serial import dump, load
-from .util   import fqn
 
 
 j    = os.path.join

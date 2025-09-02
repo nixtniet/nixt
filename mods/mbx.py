@@ -10,9 +10,9 @@ import time
 
 
 from nixt.disk   import Find, write
+from nixt.func   import fmt
 from nixt.object import Object, keys, update
 from nixt.run    import elapsed
-from nixt.util   import fmt
 
 
 from .tmr import extract_date
