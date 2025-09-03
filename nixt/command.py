@@ -82,8 +82,6 @@ def inits(names):
     return modz
 
 
-
-
 def scan(module):
     for key, cmdz in inspect.getmembers(module, inspect.isfunction):
         if key.startswith("cb"):

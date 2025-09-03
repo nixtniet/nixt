@@ -62,6 +62,8 @@ class Console(CLI):
         pass
 
     def callback(self, event):
+        if not event.txt:
+            return
         super().callback(event)
         event.wait()
 
@@ -178,7 +180,8 @@ def boot(doparse=True):
 
 
 def cmd(event):
-    event.reply(",".join(sorted(Commands.names)))
+    cmds = list(Commands.cmds.keys()) + list(Commands.names.keys())
+    event.reply(",".join(sorted(cmds)))
 
 
 def md5(event):
@@ -227,7 +230,7 @@ def tbl(event):
 
 
 def ver(event):
-    event.reply(str(Config.version))
+    event.reply(f"{NAME.upper()} {Config.version}")
 
 
 def banner():
