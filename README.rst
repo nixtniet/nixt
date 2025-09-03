@@ -38,7 +38,7 @@ display RSS feeds, take todo notes, keep a shopping list and log
 text. You can run it under systemd for 24/7 presence in a IRC channel.
 
 
-``NIXBOT`` is Public Domain.
+``NIXT`` is Public Domain.
 
 
 **INSTALL**
