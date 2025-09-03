@@ -15,7 +15,7 @@ import threading
 import _thread
 
 
-from .clients import Fleet
+from .clients import NAME, Fleet
 from .runtime import launch
 
 
@@ -29,7 +29,7 @@ class Mods:
     ignore = ""
     path   = os.path.dirname(__file__)
     path   = os.path.join(path, "modules")
-    pname  = f"{__package__}.modules"
+    pname  = f"{NAME}.modules"
 
 
 class Commands:
