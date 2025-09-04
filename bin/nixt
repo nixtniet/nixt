@@ -5,6 +5,8 @@
 "main"
 
 
+import importlib
+import importlib.util
 import json
 import logging
 import os
@@ -19,10 +21,9 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import NAME, Client, Fleet
-from nixt.command import Commands, command, parse, scan, table
-from nixt.command import Mods, inits, md5sum, mods, modules, sums
+from nixt.command import Commands, command, inits, parse, scan, table
 from nixt.handler import Event
-from nixt.persist import moddir, pidname, setwd, skel
+from nixt.persist import j, moddir, pidname, setwd, skel
 from nixt.runtime import level
 
 
@@ -162,8 +163,6 @@ def boot(doparse=True):
     Config.level   = Config.sets.get("level", Config.level or "warn")
     level(Config.level)
     setwd(NAME)
-    Mods.path = moddir()
-    Mods.pname = "mods"
     table()
     Commands.add(cmd)
     Commands.add(ver)

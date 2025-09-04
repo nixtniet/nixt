@@ -15,20 +15,13 @@ import threading
 import _thread
 
 
-from .clients import NAME, Fleet
-from .runtime import launch
+from nixt.clients import NAME, Fleet
+from nixt.persist import j, moddir
+from nixt.runtime import launch
 
 
 loadlock = threading.RLock()
-
-
-class Mods:
-
-    loaded = []
-    md5s   = {}
-    ignore = ""
-    path   = "mods"
-    pname  = "mods"
+path = j(moddir(), "__init__.py")
 
 
 class Commands:
@@ -49,7 +42,7 @@ class Commands:
             name = Commands.names.get(cmd, None)
             if not name:
                 return
-            module = mod(name)
+            module = importer(j(path, name+".py"), "mods")
             if module:
                 scan(module)
                 func = Commands.cmds.get(cmd)
@@ -63,6 +56,14 @@ def command(evt):
         func(evt)
         Fleet.display(evt)
     evt.ready()
+
+
+def importer(pth, mname):
+    spec = importlib.util.spec_from_file_location(mname, pth)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[mname] = module
+    spec.loader.exec_module(module)
+    return module
 
 
 def inits(names):
@@ -90,77 +91,10 @@ def scan(module):
 
 
 def table():
-    tbl = mod("tbl")
+    tbl = importer(j(moddir(), "tbl.py"), "mods")
     names = getattr(tbl, "NAMES", None)
     if names:
         Commands.names.update(names)
-
-
-"modules"
-
-
-def md5sum(path):
-    with open(path, "r", encoding="utf-8") as file:
-        txt = file.read().encode("utf-8")
-        return hashlib.md5(txt).hexdigest()
-
-
-def mod(name, debug=False):
-    with loadlock:
-        module = None
-        mname = f"{Mods.pname}.{name}"
-        module = sys.modules.get(mname, None)
-        if not module:
-            pth = os.path.join(Mods.path, f"{name}.py")
-            if not os.path.exists(pth):
-                return None
-            if md5sum(pth) == (hash or Mods.md5s.get(name, None)):
-                logging.error(f"md5 doesn't match on {pth}")
-            spec = importlib.util.spec_from_file_location(mname, pth)
-            module = importlib.util.module_from_spec(spec)
-            sys.modules[mname] = module
-            spec.loader.exec_module(module)
-            Mods.loaded.append(module.__name__.split(".")[-1])
-        if debug:
-            module.DEBUG = True
-        return module
-
-
-def mods(names=""):
-    res = []
-    for nme in sorted(modules(Mods.path)):
-        if names and nme not in spl(names):
-            continue
-        module = mod(nme)
-        if not mod:
-            continue
-        res.append(module)
-    return res
-
-
-def modules(mdir=""):
-    pth = mdir or Mods.path
-    if not os.path.exists(pth):
-        return []
-    return sorted([
-            x[:-3] for x in os.listdir(pth)
-            if x.endswith(".py") and not x.startswith("__") and
-            x[:-3] not in Mods.ignore
-           ])
-
-
-def sums(md5):
-    pth = os.path.join(Mods.path, "tbl.py")
-    if os.path.exists(pth) and (not md5 or (md5sum(pth) == md5)):
-        try:
-            module = mod("tbl")
-        except FileNotFoundError:
-            return {}
-        sms =  getattr(module, "MD5", None)
-        if sms:
-            Mods.md5s.update(sms)
-            return True
-    return False
 
 
 "utilities"
@@ -278,16 +212,4 @@ def spl(txt):
 
 
 def __dir__():
-    return (
-        'Commands',
-        'command',
-        'elapsed',
-        'inits',
-        'mod',
-        'mods',
-        'modules',
-        'parse',
-        'scan',
-        'spl',
-        'table'
-    )
+    return modules()
