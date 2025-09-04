@@ -11,7 +11,7 @@ import threading
 import time
 
 
-from nixt.clients import Fleet
+from nixt.handler import Fleet
 from nixt.objects import Object
 from nixt.runtime import launch, rlog
 

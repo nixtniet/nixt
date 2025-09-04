@@ -13,8 +13,8 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from ..objects import Object
-from ..runtime import launch, rlog
+from nixt.objects import Object
+from nixt.runtime import launch, rlog
 
 
 DEBUG = False

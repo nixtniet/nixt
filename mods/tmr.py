@@ -10,8 +10,8 @@ import time
 
 
 from nixt.command import elapsed
+from nixt.handler import Fleet
 from nixt.persist import find, ident, store, write
-from nixt.clients import Fleet
 from nixt.runtime import Timed, launch, rlog
 
 

@@ -21,9 +21,8 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import NAME, Client, Fleet
 from nixt.command import Commands, command, parse, scan, spl
-from nixt.handler import Event
+from nixt.handler import NAME, Client, Event, Fleet
 from nixt.persist import j, moddir, pidname, setwd, skel
 from nixt.runtime import launch, level
 
@@ -313,7 +312,7 @@ def tbl(event):
 
 
 def ver(event):
-    mds = ",".join(modules(Config.moddir))
+    mds = ",".join([x.upper() for x in modules(Config.moddir)])
     event.reply(f"{NAME.upper()} {Config.version} {mds}")
 
 
@@ -347,6 +346,8 @@ def main():
         Config.init = ",".join(modules(Config.moddir))
     if check("v"):
         Config.opts["v"] = True
+    if check("m"):
+        Config.moddir = "mods"    
     if check("c"):
         wrap(console)
     elif check("d"):

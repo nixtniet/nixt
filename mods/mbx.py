@@ -14,9 +14,6 @@ from nixt.persist import find, ident, store, write
 from nixt.objects import Object, fmt, keys, update
 
 
-from .tmr import extract_date
-
-
 class Email(Object):
 
     def __init__(self, *args, **kwargs):
@@ -61,6 +58,7 @@ def todate(date):
 
 
 def eml(event):
+    from .tmr import extract_date
     nrs = -1
     args = ["From", "Subject"]
     if len(event.args) > 1:

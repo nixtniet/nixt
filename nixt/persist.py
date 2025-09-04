@@ -12,7 +12,7 @@ import threading
 import time
 
 
-from .clients import NAME
+from .handler import NAME
 from .objects import Object, dump, items, load, update
 
 
@@ -20,26 +20,26 @@ j    = os.path.join
 lock = threading.RLock()
 
 
-class Cache:
+class DiskCache:
 
     objs = {}
 
     @staticmethod
     def add(path, obj):
-        Cache.objs[path] = obj
+        DiskCache.objs[path] = obj
 
     @staticmethod
     def get(path):
-        return Cache.objs.get(path, None)
+        return DiskCache.objs.get(path, None)
 
     @staticmethod
     def update(path, obj):
         if not obj:
             return
-        if path in Cache.objs:
-            update(Cache.objs[path], obj)
+        if path in DiskCache.objs:
+            update(DiskCache.objs[path], obj)
         else:
-            Cache.add(path, obj)
+            DiskCache.add(path, obj)
 
 
 def cdir(path):
@@ -64,7 +64,7 @@ def write(obj, path=None):
         cdir(path)
         with open(path, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)
-        Cache.update(path, obj)
+        DiskCache.update(path, obj)
         return path
 
 
@@ -149,11 +149,11 @@ def find(clz, selector=None, deleted=False, matching=False):
     if selector is None:
         selector = {}
     for pth in fns(clz):
-        obj = Cache.get(pth)
+        obj = DiskCache.get(pth)
         if not obj:
             obj = Object()
             read(obj, pth)
-            Cache.add(pth, obj)
+            DiskCache.add(pth, obj)
         if not deleted and isdeleted(obj):
             continue
         if selector and not search(obj, selector, matching):
@@ -222,7 +222,7 @@ def search(obj, selector, matching=False):
 
 def __dir__():
     return (
-        'Cache',
+        'DiskCache',
         'Workdir',
         'cdir',
         'find',

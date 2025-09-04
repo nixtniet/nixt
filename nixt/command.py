@@ -4,19 +4,11 @@
 "commands"
 
 
-import hashlib
 import inspect
-import importlib
-import importlib.util
-import logging
-import os
-import sys
 import threading
-import _thread
 
 
-from .clients import NAME, Fleet
-from .runtime import launch
+from .handler import Fleet
 
 
 loadlock = threading.RLock()
@@ -35,8 +27,7 @@ class Commands:
 
     @staticmethod
     def get(cmd):
-        func = Commands.cmds.get(cmd, None)
-        return Commands.cmds.get(cmd)
+        return Commands.cmds.get(cmd, None)
 
 
 def command(evt):
