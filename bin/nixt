@@ -22,14 +22,8 @@ from nixt.clients import NAME, Client, Fleet
 from nixt.command import Commands, command, parse, scan, table
 from nixt.command import Mods, inits, md5sum, mods, modules, sums
 from nixt.handler import Event
-from nixt.persist import pidname, setwd, skel
+from nixt.persist import moddir, pidname, setwd, skel
 from nixt.runtime import level
-
-
-CHECKSUM = "d80a32045e2abadddcbc62054c74bb69"
-
-
-Mods.ignore = "rst,udp,web,wsd"
 
 
 class Config:
@@ -94,13 +88,6 @@ def daemon(verbose=False):
     os.nice(10)
 
 
-def handler(signum, frame):
-    print("handler called!")
-
-
-signal.signal(signal.SIGHUP, handler)
-
-
 def pidfile(filename):
     if os.path.exists(filename):
         os.unlink(filename)
@@ -118,12 +105,15 @@ def privileges():
     os.setuid(pwnam2.pw_uid)
 
 
+"scripts"
+
+
 def background():
     daemon("-v" in sys.argv)
     privileges()
     boot(False)
     pidfile(pidname(NAME))
-    inits(Config.init or "irc,mdl,rss")
+    inits(Config.init or "irc,rss")
     forever()
 
 
@@ -158,25 +148,62 @@ def service():
     privileges()
     boot(False)
     pidfile(pidname(NAME))
-    inits(Config.init or "irc,mdl,rss")
+    inits(Config.init or "irc,rss")
     forever()
 
 
 def boot(doparse=True):
     if doparse:
         parse(Config, " ".join(sys.argv[1:]))
+    if "v" in Config.opts:
+        banner()
     Config.init = Config.sets.get("init", Config.init)
     Config.verbose = Config.sets.get("verbose", Config.verbose)
     Config.level   = Config.sets.get("level", Config.level or "warn")
     level(Config.level)
     setwd(NAME)
-    if Config.md5 and not sums(CHECKSUM):
-        logging.error("table sum doesn't match")
+    Mods.path = moddir()
+    Mods.pname = "mods"
     table()
     Commands.add(cmd)
     Commands.add(ver)
-    if "v" in Config.opts:
-        banner()
+
+"utilities"
+
+
+def banner():
+    tme = time.ctime(time.time()).replace("  ", " ")
+    out(f"{NAME.upper()} {Config.version} since {tme} ({Config.level.upper()})")
+    mds = modules()
+    if mds:
+        out(f"loaded {",".join(mds)}")
+
+
+def check(txt):
+    args = sys.argv[1:]
+    for arg in args:
+        if not arg.startswith("-"):
+            continue
+        for char in txt:
+            if char in arg:
+                return True
+    return False
+
+
+def forever():
+    while True:
+        try:
+            time.sleep(0.1)
+        except (KeyboardInterrupt, EOFError):
+            break
+
+
+def out(txt):
+    print(txt)
+    sys.stdout.flush()
+
+
+"commands"
 
 
 def cmd(event):
@@ -233,34 +260,7 @@ def ver(event):
     event.reply(f"{NAME.upper()} {Config.version}")
 
 
-def banner():
-    tme = time.ctime(time.time()).replace("  ", " ")
-    out(f"{NAME.upper()} {Config.version} since {tme} ({Config.level.upper()})")
-    out(f"loaded {",".join(modules())}")
-
-
-def check(txt):
-    args = sys.argv[1:]
-    for arg in args:
-        if not arg.startswith("-"):
-            continue
-        for char in txt:
-            if char in arg:
-                return True
-    return False
-
-
-def forever():
-    while True:
-        try:
-            time.sleep(0.1)
-        except (KeyboardInterrupt, EOFError):
-            break
-
-
-def out(txt):
-    print(txt)
-    sys.stdout.flush()
+"runtime"
 
 
 def wrapped(func):

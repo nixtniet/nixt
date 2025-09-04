@@ -7,8 +7,8 @@
 import time
 
 
-from ..runtime import STARTTIME
-from ..command import elapsed
+from nixt.runtime import STARTTIME
+from nixt.command import elapsed
 
 
 def upt(event):

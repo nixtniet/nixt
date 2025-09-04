@@ -11,9 +11,9 @@ import threading
 import time
 
 
-from ..clients import Fleet
-from ..objects import Object
-from ..runtime import launch, rlog
+from nixt.clients import Fleet
+from nixt.objects import Object
+from nixt.runtime import launch, rlog
 
 
 DEBUG = True

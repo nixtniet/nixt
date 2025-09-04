@@ -12,9 +12,11 @@ import threading
 import time
 
 
+from .clients import NAME
 from .objects import Object, dump, items, load, update
 
 
+j    = os.path.join
 lock = threading.RLock()
 
 
@@ -72,7 +74,7 @@ def write(obj, path=None):
 class Workdir:
 
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
-    wdr = ""
+    wdr = os.path.expanduser(f"~/.{NAME}")
 
 
 def fqn(obj):
@@ -87,7 +89,7 @@ def getpath(obj):
 
 
 def ident(obj):
-    return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
+    return j(fqn(obj), *str(datetime.datetime.now()).split())
 
 
 def long(name):
@@ -100,8 +102,12 @@ def long(name):
     return res
 
 
+def moddir():
+    return j(Workdir.wdr, "mods")   
+
+
 def pidname(name):
-    return os.path.join(Workdir.wdr, f"{name}.pid")
+    return j(Workdir.wdr, f"{name}.pid")
 
 
 def setwd(name, path=""):
@@ -119,11 +125,11 @@ def skel():
 
 
 def store(pth=""):
-    return os.path.join(Workdir.wdr, "store", pth)
+    return j(Workdir.wdr, "store", pth)
 
 
 def strip(pth, nmr=2):
-    return os.path.join(pth.split(os.sep)[-nmr:])
+    return j(pth.split(os.sep)[-nmr:])
 
 
 def types():
@@ -132,7 +138,7 @@ def types():
 
 
 def wdr(pth):
-    return os.path.join(Workdir.wdr, pth)
+    return j(Workdir.wdr, pth)
 
 
 "find"
@@ -159,9 +165,9 @@ def fns(clz):
     pth = store(clz)
     for rootdir, dirs, _files in os.walk(pth, topdown=False):
         for dname in dirs:
-            ddd = os.path.join(rootdir, dname)
+            ddd = j(rootdir, dname)
             for fll in os.listdir(ddd):
-                yield os.path.join(ddd, fll)
+                yield j(ddd, fll)
 
 
 def fntime(daystr):

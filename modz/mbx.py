@@ -9,9 +9,9 @@ import os
 import time
 
 
-from ..command import elapsed
-from ..persist import find, ident, store, write
-from ..objects import Object, fmt, keys, update
+from nixt.command import elapsed
+from nixt.persist import find, ident, store, write
+from nixt.objects import Object, fmt, keys, update
 
 
 from .tmr import extract_date

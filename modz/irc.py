@@ -13,12 +13,12 @@ import threading
 import time
 
 
-from ..clients import NAME, Fleet, Output
-from ..command import command
-from ..handler import Event as IEvent
-from ..objects import Object, edit, fmt, keys
-from ..persist import getpath, ident, last, write
-from ..runtime import launch, rlog
+from nixt.clients import NAME, Fleet, Output
+from nixt.command import command
+from nixt.handler import Event as IEvent
+from nixt.objects import Object, edit, fmt, keys
+from nixt.persist import getpath, ident, last, write
+from nixt.runtime import launch, rlog
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]

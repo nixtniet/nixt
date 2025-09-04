@@ -27,9 +27,8 @@ class Mods:
     loaded = []
     md5s   = {}
     ignore = ""
-    path   = os.path.dirname(__file__)
-    path   = os.path.join(path, "modules")
-    pname  = f"{NAME}.modules"
+    path   = "mods"
+    pname  = "mods"
 
 
 class Commands:
@@ -140,8 +139,11 @@ def mods(names=""):
 
 
 def modules(mdir=""):
+    pth = mdir or Mods.path
+    if not os.path.exists(pth):
+        return []
     return sorted([
-            x[:-3] for x in os.listdir(mdir or Mods.path)
+            x[:-3] for x in os.listdir(pth)
             if x.endswith(".py") and not x.startswith("__") and
             x[:-3] not in Mods.ignore
            ])
