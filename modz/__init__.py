@@ -4,9 +4,8 @@
 "modules"
 
 
-from ..commands import modules
+from ..command import modules
 
 
 def __dir__():
     return modules()
-
