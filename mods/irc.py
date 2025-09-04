@@ -17,7 +17,7 @@ from nixt.command import command
 from nixt.handler import Event as IEvent
 from nixt.handler import NAME, Fleet, Output
 from nixt.objects import Object, edit, fmt, keys
-from nixt.persist import getpath, ident, last, write
+from nixt.persist import getpath, last, write
 from nixt.runtime import launch, rlog
 
 
@@ -110,7 +110,6 @@ class IRC(Output):
         self.events.joined = threading.Event()
         self.events.logon = threading.Event()
         self.events.ready = threading.Event()
-        self.idents = []
         self.sock = None
         self.state = Object()
         self.state.error = ""
@@ -134,7 +133,6 @@ class IRC(Output):
         self.register("PRIVMSG", cb_privmsg)
         self.register("QUIT", cb_quit)
         self.register("366", cb_ready)
-        self.ident = ident(self)
 
     def announce(self, txt):
         for channel in self.channels:

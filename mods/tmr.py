@@ -11,7 +11,7 @@ import time
 
 from nixt.command import elapsed
 from nixt.handler import Fleet
-from nixt.persist import find, ident, store, write
+from nixt.persist import find, write
 from nixt.runtime import Timed, launch, rlog
 
 
@@ -191,7 +191,7 @@ def tmr(event):
     timer.orig = event.orig
     timer.time = target
     timer.txt = txt
-    write(timer, store(ident(timer)))
+    write(timer)
     launch(timer.start)
     event.reply("ok " +  elapsed(diff))
 

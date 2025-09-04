@@ -9,7 +9,7 @@ import time
 
 from nixt.command import elapsed
 from nixt.objects import Object
-from nixt.persist import find, fntime, ident, store, write
+from nixt.persist import find, fntime, write
 
 
 class Log(Object):
@@ -31,5 +31,5 @@ def log(event):
         return
     obj = Log()
     obj.txt = event.rest
-    write(obj, store(ident(obj)))
+    write(obj)
     event.done()

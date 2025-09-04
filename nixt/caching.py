@@ -40,12 +40,11 @@ class Cache:
             Cache.add(path, obj)
 
 
-
 def find(clz, selector=None, deleted=False, matching=False):
     clz = long(clz)
     if selector is None:
         selector = {}
-    for pth in  Cache.objsclz):
+    for pth in Cache.objsclz):
         if clz not in pth:
             continue
         obj = Cache.get(pth)
