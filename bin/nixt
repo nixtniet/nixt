@@ -313,7 +313,8 @@ def tbl(event):
 
 
 def ver(event):
-    event.reply(f"{NAME.upper()} {Config.version}")
+    mds = ",".join(modules(Config.moddir))
+    event.reply(f"{NAME.upper()} {Config.version} {mds}")
 
 
 "runtime"
