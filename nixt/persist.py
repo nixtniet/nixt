@@ -13,7 +13,7 @@ import time
 
 
 from .clients import NAME
-from .objects import Object, dump, fqn, items, load, search, update
+from .objects import Object, dump, fqn, load, search, update
 
 
 j    = os.path.join
