@@ -5,6 +5,8 @@
 "simulate clients"
 
 
+import importlib
+import importlib.util
 import os
 import random
 import queue
@@ -20,7 +22,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import NAME, Client, Fleet, Output
-from nixt.command import Commands, command, elapsed, mods, parse, table
+from nixt.command import Commands, command, elapsed, parse, scan
 from nixt.handler import Event
 from nixt.objects import Object, keys
 from nixt.persist import Workdir, setwd, skel
@@ -37,6 +39,7 @@ class Config:
     init     = ""
     level    = "warn"
     md5      = True
+    moddir   = "mods"
     opts     = {}
     otxt     = ""
     sets     = {}
@@ -155,10 +158,13 @@ class Buffer(Output):
             print(txt)
 
 
+
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    print(f"{NAME.upper()} since {tme}")
-    print("loaded " + ",".join(sorted(dir(Commands.names))))
+    print(f"{NAME.upper()} {Config.version} since {tme} ({Config.level.upper()})")
+    mds = modules(Config.moddir)
+    if mds:
+        print(f"loaded {",".join(mds)}")
 
 
 def consume(evts):
@@ -171,6 +177,32 @@ def consume(evts):
                 break
         except (KeyboardInterrupt, EOFError):
             os._exit(0)
+
+
+def importer(mname, path):
+    if path is None:
+        path = Config.moddir
+    module = sys.modules.get(mname, None)
+    if module:
+        return module
+    pth = os.path.join(path, f"{mname}.py")
+    spec = importlib.util.spec_from_file_location(mname, pth)
+    if not spec:
+        return 
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[mname] = module
+    try:
+        spec.loader.exec_module(module)
+    except Exception as ex:
+        logging.exception(ex)
+    return module
+
+
+def modules(path):
+    return sorted([
+            x[:-3] for x in os.listdir(path)
+            if x.endswith(".py") and not x.startswith("__")
+           ])
 
 
 def payload(cmds):
@@ -196,6 +228,21 @@ def payload(cmds):
         return nmr
 
 
+def scanner(path, names="", debug=False):
+    res = []
+    for nme in sorted(modules(path)):
+        if names and nme not in spl(names):
+            continue
+        module = importer(nme, path)
+        scan(module)
+        if not module:
+            continue
+        if debug and "DENUG" in dir(module):
+            module.DEBUG = True
+        res.append(module)
+    return res
+
+
 def wrap(function):
     old3 = None
     try:
@@ -215,10 +262,6 @@ def main():
     global nrs
     global nrcommand
     parse(Config, " ".join(sys.argv[1:]))
-    table()
-    for mod in mods():
-        if "DEBUG" in dir(mod):
-            mod.DEBUG = True
     nrcommand = 0
     if "v" in Config.opts:
         banner()
@@ -226,6 +269,7 @@ def main():
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
     skel()
+    scanner(Config.moddir, debug=True)
     if "z" in Config.opts:
         nrcpu = os.cpu_count()
     else:
