@@ -51,7 +51,7 @@ def parse(obj, txt=None):
     obj.gets   = getattr(obj, "gets", "")
     obj.index  = getattr(obj, "index", None)
     obj.mod    = getattr(obj, "mod", "")
-    obj.opts   = getattr(obj, "opts", {})
+    obj.opts   = getattr(obj, "opts", "")
     obj.result = getattr(obj, "result", "")
     obj.sets   = getattr(obj, "sets", {})
     obj.silent = getattr(obj, "silent", "")
@@ -63,7 +63,7 @@ def parse(obj, txt=None):
             try:
                 obj.index = int(spli[1:])
             except ValueError:
-                obj.opts[spli[1:]] = ""
+                obj.opts += spli[1:]
             continue
         if "-=" in spli:
             key, value = spli.split("-=", maxsplit=1)

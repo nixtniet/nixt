@@ -48,7 +48,7 @@ class Config:
     init     = ""
     level    = "warn"
     mod      = "mods"
-    opts     = {}
+    opts     = ""
     otxt     = ""
     sets     = {}
     verbose  = False
@@ -250,9 +250,7 @@ def background():
 def console():
     import readline # noqa: F401
     boot()
-    thrs = []
-    thrs = inits(Config.init)
-    for _mod, thr in thrs:
+    for _mod, thr in inits(Config.init):
         if "w" in Config.opts:
             thr.join(30.0)
     csl = Console()
@@ -323,11 +321,11 @@ def wrap(func):
 def main():
     Config.mod = MODS.__path__[0]
     if check("v"):
-        Config.opts["v"] = True
-    if check("a"):
-        Config.init = ",".join(modules(Config.mod))
+        Config.opts += "v"
     if check("m"):
         Config.mod = "mods"
+    if check("a"):
+        Config.init = ",".join(modules(Config.mod))
     if check("c"):
         wrap(console)
     elif check("d"):
