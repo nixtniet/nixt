@@ -25,10 +25,10 @@ def init():
     try:
         rest = REST((Config.hostname, int(Config.port)), RESTHandler)
         rest.start()
-        rlog("debug", f"rest at http://{Config.hostname}:{Config.port}")
+        rlog("warn", f"rest at http://{Config.hostname}:{Config.port}")
         return rest
     except OSError as ex:
-        rlog("debug", f"rest abort {ex}")
+        rlog("warn", f"rest abort {ex}")
 
 
 class Config:

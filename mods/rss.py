@@ -30,6 +30,7 @@ from nixt.runtime import Repeater, launch, rlog
 def init():
     fetcher = Fetcher()
     fetcher.start()
+    rlog("warn", f"rss since {elapsed(time.time()-fntime(fetcher.seenfn))}")
     return fetcher
 
 

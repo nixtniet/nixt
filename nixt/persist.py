@@ -111,6 +111,8 @@ def skel():
         return
     pth = pathlib.Path(store())
     pth.mkdir(parents=True, exist_ok=True)
+    pth = pathlib.Path(moddir())
+    pth.mkdir(parents=True, exist_ok=True)
     return str(pth)
 
 

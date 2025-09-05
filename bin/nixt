@@ -21,19 +21,35 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import NAME, Client, Fleet
-from nixt.command import Commands, command, parse, scan, spl
+from nixt.clients import NAME, Client, Fleet, spl
+from nixt.command import Commands, command, parse, scan
 from nixt.handler import Event
 from nixt.persist import j, moddir, pidname, setwd, skel
 from nixt.runtime import launch, level
 
 
+TXT = """[Unit]
+Description=%s
+After=network-online.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
+
+
 class Config:
 
     debug    = False
+    default  = "irc,mdl,rss"
     gets     = {}
     init     = ""
     level    = "warn"
+    local    = True
     md5      = True
     moddir   = moddir()
     opts     = {}
@@ -129,7 +145,7 @@ def importer(mname, path):
 
 def inits(names):
     modz = []
-    for name in spl(names):
+    for name in sorted(spl(names)):
         try:
             module = importer(name, Config.moddir)
             if not module:
@@ -171,14 +187,16 @@ def background():
     privileges()
     boot(False)
     pidfile(pidname(NAME))
-    inits(Config.init or "irc,rss")
+    inits(Config.init or Config.default)
     forever()
 
 
 def console():
     import readline # noqa: F401
     boot()
-    for _mod, thr in inits(Config.init):
+    thrs = []
+    thrs = inits(Config.init)
+    for _mod, thr in thrs:
         if "w" in Config.opts:
             thr.join(30.0)
     csl = Console()
@@ -206,7 +224,7 @@ def service():
     privileges()
     boot(False)
     pidfile(pidname(NAME))
-    inits(Config.init or "irc,rss")
+    inits(Config.init or Config.default)
     forever()
 
 
@@ -272,19 +290,6 @@ def md5(event):
     event.reply(md5sum(tbl.__file__))
 
 
-TXT = """[Unit]
-Description=%s
-After=network-online.target
-
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
-
 
 def srv(event):
     import getpass
@@ -343,12 +348,12 @@ def wrap(func):
 
 
 def main():
-    if check("a"):
-        Config.init = ",".join(modules(Config.moddir))
     if check("v"):
         Config.opts["v"] = True
-    if check("m"):
+    if Config.local:
         Config.moddir = "mods"    
+    if check("a"):
+        Config.init = ",".join(modules(Config.moddir))
     if check("c"):
         wrap(console)
     elif check("d"):

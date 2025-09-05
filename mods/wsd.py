@@ -7,7 +7,18 @@
 from random import SystemRandom
 
 
+from nixt.handler import Event
+from nixt.runtime import Repeater, rlog
+
+
 rand = SystemRandom()
+
+
+def init():
+    event = Event()
+    repeater = Repeater(180.0,  wsd, event)
+    repeater.start()
+    rlog("warn", f"wisdom has {len(TXT.split("\n"))} wise.")
 
 
 def wsd(event):

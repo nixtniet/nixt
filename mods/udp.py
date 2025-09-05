@@ -22,7 +22,7 @@ DEBUG = True
 def init():
     udpd = UDP()
     udpd.start()
-    rlog("debug", f"udp at http://{Cfg.host}:{Cfg.port}")
+    rlog("warn", f"udp at http://{Cfg.host}:{Cfg.port}")
     return udpd
 
 

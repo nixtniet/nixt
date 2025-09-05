@@ -34,7 +34,7 @@ def init():
         irc.start()
         irc.events.joined.wait(30.0)
         if irc.events.joined.is_set():
-            rlog("debug", fmt(irc.cfg, skip=["password", "realname", "username"]))
+            rlog("warn", fmt(irc.cfg, skip=["password", "realname", "username"]))
         else:
             irc.stop()
         return irc
