@@ -7,6 +7,7 @@
 
 import importlib
 import importlib.util
+import logging
 import os
 import random
 import queue
@@ -22,10 +23,10 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import NAME, Client, Fleet, Output
-from nixt.command import Commands, command, elapsed, parse, scan
+from nixt.command import command, elapsed, parse, scan, spl
 from nixt.handler import Event
 from nixt.objects import Object, keys
-from nixt.persist import Workdir, setwd, skel
+from nixt.persist import Workdir,  skel
 from nixt.runtime import STARTTIME, launch
 
 
@@ -36,6 +37,7 @@ class Config:
 
     debug    = False
     gets     = {}
+    index    = None
     init     = ""
     level    = "warn"
     md5      = True
@@ -139,7 +141,8 @@ class CLI(Client):
         self.raw(txt)
 
     def raw(self, txt):
-        if "v" in config.opts:
+
+        if "v" in Config.opts:
             print(txt)
 
 
@@ -188,7 +191,7 @@ def importer(mname, path):
     pth = os.path.join(path, f"{mname}.py")
     spec = importlib.util.spec_from_file_location(mname, pth)
     if not spec:
-        return 
+        return
     module = importlib.util.module_from_spec(spec)
     sys.modules[mname] = module
     try:

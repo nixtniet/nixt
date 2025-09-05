@@ -96,7 +96,7 @@ def long(name):
 
 
 def moddir():
-    return j(Workdir.wdr, "mods")   
+    return j(Workdir.wdr, "mods")
 
 
 def pidname(name):
