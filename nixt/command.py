@@ -8,7 +8,7 @@ import inspect
 import threading
 
 
-from .clients import Fleet
+from .clients import Fleet, spl
 
 
 loadlock = threading.RLock()
@@ -24,6 +24,22 @@ class Commands:
         Commands.cmds[func.__name__] = func
         if module:
             Commands.names[func.__name__] = module.__name__.split(".")[-1]
+
+    @staticmethod
+    def typed(type):
+        result = []
+        for name, func in Commands.cmds.items():
+            if not "types" not in dir(func):
+                result.append(name)
+                continue
+            gotcha = False
+            for typ in func.types:
+                if typ.lower() in type.lower():
+                    gotcha = True
+                    break
+            if gotcha:
+                result.append(name)
+        return result                    
 
     @staticmethod
     def get(cmd):

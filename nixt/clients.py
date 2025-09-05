@@ -93,7 +93,7 @@ class Fleet:
 
     @staticmethod
     def all():
-        return Fleet.clients.values()
+        return sorted(Fleet.clients.values())
 
     @staticmethod
     def announce(txt):

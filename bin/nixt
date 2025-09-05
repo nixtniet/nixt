@@ -32,11 +32,6 @@ from nixt.runtime import launch, level, rlog
 import nixt.modules as MODS
 
 
-def out(txt):
-    print(txt)
-    sys.stdout.flush()
-
-
 "config"
 
 
@@ -90,14 +85,10 @@ class Console(CLI):
 
 
 def cmd(event):
-    cmds = sorted(Commands.cmds.keys())
+    bot = Fleet.byorig(event.orig)
+    typ = fqn(bot)
+    cmds = sorted(Commands.typed(typ))
     event.reply(",".join(sorted(cmds)))
-
-
-def srv(event):
-    import getpass
-    name = getpass.getuser()
-    event.reply(TXT % (NAME.upper(), name, name, name, NAME))
 
 
 def ver(event):
@@ -181,6 +172,20 @@ def inits(names):
     return modz
 
 
+def out(txt):
+    print(txt)
+    sys.stdout.flush()
+
+
+def modules(path):
+    if not os.path.exists(path):
+        return {}
+    return sorted([
+            x[:-3] for x in os.listdir(path)
+            if x.endswith(".py") and not x.startswith("__")
+           ])
+
+
 def scanner(path, names=""):
     res = []
     for nme in sorted(modules(path)):
@@ -192,16 +197,6 @@ def scanner(path, names=""):
         scan(module)
         res.append(module)
     return res
-
-
-def modules(path):
-    if not os.path.exists(path):
-        return {}
-    return sorted([
-            x[:-3] for x in os.listdir(path)
-            if x.endswith(".py") and not x.startswith("__")
-           ])
-
 
 "utilities"
 
@@ -262,7 +257,6 @@ def control():
     if len(sys.argv) == 1:
         return
     boot()
-    Commands.add(srv)
     csl = CLI()
     evt = Event()
     evt.orig = repr(csl)
@@ -334,20 +328,6 @@ def main():
         wrapped(service)
     else:
         wrapped(control)
-
-
-TXT = """[Unit]
-Description=%s
-After=network-online.target
-
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
 
 
 if __name__ == "__main__":

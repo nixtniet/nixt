@@ -58,6 +58,8 @@ class Handler:
     def callback(self, event):
         func = self.cbs.get(event.type, None)
         if func:
+            if "type" in dir(func) and func.type.upper() not in str(type(self)).upper():
+                return
             event._thr = launch(func, event, name=event.txt and event.txt.split()[0])
 
     def loop(self):
