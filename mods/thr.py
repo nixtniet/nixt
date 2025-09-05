@@ -8,7 +8,7 @@ import threading
 import time
 
 
-from nixt.command import elapsed
+from nixt.clients import elapsed
 from nixt.runtime import STARTTIME
 
 

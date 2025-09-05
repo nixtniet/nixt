@@ -131,9 +131,6 @@ def values(obj):
     return obj.__dict__.values()
 
 
-"decode/encode"
-
-
 class Encoder(json.JSONEncoder):
 
     def default(self, o):
@@ -176,9 +173,6 @@ def load(fp, *args, **kw):
 def loads(s, *args, **kw):
     kw["object_hook"] = hook
     return json.loads(s, *args, **kw)
-
-
-"interface"
 
 
 def __dir__():

@@ -68,9 +68,6 @@ def write(obj, path=None):
         return path
 
 
-"paths"
-
-
 class Workdir:
 
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
@@ -134,7 +131,9 @@ def wdr(pth):
     return j(Workdir.wdr, pth)
 
 
-"find"
+class Find:
+
+    pass
 
 
 def find(clz, selector=None, deleted=False, matching=False):
@@ -190,9 +189,6 @@ def last(obj, selector=None):
         update(obj, inp[-1])
         res = inp[0]
     return res
-
-
-"interface"
 
 
 def __dir__():
