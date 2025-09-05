@@ -46,24 +46,24 @@ def parse(obj, txt=None):
         else:
             txt = ""
     args = []
-    obj.args   = []
-    obj.cmd    = ""
-    obj.gets   = {}
-    obj.index  = None
-    obj.mod    = ""
-    obj.opts   = ""
-    obj.result = {}
-    obj.sets   = {}
-    obj.silent = {}
-    obj.txt    = txt or ""
-    obj.otxt   = obj.txt
+    obj.args   = getattr(obj, "args", [])
+    obj.cmd    = getattr(obj, "cmd", "")
+    obj.gets   = getattr(obj, "gets", "")
+    obj.index  = getattr(obj, "index", None)
+    obj.mod    = getattr(obj, "mod", "")
+    obj.opts   = getattr(obj, "opts", {})
+    obj.result = getattr(obj, "result", "")
+    obj.sets   = getattr(obj, "sets", {})
+    obj.silent = getattr(obj, "silent", "")
+    obj.txt    = txt or getattr(obj, "txt", "")
+    obj.otxt   = obj.txt or getattr(obj, "otxt", "")
     _nr = -1
     for spli in obj.otxt.split():
         if spli.startswith("-"):
             try:
                 obj.index = int(spli[1:])
             except ValueError:
-                obj.opts += spli[1:]
+                obj.opts[spli[1:]] = ""
             continue
         if "-=" in spli:
             key, value = spli.split("-=", maxsplit=1)

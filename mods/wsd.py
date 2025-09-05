@@ -7,6 +7,7 @@
 from random import SystemRandom
 
 
+from nixt.clients import Fleet
 from nixt.handler import Event
 from nixt.runtime import Repeater, rlog
 
@@ -22,7 +23,7 @@ def init():
 
 
 def wsd(event):
-    event.reply(rand.choice(TXT.split("\n")).strip()[2:])
+    Fleet.announce(rand.choice(TXT.split("\n")).strip()[2:])
 
 
 TXT = """| wijsheid, wijs !

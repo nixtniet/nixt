@@ -57,7 +57,7 @@ def edit(obj, setter, skip=True):
             setattr(obj, key, val)
 
 
-def fmt(obj, args=None, skip=None, plain=False, empty=False):
+def fmt(obj, args=None, skip=None, plain=False, empty=False, newline=False):
     if args is None:
         args = keys(obj)
     if skip is None:
@@ -79,6 +79,8 @@ def fmt(obj, args=None, skip=None, plain=False, empty=False):
             txt += f'{key}="{value}" '
         else:
             txt += f"{key}={value} "
+        if newline:
+            txt += "\n"
     return txt.strip()
 
 
@@ -120,9 +122,9 @@ def search(obj, selector, matching=False):
 
 
 def update(obj, data):
-    if isinstance(data, dict):
-        return obj.__dict__.update(data)
-    obj.__dict__.update(vars(data))
+    for key, value in items(data):
+        if key and value:
+            setattr(obj, key, value)
 
 
 def values(obj):

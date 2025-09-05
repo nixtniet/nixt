@@ -2,7 +2,7 @@
 # This file is placed in the Public Domain.
 
 
-"main"
+"main program"
 
 
 import importlib
@@ -24,22 +24,20 @@ sys.path.insert(0, os.getcwd())
 from nixt.clients import NAME, Client, Fleet, spl
 from nixt.command import Commands, command, parse, scan
 from nixt.handler import Event
-from nixt.persist import j, moddir, pidname, setwd, skel
-from nixt.runtime import launch, level
+from nixt.objects import fmt, update
+from nixt.persist import Workdir, j, moddir, pidname, setwd, skel
+from nixt.runtime import launch, level, rlog
 
 
-TXT = """[Unit]
-Description=%s
-After=network-online.target
+import nixt.modules as MODS
 
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
 
-[Install]
-WantedBy=multi-user.target"""
+def out(txt):
+    print(txt)
+    sys.stdout.flush()
+
+
+"config"
 
 
 class Config:
@@ -49,14 +47,15 @@ class Config:
     gets     = {}
     init     = ""
     level    = "warn"
-    local    = True
-    md5      = True
-    moddir   = moddir()
+    mod      = "mods"
     opts     = {}
     otxt     = ""
     sets     = {}
     verbose  = False
-    version  = 410
+    version  = 411
+
+
+"clients"
 
 
 class CLI(Client):
@@ -85,6 +84,28 @@ class Console(CLI):
         evt.txt = input("> ")
         evt.type = "command"
         return evt
+
+
+"commands"
+
+
+def cmd(event):
+    cmds = sorted(Commands.cmds.keys())
+    event.reply(",".join(sorted(cmds)))
+
+
+def srv(event):
+    import getpass
+    name = getpass.getuser()
+    event.reply(TXT % (NAME.upper(), name, name, name, NAME))
+
+
+def ver(event):
+    mds = ",".join([x.upper() for x in modules(Config.mod)])
+    event.reply(f"{NAME.upper()} {Config.version} {mds}")
+
+
+"daemon"
 
 
 def daemon(verbose=False):
@@ -126,11 +147,13 @@ def privileges():
 
 def importer(mname, path):
     if path is None:
-        path = Config.moddir
+        path = Config.mod
     module = sys.modules.get(mname, None)
     if module:
         return module
     pth = os.path.join(path, f"{mname}.py")
+    if not os.path.exists(pth):
+        return 
     spec = importlib.util.spec_from_file_location(mname, pth)
     if not spec:
         return 
@@ -147,7 +170,7 @@ def inits(names):
     modz = []
     for name in sorted(spl(names)):
         try:
-            module = importer(name, Config.moddir)
+            module = importer(name, Config.mod)
             if not module:
                 continue
             if "init" in dir(module):
@@ -165,18 +188,52 @@ def scanner(path, names=""):
         if names and nme not in spl(names):
             continue
         module = importer(nme, path)
-        scan(module)
         if not module:
             continue
+        scan(module)
         res.append(module)
     return res
 
 
 def modules(path):
+    if not os.path.exists(path):
+        return {}
     return sorted([
             x[:-3] for x in os.listdir(path)
             if x.endswith(".py") and not x.startswith("__")
            ])
+
+
+"utilities"
+
+
+def banner():
+    tme = time.ctime(time.time()).replace("  ", " ")
+    rlog("warn", f"{NAME.upper()} {Config.version} since {tme} ({Config.level.upper()})")
+    mds = modules(Config.mod)
+    if mds:
+        rlog("warn", f"loaded {",".join(mds)}")
+    rlog("warn", f"workdir {Workdir.wdr}")
+    rlog("warn", f"moddir {Config.mod}")
+
+
+def check(txt):
+    args = sys.argv[1:]
+    for arg in args:
+        if not arg.startswith("-"):
+            continue
+        for char in txt:
+            if char in arg:
+                return True
+    return False
+
+
+def forever():
+    while True:
+        try:
+            time.sleep(0.1)
+        except (KeyboardInterrupt, EOFError):
+            break
 
 
 "scripts"
@@ -229,69 +286,14 @@ def service():
 def boot(doparse=True):
     if doparse:
         parse(Config, " ".join(sys.argv[1:]))
+        update(Config, Config.sets)
+    level(Config.level)
     if "v" in Config.opts:
         banner()
-    Config.init = Config.sets.get("init", Config.init)
-    Config.verbose = Config.sets.get("verbose", Config.verbose)
-    Config.level   = Config.sets.get("level", Config.level or "warn")
-    level(Config.level)
     setwd(NAME)
-    scanner(Config.moddir)
+    scanner(Config.mod)
     Commands.add(cmd)
     Commands.add(ver)
-
-"utilities"
-
-
-def banner():
-    tme = time.ctime(time.time()).replace("  ", " ")
-    out(f"{NAME.upper()} {Config.version} since {tme} ({Config.level.upper()})")
-    mds = modules(Config.moddir)
-    if mds:
-        out(f"loaded {",".join(mds)}")
-
-
-def check(txt):
-    args = sys.argv[1:]
-    for arg in args:
-        if not arg.startswith("-"):
-            continue
-        for char in txt:
-            if char in arg:
-                return True
-    return False
-
-
-def forever():
-    while True:
-        try:
-            time.sleep(0.1)
-        except (KeyboardInterrupt, EOFError):
-            break
-
-
-def out(txt):
-    print(txt)
-    sys.stdout.flush()
-
-
-"commands"
-
-
-def cmd(event):
-    cmds = sorted(Commands.cmds.keys())
-    event.reply(",".join(sorted(cmds)))
-
-
-def srv(event):
-    import getpass
-    name = getpass.getuser()
-    event.reply(TXT % (NAME.upper(), name, name, name, NAME))
-
-
-def ver(event):
-    mds = ",".join([x.upper() for x in modules(Config.moddir)])
-    event.reply(f"{NAME.upper()} {Config.version} {mds}")
 
 
 "runtime"
@@ -320,12 +322,13 @@ def wrap(func):
 
 
 def main():
+    Config.mod = MODS.__path__[0]
     if check("v"):
         Config.opts["v"] = True
-    if Config.local:
-        Config.moddir = "mods"    
     if check("a"):
-        Config.init = ",".join(modules(Config.moddir))
+        Config.init = ",".join(modules(Config.mod))
+    if check("m"):
+        Config.mod = "mods"
     if check("c"):
         wrap(console)
     elif check("d"):
@@ -334,6 +337,20 @@ def main():
         wrapped(service)
     else:
         wrapped(control)
+
+
+TXT = """[Unit]
+Description=%s
+After=network-online.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
 
 
 if __name__ == "__main__":

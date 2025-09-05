@@ -16,7 +16,7 @@ from nixt.objects import Object
 from nixt.runtime import launch, rlog
 
 
-DEBUG = True
+DEBUG = False
 
 
 def init():
