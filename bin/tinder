@@ -22,8 +22,8 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import NAME, Client, Fleet, Output
-from nixt.command import command, elapsed, parse, scan, spl
+from nixt.clients import NAME, Client, Fleet, Output, elapsed, spl
+from nixt.command import command, parse, scan
 from nixt.handler import Event
 from nixt.objects import Object, keys
 from nixt.persist import Workdir,  skel

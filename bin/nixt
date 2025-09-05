@@ -208,9 +208,7 @@ def control():
     if len(sys.argv) == 1:
         return
     boot()
-    Commands.add(md5)
     Commands.add(srv)
-    Commands.add(tbl)
     csl = CLI()
     evt = Event()
     evt.orig = repr(csl)
@@ -285,36 +283,10 @@ def cmd(event):
     event.reply(",".join(sorted(cmds)))
 
 
-def md5(event):
-    tbl = mods("tbl")[0]
-    event.reply(md5sum(tbl.__file__))
-
-
-
 def srv(event):
     import getpass
     name = getpass.getuser()
     event.reply(TXT % (NAME.upper(), name, name, name, NAME))
-
-
-def tbl(event):
-    if not check("f"):
-        Commands.names = {}
-    for module in mods():
-        scan(module)
-    event.reply("# This file is placed in the Public Domain.")
-    event.reply("")
-    event.reply("")
-    event.reply('"lookup tables"')
-    event.reply("")
-    event.reply("")
-    event.reply(f"NAMES = {json.dumps(Commands.names, indent=4, sort_keys=True)}")
-    event.reply("")
-    event.reply("")
-    event.reply("MD5 = {")
-    for module in mods():
-        event.reply(f'    "{module.__name__.split(".")[-1]}": "{md5sum(module.__file__)}",')
-    event.reply("}")
 
 
 def ver(event):
