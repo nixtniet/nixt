@@ -52,7 +52,7 @@ class Config:
     otxt     = ""
     sets     = {}
     verbose  = False
-    version  = 411
+    version  = 413
 
 
 "clients"
@@ -101,8 +101,7 @@ def srv(event):
 
 
 def ver(event):
-    mds = ",".join([x.upper() for x in modules(Config.mod)])
-    event.reply(f"{NAME.upper()} {Config.version} {mds}")
+    event.reply(f"{NAME.upper()} {Config.version}")
 
 
 "daemon"
