@@ -21,8 +21,9 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
+from nixt.clients import NAME, Client, Fleet
 from nixt.command import Commands, command, parse, scan, spl
-from nixt.handler import NAME, Client, Event, Fleet
+from nixt.handler import Event
 from nixt.persist import j, moddir, pidname, setwd, skel
 from nixt.runtime import launch, level
 

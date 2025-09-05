@@ -81,6 +81,14 @@ def fmt(obj, args=None, skip=None, plain=False, empty=False):
             txt += f"{key}={value} "
     return txt.strip()
 
+
+def fqn(obj):
+    kin = str(type(obj)).split()[-1][1:-2]
+    if kin == "type":
+        kin = f"{obj.__module__}.{obj.__name__}"
+    return kin
+
+
 def items(obj):
     if isinstance(obj, dict):
         return obj.items()
@@ -91,6 +99,24 @@ def keys(obj):
     if isinstance(obj, dict):
         return obj.keys()
     return obj.__dict__.keys()
+
+
+def search(obj, selector, matching=False):
+    res = False
+    if not selector:
+        return res
+    for key, value in items(selector):
+        val = getattr(obj, key, None)
+        if not val:
+            continue
+        if matching and value == val:
+            res = True
+        elif str(value).lower() in str(val).lower() or value == "match":
+            res = True
+        else:
+            res = False
+            break
+    return res
 
 
 def update(obj, data):
@@ -163,10 +189,12 @@ def __dir__():
         'dumps',
         'edit',
         'fmt'
+        'fqn',
         'items',
         'keys',
         'load',
-        'loads'
+        'loads',
+        'search',
         'update',
         'values'
     )

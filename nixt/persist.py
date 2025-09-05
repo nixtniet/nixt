@@ -12,34 +12,34 @@ import threading
 import time
 
 
-from .handler import NAME
-from .objects import Object, dump, items, load, update
+from .clients import NAME
+from .objects import Object, dump, fqn, items, load, search, update
 
 
 j    = os.path.join
 lock = threading.RLock()
 
 
-class DiskCache:
+class Cache:
 
     objs = {}
 
     @staticmethod
     def add(path, obj):
-        DiskCache.objs[path] = obj
+        Cache.objs[path] = obj
 
     @staticmethod
     def get(path):
-        return DiskCache.objs.get(path, None)
+        return Cache.objs.get(path, None)
 
     @staticmethod
     def update(path, obj):
         if not obj:
             return
-        if path in DiskCache.objs:
-            update(DiskCache.objs[path], obj)
+        if path in Cache.objs:
+            update(Cache.objs[path], obj)
         else:
-            DiskCache.add(path, obj)
+            Cache.add(path, obj)
 
 
 def cdir(path):
@@ -64,7 +64,7 @@ def write(obj, path=None):
         cdir(path)
         with open(path, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)
-        DiskCache.update(path, obj)
+        Cache.update(path, obj)
         return path
 
 
@@ -75,13 +75,6 @@ class Workdir:
 
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
     wdr = os.path.expanduser(f"~/.{NAME}")
-
-
-def fqn(obj):
-    kin = str(type(obj)).split()[-1][1:-2]
-    if kin == "type":
-        kin = f"{obj.__module__}.{obj.__name__}"
-    return kin
 
 
 def getpath(obj):
@@ -149,11 +142,11 @@ def find(clz, selector=None, deleted=False, matching=False):
     if selector is None:
         selector = {}
     for pth in fns(clz):
-        obj = DiskCache.get(pth)
+        obj = Cache.get(pth)
         if not obj:
             obj = Object()
             read(obj, pth)
-            DiskCache.add(pth, obj)
+            Cache.add(pth, obj)
         if not deleted and isdeleted(obj):
             continue
         if selector and not search(obj, selector, matching):
@@ -199,30 +192,12 @@ def last(obj, selector=None):
     return res
 
 
-def search(obj, selector, matching=False):
-    res = False
-    if not selector:
-        return res
-    for key, value in items(selector):
-        val = getattr(obj, key, None)
-        if not val:
-            continue
-        if matching and value == val:
-            res = True
-        elif str(value).lower() in str(val).lower() or value == "match":
-            res = True
-        else:
-            res = False
-            break
-    return res
-
-
 "interface"
 
 
 def __dir__():
     return (
-        'DiskCache',
+        'Cache',
         'Workdir',
         'cdir',
         'find',

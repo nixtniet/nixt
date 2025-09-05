@@ -9,8 +9,8 @@ import re
 import time
 
 
+from nixt.clients import Fleet
 from nixt.command import elapsed
-from nixt.handler import Fleet
 from nixt.persist import find, write
 from nixt.runtime import Timed, launch, rlog
 

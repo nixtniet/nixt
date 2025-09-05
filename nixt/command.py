@@ -8,7 +8,7 @@ import inspect
 import threading
 
 
-from .handler import Fleet
+from .clients import Fleet
 
 
 loadlock = threading.RLock()
