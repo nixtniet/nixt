@@ -85,10 +85,7 @@ class Console(CLI):
 
 
 def cmd(event):
-    bot = Fleet.get(event.orig)
-    typ = fqn(bot)
-    cmds = sorted(Commands.typed(typ))
-    event.reply(",".join(sorted(cmds)))
+    event.reply(",".join(sorted(Commands.cmds)))
 
 
 TXT = """[Unit]
@@ -212,6 +209,7 @@ def scanner(path, names=""):
         if names and nme not in spl(names):
             continue
         module = importer(nme, path)
+        print(nme, module)
         if not module:
             continue
         scan(module)
