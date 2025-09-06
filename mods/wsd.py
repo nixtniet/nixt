@@ -17,7 +17,7 @@ rand = SystemRandom()
 
 def init():
     event = Event()
-    repeater = Repeater(180.0,  wsd, event)
+    repeater = Repeater(3600.0,  wsd, event)
     repeater.start()
     rlog("warn", f"wisdom has {len(TXT.split("\n"))} wise.")
 
