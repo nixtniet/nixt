@@ -21,9 +21,9 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, command, parse, scan
+from nixt.command import Commands, command, scan
 from nixt.handler import NAME, Client, Event, Fleet
-from nixt.methods import spl
+from nixt.methods import parse, spl
 from nixt.objects import fmt, fqn, update
 from nixt.persist import Workdir, j, moddir, pidname, setwd, skel
 from nixt.runtime import launch, level, rlog
@@ -209,7 +209,6 @@ def scanner(path, names=""):
         if names and nme not in spl(names):
             continue
         module = importer(nme, path)
-        print(nme, module)
         if not module:
             continue
         scan(module)
