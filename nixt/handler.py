@@ -69,7 +69,7 @@ class Handler:
             else:
                 target = self.fqn.upper()
                 for type in spl(func.types):
-                    if func.type.upper() in target:
+                    if type.upper() in target:
                         go = True
                         break
             if go:

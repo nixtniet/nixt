@@ -91,6 +91,26 @@ def cmd(event):
     event.reply(",".join(sorted(cmds)))
 
 
+TXT = """[Unit]
+Description=%s
+After=network-online.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
+
+
+def srv(event):
+    import getpass
+    name = getpass.getuser()
+    event.reply(TXT % (NAME.upper(), name, name, name, NAME))
+
+
 def ver(event):
     event.reply(f"{NAME.upper()} {Config.version}")
 
@@ -257,6 +277,7 @@ def control():
     if len(sys.argv) == 1:
         return
     boot()
+    Commands.add(srv)
     csl = CLI()
     evt = Event()
     evt.orig = repr(csl)
