@@ -10,7 +10,11 @@ import time
 import _thread
 
 
+from .objects import fqn
 from .runtime import launch
+
+
+NAME = __name__.split(".", maxsplit=1)[0]
 
 
 class Event:
@@ -48,6 +52,7 @@ class Handler:
 
     def __init__(self):
         self.cbs = {}
+        self.type = fqn(self)
         self.queue = queue.Queue()
         self.ready = threading.Event()
         self.stopped = threading.Event()
@@ -58,9 +63,17 @@ class Handler:
     def callback(self, event):
         func = self.cbs.get(event.type, None)
         if func:
-            if "type" in dir(func) and func.type.upper() not in str(type(self)).upper():
-                return
-            event._thr = launch(func, event, name=event.txt and event.txt.split()[0])
+            go = False
+            if "types" not in dir(func):
+                go = True
+            else:
+                target = self.fqn.upper()
+                for type in spl(func.types):
+                    if func.type.upper() in target:
+                        go = True
+                        break
+            if go:
+                event._thr = launch(func, event, name=event.txt and event.txt.split()[0])
 
     def loop(self):
         while not self.stopped.is_set():
@@ -94,8 +107,136 @@ class Handler:
         pass
 
 
+class Client(Handler):
+
+    def __init__(self):
+        Handler.__init__(self)
+        self.olock = threading.RLock()
+        Fleet.add(self)
+
+    def announce(self, txt):
+        pass
+
+    def display(self, event):
+        with self.olock:
+            for tme in sorted(event.result):
+                self.dosay(event.channel, event.result[tme])
+
+    def dosay(self, channel, txt):
+        self.say(channel, txt)
+
+    def raw(self, txt):
+        raise NotImplementedError("raw")
+
+    def say(self, channel, txt):
+        self.raw(txt)
+
+
+class Output(Client):
+
+    def __init__(self):
+        Client.__init__(self)
+        self.olock  = threading.RLock()
+        self.oqueue = queue.Queue()
+        self.ostop  = threading.Event()
+
+    def display(self, event):
+        with self.olock:
+            for tme in sorted(event.result):
+                self.dosay(event.channel, event.result[tme])
+
+    def dosay(self, channel, txt):
+        raise NotImplementedError("dosay")
+
+    def oput(self, event):
+        self.oqueue.put(event)
+
+    def output(self):
+        while not self.ostop.is_set():
+            event = self.oqueue.get()
+            if event is None:
+                self.oqueue.task_done()
+                break
+            self.display(event)
+            self.oqueue.task_done()
+
+    def start(self):
+        self.ostop.clear()
+        launch(self.output)
+        super().start()
+
+    def stop(self):
+        self.ostop.set()
+        self.oqueue.put(None)
+        super().stop()
+
+    def wait(self):
+        self.oqueue.join()
+
+
+class Fleet:
+
+    clients = {}
+
+    @staticmethod
+    def add(client):
+        Fleet.clients[repr(client)] = client
+
+    @staticmethod
+    def all():
+        return list(Fleet.clients.values())
+
+    @staticmethod
+    def announce(txt):
+        for client in Fleet.all():
+            client.announce(txt)
+
+    @staticmethod
+    def dispatch(evt):
+        client = Fleet.get(evt.orig)
+        client.put(evt)
+
+    @staticmethod
+    def display(evt):
+        client = Fleet.get(evt.orig)
+        client.display(evt)
+
+    @staticmethod
+    def first():
+        clt = list(Fleet.all())
+        res = None
+        if clt:
+            res = clt[0]
+        return res
+
+    @staticmethod
+    def get(orig):
+        return Fleet.clients.get(orig, None)
+
+    @staticmethod
+    def say(orig, channel, txt):
+        client = Fleet.get(orig)
+        if client:
+            client.say(channel, txt)
+
+    @staticmethod
+    def shutdown():
+        for client in Fleet.all():
+            client.stop()
+
+    @staticmethod
+    def wait():
+        time.sleep(0.1)
+        for client in Fleet.all():
+            client.wait()
+
+
 def __dir__():
     return (
+        'NAME',
+        'Client',
         'Event',
+        'Fleet',
         'Handler'
+        'Output'
    )

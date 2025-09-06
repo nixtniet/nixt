@@ -5,13 +5,10 @@
 
 
 import inspect
-import threading
 
 
-from .clients import Fleet, spl
-
-
-loadlock = threading.RLock()
+from .handler import Fleet
+from .methods import spl
 
 
 class Commands:
@@ -29,7 +26,7 @@ class Commands:
     def typed(type):
         result = []
         for name, func in Commands.cmds.items():
-            if not "types" not in dir(func):
+            if "types" not in dir(func):
                 result.append(name)
                 continue
             gotcha = False

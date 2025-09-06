@@ -7,7 +7,7 @@
 import time
 
 
-from nixt.clients import elapsed
+from nixt.methods import elapsed
 from nixt.objects import fmt
 from nixt.persist import find, fntime, long, skel, types
 

@@ -4,7 +4,7 @@
 "service"
 
 
-from nixt.clients import NAME
+from nixt.handler import NAME
 
 
 TXT = """[Unit]
@@ -27,4 +27,4 @@ def srv(event):
     event.reply(TXT % (NAME.upper(), name, name, name, NAME))
 
 
-srv.type = "cli"
+srv.types = "cli"

@@ -21,10 +21,10 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import NAME, Client, Fleet, spl
 from nixt.command import Commands, command, parse, scan
-from nixt.handler import Event
-from nixt.objects import fmt, update
+from nixt.handler import NAME, Client, Event, Fleet
+from nixt.methods import spl
+from nixt.objects import fmt, fqn, update
 from nixt.persist import Workdir, j, moddir, pidname, setwd, skel
 from nixt.runtime import launch, level, rlog
 
@@ -85,7 +85,7 @@ class Console(CLI):
 
 
 def cmd(event):
-    bot = Fleet.byorig(event.orig)
+    bot = Fleet.get(event.orig)
     typ = fqn(bot)
     cmds = sorted(Commands.typed(typ))
     event.reply(",".join(sorted(cmds)))
@@ -203,12 +203,12 @@ def scanner(path, names=""):
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    rlog("warn", f"{NAME.upper()} {Config.version} since {tme} ({Config.level.upper()})")
+    out(f"{NAME.upper()} {Config.version} since {tme} ({Config.level.upper()})")
     mds = modules(Config.mod)
     if mds:
-        rlog("warn", f"loaded {",".join(mds)}")
-    rlog("warn", f"workdir {Workdir.wdr}")
-    rlog("warn", f"moddir {Config.mod}")
+        out(f"loaded {",".join(mds)}")
+    out(f"workdir {Workdir.wdr}")
+    out(f"moddir {Config.mod}")
 
 
 def check(txt):

@@ -12,7 +12,7 @@ import threading
 import time
 
 
-from .clients import NAME
+from .handler import NAME
 from .objects import Object, dump, fqn, load, search, update
 
 

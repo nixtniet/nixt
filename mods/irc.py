@@ -13,9 +13,9 @@ import threading
 import time
 
 
-from nixt.clients import NAME, Fleet, Output
 from nixt.command import command
 from nixt.handler import Event as IEvent
+from nixt.handler import NAME, Fleet, Output
 from nixt.objects import Object, edit, fmt, keys
 from nixt.persist import getpath, last, write
 from nixt.runtime import launch, rlog

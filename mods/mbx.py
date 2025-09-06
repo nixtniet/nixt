@@ -9,7 +9,7 @@ import os
 import time
 
 
-from nixt.clients import elapsed
+from nixt.methods import elapsed
 from nixt.persist import find, write
 from nixt.objects import Object, fmt, keys, update
 
