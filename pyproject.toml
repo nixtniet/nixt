@@ -31,7 +31,8 @@ classifiers = [
 
 [tool.setuptools]
 packages = [
-    'nixt',
-    'nixt.modules'
+    "nixt",
 ]
-include-package-data = false
+include-package-data = true
+
+
