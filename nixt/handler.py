@@ -220,7 +220,6 @@ class Fleet:
 
 def __dir__():
     return (
-        'NAME',
         'Client',
         'Event',
         'Fleet',
