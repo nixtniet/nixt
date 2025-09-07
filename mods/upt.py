@@ -8,7 +8,9 @@ import time
 
 
 from nixt.methods import elapsed
-from nixt.runtime import STARTTIME
+
+
+STARTTIME = time.time()
 
 
 def upt(event):

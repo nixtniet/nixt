@@ -27,10 +27,11 @@ from nixt.handler import Client, Event, Fleet, Output
 from nixt.methods import elapsed, spl
 from nixt.objects import Object, keys
 from nixt.persist import Workdir,  skel
-from nixt.runtime import STARTTIME, launch
+from nixt.runtime import launch
 
 
 NAME = Workdir.name
+STARTTIME = time.time()
 
 
 Workdir.wdr = ".test"

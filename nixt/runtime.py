@@ -21,9 +21,6 @@ LEVELS = {
 }
 
 
-STARTTIME = time.time()
-
-
 class Thread(threading.Thread):
 
     def __init__(self, func, *args, daemon=True, **kwargs):
