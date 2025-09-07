@@ -22,22 +22,6 @@ class Commands:
         Commands.names[func.__name__] = func.__module__.split(".")[-1]
 
     @staticmethod
-    def typed(type):
-        result = []
-        for name, func in Commands.cmds.items():
-            if "types" not in dir(func):
-                result.append(name)
-                continue
-            gotcha = False
-            for typ in func.types:
-                if typ.lower() in type.lower():
-                    gotcha = True
-                    break
-            if gotcha:
-                result.append(name)
-        return result                    
-
-    @staticmethod
     def get(cmd):
         return Commands.cmds.get(cmd, None)
 
