@@ -12,7 +12,6 @@ import threading
 import time
 
 
-from .handler import NAME
 from .methods import search
 from .objects import Object, dump, fqn, load, update
 
@@ -72,7 +71,7 @@ def write(obj, path=None):
 class Workdir:
 
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
-    wdr = os.path.expanduser(f"~/.{NAME}")
+    wdr = os.path.expanduser(f"~/.{name}")
 
 
 def getpath(obj):

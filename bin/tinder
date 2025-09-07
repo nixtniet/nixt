@@ -22,12 +22,15 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import NAME, Client, Fleet, Output, elapsed, spl
 from nixt.command import command, parse, scan
-from nixt.handler import Event
+from nixt.handler import Client, Event, Fleet, Output
+from nixt.methods import elapsed, spl
 from nixt.objects import Object, keys
 from nixt.persist import Workdir,  skel
 from nixt.runtime import STARTTIME, launch
+
+
+NAME = Workdir.name
 
 
 Workdir.wdr = ".test"
@@ -42,7 +45,7 @@ class Config:
     level    = "warn"
     md5      = True
     moddir   = "mods"
-    opts     = {}
+    opts     = ""
     otxt     = ""
     sets     = {}
     verbose  = False
@@ -76,9 +79,6 @@ class Pool:
             clt = Pool.clients[Pool.nrlast]
             clt.put(evt)
             Pool.nrlast += 1
-
-
-Workdir.wdr = ".test"
 
 
 param = Object()

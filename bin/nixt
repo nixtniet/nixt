@@ -32,6 +32,9 @@ from nixt.runtime import launch, level, rlog
 import nixt.modules as MODS
 
 
+NAME = Workdir.name
+
+
 "config"
 
 

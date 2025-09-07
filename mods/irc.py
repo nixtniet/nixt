@@ -18,11 +18,12 @@ from nixt.handler import Event as IEvent
 from nixt.handler import NAME, Fleet, Output
 from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
-from nixt.persist import getpath, last, write
+from nixt.persist import Workdir, getpath, last, write
 from nixt.runtime import launch, rlog
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
+NAME = Workdir.name
 
 
 initlock = threading.RLock()
