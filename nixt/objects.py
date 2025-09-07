@@ -35,55 +35,6 @@ def construct(obj, *args, **kwargs):
         update(obj, kwargs)
 
 
-def edit(obj, setter, skip=True):
-    for key, val in items(setter):
-        if skip and val == "":
-            continue
-        try:
-            setattr(obj, key, int(val))
-            continue
-        except ValueError:
-            pass
-        try:
-            setattr(obj, key, float(val))
-            continue
-        except ValueError:
-            pass
-        if val in ["True", "true"]:
-            setattr(obj, key, True)
-        elif val in ["False", "false"]:
-            setattr(obj, key, False)
-        else:
-            setattr(obj, key, val)
-
-
-def fmt(obj, args=None, skip=None, plain=False, empty=False, newline=False):
-    if args is None:
-        args = keys(obj)
-    if skip is None:
-        skip = []
-    txt = ""
-    for key in args:
-        if key.startswith("__"):
-            continue
-        if key in skip:
-            continue
-        value = getattr(obj, key, None)
-        if value is None:
-            continue
-        if not empty and not value:
-            continue
-        if plain:
-            txt += f"{value} "
-        elif isinstance(value, str):
-            txt += f'{key}="{value}" '
-        else:
-            txt += f"{key}={value} "
-        if newline:
-            txt += "\n"
-    return txt.strip()
-
-
 def fqn(obj):
     kin = str(type(obj)).split()[-1][1:-2]
     if kin == "type":
@@ -101,24 +52,6 @@ def keys(obj):
     if isinstance(obj, dict):
         return obj.keys()
     return obj.__dict__.keys()
-
-
-def search(obj, selector, matching=False):
-    res = False
-    if not selector:
-        return res
-    for key, value in items(selector):
-        val = getattr(obj, key, None)
-        if not val:
-            continue
-        if matching and value == val:
-            res = True
-        elif str(value).lower() in str(val).lower() or value == "match":
-            res = True
-        else:
-            res = False
-            break
-    return res
 
 
 def update(obj, data):
@@ -183,14 +116,11 @@ def __dir__():
         'construct',
         'dump',
         'dumps',
-        'edit',
-        'fmt'
         'fqn',
         'items',
         'keys',
         'load',
         'loads',
-        'search',
         'update',
         'values'
     )

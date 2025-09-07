@@ -13,7 +13,8 @@ import time
 
 
 from .handler import NAME
-from .objects import Object, dump, fqn, load, search, update
+from .methods import search
+from .objects import Object, dump, fqn, load, update
 
 
 j    = os.path.join
