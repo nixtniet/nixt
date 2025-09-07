@@ -14,9 +14,6 @@ from .objects import fqn
 from .runtime import launch
 
 
-NAME = __name__.split(".", maxsplit=1)[0]
-
-
 class Event:
 
     def __init__(self):
