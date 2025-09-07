@@ -17,10 +17,9 @@ class Commands:
     names = {}
 
     @staticmethod
-    def add(func, module=None) -> None:
+    def add(func) -> None:
         Commands.cmds[func.__name__] = func
-        if module:
-            Commands.names[func.__name__] = module.__name__.split(".")[-1]
+        Commands.names[func.__name__] = func.__module__.split(".")[-1]
 
     @staticmethod
     def typed(type):
@@ -56,8 +55,8 @@ def scan(module):
     for key, cmdz in inspect.getmembers(module, inspect.isfunction):
         if key.startswith("cb"):
             continue
-        if 'event' in cmdz.__code__.co_varnames:
-            Commands.add(cmdz, module)
+        if 'event' in inspect.signature(cmdz).parameters:
+            Commands.add(cmdz)
 
 
 def __dir__():
