@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.methods import *
+from nixt.methods import fmt
 from nixt.objects import Object
 
 
