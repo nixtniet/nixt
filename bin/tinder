@@ -5,8 +5,6 @@
 "simulate clients"
 
 
-import importlib
-import importlib.util
 import logging
 import os
 import random
@@ -22,9 +20,9 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import command, parse, scan
+from nixt.command import command, modules, parse, scan
 from nixt.handler import Client, Event, Fleet, Output
-from nixt.methods import elapsed, spl
+from nixt.methods import elapsed, importer, spl
 from nixt.objects import Object, keys
 from nixt.persist import Workdir,  skel
 from nixt.runtime import launch
@@ -166,7 +164,7 @@ class Buffer(Output):
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     print(f"{NAME.upper()} {Config.version} since {tme} ({Config.level.upper()})")
-    mds = modules(Config.moddir)
+    mds = modules()
     if mds:
         print(f"loaded {",".join(mds)}")
 
@@ -181,32 +179,6 @@ def consume(evts):
                 break
         except (KeyboardInterrupt, EOFError):
             os._exit(0)
-
-
-def importer(mname, path):
-    if path is None:
-        path = Config.moddir
-    module = sys.modules.get(mname, None)
-    if module:
-        return module
-    pth = os.path.join(path, f"{mname}.py")
-    spec = importlib.util.spec_from_file_location(mname, pth)
-    if not spec:
-        return
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[mname] = module
-    try:
-        spec.loader.exec_module(module)
-    except Exception as ex:
-        logging.exception(ex)
-    return module
-
-
-def modules(path):
-    return sorted([
-            x[:-3] for x in os.listdir(path)
-            if x.endswith(".py") and not x.startswith("__")
-           ])
 
 
 def payload(cmds):
@@ -234,7 +206,7 @@ def payload(cmds):
 
 def scanner(path, names="", debug=False):
     res = []
-    for nme in sorted(modules(path)):
+    for nme in sorted(modules()):
         if names and nme not in spl(names):
             continue
         module = importer(nme, path)

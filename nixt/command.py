@@ -4,15 +4,11 @@
 "commands"
 
 
-import importlib
-import importlib.util
 import inspect
-import logging
 import os
-import sys
 
 
-from .methods import parse, spl
+from .methods import importer, parse, spl
 
 
 class Commands:
@@ -33,7 +29,7 @@ class Commands:
             name = Commands.names.get(cmd, None)
             if not name:
                 return
-            module = importer(name)
+            module = importer(name, Commands.mod)
             if module:
                 scan(module)
                 func = Commands.cmds.get(cmd)
@@ -47,23 +43,6 @@ def command(evt):
         func(evt)
         evt.display()
     evt.ready()
-
-
-def importer(mname):
-    module = sys.modules.get(mname, None)
-    if not module:
-        try:
-            pth = os.path.join(Commands.mod, f"{mname}.py")
-            if not os.path.exists(pth):
-                return
-            spec = importlib.util.spec_from_file_location(mname, pth)
-            module = importlib.util.module_from_spec(spec)
-            if module:
-                sys.modules[mname] = module
-                spec.loader.exec_module(module)
-        except Exception as ex:
-            logging.exception(ex)
-    return module
 
 
 def modules():
@@ -88,7 +67,7 @@ def scanner(names=None):
     for nme in sorted(modules()):
         if names and nme not in spl(names):
             continue
-        module = importer(nme)
+        module = importer(nme, Commands.mod)
         if not module:
             continue
         scan(module)
@@ -97,7 +76,7 @@ def scanner(names=None):
 
 
 def table():
-    tbl = importer("tbl")
+    tbl = importer("tbl", Commands.mod)
     if tbl:
         Commands.names.update(tbl.NAMES)
     else:

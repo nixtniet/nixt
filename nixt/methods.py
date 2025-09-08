@@ -4,6 +4,13 @@
 "methods"
 
 
+import importlib
+import importlib.util
+import logging
+import os
+import sys
+
+
 from .objects import items, keys
 
 
@@ -197,22 +204,20 @@ def elapsed(seconds, short=True):
     return txt
 
 
-def importer(mname, path=None):
-    if path is None:
-        path = Config.moddir
+def importer(mname, path):
     module = sys.modules.get(mname, None)
-    if module:
-        return module
-    pth = os.path.join(path, f"{mname}.py")
-    spec = importlib.util.spec_from_file_location(mname, pth)
-    if not spec:
-        return
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[mname] = module
-    try:
-        spec.loader.exec_module(module)
-    except Exception as ex:
-        logging.exception(ex)
+    if not module:
+        try:
+            pth = os.path.join(path, f"{mname}.py")
+            if not os.path.exists(pth):
+                return
+            spec = importlib.util.spec_from_file_location(mname, pth)
+            module = importlib.util.module_from_spec(spec)
+            if module:
+                sys.modules[mname] = module
+                spec.loader.exec_module(module)
+        except Exception as ex:
+            logging.exception(ex)
     return module
 
 
