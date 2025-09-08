@@ -4,7 +4,12 @@
 "commands"
 
 
+import importlib
+import importlib.util
 import inspect
+import logging
+import os
+import sys
 
 
 from .methods import parse, spl
@@ -12,8 +17,9 @@ from .methods import parse, spl
 
 class Commands:
 
-    cmds  = {}
-    names = {}
+    cmds   = {}
+    mod = "mods"
+    names  = {}
 
     @staticmethod
     def add(func) -> None:
@@ -22,7 +28,16 @@ class Commands:
 
     @staticmethod
     def get(cmd):
-        return Commands.cmds.get(cmd, None)
+        func = Commands.cmds.get(cmd, None)
+        if not func:
+            name = Commands.names.get(cmd, None)
+            if not name:
+                return
+            module = importer(name)
+            if module:
+                scan(module)
+                func = Commands.cmds.get(cmd)
+        return func
 
 
 def command(evt):
@@ -34,12 +49,59 @@ def command(evt):
     evt.ready()
 
 
+def importer(mname):
+    module = sys.modules.get(mname, None)
+    if not module:
+        try:
+            pth = os.path.join(Commands.mod, f"{mname}.py")
+            if not os.path.exists(pth):
+                return
+            spec = importlib.util.spec_from_file_location(mname, pth)
+            module = importlib.util.module_from_spec(spec)
+            if module:
+                sys.modules[mname] = module
+                spec.loader.exec_module(module)
+        except Exception as ex:
+            logging.exception(ex)
+    return module
+
+
+def modules():
+    if not os.path.exists(Commands.mod):
+        return {}
+    return sorted([
+            x[:-3] for x in os.listdir(Commands.mod)
+            if x.endswith(".py") and not x.startswith("__")
+           ])
+
+
 def scan(module):
     for key, cmdz in inspect.getmembers(module, inspect.isfunction):
         if key.startswith("cb"):
             continue
         if 'event' in inspect.signature(cmdz).parameters:
             Commands.add(cmdz)
+
+
+def scanner(names=None):
+    res = []
+    for nme in sorted(modules()):
+        if names and nme not in spl(names):
+            continue
+        module = importer(nme)
+        if not module:
+            continue
+        scan(module)
+        res.append(module)
+    return res
+
+
+def table():
+    tbl = importer("tbl")
+    if tbl:
+        Commands.names.update(tbl.NAMES)
+    else:
+        scanner()
 
 
 def __dir__():

@@ -304,6 +304,7 @@ def main():
     time.sleep(0.1)
     consume(events)
     Fleet.shutdown()
+    Fleet.wait()
 
 
 if __name__ == "__main__":

@@ -21,7 +21,8 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, command, scan
+from nixt.command import Commands
+from nixt.command import command, importer, modules, scan, scanner, table
 from nixt.handler import Client, Event, Fleet
 from nixt.methods import fmt, fqn, parse, spl
 from nixt.objects import update
@@ -87,37 +88,6 @@ class Console(CLI):
         return evt
 
 
-"commands"
-
-
-def cmd(event):
-    event.reply(",".join(sorted(Commands.cmds)))
-
-
-TXT = """[Unit]
-Description=%s
-After=network-online.target
-
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
-
-
-def srv(event):
-    import getpass
-    name = getpass.getuser()
-    event.reply(TXT % (NAME.upper(), name, name, name, NAME))
-
-
-def ver(event):
-    event.reply(f"{NAME.upper()} {Config.version}")
-
-
 "daemon"
 
 
@@ -158,25 +128,7 @@ def privileges():
     os.setuid(pwnam2.pw_uid)
 
 
-def importer(mname, path):
-    if path is None:
-        path = Config.mod
-    module = sys.modules.get(mname, None)
-    if module:
-        return module
-    pth = os.path.join(path, f"{mname}.py")
-    if not os.path.exists(pth):
-        return 
-    spec = importlib.util.spec_from_file_location(mname, pth)
-    if not spec:
-        return 
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[mname] = module
-    try:
-        spec.loader.exec_module(module)
-    except Exception as ex:
-        logging.exception(ex)
-    return module
+"modules"
 
 
 def inits(names):
@@ -198,28 +150,6 @@ def inits(names):
 def out(txt):
     print(txt)
     sys.stdout.flush()
-
-
-def modules(path):
-    if not os.path.exists(path):
-        return {}
-    return sorted([
-            x[:-3] for x in os.listdir(path)
-            if x.endswith(".py") and not x.startswith("__")
-           ])
-
-
-def scanner(path, names=""):
-    res = []
-    for nme in sorted(modules(path)):
-        if names and nme not in spl(names):
-            continue
-        module = importer(nme, path)
-        if not module:
-            continue
-        scan(module)
-        res.append(module)
-    return res
 
 
 "utilities"
@@ -282,6 +212,7 @@ def control():
         return
     boot()
     Commands.add(srv)
+    Commands.add(tbl)
     csl = CLI()
     evt = Event()
     evt.orig = repr(csl)
@@ -307,9 +238,54 @@ def boot(doparse=True):
     if "v" in Config.opts:
         banner()
     setwd(NAME)
-    scanner(Config.mod)
+    table()
+    #scanner(Config.mod)
     Commands.add(cmd)
     Commands.add(ver)
+
+
+"commands"
+
+
+def cmd(event):
+    event.reply(",".join(sorted(Commands.names)))
+
+
+TXT = """[Unit]
+Description=%s
+After=network-online.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
+
+
+def srv(event):
+    import getpass
+    name = getpass.getuser()
+    event.reply(TXT % (NAME.upper(), name, name, name, NAME))
+
+
+def tbl(event):
+    if not check("f"):
+        Commands.names = {}
+    scanner()
+    event.reply("# This file is placed in the Public Domain.")
+    event.reply("")
+    event.reply("")
+    event.reply('"lookup tables"')
+    event.reply("")
+    event.reply("")
+    event.reply(f"NAMES = {json.dumps(Commands.names, indent=4, sort_keys=True)}")
+
+
+def ver(event):
+    event.reply(f"{NAME.upper()} {Config.version}")
 
 
 "runtime"

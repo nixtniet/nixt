@@ -197,6 +197,25 @@ def elapsed(seconds, short=True):
     return txt
 
 
+def importer(mname, path=None):
+    if path is None:
+        path = Config.moddir
+    module = sys.modules.get(mname, None)
+    if module:
+        return module
+    pth = os.path.join(path, f"{mname}.py")
+    spec = importlib.util.spec_from_file_location(mname, pth)
+    if not spec:
+        return
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[mname] = module
+    try:
+        spec.loader.exec_module(module)
+    except Exception as ex:
+        logging.exception(ex)
+    return module
+
+
 def spl(txt):
     try:
         result = txt.split(",")
