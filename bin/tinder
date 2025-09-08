@@ -5,7 +5,6 @@
 "simulate clients"
 
 
-import logging
 import os
 import random
 import queue
@@ -20,9 +19,9 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import command, modules, parse, scan
+from nixt.command import command, modules, parse, scanner, table
 from nixt.handler import Client, Event, Fleet, Output
-from nixt.methods import elapsed, importer, spl
+from nixt.methods import elapsed
 from nixt.objects import Object, keys
 from nixt.persist import Workdir,  skel
 from nixt.runtime import launch
@@ -170,7 +169,6 @@ def banner():
 
 
 def consume(evts):
-    done = []
     while True:
         try:
             event = events.get()
@@ -204,21 +202,6 @@ def payload(cmds):
         return nmr
 
 
-def scanner(path, names="", debug=False):
-    res = []
-    for nme in sorted(modules()):
-        if names and nme not in spl(names):
-            continue
-        module = importer(nme, path)
-        scan(module)
-        if not module:
-            continue
-        if debug and "DENUG" in dir(module):
-            module.DEBUG = True
-        res.append(module)
-    return res
-
-
 def wrap(function):
     old3 = None
     try:
@@ -245,7 +228,7 @@ def main():
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
     skel()
-    scanner(Config.moddir, debug=True)
+    table()
     if "z" in Config.opts:
         nrcpu = os.cpu_count()
     else:

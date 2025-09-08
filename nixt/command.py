@@ -62,7 +62,7 @@ def scan(module):
             Commands.add(cmdz)
 
 
-def scanner(names=None):
+def scanner(names=None, debug=False):
     res = []
     for nme in sorted(modules()):
         if names and nme not in spl(names):
@@ -71,6 +71,8 @@ def scanner(names=None):
         if not module:
             continue
         scan(module)
+        if debug and "DENUG" in dir(module):
+            module.DEBUG = True
         res.append(module)
     return res
 
