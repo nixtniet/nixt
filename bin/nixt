@@ -135,7 +135,7 @@ def inits(names):
     modz = []
     for name in sorted(spl(names)):
         try:
-            module = importer(name, Config.mod)
+            module = importer(name)
             if not module:
                 continue
             if "init" in dir(module):
@@ -158,7 +158,7 @@ def out(txt):
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     out(f"{NAME.upper()} {Config.version} since {tme} ({Config.level.upper()})")
-    mds = modules(Config.mod)
+    mds = modules()
     if mds:
         out(f"loaded {",".join(mds)}")
     out(f"workdir {Workdir.wdr}")
@@ -320,7 +320,7 @@ def main():
     if check("m"):
         Config.mod = "mods"
     if check("a"):
-        Config.init = ",".join(modules(Config.mod))
+        Config.init = ",".join(modules())
     if check("c"):
         wrap(console)
     elif check("d"):
