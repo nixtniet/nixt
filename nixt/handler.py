@@ -10,7 +10,7 @@ import time
 import _thread
 
 
-from .objects import fqn
+from .methods import fqn
 from .runtime import launch
 
 
@@ -26,6 +26,9 @@ class Event:
         self.result = {}
         self.txt = ""
         self.type = "event"
+
+    def display(self):
+        Fleet.display(self)
 
     def done(self):
         self.reply("ok")
@@ -126,14 +129,6 @@ class Output(Client):
         self.olock  = threading.RLock()
         self.oqueue = queue.Queue()
         self.ostop  = threading.Event()
-
-    def display(self, event):
-        with self.olock:
-            for tme in sorted(event.result):
-                self.dosay(event.channel, event.result[tme])
-
-    def dosay(self, channel, txt):
-        raise NotImplementedError("dosay")
 
     def oput(self, event):
         self.oqueue.put(event)

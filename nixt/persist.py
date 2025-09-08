@@ -12,8 +12,8 @@ import threading
 import time
 
 
-from .methods import search
-from .objects import Object, dump, fqn, load, update
+from .methods import fqn, search
+from .objects import Object, dump, load, update
 
 
 j    = os.path.join

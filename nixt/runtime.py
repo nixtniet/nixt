@@ -11,6 +11,9 @@ import time
 import _thread
 
 
+from .methods import name
+
+
 LEVELS = {
     'debug': logging.DEBUG,
     'info': logging.INFO,
@@ -115,21 +118,6 @@ def level(loglevel="debug"):
         logging.getLogger().setLevel(LEVELS.get(loglevel))
 
 
-def name(obj):
-    typ = type(obj)
-    if "__builtins__" in dir(typ):
-        return obj.__name__
-    if "__self__" in dir(obj):
-        return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
-    if "__class__" in dir(obj) and "__name__" in dir(obj):
-        return f"{obj.__class__.__name__}.{obj.__name__}"
-    if "__class__" in dir(obj):
-        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
-    if "__name__" in dir(obj):
-        return f"{obj.__class__.__name__}.{obj.__name__}"
-    return ""
-
-
 def rlog(loglevel, txt, ignore=None):
     if ignore is None:
         ignore = []
@@ -146,6 +134,5 @@ def __dir__():
         'Timed',
         'launch',
         'level',
-        'name',
-        'rlog',
+        'rlog'
    )

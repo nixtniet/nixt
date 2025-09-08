@@ -53,34 +53,6 @@ class Config:
     version  = 410
 
 
-class Pool:
-
-    clients = []
-    lock = threading.RLock()
-    nrcpu = 1
-    nrlast = 0
-
-    @staticmethod
-    def add(clt):
-        Pool.clients.append(clt)
-
-    @staticmethod
-    def init(cls, nr=None):
-        Pool.nrcpu = nr or os.cpu_count
-        for x in range(Pool.nrcpu):
-            clt = cls()
-            clt.start()
-            Pool.add(clt)
-
-    @staticmethod
-    def put(evt):
-        with Pool.lock:
-            if Pool.nrlast >= Pool.nrcpu-1:
-                Pool.nrlast = 0
-            clt = Pool.clients[Pool.nrlast]
-            clt.put(evt)
-            Pool.nrlast += 1
-
 
 param = Object()
 param.cmd = [""]
@@ -132,6 +104,35 @@ paylock = _thread.allocate_lock()
 rand = random.SystemRandom()
 
 
+class Pool:
+
+    clients = []
+    lock = threading.RLock()
+    nrcpu = 1
+    nrlast = 0
+
+    @staticmethod
+    def add(clt):
+        Pool.clients.append(clt)
+
+    @staticmethod
+    def init(cls, nr=None):
+        Pool.nrcpu = nr or os.cpu_count
+        for x in range(Pool.nrcpu):
+            clt = cls()
+            clt.start()
+            Pool.add(clt)
+
+    @staticmethod
+    def put(evt):
+        with Pool.lock:
+            if Pool.nrlast >= Pool.nrcpu-1:
+                Pool.nrlast = 0
+            clt = Pool.clients[Pool.nrlast]
+            clt.put(evt)
+            Pool.nrlast += 1
+
+
 class CLI(Client):
 
     def __init__(self):
@@ -160,7 +161,6 @@ class Buffer(Output):
     def raw(self, txt):
         if "v" in Config.opts:
             print(txt)
-
 
 
 def banner():

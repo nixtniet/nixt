@@ -56,6 +56,28 @@ def fmt(obj, args=None, skip=None, plain=False, empty=False, newline=False):
     return txt.strip()
 
 
+def fqn(obj):
+    kin = str(type(obj)).split()[-1][1:-2]
+    if kin == "type":
+        kin = f"{obj.__module__}.{obj.__name__}"
+    return kin
+
+
+def name(obj):
+    typ = type(obj)
+    if "__builtins__" in dir(typ):
+        return obj.__name__
+    if "__self__" in dir(obj):
+        return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
+    if "__class__" in dir(obj) and "__name__" in dir(obj):
+        return f"{obj.__class__.__name__}.{obj.__name__}"
+    if "__class__" in dir(obj):
+        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
+    if "__name__" in dir(obj):
+        return f"{obj.__class__.__name__}.{obj.__name__}"
+    return ""
+
+
 def parse(obj, txt=None):
     if txt is None:
         if "txt" in dir(obj):
@@ -190,6 +212,8 @@ def __dir__():
         'edit',
         'elapsed',
         'fmt',
+        'fqn',
+        'name',
         'parse',
         'search',
         'spl'

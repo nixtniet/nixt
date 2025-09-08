@@ -23,8 +23,8 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.command import Commands, command, scan
 from nixt.handler import Client, Event, Fleet
-from nixt.methods import fmt, parse, spl
-from nixt.objects import fqn, update
+from nixt.methods import fmt, fqn, parse, spl
+from nixt.objects import update
 from nixt.persist import Workdir, j, moddir, pidname, setwd, skel
 from nixt.runtime import launch, level, rlog
 

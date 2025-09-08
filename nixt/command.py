@@ -7,7 +7,6 @@
 import inspect
 
 
-from .handler import Fleet
 from .methods import parse, spl
 
 
@@ -31,7 +30,7 @@ def command(evt):
     func = Commands.get(evt.cmd)
     if func:
         func(evt)
-        Fleet.display(evt)
+        evt.display()
     evt.ready()
 
 
