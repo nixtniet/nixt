@@ -13,9 +13,9 @@ from .methods import importer, parse, spl
 
 class Commands:
 
-    cmds   = {}
-    mod = "mods"
-    names  = {}
+    cmds  = {}
+    mod   = "mods"
+    names = {}
 
     @staticmethod
     def add(func) -> None:

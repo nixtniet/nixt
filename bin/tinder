@@ -19,7 +19,7 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import command, modules, parse, scanner, table
+from nixt.command import command, modules, parse, table
 from nixt.handler import Client, Event, Fleet, Output
 from nixt.methods import elapsed
 from nixt.objects import Object, keys
@@ -115,7 +115,7 @@ class Pool:
     @staticmethod
     def init(cls, nr=None):
         Pool.nrcpu = nr or os.cpu_count
-        for x in range(Pool.nrcpu):
+        for x in range(Pool.nrcpu*2):
             clt = cls()
             clt.start()
             Pool.add(clt)
