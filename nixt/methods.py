@@ -4,13 +4,6 @@
 "methods"
 
 
-import importlib
-import importlib.util
-import logging
-import os
-import sys
-
-
 from .objects import items, keys
 
 
@@ -162,7 +155,9 @@ def search(obj, selector, matching=False):
     return res
 
 
-"utilities"
+class Utils:
+
+    pass
 
 
 def elapsed(seconds, short=True):

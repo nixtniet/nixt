@@ -40,7 +40,7 @@ DEBUG = False
 
 fetchlock = _thread.allocate_lock()
 importlock = _thread.allocate_lock()
-errors = []
+errors = {}
 skipped = []
 
 
@@ -280,13 +280,13 @@ def cdata(line):
 
 def getfeed(url, items):
     result = [Object(), Object()]
-    if DEBUG or url in errors:
+    if DEBUG or url in errors and (time.time() - errors[url]) < 600:
         return result
     try:
         rest = geturl(url)
     except (http.client.HTTPException, ValueError, HTTPError, URLError) as ex:
         rlog("error", f"{url} {ex}")
-        errors.append(url)
+        errors[url] = time.time()
         return result
     if rest:
         if "link" not in items:
