@@ -209,7 +209,7 @@ def importer(name, path, package=None):
         fullname = f"{package}.{name}"
     else:
         fullname = name
-    module = sys.modules.get(name, None)
+    module = sys.modules.get(fullname, None)
     if not module:
         try:
             pth = os.path.join(path, f"{name}.py")

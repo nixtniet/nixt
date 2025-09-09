@@ -89,5 +89,8 @@ def __dir__():
     return (
         'Commands',
         'command',
-        'scan'
+        'modules',
+        'scan',
+        'scanner'
+        'table'
     )
