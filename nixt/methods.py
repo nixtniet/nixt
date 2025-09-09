@@ -204,27 +204,6 @@ def elapsed(seconds, short=True):
     return txt
 
 
-def importer(name, path, package=None):
-    if package:
-        fullname = f"{package}.{name}"
-    else:
-        fullname = name
-    module = sys.modules.get(fullname, None)
-    if not module:
-        try:
-            pth = os.path.join(path, f"{name}.py")
-            if not os.path.exists(pth):
-                return
-            spec = importlib.util.spec_from_file_location(fullname, pth)
-            module = importlib.util.module_from_spec(spec)
-            if module:
-                sys.modules[fullname] = module
-                spec.loader.exec_module(module)
-        except Exception as ex:
-            logging.exception(ex)
-    return module
-
-
 def spl(txt):
     try:
         result = txt.split(",")

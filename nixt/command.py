@@ -8,7 +8,7 @@ import inspect
 import os
 
 
-from .methods import importer, parse, spl
+from .methods import parse, spl
 
 
 class Commands:
@@ -24,16 +24,7 @@ class Commands:
 
     @staticmethod
     def get(cmd):
-        func = Commands.cmds.get(cmd, None)
-        if not func:
-            name = Commands.names.get(cmd, None)
-            if not name:
-                return
-            module = importer(name, Commands.mod, "mods")
-            if module:
-                scan(module)
-                func = Commands.cmds.get(cmd)
-        return func
+        return Commands.cmds.get(cmd, None)
 
 
 def command(evt):
@@ -62,35 +53,10 @@ def scan(module):
             Commands.add(cmdz)
 
 
-def scanner(names=None, debug=False):
-    res = []
-    for nme in sorted(modules()):
-        if names and nme not in spl(names):
-            continue
-        module = importer(nme, Commands.mod, "mods")
-        if not module:
-            continue
-        scan(module)
-        if debug and "DENUG" in dir(module):
-            module.DEBUG = True
-        res.append(module)
-    return res
-
-
-def table():
-    tbl = importer("tbl", Commands.mod, "mods")
-    if tbl:
-        Commands.names.update(tbl.NAMES)
-    else:
-        scanner()
-
-
 def __dir__():
     return (
         'Commands',
         'command',
         'modules',
-        'scan',
-        'scanner'
-        'table'
+        'scan'
     )

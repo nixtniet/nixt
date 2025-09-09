@@ -5,6 +5,8 @@
 "main program"
 
 
+import importlib
+import importlib.util
 import json
 import logging
 import os
@@ -19,7 +21,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.command import Commands
-from nixt.command import command, importer, modules, scanner, table
+from nixt.command import command, modules, scan
 from nixt.handler import Client, Event, Fleet
 from nixt.methods import parse, spl
 from nixt.objects import update
@@ -125,6 +127,61 @@ def privileges():
     os.setuid(pwnam2.pw_uid)
 
 
+"modules"
+
+
+def importer(name, path, package=None):
+    if package:
+        fullname = f"{package}.{name}"
+    else:
+        fullname = name
+    module = sys.modules.get(fullname, None)
+    if not module:
+        try:
+            pth = os.path.join(path, f"{name}.py")
+            if not os.path.exists(pth):
+                return
+            spec = importlib.util.spec_from_file_location(fullname, pth)
+            module = importlib.util.module_from_spec(spec)
+            if module:
+                sys.modules[fullname] = module
+                spec.loader.exec_module(module)
+        except Exception as ex:
+            logging.exception(ex)
+    return module
+
+
+def inits(names):
+    modz = []
+    for name in sorted(spl(names)):
+        try:
+            module = importer(name, Commands.mod)
+            if not module:
+                continue
+            if "init" in dir(module):
+                thr = launch(module.init)
+                modz.append((module, thr))
+        except Exception as ex:
+            logging.exception(ex)
+            _thread.interrupt_main()
+    return modz
+
+
+def scanner(names=None, debug=False):
+    res = []
+    for nme in sorted(modules()):
+        if names and nme not in spl(names):
+            continue
+        module = importer(nme, Commands.mod, "mods")
+        if not module:
+            continue
+        scan(module)
+        if debug and "DENUG" in dir(module):
+            module.DEBUG = True
+        res.append(module)
+    return res
+
+
 "scripts"
 
 
@@ -179,10 +236,47 @@ def boot(doparse=True):
     if "v" in Config.opts:
         banner()
     setwd(NAME)
-    table()
+    scanner()
     #scanner(Config.mod)
     Commands.add(cmd)
     Commands.add(ver)
+
+
+"utilities"
+
+
+def banner():
+    tme = time.ctime(time.time()).replace("  ", " ")
+    out(f"{NAME.upper()} {Config.version} since {tme} ({Config.level.upper()})")
+    mds = modules()
+    if mds:
+        out(f"loaded {",".join(mds)}")
+    out(f"workdir {Workdir.wdr}")
+    out(f"moddir {Config.mod}")
+
+
+def check(txt):
+    args = sys.argv[1:]
+    for arg in args:
+        if not arg.startswith("-"):
+            continue
+        for char in txt:
+            if char in arg:
+                return True
+    return False
+
+
+def forever():
+    while True:
+        try:
+            time.sleep(0.1)
+        except (KeyboardInterrupt, EOFError):
+            break
+
+
+def out(txt):
+    print(txt)
+    sys.stdout.flush()
 
 
 "commands"
@@ -227,59 +321,6 @@ def tbl(event):
 
 def ver(event):
     event.reply(f"{NAME.upper()} {Config.version}")
-
-
-"utilities"
-
-
-def banner():
-    tme = time.ctime(time.time()).replace("  ", " ")
-    out(f"{NAME.upper()} {Config.version} since {tme} ({Config.level.upper()})")
-    mds = modules()
-    if mds:
-        out(f"loaded {",".join(mds)}")
-    out(f"workdir {Workdir.wdr}")
-    out(f"moddir {Config.mod}")
-
-
-def check(txt):
-    args = sys.argv[1:]
-    for arg in args:
-        if not arg.startswith("-"):
-            continue
-        for char in txt:
-            if char in arg:
-                return True
-    return False
-
-
-def forever():
-    while True:
-        try:
-            time.sleep(0.1)
-        except (KeyboardInterrupt, EOFError):
-            break
-
-
-def inits(names):
-    modz = []
-    for name in sorted(spl(names)):
-        try:
-            module = importer(name, Commands.mod)
-            if not module:
-                continue
-            if "init" in dir(module):
-                thr = launch(module.init)
-                modz.append((module, thr))
-        except Exception as ex:
-            logging.exception(ex)
-            _thread.interrupt_main()
-    return modz
-
-
-def out(txt):
-    print(txt)
-    sys.stdout.flush()
 
 
 "runtime"
