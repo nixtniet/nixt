@@ -22,9 +22,9 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, command, modules, scan
+from nixt.command import Commands, command, modules, parse, scan
 from nixt.handler import Client, Event, Fleet, Output
-from nixt.methods import elapsed, parse
+from nixt.methods import elapsed, spl
 from nixt.objects import Object, keys
 from nixt.persist import Workdir,  skel
 from nixt.runtime import launch

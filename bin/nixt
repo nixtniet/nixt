@@ -20,10 +20,9 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands
-from nixt.command import command, modules, scan
+from nixt.command import Commands, command, modules, parse, scan
 from nixt.handler import Client, Event, Fleet
-from nixt.methods import parse, spl
+from nixt.methods import spl
 from nixt.objects import update
 from nixt.persist import Workdir, pidname, setwd
 from nixt.runtime import launch, level
