@@ -29,7 +29,7 @@ class Commands:
             name = Commands.names.get(cmd, None)
             if not name:
                 return
-            module = importer(name, Commands.mod)
+            module = importer(name, Commands.mod, "mods")
             if module:
                 scan(module)
                 func = Commands.cmds.get(cmd)
@@ -67,7 +67,7 @@ def scanner(names=None, debug=False):
     for nme in sorted(modules()):
         if names and nme not in spl(names):
             continue
-        module = importer(nme, Commands.mod)
+        module = importer(nme, Commands.mod, "mods")
         if not module:
             continue
         scan(module)
@@ -78,7 +78,7 @@ def scanner(names=None, debug=False):
 
 
 def table():
-    tbl = importer("tbl", Commands.mod)
+    tbl = importer("tbl", Commands.mod, "mods")
     if tbl:
         Commands.names.update(tbl.NAMES)
     else:
