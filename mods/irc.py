@@ -23,11 +23,11 @@ from nixt.runtime import launch, rlog
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
-NAME = Workdir.name
+NAME   = Workdir.name
 
 
 initlock = threading.RLock()
-saylock = threading.RLock()
+saylock  = threading.RLock()
 
 
 def init():

@@ -154,7 +154,7 @@ def inits(names):
     modz = []
     for name in sorted(spl(names)):
         try:
-            module = importer(name, Commands.mod)
+            module = importer(name, Commands.mod, MODS)
             if not module:
                 continue
             if "init" in dir(module):

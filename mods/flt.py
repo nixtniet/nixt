@@ -2,8 +2,7 @@
 
 
 from nixt.handler import Fleet
-from nixt.methods import fmt
-from nixt.runtime import name
+from nixt.methods import fmt, name
 
 
 def flt(event):
