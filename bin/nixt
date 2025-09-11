@@ -20,13 +20,15 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
+from nixt.clients import Client, Fleet
 from nixt.command import Commands, command, importer
-from nixt.command import inits, md5sum, modules, scanner, table
-from nixt.handler import Client, Event, Fleet
-from nixt.methods import parse, spl
+from nixt.command import inits, modules, scanner, table
+from nixt.handler import Event
+from nixt.methods import parse
 from nixt.objects import update
-from nixt.persist import Workdir, pidname, setwd
+from nixt.workdir import Workdir, pidname, setwd
 from nixt.runtime import launch, level
+from nixt.utility import md5sum, spl
 
 
 if os.path.exists("mods"):
@@ -36,11 +38,10 @@ else:
     import nixbot.modules as MODS
 
 
-CHECKSUM = "c21fa6518904359925ace909fdd44045"
+CHECKSUM = "ad166962eddabb5bcdfb03448e2fa30f"
+
+
 NAME = Workdir.name
-
-
-"config"
 
 
 class Config:
@@ -56,9 +57,6 @@ class Config:
     sets     = {}
     verbose  = False
     version  = 413
-
-
-"clients"
 
 
 class CLI(Client):
@@ -90,9 +88,6 @@ class Console(CLI):
         evt.txt = input("> ")
         evt.type = "command"
         return evt
-
-
-"daemon"
 
 
 def daemon(verbose=False):
@@ -198,11 +193,6 @@ def boot(doparse=True):
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     out(f"{NAME.upper()} {Config.version} since {tme} ({Config.level.upper()})")
-    mds = modules()
-    if mds:
-        out(f"loaded {",".join(mds)}")
-    out(f"workdir {Workdir.wdr}")
-    out(f"moddir {Config.mod}")
 
 
 def check(txt):

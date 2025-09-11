@@ -4,7 +4,6 @@
 "commands"
 
 
-import hashlib
 import importlib
 import importlib.util
 import inspect
@@ -14,8 +13,10 @@ import sys
 import _thread
 
 
-from .methods import j, parse, spl
+from .clients import Fleet
+from .methods import parse
 from .runtime import launch, rlog
+from .utility import md5sum, j, spl
 
 
 class Commands:
@@ -52,7 +53,7 @@ def command(evt):
     func = Commands.get(evt.cmd)
     if func:
         func(evt)
-        evt.display()
+        Fleet.display(evt)
     evt.ready()
 
 
@@ -72,6 +73,7 @@ def importer(name, path):
                 spec.loader.exec_module(module)
         except Exception as ex:
             logging.exception(ex)
+            _thread.interrupt_main()
     return module
 
 
@@ -89,12 +91,6 @@ def inits(names):
             logging.exception(ex)
             _thread.interrupt_main()
     return modz
-
-
-def md5sum(path):
-    with open(path, "r", encoding="utf-8") as file:
-        txt = file.read().encode("utf-8")
-        return hashlib.md5(txt).hexdigest()
 
 
 def modules():

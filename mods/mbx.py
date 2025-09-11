@@ -9,10 +9,11 @@ import os
 import time
 
 
-from nixt.methods import elapsed, fmt
-from nixt.persist import find, write
+from nixt.locater import find
+from nixt.methods import fmt
+from nixt.persist import write
 from nixt.objects import Object, keys, update
-
+from nixt.utility import elapsed
 
 class Email(Object):
 

@@ -19,12 +19,14 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
+from nixt.clients import Client, Fleet, Output
 from nixt.command import Commands, command, modules, table
-from nixt.handler import Client, Event, Fleet, Output
-from nixt.methods import elapsed, parse
+from nixt.handler import Event
+from nixt.methods import parse
 from nixt.objects import Object, keys
-from nixt.persist import Workdir,  skel
-from nixt.runtime import launch, level
+from nixt.runtime import dispatch, launch, level
+from nixt.utility import elapsed
+from nixt.workdir import Workdir, skel
 
 
 NAME = Workdir.name
@@ -82,7 +84,7 @@ class Pool:
     @staticmethod
     def init(cls, nr=None):
         Pool.nrcpu = nr or os.cpu_count
-        for x in range(Pool.nrcpu*2):
+        for x in range(Pool.nrcpu):
             clt = cls()
             clt.start()
             Pool.add(clt)
@@ -132,7 +134,6 @@ class Buffer(Output):
             print(txt)
 
 
-
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     print(f"{NAME.upper()} {Config.version} since {tme} ({Config.level.upper()})")
@@ -152,7 +153,7 @@ def consume(evts):
             os._exit(0)
 
 
-def payload(cmds):
+def payload(clt, cmds):
     with paylock:
         nmr = 0
         cmdz = sorted(keys(cmds))
@@ -169,7 +170,7 @@ def payload(cmds):
                 event.type = "command"
                 todo.append(event)
         for event in todo:
-            Pool.put(event)
+            clt.put(event)
             events.put(event)
             nmr += 1
         return nmr
@@ -203,36 +204,32 @@ def main():
     level("debug")
     skel()
     table()
-    if "z" in Config.opts:
-        nrcpu = os.cpu_count()
-    else:
-        nrcpu = 1
-    Pool.init(CLI, nrcpu)
     nrs = Config.index or 1
     thrs = []
+    clt = Buffer()
+    clt.start()
     for _nr in range(nrs):
-        thrs.append(launch(payload, pre))
+        thrs.append(launch(payload, clt, pre))
     for thr in thrs:
         nr = thr.join()
         if nr:
             nrcommand += nr
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, param))
+        thrs.append(launch(payload, clt, param))
     for thr in thrs:
         nr = thr.join()
         if nr:
             nrcommand += nr
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, post))
+        thrs.append(launch(payload, clt, post))
     for thr in thrs:
         nr = thr.join()
         if nr:
             nrcommand += nr
     time.sleep(0.1)
     consume(events)
-    Pool.shutdown()
     Fleet.shutdown()
     Fleet.wait()
 

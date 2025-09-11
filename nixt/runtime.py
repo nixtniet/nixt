@@ -5,6 +5,7 @@
 
 
 import logging
+import os
 import queue
 import threading
 import time
@@ -59,6 +60,81 @@ class Thread(threading.Thread):
             _thread.interrupt_main()
 
 
+class Worker:
+
+    def __init__(self):
+        self.lock  = threading.RLock()
+        self.queue = queue.Queue()
+        self.stop  = threading.Event()
+
+    def put(self, func, args):
+        self.queue.put((func, args))
+
+    def run(self):
+        while not self.stop.is_set():
+            func, args = self.queue.get()
+            if func is None and args is None:
+                self.queue.task_done()
+                break
+            try:
+                func(*args)
+            except Exception as ex:
+                logging.exception(ex)
+                _thread.interrupt_main()
+            self.queue.task_done()
+
+    def start(self):
+        self.stop.clear()
+        launch(self.run)
+
+    def stop(self):
+        self.stop.set()
+        self.queue.put((None, None))
+
+    def wait(self):
+        try:
+            self.queue.join()
+        except Exception as ex:
+            _thread.interrupt_main()
+
+
+class Pool:
+
+    workers = []
+    lock = threading.RLock()
+    nrcpu = os.cpu_count()
+    nrlast = 0
+
+    @staticmethod
+    def add(wrk):
+        Pool.workers.append(wrk)
+
+    @staticmethod
+    def init(nr=None):
+        Pool.nrcpu = nr or os.cpu_count
+        for x in range(Pool.nrcpu):
+            wrk = Worker()
+            wrk.start()
+            Pool.add(wrk)
+
+    @staticmethod
+    def put(func, args):
+        with Pool.lock:
+            if not Pool.workers:
+                Pool.init(Pool.nrcpu)
+            if Pool.nrlast >= Pool.nrcpu-1:
+                Pool.nrlast = 0
+            wrk = Pool.workers[Pool.nrlast]
+            wrk.put(func, args)
+            Pool.nrlast += 1
+
+    @staticmethod
+    def shutdown():
+        with Pool.lock:
+            for worker in Pool.workers:
+                worker.stop()
+
+
 class Timy(threading.Timer):
 
     def __init__(self, sleep, func, *args, **kwargs):
@@ -104,6 +180,10 @@ class Repeater(Timed):
         super().run()
 
 
+def dispatch(func, *args, **kwargs):
+    Pool.put(func, args)
+
+
 def launch(func, *args, **kwargs):
     thread = Thread(func, *args, **kwargs)
     thread.start()
@@ -129,6 +209,7 @@ def rlog(loglevel, txt, ignore=None):
 
 def __dir__():
     return (
+        'Pool',
         'Repeater',
         'Thread',
         'Timed',
