@@ -21,6 +21,7 @@ from .runtime import launch, rlog
 class Commands:
 
     cmds = {}
+    debug = False
     md5s = {}
     mod = j(os.path.dirname(__file__), "modules")
     names = {}
@@ -40,6 +41,8 @@ class Commands:
             module = importer(name, Commands.mod)
             if module:
                 scan(module)
+                if Commands.debug:
+                    module.DEBUG = True
                 func = Commands.cmds.get(cmd)
         return func
 

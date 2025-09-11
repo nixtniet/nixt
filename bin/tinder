@@ -5,9 +5,6 @@
 "simulate clients"
 
 
-import importlib
-import importlib.util
-import logging
 import os
 import random
 import queue
@@ -22,13 +19,12 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, command, modules, scan, table
-from nixt.command import importer, inits, scanner
+from nixt.command import Commands, command, modules, table
 from nixt.handler import Client, Event, Fleet, Output
-from nixt.methods import elapsed, parse, spl
+from nixt.methods import elapsed, parse
 from nixt.objects import Object, keys
 from nixt.persist import Workdir,  skel
-from nixt.runtime import launch
+from nixt.runtime import launch, level
 
 
 NAME = Workdir.name
@@ -36,6 +32,7 @@ STARTTIME = time.time()
 
 
 Commands.mod = "mods"
+Commands.debug = True
 Workdir.wdr = ".test"
 
 
@@ -53,8 +50,6 @@ class Config:
     sets     = {}
     verbose  = False
     version  = 410
-
-
 
 
 lap = 1
@@ -101,6 +96,12 @@ class Pool:
             clt.put(evt)
             Pool.nrlast += 1
 
+    @staticmethod
+    def shutdown():
+        with Pool.lock:
+            for client in Pool.clients:
+                client.stop()
+
 
 class CLI(Client):
 
@@ -112,7 +113,6 @@ class CLI(Client):
         self.raw(txt)
 
     def raw(self, txt):
-
         if "v" in Config.opts:
             print(txt)
 
@@ -167,7 +167,6 @@ def payload(cmds):
                 event = Event()
                 event.txt = cmd + " " + example
                 event.type = "command"
-                print(event.txt)
                 todo.append(event)
         for event in todo:
             Pool.put(event)
@@ -201,13 +200,14 @@ def main():
     if "f" not in Config.opts:
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
+    level("debug")
     skel()
     table()
     if "z" in Config.opts:
         nrcpu = os.cpu_count()
     else:
         nrcpu = 1
-    Pool.init(Buffer, nrcpu)
+    Pool.init(CLI, nrcpu)
     nrs = Config.index or 1
     thrs = []
     for _nr in range(nrs):
@@ -232,6 +232,7 @@ def main():
             nrcommand += nr
     time.sleep(0.1)
     consume(events)
+    Pool.shutdown()
     Fleet.shutdown()
     Fleet.wait()
 
@@ -266,8 +267,8 @@ pre.tdo = ["mekker", ""]
 
 post = Object()
 post.dne = ["hnrss", ""]
-post.rem = ["hnrss", ""]
 post.exp = ['']
+post.rem = ["hnrss", ""]
 
 
 if __name__ == "__main__":
