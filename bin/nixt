@@ -20,7 +20,8 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, command, modules, scan
+from nixt.command import Commands, command, importer
+from nixt.command import inits, md5sum, modules, scanner, table
 from nixt.handler import Client, Event, Fleet
 from nixt.methods import parse, spl
 from nixt.objects import update
@@ -28,9 +29,14 @@ from nixt.persist import Workdir, pidname, setwd
 from nixt.runtime import launch, level
 
 
-import nixt.modules as MODS
+if os.path.exists("mods"):
+    import mods as MODS
+    Commands.mod = "mods"
+else:
+    import nixbot.modules as MODS
 
 
+CHECKSUM = "c21fa6518904359925ace909fdd44045"
 NAME = Workdir.name
 
 
@@ -44,7 +50,7 @@ class Config:
     gets     = {}
     init     = ""
     level    = "warn"
-    mod      = "mods"
+    mod      = MODS.__path__[0]
     opts     = ""
     otxt     = ""
     sets     = {}
@@ -126,61 +132,6 @@ def privileges():
     os.setuid(pwnam2.pw_uid)
 
 
-"modules"
-
-
-def importer(name, path, package=None):
-    if package:
-        fullname = f"{package}.{name}"
-    else:
-        fullname = name
-    module = sys.modules.get(fullname, None)
-    if not module:
-        try:
-            pth = os.path.join(path, f"{name}.py")
-            if not os.path.exists(pth):
-                return
-            spec = importlib.util.spec_from_file_location(fullname, pth)
-            module = importlib.util.module_from_spec(spec)
-            if module:
-                sys.modules[fullname] = module
-                spec.loader.exec_module(module)
-        except Exception as ex:
-            logging.exception(ex)
-    return module
-
-
-def inits(names):
-    modz = []
-    for name in sorted(spl(names)):
-        try:
-            module = importer(name, Commands.mod, MODS)
-            if not module:
-                continue
-            if "init" in dir(module):
-                thr = launch(module.init)
-                modz.append((module, thr))
-        except Exception as ex:
-            logging.exception(ex)
-            _thread.interrupt_main()
-    return modz
-
-
-def scanner(names=None, debug=False):
-    res = []
-    for nme in sorted(modules()):
-        if names and nme not in spl(names):
-            continue
-        module = importer(nme, Commands.mod, "mods")
-        if not module:
-            continue
-        scan(module)
-        if debug and "DENUG" in dir(module):
-            module.DEBUG = True
-        res.append(module)
-    return res
-
-
 "scripts"
 
 
@@ -208,6 +159,7 @@ def control():
     if len(sys.argv) == 1:
         return
     boot()
+    Commands.add(md5)
     Commands.add(srv)
     Commands.add(tbl)
     csl = CLI()
@@ -230,13 +182,12 @@ def service():
 def boot(doparse=True):
     if doparse:
         parse(Config, " ".join(sys.argv[1:]))
-        update(Config, Config.sets)
+        update(Config, Config.sets, empty=False)
     level(Config.level)
     if "v" in Config.opts:
         banner()
     setwd(NAME)
-    scanner()
-    #scanner(Config.mod)
+    table(CHECKSUM)
     Commands.add(cmd)
     Commands.add(ver)
 
@@ -285,18 +236,10 @@ def cmd(event):
     event.reply(",".join(sorted(Commands.names)))
 
 
-TXT = """[Unit]
-Description=%s
-After=network-online.target
+def md5(event):
+    tbl = importer("tbl", Config.mod)
+    event.reply(md5sum(tbl.__file__))
 
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
 
 
 def srv(event):
@@ -316,6 +259,11 @@ def tbl(event):
     event.reply("")
     event.reply("")
     event.reply(f"NAMES = {json.dumps(Commands.names, indent=4, sort_keys=True)}")
+    event.reply("")
+    event.reply("MD5 = {")
+    for module in scanner():
+        event.reply(f'    "{module.__name__.split(".")[-1]}": "{md5sum(module.__file__)}",')
+    event.reply("}")
 
 
 def ver(event):
@@ -348,7 +296,6 @@ def wrap(func):
 
 
 def main():
-    Config.mod = MODS.__path__[0]
     if check("v"):
         Config.opts += "v"
     if check("m"):
@@ -363,6 +310,20 @@ def main():
         wrapped(service)
     else:
         wrapped(control)
+
+
+TXT = """[Unit]
+Description=%s
+After=network-online.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
 
 
 if __name__ == "__main__":

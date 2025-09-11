@@ -47,11 +47,11 @@ def keys(obj):
     return obj.__dict__.keys()
 
 
-def update(obj, data):
+def update(obj, data, empty=True):
     for key, value in items(data):
-        if key and value:
-            setattr(obj, key, value)
-
+        if not empty and not value:
+            continue
+        setattr(obj, key, value)
 
 def values(obj):
     if isinstance(obj, dict):

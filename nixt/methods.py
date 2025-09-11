@@ -4,7 +4,13 @@
 "methods"
 
 
+import os
+
+
 from .objects import items, keys
+
+
+j = os.path.join
 
 
 def edit(obj, setter, skip=True):
@@ -89,6 +95,7 @@ def parse(obj, txt=None):
     obj.cmd    = getattr(obj, "cmd", "")
     obj.gets   = getattr(obj, "gets", "")
     obj.index  = getattr(obj, "index", None)
+    obj.inits  = getattr(obj, "inits", "")
     obj.mod    = getattr(obj, "mod", "")
     obj.opts   = getattr(obj, "opts", "")
     obj.result = getattr(obj, "result", "")
@@ -215,6 +222,7 @@ def __dir__():
         'elapsed',
         'fmt',
         'fqn',
+        'j',
         'name',
         'parse',
         'search',
