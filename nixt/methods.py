@@ -5,7 +5,7 @@
 
 
 import hashlib
-import os
+import time
 
 
 from .objects import items, keys

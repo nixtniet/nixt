@@ -155,7 +155,7 @@ class Output(Client):
     def wait(self):
         try:
             self.oqueue.join()
-        except Exception as ex:
+        except Exception:
             _thread.interrupt_main()
 
 

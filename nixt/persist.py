@@ -12,12 +12,12 @@ import threading
 import time
 
 
-j = os.path.join
-lock = threading.RLock()
-
-
 from .methods import fqn, search
 from .objects import Object, dump, load, update
+
+
+j = os.path.join
+lock = threading.RLock()
 
 
 class Cache:

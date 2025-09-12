@@ -97,7 +97,7 @@ class Worker:
     def wait(self):
         try:
             self.queue.join()
-        except Exception as ex:
+        except Exception:
             _thread.interrupt_main()
 
 
