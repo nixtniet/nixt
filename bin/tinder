@@ -96,6 +96,7 @@ class Buffer(Output):
         if "v" in Config.opts:
             print(txt)
 
+
 class Pool:
 
     clients = []
@@ -123,8 +124,6 @@ class Pool:
             clt = Pool.clients[Pool.nrlast]
             clt.put(evt)
             Pool.nrlast += 1
-
-
 
 
 def banner():

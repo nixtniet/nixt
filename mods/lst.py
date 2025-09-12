@@ -8,4 +8,8 @@ from nixt.persist import types
 
 
 def ls(event):
-    event.reply(",".join([x.split(".")[-1].lower() for x in types()]))
+    tps = types()
+    if tps:
+        event.reply(",".join([x.split(".")[-1].lower() for x in tps]))
+    else:
+        event.reply("no data yet.")

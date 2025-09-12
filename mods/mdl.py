@@ -75,8 +75,6 @@ jaar["Wfz"] = 23820
 jaar["totaal"] = 168678
 
 
-
-
 "utilities"
 
 

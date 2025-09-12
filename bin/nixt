@@ -45,7 +45,7 @@ class Config:
     otxt     = ""
     sets     = {}
     verbose  = False
-    version  = 413
+    version  = 420
 
 
 class CLI(Client):
@@ -77,6 +77,9 @@ class Console(CLI):
         evt.txt = input("> ")
         evt.type = "command"
         return evt
+
+
+"daemon"
 
 
 def daemon(verbose=False):
@@ -176,10 +179,6 @@ def boot(doparse=True):
     table(CHECKSUM)
     Commands.add(cmd)
     Commands.add(ver)
-    if "z" in Config.opts:
-        Pool.init()
-    else:
-        Pool.init(1)
 
 
 "utilities"
