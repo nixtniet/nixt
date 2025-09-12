@@ -24,7 +24,7 @@ from nixt.handler import Client, Event, Fleet, Output
 from nixt.methods import elapsed, parse
 from nixt.objects import Object, keys
 from nixt.persist import Workdir, skel
-from nixt.runtime import dispatch, launch, level
+from nixt.runtime import launch, level
 
 
 NAME = Workdir.name
@@ -68,41 +68,6 @@ paylock = _thread.allocate_lock()
 rand = random.SystemRandom()
 
 
-class Pool:
-
-    clients = []
-    lock = threading.RLock()
-    nrcpu = 1
-    nrlast = 0
-
-    @staticmethod
-    def add(clt):
-        Pool.clients.append(clt)
-
-    @staticmethod
-    def init(cls, nr=None):
-        Pool.nrcpu = nr or os.cpu_count
-        for x in range(Pool.nrcpu):
-            clt = cls()
-            clt.start()
-            Pool.add(clt)
-
-    @staticmethod
-    def put(evt):
-        with Pool.lock:
-            if Pool.nrlast >= Pool.nrcpu-1:
-                Pool.nrlast = 0
-            clt = Pool.clients[Pool.nrlast]
-            clt.put(evt)
-            Pool.nrlast += 1
-
-    @staticmethod
-    def shutdown():
-        with Pool.lock:
-            for client in Pool.clients:
-                client.stop()
-
-
 class CLI(Client):
 
     def __init__(self):
@@ -131,6 +96,36 @@ class Buffer(Output):
         if "v" in Config.opts:
             print(txt)
 
+class Pool:
+
+    clients = []
+    lock = threading.RLock()
+    nrcpu = 1
+    nrlast = 0
+
+    @staticmethod
+    def add(clt):
+        Pool.clients.append(clt)
+
+    @staticmethod
+    def init(cls, nr=None):
+        Pool.nrcpu = nr or os.cpu_count()
+        for x in range(Pool.nrcpu):
+            clt = cls()
+            clt.start()
+            Pool.add(clt)
+
+    @staticmethod
+    def put(evt):
+        with Pool.lock:
+            if Pool.nrlast >= Pool.nrcpu-1:
+                Pool.nrlast = 0
+            clt = Pool.clients[Pool.nrlast]
+            clt.put(evt)
+            Pool.nrlast += 1
+
+
+
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
@@ -150,7 +145,7 @@ def consume(evts):
             os._exit(0)
 
 
-def payload(clt, cmds):
+def payload(cmds):
     with paylock:
         nmr = 0
         cmdz = sorted(keys(cmds))
@@ -167,7 +162,7 @@ def payload(clt, cmds):
                 event.type = "command"
                 todo.append(event)
         for event in todo:
-            clt.put(event)
+            Pool.put(event)
             events.put(event)
             nmr += 1
         return nmr
@@ -203,24 +198,26 @@ def main():
     table()
     nrs = Config.index or 1
     thrs = []
-    clt = Buffer()
-    clt.start()
+    if "z" in Config.opts:
+        Pool.init(Buffer)
+    else:
+        Pool.init(Buffer, 1)
     for _nr in range(nrs):
-        thrs.append(launch(payload, clt, pre))
+        thrs.append(launch(payload, pre))
     for thr in thrs:
         nr = thr.join()
         if nr:
             nrcommand += nr
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, clt, param))
+        thrs.append(launch(payload, param))
     for thr in thrs:
         nr = thr.join()
         if nr:
             nrcommand += nr
     thrs = []
     for _nr in range(nrs):
-        thrs.append(launch(payload, clt, post))
+        thrs.append(launch(payload,  post))
     for thr in thrs:
         nr = thr.join()
         if nr:
@@ -272,6 +269,7 @@ if __name__ == "__main__":
     nrevents = events.qsize()
     percall = (endtime-STARTTIME)/(nrcommand)
     if "v" in Config.opts:
+        print(f"{Pool.nrcpu} cpu's used")
         print(f"{nrevents} events left.")
         print(f"total: {lap} nrs: {nrs} cmds: {nrcommand} call: %.6fs" % percall)
     sys.exit()

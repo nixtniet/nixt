@@ -176,6 +176,10 @@ def boot(doparse=True):
     table(CHECKSUM)
     Commands.add(cmd)
     Commands.add(ver)
+    if "z" in Config.opts:
+        Pool.init()
+    else:
+        Pool.init(1)
 
 
 "utilities"

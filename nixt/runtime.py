@@ -60,100 +60,6 @@ class Thread(threading.Thread):
             _thread.interrupt_main()
 
 
-"workers"
-
-
-class Worker(Thread):
-
-    def __init__(self, daemon=True, **kwargs):
-        super().__init__(None, self.run, None, (), daemon=daemon, **kwargs)
-        self.lock  = threading.RLock()
-        self.queue = queue.Queue()
-        self.stop  = threading.Event()
-
-    def put(self, func, args):
-        self.queue.put((func, args))
-
-    def run(self):
-        while not self.stop.is_set():
-            func, args = self.queue.get()
-            if func is None and args is None:
-                self.queue.task_done()
-                break
-            try:
-                func(*args)
-            except Exception as ex:
-                logging.exception(ex)
-                _thread.interrupt_main()
-            self.queue.task_done()
-
-    def start(self):
-        self.stop.clear()
-        launch(self.run)
-
-    def stop(self):
-        self.stop.set()
-        self.queue.put((None, None))
-
-    def wait(self):
-        try:
-            self.queue.join()
-        except Exception:
-            _thread.interrupt_main()
-
-
-class Pool:
-
-    workers = []
-    lock = threading.RLock()
-    nrcpu = os.cpu_count()
-    nrlast = 0
-
-    @staticmethod
-    def add(wrk):
-        Pool.workers.append(wrk)
-
-    @staticmethod
-    def init(nr=None):
-        for x in range(nr or Pool.nrcpu):
-            Pool.new()
-
-    @staticmethod
-    def new():
-        worker = Worker()
-        worker.start()
-        Pool.add(worker)
-        return worker
-
-    @staticmethod
-    def put(func, args):
-        with Pool.lock:
-            if not Pool.workers:
-                Pool.new()
-            gotcha = False
-            if len(Pool.workers) < Pool.nrcpu:
-                worker = Pool.new()
-                worker.put(func, args)
-                gotcha = True
-            if not gotcha:
-                for worker in Pool.workers:
-                    if worker.queue.qsize() == 0:
-                        worker.put(func, args)
-                        gotcha = True
-            if not gotcha:
-                if Pool.nrlast >= Pool.nrcpu-1:
-                    Pool.nrlast = 0
-                worker= Pool.workers[Pool.nrlast]
-                worker.put(func, args)
-                Pool.nrlast += 1
-
-    @staticmethod
-    def shutdown():
-        with Pool.lock:
-            for worker in Pool.workers:
-                worker.stop()
-
-
 "timer/repeater"
 
 
@@ -203,10 +109,6 @@ class Repeater(Timed):
 
 
 "utility"
-
-
-def dispatch(func, *args, **kwargs):
-    Pool.put(func, args)
 
 
 def launch(func, *args, **kwargs):

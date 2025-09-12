@@ -11,7 +11,7 @@ import _thread
 
 
 from .methods import fqn
-from .runtime import dispatch, launch
+from .runtime import launch
 
 
 class Event:
@@ -22,6 +22,7 @@ class Event:
         self.args = []
         self.channel = ""
         self.ctime = time.time()
+        self.orig = ""
         self.rest = ""
         self.result = {}
         self.txt = ""
@@ -60,7 +61,7 @@ class Handler:
     def callback(self, event):
         func = self.cbs.get(event.type, None)
         if func:
-            event._thr = dispatch(func, event, name=event.txt and event.txt.split()[0])
+            event._thr = launch(func, event, name=event.txt and event.txt.split()[0])
 
     def loop(self):
         while not self.stopped.is_set():
