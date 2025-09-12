@@ -19,14 +19,12 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client, Fleet, Output
 from nixt.command import Commands, command, modules, table
-from nixt.handler import Event
-from nixt.methods import parse
+from nixt.handler import Client, Event, Fleet, Output
+from nixt.methods import elapsed, parse
 from nixt.objects import Object, keys
+from nixt.persist import Workdir, skel
 from nixt.runtime import dispatch, launch, level
-from nixt.utility import elapsed
-from nixt.workdir import Workdir, skel
 
 
 NAME = Workdir.name
