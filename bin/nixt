@@ -29,16 +29,7 @@ from nixt.persist import Workdir, pidname, setwd
 from nixt.runtime import launch, level
 
 
-if os.path.exists("mods"):
-    import mods as MODS
-    Commands.mod = "mods"
-else:
-    import nixbot.modules as MODS
-
-
 CHECKSUM = "1cb5d3d928eb48895999fec5fc15d47e"
-
-
 NAME = Workdir.name
 
 
@@ -49,7 +40,7 @@ class Config:
     gets     = {}
     init     = ""
     level    = "warn"
-    mod      = MODS.__path__[0]
+    mod      = ""
     opts     = ""
     otxt     = ""
     sets     = {}
@@ -180,6 +171,8 @@ def boot(doparse=True):
     if "v" in Config.opts:
         banner()
     setwd(NAME)
+    if os.path.exists("mods"):
+        Commands.mod = Config.mod = "mods"
     table(CHECKSUM)
     Commands.add(cmd)
     Commands.add(ver)
@@ -225,7 +218,7 @@ def cmd(event):
 
 
 def md5(event):
-    tbl = importer("tbl", Config.mod)
+    tbl = importer("tbl")
     event.reply(md5sum(tbl.__file__))
 
 

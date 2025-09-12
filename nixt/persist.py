@@ -12,11 +12,10 @@ import threading
 import time
 
 
-from .methods import fqn, search
+from .methods import fqn, j, search
 from .objects import Object, dump, load, update
 
 
-j = os.path.join
 lock = threading.RLock()
 
 

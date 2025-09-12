@@ -5,10 +5,14 @@
 
 
 import hashlib
+import os
 import time
 
 
 from .objects import items, keys
+
+
+j = os.path.join
 
 
 def edit(obj, setter, skip=True):
@@ -250,6 +254,7 @@ def __dir__():
         'extract_date',
         'fmt',
         'fqn',
+        'j',
         'md5sum',
         'name',
         'parse',

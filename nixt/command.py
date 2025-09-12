@@ -13,12 +13,9 @@ import sys
 import _thread
 
 
-from .methods import md5sum, parse, spl
+from .methods import j, md5sum, parse, spl
 from .handler import Fleet
 from .runtime import launch, rlog
-
-
-j = os.path.join
 
 
 class Commands:
@@ -31,23 +28,26 @@ class Commands:
 
     @staticmethod
     def add(func) -> None:
-        Commands.cmds[func.__name__] = func
-        Commands.names[func.__name__] = func.__module__.split(".")[-1]
+        name = func.__name__
+        modname = func.__module__.split(".")[-1]
+        Commands.cmds[name] = func
+        Commands.names[name] = modname
 
     @staticmethod
     def get(cmd):
         func = Commands.cmds.get(cmd, None)
-        if not func:
-            name = Commands.names.get(cmd, None)
-            if not name:
-                return
-            module = importer(name, Commands.mod)
-            if module:
-                scan(module)
-                if Commands.debug:
-                    module.DEBUG = True
-                func = Commands.cmds.get(cmd)
-        return func
+        if func:
+            return func
+        name = Commands.names.get(cmd, None)
+        if not name:
+            return
+        module = importer(name)
+        if not module:
+            return
+        scan(module)
+        if Commands.debug:
+            module.DEBUG = True
+        return Commands.cmds.get(cmd, None)
 
 
 def command(evt):
@@ -86,9 +86,11 @@ def scan(module):
 "modules"
 
 
-def importer(name, path):
+def importer(name, path=None):
     module = sys.modules.get(name, None)
     if not module:
+        if not path:
+            path = Commands.mod
         try:
             pth = j(path, f"{name}.py")
             if not os.path.exists(pth):
@@ -100,6 +102,7 @@ def importer(name, path):
             if module:
                 sys.modules[name] = module
                 spec.loader.exec_module(module)
+                rlog("warn", f"load {pth}")
         except Exception as ex:
             logging.exception(ex)
             _thread.interrupt_main()
@@ -120,7 +123,7 @@ def scanner(names=None):
     for nme in sorted(modules()):
         if names and nme not in spl(names):
             continue
-        module = importer(nme, Commands.mod)
+        module = importer(nme)
         if not module:
             continue
         scan(module)
@@ -133,7 +136,7 @@ def table(checksum=""):
     if os.path.exists(pth):
         if checksum and md5sum(pth) != checksum:
             rlog("warn", "table checksum error.")
-    tbl = importer("tbl", Commands.mod)
+    tbl = importer("tbl")
     if tbl:
         if "NAMES" in dir(tbl):
             Commands.names.update(tbl.NAMES)
