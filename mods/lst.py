@@ -4,7 +4,7 @@
 "available types"
 
 
-from nixt.workdir import types
+from nixt.persist import types
 
 
 def ls(event):

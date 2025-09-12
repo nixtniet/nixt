@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-from nixt.clients import Fleet
+from nixt.handler import Fleet
 from nixt.methods import fmt, name
 
 

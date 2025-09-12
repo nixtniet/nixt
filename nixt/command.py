@@ -13,10 +13,12 @@ import sys
 import _thread
 
 
-from .clients import Fleet
-from .methods import parse
+from .methods import md5sum, parse, spl
+from .handler import Fleet
 from .runtime import launch, rlog
-from .utility import md5sum, j, spl
+
+
+j = os.path.join
 
 
 class Commands:

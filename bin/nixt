@@ -20,15 +20,13 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client, Fleet
 from nixt.command import Commands, command, importer
 from nixt.command import inits, modules, scanner, table
-from nixt.handler import Event
-from nixt.methods import parse
+from nixt.handler import Client, Event, Fleet
+from nixt.methods import md5sum, parse, spl
 from nixt.objects import update
-from nixt.workdir import Workdir, pidname, setwd
+from nixt.persist import Workdir, pidname, setwd
 from nixt.runtime import launch, level
-from nixt.utility import md5sum, spl
 
 
 if os.path.exists("mods"):
@@ -38,7 +36,7 @@ else:
     import nixbot.modules as MODS
 
 
-CHECKSUM = "ad166962eddabb5bcdfb03448e2fa30f"
+CHECKSUM = "1cb5d3d928eb48895999fec5fc15d47e"
 
 
 NAME = Workdir.name

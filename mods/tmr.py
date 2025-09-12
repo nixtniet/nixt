@@ -9,11 +9,10 @@ import re
 import time
 
 
-from nixt.clients import Fleet
-from nixt.locater import find
-from nixt.persist import write
+from nixt.handler import Fleet
+from nixt.methods import elapsed, extract_date
+from nixt.persist import find, write
 from nixt.runtime import Timed, launch, rlog
-from nixt.utility import elapsed
 
 
 def init():
@@ -35,18 +34,6 @@ def init():
 class NoDate(Exception):
 
     pass
-
-
-def extract_date(daystr):
-    daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
-    res = time.time()
-    for fmt in FORMATS:
-        try:
-            res = time.mktime(time.strptime(daystr, fmt))
-            break
-        except ValueError:
-            pass
-    return res
 
 
 def get_day(daystr):
@@ -213,14 +200,4 @@ MONTHS = [
     'Oct',
     'Nov',
     'Dec'
-]
-
-
-FORMATS = [
-    "%Y-%M-%D %H:%M:%S",
-    "%Y-%m-%d %H:%M:%S",
-    "%Y-%m-%d",
-    "%d-%m-%Y",
-    "%d-%m",
-    "%m-%d",
 ]

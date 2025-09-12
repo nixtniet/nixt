@@ -9,11 +9,10 @@ import os
 import time
 
 
-from nixt.locater import find
-from nixt.methods import fmt
-from nixt.persist import write
+from nixt.methods import elapsed, extract_date, fmt, spl
+from nixt.persist import find, write
 from nixt.objects import Object, keys, update
-from nixt.utility import elapsed
+
 
 class Email(Object):
 
@@ -59,14 +58,13 @@ def todate(date):
 
 
 def eml(event):
-    from .tmr import extract_date
     nrs = -1
     args = ["From", "Subject"]
     if len(event.args) > 1:
         args.extend(event.args[1:])
     if event.gets:
         args.extend(keys(event.gets))
-    for key in keys(event.silent):
+    for key in spl(event.silent):
         if key in args:
             args.remove(key)
     args = set(args)

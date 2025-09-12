@@ -14,8 +14,8 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from nixt.objects import Object
+from nixt.persist import Workdir, types
 from nixt.runtime import launch, rlog
-from nixt.workdir import Workdir, types
 
 
 DEBUG = False

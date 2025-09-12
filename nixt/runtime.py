@@ -60,6 +60,9 @@ class Thread(threading.Thread):
             _thread.interrupt_main()
 
 
+"workers"
+
+
 class Worker:
 
     def __init__(self):
@@ -113,26 +116,43 @@ class Pool:
     def init(nr=None):
         Pool.nrcpu = nr or os.cpu_count
         for x in range(Pool.nrcpu):
-            wrk = Worker()
-            wrk.start()
-            Pool.add(wrk)
+            Pool.new()
+
+    @staticmethod
+    def new():
+        worker = Worker()
+        worker.start()
+        Pool.add(worker)
+        return worker
 
     @staticmethod
     def put(func, args):
         with Pool.lock:
             if not Pool.workers:
-                Pool.init(Pool.nrcpu)
-            if Pool.nrlast >= Pool.nrcpu-1:
-                Pool.nrlast = 0
-            wrk = Pool.workers[Pool.nrlast]
-            wrk.put(func, args)
-            Pool.nrlast += 1
+                Pool.new()
+            gotcha = False
+            for worker in Pool.workers:
+                if worker.queue.qsize() == 0:
+                    worker.put(func, args)
+                    gotcha = True
+            if not gotcha:
+                if len(Pool.workers) < Pool.nrcpu:
+                    worker = Pool.new()
+                    worker.put(func, args)
+                else:
+                    Pool.nrlast = 0
+                    worker= Pool.workers[Pool.nrlast]
+                    worker.put(func, args)
+                    Pool.nrlast += 1
 
     @staticmethod
     def shutdown():
         with Pool.lock:
             for worker in Pool.workers:
                 worker.stop()
+
+
+"timer/repeater"
 
 
 class Timy(threading.Timer):
@@ -180,6 +200,9 @@ class Repeater(Timed):
         super().run()
 
 
+"utility"
+
+
 def dispatch(func, *args, **kwargs):
     Pool.put(func, args)
 
@@ -205,6 +228,9 @@ def rlog(loglevel, txt, ignore=None):
         if ign in str(txt):
             return
     logging.log(LEVELS.get(loglevel), txt)
+
+
+"interface"
 
 
 def __dir__():
