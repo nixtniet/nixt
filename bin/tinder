@@ -145,8 +145,7 @@ def consume(evts):
         try:
             event = events.get()
             event.wait()
-            if events.qsize() == 0:
-                break
+            events.task_done()
         except (KeyboardInterrupt, EOFError):
             os._exit(0)
 
@@ -226,8 +225,8 @@ def main():
         nr = thr.join()
         if nr:
             nrcommand += nr
-    time.sleep(0.1)
-    consume(events)
+    launch(consume, events)
+    events.join()    
     Fleet.shutdown()
     Fleet.wait()
 

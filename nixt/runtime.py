@@ -63,9 +63,10 @@ class Thread(threading.Thread):
 "workers"
 
 
-class Worker:
+class Worker(Thread):
 
-    def __init__(self):
+    def __init__(self, daemon=True, **kwargs):
+        super().__init__(None, self.run, None, (), daemon=daemon, **kwargs)
         self.lock  = threading.RLock()
         self.queue = queue.Queue()
         self.stop  = threading.Event()
@@ -114,8 +115,7 @@ class Pool:
 
     @staticmethod
     def init(nr=None):
-        Pool.nrcpu = nr or os.cpu_count
-        for x in range(Pool.nrcpu):
+        for x in range(nr or Pool.nrcpu):
             Pool.new()
 
     @staticmethod
@@ -131,19 +131,21 @@ class Pool:
             if not Pool.workers:
                 Pool.new()
             gotcha = False
-            for worker in Pool.workers:
-                if worker.queue.qsize() == 0:
-                    worker.put(func, args)
-                    gotcha = True
+            if len(Pool.workers) < Pool.nrcpu:
+                worker = Pool.new()
+                worker.put(func, args)
+                gotcha = True
             if not gotcha:
-                if len(Pool.workers) < Pool.nrcpu:
-                    worker = Pool.new()
-                    worker.put(func, args)
-                else:
+                for worker in Pool.workers:
+                    if worker.queue.qsize() == 0:
+                        worker.put(func, args)
+                        gotcha = True
+            if not gotcha:
+                if Pool.nrlast >= Pool.nrcpu-1:
                     Pool.nrlast = 0
-                    worker= Pool.workers[Pool.nrlast]
-                    worker.put(func, args)
-                    Pool.nrlast += 1
+                worker= Pool.workers[Pool.nrlast]
+                worker.put(func, args)
+                Pool.nrlast += 1
 
     @staticmethod
     def shutdown():

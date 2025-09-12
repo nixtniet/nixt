@@ -59,6 +59,33 @@ def command(evt):
     evt.ready()
 
 
+def inits(names):
+    modz = []
+    for name in sorted(spl(names)):
+        try:
+            module = importer(name, Commands.mod)
+            if not module:
+                continue
+            if "init" in dir(module):
+                thr = launch(module.init)
+                modz.append((module, thr))
+        except Exception as ex:
+            logging.exception(ex)
+            _thread.interrupt_main()
+    return modz
+
+
+def scan(module):
+    for key, cmdz in inspect.getmembers(module, inspect.isfunction):
+        if key.startswith("cb"):
+            continue
+        if 'event' in inspect.signature(cmdz).parameters:
+            Commands.add(cmdz)
+
+
+"modules"
+
+
 def importer(name, path):
     module = sys.modules.get(name, None)
     if not module:
@@ -79,22 +106,6 @@ def importer(name, path):
     return module
 
 
-def inits(names):
-    modz = []
-    for name in sorted(spl(names)):
-        try:
-            module = importer(name, Commands.mod)
-            if not module:
-                continue
-            if "init" in dir(module):
-                thr = launch(module.init)
-                modz.append((module, thr))
-        except Exception as ex:
-            logging.exception(ex)
-            _thread.interrupt_main()
-    return modz
-
-
 def modules():
     if not os.path.exists(Commands.mod):
         return {}
@@ -102,14 +113,6 @@ def modules():
             x[:-3] for x in os.listdir(Commands.mod)
             if x.endswith(".py") and not x.startswith("__")
            ])
-
-
-def scan(module):
-    for key, cmdz in inspect.getmembers(module, inspect.isfunction):
-        if key.startswith("cb"):
-            continue
-        if 'event' in inspect.signature(cmdz).parameters:
-            Commands.add(cmdz)
 
 
 def scanner(names=None):
@@ -138,6 +141,9 @@ def table(checksum=""):
             Commands.md5s.update(tbl.MD5)
     else:
         scanner()
+
+
+"interface"
 
 
 def __dir__():
