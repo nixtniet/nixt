@@ -21,10 +21,10 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.command import Commands, command, modules, table
 from nixt.handler import Client, Event, Fleet, Output
-from nixt.methods import elapsed, parse
+from nixt.methods import elapsed, level, parse
 from nixt.objects import Object, keys
 from nixt.persist import Workdir, skel
-from nixt.runtime import launch, level
+from nixt.runtime import launch
 
 
 NAME = Workdir.name
@@ -42,7 +42,7 @@ class Config:
     gets     = {}
     index    = None
     init     = ""
-    level    = "debug"
+    level    = "warn"
     md5      = True
     moddir   = "mods"
     opts     = ""
@@ -129,9 +129,6 @@ class Pool:
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     print(f"{NAME.upper()} {Config.version} since {tme} ({Config.level.upper()})")
-    mds = modules()
-    if mds:
-        print(f"loaded {",".join(mds)}")
 
 
 def consume(evts):
@@ -192,7 +189,7 @@ def main():
     if "f" not in Config.opts:
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
-    level("debug")
+    level(Config.level)
     skel()
     table()
     nrs = Config.index or 1
