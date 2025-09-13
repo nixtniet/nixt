@@ -66,7 +66,6 @@ def getmod(name, path=None):
         if not path:
             path = Commands.mod
         pth = j(path, f"{name}.py")
-        print(pth)
         if not os.path.exists(pth):
             return
         if name != "tbl" and md5sum(pth) != Commands.md5s.get(name, None):

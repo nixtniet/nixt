@@ -115,7 +115,5 @@ def __dir__():
         'Repeater',
         'Thread',
         'Timed',
-        'launch',
-        'level',
-        'rlog'
+        'launch'
    )

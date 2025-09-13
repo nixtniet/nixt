@@ -225,7 +225,6 @@ def extract_date(daystr):
 
 def importer(name, pth):
     try:
-        print(name, pth)
         spec = importlib.util.spec_from_file_location(name, pth)
         if not spec:
             rlog("info", f"misiing {pth}")
@@ -251,6 +250,12 @@ def level(loglevel="debug"):
         logging.getLogger().setLevel(LEVELS.get(loglevel))
 
 
+def md5sum(path):
+    with open(path, "r", encoding="utf-8") as file:
+        txt = file.read().encode("utf-8")
+        return hashlib.md5(txt).hexdigest()
+
+
 def rlog(loglevel, txt, ignore=None):
     if ignore is None:
         ignore = []
@@ -258,15 +263,6 @@ def rlog(loglevel, txt, ignore=None):
         if ign in str(txt):
             return
     logging.log(LEVELS.get(loglevel), txt)
-
-
-"data"
-
-
-def md5sum(path):
-    with open(path, "r", encoding="utf-8") as file:
-        txt = file.read().encode("utf-8")
-        return hashlib.md5(txt).hexdigest()
 
 
 def spl(txt):
