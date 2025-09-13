@@ -13,8 +13,8 @@ import sys
 import threading
 
 
-from nixt.methods import j, rlog, spl
-from nixt.handler import Fleet
+from .methods import j, rlog, spl
+from .handler import Fleet
 
 
 lock = threading.RLock()
