@@ -5,8 +5,13 @@
 
 
 import hashlib
+import importlib
+import importlib.util
+import logging
 import os
+import sys
 import time
+import _thread
 
 
 from .objects import items, keys
@@ -218,6 +223,40 @@ def extract_date(daystr):
     return res
 
 
+def importer(name, pth):
+    try:
+        spec = importlib.util.spec_from_file_location(name, pth)
+        module = importlib.util.module_from_spec(spec)
+        if module:
+            sys.modules[name] = module
+            spec.loader.exec_module(module)
+            rlog("info", f"load {pth}")
+            return module
+    except Exception as ex:
+        logging.exception(ex)
+        _thread.interrupt_main()
+
+
+def level(loglevel="debug"):
+    if loglevel != "none":
+        format_short = "%(asctime)-8s %(message)-80s"
+        datefmt = "%H:%M:%S"
+        logging.basicConfig(datefmt=datefmt, format=format_short, force=True)
+        logging.getLogger().setLevel(LEVELS.get(loglevel))
+
+
+def rlog(loglevel, txt, ignore=None):
+    if ignore is None:
+        ignore = []
+    for ign in ignore:
+        if ign in str(txt):
+            return
+    logging.log(LEVELS.get(loglevel), txt)
+
+
+"data"
+
+
 def md5sum(path):
     with open(path, "r", encoding="utf-8") as file:
         txt = file.read().encode("utf-8")
@@ -247,6 +286,16 @@ FORMATS = [
 ]
 
 
+LEVELS = {
+    'debug': logging.DEBUG,
+    'info': logging.INFO,
+    'warning': logging.WARNING,
+    'warn': logging.WARNING,
+    'error': logging.ERROR,
+    'critical': logging.CRITICAL,
+}
+
+
 "interface"
 
 
@@ -257,10 +306,13 @@ def __dir__():
         'extract_date',
         'fmt',
         'fqn',
+        'importer',
         'j',
+        'level',
         'md5sum',
         'name',
         'parse',
+        'rlog',
         'search',
         'spl'
     )

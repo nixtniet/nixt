@@ -20,13 +20,13 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, command, importer
-from nixt.command import inits, modules, scanner, table
+from nixt.command import Commands, command, getmod
+from nixt.command import modules, scanner, table
 from nixt.handler import Client, Event, Fleet
-from nixt.methods import md5sum, parse, spl
+from nixt.methods import level, md5sum, parse, spl
 from nixt.objects import update
 from nixt.persist import Workdir, pidname, setwd
-from nixt.runtime import launch, level
+from nixt.runtime import launch
 
 
 CHECKSUM = "1cb5d3d928eb48895999fec5fc15d47e"
@@ -100,6 +100,22 @@ def daemon(verbose=False):
     os.umask(0)
     os.chdir("/")
     os.nice(10)
+
+
+def inits(names):
+    modz = []
+    for name in sorted(spl(names)):
+        try:
+            module = getmod(name)
+            if not module:
+                continue
+            if "init" in dir(module):
+                thr = launch(module.init)
+                modz.append((module, thr))
+        except Exception as ex:
+            logging.exception(ex)
+            _thread.interrupt_main()
+    return modz
 
 
 def pidfile(filename):
