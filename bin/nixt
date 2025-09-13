@@ -170,12 +170,14 @@ def boot(doparse=True):
     if doparse:
         parse(Config, " ".join(sys.argv[1:]))
         update(Config, Config.sets, empty=False)
+    if "m" in Config.opts:
+        Commands.mod = Config.mod = "mods"
+    if "a" in Config.opts:
+        Config.init = ",".join(modules())
     level(Config.level)
     if "v" in Config.opts:
         banner()
     setwd(NAME)
-    if os.path.exists("mods"):
-        Commands.mod = Config.mod = "mods"
     table(CHECKSUM)
     Commands.add(cmd)
     Commands.add(ver)
@@ -254,6 +256,23 @@ def ver(event):
     event.reply(f"{NAME.upper()} {Config.version}")
 
 
+"data"
+
+
+TXT = """[Unit]
+Description=%s
+After=network-online.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
+
+
 "runtime"
 
 
@@ -280,12 +299,6 @@ def wrap(func):
 
 
 def main():
-    if check("v"):
-        Config.opts += "v"
-    if check("m"):
-        Config.mod = "mods"
-    if check("a"):
-        Config.init = ",".join(modules())
     if check("c"):
         wrap(console)
     elif check("d"):
@@ -294,20 +307,6 @@ def main():
         wrapped(service)
     else:
         wrapped(control)
-
-
-TXT = """[Unit]
-Description=%s
-After=network-online.target
-
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
 
 
 if __name__ == "__main__":

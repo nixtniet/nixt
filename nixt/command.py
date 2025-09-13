@@ -77,32 +77,33 @@ def scan(module):
 def importer(name, path=None):
     with lock:
         module = sys.modules.get(name, None)
-        if not module:
-            if not path:
-                path = Commands.mod
-            try:
-                pth = j(path, f"{name}.py")
-                if not os.path.exists(pth):
-                    return
-                if name != "tbl" and md5sum(pth) != Commands.md5s.get(name, None):
-                    rlog("warn", f"md5 error on {pth.split(os.sep)[-1]}")
-                spec = importlib.util.spec_from_file_location(name, pth)
-                module = importlib.util.module_from_spec(spec)
-                if module:
-                    sys.modules[name] = module
-                    spec.loader.exec_module(module)
-                    rlog("info", f"load {pth}")
-            except Exception as ex:
-                logging.exception(ex)
-                _thread.interrupt_main()
-        return module
+        if module:
+            return module
+        if not path:
+            path = Commands.mod
+        pth = j(path, f"{name}.py")
+        if not os.path.exists(pth):
+            return
+            if name != "tbl" and md5sum(pth) != Commands.md5s.get(name, None):
+                rlog("warn", f"md5 error on {pth.split(os.sep)[-1]}")
+        try:
+            spec = importlib.util.spec_from_file_location(name, pth)
+            module = importlib.util.module_from_spec(spec)
+            if module:
+                sys.modules[name] = module
+                spec.loader.exec_module(module)
+                rlog("info", f"load {pth}")
+                return module
+        except Exception as ex:
+            logging.exception(ex)
+            _thread.interrupt_main()
 
 
 def inits(names):
     modz = []
     for name in sorted(spl(names)):
         try:
-            module = importer(name, Commands.mod)
+            module = importer(name)
             if not module:
                 continue
             if "init" in dir(module):
