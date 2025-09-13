@@ -91,66 +91,6 @@ def name(obj):
     return ""
 
 
-def parse(obj, txt=None):
-    if txt is None:
-        if "txt" in dir(obj):
-            txt = obj.txt
-        else:
-            txt = ""
-    args = []
-    obj.args   = getattr(obj, "args", [])
-    obj.cmd    = getattr(obj, "cmd", "")
-    obj.gets   = getattr(obj, "gets", "")
-    obj.index  = getattr(obj, "index", None)
-    obj.inits  = getattr(obj, "inits", "")
-    obj.mod    = getattr(obj, "mod", "")
-    obj.opts   = getattr(obj, "opts", "")
-    obj.result = getattr(obj, "result", "")
-    obj.sets   = getattr(obj, "sets", {})
-    obj.silent = getattr(obj, "silent", "")
-    obj.txt    = txt or getattr(obj, "txt", "")
-    obj.otxt   = obj.txt or getattr(obj, "otxt", "")
-    _nr = -1
-    for spli in obj.otxt.split():
-        if spli.startswith("-"):
-            try:
-                obj.index = int(spli[1:])
-            except ValueError:
-                obj.opts += spli[1:]
-            continue
-        if "-=" in spli:
-            key, value = spli.split("-=", maxsplit=1)
-            obj.silent[key] = value
-            obj.gets[key] = value
-            continue
-        if "==" in spli:
-            key, value = spli.split("==", maxsplit=1)
-            obj.gets[key] = value
-            continue
-        if "=" in spli:
-            key, value = spli.split("=", maxsplit=1)
-            if key == "mod":
-                if obj.mod:
-                    obj.mod += f",{value}"
-                else:
-                    obj.mod = value
-                continue
-            obj.sets[key] = value
-            continue
-        _nr += 1
-        if _nr == 0:
-            obj.cmd = spli
-            continue
-        args.append(spli)
-    if args:
-        obj.args = args
-        obj.txt  = obj.cmd or ""
-        obj.rest = " ".join(obj.args)
-        obj.txt  = obj.cmd + " " + obj.rest
-    else:
-        obj.txt = obj.cmd or ""
-
-
 def search(obj, selector, matching=False):
     res = False
     if not selector:
@@ -223,37 +163,12 @@ def extract_date(daystr):
     return res
 
 
-def importer(name, pth):
-    try:
-        spec = importlib.util.spec_from_file_location(name, pth)
-        if not spec:
-            rlog("info", f"misiing {pth}")
-            return 
-        module = importlib.util.module_from_spec(spec)
-        if not module:
-            rlog("info", f"{pth} not importable")
-            return
-        sys.modules[name] = module
-        spec.loader.exec_module(module)
-        rlog("info", f"load {pth}")
-        return module
-    except Exception as ex:
-        logging.exception(ex)
-        _thread.interrupt_main()
-
-
 def level(loglevel="debug"):
     if loglevel != "none":
         format_short = "%(asctime)-8s %(message)-80s"
         datefmt = "%H:%M:%S"
         logging.basicConfig(datefmt=datefmt, format=format_short, force=True)
         logging.getLogger().setLevel(LEVELS.get(loglevel))
-
-
-def md5sum(path):
-    with open(path, "r", encoding="utf-8") as file:
-        txt = file.read().encode("utf-8")
-        return hashlib.md5(txt).hexdigest()
 
 
 def rlog(loglevel, txt, ignore=None):
@@ -308,12 +223,9 @@ def __dir__():
         'extract_date',
         'fmt',
         'fqn',
-        'importer',
         'j',
         'level',
-        'md5sum',
         'name',
-        'parse',
         'rlog',
         'search',
         'spl'
