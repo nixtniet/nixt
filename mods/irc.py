@@ -16,10 +16,10 @@ import time
 from nixt.command import command
 from nixt.handler import Event as IEvent
 from nixt.handler import Fleet, Output
-from nixt.methods import edit, fmt
+from nixt.methods import edit, fmt, rlog
 from nixt.objects import Object, keys
 from nixt.persist import Workdir, getpath, last, write
-from nixt.runtime import launch, rlog
+from nixt.runtime import launch
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]

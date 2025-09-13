@@ -14,7 +14,7 @@ import time
 import _thread
 
 
-from .objects import items, keys
+from nixt.objects import items, keys
 
 
 j = os.path.join
@@ -214,9 +214,9 @@ def elapsed(seconds, short=True):
 def extract_date(daystr):
     daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
     res = time.time()
-    for fmt in FORMATS:
+    for format in FORMATS:
         try:
-            res = time.mktime(time.strptime(daystr, fmt))
+            res = time.mktime(time.strptime(daystr, format))
             break
         except ValueError:
             pass
@@ -225,13 +225,19 @@ def extract_date(daystr):
 
 def importer(name, pth):
     try:
+        print(name, pth)
         spec = importlib.util.spec_from_file_location(name, pth)
+        if not spec:
+            rlog("info", f"misiing {pth}")
+            return 
         module = importlib.util.module_from_spec(spec)
-        if module:
-            sys.modules[name] = module
-            spec.loader.exec_module(module)
-            rlog("info", f"load {pth}")
-            return module
+        if not module:
+            rlog("info", f"{pth} not importable")
+            return
+        sys.modules[name] = module
+        spec.loader.exec_module(module)
+        rlog("info", f"load {pth}")
+        return module
     except Exception as ex:
         logging.exception(ex)
         _thread.interrupt_main()

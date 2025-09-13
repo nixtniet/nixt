@@ -12,8 +12,9 @@ import time
 
 
 from nixt.handler import Fleet
+from nixt.methods import rlog
 from nixt.objects import Object
-from nixt.runtime import launch, rlog
+from nixt.runtime import launch
 
 
 DEBUG = False

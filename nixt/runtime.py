@@ -5,14 +5,13 @@
 
 
 import logging
-import os
 import queue
 import threading
 import time
 import _thread
 
 
-from .methods import name, rlog
+from nixt.methods import name
 
 
 class Thread(threading.Thread):

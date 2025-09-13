@@ -4,19 +4,14 @@
 "commands"
 
 
-import importlib
-import importlib.util
 import inspect
-import logging
 import os
 import sys
 import threading
-import _thread
 
 
-from .methods import importer, j, md5sum, parse, spl
-from .handler import Fleet
-from .runtime import launch, rlog
+from nixt.methods import importer, j, md5sum, parse, rlog, spl
+from nixt.handler import Fleet
 
 
 lock = threading.RLock()
@@ -71,10 +66,11 @@ def getmod(name, path=None):
         if not path:
             path = Commands.mod
         pth = j(path, f"{name}.py")
+        print(pth)
         if not os.path.exists(pth):
             return
-            if name != "tbl" and md5sum(pth) != Commands.md5s.get(name, None):
-                rlog("warn", f"md5 error on {pth.split(os.sep)[-1]}")
+        if name != "tbl" and md5sum(pth) != Commands.md5s.get(name, None):
+            rlog("warn", f"md5 error on {pth.split(os.sep)[-1]}")
         return importer(name, pth) 
 
 
@@ -100,7 +96,7 @@ def scanner(names=None):
     for nme in sorted(modules()):
         if names and nme not in spl(names):
             continue
-        module = importer(nme)
+        module = getmod(nme)
         if not module:
             continue
         scan(module)
@@ -130,8 +126,7 @@ def __dir__():
     return (
         'Commands',
         'command',
-        'importer',
-        'inits',
+        'getmod',
         'modules',
         'scan',
         'scanner',

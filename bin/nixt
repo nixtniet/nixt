@@ -5,8 +5,6 @@
 "main program"
 
 
-import importlib
-import importlib.util
 import json
 import logging
 import os
@@ -20,7 +18,7 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, command, getmod
+from nixt.command import Commands, command, getmod, importer
 from nixt.command import modules, scanner, table
 from nixt.handler import Client, Event, Fleet
 from nixt.methods import level, md5sum, parse, spl
@@ -29,7 +27,7 @@ from nixt.persist import Workdir, pidname, setwd
 from nixt.runtime import launch
 
 
-CHECKSUM = "1cb5d3d928eb48895999fec5fc15d47e"
+CHECKSUM = "51195d0b6c07213978e0b6cc7ee781c6"
 NAME = Workdir.name
 
 
@@ -77,62 +75,6 @@ class Console(CLI):
         evt.txt = input("> ")
         evt.type = "command"
         return evt
-
-
-"daemon"
-
-
-def daemon(verbose=False):
-    pid = os.fork()
-    if pid != 0:
-        os._exit(0)
-    os.setsid()
-    pid2 = os.fork()
-    if pid2 != 0:
-        os._exit(0)
-    if not verbose:
-        with open('/dev/null', 'r', encoding="utf-8") as sis:
-            os.dup2(sis.fileno(), sys.stdin.fileno())
-        with open('/dev/null', 'a+', encoding="utf-8") as sos:
-            os.dup2(sos.fileno(), sys.stdout.fileno())
-        with open('/dev/null', 'a+', encoding="utf-8") as ses:
-            os.dup2(ses.fileno(), sys.stderr.fileno())
-    os.umask(0)
-    os.chdir("/")
-    os.nice(10)
-
-
-def inits(names):
-    modz = []
-    for name in sorted(spl(names)):
-        try:
-            module = getmod(name)
-            if not module:
-                continue
-            if "init" in dir(module):
-                thr = launch(module.init)
-                modz.append((module, thr))
-        except Exception as ex:
-            logging.exception(ex)
-            _thread.interrupt_main()
-    return modz
-
-
-def pidfile(filename):
-    if os.path.exists(filename):
-        os.unlink(filename)
-    path2 = pathlib.Path(filename)
-    path2.parent.mkdir(parents=True, exist_ok=True)
-    with open(filename, "w", encoding="utf-8") as fds:
-        fds.write(str(os.getpid()))
-
-
-def privileges():
-    import getpass
-    import pwd
-    pwnam2 = pwd.getpwnam(getpass.getuser())
-    os.setgid(pwnam2.pw_gid)
-    os.setuid(pwnam2.pw_uid)
 
 
 "scripts"
@@ -199,6 +141,105 @@ def boot(doparse=True):
     Commands.add(ver)
 
 
+"daemon"
+
+
+def daemon(verbose=False):
+    pid = os.fork()
+    if pid != 0:
+        os._exit(0)
+    os.setsid()
+    pid2 = os.fork()
+    if pid2 != 0:
+        os._exit(0)
+    if not verbose:
+        with open('/dev/null', 'r', encoding="utf-8") as sis:
+            os.dup2(sis.fileno(), sys.stdin.fileno())
+        with open('/dev/null', 'a+', encoding="utf-8") as sos:
+            os.dup2(sos.fileno(), sys.stdout.fileno())
+        with open('/dev/null', 'a+', encoding="utf-8") as ses:
+            os.dup2(ses.fileno(), sys.stderr.fileno())
+    os.umask(0)
+    os.chdir("/")
+    os.nice(10)
+
+
+def inits(names):
+    modz = []
+    for name in sorted(spl(names)):
+        try:
+            module = getmod(name)
+            if not module:
+                continue
+            if "init" in dir(module):
+                thr = launch(module.init)
+                modz.append((module, thr))
+        except Exception as ex:
+            logging.exception(ex)
+            _thread.interrupt_main()
+    return modz
+
+
+def pidfile(filename):
+    if os.path.exists(filename):
+        os.unlink(filename)
+    path2 = pathlib.Path(filename)
+    path2.parent.mkdir(parents=True, exist_ok=True)
+    with open(filename, "w", encoding="utf-8") as fds:
+        fds.write(str(os.getpid()))
+
+
+def privileges():
+    import getpass
+    import pwd
+    pwnam2 = pwd.getpwnam(getpass.getuser())
+    os.setgid(pwnam2.pw_gid)
+    os.setuid(pwnam2.pw_uid)
+
+
+"commands"
+
+
+def cmd(event):
+    event.reply(",".join(sorted(Commands.names)))
+
+
+def md5(event):
+    tbl = getmod("tbl")
+    if tbl:
+        event.reply(md5sum(tbl.__file__))
+    else:
+        event.reply("table is not there.")
+
+
+def srv(event):
+    import getpass
+    name = getpass.getuser()
+    event.reply(TXT % (NAME.upper(), name, name, name, NAME))
+
+
+def tbl(event):
+    if not check("f"):
+        Commands.names = {}
+    scanner()
+    event.reply("# This file is placed in the Public Domain.")
+    event.reply("")
+    event.reply("")
+    event.reply('"lookup tables"')
+    event.reply("")
+    event.reply("")
+    event.reply(f"NAMES = {json.dumps(Commands.names, indent=4, sort_keys=True)}")
+    event.reply("")
+    event.reply("MD5 = {")
+    for module in scanner():
+        event.reply(f'    "{module.__name__.split(".")[-1]}": "{md5sum(module.__file__)}",')
+    event.reply("}")
+
+
+def ver(event):
+    event.reply(f"{NAME.upper()} {Config.version}")
+
+
 "utilities"
 
 
@@ -229,47 +270,6 @@ def forever():
 def out(txt):
     print(txt)
     sys.stdout.flush()
-
-
-"commands"
-
-
-def cmd(event):
-    event.reply(",".join(sorted(Commands.names)))
-
-
-def md5(event):
-    tbl = importer("tbl")
-    event.reply(md5sum(tbl.__file__))
-
-
-
-def srv(event):
-    import getpass
-    name = getpass.getuser()
-    event.reply(TXT % (NAME.upper(), name, name, name, NAME))
-
-
-def tbl(event):
-    if not check("f"):
-        Commands.names = {}
-    scanner()
-    event.reply("# This file is placed in the Public Domain.")
-    event.reply("")
-    event.reply("")
-    event.reply('"lookup tables"')
-    event.reply("")
-    event.reply("")
-    event.reply(f"NAMES = {json.dumps(Commands.names, indent=4, sort_keys=True)}")
-    event.reply("")
-    event.reply("MD5 = {")
-    for module in scanner():
-        event.reply(f'    "{module.__name__.split(".")[-1]}": "{md5sum(module.__file__)}",')
-    event.reply("}")
-
-
-def ver(event):
-    event.reply(f"{NAME.upper()} {Config.version}")
 
 
 "data"

@@ -13,8 +13,9 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
+from nixt.methods import rlog
 from nixt.objects import Object
-from nixt.runtime import launch, rlog
+from nixt.runtime import launch
 
 
 DEBUG = False

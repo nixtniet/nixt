@@ -9,9 +9,9 @@ import time
 
 
 from nixt.handler import Event, Fleet
-from nixt.methods import elapsed
+from nixt.methods import elapsed, rlog
 from nixt.objects import Object, construct, keys
-from nixt.runtime import Repeater, rlog
+from nixt.runtime import Repeater
 
 
 def init():
