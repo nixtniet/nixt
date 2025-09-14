@@ -27,7 +27,7 @@ from nixt.persist import Workdir, pidname, setwd
 from nixt.runtime import launch
 
 
-CHECKSUM = "2e0b5d60266d21476443ee3dff6fc4e4"
+CHECKSUM = "fb2f391d603d1aaba4dc1024209502d5"
 NAME = Workdir.name
 
 

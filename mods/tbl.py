@@ -1,6 +1,7 @@
 # This file is placed in the Public Domain.
 
 
+"lookup tables"
 
 
 NAMES = {
@@ -35,7 +36,7 @@ NAMES = {
 }
 
 MD5 = {
-    "flt": "da14daffc1744b4b7f063e3447baa672",
+    "flt": "2cd52aa57267296d837a692001f80472",
     "fnd": "7a4946c301ea677d19efe772abf9f896",
     "irc": "6856e549ebbc14b13d992d79e596b4fd",
     "log": "cf3ca944f07862e954579146e5cdc6c6",
