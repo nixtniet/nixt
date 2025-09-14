@@ -28,6 +28,7 @@ class Commands:
     debug = False
     md5s = {}
     mod = j(os.path.dirname(__file__), "modules")
+    package = __name__.split(".")[0] + "." + "modules"
     names = {}
 
     @staticmethod
@@ -68,7 +69,8 @@ def command(evt):
 
 def getmod(name, path=None):
     with lock:
-        module = sys.modules.get(name, None)
+        mname = Commands.package + "." +  name
+        module = sys.modules.get(mname, None)
         if module:
             return module
         if not path:
@@ -78,16 +80,16 @@ def getmod(name, path=None):
             return
         if name != "tbl" and md5sum(pth) != Commands.md5s.get(name, None):
             rlog("warn", f"md5 error on {pth.split(os.sep)[-1]}")
-        return importer(name, pth) 
+        return importer(mname, pth) 
 
 
 def modules():
     if not os.path.exists(Commands.mod):
         return {}
-    return sorted([
+    return {
             x[:-3] for x in os.listdir(Commands.mod)
             if x.endswith(".py") and not x.startswith("__")
-           ])
+           }
 
 
 def scan(module):
