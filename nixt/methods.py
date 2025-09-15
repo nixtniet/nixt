@@ -148,6 +148,9 @@ def extract_date(daystr):
     return res
 
 
+"logging"
+
+
 def level(loglevel="debug"):
     if loglevel != "none":
         format_short = "%(asctime)-8s %(message)-80s"

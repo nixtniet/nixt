@@ -64,6 +64,14 @@ def command(evt):
     evt.ready()
 
 
+def scan(module):
+    for key, cmdz in inspect.getmembers(module, inspect.isfunction):
+        if key.startswith("cb"):
+            continue
+        if 'event' in inspect.signature(cmdz).parameters:
+            Commands.add(cmdz)
+
+
 "modules"
 
 
@@ -90,14 +98,6 @@ def modules():
             x[:-3] for x in os.listdir(Commands.mod)
             if x.endswith(".py") and not x.startswith("__")
            }
-
-
-def scan(module):
-    for key, cmdz in inspect.getmembers(module, inspect.isfunction):
-        if key.startswith("cb"):
-            continue
-        if 'event' in inspect.signature(cmdz).parameters:
-            Commands.add(cmdz)
 
 
 def scanner(names=None):

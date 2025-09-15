@@ -11,6 +11,9 @@ import time
 import _thread
 
 
+"threads"
+
+
 class Thread(threading.Thread):
 
     def __init__(self, func, *args, daemon=True, **kwargs):
@@ -28,6 +31,13 @@ class Thread(threading.Thread):
     def __next__(self):
         yield from dir(self)
 
+    def join(self, timeout=None):
+        try:
+            super().join(timeout)
+            return self.result
+        except (KeyboardInterrupt, EOFError):
+            _thread.interrupt_main()
+
     def run(self):
         func, args = self.queue.get()
         try:
@@ -38,15 +48,8 @@ class Thread(threading.Thread):
             logging.exception(ex)
             _thread.interrupt_main()
 
-    def join(self, timeout=None):
-        try:
-            super().join(timeout)
-            return self.result
-        except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
 
-
-"timer/repeater"
+"timers"
 
 
 class Timy(threading.Timer):

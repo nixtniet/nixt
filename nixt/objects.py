@@ -59,7 +59,7 @@ def values(obj):
     return obj.__dict__.values()
 
 
-"decoder/encoder"
+"serialize"
 
 
 class Encoder(json.JSONEncoder):
