@@ -15,11 +15,8 @@ import threading
 import _thread
 
 
+from .clients import Fleet
 from .methods import j, rlog, spl
-from .handler import Fleet
-
-
-lock = threading.RLock()
 
 
 class Commands:
@@ -73,6 +70,9 @@ def scan(module):
 
 
 "modules"
+
+
+lock = threading.RLock()
 
 
 def getmod(name, path=None):
