@@ -12,11 +12,11 @@ import threading
 import time
 
 
-from .methods import fqn, j, search
+from .methods import fqn, search
 from .objects import Object, dump, load, update
 
 
-lock = threading.RLock()
+j = os.path.join
 
 
 "paths"
@@ -148,6 +148,9 @@ def last(obj, selector=None):
 "disk"
 
 
+lock = threading.RLock()
+
+
 class Cache:
 
     objs = {}
@@ -206,6 +209,7 @@ def __dir__():
         'cdir',
         'find',
         'fntime',
+        'j',
         'last',
         'long',
         'pidname',

@@ -18,13 +18,13 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
+from nixt.clients import Client, Fleet
 from nixt.command import Commands, command, getmod, importer
 from nixt.command import md5sum, modules, parse, scanner, table
-from nixt.handler import Client, Event, Fleet
 from nixt.methods import level, spl
 from nixt.objects import update
 from nixt.persist import Workdir, pidname, setwd
-from nixt.runtime import launch
+from nixt.runtime import Event, launch
 
 
 CHECKSUM = "fb2f391d603d1aaba4dc1024209502d5"

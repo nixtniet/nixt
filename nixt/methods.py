@@ -12,9 +12,6 @@ import time
 from .objects import items, keys
 
 
-j = os.path.join
-
-
 def edit(obj, setter, skip=True):
     for key, val in items(setter):
         if skip and val == "":
@@ -206,7 +203,6 @@ def __dir__():
         'extract_date',
         'fmt',
         'fqn',
-        'j',
         'level',
         'rlog',
         'search',

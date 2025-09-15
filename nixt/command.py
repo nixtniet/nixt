@@ -16,7 +16,8 @@ import _thread
 
 
 from .clients import Fleet
-from .methods import j, rlog, spl
+from .methods import rlog, spl
+from .persist import j
 
 
 class Commands:
