@@ -27,7 +27,11 @@ from nixt.persist import Workdir, pidname, setwd
 from nixt.runtime import Event, launch
 
 
-CHECKSUM = "fb2f391d603d1aaba4dc1024209502d5"
+import nixt
+
+
+CHECKSUM = "9488d1cbdc265952c77dd1cd75a4e78f"
+CHECKSUM = ""
 NAME = Workdir.name
 
 
@@ -43,7 +47,7 @@ class Config:
     otxt     = ""
     sets     = {}
     verbose  = False
-    version  = 421
+    version  = 431
 
 
 class CLI(Client):
@@ -128,6 +132,11 @@ def boot(doparse=True):
     if doparse:
         parse(Config, " ".join(sys.argv[1:]))
         update(Config, Config.sets, empty=False)
+    if 'e' in Config.opts:
+        pth = nixt.__path__[0]
+        pth = os.sep.join(pth.split(os.sep)[:-4])
+        pth = os.path.join(pth, 'share', 'nixt',  'examples')
+        Commands.mod = Config.mod = pth
     if "m" in Config.opts:
         Commands.mod = Config.mod = "mods"
     if "a" in Config.opts:

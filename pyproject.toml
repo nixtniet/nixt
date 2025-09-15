@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nixt"
-version = "421"
+version = "431"
 authors = [
     {name = "Bart Thate", email = "nixtniet@gmail.com" },
 ]
@@ -32,5 +32,20 @@ classifiers = [
 [tool.setuptools]
 packages = [
     'nixt',
+    'nixt.modules'
 ]
 include-package-data = true
+
+
+[tool.setuptools.data-files]
+"share/nixt/examples" = [
+    'mods/flt.py',
+    'mods/irc.py',
+    'mods/log.py',
+    'mods/lst.py',
+    'mods/rss.py',
+    'mods/tdo.py',
+    'mods/thr.py',
+    'mods/tmr.py',
+    'mods/upt.py'
+]

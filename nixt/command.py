@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"commands"
+"loading on demand"
 
 
 import hashlib
@@ -18,6 +18,9 @@ import _thread
 from .clients import Fleet
 from .methods import rlog, spl
 from .persist import j
+
+
+"commands"
 
 
 class Commands:
@@ -87,7 +90,7 @@ def getmod(name, path=None):
         pth = j(path, f"{name}.py")
         if not os.path.exists(pth):
             return
-        if name != "tbl" and md5sum(pth) != Commands.md5s.get(name, None):
+        if name != "tbl" and (Commands.md5s and md5sum(pth) != Commands.md5s.get(name, None)):
             rlog("warn", f"md5 error on {pth.split(os.sep)[-1]}")
         return importer(mname, pth) 
 

@@ -7,9 +7,9 @@
 from random import SystemRandom
 
 
-from nixt.handler import Event, Fleet
+from nixt.clients import Fleet
 from nixt.methods import rlog
-from nixt.runtime import Repeater
+from nixt.runtime import Event, Repeater
 
 
 rand = SystemRandom()

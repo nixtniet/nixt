@@ -13,6 +13,9 @@ import _thread
 from .runtime import Handler, launch
 
 
+"client"
+
+
 class Client(Handler):
 
     def __init__(self):
@@ -36,6 +39,9 @@ class Client(Handler):
 
     def say(self, channel, txt):
         self.raw(txt)
+
+
+"buffered"
 
 
 class Output(Client):

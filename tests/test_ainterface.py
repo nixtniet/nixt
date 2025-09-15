@@ -15,8 +15,8 @@ sys.path.insert(0, os.getcwd())
 
 
 import nixt
+import nixt.clients
 import nixt.command
-import nixt.handler
 import nixt.methods
 import nixt.objects
 import nixt.persist
@@ -27,8 +27,8 @@ from nixt.objects import *
 
 
 PACKAGE = [
+    'clients',
     'command',
-    'handler',
     'methods',
     'objects',
     'persist',
