@@ -20,11 +20,15 @@ from .methods import rlog, spl
 from .persist import j
 
 
-"commands"
+"defines"
+
 
 debug   = False
 lock    = threading.RLock()
 package = __name__.split(".")[0] + "." + "modules"
+
+
+"commands"
 
 
 class Commands:
@@ -76,8 +80,6 @@ def scan(module):
 
 
 "modules"
-
-
 
 
 def getmod(name, path=None):
