@@ -7,6 +7,7 @@
 import html
 import html.parser
 import http.client
+import logging
 import os
 import re
 import time
@@ -22,7 +23,7 @@ from urllib.parse import quote_plus, urlencode
 
 
 from nixt.clients import Fleet
-from nixt.methods import elapsed, fmt, rlog, spl
+from nixt.methods import elapsed, fmt, spl
 from nixt.objects import Object, update
 from nixt.persist import find, fntime, getpath, last, write
 from nixt.runtime import Repeater, launch
@@ -32,7 +33,7 @@ def init():
     fetcher = Fetcher()
     fetcher.start()
     if fetcher.seenfn:
-        rlog("warn", f"rss since {elapsed(time.time()-fntime(fetcher.seenfn))}")
+        logging.warning(f"rss since {elapsed(time.time()-fntime(fetcher.seenfn))}")
     return fetcher
 
 
@@ -286,7 +287,7 @@ def getfeed(url, items):
     try:
         rest = geturl(url)
     except (http.client.HTTPException, ValueError, HTTPError, URLError) as ex:
-        rlog("error", f"{url} {ex}")
+        logging.error(f"{url} {ex}")
         errors[url] = time.time()
         return result
     if rest:

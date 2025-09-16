@@ -16,7 +16,7 @@ import _thread
 
 
 from .clients import Fleet
-from .methods import rlog, spl
+from .methods import spl
 from .persist import j
 
 
@@ -94,7 +94,7 @@ def getmod(name, path=None):
         if not os.path.exists(pth):
             return
         if name != "tbl" and (Commands.md5s and md5sum(pth) != Commands.md5s.get(name, None)):
-            rlog("warn", f"md5 error on {pth.split(os.sep)[-1]}")
+            logging.warning(f"md5 error on {pth.split(os.sep)[-1]}")
         return importer(mname, pth) 
 
 
@@ -124,7 +124,7 @@ def table(checksum=""):
     pth = j(Commands.mod, "tbl.py")
     if os.path.exists(pth):
         if checksum and md5sum(pth) != checksum:
-            rlog("warn", "table checksum error.")
+            logging.warning("table checksum error.")
     tbl = getmod("tbl")
     if tbl:
         if "NAMES" in dir(tbl):
@@ -142,15 +142,15 @@ def importer(name, pth):
     try:
         spec = importlib.util.spec_from_file_location(name, pth)
         if not spec:
-            rlog("info", f"misiing {pth}")
+            logging.warning(f"misiing {pth}")
             return 
         module = importlib.util.module_from_spec(spec)
         if not module:
-            rlog("info", f"{pth} not importable")
+            logging.info(f"{pth} not importable")
             return
         sys.modules[name] = module
         spec.loader.exec_module(module)
-        rlog("info", f"load {pth}")
+        logging.info(f"load {pth}")
         return module
     except Exception as ex:
         logging.exception(ex)

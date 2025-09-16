@@ -4,11 +4,13 @@
 "wijs, wijsheid, wijs!"
 
 
+import logging
+
+
 from random import SystemRandom
 
 
 from nixt.clients import Fleet
-from nixt.methods import rlog
 from nixt.runtime import Event, Repeater
 
 
@@ -19,7 +21,7 @@ def init():
     event = Event()
     repeater = Repeater(3600.0,  wsd, event)
     repeater.start()
-    rlog("warn", f"wisdom has {len(TXT.split("\n"))} wise.")
+    logging.warning(f"wisdom has {len(TXT.split("\n"))} wise.")
 
 
 def wsd(event):

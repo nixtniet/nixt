@@ -4,8 +4,6 @@
 "methods"
 
 
-import logging
-import os
 import time
 
 
@@ -140,26 +138,6 @@ def extract_date(daystr):
     return res
 
 
-"logging"
-
-
-def level(loglevel="debug"):
-    if loglevel != "none":
-        format_short = "%(asctime)-8s %(message)-71s"
-        datefmt = "%H:%M:%S"
-        logging.basicConfig(datefmt=datefmt, format=format_short, force=True)
-        logging.getLogger().setLevel(LEVELS.get(loglevel))
-
-
-def rlog(loglevel, txt, ignore=None):
-    if ignore is None:
-        ignore = []
-    for ign in ignore:
-        if ign in str(txt):
-            return
-    logging.log(LEVELS.get(loglevel), txt)
-
-
 def spl(txt):
     try:
         result = txt.split(",")
@@ -183,16 +161,6 @@ FORMATS = [
 ]
 
 
-LEVELS = {
-    'debug'   : logging.DEBUG,
-    'info'    : logging.INFO,
-    'warning' : logging.WARNING,
-    'warn'    : logging.WARNING,
-    'error'   : logging.ERROR,
-    'critical': logging.CRITICAL,
-}
-
-
 "interface"
 
 
@@ -203,8 +171,6 @@ def __dir__():
         'extract_date',
         'fmt',
         'fqn',
-        'level',
-        'rlog',
         'search',
         'spl'
     )

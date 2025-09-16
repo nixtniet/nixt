@@ -13,7 +13,6 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.methods import rlog
 from nixt.objects import Object
 from nixt.persist import Workdir, types
 from nixt.runtime import launch
@@ -26,10 +25,10 @@ def init():
     try:
         rest = REST((Config.hostname, int(Config.port)), RESTHandler)
         rest.start()
-        rlog("warn", f"rest at http://{Config.hostname}:{Config.port}")
+        logging.warning(f"rest at http://{Config.hostname}:{Config.port}")
         return rest
     except OSError as ex:
-        rlog("warn", f"rest abort {ex}")
+        logging.exception(ex)
 
 
 class Config:

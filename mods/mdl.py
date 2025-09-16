@@ -5,11 +5,12 @@
 
 
 import datetime
+import logging
 import time
 
 
 from nixt.clients import Fleet
-from nixt.methods import elapsed, rlog
+from nixt.methods import elapsed
 from nixt.objects import Object, construct, keys
 from nixt.runtime import Event, Repeater
 
@@ -27,7 +28,7 @@ def init():
             name = aliases.get(key)
             repeater = Repeater(sec, cbstats, evt, thrname=name)
             repeater.start()
-            rlog("warn", f"{name} since {STARTDATE} {elapsed(time.time()-STARTTIME)}")
+            logging.warning(f"{name} since {STARTDATE} {elapsed(time.time()-STARTTIME)}")
 
 
 "defines"

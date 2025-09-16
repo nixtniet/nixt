@@ -5,12 +5,13 @@
 
 
 import datetime
+import logging
 import re
 import time
 
 
 from nixt.clients import Fleet
-from nixt.methods import elapsed, extract_date, rlog
+from nixt.methods import elapsed, extract_date
 from nixt.persist import find, write
 from nixt.runtime import Timed, launch
 
@@ -28,7 +29,7 @@ def init():
         else:
             obj.__deleted__ = True
             write(obj, fnm)
-    rlog("warn", f"timers {nrs}")
+    logging.warning(f"timers {nrs}")
 
 
 class NoDate(Exception):

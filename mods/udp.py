@@ -4,6 +4,7 @@
 "UDP to IRC relay"
 
 
+import logging
 import select
 import socket
 import sys
@@ -12,7 +13,6 @@ import time
 
 
 from nixt.clients import Fleet
-from nixt.methods import rlog
 from nixt.objects import Object
 from nixt.runtime import launch
 
@@ -23,7 +23,7 @@ DEBUG = False
 def init():
     udpd = UDP()
     udpd.start()
-    rlog("warn", f"udp at http://{Cfg.host}:{Cfg.port}")
+    logging.warning(f"udp at http://{Cfg.host}:{Cfg.port}")
     return udpd
 
 

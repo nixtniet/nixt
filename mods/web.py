@@ -13,7 +13,6 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.methods import rlog
 from nixt.objects import Object
 from nixt.runtime import launch
 
@@ -25,10 +24,10 @@ def init():
     try:
         server = HTTP((Cfg.hostname, int(Cfg.port)), HTTPHandler)
         server.start()
-        rlog("warn", f"web at http://{Cfg.hostname}:{Cfg.port}")
+        logging.warning(f"web at http://{Cfg.hostname}:{Cfg.port}")
         return server
     except OSError as ex:
-        rlog("warn", f"web abort {ex}")
+        logging.warning(f"web abort {ex}")
 
 
 class Cfg:
