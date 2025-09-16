@@ -1,13 +1,16 @@
 # This file is placed in the Public Domain.
 
 
-"methods"
+"object functions"
 
 
 import time
 
 
 from .objects import items, keys
+
+
+"methods"
 
 
 def edit(obj, setter, skip=True):

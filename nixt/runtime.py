@@ -185,30 +185,6 @@ class Repeater(Timed):
         super().run()
 
 
-"utilities"
-
-
-def launch(func, *args, **kwargs):
-    thread = Thread(func, *args, **kwargs)
-    thread.start()
-    return thread
-
-
-def name(obj):
-    typ = type(obj)
-    if "__builtins__" in dir(typ):
-        return obj.__name__
-    if "__self__" in dir(obj):
-        return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
-    if "__class__" in dir(obj) and "__name__" in dir(obj):
-        return f"{obj.__class__.__name__}.{obj.__name__}"
-    if "__class__" in dir(obj):
-        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
-    if "__name__" in dir(obj):
-        return f"{obj.__class__.__name__}.{obj.__name__}"
-    return ""
-
-
 "logging"
 
 
@@ -237,6 +213,30 @@ def rlog(loglevel, txt, ignore=None):
         if ign in str(txt):
             return
     logging.log(LEVELS.get(loglevel), txt)
+
+
+"utilities"
+
+
+def launch(func, *args, **kwargs):
+    thread = Thread(func, *args, **kwargs)
+    thread.start()
+    return thread
+
+
+def name(obj):
+    typ = type(obj)
+    if "__builtins__" in dir(typ):
+        return obj.__name__
+    if "__self__" in dir(obj):
+        return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
+    if "__class__" in dir(obj) and "__name__" in dir(obj):
+        return f"{obj.__class__.__name__}.{obj.__name__}"
+    if "__class__" in dir(obj):
+        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
+    if "__name__" in dir(obj):
+        return f"{obj.__class__.__name__}.{obj.__name__}"
+    return ""
 
 
 "interface"

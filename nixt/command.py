@@ -20,9 +20,6 @@ from .methods import spl
 from .persist import j
 
 
-"defines"
-
-
 debug   = False
 lock    = threading.RLock()
 package = __name__.split(".")[0] + "." + "modules"
