@@ -145,7 +145,7 @@ def extract_date(daystr):
 
 def level(loglevel="debug"):
     if loglevel != "none":
-        format_short = "%(asctime)-8s %(message)-80s"
+        format_short = "%(asctime)-8s %(message)-71s"
         datefmt = "%H:%M:%S"
         logging.basicConfig(datefmt=datefmt, format=format_short, force=True)
         logging.getLogger().setLevel(LEVELS.get(loglevel))

@@ -2,3 +2,6 @@
 
 
 "modules"
+
+
+__author__ = "Bart Thate <nixtniet@gmail.com>"
