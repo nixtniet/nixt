@@ -17,16 +17,16 @@ import _thread
 class Event:
 
     def __init__(self):
-        self._ready = threading.Event()
-        self._thr = None
-        self.args = []
+        self._ready  = threading.Event()
+        self._thr    = None
+        self.args    = []
         self.channel = ""
-        self.ctime = time.time()
-        self.orig = ""
-        self.rest = ""
-        self.result = {}
-        self.txt = ""
-        self.type = "event"
+        self.ctime   = time.time()
+        self.orig    = ""
+        self.rest    = ""
+        self.result  = {}
+        self.txt     = ""
+        self.type    = "event"
 
     def done(self):
         self.reply("ok")
@@ -52,9 +52,9 @@ class Event:
 class Handler:
 
     def __init__(self):
-        self.cbs = {}
-        self.queue = queue.Queue()
-        self.ready = threading.Event()
+        self.cbs     = {}
+        self.queue   = queue.Queue()
+        self.ready   = threading.Event()
         self.stopped = threading.Event()
 
     def available(self, event):
@@ -106,11 +106,11 @@ class Thread(threading.Thread):
 
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
-        self.name = kwargs.get("name", name(func))
-        self.queue = queue.Queue()
-        self.result = None
+        self.name      = kwargs.get("name", name(func))
+        self.queue     = queue.Queue()
+        self.result    = None
         self.starttime = time.time()
-        self.stopped = threading.Event()
+        self.stopped   = threading.Event()
         self.queue.put((func, args))
 
     def __iter__(self):
@@ -144,7 +144,7 @@ class Timy(threading.Timer):
 
     def __init__(self, sleep, func, *args, **kwargs):
         super().__init__(sleep, func)
-        self.name = kwargs.get("name", name(func))
+        self.name  = kwargs.get("name", name(func))
         self.sleep = sleep
         self.state = {}
         self.state["latest"] = time.time()
@@ -155,13 +155,13 @@ class Timy(threading.Timer):
 class Timed:
 
     def __init__(self, sleep, func, *args, thrname="", **kwargs):
-        self.args = args
-        self.func = func
+        self.args   = args
+        self.func   = func
         self.kwargs = kwargs
-        self.sleep = sleep
-        self.name = thrname or kwargs.get("name", name(func))
+        self.sleep  = sleep
+        self.name   = thrname or kwargs.get("name", name(func))
         self.target = time.time() + self.sleep
-        self.timer = None
+        self.timer  = None
 
     def run(self):
         self.timer.latest = time.time()

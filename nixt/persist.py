@@ -25,7 +25,7 @@ j = os.path.join
 class Workdir:
 
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
-    wdr = os.path.expanduser(f"~/.{name}")
+    wdr  = os.path.expanduser(f"~/.{name}")
 
 
 def getpath(obj):

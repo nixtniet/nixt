@@ -48,7 +48,6 @@ class Output(Client):
 
     def __init__(self):
         Client.__init__(self)
-        self.olock  = threading.RLock()
         self.oqueue = queue.Queue()
         self.ostop  = threading.Event()
 

@@ -22,21 +22,23 @@ from .persist import j
 
 "commands"
 
+debug   = False
+lock    = threading.RLock()
+package = __name__.split(".")[0] + "." + "modules"
+
 
 class Commands:
 
-    cmds = {}
-    debug = False
-    md5s = {}
-    mod = j(os.path.dirname(__file__), "modules")
-    package = __name__.split(".")[0] + "." + "modules"
+    mod   = j(os.path.dirname(__file__), "modules")
+    cmds  = {}
+    md5s  = {}
     names = {}
 
     @staticmethod
     def add(func) -> None:
-        name = func.__name__
-        modname = func.__module__.split(".")[-1]
-        Commands.cmds[name] = func
+        name                 = func.__name__
+        modname              = func.__module__.split(".")[-1]
+        Commands.cmds[name]  = func
         Commands.names[name] = modname
 
     @staticmethod
@@ -51,7 +53,7 @@ class Commands:
         if not module:
             return
         scan(module)
-        if Commands.debug:
+        if debug:
             module.DEBUG = True
         return Commands.cmds.get(cmd, None)
 
@@ -76,12 +78,11 @@ def scan(module):
 "modules"
 
 
-lock = threading.RLock()
 
 
 def getmod(name, path=None):
     with lock:
-        mname = Commands.package + "." +  name
+        mname = package + "." +  name
         module = sys.modules.get(mname, None)
         if module:
             return module
