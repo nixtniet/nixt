@@ -7,6 +7,9 @@
 import json
 
 
+"object"
+
+
 class Object:
 
     def __contains__(self, key):
@@ -59,6 +62,9 @@ def values(obj):
     return obj.__dict__.values()
 
 
+"json"
+
+
 class Encoder(json.JSONEncoder):
 
     def default(self, o):
@@ -101,6 +107,9 @@ def load(fp, *args, **kw):
 def loads(s, *args, **kw):
     kw["object_hook"] = hook
     return json.loads(s, *args, **kw)
+
+
+"interface"
 
 
 def __dir__():

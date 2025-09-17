@@ -153,9 +153,7 @@ def search(obj, selector, matching=False):
     return res
 
 
-class Utils:
-
-    pass
+"utilities"
 
 
 def elapsed(seconds, short=True):
@@ -223,6 +221,9 @@ def spl(txt):
             txt,
         ]
     return [x for x in result if x]
+
+
+"interface"
 
 
 def __dir__():

@@ -12,13 +12,16 @@ import _thread
 
 
 LEVELS = {
-    'debug'   : logging.DEBUG,
-    'info'    : logging.INFO,
-    'warning' : logging.WARNING,
-    'warn'    : logging.WARNING,
-    'error'   : logging.ERROR,
+    'debug': logging.DEBUG,
+    'info': logging.INFO,
+    'warning': logging.WARNING,
+    'warn': logging.WARNING,
+    'error': logging.ERROR,
     'critical': logging.CRITICAL,
 }
+
+
+"event handler"
 
 
 class Event:
@@ -102,6 +105,9 @@ class Handler:
         self.queue.put(None)
 
 
+"threads"
+
+
 class Thread(threading.Thread):
 
     def __init__(self, func, *args, daemon=True, **kwargs):
@@ -137,6 +143,9 @@ class Thread(threading.Thread):
         except Exception as ex: # pylint: disable=W0718
             logging.exception(ex)
             _thread.interrupt_main()
+
+
+"timers"
 
 
 class Timy(threading.Timer):
@@ -184,6 +193,9 @@ class Repeater(Timed):
         super().run()
 
 
+"utilities"
+
+
 def launch(func, *args, **kwargs):
     thread = Thread(func, *args, **kwargs)
     thread.start()
@@ -211,6 +223,9 @@ def name(obj):
     if "__name__" in dir(obj):
         return f"{obj.__class__.__name__}.{obj.__name__}"
     return ""
+
+
+"interface"
 
 
 def __dir__():

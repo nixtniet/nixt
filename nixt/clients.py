@@ -13,6 +13,9 @@ import _thread
 from nixt.runtime import Handler, launch
 
 
+"client"
+
+
 class Client(Handler):
 
     def __init__(self):
@@ -39,6 +42,9 @@ class Client(Handler):
 
     def wait(self):
         pass
+
+
+"output"
 
 
 class Output(Client):
@@ -78,6 +84,9 @@ class Output(Client):
             self.oqueue.join()
         except Exception:
             _thread.interrupt_main()
+
+
+"fleet"
 
 
 class Fleet:
@@ -136,6 +145,9 @@ class Fleet:
         time.sleep(0.1)
         for client in Fleet.all():
             client.wait()
+
+
+"interface"
 
 
 def __dir__():

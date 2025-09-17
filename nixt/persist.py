@@ -16,8 +16,11 @@ from nixt.methods import fqn, search
 from nixt.objects import Object, dump, load, update
 
 
-j    = os.path.join
+j = os.path.join
 lock = threading.RLock()
+
+
+"disk"
 
 
 class Cache:
@@ -66,6 +69,9 @@ def write(obj, path=None):
             dump(obj, fpt, indent=4)
         Cache.update(path, obj)
         return path
+
+
+"workdir"
 
 
 class Workdir:
@@ -134,9 +140,7 @@ def wdr(pth):
     return j(Workdir.wdr, pth)
 
 
-class Find:
-
-    pass
+"locater"
 
 
 def find(clz, selector=None, deleted=False, matching=False):
@@ -192,6 +196,9 @@ def last(obj, selector=None):
         update(obj, inp[-1])
         res = inp[0]
     return res
+
+
+"interface"
 
 
 def __dir__():

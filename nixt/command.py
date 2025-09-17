@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"commands"
+"write your own commands"
 
 
 import importlib
@@ -25,19 +25,22 @@ DEBUG = False
 lock = threading.RLock()
 
 
+"commands"
+
+
 class Commands:
 
-    mod     = j(os.path.dirname(__file__), "modules")
-    cmds    = {}
-    md5s    = {}
-    names   = {}
+    mod = j(os.path.dirname(__file__), "modules")
+    cmds = {}
+    md5s = {}
+    names = {}
     package = __name__.split(".", maxsplit=1)[0] + "." + "modules"
 
     @staticmethod
     def add(func):
-        name                 = func.__name__
-        modname              = func.__module__.split(".")[-1]
-        Commands.cmds[name]  = func
+        name  = func.__name__
+        modname = func.__module__.split(".")[-1]
+        Commands.cmds[name] = func
         Commands.names[name] = modname
 
     @staticmethod
@@ -62,6 +65,17 @@ def command(evt):
         func(evt)
         Fleet.display(evt)
     evt.ready()
+
+
+def scan(module):
+    for key, cmdz in inspect.getmembers(module, inspect.isfunction):
+        if key.startswith("cb"):
+            continue
+        if 'event' in inspect.signature(cmdz).parameters:
+            Commands.add(cmdz)
+
+
+"modules"
 
 
 def getmod(name, path=None):
@@ -105,14 +119,6 @@ def modules():
            }
 
 
-def scan(module):
-    for key, cmdz in inspect.getmembers(module, inspect.isfunction):
-        if key.startswith("cb"):
-            continue
-        if 'event' in inspect.signature(cmdz).parameters:
-            Commands.add(cmdz)
-
-
 def scanner(names=""):
     res = []
     logging.warning("scanning %s", Commands.mod)
@@ -142,6 +148,9 @@ def table(checksum):
                 Commands.md5s.update(tbl.MD5)
             return
     scanner()
+
+
+"interface"
 
 
 def __dir__():
