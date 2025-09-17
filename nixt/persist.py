@@ -12,8 +12,8 @@ import threading
 import time
 
 
-from .methods import fqn, search
-from .objects import Object, dump, load, update
+from nixt.methods import fqn, search
+from nixt.objects import Object, dump, load, update
 
 
 j    = os.path.join

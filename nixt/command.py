@@ -14,9 +14,9 @@ import threading
 import _thread
 
 
-from .clients import Fleet
-from .methods import md5sum, parse, spl
-from .persist import j
+from nixt.clients import Fleet
+from nixt.methods import md5sum, parse, spl
+from nixt.persist import j
 
 
 debug   = False

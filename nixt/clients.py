@@ -10,7 +10,7 @@ import time
 import _thread
 
 
-from .runtime import Handler, launch
+from nixt.runtime import Handler, launch
 
 
 class Client(Handler):
