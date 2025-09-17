@@ -14,27 +14,23 @@ import threading
 import _thread
 
 
-from nixt.clients import Fleet
-from nixt.methods import md5sum, parse, spl
-from nixt.persist import j
+from .brokers import Fleet
+from .methods import parse
+from .package import Mods, getmod, modules
+from .utility import md5sum, spl
 
 
 DEBUG = False
 
 
+j = os.path.join
 lock = threading.RLock()
-
-
-"commands"
 
 
 class Commands:
 
-    mod = j(os.path.dirname(__file__), "modules")
     cmds = {}
-    md5s = {}
     names = {}
-    package = __name__.split(".", maxsplit=1)[0] + "." + "modules"
 
     @staticmethod
     def add(func):
@@ -75,53 +71,9 @@ def scan(module):
             Commands.add(cmdz)
 
 
-"modules"
-
-
-def getmod(name, path=None):
-    with lock:
-        mname = Commands.package + "." +  name
-        module = sys.modules.get(mname, None)
-        if module:
-            return module
-        if not path:
-            path = Commands.mod
-        pth = j(path, f"{name}.py")
-        if os.path.exists(pth):
-            if name != "tbl" and (Commands.md5s and md5sum(pth) != Commands.md5s.get(name, None)):
-                logging.warning("md5 error on %s", pth.split(os.sep)[-1])
-        return importer(mname, pth)
-
-
-def importer(name, pth):
-    module = None
-    try:
-        spec = importlib.util.spec_from_file_location(name, pth)
-        if spec:
-            module = importlib.util.module_from_spec(spec)
-            if module:
-                sys.modules[name] = module
-                if spec.loader:
-                    spec.loader.exec_module(module)
-                logging.info("load %s", pth)
-    except Exception as ex:
-        logging.exception(ex)
-        _thread.interrupt_main()
-    return module
-
-
-def modules():
-    if not os.path.exists(Commands.mod):
-        return {}
-    return {
-            x[:-3] for x in os.listdir(Commands.mod)
-            if x.endswith(".py") and not x.startswith("__")
-           }
-
-
 def scanner(names=""):
     res = []
-    logging.warning("scanning %s", Commands.mod)
+    logging.warning("scanning %s", Mods.mod)
     for nme in sorted(modules()):
         if names and nme not in spl(names):
             continue
@@ -134,7 +86,7 @@ def scanner(names=""):
 
 
 def table(checksum):
-    pth = j(Commands.mod, "tbl.py")
+    pth = j(Mods.mod, "tbl.py")
     if not os.path.exists(pth):
         logging.info("table file is not there.")
     elif checksum and md5sum(pth) != checksum:
@@ -144,22 +96,14 @@ def table(checksum):
         if tbl:
             if "NAMES" in dir(tbl):
                 Commands.names.update(tbl.NAMES)
-            if "MD5" in dir(tbl):
-                Commands.md5s.update(tbl.MD5)
-            return
+                return
     scanner()
-
-
-"interface"
 
 
 def __dir__():
     return (
         'Commands',
         'command',
-        'getmod',
-        'importer',
-        'modules',
         'scan',
         'scanner',
         'table'

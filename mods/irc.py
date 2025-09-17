@@ -16,9 +16,10 @@ import time
 
 from nixt.clients import Fleet, Output
 from nixt.command import command
+from nixt.locater import last
 from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
-from nixt.persist import Workdir, getpath, last, write
+from nixt.persist import Workdir, getpath, write
 from nixt.runtime import Event as IEvent
 from nixt.runtime import LEVELS, launch
 
@@ -411,7 +412,7 @@ class IRC(Output):
 
     def raw(self, txt):
         txt = txt.rstrip()
-        rlog("warn", txt, IGNORE)
+        rlog("info", txt, IGNORE)
         txt = txt[:500]
         txt += "\r\n"
         txt = bytes(txt, "utf-8")
