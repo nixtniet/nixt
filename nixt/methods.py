@@ -11,6 +11,16 @@ import time
 from .objects import items, keys
 
 
+FORMATS = [
+    "%Y-%M-%D %H:%M:%S",
+    "%Y-%m-%d %H:%M:%S",
+    "%Y-%m-%d",
+    "%d-%m-%Y",
+    "%d-%m",
+    "%m-%d",
+]
+
+
 def edit(obj, setter, skip=True):
     for key, val in items(setter):
         if skip and val == "":
@@ -145,7 +155,9 @@ def search(obj, selector, matching=False):
     return res
 
 
-"utilities"
+class Utils:
+
+    pass
 
 
 def elapsed(seconds, short=True):
@@ -213,16 +225,6 @@ def spl(txt):
             txt,
         ]
     return [x for x in result if x]
-
-
-FORMATS = [
-    "%Y-%M-%D %H:%M:%S",
-    "%Y-%m-%d %H:%M:%S",
-    "%Y-%m-%d",
-    "%d-%m-%Y",
-    "%d-%m",
-    "%m-%d",
-]
 
 
 def __dir__():

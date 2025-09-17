@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"loading on demand"
+"commands"
 
 
 import importlib
@@ -78,7 +78,6 @@ def getmod(name, path=None):
         if name != "tbl" and (Commands.md5s and md5sum(pth) != Commands.md5s.get(name, None)):
             logging.warning(f"md5 error on {pth.split(os.sep)[-1]}")
         return importer(mname, pth) 
-
 
 
 def importer(name, pth):

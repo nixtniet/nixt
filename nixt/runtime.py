@@ -11,6 +11,16 @@ import time
 import _thread
 
 
+LEVELS = {
+    'debug'   : logging.DEBUG,
+    'info'    : logging.INFO,
+    'warning' : logging.WARNING,
+    'warn'    : logging.WARNING,
+    'error'   : logging.ERROR,
+    'critical': logging.CRITICAL,
+}
+
+
 class Event:
 
     def __init__(self):
@@ -179,6 +189,14 @@ def launch(func, *args, **kwargs):
     return thread
 
 
+def level(loglevel="debug"):
+    if loglevel != "none":
+        format_short = "%(asctime)-8s %(message)-71s"
+        datefmt = "%H:%M:%S"
+        logging.basicConfig(datefmt=datefmt, format=format_short, force=True)
+        logging.getLogger().setLevel(LEVELS.get(loglevel))
+
+
 def name(obj):
     typ = type(obj)
     if "__builtins__" in dir(typ):
@@ -194,34 +212,6 @@ def name(obj):
     return ""
 
 
-LEVELS = {
-    'debug'   : logging.DEBUG,
-    'info'    : logging.INFO,
-    'warning' : logging.WARNING,
-    'warn'    : logging.WARNING,
-    'error'   : logging.ERROR,
-    'critical': logging.CRITICAL,
-}
-
-
-def level(loglevel="debug"):
-    if loglevel != "none":
-        format_short = "%(asctime)-8s %(message)-60s"
-        datefmt = "%H:%M:%S"
-        logging.basicConfig(datefmt=datefmt, format=format_short, force=True)
-        logging.getLogger().setLevel(LEVELS.get(loglevel))
-
-
-def rlog(loglevel, txt, ignore=None):
-    if ignore is None:
-        ignore = []
-    for ign in ignore:
-        if ign in str(txt):
-            return
-    logging.log(LEVELS.get(loglevel), txt)
-
-
-
 def __dir__():
     return (
         'Event',
@@ -232,6 +222,5 @@ def __dir__():
         'Timed',
         'launch',
         'level',
-        'name',
-        'rlog'
+        'name'
    )
