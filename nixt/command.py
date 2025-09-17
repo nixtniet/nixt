@@ -19,12 +19,16 @@ from nixt.methods import md5sum, parse, spl
 from nixt.persist import j
 
 
-debug   = False
+DEBUG = False
+
+
 lock    = threading.RLock()
-package = __name__.split(".")[0] + "." + "modules"
+package = __name__.split(".", maxsplit=1)[0] + "." + "modules"
 
 
 class Commands:
+
+    "commands"
 
     mod   = j(os.path.dirname(__file__), "modules")
     cmds  = {}
@@ -33,6 +37,7 @@ class Commands:
 
     @staticmethod
     def add(func) -> None:
+        "register command."
         name                 = func.__name__
         modname              = func.__module__.split(".")[-1]
         Commands.cmds[name]  = func
@@ -40,22 +45,22 @@ class Commands:
 
     @staticmethod
     def get(cmd):
+        "return corresponding function."
         func = Commands.cmds.get(cmd, None)
         if func:
             return func
         name = Commands.names.get(cmd, None)
-        if not name:
-            return
-        module = getmod(name)
-        if not module:
-            return
-        scan(module)
-        if debug:
+        if name:
+            module = getmod(name)
+            if module:
+                scan(module)
+        if DEBUG:
             module.DEBUG = True
         return Commands.cmds.get(cmd, None)
 
 
 def command(evt):
+    "check event for command and, if so, run it,"
     parse(evt)
     func = Commands.get(evt.cmd)
     if func:
@@ -65,6 +70,7 @@ def command(evt):
 
 
 def getmod(name, path=None):
+    "return module."
     with lock:
         mname = package + "." +  name
         module = sys.modules.get(mname, None)
@@ -73,33 +79,31 @@ def getmod(name, path=None):
         if not path:
             path = Commands.mod
         pth = j(path, f"{name}.py")
-        if not os.path.exists(pth):
-            return
-        if name != "tbl" and (Commands.md5s and md5sum(pth) != Commands.md5s.get(name, None)):
-            logging.warning(f"md5 error on {pth.split(os.sep)[-1]}")
-        return importer(mname, pth) 
+        if os.path.exists(pth):
+            if name != "tbl" and (Commands.md5s and md5sum(pth) != Commands.md5s.get(name, None)):
+                logging.warning("md5 error on %s", pth.split(os.sep)[-1])
+        return importer(mname, pth)
 
 
 def importer(name, pth):
+    "import module from path."
+    module = None
     try:
         spec = importlib.util.spec_from_file_location(name, pth)
-        if not spec:
-            logging.warning(f"misiing {pth}")
-            return 
-        module = importlib.util.module_from_spec(spec)
-        if not module:
-            logging.info(f"{pth} not importable")
-            return
-        sys.modules[name] = module
-        spec.loader.exec_module(module)
-        logging.info(f"load {pth}")
-        return module
-    except Exception as ex:
+        if spec:
+            module = importlib.util.module_from_spec(spec)
+            if module:
+                sys.modules[name] = module
+                spec.loader.exec_module(module)
+                logging.info("load %s", pth)
+    except Exception as ex: # pylint: disable=W0718
         logging.exception(ex)
         _thread.interrupt_main()
+    return module
 
 
 def modules():
+    "list all modules."
     if not os.path.exists(Commands.mod):
         return {}
     return {
@@ -109,6 +113,7 @@ def modules():
 
 
 def scan(module):
+    "scan modules for commands."
     for key, cmdz in inspect.getmembers(module, inspect.isfunction):
         if key.startswith("cb"):
             continue
@@ -117,6 +122,7 @@ def scan(module):
 
 
 def scanner(names=None):
+    "scan all modules in directory."
     res = []
     for nme in sorted(modules()):
         if names and nme not in spl(names):
@@ -130,10 +136,11 @@ def scanner(names=None):
 
 
 def table(checksum=""):
+    "initialize tables."
     pth = j(Commands.mod, "tbl.py")
     if os.path.exists(pth):
         if checksum and md5sum(pth) != checksum:
-            logging.warning("table checksum error.")
+            logging.warning("table checksum error")
     tbl = getmod("tbl")
     if tbl:
         if "NAMES" in dir(tbl):

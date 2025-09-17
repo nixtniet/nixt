@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# pylint: disable=R0903,R0912,R0915
 
 
 "object functions"
@@ -8,7 +9,7 @@ import hashlib
 import time
 
 
-from .objects import items, keys
+from nixt.objects import items, keys
 
 
 FORMATS = [
@@ -22,6 +23,7 @@ FORMATS = [
 
 
 def edit(obj, setter, skip=True):
+    "edit object with provided values."
     for key, val in items(setter):
         if skip and val == "":
             continue
@@ -43,7 +45,8 @@ def edit(obj, setter, skip=True):
             setattr(obj, key, val)
 
 
-def fmt(obj, args=None, skip=None, plain=False, empty=False, newline=False):
+def fmt(obj, args=None, skip=None, plain=False, empty=False):
+    "return formatted string."
     if args is None:
         args = keys(obj)
     if skip is None:
@@ -65,12 +68,11 @@ def fmt(obj, args=None, skip=None, plain=False, empty=False, newline=False):
             txt += f'{key}="{value}" '
         else:
             txt += f"{key}={value} "
-        if newline:
-            txt += "\n"
     return txt.strip()
 
 
 def fqn(obj):
+    "return full quealified name."
     kin = str(type(obj)).split()[-1][1:-2]
     if kin == "type":
         kin = f"{obj.__module__}.{obj.__name__}"
@@ -78,6 +80,7 @@ def fqn(obj):
 
 
 def parse(obj, txt=None):
+    "parse command line options,"
     if txt is None:
         if "txt" in dir(obj):
             txt = obj.txt
@@ -138,6 +141,7 @@ def parse(obj, txt=None):
 
 
 def search(obj, selector, matching=False):
+    "search object for matching values."
     res = False
     if not selector:
         return res
@@ -157,10 +161,11 @@ def search(obj, selector, matching=False):
 
 class Utils:
 
-    pass
+    "utilities"
 
 
 def elapsed(seconds, short=True):
+    "return elapsed time in string form."
     txt = ""
     nsec = float(seconds)
     if nsec < 1:
@@ -200,11 +205,12 @@ def elapsed(seconds, short=True):
 
 
 def extract_date(daystr):
+    "extract date from string."
     daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
     res = time.time()
-    for format in FORMATS:
+    for fmat in FORMATS:
         try:
-            res = time.mktime(time.strptime(daystr, format))
+            res = time.mktime(time.strptime(daystr, fmat))
             break
         except ValueError:
             pass
@@ -212,12 +218,14 @@ def extract_date(daystr):
 
 
 def md5sum(path):
+    "return md5 sum of file."
     with open(path, "r", encoding="utf-8") as file:
         txt = file.read().encode("utf-8")
         return hashlib.md5(txt).hexdigest()
 
 
 def spl(txt):
+    "split string on comma."
     try:
         result = txt.split(",")
     except (TypeError, ValueError):

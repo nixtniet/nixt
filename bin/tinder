@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # This file is placed in the Public Domain.
+# pylint: disable=C0413,R0903,R0912
 
 
 "simulate clients"
@@ -27,16 +28,57 @@ from nixt.persist import Workdir, skel
 from nixt.runtime import Event, launch, level
 
 
-NAME = Workdir.name
+NAME      = Workdir.name
 STARTTIME = time.time()
 
 
-Commands.mod = "mods"
+Commands.mod   = "mods"
 Commands.debug = True
-Workdir.wdr = ".test"
+Workdir.wdr    = ".test"
+
+
+events  = queue.Queue()
+paylock = _thread.allocate_lock()
+rand    = random.SystemRandom()
+
+
+param = Object()
+param.cmd = [""]
+param.dis = [""]
+param.dpl = ["hnrss title,url", ""]
+param.flt = [""]
+param.fnd = ["log", "rss", "config", "todo", ""]
+param.man = [""]
+param.mod = [""]
+param.mre = [""]
+param.nme = ["hnrss hackernews", ""]
+param.now = [""]
+param.pwd = ["bla mekker", ""]
+param.req = [""]
+param.res = ["hnrss", ""]
+param.srv = [""]
+param.thr = [""]
+param.upt = [""]
+param.ver = [""]
+
+
+pre = Object()
+pre.cfg = ["nick=mekker", ""]
+pre.imp = ["tests/feeds.opml", ""]
+pre.log = ["bla", ""]
+pre.rss = ["http://hnrss.org/newest", ""]
+pre.tdo = ["mekker", ""]
+
+
+post = Object()
+post.dne = ["hnrss", ""]
+post.exp = ['']
+post.rem = ["hnrss", ""]
 
 
 class Config:
+
+    "configuration"    
 
     debug    = False
     gets     = {}
@@ -52,23 +94,9 @@ class Config:
     version  = 410
 
 
-lap = 1
-nrs = 1
-nrcommand = 1
-percall   = 1
-
-
-events = queue.Queue()
-ignore = [
-    "dbg",
-]
-paylock = _thread.allocate_lock()
-
-
-rand = random.SystemRandom()
-
-
 class CLI(Client):
+
+    "command line interface."
 
     def __init__(self):
         Client.__init__(self)
@@ -84,6 +112,7 @@ class CLI(Client):
 
 class Buffer(Output):
 
+    "buffered output."
 
     def __init__(self):
         Output.__init__(self)
@@ -99,6 +128,8 @@ class Buffer(Output):
 
 class Pool:
 
+    "pool of clients."
+
     clients = []
     lock = threading.RLock()
     nrcpu = 1
@@ -106,18 +137,21 @@ class Pool:
 
     @staticmethod
     def add(clt):
+        "add client to pool."
         Pool.clients.append(clt)
 
     @staticmethod
     def init(clz, nr=None):
+        "initialize client pool."
         Pool.nrcpu = nr or os.cpu_count()
-        for x in range(Pool.nrcpu):
+        for _x in range(Pool.nrcpu):
             clt = clz()
             clt.start()
             Pool.add(clt)
 
     @staticmethod
     def put(evt):
+        "dispatch to client."
         with Pool.lock:
             if Pool.nrlast >= Pool.nrcpu-1:
                 Pool.nrlast = 0
@@ -127,11 +161,13 @@ class Pool:
 
 
 def banner():
+    "show start message."
     tme = time.ctime(time.time()).replace("  ", " ")
     print(f"{NAME.upper()} {Config.version} since {tme} ({Config.level.upper()})")
 
 
-def consume(evts):
+def consume():
+    "wait for all events."
     while True:
         try:
             event = events.get()
@@ -142,6 +178,7 @@ def consume(evts):
 
 
 def payload(cmds):
+    "create example events and run them."
     with paylock:
         nmr = 0
         cmdz = sorted(keys(cmds))
@@ -149,8 +186,6 @@ def payload(cmds):
             rand.shuffle(cmdz)
         todo = []
         for cmd in cmdz:
-            if cmd in ignore:
-                continue
             examples = getattr(cmds, cmd)
             for example in examples:
                 event = Event()
@@ -165,25 +200,26 @@ def payload(cmds):
 
 
 def wrap(function):
+    "wrap function and restore console on return."
     old3 = None
     try:
         old3 = termios.tcgetattr(sys.stdin.fileno())
     except termios.error:
         pass
+    res = None
     try:
-        function()
+        res = function()
     except (KeyboardInterrupt, EOFError):
         pass
     finally:
         if old3:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old3)
+    return res
 
 
-def main():
-    global nrs
-    global nrcommand
+def main(): # pylint: disable=R0912
+    "main script."
     parse(Config, " ".join(sys.argv[1:]))
-    nrcommand = 0
     if "v" in Config.opts:
         banner()
     if "f" not in Config.opts:
@@ -222,50 +258,18 @@ def main():
     events.join()
     Fleet.shutdown()
     Fleet.wait()
+    return nrs, nrcommand
 
-
-param = Object()
-param.cmd = [""]
-param.dis = [""]
-param.dpl = ["hnrss title,url", ""]
-param.flt = [""]
-param.fnd = ["log", "rss", "config", "todo", ""]
-param.man = [""]
-param.mod = [""]
-param.mre = [""]
-param.nme = ["hnrss hackernews", ""]
-param.now = [""]
-param.pwd = ["bla mekker", ""]
-param.req = [""]
-param.res = ["hnrss", ""]
-param.srv = [""]
-param.thr = [""]
-param.upt = [""]
-param.ver = [""]
-
-
-pre = Object()
-pre.cfg = ["nick=mekker", ""]
-pre.imp = ["tests/feeds.opml", ""]
-pre.log = ["bla", ""]
-pre.rss = ["http://hnrss.org/newest", ""]
-pre.tdo = ["mekker", ""]
-
-
-post = Object()
-post.dne = ["hnrss", ""]
-post.exp = ['']
-post.rem = ["hnrss", ""]
 
 
 if __name__ == "__main__":
-    wrap(main)
+    nrz, commandz = wrap(main)
     endtime = time.time()
     lap = elapsed(endtime-STARTTIME)
     nrevents = events.qsize()
-    percall = (endtime-STARTTIME)/(nrcommand)
+    percall = (endtime-STARTTIME)/(commandz)
     if "v" in Config.opts:
         print(f"{Pool.nrcpu} cpu's used")
         print(f"{nrevents} events left.")
-        print(f"total: {lap} nrs: {nrs} cmds: {nrcommand} call: %.6fs" % percall)
+        print(f"total: {lap} nrs: {nrz} cmds: {commandz} call: %.6fs" % percall)
     sys.exit()
