@@ -1,5 +1,4 @@
 # This file is placed in the Public Domain.
-# pylint: disable=R0902
 
 
 "runtime"
@@ -39,19 +38,15 @@ class Event:
         self.type    = "event"
 
     def done(self):
-        "echo done reply."
         self.reply("ok")
 
     def ready(self):
-        "flag event as ready."
         self._ready.set()
 
     def reply(self, txt):
-        "add txt to result."
         self.result[time.time()] = txt
 
     def wait(self, timeout=None):
-        "wait for event to finish."
         try:
             self._ready.wait()
             if self._thr:
@@ -62,8 +57,6 @@ class Event:
 
 class Handler:
 
-    "handler"
-
     def __init__(self):
         self.cbs     = {}
         self.queue   = queue.Queue()
@@ -71,11 +64,9 @@ class Handler:
         self.stopped = threading.Event()
 
     def available(self, event):
-        "check whether callback for event is there."
         return event.type in self.cbs
 
     def callback(self, event):
-        "handle callbacks for event."
         func = self.cbs.get(event.type, None)
         if func:
             event._thr = launch(func, event, name=event.txt and event.txt.split()[0]) # pylint: disable=W0212
@@ -83,7 +74,6 @@ class Handler:
             event.ready()
 
     def loop(self):
-        "callback loop."
         while not self.stopped.is_set():
             try:
                 event = self.poll()
@@ -95,31 +85,24 @@ class Handler:
                 _thread.interrupt_main()
 
     def poll(self):
-        "poll for event."
         return self.queue.get()
 
     def put(self, event):
-        "put event onto the queue."
         self.queue.put(event)
 
     def register(self, typ, cbs):
-        "register callback."
         self.cbs[typ] = cbs
 
     def start(self, daemon=True):
-        "start handler."
         self.stopped.clear()
         launch(self.loop, daemon=daemon)
 
     def stop(self):
-        "stop handler."
         self.stopped.set()
         self.queue.put(None)
 
 
 class Thread(threading.Thread):
-
-    "thread"
 
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
@@ -137,7 +120,6 @@ class Thread(threading.Thread):
         yield from dir(self)
 
     def join(self, timeout=None):
-        "join thread and return result."
         result = None
         try:
             super().join(timeout)
@@ -147,7 +129,6 @@ class Thread(threading.Thread):
         return result
 
     def run(self):
-        "run thread."
         func, args = self.queue.get()
         try:
             self.result = func(*args)
@@ -159,8 +140,6 @@ class Thread(threading.Thread):
 
 
 class Timy(threading.Timer):
-
-    "timy"
 
     def __init__(self, sleep, func, *args, **kwargs):
         super().__init__(sleep, func)
@@ -174,8 +153,6 @@ class Timy(threading.Timer):
 
 class Timed:
 
-    "timed"
-
     def __init__(self, sleep, func, *args, thrname="", **kwargs):
         self.args   = args
         self.func   = func
@@ -186,42 +163,34 @@ class Timed:
         self.timer  = None
 
     def run(self):
-        "run timer."
         self.timer.latest = time.time()
         self.func(*self.args)
 
     def start(self):
-        "start timer."
         self.kwargs["name"] = self.name
         timer = Timy(self.sleep, self.run, *self.args, **self.kwargs)
         timer.start()
         self.timer = timer
 
     def stop(self):
-        "stop timer."
         if self.timer:
             self.timer.cancel()
 
 
 class Repeater(Timed):
 
-    "repeater"
-
     def run(self):
-        "run the repeater."
         launch(self.start)
         super().run()
 
 
 def launch(func, *args, **kwargs):
-    "run function in thread."
     thread = Thread(func, *args, **kwargs)
     thread.start()
     return thread
 
 
 def level(loglevel="debug"):
-    "iniitalze logging."
     if loglevel != "none":
         format_short = "%(asctime)-8s %(message)-71s"
         datefmt = "%H:%M:%S"
@@ -230,7 +199,6 @@ def level(loglevel="debug"):
 
 
 def name(obj):
-    "return name for object."
     typ = type(obj)
     if "__builtins__" in dir(typ):
         return obj.__name__

@@ -17,6 +17,7 @@ import _thread
 from nixt.clients import Fleet
 from nixt.methods import md5sum, parse, spl
 from nixt.persist import j
+from nixt.runtime import Event
 
 
 DEBUG = False
@@ -28,16 +29,13 @@ package = __name__.split(".", maxsplit=1)[0] + "." + "modules"
 
 class Commands:
 
-    "commands"
-
     mod   = j(os.path.dirname(__file__), "modules")
     cmds  = {}
     md5s  = {}
     names = {}
 
     @staticmethod
-    def add(func) -> None:
-        "register command."
+    def add(func):
         name                 = func.__name__
         modname              = func.__module__.split(".")[-1]
         Commands.cmds[name]  = func
@@ -45,7 +43,6 @@ class Commands:
 
     @staticmethod
     def get(cmd):
-        "return corresponding function."
         func = Commands.cmds.get(cmd, None)
         if func:
             return func
@@ -54,13 +51,12 @@ class Commands:
             module = getmod(name)
             if module:
                 scan(module)
-        if DEBUG:
-            module.DEBUG = True
+                if DEBUG:
+                    module.DEBUG = True
         return Commands.cmds.get(cmd, None)
 
 
 def command(evt):
-    "check event for command and, if so, run it,"
     parse(evt)
     func = Commands.get(evt.cmd)
     if func:
@@ -70,7 +66,6 @@ def command(evt):
 
 
 def getmod(name, path=None):
-    "return module."
     with lock:
         mname = package + "." +  name
         module = sys.modules.get(mname, None)
@@ -86,7 +81,6 @@ def getmod(name, path=None):
 
 
 def importer(name, pth):
-    "import module from path."
     module = None
     try:
         spec = importlib.util.spec_from_file_location(name, pth)
@@ -94,16 +88,16 @@ def importer(name, pth):
             module = importlib.util.module_from_spec(spec)
             if module:
                 sys.modules[name] = module
-                spec.loader.exec_module(module)
+                if spec.loader:
+                    spec.loader.exec_module(module)
                 logging.info("load %s", pth)
-    except Exception as ex: # pylint: disable=W0718
+    except Exception as ex:
         logging.exception(ex)
         _thread.interrupt_main()
     return module
 
 
 def modules():
-    "list all modules."
     if not os.path.exists(Commands.mod):
         return {}
     return {
@@ -113,7 +107,6 @@ def modules():
 
 
 def scan(module):
-    "scan modules for commands."
     for key, cmdz in inspect.getmembers(module, inspect.isfunction):
         if key.startswith("cb"):
             continue
@@ -121,8 +114,7 @@ def scan(module):
             Commands.add(cmdz)
 
 
-def scanner(names=None):
-    "scan all modules in directory."
+def scanner(names=""):
     res = []
     for nme in sorted(modules()):
         if names and nme not in spl(names):
@@ -135,8 +127,7 @@ def scanner(names=None):
     return res
 
 
-def table(checksum=""):
-    "initialize tables."
+def table(checksum):
     pth = j(Commands.mod, "tbl.py")
     if os.path.exists(pth):
         if checksum and md5sum(pth) != checksum:

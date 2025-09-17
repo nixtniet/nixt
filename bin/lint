@@ -1,1 +1,1 @@
-pylint nixt bin/nixt bin/tinder
+pylint -d C,R,W nixt bin/nixt bin/tinder

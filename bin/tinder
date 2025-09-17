@@ -28,6 +28,7 @@ from nixt.persist import Workdir, skel
 from nixt.runtime import Event, launch, level
 
 
+CHECKSUM  = ""
 NAME      = Workdir.name
 STARTTIME = time.time()
 
@@ -227,7 +228,7 @@ def main(): # pylint: disable=R0912
             shutil.rmtree(Workdir.wdr)
     level(Config.level)
     skel()
-    table()
+    table(CHECKSUM)
     nrs = Config.index or 1
     thrs = []
     if "z" in Config.opts:
