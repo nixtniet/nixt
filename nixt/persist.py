@@ -9,11 +9,10 @@ import json.decoder
 import os
 import pathlib
 import threading
-import time
 
 
-from .methods import fqn, search
-from .objects import Object, dump, load, update
+from .methods import fqn
+from .objects import dump, load, update
 
 
 j = os.path.join

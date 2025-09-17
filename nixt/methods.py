@@ -4,8 +4,6 @@
 "object functions"
 
 
-import hashlib
-import time
 
 
 from .objects import items, keys
