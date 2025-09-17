@@ -220,6 +220,7 @@ def wrap(function):
 
 def main(): # pylint: disable=R0912
     "main script."
+    nrcommand = 0
     parse(Config, " ".join(sys.argv[1:]))
     if "v" in Config.opts:
         banner()

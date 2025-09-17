@@ -10,10 +10,7 @@ import time
 import _thread
 
 
-from typing import Iterable
-
-
-from nixt.runtime import Event, Handler, launch
+from nixt.runtime import Handler, launch
 
 
 class Client(Handler):
@@ -147,7 +144,6 @@ class Fleet:
 def __dir__():
     return (
         'Client',
-        'Event',
         'Fleet',
         'Handler',
         'Output'

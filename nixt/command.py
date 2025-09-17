@@ -17,7 +17,6 @@ import _thread
 from nixt.clients import Fleet
 from nixt.methods import md5sum, parse, spl
 from nixt.persist import j
-from nixt.runtime import Event
 
 
 DEBUG = False
