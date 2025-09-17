@@ -115,6 +115,7 @@ def scan(module):
 
 def scanner(names=""):
     res = []
+    logging.warning("scanning %s", Commands.mod)
     for nme in sorted(modules()):
         if names and nme not in spl(names):
             continue
@@ -130,17 +131,17 @@ def table(checksum):
     pth = j(Commands.mod, "tbl.py")
     if not os.path.exists(pth):
         logging.info("table file is not there.")
-        return
-    if checksum and md5sum(pth) != checksum:
+    elif checksum and md5sum(pth) != checksum:
         logging.warning("table checksum error.")
-    tbl = getmod("tbl")
-    if tbl:
-        if "NAMES" in dir(tbl):
-            Commands.names.update(tbl.NAMES)
-        if "MD5" in dir(tbl):
-            Commands.md5s.update(tbl.MD5)
     else:
-        scanner()
+        tbl = getmod("tbl")
+        if tbl:
+            if "NAMES" in dir(tbl):
+                Commands.names.update(tbl.NAMES)
+            if "MD5" in dir(tbl):
+                Commands.md5s.update(tbl.MD5)
+            return
+    scanner()
 
 
 def __dir__():

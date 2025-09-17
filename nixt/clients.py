@@ -86,6 +86,8 @@ class Fleet:
 
     @staticmethod
     def add(client):
+        if not client:
+            return
         Fleet.clients[repr(client)] = client
 
     @staticmethod
@@ -95,20 +97,17 @@ class Fleet:
     @staticmethod
     def announce(txt):
         for client in Fleet.all():
-            if client:
-                client.announce(txt)
+            client.announce(txt)
 
     @staticmethod
     def dispatch(evt):
         client = Fleet.get(evt.orig)
-        if client:
-            client.put(evt)
+        client.put(evt)
 
     @staticmethod
     def display(evt):
         client = Fleet.get(evt.orig)
-        if client:
-            client.display(evt)
+        client.display(evt)
 
     @staticmethod
     def first():
@@ -125,8 +124,7 @@ class Fleet:
     @staticmethod
     def say(orig, channel, txt):
         client = Fleet.get(orig)
-        if client:
-            client.say(channel, txt)
+        client.say(channel, txt)
 
     @staticmethod
     def shutdown():
@@ -137,8 +135,7 @@ class Fleet:
     def wait():
         time.sleep(0.1)
         for client in Fleet.all():
-            if client:
-                client.wait()
+            client.wait()
 
 
 def __dir__():

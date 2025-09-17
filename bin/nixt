@@ -132,6 +132,9 @@ def boot(doparse=True):
     if doparse:
         parse(Config, " ".join(sys.argv[1:]))
         update(Config, Config.sets, empty=False)
+    level(Config.level)
+    if "v" in Config.opts:
+        banner()
     if 'e' in Config.opts:
         pth = nixt.__path__[0]
         pth = os.sep.join(pth.split(os.sep)[:-4])
@@ -139,13 +142,11 @@ def boot(doparse=True):
         Commands.mod = Config.mod = pth
         Commands.package = "mods"
     if "m" in Config.opts:
+        logging.warning("using mods directory.")
         Commands.mod = Config.mod = "mods"
         Commands.package = "mods"
     if "a" in Config.opts:
         Config.init = ",".join(modules())
-    level(Config.level)
-    if "v" in Config.opts:
-        banner()
     setwd(NAME)
     table(CHECKSUM)
     Commands.add(cmd)
