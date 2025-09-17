@@ -19,12 +19,12 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, command, parse, table
-from nixt.handler import Client, Event, Fleet, Output
-from nixt.methods import elapsed, level
+from nixt.clients import Client, Fleet, Output
+from nixt.command import Commands, command, table
+from nixt.methods import elapsed, parse
 from nixt.objects import Object, keys
 from nixt.persist import Workdir, skel
-from nixt.runtime import launch
+from nixt.runtime import Event, launch, level
 
 
 NAME = Workdir.name
@@ -246,7 +246,7 @@ param.ver = [""]
 
 pre = Object()
 pre.cfg = ["nick=mekker", ""]
-pre.imp = ["testing/feeds.opml", ""]
+pre.imp = ["tests/feeds.opml", ""]
 pre.log = ["bla", ""]
 pre.rss = ["http://hnrss.org/newest", ""]
 pre.tdo = ["mekker", ""]

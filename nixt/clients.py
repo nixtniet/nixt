@@ -13,9 +13,6 @@ import _thread
 from .runtime import Handler, launch
 
 
-"client"
-
-
 class Client(Handler):
 
     def __init__(self):
@@ -39,9 +36,6 @@ class Client(Handler):
 
     def say(self, channel, txt):
         self.raw(txt)
-
-
-"buffered"
 
 
 class Output(Client):
@@ -78,9 +72,6 @@ class Output(Client):
             self.oqueue.join()
         except Exception:
             _thread.interrupt_main()
-
-
-"list of clients"
 
 
 class Fleet:
@@ -138,9 +129,6 @@ class Fleet:
         time.sleep(0.1)
         for client in Fleet.all():
             client.wait()
-
-
-"interface"
 
 
 def __dir__():

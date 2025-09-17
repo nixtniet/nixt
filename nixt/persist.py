@@ -19,9 +19,6 @@ from .objects import Object, dump, load, update
 j = os.path.join
 
 
-"paths"
-
-
 class Workdir:
 
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
@@ -87,7 +84,9 @@ def wdr(pth):
     return j(Workdir.wdr, pth)
 
 
-"find"
+class Find:
+
+    pass
 
 
 def find(clz, selector=None, deleted=False, matching=False):
@@ -145,9 +144,6 @@ def last(obj, selector=None):
     return res
 
 
-"disk"
-
-
 lock = threading.RLock()
 
 
@@ -197,9 +193,6 @@ def write(obj, path=None):
             dump(obj, fpt, indent=4)
         Cache.update(path, obj)
         return path
-
-
-"interface"
 
 
 def __dir__():

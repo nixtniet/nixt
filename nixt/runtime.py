@@ -11,9 +11,6 @@ import time
 import _thread
 
 
-"event"
-
-
 class Event:
 
     def __init__(self):
@@ -44,9 +41,6 @@ class Event:
                 self._thr.join()
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
-
-
-"handler"
 
 
 class Handler:
@@ -99,9 +93,6 @@ class Handler:
         pass
 
 
-"threads"
-
-
 class Thread(threading.Thread):
 
     def __init__(self, func, *args, daemon=True, **kwargs):
@@ -135,9 +126,6 @@ class Thread(threading.Thread):
         except Exception as ex:
             logging.exception(ex)
             _thread.interrupt_main()
-
-
-"timers"
 
 
 class Timy(threading.Timer):
@@ -185,7 +173,25 @@ class Repeater(Timed):
         super().run()
 
 
-"logging"
+def launch(func, *args, **kwargs):
+    thread = Thread(func, *args, **kwargs)
+    thread.start()
+    return thread
+
+
+def name(obj):
+    typ = type(obj)
+    if "__builtins__" in dir(typ):
+        return obj.__name__
+    if "__self__" in dir(obj):
+        return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
+    if "__class__" in dir(obj) and "__name__" in dir(obj):
+        return f"{obj.__class__.__name__}.{obj.__name__}"
+    if "__class__" in dir(obj):
+        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
+    if "__name__" in dir(obj):
+        return f"{obj.__class__.__name__}.{obj.__name__}"
+    return ""
 
 
 LEVELS = {
@@ -214,32 +220,6 @@ def rlog(loglevel, txt, ignore=None):
             return
     logging.log(LEVELS.get(loglevel), txt)
 
-
-"utilities"
-
-
-def launch(func, *args, **kwargs):
-    thread = Thread(func, *args, **kwargs)
-    thread.start()
-    return thread
-
-
-def name(obj):
-    typ = type(obj)
-    if "__builtins__" in dir(typ):
-        return obj.__name__
-    if "__self__" in dir(obj):
-        return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
-    if "__class__" in dir(obj) and "__name__" in dir(obj):
-        return f"{obj.__class__.__name__}.{obj.__name__}"
-    if "__class__" in dir(obj):
-        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
-    if "__name__" in dir(obj):
-        return f"{obj.__class__.__name__}.{obj.__name__}"
-    return ""
-
-
-"interface"
 
 
 def __dir__():
