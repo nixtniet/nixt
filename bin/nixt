@@ -137,8 +137,10 @@ def boot(doparse=True):
         pth = os.sep.join(pth.split(os.sep)[:-4])
         pth = os.path.join(pth, 'share', 'nixt',  'examples')
         Commands.mod = Config.mod = pth
+        Commands.package = "mods"
     if "m" in Config.opts:
         Commands.mod = Config.mod = "mods"
+        Commands.package = "mods"
     if "a" in Config.opts:
         Config.init = ",".join(modules())
     level(Config.level)

@@ -22,16 +22,16 @@ from nixt.persist import j
 DEBUG = False
 
 
-lock    = threading.RLock()
-package = __name__.split(".", maxsplit=1)[0] + "." + "modules"
+lock = threading.RLock()
 
 
 class Commands:
 
-    mod   = j(os.path.dirname(__file__), "modules")
-    cmds  = {}
-    md5s  = {}
-    names = {}
+    mod     = j(os.path.dirname(__file__), "modules")
+    cmds    = {}
+    md5s    = {}
+    names   = {}
+    package = __name__.split(".", maxsplit=1)[0] + "." + "modules"
 
     @staticmethod
     def add(func):
@@ -66,7 +66,7 @@ def command(evt):
 
 def getmod(name, path=None):
     with lock:
-        mname = package + "." +  name
+        mname = Commands.package + "." +  name
         module = sys.modules.get(mname, None)
         if module:
             return module
@@ -128,9 +128,11 @@ def scanner(names=""):
 
 def table(checksum):
     pth = j(Commands.mod, "tbl.py")
-    if os.path.exists(pth):
-        if checksum and md5sum(pth) != checksum:
-            logging.warning("table checksum error")
+    if not os.path.exists(pth):
+        logging.info("table file is not there.")
+        return
+    if checksum and md5sum(pth) != checksum:
+        logging.warning("table checksum error.")
     tbl = getmod("tbl")
     if tbl:
         if "NAMES" in dir(tbl):
