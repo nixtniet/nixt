@@ -12,7 +12,8 @@ import threading
 
 
 from .methods import fqn
-from .objects import dump, load, update
+from .objects import update
+from .serials import dump, loaded
 
 
 j = os.path.join
