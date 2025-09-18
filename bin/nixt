@@ -46,7 +46,7 @@ class Config:
     otxt     = ""
     sets     = {}
     verbose  = False
-    version  = 432
+    version  = 433
 
 
 class CLI(Client):
