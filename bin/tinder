@@ -19,12 +19,16 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client, Fleet, Output
+from nixt.brokers import Fleet
+from nixt.clients import Client, Output
 from nixt.command import Commands, command, table
-from nixt.methods import elapsed, parse
+from nixt.handler import Event
+from nixt.methods import parse
 from nixt.objects import Object, keys
+from nixt.package import Mods
 from nixt.persist import Workdir, skel
-from nixt.runtime import Event, launch, level
+from nixt.runtime import launch, level
+from nixt.utility import elapsed
 
 
 CHECKSUM  = ""
@@ -32,7 +36,8 @@ NAME      = Workdir.name
 STARTTIME = time.time()
 
 
-Commands.mod   = "mods"
+Mods.mod   = "mods"
+#Mods.package = "mods"
 Commands.debug = True
 Workdir.wdr    = ".test"
 
@@ -78,8 +83,6 @@ post.rem = ["hnrss", ""]
 
 class Config:
 
-    "configuration"    
-
     debug    = False
     gets     = {}
     index    = None
@@ -91,12 +94,10 @@ class Config:
     otxt     = ""
     sets     = {}
     verbose  = False
-    version  = 410
+    version  = 433
 
 
 class CLI(Client):
-
-    "command line interface."
 
     def __init__(self):
         Client.__init__(self)
@@ -112,8 +113,6 @@ class CLI(Client):
 
 class Buffer(Output):
 
-    "buffered output."
-
     def __init__(self):
         Output.__init__(self)
         self.register("command", command)
@@ -127,8 +126,6 @@ class Buffer(Output):
 
 
 class Pool:
-
-    "pool of clients."
 
     clients = []
     lock = threading.RLock()
@@ -161,13 +158,11 @@ class Pool:
 
 
 def banner():
-    "show start message."
     tme = time.ctime(time.time()).replace("  ", " ")
     print(f"{NAME.upper()} {Config.version} TINDER since {tme} ({Config.level.upper()})")
 
 
 def consume():
-    "wait for all events."
     while True:
         try:
             event = events.get()
@@ -178,7 +173,6 @@ def consume():
 
 
 def payload(cmds):
-    "create example events and run them."
     with paylock:
         nmr = 0
         cmdz = sorted(keys(cmds))
@@ -200,7 +194,6 @@ def payload(cmds):
 
 
 def wrap(function):
-    "wrap function and restore console on return."
     old3 = None
     try:
         old3 = termios.tcgetattr(sys.stdin.fileno())
@@ -218,7 +211,6 @@ def wrap(function):
 
 
 def main(): # pylint: disable=R0912
-    "main script."
     nrcommand = 0
     parse(Config, " ".join(sys.argv[1:]))
     if "v" in Config.opts:
@@ -255,8 +247,8 @@ def main(): # pylint: disable=R0912
         nr = thr.join()
         if nr:
             nrcommand += nr
-    #consume()
-    #events.join()
+    launch(consume)
+    events.join()
     Fleet.shutdown()
     Fleet.wait()
     return nrs, nrcommand
