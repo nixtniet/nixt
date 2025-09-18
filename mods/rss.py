@@ -387,13 +387,13 @@ def imp(event):
     if not os.path.exists(fnm):
         event.reply(f"no {fnm} file found.")
         return
-    with open(fnm, "r", encoding="utf-8") as file:
-        txt = file.read()
-    prs = OPML()
-    nrs = 0
-    nrskip = 0
-    insertid = shortid()
     with importlock:
+        with open(fnm, "r", encoding="utf-8") as file:
+            txt = file.read()
+        prs = OPML()
+        nrs = 0
+        nrskip = 0
+        insertid = shortid()
         for obj in prs.parse(txt, "outline", "name,display_list,xmlUrl"):
             url = obj.xmlUrl
             if url in skipped:

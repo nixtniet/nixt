@@ -21,7 +21,7 @@ from .methods import fqn
 class Workdir:
 
     name = __file__.rsplit(os.sep, maxsplit=2)[-2]
-    wdr  = os.path.expanduser(f"~/.{name}")
+    wdr  = ""
 
 
 def getpath(obj):
@@ -43,16 +43,18 @@ def long(name):
 
 
 def moddir():
+    assert Workdir.wdr
     return j(Workdir.wdr, "mods")
 
 
 def pidname(name):
+    assert Workdir.wdr
     return j(Workdir.wdr, f"{name}.pid")
 
 
 def setwd(name, path=""):
     path = path or os.path.expanduser(f"~/.{name}")
-    Workdir.wdr = path
+    Workdir.wdr = Workdir.wdr or path
     skel()
 
 
@@ -68,6 +70,7 @@ def skel():
 
 
 def store(pth=""):
+    assert Workdir.wdr
     return j(Workdir.wdr, "store", pth)
 
 
@@ -81,6 +84,7 @@ def types():
 
 
 def wdr(pth):
+    assert Workdir.wdr
     return j(Workdir.wdr, pth)
 
 

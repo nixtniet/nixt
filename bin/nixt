@@ -131,6 +131,8 @@ def boot(doparse=True):
     if doparse:
         parse(Config, " ".join(sys.argv[1:]))
         update(Config, Config.sets, empty=False)
+        update(Mods, Config.sets, empty=False)
+        update(Workdir, Config.sets, empty=False)
     level(Config.level)
     if "v" in Config.opts:
         banner()
@@ -142,7 +144,6 @@ def boot(doparse=True):
         Mods.mod = Config.mod = pth
         Mods.package = "mods"
     if "m" in Config.opts:
-        logging.warning("using mods directory.")
         Mods.mod = Config.mod = "mods"
         Mods.package = "mods"
     if "a" in Config.opts:
@@ -151,6 +152,7 @@ def boot(doparse=True):
     table(CHECKSUM)
     Commands.add(cmd)
     Commands.add(ver)
+    logging.warning("workdir is %s", Workdir.wdr)
 
 
 "daemon"
