@@ -24,9 +24,9 @@ from nixt.command import Commands, command, scanner, table
 from nixt.methods import parse
 from nixt.objects import update
 from nixt.package import Mods, getmod, modules
-from nixt.persist import Workdir, pidname, setwd
 from nixt.runtime import Event, launch, level
 from nixt.utility import md5sum, spl
+from nixt.workdir import Workdir, pidname, setwd
 
 
 CHECKSUM = "9488d1cbdc265952c77dd1cd75a4e78f"

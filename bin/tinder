@@ -26,9 +26,9 @@ from nixt.handler import Event
 from nixt.methods import parse
 from nixt.objects import Object, keys
 from nixt.package import Mods
-from nixt.persist import Workdir, skel
 from nixt.runtime import launch, level
 from nixt.utility import elapsed
+from nixt.workdir import Workdir, skel
 
 
 CHECKSUM  = ""
@@ -210,7 +210,7 @@ def wrap(function):
     return res
 
 
-def main(): # pylint: disable=R0912
+def main():
     nrcommand = 0
     parse(Config, " ".join(sys.argv[1:]))
     if "v" in Config.opts:

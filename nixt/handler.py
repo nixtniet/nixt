@@ -59,7 +59,7 @@ class Handler:
     def callback(self, event):
         func = self.cbs.get(event.type, None)
         if func:
-            event._thr = launch(func, event, name=event.txt and event.txt.split()[0]) # pylint: disable=W0212
+            event._thr = launch(func, event, name=event.txt and event.txt.split()[0])
         else:
             event.ready()
 

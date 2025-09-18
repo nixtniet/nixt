@@ -10,9 +10,8 @@ import re
 import time
 
 
+from nixt.caching import find, write
 from nixt.clients import Fleet
-from nixt.locater import find
-from nixt.persist import write
 from nixt.runtime import Timed, launch
 from nixt.utility import elapsed, extract_date
 

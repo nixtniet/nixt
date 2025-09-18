@@ -69,7 +69,7 @@ class Handler:
     def callback(self, event):
         func = self.cbs.get(event.type, None)
         if func:
-            event._thr = launch(func, event, name=event.txt and event.txt.split()[0]) # pylint: disable=W0212
+            event._thr = launch(func, event, name=event.txt and event.txt.split()[0])
         else:
             event.ready()
 
@@ -134,7 +134,7 @@ class Thread(threading.Thread):
             self.result = func(*args)
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
-        except Exception as ex: # pylint: disable=W0718
+        except Exception as ex:
             logging.exception(ex)
             _thread.interrupt_main()
 

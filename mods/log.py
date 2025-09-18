@@ -7,9 +7,8 @@
 import time
 
 
-from nixt.locater import find, fntime
+from nixt.caching import find, fntime, write
 from nixt.objects import Object
-from nixt.persist import write
 from nixt.utility import elapsed
 
 

@@ -22,13 +22,13 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
+from nixt.caching import find, fntime, last, write
 from nixt.clients import Fleet
-from nixt.locater import find, fntime, last
 from nixt.methods import fmt
 from nixt.objects import Object, update
-from nixt.persist import getpath, write
 from nixt.runtime import Repeater, launch
 from nixt.utility import elapsed, spl
+from nixt.workdir import getpath
 
 
 def init():

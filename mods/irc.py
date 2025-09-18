@@ -14,14 +14,14 @@ import threading
 import time
 
 
+from nixt.caching import last, write
 from nixt.clients import Fleet, Output
 from nixt.command import command
-from nixt.locater import last
 from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
-from nixt.persist import Workdir, getpath, write
 from nixt.runtime import Event as IEvent
 from nixt.runtime import LEVELS, launch
+from nixt.workdir import Workdir, getpath
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"]
