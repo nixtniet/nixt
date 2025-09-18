@@ -13,7 +13,7 @@ import threading
 
 from .methods import fqn
 from .objects import update
-from .serials import dump, loaded
+from .serials import dump, load
 
 
 j = os.path.join
