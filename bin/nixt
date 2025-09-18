@@ -29,9 +29,6 @@ from nixt.runtime import Event, launch, level
 from nixt.utility import md5sum, spl
 
 
-import nixt
-
-
 CHECKSUM = "9488d1cbdc265952c77dd1cd75a4e78f"
 CHECKSUM = ""
 NAME = Workdir.name
@@ -138,9 +135,10 @@ def boot(doparse=True):
     if "v" in Config.opts:
         banner()
     if 'e' in Config.opts:
-        pth = nixt.__path__[0]
+        pkg = sys.modules.get(NAME)
+        pth = pkg.__path__[0]
         pth = os.sep.join(pth.split(os.sep)[:-4])
-        pth = os.path.join(pth, 'share', 'nixt',  'examples')
+        pth = os.path.join(pth, 'share', NAME,  'examples')
         Mods.mod = Config.mod = pth
         Mods.package = "mods"
     if "m" in Config.opts:
