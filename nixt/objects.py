@@ -4,8 +4,6 @@
 "a clean namespace"
 
 
-
-
 class Object:
 
     def __contains__(self, key):
@@ -56,14 +54,3 @@ def values(obj):
     if isinstance(obj, dict):
         return obj.values()
     return obj.__dict__.values()
-
-
-def __dir__():
-    return (
-        'Object',
-        'construct',
-        'items',
-        'keys',
-        'update',
-        'values'
-    )
