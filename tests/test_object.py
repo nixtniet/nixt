@@ -7,7 +7,8 @@
 import unittest
 
 
-from nixt.objects import Object, dumps, items, keys, loads, update, values
+from nixt.objects import Object, items, keys, update, values
+from nixt.serials import dumps, loads
 
 
 import nixt.objects
@@ -30,9 +31,6 @@ class Mixin(Mix, Object):
 attrs1 = (
     "Object",
     "construct",
-    "edit",
-    "fmt",
-    "fqn",
     "items",
     "keys",
     "update",

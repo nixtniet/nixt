@@ -15,24 +15,36 @@ sys.path.insert(0, os.getcwd())
 
 
 import nixt
+import nixt.brokers
+import nixt.caching
 import nixt.clients
 import nixt.command
+import nixt.handler
 import nixt.methods
 import nixt.objects
-import nixt.persist
+import nixt.package
 import nixt.runtime
+import nixt.serials
+import nixt.utility
+import nixt.workdir
 
 
 from nixt.objects import *
 
 
 PACKAGE = [
+    'brokers',
+    'caching',
     'clients',
     'command',
+    'handler',
     'methods',
     'objects',
-    'persist',
-    'runtime'
+    'package',
+    'runtime',
+    'serials',
+    'utility',
+    'workdir'
 ]
 
 

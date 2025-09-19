@@ -34,19 +34,34 @@ CHECKSUM = ""
 NAME = Workdir.name
 
 
+TXT = """[Unit]
+Description=%s
+After=network-online.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
+
+
 class Config:
 
-    debug    = False
-    default  = "irc,mdl,rss"
-    gets     = {}
-    init     = ""
-    level    = "warn"
-    mod      = ""
-    opts     = ""
-    otxt     = ""
-    sets     = {}
-    verbose  = False
-    version  = 433
+    debug = False
+    default = "irc,mdl,rss"
+    gets = {}
+    init  = ""
+    level = "warn"
+    mod = ""
+    opts = ""
+    otxt = ""
+    sets = {}
+    verbose = False
+    version = 432
+    wdr = ""
 
 
 class CLI(Client):
@@ -131,8 +146,8 @@ def boot(doparse=True):
     if doparse:
         parse(Config, " ".join(sys.argv[1:]))
         update(Config, Config.sets, empty=False)
-        update(Mods, Config.sets, empty=False)
-        update(Workdir, Config.sets, empty=False)
+        Mods.mod = Config.mod
+        Workdir.wdr = Config.wdr
     level(Config.level)
     if "v" in Config.opts:
         banner()
@@ -284,23 +299,6 @@ def forever():
 def out(txt):
     print(txt)
     sys.stdout.flush()
-
-
-"data"
-
-
-TXT = """[Unit]
-Description=%s
-After=network-online.target
-
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
 
 
 "runtime"
