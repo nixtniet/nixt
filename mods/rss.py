@@ -22,12 +22,12 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.caching import find, fntime, last, write
+from nixt.caching import find, last, write
 from nixt.clients import Fleet
 from nixt.methods import fmt
 from nixt.objects import Object, update
-from nixt.runtime import Repeater, launch
-from nixt.utility import elapsed, spl
+from nixt.threads import Repeater, launch
+from nixt.utility import elapsed, fntime, spl
 from nixt.workdir import getpath
 
 
@@ -35,7 +35,7 @@ def init():
     fetcher = Fetcher()
     fetcher.start()
     if fetcher.seenfn:
-        logging.warning(f"rss since {elapsed(time.time()-fntime(fetcher.seenfn))}")
+        logging.warning(f"since {elapsed(time.time()-fntime(fetcher.seenfn))}")
     return fetcher
 
 

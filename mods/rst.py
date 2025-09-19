@@ -14,7 +14,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from nixt.objects import Object
-from nixt.runtime import launch
+from nixt.threads import launch
 from nixt.workdir import Workdir, types
 
 
@@ -25,10 +25,10 @@ def init():
     try:
         rest = REST((Config.hostname, int(Config.port)), RESTHandler)
         rest.start()
-        logging.warning(f"rest at http://{Config.hostname}:{Config.port}")
+        logging.warning(f"http://{Config.hostname}:{Config.port}")
         return rest
     except OSError as ex:
-        logging.exception(ex)
+        logging.error(str(ex))
 
 
 class Config:

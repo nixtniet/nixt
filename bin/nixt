@@ -25,14 +25,13 @@ from nixt.methods import parse
 from nixt.network import md5, srv, tbl
 from nixt.handler import Event
 from nixt.objects import update
-from nixt.package import Mods, getmod, inits, modules
+from nixt.package import Mods, getmod, inits, modules, sums
 from nixt.threads import launch, level
 from nixt.utility import forever, md5sum, spl
 from nixt.workdir import Workdir, pidname, setwd
 
 
-CHECKSUM = "9488d1cbdc265952c77dd1cd75a4e78f"
-CHECKSUM = ""
+CHECKSUM = "e403bc51e1253c9339c71d591a137300"
 NAME = Workdir.name
 
 
@@ -158,6 +157,7 @@ def boot(doparse=True):
     if "a" in Config.opts:
         Config.init = ",".join(modules())
     setwd(NAME)
+    sums(CHECKSUM)
     table(CHECKSUM)
     Commands.add(cmd)
     Commands.add(ver)

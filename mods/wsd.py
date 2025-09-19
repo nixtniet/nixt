@@ -12,7 +12,7 @@ from random import SystemRandom
 
 from nixt.clients import Fleet
 from nixt.handler import Event
-from nixt.runtime import Repeater
+from nixt.threads import Repeater
 
 
 rand = SystemRandom()
@@ -22,7 +22,7 @@ def init():
     event = Event()
     repeater = Repeater(3600.0,  wsd, event)
     repeater.start()
-    logging.warning(f"wisdom has {len(TXT.split("\n"))} wise.")
+    logging.warning(f"{len(TXT.split("\n"))} wise.")
 
 
 def wsd(event):

@@ -7,9 +7,9 @@
 import time
 
 
-from nixt.caching import find, fntime, write
+from nixt.caching import find, write
 from nixt.objects import Object
-from nixt.utility import elapsed
+from nixt.utility import elapsed, fntime
 
 
 class Todo(Object):

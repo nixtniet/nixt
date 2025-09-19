@@ -12,7 +12,7 @@ import time
 
 from nixt.caching import find, write
 from nixt.clients import Fleet
-from nixt.runtime import Timed, launch
+from nixt.threads import Timed, launch
 from nixt.utility import elapsed, extract_date
 
 
@@ -29,7 +29,7 @@ def init():
         else:
             obj.__deleted__ = True
             write(obj, fnm)
-    logging.warning(f"timers {nrs}")
+    logging.warning(f"{nrs} timers")
 
 
 class NoDate(Exception):

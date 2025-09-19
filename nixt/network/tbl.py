@@ -4,12 +4,15 @@
 "create table"
 
 
+import json
+
+
 from ..command import Commands, scanner
+from ..utility import md5sum
 
 
 def tbl(event):
-    if not check("f"):
-        Commands.names = {}
+    Commands.names = {}
     scanner()
     event.reply("# This file is placed in the Public Domain.")
     event.reply("")

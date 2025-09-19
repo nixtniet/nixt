@@ -20,7 +20,7 @@ from nixt.command import command
 from nixt.handler import Event as IEvent
 from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
-from nixt.runtime import LEVELS, launch
+from nixt.threads import LEVELS, launch
 from nixt.workdir import Workdir, getpath
 
 
@@ -38,7 +38,7 @@ def init():
         irc.start()
         irc.events.joined.wait(30.0)
         if irc.events.joined.is_set():
-            logging.warning(f"irc {fmt(irc.cfg, skip=["password", "realname", "username"])} channels {",".join(irc.channels)}")
+            logging.warning(f"{fmt(irc.cfg, skip=["password", "realname", "username"])} channels {",".join(irc.channels)}")
         else:
             irc.stop()
         return irc

@@ -14,7 +14,7 @@ import time
 
 from nixt.clients import Fleet
 from nixt.objects import Object
-from nixt.runtime import launch
+from nixt.threads import launch
 
 
 DEBUG = False
@@ -23,7 +23,7 @@ DEBUG = False
 def init():
     udpd = UDP()
     udpd.start()
-    logging.warning(f"udp at http://{Cfg.host}:{Cfg.port}")
+    logging.warning(f"http://{Cfg.host}:{Cfg.port}")
     return udpd
 
 
