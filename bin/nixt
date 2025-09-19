@@ -152,7 +152,7 @@ def boot(doparse=True):
     table(CHECKSUM)
     Commands.add(cmd)
     Commands.add(ver)
-    logging.warning("workdir is %s", Workdir.wdr)
+    logging.info("workdir is %s", Workdir.wdr)
 
 
 "daemon"

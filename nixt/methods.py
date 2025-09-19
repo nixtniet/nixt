@@ -121,10 +121,29 @@ def parse(obj, txt=None):
         obj.txt = obj.cmd or ""
 
 
+def search(obj, selector, matching=False):
+    res = False
+    if not selector:
+        return res
+    for key, value in items(selector):
+        val = getattr(obj, key, None)
+        if not val:
+            continue
+        if matching and value == val:
+            res = True
+        elif str(value).lower() in str(val).lower() or value == "match":
+            res = True
+        else:
+            res = False
+            break
+    return res
+
+
 def __dir__():
     return (
         'edit',
         'fmt',
         'fqn',
-        'parse'
+        'parse',
+        'search'
     )

@@ -11,7 +11,7 @@ import threading
 import time
 
 
-from .methods import fqn
+from .methods import fqn, search
 from .objects import Object, items, update
 from .serials import dump, load
 from .workdir import getpath, long, store
