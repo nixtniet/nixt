@@ -33,18 +33,4 @@ classifiers = [
 packages = [
     'nixt',
 ]
-include-package-data = true
-
-
-[tool.setuptools.data-files]
-"share/nixt/examples" = [
-    'mods/flt.py',
-    'mods/irc.py',
-    'mods/log.py',
-    'mods/lst.py',
-    'mods/rss.py',
-    'mods/tdo.py',
-    'mods/thr.py',
-    'mods/tmr.py',
-    'mods/upt.py'
-]
+include-package-data = false

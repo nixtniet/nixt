@@ -23,8 +23,8 @@ import nixt.handler
 import nixt.methods
 import nixt.objects
 import nixt.package
-import nixt.runtime
 import nixt.serials
+import nixt.threads
 import nixt.utility
 import nixt.workdir
 
@@ -41,8 +41,8 @@ PACKAGE = [
     'methods',
     'objects',
     'package',
-    'runtime',
     'serials',
+    'threads',
     'utility',
     'workdir'
 ]
