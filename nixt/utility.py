@@ -89,6 +89,14 @@ def fntime(daystr):
     return float(timed)
 
 
+def forever():
+    while True:
+        try:
+            time.sleep(0.1)
+        except (KeyboardInterrupt, EOFError):
+            break
+
+
 def md5sum(path):
     with open(path, "r", encoding="utf-8") as file:
         txt = file.read().encode("utf-8")
@@ -111,6 +119,7 @@ def __dir__():
         'elapsed',
         'extract_date',
         'fntime',
+        'forever',
         'md5sum',
         'spl'
     )

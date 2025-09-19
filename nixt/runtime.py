@@ -1,144 +1,167 @@
 # This file is placed in the Public Domain.
 
 
-"runtime"
+"scripts"
 
 
-import logging
-import queue
-import threading
-import time
-import _thread
+import sys
+import termios
 
 
-LEVELS = {
-    'debug': logging.DEBUG,
-    'info': logging.INFO,
-    'warning': logging.WARNING,
-    'warn': logging.WARNING,
-    'error': logging.ERROR,
-    'critical': logging.CRITICAL,
-}
+from .brokers import Fleet
+from .command import table
+from .daemons import daemon, inits, pidfile, privileges
+from .methods import parse
+from .objects import update
+from .package import Mods
+from .threads import level
+from .workdir import Workdir, pidname, setwd
 
 
-class Thread(threading.Thread):
-
-    def __init__(self, func, *args, daemon=True, **kwargs):
-        super().__init__(None, self.run, None, (), daemon=daemon)
-        self.name      = kwargs.get("name", name(func))
-        self.queue     = queue.Queue()
-        self.result    = None
-        self.starttime = time.time()
-        self.stopped   = threading.Event()
-        self.queue.put((func, args))
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        yield from dir(self)
-
-    def join(self, timeout=None):
-        result = None
-        try:
-            super().join(timeout)
-            result = self.result
-        except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
-        return result
-
-    def run(self):
-        func, args = self.queue.get()
-        try:
-            self.result = func(*args)
-        except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
-        except Exception as ex:
-            logging.exception(ex)
-            _thread.interrupt_main()
+NAME = Workdir.name
 
 
-class Timy(threading.Timer):
+class Config:
 
-    def __init__(self, sleep, func, *args, **kwargs):
-        super().__init__(sleep, func)
-        self.name  = kwargs.get("name", name(func))
-        self.sleep = sleep
-        self.state = {}
-        self.state["latest"] = time.time()
-        self.state["starttime"] = time.time()
-        self.starttime = time.time()
-
-
-class Timed:
-
-    def __init__(self, sleep, func, *args, thrname="", **kwargs):
-        self.args   = args
-        self.func   = func
-        self.kwargs = kwargs
-        self.sleep  = sleep
-        self.name   = thrname or kwargs.get("name", name(func))
-        self.target = time.time() + self.sleep
-        self.timer  = None
-
-    def run(self):
-        self.timer.latest = time.time()
-        self.func(*self.args)
-
-    def start(self):
-        self.kwargs["name"] = self.name
-        timer = Timy(self.sleep, self.run, *self.args, **self.kwargs)
-        timer.start()
-        self.timer = timer
-
-    def stop(self):
-        if self.timer:
-            self.timer.cancel()
+    debug = False
+    default = "irc,mdl,rss"
+    gets = {}
+    init  = ""
+    level = "warn"
+    mod = ""
+    opts = ""
+    otxt = ""
+    sets = {}
+    verbose = False
+    version = 432
+    wdr = ""
 
 
-class Repeater(Timed):
-
-    def run(self):
-        launch(self.start)
-        super().run()
-
-
-def launch(func, *args, **kwargs):
-    thread = Thread(func, *args, **kwargs)
-    thread.start()
-    return thread
+def background():
+    daemon("-v" in sys.argv)
+    privileges()
+    boot(False)
+    pidfile(pidname(NAME))
+    inits(Config.init or Config.default)
+    forever()
 
 
-def level(loglevel="debug"):
-    if loglevel != "none":
-        format_short = "%(asctime)-8s %(message)-71s"
-        datefmt = "%H:%M:%S"
-        logging.basicConfig(datefmt=datefmt, format=format_short, force=True)
-        logging.getLogger().setLevel(LEVELS.get(loglevel))
+def console():
+    import readline # noqa: F401
+    boot()
+    for _mod, thr in inits(Config.init):
+        if "w" in Config.opts:
+            thr.join(30.0)
+    csl = Console()
+    csl.start(daemon=True)
+    forever()
 
 
-def name(obj):
-    typ = type(obj)
-    if "__builtins__" in dir(typ):
-        return obj.__name__
-    if "__self__" in dir(obj):
-        return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
-    if "__class__" in dir(obj) and "__name__" in dir(obj):
-        return f"{obj.__class__.__name__}.{obj.__name__}"
-    if "__class__" in dir(obj):
-        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
-    if "__name__" in dir(obj):
-        return f"{obj.__class__.__name__}.{obj.__name__}"
-    return ""
+def control():
+    if len(sys.argv) == 1:
+        return
+    boot()
+    Commands.add(md5)
+    Commands.add(srv)
+    Commands.add(tbl)
+    csl = CLI()
+    evt = Event()
+    evt.orig = repr(csl)
+    evt.type = "command"
+    evt.txt = Config.otxt
+    command(evt)
+    evt.wait()
+
+
+def service():
+    privileges()
+    boot(False)
+    pidfile(pidname(NAME))
+    inits(Config.init or Config.default)
+    forever()
+
+
+def boot(doparse=True):
+    if doparse:
+        parse(Config, " ".join(sys.argv[1:]))
+        update(Config, Config.sets, empty=False)
+        Mods.mod = Config.mod
+        Workdir.wdr = Config.wdr
+    level(Config.level)
+    if "v" in Config.opts:
+        banner()
+    if 'e' in Config.opts:
+        pkg = sys.modules.get(NAME)
+        pth = pkg.__path__[0]
+        pth = os.sep.join(pth.split(os.sep)[:-4])
+        pth = os.path.join(pth, 'share', NAME,  'examples')
+        Mods.mod = Config.mod = pth
+        Mods.package = "mods"
+    if "m" in Config.opts:
+        Mods.mod = Config.mod = "mods"
+        Mods.package = "mods"
+    if "a" in Config.opts:
+        Config.init = ",".join(modules())
+    setwd(NAME)
+    table(CHECKSUM)
+    Commands.add(cmd)
+    Commands.add(ver)
+    logging.info("workdir is %s", Workdir.wdr)
+
+
+def check(txt):
+    args = sys.argv[1:]
+    for arg in args:
+        if not arg.startswith("-"):
+            continue
+        for char in txt:
+            if char in arg:
+                return True
+    return False
+
+
+def wrapped(func):
+    try:
+        func()
+    except (KeyboardInterrupt, EOFError):
+        out("")
+    Fleet.shutdown()
+
+
+def wrap(func):
+    import termios
+    old = None
+    try:
+        old = termios.tcgetattr(sys.stdin.fileno())
+    except termios.error:
+        pass
+    try:
+        wrapped(func)
+    finally:
+        if old:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+
+
+def main():
+    if check("c"):
+        wrap(console)
+    elif check("d"):
+        background()
+    elif check("s"):
+        wrapped(service)
+    else:
+        wrapped(control)
 
 
 def __dir__():
     return (
-        'Output',
-        'Repeater',
-        'Thread',
-        'Timed',
-        'launch',
-        'level',
-        'name'
-   )
+        'NAME',
+        'background',
+        'boot',
+        'wrapped',
+        'console',
+        'constrol',
+        'serivce',
+        'wrap',
+        'main'
+    )
