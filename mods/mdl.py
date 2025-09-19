@@ -10,8 +10,9 @@ import time
 
 
 from nixt.clients import Fleet
+from nixt.handler import Event
 from nixt.objects import Object, construct, keys
-from nixt.runtime import Event, Repeater
+from nixt.runtime import Repeater
 from nixt.utility import elapsed
 
 

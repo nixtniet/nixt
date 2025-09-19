@@ -5,6 +5,8 @@
 
 
 import hashlib
+import os
+import pathlib
 import time
 
 
@@ -16,6 +18,11 @@ FORMATS = [
     "%d-%m",
     "%m-%d",
 ]
+
+
+def cdir(path):
+    pth = pathlib.Path(path)
+    pth.parent.mkdir(parents=True, exist_ok=True)
 
 
 def elapsed(seconds, short=True):
@@ -69,6 +76,19 @@ def extract_date(daystr):
     return res
 
 
+def fntime(daystr):
+    datestr = " ".join(daystr.split(os.sep)[-2:])
+    datestr = datestr.replace("_", " ")
+    if "." in datestr:
+        datestr, rest = datestr.rsplit(".", 1)
+    else:
+        rest = ""
+    timed = time.mktime(time.strptime(datestr, "%Y-%m-%d %H:%M:%S"))
+    if rest:
+        timed += float("." + rest)
+    return float(timed)
+
+
 def md5sum(path):
     with open(path, "r", encoding="utf-8") as file:
         txt = file.read().encode("utf-8")
@@ -87,8 +107,10 @@ def spl(txt):
 
 def __dir__():
     return (
+        'cdir',
         'elapsed',
         'extract_date',
+        'fntime',
         'md5sum',
         'spl'
     )

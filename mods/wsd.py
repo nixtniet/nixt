@@ -11,7 +11,8 @@ from random import SystemRandom
 
 
 from nixt.clients import Fleet
-from nixt.runtime import Event, Repeater
+from nixt.handler import Event
+from nixt.runtime import Repeater
 
 
 rand = SystemRandom()

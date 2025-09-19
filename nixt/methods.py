@@ -7,6 +7,10 @@
 from .objects import items, keys
 
 
+def isdeleted(obj):
+    return "__deleted__" in dir(obj) and obj.__deleted__
+
+
 def edit(obj, setter, skip=True):
     for key, val in items(setter):
         if skip and val == "":
@@ -141,6 +145,7 @@ def search(obj, selector, matching=False):
 
 def __dir__():
     return (
+        'deleted',
         'edit',
         'fmt',
         'fqn',

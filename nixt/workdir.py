@@ -12,9 +12,6 @@ import threading
 import time
 
 
-j = os.path.join
-
-
 from .methods import fqn
 
 
@@ -29,7 +26,7 @@ def getpath(obj):
 
 
 def ident(obj):
-    return j(fqn(obj), *str(datetime.datetime.now()).split())
+    return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
 
 
 def long(name):
@@ -44,12 +41,12 @@ def long(name):
 
 def moddir():
     assert Workdir.wdr
-    return j(Workdir.wdr, "mods")
+    return os.path.join(Workdir.wdr, "mods")
 
 
 def pidname(name):
     assert Workdir.wdr
-    return j(Workdir.wdr, f"{name}.pid")
+    return os.path.join(Workdir.wdr, f"{name}.pid")
 
 
 def setwd(name, path=""):
@@ -71,11 +68,11 @@ def skel():
 
 def store(pth=""):
     assert Workdir.wdr
-    return j(Workdir.wdr, "store", pth)
+    return os.path.join(Workdir.wdr, "store", pth)
 
 
 def strip(pth, nmr=2):
-    return j(pth.split(os.sep)[-nmr:])
+    return os.path.join(pth.split(os.sep)[-nmr:])
 
 
 def types():
@@ -85,7 +82,7 @@ def types():
 
 def wdr(pth):
     assert Workdir.wdr
-    return j(Workdir.wdr, pth)
+    return os.path.join(Workdir.wdr, pth)
 
 
 def __dir__():

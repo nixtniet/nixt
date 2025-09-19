@@ -22,9 +22,10 @@ from nixt.brokers import Fleet
 from nixt.clients import Client
 from nixt.command import Commands, command, scanner, table
 from nixt.methods import parse
+from nixt.handler import Event
 from nixt.objects import update
 from nixt.package import Mods, getmod, modules
-from nixt.runtime import Event, launch, level
+from nixt.runtime import launch, level
 from nixt.utility import md5sum, spl
 from nixt.workdir import Workdir, pidname, setwd
 

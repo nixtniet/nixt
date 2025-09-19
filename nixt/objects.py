@@ -54,3 +54,14 @@ def values(obj):
     if isinstance(obj, dict):
         return obj.values()
     return obj.__dict__.values()
+
+
+def __dir__():
+    return (
+        'Object',
+        'construct',
+        'items',
+        'keys',
+        'update',
+        'values'
+    )

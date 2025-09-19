@@ -19,7 +19,6 @@ from .utility import md5sum, spl
 DEBUG = False
 
 
-j = os.path.join
 lock = threading.RLock()
 
 
@@ -82,7 +81,7 @@ def scanner(names=""):
 
 
 def table(checksum):
-    pth = j(Mods.mod, "tbl.py")
+    pth = os.path.join(Mods.mod, "tbl.py")
     if not os.path.exists(pth):
         logging.info("table file is not there.")
     elif checksum and md5sum(pth) != checksum:

@@ -17,9 +17,9 @@ import time
 from nixt.caching import last, write
 from nixt.clients import Fleet, Output
 from nixt.command import command
+from nixt.handler import Event as IEvent
 from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
-from nixt.runtime import Event as IEvent
 from nixt.runtime import LEVELS, launch
 from nixt.workdir import Workdir, getpath
 

@@ -16,13 +16,12 @@ import _thread
 from .utility import md5sum
 
 
-j = os.path.join
 lock = threading.RLock()
 
 
 class Mods:
 
-    mod = j(os.path.dirname(__file__), "modules")
+    mod = os.path.join(os.path.dirname(__file__), "modules")
     md5s = {}
     package = __name__.split(".", maxsplit=1)[0] + "." + "modules"
 
@@ -35,7 +34,7 @@ def getmod(name, path=None):
             return module
         if not path:
             path = Mods.mod
-        pth = j(path, f"{name}.py")
+        pth = os.path.join(path, f"{name}.py")
         if os.path.exists(pth):
             if name != "tbl" and (Mods.md5s and md5sum(pth) != Mods.md5s.get(name, None)):
                 logging.warning("md5 error on %s", pth.split(os.sep)[-1])
@@ -71,7 +70,7 @@ def modules():
 
 
 def sums(checksum):
-    pth = j(Mods.mod, "tbl.py")
+    pth = os.path.join(Mods.mod, "tbl.py")
     if not os.path.exists(pth):
         logging.info("table file is not there.")
     elif checksum and md5sum(pth) != checksum:

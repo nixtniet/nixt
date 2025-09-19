@@ -10,7 +10,8 @@ import _thread
 
 
 from .brokers import Fleet
-from .runtime import Handler, launch
+from .handler import Handler
+from .runtime import launch
 
 
 class Client(Handler):

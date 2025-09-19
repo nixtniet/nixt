@@ -11,13 +11,13 @@ import threading
 import time
 
 
-from .methods import fqn, search
+from .methods import fqn, isdeleted, search
 from .objects import Object, items, update
 from .serials import dump, load
 from .workdir import getpath, long, store
+from .utility import cdir, fntime
 
 
-j = os.path.join
 lock = threading.RLock()
 
 
@@ -43,11 +43,6 @@ class Cache:
             Cache.add(path, obj)
 
 
-def cdir(path):
-    pth = pathlib.Path(path)
-    pth.parent.mkdir(parents=True, exist_ok=True)
-
-
 def find(clz, selector=None, deleted=False, matching=False):
     clz = long(clz)
     if selector is None:
@@ -69,26 +64,9 @@ def fns(clz):
     pth = store(clz)
     for rootdir, dirs, _files in os.walk(pth, topdown=False):
         for dname in dirs:
-            ddd = j(rootdir, dname)
+            ddd = os.path.join(rootdir, dname)
             for fll in os.listdir(ddd):
-                yield j(ddd, fll)
-
-
-def fntime(daystr):
-    datestr = " ".join(daystr.split(os.sep)[-2:])
-    datestr = datestr.replace("_", " ")
-    if "." in datestr:
-        datestr, rest = datestr.rsplit(".", 1)
-    else:
-        rest = ""
-    timed = time.mktime(time.strptime(datestr, "%Y-%m-%d %H:%M:%S"))
-    if rest:
-        timed += float("." + rest)
-    return float(timed)
-
-
-def isdeleted(obj):
-    return "__deleted__" in dir(obj) and obj.__deleted__
+                yield os.path.join(ddd, fll)
 
 
 def last(obj, selector=None):
@@ -111,24 +89,6 @@ def read(obj, path):
             except json.decoder.JSONDecodeError as ex:
                 ex.add_note(path)
                 raise ex
-
-
-def search(obj, selector, matching=False):
-    res = False
-    if not selector:
-        return res
-    for key, value in items(selector):
-        val = getattr(obj, key, None)
-        if not val:
-            continue
-        if matching and value == val:
-            res = True
-        elif str(value).lower() in str(val).lower() or value == "match":
-            res = True
-        else:
-            res = False
-            break
-    return res
 
 
 def write(obj, path=None):
