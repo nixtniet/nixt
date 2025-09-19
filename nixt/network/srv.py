@@ -4,7 +4,10 @@
 "service file"
 
 
-from nixt.scripts import NAME
+from nixt.workdir import Workdir
+
+
+NAME = Workdir.name
 
 
 TXT = """[Unit]

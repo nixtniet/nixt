@@ -4,18 +4,7 @@
 "cache"
 
 
-import json.decoder
-import os
-import pathlib
 import threading
-import time
-
-
-from .methods import fqn, isdeleted, search
-from .objects import Object, items, update
-from .serials import dump, load
-from .workdir import getpath, long, store
-from .utility import cdir, fntime
 
 
 lock = threading.RLock()
@@ -105,9 +94,7 @@ def write(obj, path=None):
 def __dir__():
     return (
         'Cache',
-        'cdir',
         'find',
-        'fntime',
         'last',
         'read',
         'write'

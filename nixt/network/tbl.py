@@ -4,7 +4,7 @@
 "create table"
 
 
-from .command imnport Commands, scanned
+from ..command import Commands, scanner
 
 
 def tbl(event):

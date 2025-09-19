@@ -3,7 +3,7 @@
 
 from nixt.clients import Fleet
 from nixt.methods import fmt
-from nixt.runtime import name
+from nixt.threads import name
 
 
 def flt(event):

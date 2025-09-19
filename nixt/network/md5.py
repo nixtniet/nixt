@@ -3,8 +3,9 @@
 
 "md5sum"
 
-from .package import getmod
-from .utility import md5sum
+
+from ..package import getmod
+from ..utility import md5sum
 
 
 def md5(event):

@@ -13,7 +13,7 @@ import threading
 import _thread
 
 
-from .utility import md5sum
+from .utility import md5sum, spl
 
 
 lock = threading.RLock()
@@ -58,6 +58,22 @@ def importer(name, pth):
         logging.exception(ex)
         _thread.interrupt_main()
     return module
+
+
+def inits(names):
+    modz = []
+    for name in sorted(spl(names)):
+        try:
+            module = getmod(name)
+            if not module:
+                continue
+            if "init" in dir(module):
+                thr = launch(module.init)
+                modz.append((module, thr))
+        except Exception as ex:
+            logging.exception(ex)
+            _thread.interrupt_main()
+    return modz
 
 
 def modules():
