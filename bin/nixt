@@ -22,7 +22,6 @@ from nixt.brokers import Fleet
 from nixt.clients import Client
 from nixt.command import Commands, command, scanner, table
 from nixt.methods import parse
-from nixt.network import md5, srv, tbl
 from nixt.handler import Event
 from nixt.objects import update
 from nixt.package import Mods, getmod, inits, modules, sums
@@ -115,9 +114,9 @@ def control():
     if len(sys.argv) == 1:
         return
     boot()
-    Commands.add(md5.md5)
-    Commands.add(srv.srv)
-    Commands.add(tbl.tbl)
+    Commands.add(md5)
+    Commands.add(srv)
+    Commands.add(tbl)
     csl = CLI()
     evt = Event()
     evt.orig = repr(csl)
@@ -169,6 +168,51 @@ def boot(doparse=True):
 
 def cmd(event):
     event.reply(",".join(sorted(Commands.names)))
+
+
+def md5(event):
+    tbl = getmod("tbl")
+    if tbl:
+        event.reply(md5sum(tbl.__file__))
+    else:
+        event.reply("table is not there.")
+
+
+TXT = """[Unit]
+Description=%s
+After=network-online.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
+
+
+def srv(event):
+    import getpass
+    name = getpass.getuser()
+    event.reply(TXT % (NAME.upper(), name, name, name, NAME))
+
+
+def tbl(event):
+    Commands.names = {}
+    scanner()
+    event.reply("# This file is placed in the Public Domain.")
+    event.reply("")
+    event.reply("")
+    event.reply('"lookup tables"')
+    event.reply("")
+    event.reply("")
+    event.reply(f"NAMES = {json.dumps(Commands.names, indent=4, sort_keys=True)}")
+    event.reply("")
+    event.reply("MD5 = {")
+    for module in scanner():
+        event.reply(f'    "{module.__name__.split(".")[-1]}": "{md5sum(module.__file__)}",')
+    event.reply("}")
 
 
 def ver(event):

@@ -7,7 +7,7 @@
 from .objects import items, keys
 
 
-def isdeleted(obj):
+def deleted(obj):
     return "__deleted__" in dir(obj) and obj.__deleted__
 
 

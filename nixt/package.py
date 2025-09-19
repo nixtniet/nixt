@@ -89,7 +89,7 @@ def modules():
 def sums(checksum):
     pth = os.path.join(Mods.mod, "tbl.py")
     if not os.path.exists(pth):
-        logging.info("table file is not there.")
+        logging.info("table is not there.")
     elif checksum and md5sum(pth) != checksum:
         logging.warning("table checksum error.")
     else:

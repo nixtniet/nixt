@@ -9,7 +9,7 @@ import os
 import threading
 
 
-from .methods import fqn, isdeleted, search
+from .methods import fqn, deleted, search
 from .objects import Object, update
 from .serials import dump, load
 from .utility import cdir, fntime
@@ -41,7 +41,7 @@ class Cache:
             Cache.add(path, obj)
 
 
-def find(clz, selector=None, deleted=False, matching=False):
+def find(clz, selector=None, removed=False, matching=False):
     clz = long(clz)
     if selector is None:
         selector = {}
@@ -51,7 +51,7 @@ def find(clz, selector=None, deleted=False, matching=False):
             obj = Object()
             read(obj, pth)
             Cache.add(pth, obj)
-        if not deleted and isdeleted(obj):
+        if not removed and deleted(obj):
             continue
         if selector and not search(obj, selector, matching):
             continue

@@ -90,7 +90,7 @@ def __dir__():
         'Workdir',
         'find',
         'fntime',
-        'last'
+        'last',
         'long',
         'pidname',
         'setwd',

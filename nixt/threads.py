@@ -104,7 +104,6 @@ class Repeater(Timed):
         super().run()
 
 
-format_short = "%(asctime)-8s %(module).3s %(message)-67s"
 
 
 class Formatter(logging.Formatter):
@@ -123,14 +122,13 @@ def launch(func, *args, **kwargs):
 def level(loglevel="debug"):
     if loglevel != "none":
         datefmt = "%H:%M:%S"
+        format_short = "%(asctime)-8s %(module).3s %(message)-67s"
         ch = logging.StreamHandler()
         ch.setLevel(LEVELS.get(loglevel))
         formatter = Formatter(fmt=format_short, datefmt=datefmt)
         ch.setFormatter(formatter)
         logger = logging.getLogger()
         logger.addHandler(ch)
-        #logging.basicConfig(datefmt=datefmt, format=formatter, force=True)
-        #logging.getLogger().setLevel()
 
 
 def name(obj):

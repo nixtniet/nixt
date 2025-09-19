@@ -66,7 +66,10 @@ def scan(module):
 
 def scanner(names=None):
     res = []
-    logging.warning("scanning %s", Mods.mod)
+    if not os.path.exists(Mods.mod):
+        logging.info("modules directory is not set.")
+        return
+    logging.info("scanning %s", Mods.mod)
     for nme in sorted(modules()):
         if names and nme not in spl(names):
             continue
