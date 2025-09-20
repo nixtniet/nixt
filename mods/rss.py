@@ -451,7 +451,7 @@ def res(event):
     if len(event.args) != 1:
         event.reply("res <stringinurl>")
         return
-    for fnm, fed in find("rss", deleted=True):
+    for fnm, fed in find("rss", removed=True):
         feed = Rss()
         update(feed, fed)
         if event.args[0] not in feed.rss:
