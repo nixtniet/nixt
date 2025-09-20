@@ -17,18 +17,17 @@ from .threads import launch
 from .utility import md5sum, spl
 
 
-lock = threading.RLock()
-
-
 class Mods:
 
+    debug = False
+    lock = threading.RLock()
     mod = os.path.join(os.path.dirname(__file__), "modules")
     md5s = {}
     package = __name__.split(".", maxsplit=1)[0] + "." + "modules"
 
 
 def getmod(name, path=None):
-    with lock:
+    with Mods.lock:
         mname = Mods.package + "." +  name
         module = sys.modules.get(mname, None)
         if module:
@@ -54,6 +53,8 @@ def importer(name, pth):
                 sys.modules[name] = module
                 if spec.loader:
                     spec.loader.exec_module(module)
+                if Mods.debug:
+                    module.DEBUG = True
                 logging.info("load %s", pth)
     except Exception as ex:
         logging.exception(ex)

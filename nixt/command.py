@@ -15,9 +15,6 @@ from .package import Mods, getmod, modules
 from .utility import md5sum, spl
 
 
-DEBUG = False
-
-
 class Commands:
 
     cmds = {}
@@ -42,8 +39,6 @@ class Commands:
         if not module:
             return
         scan(module)
-        if DEBUG:
-            module.DEBUG = True
         return Commands.cmds.get(cmd, None)
 
 
@@ -68,7 +63,7 @@ def scanner(names=None):
     res = []
     if not os.path.exists(Mods.mod):
         logging.info("modules directory is not set.")
-        return
+        return res
     logging.info("scanning %s", Mods.mod)
     for nme in sorted(modules()):
         if names and nme not in spl(names):

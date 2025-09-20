@@ -31,54 +31,20 @@ from nixt.utility import elapsed
 from nixt.workdir import Workdir, skel
 
 
-CHECKSUM  = ""
-NAME      = Workdir.name
+CHECKSUM = ""
+NAME = Workdir.name
 STARTTIME = time.time()
 
 
-Mods.mod   = "mods"
-#Mods.package = "mods"
-Commands.debug = True
-Workdir.wdr    = ".test"
+Mods.debug = True
+Mods.mod = "mods"
+Mods.package = "mods"
+Workdir.wdr = ".test"
 
 
 events  = queue.Queue()
 paylock = _thread.allocate_lock()
 rand    = random.SystemRandom()
-
-
-param = Object()
-param.cmd = [""]
-param.dis = [""]
-param.dpl = ["hnrss title,url", ""]
-param.flt = [""]
-param.fnd = ["log", "rss", "config", "todo", ""]
-param.man = [""]
-param.mod = [""]
-param.mre = [""]
-param.nme = ["hnrss hackernews", ""]
-param.now = [""]
-param.pwd = ["bla mekker", ""]
-param.req = [""]
-param.res = ["hnrss", ""]
-param.srv = [""]
-param.thr = [""]
-param.upt = [""]
-param.ver = [""]
-
-
-pre = Object()
-pre.cfg = ["nick=mekker", ""]
-pre.imp = ["tests/feeds.opml", ""]
-pre.log = ["bla", ""]
-pre.rss = ["http://hnrss.org/newest", ""]
-pre.tdo = ["mekker", ""]
-
-
-post = Object()
-post.dne = ["hnrss", ""]
-post.exp = ['']
-post.rem = ["hnrss", ""]
 
 
 class Config:
@@ -252,6 +218,40 @@ def main():
     Fleet.shutdown()
     Fleet.wait()
     return nrs, nrcommand
+
+
+param = Object()
+param.cmd = [""]
+param.dis = [""]
+param.dpl = ["hnrss title,url", ""]
+param.flt = [""]
+param.fnd = ["log", "rss", "config", "todo", ""]
+param.man = [""]
+param.mod = [""]
+param.mre = [""]
+param.nme = ["hnrss hackernews", ""]
+param.now = [""]
+param.pwd = ["bla mekker", ""]
+param.req = [""]
+param.res = ["hnrss", ""]
+param.srv = [""]
+param.thr = [""]
+param.upt = [""]
+param.ver = [""]
+
+
+pre = Object()
+pre.cfg = ["nick=mekker", ""]
+pre.imp = ["testing/feeds.opml", ""]
+pre.log = ["bla", ""]
+pre.rss = ["http://hnrss.org/newest", ""]
+pre.tdo = ["mekker", ""]
+
+
+post = Object()
+post.dne = ["hnrss", ""]
+post.exp = ['']
+post.rem = ["hnrss", ""]
 
 
 

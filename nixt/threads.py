@@ -11,17 +11,6 @@ import time
 import _thread
 
 
-LEVELS = {
-    'debug': logging.DEBUG,
-    'info': logging.INFO,
-    'warning': logging.WARNING,
-    'warn': logging.WARNING,
-    'error': logging.ERROR,
-    'critical': logging.CRITICAL,
-}
-
-
-
 class Thread(threading.Thread):
 
     def __init__(self, func, *args, daemon=True, **kwargs):
@@ -104,8 +93,6 @@ class Repeater(Timed):
         super().run()
 
 
-
-
 class Formatter(logging.Formatter):
 
     def format(self, record):
@@ -144,6 +131,16 @@ def name(obj):
     if "__name__" in dir(obj):
         return f"{obj.__class__.__name__}.{obj.__name__}"
     return ""
+
+
+LEVELS = {
+    'debug': logging.DEBUG,
+    'info': logging.INFO,
+    'warning': logging.WARNING,
+    'warn': logging.WARNING,
+    'error': logging.ERROR,
+    'critical': logging.CRITICAL,
+}
 
 
 def __dir__():

@@ -2,9 +2,6 @@
 # This file is placed in the Public Domain.
 
 
-"main program"
-
-
 import json
 import logging
 import os
@@ -30,11 +27,8 @@ from nixt.utility import forever, md5sum, spl
 from nixt.workdir import Workdir, pidname, setwd
 
 
-CHECKSUM = "e403bc51e1253c9339c71d591a137300"
+CHECKSUM = "9bbaa1c04f7668358d78bb72d8b4b43a"
 NAME = Workdir.name
-
-
-"config"
 
 
 class Config:
@@ -49,11 +43,8 @@ class Config:
     otxt = ""
     sets = {}
     verbose = False
-    version = 432
+    version = 433
     wdr = ""
-
-
-"clients"
 
 
 class CLI(Client):
@@ -85,9 +76,6 @@ class Console(CLI):
         evt.txt = input("> ")
         evt.type = "command"
         return evt
-
-
-"scripts"
 
 
 def background():
@@ -161,9 +149,6 @@ def boot(doparse=True):
     Commands.add(cmd)
     Commands.add(ver)
     logging.info("workdir is %s", Workdir.wdr)
-
-
-"commands"
 
 
 def cmd(event):

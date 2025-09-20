@@ -38,7 +38,7 @@ def init():
         irc.start()
         irc.events.joined.wait(30.0)
         if irc.events.joined.is_set():
-            logging.warning(f"{fmt(irc.cfg, skip=["password", "realname", "username"])} channels {",".join(irc.channels)}")
+            logging.warning(f"{fmt(irc.cfg, skip=["password", "realname", "username"])}")
         else:
             irc.stop()
         return irc
