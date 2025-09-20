@@ -5,12 +5,10 @@
 
 
 import hashlib
-import logging
 import os
 import pathlib
 import sys
 import time
-import _thread
 
 
 FORMATS = [

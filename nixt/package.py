@@ -90,14 +90,14 @@ def sums(checksum):
     pth = os.path.join(Mods.mod, "tbl.py")
     if not os.path.exists(pth):
         logging.info("table is not there.")
+        return
     elif checksum and md5sum(pth) != checksum:
         logging.warning("table checksum error.")
-    else:
-        tbl = getmod("tbl")
-        if tbl:
-            if "MD5" in dir(tbl):
-                Mods.md5s.update(tbl.MD5)
-            return
+        return
+    tbl = getmod("tbl")
+    if tbl:
+        if "MD5" in dir(tbl):
+            Mods.md5s.update(tbl.MD5)
 
 
 def __dir__():

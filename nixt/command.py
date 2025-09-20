@@ -12,7 +12,7 @@ import os
 from .brokers import Fleet
 from .methods import parse
 from .package import Mods, getmod, modules
-from .utility import md5sum
+from .utility import md5sum, spl
 
 
 DEBUG = False
