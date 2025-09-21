@@ -37,7 +37,10 @@ def getmod(name, path=None):
         pth = os.path.join(path, f"{name}.py")
         if os.path.exists(pth):
             if name != "tbl" and (Mods.md5s and md5sum(pth) != Mods.md5s.get(name, None)):
-                logging.warning("md5 error on %s", pth.split(os.sep)[-1])
+                logging.warning(
+                                "md5 error on %s",
+                                pth.split(os.sep)[-1]
+                               )
         return importer(mname, pth)
 
 
@@ -106,6 +109,7 @@ def __dir__():
         'Mods',
         'getmod',
         'importer',
+        'init',
         'modules',
         'sums'
     )

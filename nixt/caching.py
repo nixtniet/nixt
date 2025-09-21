@@ -16,11 +16,9 @@ from .utility import cdir, fntime
 from .workdir import getpath, long, store
 
 
-lock = threading.RLock()
-
-
 class Cache:
 
+    lock = threading.RLock()
     objs = {}
 
     @staticmethod
@@ -80,7 +78,7 @@ def last(obj, selector=None):
 
 
 def read(obj, path):
-    with lock:
+    with Cache.lock:
         with open(path, "r", encoding="utf-8") as fpt:
             try:
                 update(obj, load(fpt))
@@ -90,7 +88,7 @@ def read(obj, path):
 
 
 def write(obj, path=None):
-    with lock:
+    with Cache.lock:
         if path is None:
             path = getpath(obj)
         cdir(path)

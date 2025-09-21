@@ -27,22 +27,9 @@ class Fleet:
             client.announce(txt)
 
     @staticmethod
-    def dispatch(evt):
-        client = Fleet.get(evt.orig)
-        client.put(evt)
-
-    @staticmethod
     def display(evt):
         client = Fleet.get(evt.orig)
         client.display(evt)
-
-    @staticmethod
-    def first():
-        clt = list(Fleet.all())
-        res = None
-        if clt:
-            res = clt[0]
-        return res
 
     @staticmethod
     def get(orig):
