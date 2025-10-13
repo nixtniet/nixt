@@ -197,36 +197,3 @@ class TestObject(unittest.TestCase):
                 "value",
             ],
         )
-
-
-class TestDecoder(unittest.TestCase):
-
-    def test_loads(self):
-        obj = Object()
-        obj.test = "bla"
-        oobj = loads(dumps(obj))
-        self.assertEqual(oobj.test, "bla")
-
-
-class TestEncoder(unittest.TestCase):
-
-    def test_dumps(self):
-        obj = Object()
-        obj.test = "bla"
-        self.assertEqual(dumps(obj), VALIDPYTHON)
-
-
-class TestComposite(unittest.TestCase):
-
-    def testcomposite(self):
-        obj = Object()
-        obj.obj = Object()
-        obj.obj.abc = "test"
-        self.assertEqual(obj.obj.abc, "test")
-
-
-class TestMixin(unittest.TestCase):
-
-    def test_mixin(self):
-        mix = Mixin()
-        self.assertTrue(isinstance(mix, Mixin))

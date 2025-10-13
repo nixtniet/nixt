@@ -14,13 +14,15 @@ import threading
 import time
 
 
+from nixt.brokers import Fleet
 from nixt.caching import last, write
-from nixt.clients import Fleet, Output
+from nixt.clients import Output
 from nixt.command import command
 from nixt.handler import Event as IEvent
 from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
-from nixt.threads import LEVELS, launch
+from nixt.threads import launch
+from nixt.utility import LEVELS
 from nixt.workdir import Workdir, getpath
 
 
@@ -38,7 +40,7 @@ def init():
         irc.start()
         irc.events.joined.wait(30.0)
         if irc.events.joined.is_set():
-            logging.warning(f"{fmt(irc.cfg, skip=["password", "realname", "username"])}")
+            logging.warning(fmt(irc.cfg, skip=["password", "realname", "username"]))
         else:
             irc.stop()
         return irc
@@ -123,6 +125,7 @@ class IRC(Output):
         self.events.joined = threading.Event()
         self.events.logon = threading.Event()
         self.events.ready = threading.Event()
+        self.silent = False
         self.sock = None
         self.state = Object()
         self.state.error = ""
@@ -176,7 +179,7 @@ class IRC(Output):
             self.sock.setblocking(True)
             self.sock.settimeout(180.0)
             self.events.connected.set()
-            logging.debug(f"connected {self.cfg.server}:{self.cfg.port} {self.cfg.channel}")
+            logging.debug("connected %s:%s channel %s", self.cfg.server, self.cfg.port, self.cfg.channel)
             return True
         return False
 
@@ -241,7 +244,7 @@ class IRC(Output):
             except (socket.timeout, ssl.SSLError, OSError, ConnectionResetError) as ex:
                 self.events.joined.set()
                 self.state.error = str(ex)
-                logging.debug(str(type(ex)) + " " + str(ex))
+                logging.debug("%s", str(type(ex)) + " " + str(ex))
             time.sleep(self.cfg.sleep)
 
     def dosay(self, channel, txt):
@@ -297,7 +300,7 @@ class IRC(Output):
             self.docommand("JOIN", channel)
 
     def keep(self):
-        while not self.stopped.is_set():
+        while True:
             if self.state.stopkeep:
                 self.state.stopkeep = False
                 break
@@ -427,7 +430,7 @@ class IRC(Output):
                 BrokenPipeError,
                 socket.timeout,
             ) as ex:
-                logging.debug(str(type(ex)) + " " + str(ex))
+                logging.debug("%s", str(type(ex)) + " " + str(ex))
                 self.events.joined.set()
                 self.state.nrerror += 1
                 self.state.error = str(ex)
@@ -438,7 +441,7 @@ class IRC(Output):
         self.state.nrsend += 1
 
     def reconnect(self):
-        logging.debug(f"reconnecting {self.cfg.server:self.cfg.port}")
+        logging.debug("reconnecting %s:%s", self.cfg.server, self.cfg.port)
         self.disconnect()
         self.events.connected.clear()
         self.events.joined.clear()
@@ -583,7 +586,7 @@ def cb_privmsg(evt):
 
 def cb_quit(evt):
     bot = Fleet.get(evt.orig)
-    logging.debug(f"quit from {bot.cfg.server}")
+    logging.debug("quit from %s", bot.cfg.server)
     bot.state.nrerror += 1
     bot.state.error = evt.txt
     if evt.orig and evt.orig in bot.zelf:

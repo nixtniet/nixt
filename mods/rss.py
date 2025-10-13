@@ -35,11 +35,16 @@ def init():
     fetcher = Fetcher()
     fetcher.start()
     if fetcher.seenfn:
-        logging.warning(f"since {elapsed(time.time()-fntime(fetcher.seenfn))}")
+        logging.warning("since %s", elapsed(time.time()-fntime(fetcher.seenfn)))
+    else:
+        logging.warning("since %s", time.ctime(time.time()))
     return fetcher
 
 
 DEBUG = False
+URLS = [
+    "https://www.icc-cpi.int/rss/records/all",
+]
 
 
 fetchlock = _thread.allocate_lock()
@@ -137,8 +142,14 @@ class Fetcher(Object):
 
     def run(self, silent=False):
         thrs = []
-        for _fn, feed in find("rss"):
-            thrs.append(launch(self.fetch, feed, silent))
+        fed = Feed()
+        for url in URLS:
+            rss = Rss()
+            rss.name = "ICC"
+            rss.rss = url
+            thrs.append(launch(self.fetch, rss, silent))
+        for _fn, rss in find("rss"):
+            thrs.append(launch(self.fetch, rss, silent))
         return thrs
 
     def start(self, repeat=True):
@@ -289,7 +300,7 @@ def getfeed(url, items):
     try:
         rest = geturl(url)
     except (http.client.HTTPException, ValueError, HTTPError, URLError) as ex:
-        logging.error(f"{url} {ex}")
+        logging.error("%s %s", url, ex)
         errors[url] = time.time()
         return result
     if rest:
@@ -360,7 +371,7 @@ def dpl(event):
         if feed:
             update(feed, setter)
             write(feed, fnm)
-    event.done()
+    event.reply("ok")
 
 
 def exp(event):
@@ -428,7 +439,7 @@ def nme(event):
         if feed:
             feed.name = str(event.args[1])
             write(feed, fnm)
-    event.done()
+    event.reply("ok")
 
 
 def rem(event):
@@ -442,8 +453,8 @@ def rem(event):
             continue
         if feed:
             feed.__deleted__ = True
-            write(feed)
-            event.done()
+            write(feed, fnm)
+            event.reply("ok")
             break
 
 
@@ -459,7 +470,7 @@ def res(event):
         if feed:
             feed.__deleted__ = False
             write(feed, fnm)
-    event.done()
+    event.reply("ok")
 
 
 def rss(event):
@@ -484,7 +495,7 @@ def rss(event):
     feed = Rss()
     feed.rss = event.args[0]
     write(feed)
-    event.done()
+    event.reply("ok")
 
 
 def syn(event):

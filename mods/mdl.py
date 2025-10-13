@@ -29,7 +29,7 @@ def init():
             name = aliases.get(key)
             repeater = Repeater(sec, cbstats, evt, thrname=name)
             repeater.start()
-            logging.warning(f"since {elapsed(time.time()-STARTTIME)}")
+            logging.warning("since %s", elapsed(time.time()-STARTTIME))
 
 
 "defines"

@@ -11,7 +11,7 @@ def flt(event):
         clts = Fleet.all()
         index = int(event.args[0])
         if index < len(clts):
-            event.reply(fmt(Fleet.all()[index]))
+            event.reply(fmt(list(Fleet.all())[index], empty=True))
         else:
             event.reply(f"only {len(clts)} clients in fleet.")
         return

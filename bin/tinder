@@ -21,24 +21,26 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.brokers import Fleet
 from nixt.clients import Client, Output
-from nixt.command import Commands, command, table
+from nixt.command import command, scanner
 from nixt.handler import Event
 from nixt.methods import parse
 from nixt.objects import Object, keys
-from nixt.package import Mods
-from nixt.threads import launch, level
-from nixt.utility import elapsed
+from nixt.package import NAME, Mods
+from nixt.threads import launch
+from nixt.utility import elapsed, level
 from nixt.workdir import Workdir, skel
 
 
 CHECKSUM = ""
-NAME = Workdir.name
 STARTTIME = time.time()
 
 
+Mods.dir("mods", "mods")
+Mods.dir("modules")
+Mods.dir("network")
 Mods.debug = True
-Mods.mod = "mods"
-Mods.package = "mods"
+
+
 Workdir.wdr = ".test"
 
 
@@ -60,24 +62,10 @@ class Config:
     otxt     = ""
     sets     = {}
     verbose  = False
-    version  = 433
+    version  = 213
 
 
-class CLI(Client):
-
-    def __init__(self):
-        Client.__init__(self)
-        self.register("command", command)
-
-    def dosay(self, channel, txt):
-        self.raw(txt)
-
-    def raw(self, txt):
-        if "v" in Config.opts:
-            print(txt)
-
-
-class Buffer(Output):
+class CLI(Output):
 
     def __init__(self):
         Output.__init__(self)
@@ -125,7 +113,7 @@ class Pool:
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    print(f"{NAME.upper()} {Config.version} TINDER since {tme} ({Config.level.upper()})")
+    print(f"{NAME[::-1].upper()} {Config.version} TINDER since {tme} ({Config.level.upper()})")
 
 
 def consume():
@@ -186,13 +174,14 @@ def main():
             shutil.rmtree(Workdir.wdr)
     level(Config.level)
     skel()
-    table(CHECKSUM)
+    for mod in scanner():
+        mod.DEBUG = True
     nrs = Config.index or 1
     thrs = []
     if "z" in Config.opts:
-        Pool.init(Buffer)
+        Pool.init(CLI)
     else:
-        Pool.init(Buffer, 1)
+        Pool.init(CLI, 1)
     for _nr in range(nrs):
         thrs.append(launch(payload, pre))
     for thr in thrs:
@@ -216,7 +205,6 @@ def main():
     launch(consume)
     events.join()
     Fleet.shutdown()
-    Fleet.wait()
     return nrs, nrcommand
 
 
@@ -258,12 +246,13 @@ post.rem = ["hnrss", ""]
 if __name__ == "__main__":
     nrz, commandz = wrap(main)
     if nrz is None and commandz is None:
-       os._exit(1)
+        os._exit(1)
     endtime = time.time()
     lap = elapsed(endtime-STARTTIME)
     nrevents = events.qsize()
     percall = (endtime-STARTTIME)/(commandz)
     if "v" in Config.opts:
+        print(f"debug is {Mods.debug}")
         print(f"{Pool.nrcpu} cpu's used")
         print(f"{nrevents} events left.")
         print(f"total: {lap} nrs: {nrz} cmds: {commandz} call: %.6fs" % percall)

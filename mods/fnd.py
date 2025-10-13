@@ -19,6 +19,8 @@ def fnd(event):
         res = sorted([x.split('.')[-1].lower() for x in types()])
         if res:
             event.reply(",".join(res))
+        else:
+            event.reply("no data yet.")
         return
     otype = event.args[0]
     clz = long(otype)

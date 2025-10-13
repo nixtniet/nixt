@@ -6,29 +6,28 @@ import json
 import logging
 import os
 import os.path
-import pathlib
 import sys
 import time
-import _thread
 
 
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.brokers import Fleet
 from nixt.clients import Client
 from nixt.command import Commands, command, scanner, table
 from nixt.methods import parse
 from nixt.handler import Event
 from nixt.objects import update
-from nixt.package import Mods, getmod, inits, modules, sums
-from nixt.threads import launch, level
-from nixt.utility import forever, md5sum, spl
-from nixt.workdir import Workdir, pidname, setwd
+from nixt.package import NAME, Mods
+from nixt.package import getmod, inits, md5sum, modules, setdirs, sums
+from nixt.utility import level, spl
+from nixt.workdir import Workdir, moddir, pidfile, pidname, setwd
 
 
-CHECKSUM = "9bbaa1c04f7668358d78bb72d8b4b43a"
-NAME = Workdir.name
+CHECKSUM = ""
+
+
+"config"
 
 
 class Config:
@@ -36,6 +35,7 @@ class Config:
     debug = False
     default = "irc,mdl,rss"
     gets = {}
+    index = None
     init  = ""
     level = "warn"
     mod = ""
@@ -47,23 +47,20 @@ class Config:
     wdr = ""
 
 
+"clients"
+
+
 class CLI(Client):
 
     def __init__(self):
         Client.__init__(self)
         self.register("command", command)
 
-    def announce(self, txt):
-        self.raw(txt)
-
     def raw(self, txt):
         out(txt.encode('utf-8', 'replace').decode("utf-8"))
 
 
 class Console(CLI):
-
-    def announce(self, txt):
-        pass
 
     def callback(self, event):
         if not event.txt:
@@ -78,23 +75,26 @@ class Console(CLI):
         return evt
 
 
+"scripts"
+
+
 def background():
     daemon("-v" in sys.argv)
     privileges()
     boot(False)
     pidfile(pidname(NAME))
-    inits(Config.init or Config.default)
+    inits(spl(Config.init or Config.default))
     forever()
 
 
 def console():
     import readline # noqa: F401
     boot()
-    for _mod, thr in inits(Config.init):
+    for _mod, thr in inits(spl(Config.init)):
         if "w" in Config.opts:
             thr.join(30.0)
     csl = Console()
-    csl.start(daemon=True)
+    csl.start()
     forever()
 
 
@@ -118,7 +118,8 @@ def service():
     privileges()
     boot(False)
     pidfile(pidname(NAME))
-    inits(Config.init or Config.default)
+    banner()
+    inits(spl(Config.init or Config.default))
     forever()
 
 
@@ -126,29 +127,26 @@ def boot(doparse=True):
     if doparse:
         parse(Config, " ".join(sys.argv[1:]))
         update(Config, Config.sets, empty=False)
-        Mods.mod = Config.mod
         Workdir.wdr = Config.wdr
     level(Config.level)
+    setwd(NAME)
+    if "m" in Config.opts:
+        Mods.dir("mods", "mods")
+    if "n" in Config.opts:
+        Mods.dir("network")
+    setdirs("n" in Config.opts, "m" in Config.opts)
     if "v" in Config.opts:
         banner()
-    if 'e' in Config.opts:
-        pkg = sys.modules.get(NAME)
-        pth = pkg.__path__[0]
-        pth = os.sep.join(pth.split(os.sep)[:-4])
-        pth = os.path.join(pth, 'share', NAME,  'examples')
-        Mods.mod = Config.mod = pth
-        Mods.package = "mods"
-    if "m" in Config.opts:
-        Mods.mod = Config.mod = "mods"
-        Mods.package = "mods"
     if "a" in Config.opts:
         Config.init = ",".join(modules())
-    setwd(NAME)
     sums(CHECKSUM)
     table(CHECKSUM)
     Commands.add(cmd)
     Commands.add(ver)
     logging.info("workdir is %s", Workdir.wdr)
+
+
+"commands"
 
 
 def cmd(event):
@@ -161,20 +159,6 @@ def md5(event):
         event.reply(md5sum(tbl.__file__))
     else:
         event.reply("table is not there.")
-
-
-TXT = """[Unit]
-Description=%s
-After=network-online.target
-
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
 
 
 def srv(event):
@@ -194,6 +178,7 @@ def tbl(event):
     event.reply("")
     event.reply(f"NAMES = {json.dumps(Commands.names, indent=4, sort_keys=True)}")
     event.reply("")
+    event.reply("")
     event.reply("MD5 = {")
     for module in scanner():
         event.reply(f'    "{module.__name__.split(".")[-1]}": "{md5sum(module.__file__)}",')
@@ -209,7 +194,7 @@ def ver(event):
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    out(f"{NAME.upper()} {Config.version} since {tme} ({Config.level.upper()})")
+    out("%s %s since %s (%s)" % (NAME.upper(), Config.version, tme, Config.level.upper()))
 
 
 def check(txt):
@@ -223,10 +208,45 @@ def check(txt):
     return False
 
 
+def daemon(verbose=False):
+    pid = os.fork()
+    if pid != 0:
+        os._exit(0)
+    os.setsid()
+    pid2 = os.fork()
+    if pid2 != 0:
+        os._exit(0)
+    if not verbose:
+        with open('/dev/null', 'r', encoding="utf-8") as sis:
+            os.dup2(sis.fileno(), sys.stdin.fileno())
+        with open('/dev/null', 'a+', encoding="utf-8") as sos:
+            os.dup2(sos.fileno(), sys.stdout.fileno())
+        with open('/dev/null', 'a+', encoding="utf-8") as ses:
+            os.dup2(ses.fileno(), sys.stderr.fileno())
+    os.umask(0)
+    os.chdir("/")
+    os.nice(10)
+
+
+def forever():
+    while True:
+        try:
+            time.sleep(0.1)
+        except (KeyboardInterrupt, EOFError):
+            break
+
+
 def out(txt):
     print(txt)
     sys.stdout.flush()
 
+
+def privileges():
+    import getpass
+    import pwd
+    pwnam2 = pwd.getpwnam(getpass.getuser())
+    os.setgid(pwnam2.pw_gid)
+    os.setuid(pwnam2.pw_uid)
 
 
 "runtime"
@@ -237,7 +257,6 @@ def wrapped(func):
         func()
     except (KeyboardInterrupt, EOFError):
         out("")
-    Fleet.shutdown()
 
 
 def wrap(func):
@@ -263,6 +282,20 @@ def main():
         wrapped(service)
     else:
         wrapped(control)
+
+
+TXT = """[Unit]
+Description=%s
+After=network-online.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
 
 
 if __name__ == "__main__":
