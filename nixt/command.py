@@ -1,18 +1,15 @@
 # This file is placed in the Public Domain.
 
 
-"loading on demand"
+"write your own commands"
 
 
 import inspect
-import logging
-import os
 
 
 from .brokers import Fleet
 from .methods import parse
-from .package import Mods, getmod, modules
-from .utility import md5sum, spl
+from .package import getmod, modules
 
 
 class Commands:
@@ -33,12 +30,10 @@ class Commands:
         if func:
             return func
         name = Commands.names.get(cmd, None)
-        if not name:
-            return
-        module = getmod(name)
-        if not module:
-            return
-        scan(module)
+        if name:
+            module = getmod(name)
+            if module:
+                scan(module)
         return Commands.cmds.get(cmd, None)
 
 
@@ -59,14 +54,10 @@ def scan(module):
             Commands.add(cmdz)
 
 
-def scanner(names=None):
+def scanner(names=[]):
     res = []
-    if not os.path.exists(Mods.mod):
-        logging.info("modules directory is not set.")
-        return res
-    logging.info("scanning %s", Mods.mod)
     for nme in sorted(modules()):
-        if names and nme not in spl(names):
+        if names and nme not in names:
             continue
         module = getmod(nme)
         if not module:
@@ -77,10 +68,6 @@ def scanner(names=None):
 
 
 def table(checksum=""):
-    pth = os.path.join(Mods.mod, "tbl.py")
-    if os.path.exists(pth):
-        if checksum and md5sum(pth) != checksum:
-            logging.warning("table checksum error.")
     tbl = getmod("tbl")
     if tbl and "NAMES" in dir(tbl):
         Commands.names.update(tbl.NAMES)

@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"a clean namespace"
+"clean namespace"
 
 
 class Object:
@@ -26,7 +26,7 @@ def construct(obj, *args, **kwargs):
             update(obj, dict(val))
         elif isinstance(val, dict):
             update(obj, val)
-        elif isinstance(val, Object):
+        else:
             update(obj, vars(val))
     if kwargs:
         update(obj, kwargs)
@@ -49,6 +49,7 @@ def update(obj, data, empty=True):
         if not empty and not value:
             continue
         setattr(obj, key, value)
+
 
 def values(obj):
     if isinstance(obj, dict):

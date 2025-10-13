@@ -4,23 +4,22 @@
 "json serializer"
 
 
-import json
+from json import JSONEncoder
+from json import dump as jdump
+from json import dumps as jdumps
+from json import load as load
+from json import loads as loads
 
 
-from .objects import Object, construct
-
-
-class Encoder(json.JSONEncoder):
+class Encoder(JSONEncoder):
 
     def default(self, o):
         if isinstance(o, dict):
             return o.items()
-        if issubclass(type(o), Object):
-            return vars(o)
         if isinstance(o, list):
             return iter(o)
         try:
-            return json.JSONEncoder.default(self, o)
+            return JSONEncoder.default(self, o)
         except TypeError:
             try:
                 return vars(o)
@@ -30,28 +29,12 @@ class Encoder(json.JSONEncoder):
 
 def dump(obj, fp, *args, **kw):
     kw["cls"] = Encoder
-    json.dump(obj, fp, *args, **kw)
+    jdump(obj, fp, *args, **kw)
 
 
 def dumps(obj, *args, **kw):
     kw["cls"] = Encoder
-    return json.dumps(obj, *args, **kw)
-
-
-def hook(objdict):
-    obj = Object()
-    construct(obj, objdict)
-    return obj
-
-
-def load(fp, *args, **kw):
-    kw["object_hook"] = hook
-    return json.load(fp, *args, **kw)
-
-
-def loads(s, *args, **kw):
-    kw["object_hook"] = hook
-    return json.loads(s, *args, **kw)
+    return jdumps(obj, *args, **kw)
 
 
 def __dir__():

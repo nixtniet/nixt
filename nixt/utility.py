@@ -5,35 +5,39 @@
 
 
 import hashlib
+import importlib.util
+import logging
 import os
-import pathlib
 import sys
 import time
+import _thread
 
 
-def cdir(path):
-    pth = pathlib.Path(path)
-    pth.parent.mkdir(parents=True, exist_ok=True)
+FORMATS = [
+    "%Y-%M-%D %H:%M:%S",
+    "%Y-%m-%d %H:%M:%S",
+    "%Y-%m-%d",
+    "%d-%m-%Y",
+    "%d-%m",
+    "%m-%d",
+]
 
 
-def daemon(verbose=False):
-    pid = os.fork()
-    if pid != 0:
-        os._exit(0)
-    os.setsid()
-    pid2 = os.fork()
-    if pid2 != 0:
-        os._exit(0)
-    if not verbose:
-        with open('/dev/null', 'r', encoding="utf-8") as sis:
-            os.dup2(sis.fileno(), sys.stdin.fileno())
-        with open('/dev/null', 'a+', encoding="utf-8") as sos:
-            os.dup2(sos.fileno(), sys.stdout.fileno())
-        with open('/dev/null', 'a+', encoding="utf-8") as ses:
-            os.dup2(ses.fileno(), sys.stderr.fileno())
-    os.umask(0)
-    os.chdir("/")
-    os.nice(10)
+LEVELS = {
+    'debug': logging.DEBUG,
+    'info': logging.INFO,
+    'warning': logging.WARNING,
+    'warn': logging.WARNING,
+    'error': logging.ERROR,
+    'critical': logging.CRITICAL,
+}
+
+
+class Formatter(logging.Formatter):
+
+    def format(self, record):
+        record.module = record.module.upper()
+        return logging.Formatter.format(self, record)
 
 
 def elapsed(seconds, short=True):
@@ -100,35 +104,41 @@ def fntime(daystr):
     return float(timed)
 
 
-def forever():
-    while True:
-        try:
-            time.sleep(0.1)
-        except (KeyboardInterrupt, EOFError):
-            break
+def importer(name, pth):
+    if not os.path.exists(pth):
+        return
+    try:
+        spec = importlib.util.spec_from_file_location(name, pth)
+        if not spec or not spec.loader:
+            return
+        mod = importlib.util.module_from_spec(spec)
+        if not mod:
+            return
+        sys.modules[name] = mod
+        spec.loader.exec_module(mod)
+        logging.info("load %s", pth)
+        return mod
+    except Exception as ex:
+        logging.exception(ex)
+        _thread.interrupt_main()
+
+
+def level(loglevel="debug"):
+    if loglevel != "none":
+        datefmt = "%H:%M:%S"
+        format_short = "%(module).3s %(message)-76s"
+        ch = logging.StreamHandler()
+        ch.setLevel(LEVELS.get(loglevel))
+        formatter = Formatter(fmt=format_short, datefmt=datefmt)
+        ch.setFormatter(formatter)
+        logger = logging.getLogger()
+        logger.addHandler(ch)
 
 
 def md5sum(path):
     with open(path, "r", encoding="utf-8") as file:
         txt = file.read().encode("utf-8")
         return hashlib.md5(txt).hexdigest()
-
-
-def pidfile(filename):
-    if os.path.exists(filename):
-        os.unlink(filename)
-    path2 = pathlib.Path(filename)
-    path2.parent.mkdir(parents=True, exist_ok=True)
-    with open(filename, "w", encoding="utf-8") as fds:
-        fds.write(str(os.getpid()))
-
-
-def privileges():
-    import getpass
-    import pwd
-    pwnam2 = pwd.getpwnam(getpass.getuser())
-    os.setgid(pwnam2.pw_gid)
-    os.setuid(pwnam2.pw_uid)
 
 
 def spl(txt):
@@ -141,26 +151,14 @@ def spl(txt):
     return [x for x in result if x]
 
 
-FORMATS = [
-    "%Y-%M-%D %H:%M:%S",
-    "%Y-%m-%d %H:%M:%S",
-    "%Y-%m-%d",
-    "%d-%m-%Y",
-    "%d-%m",
-    "%m-%d",
-]
-
-
 def __dir__():
     return (
         'cdir',
-        'daemon',
         'elapsed',
         'extract_date',
         'fntime',
-        'forever',
+        'importer',
+        'level',
         'md5sum',
-        'pidfile',
-        'privileges',
         'spl'
     )

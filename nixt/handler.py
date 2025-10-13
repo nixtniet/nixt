@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"event handler"
+"handle events"
 
 
 import queue
@@ -13,22 +13,60 @@ import _thread
 from .threads import launch
 
 
+class Handler:
+
+    def __init__(self):
+        self.cbs = {}
+        self.queue = queue.Queue()
+
+    def callback(self, event):
+        func = self.cbs.get(event.type, None)
+        if func:
+            name = event.txt and event.txt.split()[0]
+            event._thr = launch(func, event, name=name)
+        else:
+            event.ready()
+
+    def loop(self):
+        while True:
+            try:
+                event = self.poll()
+                if event is None:
+                    break
+                event.orig = repr(self)
+                self.callback(event)
+            except (KeyboardInterrupt, EOFError):
+                _thread.interrupt_main()
+
+    def poll(self):
+        return self.queue.get()
+
+    def put(self, event):
+        self.queue.put(event)
+
+    def register(self, type, callback):
+        self.cbs[type] = callback
+
+    def start(self):
+        launch(self.loop)
+
+    def stop(self):
+        self.queue.put(None)
+
+
 class Event:
 
     def __init__(self):
-        self._ready  = threading.Event()
-        self._thr    = None
-        self.args    = []
+        self._ready = threading.Event()
+        self._thr = None
+        self.args = []
         self.channel = ""
-        self.ctime   = time.time()
-        self.orig    = ""
-        self.rest    = ""
-        self.result  = {}
-        self.txt     = ""
-        self.type    = "event"
-
-    def done(self):
-        self.reply("ok")
+        self.ctime = time.time()
+        self.orig = ""
+        self.rest = ""
+        self.result = {}
+        self.txt = ""
+        self.type = "event"
 
     def ready(self):
         self._ready.set()
@@ -43,57 +81,6 @@ class Event:
                 self._thr.join(timeout)
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
-
-
-class Handler:
-
-    def __init__(self):
-        self.cbs     = {}
-        self.queue   = queue.Queue()
-        self.ready   = threading.Event()
-        self.stopped = threading.Event()
-
-    def available(self, event):
-        return event.type in self.cbs
-
-    def callback(self, event):
-        func = self.cbs.get(event.type, None)
-        if func:
-            event._thr = launch(
-                                func,
-                                event,
-                                name=event.txt and event.txt.split()[0]
-                               )
-        else:
-            event.ready()
-
-    def loop(self):
-        while not self.stopped.is_set():
-            try:
-                event = self.poll()
-                if event is None or self.stopped.is_set():
-                    break
-                event.orig = repr(self)
-                self.callback(event)
-            except (KeyboardInterrupt, EOFError):
-                _thread.interrupt_main()
-
-    def poll(self):
-        return self.queue.get()
-
-    def put(self, event):
-        self.queue.put(event)
-
-    def register(self, typ, cbs):
-        self.cbs[typ] = cbs
-
-    def start(self, daemon=True):
-        self.stopped.clear()
-        launch(self.loop, daemon=daemon)
-
-    def stop(self):
-        self.stopped.set()
-        self.queue.put(None)
 
 
 def __dir__():

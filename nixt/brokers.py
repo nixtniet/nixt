@@ -1,10 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"brokers"
-
-
-import time
+"client for a string"
 
 
 class Fleet:
@@ -13,13 +10,11 @@ class Fleet:
 
     @staticmethod
     def add(client):
-        if not client:
-            return
         Fleet.clients[repr(client)] = client
 
     @staticmethod
     def all():
-        return list(Fleet.clients.values())
+        return Fleet.clients.values()
 
     @staticmethod
     def announce(txt):
@@ -43,16 +38,11 @@ class Fleet:
     @staticmethod
     def shutdown():
         for client in Fleet.all():
-            client.stop()
-
-    @staticmethod
-    def wait():
-        time.sleep(0.1)
-        for client in Fleet.all():
             client.wait()
+            client.stop()
 
 
 def __dir__():
     return (
         'Fleet',
-   )
+    )

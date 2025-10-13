@@ -9,7 +9,7 @@ import os
 import pathlib
 
 
-from .methods import fqn
+j = os.path.join
 
 
 class Workdir:
@@ -18,12 +18,24 @@ class Workdir:
     wdr  = ""
 
 
+def cdir(path):
+    pth = pathlib.Path(path)
+    pth.parent.mkdir(parents=True, exist_ok=True)
+
+
+def fqn(obj):
+    kin = str(type(obj)).split()[-1][1:-2]
+    if kin == "type":
+        kin = f"{obj.__module__}.{obj.__name__}"
+    return kin
+
+
 def getpath(obj):
     return store(ident(obj))
 
 
 def ident(obj):
-    return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
+    return j(fqn(obj), *str(datetime.datetime.now()).split())
 
 
 def long(name):
@@ -38,12 +50,21 @@ def long(name):
 
 def moddir():
     assert Workdir.wdr
-    return os.path.join(Workdir.wdr, "mods")
+    return j(Workdir.wdr, "mods")
+
+
+def pidfile(filename):
+    if os.path.exists(filename):
+        os.unlink(filename)
+    path2 = pathlib.Path(filename)
+    path2.parent.mkdir(parents=True, exist_ok=True)
+    with open(filename, "w", encoding="utf-8") as fds:
+        fds.write(str(os.getpid()))
 
 
 def pidname(name):
     assert Workdir.wdr
-    return os.path.join(Workdir.wdr, f"{name}.pid")
+    return j(Workdir.wdr, f"{name}.pid")
 
 
 def setwd(name, path=""):
@@ -65,11 +86,11 @@ def skel():
 
 def store(pth=""):
     assert Workdir.wdr
-    return os.path.join(Workdir.wdr, "store", pth)
+    return j(Workdir.wdr, "store", pth)
 
 
 def strip(pth, nmr=2):
-    return os.path.join(pth.split(os.sep)[-nmr:])
+    return j(pth.split(os.sep)[-nmr:])
 
 
 def types():
@@ -77,20 +98,20 @@ def types():
     return os.listdir(store())
 
 
-def wdr(pth):
-    assert Workdir.wdr
-    return os.path.join(Workdir.wdr, pth)
-
-
 def __dir__():
     return (
         'Workdir',
-        'find',
-        'fntime',
-        'last',
+        'cdir',
+        'fqn',
+        'getpath',
+        'ident',
+        'j',
         'long',
+        'moddir',
+        'pidfile',
         'pidname',
         'setwd',
+        'skel',
         'store',
         'strip',
         'types'

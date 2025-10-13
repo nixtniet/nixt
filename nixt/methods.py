@@ -1,10 +1,10 @@
 # This file is placed in the Public Domain.
 
 
-"object functions"
+"object as the first argument"
 
 
-from .objects import items, keys
+from .objects import Object, items, keys
 
 
 def deleted(obj):
@@ -33,11 +33,9 @@ def edit(obj, setter, skip=True):
             setattr(obj, key, val)
 
 
-def fmt(obj, args=None, skip=None, plain=False, empty=False):
-    if args is None:
+def fmt(obj, args=[], skip=[], plain=False, empty=False):
+    if not args:
         args = keys(obj)
-    if skip is None:
-        skip = []
     txt = ""
     for key in args:
         if key.startswith("__"):
@@ -53,24 +51,35 @@ def fmt(obj, args=None, skip=None, plain=False, empty=False):
             txt += f"{value} "
         elif isinstance(value, str):
             txt += f'{key}="{value}" '
-        else:
+        elif isinstance(value, (int, float, dict, bool)):
             txt += f"{key}={value} "
+        else:
+            txt += f"{key}={name(value, True)} "
     return txt.strip()
 
 
-def fqn(obj):
-    kin = str(type(obj)).split()[-1][1:-2]
-    if kin == "type":
-        kin = f"{obj.__module__}.{obj.__name__}"
-    return kin
+def name(obj, short=False):
+    typ = type(obj)
+    res = ""
+    if "__builtins__" in dir(typ):
+        res = obj.__name__
+    elif "__self__" in dir(obj):
+        res = f"{obj.__self__.__class__.__name__}.{obj.__name__}"
+    elif "__class__" in dir(obj) and "__name__" in dir(obj):
+        res = f"{obj.__class__.__name__}.{obj.__name__}"
+    elif "__class__" in dir(obj):
+        res =  f"{obj.__class__.__module__}.{obj.__class__.__name__}"
+    elif "__name__" in dir(obj):
+        res = f"{obj.__class__.__name__}.{obj.__name__}"
+    if short:
+        res = res.split(".")[-1]
+    return res
 
 
-def parse(obj, txt=None):
-    if txt is None:
+def parse(obj, txt=""):
+    if not txt:
         if "txt" in dir(obj):
             txt = obj.txt
-        else:
-            txt = ""
     args = []
     obj.args   = getattr(obj, "args", [])
     obj.cmd    = getattr(obj, "cmd", "")
@@ -127,15 +136,13 @@ def parse(obj, txt=None):
 
 def search(obj, selector, matching=False):
     res = False
-    if not selector:
-        return res
     for key, value in items(selector):
         val = getattr(obj, key, None)
         if not val:
             continue
         if matching and value == val:
             res = True
-        elif str(value).lower() in str(val).lower() or value == "match":
+        elif str(value).lower() in str(val).lower():
             res = True
         else:
             res = False
@@ -148,7 +155,7 @@ def __dir__():
         'deleted',
         'edit',
         'fmt',
-        'fqn',
+        'name',
         'parse',
         'search'
     )

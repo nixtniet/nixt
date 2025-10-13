@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"clients"
+"client events"
 
 
 import queue
@@ -19,15 +19,21 @@ class Client(Handler):
     def __init__(self):
         Handler.__init__(self)
         self.olock = threading.RLock()
+        self.oqueue = queue.Queue()
+        self.silent = True
         Fleet.add(self)
 
     def announce(self, txt):
-        pass
+        if not self.silent:
+            self.raw(txt)
 
     def display(self, event):
         with self.olock:
             for tme in sorted(event.result):
-                self.dosay(event.channel, event.result[tme])
+                self.dosay(
+                           event.channel,
+                           event.result[tme]
+                          )
 
     def dosay(self, channel, txt):
         self.say(channel, txt)
@@ -38,22 +44,12 @@ class Client(Handler):
     def say(self, channel, txt):
         self.raw(txt)
 
-    def wait(self):
-        pass
-
 
 class Output(Client):
 
-    def __init__(self):
-        Client.__init__(self)
-        self.oqueue = queue.Queue()
-        self.ostop  = threading.Event()
-
-    def oput(self, event):
-        self.oqueue.put(event)
 
     def output(self):
-        while not self.ostop.is_set():
+        while True:
             event = self.oqueue.get()
             if event is None:
                 self.oqueue.task_done()
@@ -61,16 +57,11 @@ class Output(Client):
             self.display(event)
             self.oqueue.task_done()
 
-    def raw(self, txt):
-        raise NotImplementedError("raw")
-
-    def start(self, daemon=True):
-        self.ostop.clear()
-        launch(self.output, daemon=daemon)
+    def start(self):
+        launch(self.output)
         super().start()
 
     def stop(self):
-        self.ostop.set()
         self.oqueue.put(None)
         super().stop()
 
@@ -85,4 +76,4 @@ def __dir__():
     return (
         'Client',
         'Output'
-   )
+    )

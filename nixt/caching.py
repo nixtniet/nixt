@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"cache"
+"object for a string"
 
 
 import json.decoder
@@ -9,16 +9,18 @@ import os
 import threading
 
 
-from .methods import fqn, deleted, search
+from .methods import deleted, search
 from .objects import Object, update
 from .serials import dump, load
-from .utility import cdir, fntime
-from .workdir import getpath, long, store
+from .workdir import cdir, fqn, getpath, j, long, store
+from .utility import fntime
+
+
+lock = threading.RLock()
 
 
 class Cache:
 
-    lock = threading.RLock()
     objs = {}
 
     @staticmethod
@@ -31,8 +33,6 @@ class Cache:
 
     @staticmethod
     def update(path, obj):
-        if not obj:
-            return
         if path in Cache.objs:
             update(Cache.objs[path], obj)
         else:
@@ -60,15 +60,18 @@ def fns(clz):
     pth = store(clz)
     for rootdir, dirs, _files in os.walk(pth, topdown=False):
         for dname in dirs:
-            ddd = os.path.join(rootdir, dname)
+            ddd = j(rootdir, dname)
             for fll in os.listdir(ddd):
-                yield os.path.join(ddd, fll)
+                yield j(ddd, fll)
 
 
 def last(obj, selector=None):
     if selector is None:
         selector = {}
-    result = sorted(find(fqn(obj), selector), key=lambda x: fntime(x[0]))
+    result = sorted(
+                    find(fqn(obj), selector),
+                    key=lambda x: fntime(x[0])
+                   )
     res = ""
     if result:
         inp = result[-1]
@@ -78,7 +81,7 @@ def last(obj, selector=None):
 
 
 def read(obj, path):
-    with Cache.lock:
+    with lock:
         with open(path, "r", encoding="utf-8") as fpt:
             try:
                 update(obj, load(fpt))
@@ -88,7 +91,7 @@ def read(obj, path):
 
 
 def write(obj, path=None):
-    with Cache.lock:
+    with lock:
         if path is None:
             path = getpath(obj)
         cdir(path)

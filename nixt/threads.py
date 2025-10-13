@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"threading"
+"non-blocking"
 
 
 import logging
@@ -9,6 +9,9 @@ import queue
 import threading
 import time
 import _thread
+
+
+from .methods import name
 
 
 class Thread(threading.Thread):
@@ -93,54 +96,10 @@ class Repeater(Timed):
         super().run()
 
 
-class Formatter(logging.Formatter):
-
-    def format(self, record):
-        record.module = record.module.upper()
-        return logging.Formatter.format(self, record)
-
-
 def launch(func, *args, **kwargs):
     thread = Thread(func, *args, **kwargs)
     thread.start()
     return thread
-
-
-def level(loglevel="debug"):
-    if loglevel != "none":
-        datefmt = "%H:%M:%S"
-        format_short = "%(asctime)-8s %(module).3s %(message)-67s"
-        ch = logging.StreamHandler()
-        ch.setLevel(LEVELS.get(loglevel))
-        formatter = Formatter(fmt=format_short, datefmt=datefmt)
-        ch.setFormatter(formatter)
-        logger = logging.getLogger()
-        logger.addHandler(ch)
-
-
-def name(obj):
-    typ = type(obj)
-    if "__builtins__" in dir(typ):
-        return obj.__name__
-    if "__self__" in dir(obj):
-        return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
-    if "__class__" in dir(obj) and "__name__" in dir(obj):
-        return f"{obj.__class__.__name__}.{obj.__name__}"
-    if "__class__" in dir(obj):
-        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
-    if "__name__" in dir(obj):
-        return f"{obj.__class__.__name__}.{obj.__name__}"
-    return ""
-
-
-LEVELS = {
-    'debug': logging.DEBUG,
-    'info': logging.INFO,
-    'warning': logging.WARNING,
-    'warn': logging.WARNING,
-    'error': logging.ERROR,
-    'critical': logging.CRITICAL,
-}
 
 
 def __dir__():
@@ -148,6 +107,5 @@ def __dir__():
         'Repeater',
         'Thread',
         'launch',
-        'level',
         'name'
    )
