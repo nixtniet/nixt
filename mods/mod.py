@@ -1,9 +1,6 @@
 # This file is placed in the Public Domain.
 
 
-"show modules"
-
-
 from nixt.package import modules
 
 

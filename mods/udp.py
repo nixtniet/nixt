@@ -1,9 +1,6 @@
 # This file is placed in the Public Domain.
 
 
-"UDP to IRC relay"
-
-
 import logging
 import select
 import socket
@@ -20,11 +17,11 @@ from nixt.threads import launch
 DEBUG = False
 
 
-def init():
-    udpd = UDP()
-    udpd.start()
-    logging.warning(f"http://{Cfg.host}:{Cfg.port}")
-    return udpd
+def init(cfg):
+    udp = UDP()
+    udp.start()
+    logging.warning("http://%s:%s", Cfg.host, Cfg.port)
+    return udp
 
 
 class Cfg(Object):

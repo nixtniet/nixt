@@ -1,9 +1,6 @@
 # This file is placed in the Public Domain.
 
 
-"show path to website"
-
-
 import os
 
 
@@ -12,7 +9,7 @@ d = os.path.dirname
 p = os.path.join
 
 
-PATH = p(d(d(__file__)), "network", "index.html")
+PATH = p(d(d(__file__)), "network", "html","index.html")
 
 
 def pth(event):

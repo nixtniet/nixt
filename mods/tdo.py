@@ -1,15 +1,12 @@
 # This file is placed in the Public Domain.
 
 
-"todo list"
-
-
 import time
 
 
-from nixt.caching import find, write
 from nixt.objects import Object
-from nixt.utility import elapsed, fntime
+from nixt.persist import find, fntime, write
+from nixt.utility import elapsed
 
 
 class Todo(Object):

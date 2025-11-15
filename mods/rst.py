@@ -1,9 +1,6 @@
 # This file is placed in the Public Domain.
 
 
-"REST"
-
-
 import logging
 import os
 import sys
@@ -14,18 +11,18 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from nixt.objects import Object
+from nixt.persist import store, types
 from nixt.threads import launch
-from nixt.workdir import Workdir, types
 
 
 DEBUG = False
 
 
-def init():
+def init(cfg):
     try:
         rest = REST((Config.hostname, int(Config.port)), RESTHandler)
         rest.start()
-        logging.warning(f"http://{Config.hostname}:{Config.port}")
+        logging.warning("http://%s:%s", Config.hostname, Config.port)
         return rest
     except OSError as ex:
         logging.error(str(ex))
@@ -97,7 +94,7 @@ class RESTHandler(BaseHTTPRequestHandler):
                 txt += f'<a href="http://{Config.hostname}:{Config.port}/{fnm}">{fnm}</a><br>\n'
             self.send(html(txt.strip()))
             return
-        fnm = Workdir.wdr + os.sep + "store" + self.path
+        fnm = store() + self.path
         fnm = os.path.abspath(fnm)
         if os.path.isdir(fnm):
             self.write_header("text/html")
@@ -110,7 +107,7 @@ class RESTHandler(BaseHTTPRequestHandler):
         try:
             with open(fnm, "r", encoding="utf-8") as file:
                 txt = file.read()
-                file.close()
+                file.cnixte()
             self.write_header("text/html")
             self.send(html(txt))
         except (TypeError, FileNotFoundError, IsADirectoryError) as ex:

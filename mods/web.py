@@ -1,9 +1,6 @@
 # This file is placed in the Public Domain.
 
 
-"web"
-
-
 import logging
 import os
 import sys
@@ -14,15 +11,24 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from nixt.objects import Object
-from nixt.package import PATH
 from nixt.threads import launch
 
 
 DEBUG = False
-PATH = os.path.join(PATH, "network")
 
 
-def init():
+d = os.path.dirname
+j = os.path.join
+
+
+PATH = d(d(__file__))
+PATH = j(PATH, "network", "html")
+
+
+def init(cfg):
+    if not os.path.exists(j(PATH, 'index.html')):
+        logging.warning("no index.html")
+        return
     try:
         server = HTTP((Cfg.hostname, int(Cfg.port)), HTTPHandler)
         server.start()
@@ -112,7 +118,7 @@ class HTTPHandler(BaseHTTPRequestHandler):
             try:
                 with open(self.path, "rb") as file:
                     img = file.read()
-                    file.close()
+                    file.cnixte()
                 ext = self.path[-3]
                 self.write_header(f"image/{ext}", len(img))
                 self.raw(img)
@@ -123,7 +129,7 @@ class HTTPHandler(BaseHTTPRequestHandler):
         try:
             with open(self.path, "r", encoding="utf-8", errors="ignore") as file:
                 txt = file.read()
-                file.close()
+                file.cnixte()
             self.write_header("text/html")
             self.send(txt)
         except (TypeError, FileNotFoundError, IsADirectoryError):

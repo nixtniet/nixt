@@ -1,40 +1,64 @@
 # This file is placed in the Public Domain.
 
 
-"timers"
-
-
 import datetime
 import logging
+import random
 import re
 import time
 
 
-from nixt.caching import find, write
-from nixt.clients import Fleet
-from nixt.threads import Timed, launch
+from nixt.command import Fleet
+from nixt.objects import Object, items
+from nixt.persist import getpath, last, write
+from nixt.repeats import Timed
 from nixt.utility import elapsed, extract_date
 
 
-def init():
-    nrs = 0
-    for fnm, obj in find("timer"):
-        if "time" not in dir(obj):
-            continue
-        nrs += 1
-        diff = float(obj.time) - time.time()
-        if diff > 0:
-            timer = Timed(diff, Fleet.announce, obj.txt)
-            timer.start()
-        else:
-            obj.__deleted__ = True
-            write(obj, fnm)
-    logging.warning(f"{nrs} timers")
+def init(cfg):
+    Timers.path = last(Timers.timers) or getpath(Timers.timers)
+    remove = []
+    for tme, args in items(Timers.timers):
+        orig, channel, txt = args
+        for origin in Fleet.like(orig):
+            if not origin:
+                continue
+            diff = float(tme) - time.time()
+            if diff > 0:
+                timer = Timed(diff, Fleet.say, origin, channel, txt)
+                timer.start()
+            else:
+                remove.append(tme)
+    for tme in remove:
+        delete(tme)
+    if Timers.timers:
+        write(Timers.timers, Timers.path)
+    logging.warning("%s timers", len(Timers.timers))
 
 
 class NoDate(Exception):
 
     pass
+
+
+class Timer(Object):
+
+    pass
+
+
+class Timers(Object):
+
+    path = ""
+    timers = Timer()
+
+
+
+def add(tme, orig, channel,  txt):
+    setattr(Timers.timers, str(tme), (orig, channel, txt))
+
+
+def delete(tme):
+     delattr(Timers.timers, str(tme))
 
 
 def get_day(daystr):
@@ -141,12 +165,10 @@ def tmr(event):
     result = ""
     if not event.rest:
         nmr = 0
-        for _fn, obj in find('timer'):
-            if "time" not in dir(obj):
-                continue
-            lap = float(obj.time) - time.time()
+        for tme, txt in items(Timers.timers):
+            lap = float(tme) - time.time()
             if lap > 0:
-                event.reply(f'{nmr} {obj.txt} {elapsed(lap)}')
+                event.reply(f'{nmr} {" ".join(txt)} {elapsed(lap)}')
                 nmr += 1
         if not nmr:
             event.reply("no timers.")
@@ -172,18 +194,16 @@ def tmr(event):
         hour =  get_hour(event.rest)
         if hour:
             target += hour
+    target += random.random() 
     if not target or time.time() > target:
         event.reply("already passed given time.")
         return result
     diff = target - time.time()
     txt = " ".join(event.args[1:])
+    add(target, event.orig, event.channel, txt)
+    write(Timers.timers, Timers.path or getpath(Timers.timers))
     timer = Timed(diff, Fleet.say, event.orig, event.channel, txt)
-    timer.channel = event.channel
-    timer.orig = event.orig
-    timer.time = target
-    timer.txt = txt
-    write(timer)
-    launch(timer.start)
+    timer.start()
     event.reply("ok " +  elapsed(diff))
 
 

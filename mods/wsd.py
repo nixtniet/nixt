@@ -1,28 +1,25 @@
 # This file is placed in the Public Domain.
 
 
-"wijs, wijsheid, wijs!"
-
-
 import logging
 
 
 from random import SystemRandom
 
 
-from nixt.clients import Fleet
+from nixt.command import Fleet
 from nixt.handler import Event
-from nixt.threads import Repeater
+from nixt.repeats import Repeater
 
 
 rand = SystemRandom()
 
 
-def init():
+def init(cfg):
     event = Event()
     repeater = Repeater(3600.0,  wsd, event)
     repeater.start()
-    logging.warning(f"{len(TXT.split("\n"))} wise.")
+    logging.warning("%s wise", len(TXT.split("\n")))
 
 
 def wsd(event):

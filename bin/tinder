@@ -2,67 +2,34 @@
 # This file is placed in the Public Domain.
 
 
-"simulate clients"
-
-
+import inspect
+import logging
 import os
-import random
 import queue
 import shutil
 import sys
-import termios
 import threading
 import time
-import _thread
 
 
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.brokers import Fleet
-from nixt.clients import Client, Output
-from nixt.command import command, scanner
-from nixt.handler import Event
-from nixt.methods import parse
-from nixt.objects import Object, keys
-from nixt.package import NAME, Mods
-from nixt.threads import launch
-from nixt.utility import elapsed, level
-from nixt.workdir import Workdir, skel
+from tob.clients import Client, Config, Output
+from tob.command import Commands, command, parse, scan
+from tob.handler import Event
+from tob.loggers import level
+from tob.package import Mods, getmod, modules
+from tob.persist import Workdir, moddir, skel
+from tob.threads import launch, threadhook
+from tob.utility import elapsed, where
 
 
-CHECKSUM = ""
-STARTTIME = time.time()
-
-
-Mods.dir("mods", "mods")
-Mods.dir("modules")
-Mods.dir("network")
-Mods.debug = True
-
-
+Mods.init("tobot.modules")
 Workdir.wdr = ".test"
 
 
-events  = queue.Queue()
-paylock = _thread.allocate_lock()
-rand    = random.SystemRandom()
-
-
-class Config:
-
-    debug    = False
-    gets     = {}
-    index    = None
-    init     = ""
-    level    = "warn"
-    md5      = True
-    moddir   = "mods"
-    opts     = ""
-    otxt     = ""
-    sets     = {}
-    verbose  = False
-    version  = 213
+events = queue.Queue()
 
 
 class CLI(Output):
@@ -71,9 +38,6 @@ class CLI(Output):
         Output.__init__(self)
         self.register("command", command)
 
-    def dosay(self, channel, txt):
-        self.raw(txt)
-
     def raw(self, txt):
         if "v" in Config.opts:
             print(txt)
@@ -81,39 +45,43 @@ class CLI(Output):
 
 class Pool:
 
-    clients = []
+    clients: list[Client] = []
     lock = threading.RLock()
     nrcpu = 1
     nrlast = 0
 
     @staticmethod
-    def add(clt):
-        "add client to pool."
-        Pool.clients.append(clt)
+    def add(client):
+        Pool.clients.append(client)
 
     @staticmethod
-    def init(clz, nr=None):
-        "initialize client pool."
-        Pool.nrcpu = nr or os.cpu_count()
+    def init(cls, nr, verbose=False):
+        Pool.nrcpu = nr
         for _x in range(Pool.nrcpu):
-            clt = clz()
+            clt = cls()
             clt.start()
             Pool.add(clt)
 
     @staticmethod
-    def put(evt):
-        "dispatch to client."
+    def put(event):
         with Pool.lock:
             if Pool.nrlast >= Pool.nrcpu-1:
                 Pool.nrlast = 0
             clt = Pool.clients[Pool.nrlast]
-            clt.put(evt)
+            clt.put(event)
             Pool.nrlast += 1
 
 
-def banner():
+def banner(name, version):
     tme = time.ctime(time.time()).replace("  ", " ")
-    print(f"{NAME[::-1].upper()} {Config.version} TINDER since {tme} ({Config.level.upper()})")
+    logger = logging.getLogger()
+    print("%s %s since %s (%s)" % (
+                                   name.upper(),
+                                   version,
+                                   tme,
+                                   logging.getLevelName(logger.getEffectiveLevel())
+                                  ))
+    sys.stdout.flush()
 
 
 def consume():
@@ -126,134 +94,110 @@ def consume():
             os._exit(0)
 
 
-def payload(cmds):
-    with paylock:
-        nmr = 0
-        cmdz = sorted(keys(cmds))
-        if "s" in Config.opts:
-            rand.shuffle(cmdz)
-        todo = []
-        for cmd in cmdz:
-            examples = getattr(cmds, cmd)
-            for example in examples:
-                event = Event()
-                event.txt = cmd + " " + example
-                event.type = "command"
-                todo.append(event)
-        for event in todo:
-            Pool.put(event)
-            events.put(event)
-            nmr += 1
-        return nmr
+def payload(todo):
+    for cmd, example in todo.items():
+        for ex in example:
+            evt = Event()
+            evt.text = f"{cmd} {ex}"
+            evt.type = "command"
+            Pool.put(evt)
+            events.put(evt)
 
 
-def wrap(function):
-    old3 = None
-    try:
-        old3 = termios.tcgetattr(sys.stdin.fileno())
-    except termios.error:
-        pass
-    res = None, None
-    try:
-        res = function()
-    except (KeyboardInterrupt, EOFError):
-        pass
-    finally:
-        if old3:
-            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old3)
-    return res
+def scanner(names=[]):
+    if not names:
+        names = modules()
+    mods = []
+    for name in names:
+        if name in Mods.ignore:
+            continue
+        mod = getmod(name)
+        if mod:
+            mods.append(mod)
+            scan(mod)
+    return mods
 
 
 def main():
-    nrcommand = 0
+    if os.path.exists(Workdir.wdr):
+        shutil.rmtree(Workdir.wdr)
     parse(Config, " ".join(sys.argv[1:]))
+    if "b" in Config.opts:
+        threading.excepthook = threadhook
     if "v" in Config.opts:
-        banner()
-    if "f" not in Config.opts:
-        if os.path.exists(Workdir.wdr):
-            shutil.rmtree(Workdir.wdr)
-    level(Config.level)
-    skel()
-    for mod in scanner():
-        mod.DEBUG = True
-    nrs = Config.index or 1
-    thrs = []
+        banner(Config.name, Config.version)
+    scanner()
+    args = sys.argv[1:]
     if "z" in Config.opts:
-        Pool.init(CLI)
+        Pool.init(CLI, os.cpu_count())
     else:
         Pool.init(CLI, 1)
-    for _nr in range(nrs):
+    starttime = time.time()
+    thrs = []
+    NRS = Config.index or 1
+    for _x in range(NRS):
         thrs.append(launch(payload, pre))
     for thr in thrs:
-        nr = thr.join()
-        if nr:
-            nrcommand += nr
-    thrs = []
-    for _nr in range(nrs):
-        thrs.append(launch(payload, param))
+        thr.join()
+    for _x in range(NRS):
+        thrs.append(launch(payload, examples))
     for thr in thrs:
-        nr = thr.join()
-        if nr:
-            nrcommand += nr
-    thrs = []
-    for _nr in range(nrs):
-        thrs.append(launch(payload,  post))
+        thr.join()
+    for _x in range(NRS):
+        thrs.append(launch(payload, post))
     for thr in thrs:
-        nr = thr.join()
-        if nr:
-            nrcommand += nr
+        thr.join()
     launch(consume)
+    nrevents = events.qsize()
     events.join()
-    Fleet.shutdown()
-    return nrs, nrcommand
+    endtime = time.time()
+    lap = elapsed(endtime-starttime)
+    percall = (endtime-starttime)/nrevents
+    nrs = events.qsize()
+    if "v" in Config.opts:
+        print(f"{nrs} events left.")
+        print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
+    sys.exit()
 
 
-param = Object()
-param.cmd = [""]
-param.dis = [""]
-param.dpl = ["hnrss title,url", ""]
-param.flt = [""]
-param.fnd = ["log", "rss", "config", "todo", ""]
-param.man = [""]
-param.mod = [""]
-param.mre = [""]
-param.nme = ["hnrss hackernews", ""]
-param.now = [""]
-param.pwd = ["bla mekker", ""]
-param.req = [""]
-param.res = ["hnrss", ""]
-param.srv = [""]
-param.thr = [""]
-param.upt = [""]
-param.ver = [""]
+examples = {
+    "cmd": [""],
+    "dis": [""],
+    "dne": ["", "test2"],
+    "dpl": ["hnrss title,url", ""],
+    "flt": [""],
+    "fnd": ["", "log", "rss", "config", "todo"],
+    "log": ["", "test"],
+    "man": [""],
+    "mod": [""],
+    "mre": [""],
+    "nme": ["", "hnrss hackernews"],
+    "now": [""],
+    "pwd": ["", "bla mekker"],
+    "req": [""],
+    "res": ["", "hnrss"],
+    "srv": [""],
+    "tdo": ["", "test2", "test3"],
+    "thr": [""],
+    "upt": [""]
+}
 
 
-pre = Object()
-pre.cfg = ["nick=mekker", ""]
-pre.imp = ["testing/feeds.opml", ""]
-pre.log = ["bla", ""]
-pre.rss = ["http://hnrss.org/newest", ""]
-pre.tdo = ["mekker", ""]
+pre = {
+    "cfg": ["", "nick=mekker"],
+    "imp": ["", "testing/feeds.opml"],
+    "log": ["", "bla"],
+    "rss": ["","http://hnrss.org/newest"],
+    "tdo": ["", "mekker"]
+}
 
 
-post = Object()
-post.dne = ["hnrss", ""]
-post.exp = ['']
-post.rem = ["hnrss", ""]
-
+post = {
+    "dne": ["", "hnrss"],
+    "exp": [""],
+    "rem": ["", "hnrss"]
+}
 
 
 if __name__ == "__main__":
-    nrz, commandz = wrap(main)
-    if nrz is None and commandz is None:
-        os._exit(1)
-    endtime = time.time()
-    lap = elapsed(endtime-STARTTIME)
-    nrevents = events.qsize()
-    percall = (endtime-STARTTIME)/(commandz)
-    if "v" in Config.opts:
-        print(f"debug is {Mods.debug}")
-        print(f"{Pool.nrcpu} cpu's used")
-        print(f"{nrevents} events left.")
-        print(f"total: {lap} nrs: {nrz} cmds: {commandz} call: %.6fs" % percall)
-    sys.exit()
+    main()

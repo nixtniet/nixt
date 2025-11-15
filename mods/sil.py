@@ -1,11 +1,8 @@
 # This file is placed in the Public Domain.
 
 
-"enable silence mode"
+from nixt.command import Fleet
 
-
-from nixt.brokers import Fleet
- 
 
 def sil(event):
     bot = Fleet.get(event.orig)
