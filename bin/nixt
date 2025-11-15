@@ -24,15 +24,12 @@ from nixt.utility import daemon, forever, pidfile, privileges, wrap
 from nixt.utility import check, spl, where, wrapped
 
 
-NAME = "nixt"
-
-
-Config.name = NAME
+Config.name = "nixt"
 Config.version = 434
 
 
-Workdir.init(NAME)
-Mods.init(f"{NAME}.modules", local=True)
+Workdir.init(Config.name)
+Mods.init(f"{Config.name}.modules", local=True)
 
 
 class CLI(Client):
