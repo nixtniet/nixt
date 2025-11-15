@@ -7,7 +7,7 @@ import os
 import sys
 
 
-from .utility import spl, where
+from .utility import spl
 
 
 class Mods:

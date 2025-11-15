@@ -20,7 +20,6 @@ from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
 from nixt.persist import getpath, last, write
 from nixt.threads import launch
-from nixt.utility import where
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"] 

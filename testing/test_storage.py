@@ -10,7 +10,7 @@ sys.path.insert(0, ".")
 
 
 from nixt.objects import Object
-from nixt.persist import Cache, Workdir, store, write
+from nixt.persist import Cache, Workdir, write
 
 
 import nixt.persist
