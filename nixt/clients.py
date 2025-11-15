@@ -11,10 +11,7 @@ from .threads import launch
 
 class Config:
 
-    name = "tob"
-    opts = ""
-    sets: dict[str,str] = {}
-    version = 141
+    name = __name__.split(".")[0]
 
 
 class Client(Handler):

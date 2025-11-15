@@ -4,17 +4,14 @@
 import inspect
 
 
-from typing import Callable
-
-
 from .clients import Fleet
 from .methods import parse
 
 
 class Commands:
 
-    cmds: dict[str, Callable] = {}
-    names: dict[str, str] = {}
+    cmds = {}
+    names = {}
 
     @staticmethod
     def add(*args):

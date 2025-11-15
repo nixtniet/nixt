@@ -12,8 +12,8 @@ from .utility import spl, where
 
 class Mods:
 
-    dirs: dict[str, str] = {}
-    ignore: list[str] = []
+    dirs = {}
+    ignore = []
 
     @staticmethod
     def add(name=None, path=None):

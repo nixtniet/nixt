@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 name = "nixt"
 version = "434"
 authors = [
-    {name = "Bart Thate", email = "nixtniet@gmail.com" },
+    {name = "Nixt Niet", email = "nixtniet@gmail.com" },
 ]
 description = "NIXT"
 readme = "README.rst"

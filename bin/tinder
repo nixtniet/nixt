@@ -15,17 +15,17 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from tob.clients import Client, Config, Output
-from tob.command import Commands, command, parse, scan
-from tob.handler import Event
-from tob.loggers import level
-from tob.package import Mods, getmod, modules
-from tob.persist import Workdir, moddir, skel
-from tob.threads import launch, threadhook
-from tob.utility import elapsed, where
+from nixt.clients import Client, Config, Output
+from nixt.command import Commands, command, parse, scan
+from nixt.handler import Event
+from nixt.loggers import level
+from nixt.package import Mods, getmod, modules
+from nixt.persist import Workdir, moddir, skel
+from nixt.threads import launch, threadhook
+from nixt.utility import elapsed, where
 
 
-Mods.init("tobot.modules")
+Mods.init(local=True)
 Workdir.wdr = ".test"
 
 

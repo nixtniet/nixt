@@ -6,9 +6,6 @@ import threading
 import time
 
 
-from typing import Callable
-
-
 from .threads import launch
 
 
@@ -38,7 +35,7 @@ class Event:
 class Handler:
 
     def __init__(self):
-        self.cbs: dict[str, Callable] = {}
+        self.cbs = {}
         self.queue = queue.Queue()
 
     def callback(self, event):
