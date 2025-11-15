@@ -10,23 +10,30 @@ sys.path.insert(0, ".")
 
 
 from nixt.objects import Object
-from nixt.caching import Cache, write
-from nixt.workdir import Workdir, store
+from nixt.persist import Cache, Workdir, store, write
 
 
-import nixt.caching
+import nixt.persist
 
 
 Workdir.wdr = '.test'
 
 
 ATTRS1 = (
-          'Cache',
-          'find',
-          'last',
-          'read',
-          'write'
-         )
+    'Cache',
+    'Workdir',
+    'cdir',
+    'find',
+    'fntime',
+    'fqn',
+    'fqn',
+    'getpath',
+    'ident',
+    'read',
+    'skel',
+    'types',
+    'write'
+)
 
 
 class TestStorage(unittest.TestCase):
@@ -42,7 +49,7 @@ class TestStorage(unittest.TestCase):
 
     def test_dirmodule(self):
         self.assertEqual(
-                         dir(nixt.caching),
+                         dir(nixt.persist),
                          list(ATTRS1)
                         )
 

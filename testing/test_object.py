@@ -8,7 +8,7 @@ import unittest
 
 
 from nixt.objects import Object, items, keys, update, values
-from nixt.serials import dumps, loads
+from nixt.marshal import dumps, loads
 
 
 import nixt.objects

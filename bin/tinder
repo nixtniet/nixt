@@ -25,6 +25,10 @@ from nixt.threads import launch, threadhook
 from nixt.utility import elapsed, where
 
 
+Config.name = "nixt"
+Config.version = 434
+
+
 Mods.init(local=True)
 Workdir.wdr = ".test"
 

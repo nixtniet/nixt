@@ -20,11 +20,11 @@ class Mods:
         Mods.dirs[name] = path
 
     @staticmethod
-    def init(name, ignore="", local=False):
+    def init(name=None, ignore="", local=False):
         if name:
             pkg = importer(name)
-        if pkg:
-            Mods.add(name, pkg.__path__[0])
+            if pkg:
+                Mods.add(name, pkg.__path__[0])
         if ignore:
             Mods.ignore = spl(ignore)
         if local:

@@ -5,8 +5,7 @@ import unittest
 
 
 from nixt.methods import fmt
-from nixt.objects import Object,items, keys, update, values
-from nixt.workdir import fqn
+from nixt.objects import Object, fqn, items, keys, update, values
 
 
 VALIDJSON = '{"test": "bla"}'

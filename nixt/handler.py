@@ -18,6 +18,7 @@ class Event:
         self.ctime = time.time()
         self.orig = ""
         self.result = {}
+        self.text = ""
         self.type = "event"
 
     def ready(self):
