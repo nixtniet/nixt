@@ -12,10 +12,10 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client, Config
-from nixt.command import Commands, command, parse, scan
-from nixt.handler import Event
+from nixt.command import Commands, Config, command, parse, scan
+from nixt.handler import Client
 from nixt.loggers import level
+from nixt.message import Message
 from nixt.objects import update
 from nixt.package import Mods, getmod, modules
 from nixt.persist import Workdir, moddir, pidname
@@ -51,7 +51,7 @@ class Console(CLI):
         event.wait()
 
     def poll(self):
-        evt = Event()
+        evt = Message()
         evt.text = input("> ")
         evt.type = "command"
         return evt
@@ -123,7 +123,7 @@ def control():
     Commands.add(cmd, srv, ver)
     csl = CLI()
     csl.silent = False
-    evt = Event()
+    evt = Message()
     evt.orig = repr(csl)
     evt.text = " ".join(sys.argv[1:])
     evt.type = "command"

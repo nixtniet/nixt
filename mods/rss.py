@@ -19,7 +19,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.clients import Fleet
+from nixt.brokers import Broker
 from nixt.methods import fmt
 from nixt.objects import Object, update
 from nixt.persist import find, fntime, getpath, last, write
@@ -130,7 +130,7 @@ class Fetcher(Object):
             txt = f"[{feedname}] "
         for obj in result:
             txt2 = txt + self.display(obj)
-            for bot in Fleet.all():
+            for bot in Broker.all():
                 bot.announce(txt2)
         return counter
 

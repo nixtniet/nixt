@@ -111,7 +111,7 @@ def md5sum(path):
     import hashlib
     with open(path, "r", encoding="utf-8") as file:
         txt = file.read().encode("utf-8")
-        return hashlib.md5(txt).hexdigest()
+        return hashlib.md5(txt, usedforsecurity=False).hexdigest()
 
 
 

@@ -9,8 +9,7 @@ import threading
 import time
 
 
-from .marshal import dump, load
-from .objects import Object, items, update
+from .objects import Object, dump, items, load, update
 
 
 lock = threading.RLock()
@@ -168,7 +167,6 @@ def moddir(modname=None):
 
 
 def pidname(name):
-    assert Workdir.wdr
     return os.path.join(Workdir.wdr, f"{name}.pid")
 
 

@@ -11,11 +11,12 @@ import threading
 import time
 
 
-from nixt.clients import Config as Main
-from nixt.clients import Output
-from nixt.command import Fleet, command
-from nixt.handler import Event as IEvent
+from nixt.brokers import Broker
+from nixt.command import Config as Main
+from nixt.command import command
+from nixt.handler import Output
 from nixt.loggers import LEVELS
+from nixt.message import Message
 from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
 from nixt.persist import getpath, last, write
@@ -33,7 +34,7 @@ def init(cfg):
     irc.start()
     irc.events.joined.wait(30.0)
     if irc.events.joined.is_set():
-        logging.warning(fmt(irc.cfg, skip=["name", "password", "realname", "username"]))
+        logging.warning(fmt(irc.cfg, skip=["name", "word", "realname", "username"]))
     else:
         irc.stop()
     return irc
@@ -46,7 +47,7 @@ class Config:
     control = "!"
     name = Main.name
     nick = Main.name
-    password = ""
+    word = ""
     port = 6667
     realname = Main.name
     sasl = False
@@ -68,7 +69,7 @@ class Config:
         self.username = Config.username
 
 
-class Event(IEvent):
+class Event(Message):
 
     def __init__(self):
         super().__init__()
@@ -85,7 +86,7 @@ class Event(IEvent):
         self.text = ""
 
     def dosay(self, txt):
-        bot = Fleet.get(self.orig)
+        bot = Broker.get(self.orig)
         bot.dosay(self.channel, txt)
 
 
@@ -151,7 +152,7 @@ class IRC(Output):
         self.state.nrconnect += 1
         self.events.connected.clear()
         self.events.joined.clear()
-        if self.cfg.password:
+        if self.cfg.word or self.cfg.password:
             logging.debug("using SASL")
             self.cfg.sasl = True
             self.cfg.port = "6697"
@@ -501,33 +502,33 @@ class IRC(Output):
 
 
 def cb_auth(evt):
-    bot = Fleet.get(evt.orig)
-    bot.docommand(f"AUTHENTICATE {bot.cfg.password}")
+    bot = Broker.get(evt.orig)
+    bot.docommand(f"AUTHENTICATE {bot.cfg.word or bot.cfg.password}")
 
 
 def cb_cap(evt):
-    bot = Fleet.get(evt.orig)
-    if bot.cfg.password and "ACK" in evt.arguments:
+    bot = Broker.get(evt.orig)
+    if (bot.cfg.word or bot.cfg.password) and "ACK" in evt.arguments:
         bot.direct("AUTHENTICATE PLAIN")
     else:
         bot.direct("CAP REQ :sasl")
 
 
 def cb_error(evt):
-    bot = Fleet.get(evt.orig)
+    bot = Broker.get(evt.orig)
     bot.state.nrerror += 1
     bot.state.error = evt.text
     logging.debug(fmt(evt))
 
 
 def cb_h903(evt):
-    bot = Fleet.get(evt.orig)
+    bot = Broker.get(evt.orig)
     bot.direct("CAP END")
     bot.events.authed.set()
 
 
 def cb_h904(evt):
-    bot = Fleet.get(evt.orig)
+    bot = Broker.get(evt.orig)
     bot.direct("CAP END")
     bot.events.authed.set()
 
@@ -541,24 +542,24 @@ def cb_log(evt):
 
 
 def cb_ready(evt):
-    bot = Fleet.get(evt.orig)
+    bot = Broker.get(evt.orig)
     bot.events.ready.set()
 
 
 def cb_001(evt):
-    bot = Fleet.get(evt.orig)
+    bot = Broker.get(evt.orig)
     bot.events.logon.set()
 
 
 def cb_notice(evt):
-    bot = Fleet.get(evt.orig)
+    bot = Broker.get(evt.orig)
     if evt.text.startswith("VERSION"):
         txt = f"\001VERSION {Config.name.upper()} {Config.version} - {bot.cfg.username}\001"
         bot.docommand("NOTICE", evt.channel, txt)
 
 
 def cb_privmsg(evt):
-    bot = Fleet.get(evt.orig)
+    bot = Broker.get(evt.orig)
     if not bot.cfg.commands:
         return
     if evt.text:
@@ -577,7 +578,7 @@ def cb_privmsg(evt):
 
 
 def cb_quit(evt):
-    bot = Fleet.get(evt.orig)
+    bot = Broker.get(evt.orig)
     logging.debug("quit from %s", bot.cfg.server)
     bot.state.nrerror += 1
     bot.state.error = evt.text
@@ -596,7 +597,7 @@ def cfg(event):
             fmt(
                 config,
                 keys(config),
-                skip="control,name,password,realname,sleep,username".split(","),
+                skip="control,name,word,realname,sleep,username".split(","),
             )
         )
     else:
@@ -609,7 +610,7 @@ def mre(event):
     if not event.channel:
         event.reply("channel is not set.")
         return
-    bot = Fleet.get(event.orig)
+    bot = Broker.get(event.orig)
     if "cache" not in dir(bot):
         event.reply("bot is missing cache")
         return

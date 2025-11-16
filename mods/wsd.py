@@ -7,8 +7,8 @@ import logging
 from random import SystemRandom
 
 
-from nixt.command import Fleet
-from nixt.handler import Event
+from nixt.brokers import Broker
+from nixt.message import Message
 from nixt.repeats import Repeater
 
 
@@ -16,14 +16,15 @@ rand = SystemRandom()
 
 
 def init(cfg):
-    event = Event()
+    event = Message()
     repeater = Repeater(3600.0,  wsd, event)
     repeater.start()
     logging.warning("%s wise", len(TXT.split("\n")))
 
 
 def wsd(event):
-    Fleet.announce(rand.choice(TXT.split("\n")).strip()[2:])
+    for bot in Broker.all():
+        bot.announce(rand.choice(TXT.split("\n")).strip()[2:])
 
 
 TXT = """| wijsheid, wijs !

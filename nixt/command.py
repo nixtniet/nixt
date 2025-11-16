@@ -4,8 +4,12 @@
 import inspect
 
 
-from .clients import Fleet
 from .methods import parse
+
+
+class Config:
+
+    name = __name__.split(".")[0]
 
 
 class Commands:
@@ -30,7 +34,7 @@ def command(evt):
     func = Commands.get(evt.cmd)
     if func:
         func(evt)
-        Fleet.display(evt)
+        evt.display()
     evt.ready()
 
 
@@ -45,6 +49,7 @@ def scan(module):
 def __dir__():
     return (
         'Comamnds',
+        'Config',
         'command',
         'scan'
     )

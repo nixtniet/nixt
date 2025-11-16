@@ -8,7 +8,7 @@ import re
 import time
 
 
-from nixt.command import Fleet
+from nixt.brokers import Broker
 from nixt.objects import Object, items
 from nixt.persist import getpath, last, write
 from nixt.repeats import Timed
@@ -20,12 +20,13 @@ def init(cfg):
     remove = []
     for tme, args in items(Timers.timers):
         orig, channel, txt = args
-        for origin in Fleet.like(orig):
+        for origin in Broker.like(orig):
             if not origin:
                 continue
             diff = float(tme) - time.time()
             if diff > 0:
-                timer = Timed(diff, Fleet.say, origin, channel, txt)
+                bot = Broker.get(origin)
+                timer = Timed(diff, bot.say, channel, txt)
                 timer.start()
             else:
                 remove.append(tme)
@@ -194,7 +195,7 @@ def tmr(event):
         hour =  get_hour(event.rest)
         if hour:
             target += hour
-    target += random.random() 
+    target += os.urandom() 
     if not target or time.time() > target:
         event.reply("already passed given time.")
         return result
