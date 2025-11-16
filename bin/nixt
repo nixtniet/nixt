@@ -12,7 +12,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, Config, command, parse, scan
+from nixt.command import Commands, command, parse, scan
 from nixt.handler import Client
 from nixt.loggers import level
 from nixt.message import Message

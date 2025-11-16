@@ -12,7 +12,6 @@ import time
 
 
 from nixt.brokers import Broker
-from nixt.command import Config as Main
 from nixt.command import command
 from nixt.handler import Output
 from nixt.loggers import LEVELS
