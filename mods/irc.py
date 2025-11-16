@@ -21,6 +21,7 @@ from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
 from nixt.persist import getpath, last, write
 from nixt.threads import launch
+from nixt.utility import getmain
 
 
 IGNORE = ["PING", "PONG", "PRIVMSG"] 
@@ -40,7 +41,10 @@ def init(cfg):
     return irc
 
 
-class Config:
+Main = getmain("Config")
+
+
+class Config(Object):
 
     channel = f"#{Main.name}"
     commands = True
@@ -59,6 +63,7 @@ class Config:
     version = 1
 
     def __init__(self):
+        super().__init__()
         self.channel = Config.channel
         self.commands = Config.commands
         self.name = Config.name
@@ -67,6 +72,12 @@ class Config:
         self.realname = Config.realname
         self.server = Config.server
         self.username = Config.username
+
+    def __getattr__(self, name):
+        if name not in self:
+            return ""
+        return self.__getattribute__(name)
+            
 
 
 class Event(Message):

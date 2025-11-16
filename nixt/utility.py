@@ -107,6 +107,11 @@ def forever():
             break
 
 
+def getmain(name):
+    main = sys.modules.get("__main__")
+    return getattr(main, name, None)
+
+
 def md5sum(path):
     import hashlib
     with open(path, "r", encoding="utf-8") as file:
@@ -173,6 +178,7 @@ def __dir__():
         'elapsed',
         'extract_date',
         'forever',
+        'getmain',
         'md5sum',
         'pidfile',
         'privileges',

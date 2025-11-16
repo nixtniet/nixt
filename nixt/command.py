@@ -7,11 +7,6 @@ import inspect
 from .methods import parse
 
 
-class Config:
-
-    name = __name__.split(".")[0]
-
-
 class Commands:
 
     cmds = {}

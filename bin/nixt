@@ -24,8 +24,10 @@ from nixt.utility import daemon, forever, pidfile, privileges, wrap
 from nixt.utility import check, spl, where, wrapped
 
 
-Config.name = "nixt"
-Config.version = 434
+class Config:
+
+    name = "nixt"
+    version = 434
 
 
 Workdir.init(Config.name)
