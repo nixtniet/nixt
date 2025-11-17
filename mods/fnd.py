@@ -19,6 +19,7 @@ def fnd(event):
         return
     otype = event.args[0]
     nmr = 0
+    print(event)
     for fnm, obj in list(find(otype, event.gets)):
         event.reply(f"{nmr} {fmt(obj)} {elapsed(time.time()-fntime(fnm))}")
         nmr += 1

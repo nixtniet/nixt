@@ -7,11 +7,13 @@ import time
 
 
 from .brokers import Broker
+from .objects import Object
 
 
-class Message:
+class Message(Object):
 
     def __init__(self):
+        Object.__init__(self)
         self._ready = threading.Event()
         self._thr = None
         self.channel = ""
@@ -20,6 +22,9 @@ class Message:
         self.result = {}
         self.text = ""
         self.type = "event"
+
+    def __getattr__(self, key):
+        return self.__dict__.get(key, "")
 
     def display(self):
         bot = Broker.get(self.orig)
