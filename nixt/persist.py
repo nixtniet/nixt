@@ -103,14 +103,6 @@ def last(obj, selector=None):
     return res
 
 
-def long(name) -> str:
-    split = name.split(".")[-1].lower()
-    res = name
-    for names in types():
-        if split == names.split(".")[-1].lower():
-            res = names
-            break
-    return res
 
 
 def read(obj, path):
@@ -178,6 +170,16 @@ def getpath(obj):
 
 def ident(obj):
     return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
+
+
+def long(name) -> str:
+    split = name.split(".")[-1].lower()
+    res = name
+    for names in types():
+        if split == names.split(".")[-1].lower():
+            res = names
+            break
+    return res
 
 
 def moddir(modname=None):
