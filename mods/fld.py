@@ -15,4 +15,4 @@ def fld(event):
     if not items:
         event.reply("no fields")
     else:
-        event.reply(".".join(items))
+        event.reply(",".join(items))

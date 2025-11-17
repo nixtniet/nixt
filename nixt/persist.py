@@ -37,16 +37,17 @@ def deleted(obj):
 
 
 def fields(type):
-    objs = find(type)
+    objs = list(find(type))
     if objs:
-        return keys(list(objs)[0][1])
+        return keys(objs[0][1])
     return []
 
 
 def find(type=None, selector=None, removed=False, matching=False):
     if selector is None:
         selector = {}
-    for pth in fns(type):
+    fqn = long(type)
+    for pth in fns(fqn):
         obj = Cache.get(pth)
         if not obj:
             obj = Object()
@@ -99,6 +100,16 @@ def last(obj, selector=None):
         inp = result[-1]
         update(obj, inp[-1])
         res = inp[0]
+    return res
+
+
+def long(name) -> str:
+    split = name.split(".")[-1].lower()
+    res = name
+    for names in types():
+        if split == names.split(".")[-1].lower():
+            res = names
+            break
     return res
 
 
