@@ -4,8 +4,7 @@
 import unittest
 
 
-from nixt.marshal import dumps
-from nixt.objects import Object
+from nixt.objects import Object, dumps
 
 
 VALIDJSON = '{"test": "bla"}'

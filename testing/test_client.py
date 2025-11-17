@@ -7,8 +7,8 @@
 import unittest
 
 
-from nixt.clients import Client
-from nixt.handler import Event
+from nixt.handler import Client
+from nixt.message import Message
 
 
 def hello(event):
@@ -24,7 +24,7 @@ clt.start()
 class TestHandler(unittest.TestCase):
 
     def test_loop(self):
-        e = Event()
+        e = Message()
         e.type = "hello"
         clt.put(e)
         e.wait()

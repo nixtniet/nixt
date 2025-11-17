@@ -4,8 +4,7 @@
 import unittest
 
 
-from nixt.marshal import loads, dumps
-from nixt.objects import Object
+from nixt.objects import Object, dumps, loads
 
 
 class TestDecoder(unittest.TestCase):

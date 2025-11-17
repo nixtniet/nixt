@@ -15,10 +15,10 @@ sys.path.insert(0, os.getcwd())
 
 
 import nixt
-import nixt.clients
+import nixt.brokers
 import nixt.command
 import nixt.handler
-import nixt.marshal
+import nixt.message
 import nixt.methods
 import nixt.objects
 import nixt.package
@@ -32,10 +32,10 @@ from nixt.objects import *
 
 
 PACKAGE = [
-    'clients',
+    'brokers',
     'command',
     'handler',
-    'marshal',
+    'message',
     'methods',
     'objects',
     'package',
