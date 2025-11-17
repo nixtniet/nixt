@@ -23,6 +23,7 @@ ATTRS1 = (
     'Cache',
     'Workdir',
     'cdir',
+    'fields',
     'find',
     'fntime',
     'fqn',
