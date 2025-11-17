@@ -9,7 +9,7 @@ import threading
 import time
 
 
-from .objects import Object, dump, items, load, update
+from .objects import Object, dump, items, keys, load, update
 
 
 lock = threading.RLock()
@@ -34,6 +34,13 @@ class Cache:
 
 def deleted(obj):
     return "__deleted__" in dir(obj) and obj.__deleted__
+
+
+def fields(type):
+    objs = find(type)
+    if objs:
+        return keys(list(objs)[0][1])
+    return []
 
 
 def find(type=None, selector=None, removed=False, matching=False):
@@ -190,6 +197,7 @@ def __dir__():
         'Cache',
         'Workdir',
         'cdir',
+        'fields',
         'find',
         'fntime',
         'fqn',
