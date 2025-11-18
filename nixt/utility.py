@@ -7,14 +7,7 @@ import sys
 import time
 
 
-FORMATS = [
-    "%Y-%M-%D %H:%M:%S",
-    "%Y-%m-%d %H:%M:%S",
-    "%Y-%m-%d",
-    "%d-%m-%Y",
-    "%d-%m",
-    "%m-%d"
-]
+from .defines import TIMES
 
 
 def check(text):
@@ -90,7 +83,7 @@ def elapsed(seconds, short=True):
 def extract_date(daystr):
     daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
     res = time.time()
-    for fmat in FORMATS:
+    for fmat in TIMES:
         try:
             res = time.mktime(time.strptime(daystr, fmat))
             break

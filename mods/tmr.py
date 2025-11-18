@@ -9,10 +9,12 @@ import time
 
 
 from nixt.brokers import Broker
+from nixt.locater import last
 from nixt.objects import Object, items
-from nixt.persist import getpath, last, write
+from nixt.persist import write
 from nixt.repeats import Timed
 from nixt.utility import elapsed, extract_date
+from nixt.workdir import getpath
 
 
 def init(cfg):

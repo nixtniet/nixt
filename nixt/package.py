@@ -79,5 +79,5 @@ def __dir__():
         'Mods',
         'getmod',
         'importer',
-        'modules',
+        'modules'
     )

@@ -1,9 +1,6 @@
 # This file is placed in the Public Domain.
 
 
-"object for an string"
-
-
 class Broker:
 
     objects = {}
@@ -13,8 +10,11 @@ class Broker:
         Broker.objects[repr(obj)] = obj
 
     @staticmethod
-    def all():
-        return Broker.objects.values()
+    def all(attr=None):
+        for obj in Broker.objects.values():
+            if attr and attr not in dir(obj):
+                continue
+            yield obj
 
     @staticmethod
     def get(origin):

@@ -4,14 +4,7 @@
 import logging
 
 
-LEVELS = {
-    'debug': logging.DEBUG,
-    'info': logging.INFO,
-    'warning':logging. WARNING,
-    'warn': logging.WARNING,
-    'error': logging.ERROR,
-    'critical': logging.CRITICAL
-}
+from .defines import LEVELS
 
 
 class Logging:
@@ -44,7 +37,6 @@ def level(loglevel="debug"):
 
 def __dir__():
     return (
-        'LEVELS',
         'Logging',
         'level'
    )

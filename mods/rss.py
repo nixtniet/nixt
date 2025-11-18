@@ -20,12 +20,14 @@ from urllib.parse import quote_plus, urlencode
 
 
 from nixt.brokers import Broker
+from nixt.locater import find, fntime, last
 from nixt.methods import fmt
 from nixt.objects import Object, update
-from nixt.persist import find, fntime, getpath, last, write
+from nixt.persist import write
 from nixt.repeats import Repeater
 from nixt.threads import launch
 from nixt.utility import elapsed, spl
+from nixt.workdir import getpath
 
 
 DEBUG = False

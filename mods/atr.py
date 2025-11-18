@@ -4,14 +4,14 @@
 "fields"
 
 
-from nixt.persist import fields
+from nixt.locater import attrs
 
 
-def fld(event):
+def atr(event):
     if not event.rest:
         event.reply("fld <type>")
         return
-    items = fields(event.args[0])
+    items = attrs(event.args[0])
     if not items:
         event.reply("no fields")
     else:

@@ -44,7 +44,6 @@ def scan(module):
 def __dir__():
     return (
         'Comamnds',
-        'Config',
         'command',
         'scan'
     )

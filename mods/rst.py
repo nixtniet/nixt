@@ -11,8 +11,8 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from nixt.objects import Object
-from nixt.persist import store, types
 from nixt.threads import launch
+from nixt.workdir import store, types
 
 
 DEBUG = False

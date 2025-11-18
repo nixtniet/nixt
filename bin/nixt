@@ -12,16 +12,17 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
+from nixt.clients import Client
 from nixt.command import Commands, command, parse, scan
-from nixt.handler import Client
+from nixt.defines import SYSTEMD
 from nixt.loggers import level
 from nixt.message import Message
 from nixt.objects import update
 from nixt.package import Mods, getmod, modules
-from nixt.persist import Workdir, moddir, pidname
 from nixt.threads import launch, threadhook
 from nixt.utility import daemon, forever, pidfile, privileges, wrap
 from nixt.utility import check, spl, where, wrapped
+from nixt.workdir import Workdir, moddir, pidname
 
 
 class Config:
@@ -153,26 +154,12 @@ def cmd(event):
 def srv(event):
     import getpass
     name = getpass.getuser()
-    event.reply(TXT % (Config.name.upper(), name, name, name, Config.name))
-
-
-TXT = """[Unit]
-Description=%s
-After=network-online.target
-
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
+    event.reply(SYSTEMD % (Config.name.upper(), name, name, name, Config.name))
 
 
 def ver(event):
-    event.reply(f"{Config.name.upper()} {Config.version}")
-
+    event.reply("{Config.name.upper()} {Config.version}")
+    
 
 "runtime"
 

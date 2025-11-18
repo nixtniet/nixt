@@ -138,7 +138,7 @@ def cbnow(_evt):
         nrtimes = int(delta/needed)
         txt += f"{getalias(nme)} {nrtimes} | "
     txt += "https://pypi.org/project/."
-    for bot in Broker.all():
+    for bot in Broker.all("announce"):
         bot.announce(txt)
 
 
@@ -161,7 +161,8 @@ def cbstats(evt):
             nryear,
             elapsed(needed)
         )
-        Fleet.announce(txt)
+        for bot in Broker.all("announce"):
+            bot.announce(txt)
 
 
 "commands"

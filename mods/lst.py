@@ -1,7 +1,7 @@
 # This file is been placed in the Public Domain.
 
 
-from nixt.persist import types
+from nixt.workdir import types
 
 
 def lst(event):

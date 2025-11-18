@@ -15,12 +15,7 @@ class Message(Object):
     def __init__(self):
         Object.__init__(self)
         self._ready = threading.Event()
-        self._thr = None
-        self.channel = ""
-        self.ctime = time.time()
-        self.orig = ""
         self.result = {}
-        self.text = ""
         self.type = "event"
 
     def __getattr__(self, key):
