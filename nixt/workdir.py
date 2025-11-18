@@ -4,11 +4,9 @@
 import datetime
 import os
 import pathlib
-import time
 
 
-from .methods import name
-from .objects import Object, fqn, items, keys, update
+from .objects import fqn
 
 
 class Workdir:

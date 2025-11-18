@@ -3,7 +3,6 @@
 
 import queue
 import threading
-import time
 
 
 from .brokers import Broker

@@ -1,7 +1,6 @@
 # This file is placed in the Public Domain.
 
 
-import queue
 import threading
 import time
 

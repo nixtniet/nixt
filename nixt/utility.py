@@ -1,13 +1,43 @@
 # This file is placed in the Public Domain.
 
 
+
+import logging
 import os
 import pathlib
 import sys
 import time
 
 
-from .defines import TIMES
+from .defines import LEVELS, TIMES
+
+
+class Logging:
+
+    datefmt = "%H:%M:%S"
+    format = "%(module).3s %(message)s"
+
+
+class Format(logging.Formatter):
+
+    def format(self, record):
+        record.module = record.module.upper()
+        return logging.Formatter.format(self, record)
+
+
+def level(loglevel="debug"):
+    if loglevel != "none":
+        lvl = LEVELS.get(loglevel)
+        if not lvl:
+            return
+        logger = logging.getLogger()
+        for handler in logger.handlers:
+            logger.removeHandler(handler)
+        logger.setLevel(lvl)
+        formatter = Format(Logging.format, datefmt=Logging.datefmt)
+        ch = logging.StreamHandler()
+        ch.setFormatter(formatter)
+        logger.addHandler(ch)
 
 
 def check(text):
@@ -165,12 +195,14 @@ def wrap(func):
 
 def __dir__():
     return (
+        'Logging',
         'check',
         'daemon',
         'elapsed',
         'extract_date',
         'forever',
         'getmain',
+        'level',
         'md5sum',
         'pidfile',
         'privileges',

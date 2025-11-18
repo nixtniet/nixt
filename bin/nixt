@@ -13,20 +13,23 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.command import Commands, command, parse, scan
+from nixt.configs import Config
 from nixt.defines import SYSTEMD
 from nixt.handler import Client
 from nixt.kernels import Kernel
-from nixt.loggers import level
 from nixt.message import Message
 from nixt.objects import update
 from nixt.package import Mods, getmod, modules
 from nixt.threads import launch, threadhook
 from nixt.utility import daemon, forever, pidfile, privileges, wrap
-from nixt.utility import check, spl, where, wrapped
+from nixt.utility import check, level, spl, where, wrapped
 from nixt.workdir import Workdir, moddir, pidname
 
 
-Kernel.boot("nixt", 434)
+NAME = "nixt" ; VERSION = 440
+
+
+"clients"
 
 
 class CLI(Client):
@@ -55,6 +58,9 @@ class Console(CLI):
 
 
 "in the begining"
+
+
+Kernel.boot(NAME, VERSION)
 
 
 def banner(name, version):

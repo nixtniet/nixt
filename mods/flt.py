@@ -15,4 +15,4 @@ def flt(event):
         else:
             event.reply(f"only {len(clts)} clients in fleet.")
         return
-    event.reply(' | '.join([name(o) for o in Fleet.all()]))
+    event.reply(' | '.join([name(o) for o in Broker.all()]))

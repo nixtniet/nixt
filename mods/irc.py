@@ -13,15 +13,15 @@ import time
 
 from nixt.brokers import Broker
 from nixt.command import command
+from nixt.configs import Config as Main
+from nixt.defines import LEVELS
 from nixt.locater import last
-from nixt.loggers import LEVELS
 from nixt.message import Message
 from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
 from nixt.outputs import Output
 from nixt.persist import write
 from nixt.threads import launch
-from nixt.utility import getmain
 from nixt.workdir import getpath
 
 
@@ -40,9 +40,6 @@ def init(cfg):
     else:
         irc.stop()
     return irc
-
-
-Main = getmain("Config")
 
 
 class Config(Object):

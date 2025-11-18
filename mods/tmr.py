@@ -3,7 +3,7 @@
 
 import datetime
 import logging
-import random
+import os
 import re
 import time
 
@@ -205,7 +205,8 @@ def tmr(event):
     txt = " ".join(event.args[1:])
     add(target, event.orig, event.channel, txt)
     write(Timers.timers, Timers.path or getpath(Timers.timers))
-    timer = Timed(diff, Fleet.say, event.orig, event.channel, txt)
+    bot = Broker.get(event.orig)
+    timer = Timed(diff, bot.say, event.orig, event.channel, txt)
     timer.start()
     event.reply("ok " +  elapsed(diff))
 
