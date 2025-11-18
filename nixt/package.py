@@ -16,7 +16,7 @@ class Mods:
     ignore = []
 
     @staticmethod
-    def add(name=None, path=None):
+    def add(name, path):
         Mods.dirs[name] = path
 
     @staticmethod

@@ -7,6 +7,7 @@ import threading
 
 from .objects import Object, update
 from .serials import dump, load
+from .workdir import getpath
 
 
 lock = threading.RLock()

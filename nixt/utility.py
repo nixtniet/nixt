@@ -112,7 +112,6 @@ def md5sum(path):
         return hashlib.md5(txt, usedforsecurity=False).hexdigest()
 
 
-
 def pidfile(filename):
     if os.path.exists(filename):
         os.unlink(filename)
