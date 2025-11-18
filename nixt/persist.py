@@ -59,6 +59,7 @@ def write(obj, path=None):
 def __dir__():
     return (
         'Cache',
+        'cdir',
         'read',
         'write'
     )

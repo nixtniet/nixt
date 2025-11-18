@@ -33,7 +33,7 @@ classifiers = [
 packages = [
     'nixt',
     'nixt.modules',
-    'nixt.network'.
+    'nixt.network',
     'nixt.nucleus'
 ]
 include-package-data = false

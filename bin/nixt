@@ -12,9 +12,10 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client
 from nixt.command import Commands, command, parse, scan
 from nixt.defines import SYSTEMD
+from nixt.handler import Client
+from nixt.kernels import Kernel
 from nixt.loggers import level
 from nixt.message import Message
 from nixt.objects import update
@@ -25,14 +26,7 @@ from nixt.utility import check, spl, where, wrapped
 from nixt.workdir import Workdir, moddir, pidname
 
 
-class Config:
-
-    name = "nixt"
-    version = 434
-
-
-Workdir.init(Config.name)
-Mods.init(f"{Config.name}.modules", local=True)
+Kernel.boot("nixt", 434)
 
 
 class CLI(Client):

@@ -10,7 +10,8 @@ sys.path.insert(0, ".")
 
 
 from nixt.objects import Object
-from nixt.persist import Cache, Workdir, write
+from nixt.persist import Cache, write
+from nixt.workdir import Workdir
 
 
 import nixt.persist
@@ -21,18 +22,8 @@ Workdir.wdr = '.test'
 
 ATTRS1 = (
     'Cache',
-    'Workdir',
     'cdir',
-    'fields',
-    'find',
-    'fntime',
-    'fqn',
-    'fqn',
-    'getpath',
-    'ident',
     'read',
-    'skel',
-    'types',
     'write'
 )
 
