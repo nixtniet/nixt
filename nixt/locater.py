@@ -6,7 +6,7 @@ import time
 
 
 from .methods import name
-from .objects import Object, fqn, items, update
+from .objects import Object, fqn, items, keys, update
 from .persist import Cache, read
 from .workdir import long, store
 

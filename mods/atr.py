@@ -5,11 +5,16 @@
 
 
 from nixt.locater import attrs
+from nixt.workdir import types
 
 
 def atr(event):
     if not event.rest:
-        event.reply("fld <type>")
+        res = sorted([x.split('.')[-1].lower() for x in types()])
+        if res:
+            event.reply(",".join(res))
+        else:
+            event.reply("no types")
         return
     items = attrs(event.args[0])
     if not items:
