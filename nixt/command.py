@@ -4,6 +4,7 @@
 import inspect
 
 
+from .brokers import Broker
 from .methods import parse
 
 

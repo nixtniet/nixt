@@ -16,7 +16,7 @@ class Config(Default):
     version = 440
 
 
-deef __dir__():
+def __dir__():
     return (
         'Config',
         'Default'
