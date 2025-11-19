@@ -5,7 +5,6 @@ import threading
 import time
 
 
-from .brokers import Broker
 from .objects import Object
 
 
@@ -19,10 +18,6 @@ class Message(Object):
 
     def __getattr__(self, key):
         return self.__dict__.get(key, "")
-
-    def display(self):
-        bot = Broker.get(self.orig)
-        bot.display(self)
 
     def ready(self):
         self._ready.set()

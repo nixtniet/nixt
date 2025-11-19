@@ -29,7 +29,8 @@ def command(evt):
     func = Commands.get(evt.cmd)
     if func:
         func(evt)
-        evt.display()
+        bot = Broker.get(evt.orig)
+        bot.display(evt)
     evt.ready()
 
 
