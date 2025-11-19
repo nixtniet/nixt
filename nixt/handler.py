@@ -17,11 +17,11 @@ class Handler:
 
     def callback(self, event):
         func = self.cbs.get(event.type, None)
-        if func:
-            name = event.text and event.text.split()[0]
-            event._thr = launch(func, event, name=name)
-        else:
+        if not func:
             event.ready()
+            return
+        name = event.text and event.text.split()[0]
+        event._thr = launch(func, event, name=name)
 
     def loop(self):
         while True:
