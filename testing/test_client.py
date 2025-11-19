@@ -25,7 +25,7 @@ class TestHandler(unittest.TestCase):
 
     def test_loop(self):
         e = Message()
-        e.type = "hello"
+        e.kind = "hello"
         clt.put(e)
         e.wait()
         self.assertTrue(True)

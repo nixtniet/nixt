@@ -2,7 +2,6 @@
 # This file is placed in the Public Domain.
 
 
-import inspect
 import logging
 import os
 import queue
@@ -16,13 +15,12 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client, Config, Output
-from nixt.command import Commands, command, parse, scan
+from nixt.command import command, parse, scan
 from nixt.handler import Event
-from nixt.loggers import level
 from nixt.package import Mods, getmod, modules
-from nixt.persist import Workdir, moddir, skel
+from nixt.persist import Workdir
 from nixt.threads import launch, threadhook
-from nixt.utility import elapsed, where
+from nixt.utility import elapsed
 
 
 Config.name = "nixt"
@@ -59,10 +57,10 @@ class Pool:
         Pool.clients.append(client)
 
     @staticmethod
-    def init(cls, nr, verbose=False):
+    def init(clz, nr):
         Pool.nrcpu = nr
         for _x in range(Pool.nrcpu):
-            clt = cls()
+            clt = clz()
             clt.start()
             Pool.add(clt)
 
@@ -103,13 +101,13 @@ def payload(todo):
         for ex in example:
             evt = Event()
             evt.text = f"{cmd} {ex}"
-            evt.type = "command"
+            evt.kind = "command"
             Pool.put(evt)
             events.put(evt)
 
 
-def scanner(names=[]):
-    if not names:
+def scanner(names=None):
+    if names is None:
         names = modules()
     mods = []
     for name in names:
@@ -131,7 +129,6 @@ def main():
     if "v" in Config.opts:
         banner(Config.name, Config.version)
     scanner()
-    args = sys.argv[1:]
     if "z" in Config.opts:
         Pool.init(CLI, os.cpu_count())
     else:

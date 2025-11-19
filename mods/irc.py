@@ -346,7 +346,7 @@ class IRC(Output):
             obj.origin = obj.origin[1:]
             if len(arguments) > 1:
                 obj.command = arguments[1]
-                obj.type = obj.command
+                obj.kind = obj.command
             if len(arguments) > 2:
                 txtlist = []
                 adding = False
@@ -385,7 +385,7 @@ class IRC(Output):
             obj.rest = " ".join(obj.args)
         obj.orig = object.__repr__(self)
         obj.text = obj.text.strip()
-        obj.type = obj.command
+        obj.kind = obj.command
         return obj
 
     def poll(self):

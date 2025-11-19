@@ -15,7 +15,7 @@ class Message(Object):
         Object.__init__(self)
         self._ready = threading.Event()
         self.result = {}
-        self.type = "event"
+        self.kind = "event"
 
     def __getattr__(self, key):
         return self.__dict__.get(key, "")

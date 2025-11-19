@@ -16,7 +16,7 @@ class Handler:
         self.queue = queue.Queue()
 
     def callback(self, event):
-        func = self.cbs.get(event.type, None)
+        func = self.cbs.get(event.kind, None)
         if not func:
             event.ready()
             return
@@ -37,8 +37,8 @@ class Handler:
     def put(self, event):
         self.queue.put(event)
 
-    def register(self, type, callback):
-        self.cbs[type] = callback
+    def register(self, kind, callback):
+        self.cbs[kind] = callback
 
     def start(self):
         launch(self.loop)
@@ -78,7 +78,7 @@ class Client(Handler):
         self.raw(text)
 
     def wait(self):
-        self.oqueue.join()    
+        self.oqueue.join()
 
 
 def __dir__():

@@ -10,8 +10,8 @@ from .persist import Cache, read
 from .workdir import long, store
 
 
-def attrs(type):
-    objs = list(find(type))
+def attrs(kind):
+    objs = list(find(kind))
     if objs:
         return keys(objs[0][1])
     return []
@@ -21,11 +21,11 @@ def deleted(obj):
     return "__deleted__" in dir(obj) and obj.__deleted__
 
 
-def find(type=None, selector=None, removed=False, matching=False):
+def find(kind=None, selector=None, removed=False, matching=False):
     if selector is None:
         selector = {}
-    fqn = long(type)
-    for pth in fns(fqn):
+    fullname = long(kind)
+    for pth in fns(fullname):
         obj = Cache.get(pth)
         if not obj:
             obj = Object()
@@ -38,16 +38,16 @@ def find(type=None, selector=None, removed=False, matching=False):
         yield pth, obj
 
 
-def fns(type=None):
-    if type is not None:
-        type = type.lower()
+def fns(kind=None):
+    if kind is not None:
+        kind = kind.lower()
     path = store()
     for rootdir, dirs, _files in os.walk(path, topdown=True):
         for dname in dirs:
             if dname.count("-") != 2:
                 continue
             ddd = os.path.join(rootdir, dname)
-            if type and type not in ddd.lower():
+            if kind and kind not in ddd.lower():
                 continue
             for fll in os.listdir(ddd):
                 yield os.path.join(ddd, fll)

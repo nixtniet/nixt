@@ -47,9 +47,9 @@ def launch(func, *args, **kwargs):
 
 
 def threadhook(args):
-    type, value, trace, thread = args
+    kind, value, trace, _thr = args
     exc = value.with_traceback(trace)
-    if type not in (KeyboardInterrupt, EOFError):
+    if kind not in (KeyboardInterrupt, EOFError):
         logging.exception(exc)
     _thread.interrupt_main()
 

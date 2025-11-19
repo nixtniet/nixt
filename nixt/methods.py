@@ -26,9 +26,11 @@ def edit(obj, setter, skip=True):
             setattr(obj, key, val)
 
 
-def fmt(obj, args=[], skip=[], plain=False, empty=False):
-    if not args:
+def fmt(obj, args=None, skip=None, plain=False, empty=False):
+    if args is None:
         args = obj.__dict__.keys()
+    if skip is None:
+        skip = []
     txt = ""
     for key in args:
         if key.startswith("__"):

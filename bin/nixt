@@ -18,15 +18,14 @@ from nixt.defines import SYSTEMD
 from nixt.handler import Client
 from nixt.kernels import Kernel
 from nixt.message import Message
-from nixt.objects import update
-from nixt.package import Mods, getmod, modules
+from nixt.package import getmod, modules
 from nixt.threads import launch, threadhook
 from nixt.utility import daemon, forever, pidfile, privileges, wrap
-from nixt.utility import check, level, spl, where, wrapped
-from nixt.workdir import Workdir, moddir, pidname
+from nixt.utility import check, level, spl, wrapped
+from nixt.workdir import pidname
 
 
-NAME = "nixt" ; VERSION = 440
+NAME = "nixt" ; VERSION = 440 # noqa: E702
 
 
 "clients"
@@ -53,7 +52,7 @@ class Console(CLI):
     def poll(self):
         evt = Message()
         evt.text = input("> ")
-        evt.type = "command"
+        evt.kind = "command"
         return evt
 
 
@@ -129,7 +128,7 @@ def control():
     evt = Message()
     evt.orig = repr(csl)
     evt.text = " ".join(sys.argv[1:])
-    evt.type = "command"
+    evt.kind = "command"
     command(evt)
     evt.wait()
 

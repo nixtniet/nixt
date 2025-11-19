@@ -53,7 +53,7 @@ def keys(obj):
     return obj.__dict__.keys()
 
 
-def update(obj, data={}, empty=True):
+def update(obj, data, empty=True):
     if isinstance(obj, type):
         for k, v in items(data):
             if isinstance(getattr(obj, k, None), types.MethodType):
