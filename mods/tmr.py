@@ -4,6 +4,7 @@
 import datetime
 import logging
 import os
+import random
 import re
 import time
 
@@ -15,6 +16,9 @@ from nixt.persist import write
 from nixt.repeats import Timed
 from nixt.utility import elapsed, extract_date
 from nixt.workdir import getpath
+
+
+rand = random.SystemRandom()
 
 
 def init(cfg):
@@ -197,7 +201,7 @@ def tmr(event):
         hour =  get_hour(event.rest)
         if hour:
             target += hour
-    target += os.urandom() 
+    target += rand.random() 
     if not target or time.time() > target:
         event.reply("already passed given time.")
         return result

@@ -14,13 +14,15 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client, Config, Output
+from nixt.clients import Client
 from nixt.command import command, parse, scan
-from nixt.handler import Event
+from nixt.configs import Config
+from nixt.message import Message
+from nixt.outputs import Output
 from nixt.package import Mods, getmod, modules
-from nixt.persist import Workdir
 from nixt.threads import launch, threadhook
 from nixt.utility import elapsed
+from nixt.workdir import Workdir
 
 
 Config.name = "nixt"
@@ -99,7 +101,7 @@ def consume():
 def payload(todo):
     for cmd, example in todo.items():
         for ex in example:
-            evt = Event()
+            evt = Message()
             evt.text = f"{cmd} {ex}"
             evt.kind = "command"
             Pool.put(evt)

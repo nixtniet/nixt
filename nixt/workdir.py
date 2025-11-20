@@ -16,7 +16,7 @@ class Workdir:
     @staticmethod
     def init(name):
         Workdir.wdr = os.path.expanduser(f"~/.{name}")
-
+        skel()
 
 def getpath(obj):
     return store(ident(obj))
@@ -56,6 +56,7 @@ def store(fnm=""):
 
 
 def types():
+    skel()
     return os.listdir(store())
 
 
