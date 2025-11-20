@@ -5,13 +5,13 @@ import threading
 import time
 
 
-from .objects import Object
+from .objects import Default
 
 
-class Message(Object):
+class Message(Default):
 
     def __init__(self):
-        Object.__init__(self)
+        super().__init__()
         self._ready = threading.Event()
         self.result = {}
         self.kind = "event"

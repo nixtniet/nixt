@@ -18,6 +18,7 @@ class Workdir:
         Workdir.wdr = os.path.expanduser(f"~/.{name}")
         skel()
 
+
 def getpath(obj):
     return store(ident(obj))
 
@@ -45,7 +46,10 @@ def pidname(name):
 
 
 def skel():
-    pth = pathlib.Path(store())
+    path = store()
+    if os.path.exists(path):
+        return
+    pth = pathlib.Path(path)
     pth.mkdir(parents=True, exist_ok=True)
     pth = pathlib.Path(moddir())
     pth.mkdir(parents=True, exist_ok=True)

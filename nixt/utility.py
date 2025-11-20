@@ -172,13 +172,6 @@ def where(obj):
     return os.path.dirname(inspect.getfile(obj))
 
 
-def wrapped(func):
-    try:
-        func()
-    except (KeyboardInterrupt, EOFError):
-        pass
-
-
 def wrap(func):
     import termios
     old = None
@@ -191,6 +184,13 @@ def wrap(func):
     finally:
         if old:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+
+
+def wrapped(func):
+    try:
+        func()
+    except (KeyboardInterrupt, EOFError):
+        pass
 
 
 def __dir__():

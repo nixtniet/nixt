@@ -3,7 +3,6 @@
 
 import datetime
 import logging
-import os
 import random
 import re
 import time
