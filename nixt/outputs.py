@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-from .handler import Client
+from .clients import Client
 from .threads import launch
 
 

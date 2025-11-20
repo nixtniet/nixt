@@ -6,7 +6,12 @@ import threading
 
 
 from .brokers import Broker
+from .configs import Config
+from .command import scan
 from .handler import Handler
+from .package import Mods, getmod
+from .threads import launch
+from .workdir import Workdir
 
 
 class Client(Handler):
@@ -43,7 +48,28 @@ class Client(Handler):
         self.oqueue.join()
 
 
+def configure(name, version):
+    Config.name = name
+    Config.version = version
+    Workdir.init(name)
+    Mods.init(f"{name}.modules", local=True)
+
+
+def scanner(names, init=False):
+    mods = []
+    for name in names:
+        mod = getmod(name)
+        if mod:
+            scan(mod)
+        if init and "init" in dir(mod):
+            thr = launch(mod.init, Config())
+            mods.append((mod, thr))
+    return mods
+
+
 def __dir__():
     return (
         'Client',
+        'configure',
+        'scanner'
    )
