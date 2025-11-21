@@ -16,7 +16,7 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.clients import Client
 from nixt.command import command, parse, scan
-from nixt.configs import Config
+from nixt.configs import Config, configure
 from nixt.message import Message
 from nixt.outputs import Output
 from nixt.package import Mods, getmod, modules
@@ -25,11 +25,10 @@ from nixt.utility import elapsed
 from nixt.workdir import Workdir
 
 
-Config.name = "nixt"
-Config.version = 434
+NAME = "nixt" ; VERSION = 434
 
 
-Mods.init(local=True)
+configure(NAME, VERSION)
 Workdir.wdr = ".test"
 
 
