@@ -9,10 +9,10 @@ import time
 
 
 from nixt.brokers import Broker
-from nixt.locater import last
 from nixt.objects import Object, items
-from nixt.persist import write
+from nixt.persist import last, write
 from nixt.repeats import Timed
+from nixt.statics import MONTH
 from nixt.utility import elapsed, extract_date
 from nixt.workdir import getpath
 
@@ -20,10 +20,12 @@ from nixt.workdir import getpath
 rand = random.SystemRandom()
 
 
-def init(cfg):
+def init():
     Timers.path = last(Timers.timers) or getpath(Timers.timers)
     remove = []
     for tme, args in items(Timers.timers):
+        if not args:
+            continue
         orig, channel, txt = args
         for origin in Broker.like(orig):
             if not origin:
@@ -87,7 +89,7 @@ def get_day(daystr):
         day = int(day)
         month = int(month)
         yea = int(yea)
-        date = f"{day} {MONTHS[month]} {yea}"
+        date = f"{day} {MONTH[month]} {yea}"
         return time.mktime(time.strptime(date, r"%d %b %Y"))
     raise NoDate(daystr)
 
@@ -212,20 +214,3 @@ def tmr(event):
     timer = Timed(diff, bot.say, event.orig, event.channel, txt)
     timer.start()
     event.reply("ok " +  elapsed(diff))
-
-
-MONTHS = [
-    'Bo',
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
-]

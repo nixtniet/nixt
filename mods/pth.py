@@ -4,13 +4,13 @@
 import os
 
 
-a = os.path.abspath
-d = os.path.dirname
-p = os.path.join
-
-
-PATH = p(d(d(__file__)), "network", "html","index.html")
-
+from nixt.configs import Config
+from nixt.utility import importer
 
 def pth(event):
-    event.reply(f"file://{PATH}")
+    mod = importer(f"{Config.name}.nucleus")
+    if not mod:
+        event.reply("can't find web directory.")
+        return
+    path = os.path.join(mod.__path__[0], "index.html")
+    event.reply(f"file://{path}")

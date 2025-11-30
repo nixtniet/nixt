@@ -4,8 +4,8 @@
 import time
 
 
-from nixt.locater import find, fntime
 from nixt.methods import fmt
+from nixt.persist import find, fntime
 from nixt.utility import elapsed
 from nixt.workdir import types
 

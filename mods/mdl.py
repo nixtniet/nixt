@@ -13,7 +13,7 @@ from nixt.repeats import Repeater
 from nixt.utility import elapsed
 
 
-def init(cfg):
+def init():
     for key in keys(oorzaken):
         if "Psych" not in key:
             continue

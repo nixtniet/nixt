@@ -12,25 +12,22 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, command, parse, scan
+from nixt.command import Commands, command
 from nixt.clients import Client
-from nixt.configs import Config, configure
-from nixt.defines import SYSTEMD
+from nixt.configs import Config
+from nixt.kernels import Kernel, scanner
 from nixt.message import Message
-from nixt.package import Mods, getmod, modules
-from nixt.threads import launch, threadhook
+from nixt.package import modules
+from nixt.statics import SYSTEMD
+from nixt.threads import threadhook
 from nixt.utility import daemon, forever, pidfile, privileges, wrap
-from nixt.utility import check, level, spl, wrapped
-from nixt.workdir import Workdir, pidname
+from nixt.utility import check, spl, wrapped
+from nixt.workdir import pidname
 
 
-NAME = "nixt" ; VERSION = 440 # noqa: E702
-
-
-threading.excepthook = threadhook
-
-
-"clients"
+Config.ignore = "udp"
+Config.name = "nixt" 
+Config.version = 150
 
 
 class CLI(Client):
@@ -61,29 +58,16 @@ class Console(CLI):
 "in the beginning"
 
 
-def banner(name, version):
+def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     logger = logging.getLogger()
     print("%s %s since %s (%s)" % (
-                                   name.upper(),
-                                   version,
+                                   Config.name.upper(),
+                                   Config.version,
                                    tme,
                                    logging.getLevelName(logger.getEffectiveLevel())
                                   ))
     sys.stdout.flush()
-
-
-
-def scanner(names, init=False):
-    mods = []
-    for name in names:
-        mod = getmod(name)
-        if mod:
-            scan(mod)
-        if init and "init" in dir(mod):
-            thr = launch(mod.init, Config())
-            mods.append((mod, thr))
-    return mods
 
 
 "scripts"
@@ -92,8 +76,7 @@ def scanner(names, init=False):
 def background():
     daemon(check("v"))
     privileges()
-    level("info")
-    scanner(modules(), False)
+    scanner(modules(), True)
     Commands.add(cmd, ver)
     pidfile(pidname(Config.name))
     forever()
@@ -101,10 +84,8 @@ def background():
 
 def console():
     import readline # noqa: F401
-    parse(Config, " ".join(sys.argv[1:]))
-    level(Config.sets.get("level", "info"))
     if "v" in Config.opts:
-        banner(Config.name, Config.version)
+        banner()
     mods = []
     if "a" in Config.opts:
         mods = modules()
@@ -135,9 +116,8 @@ def control():
 
 def service():
     privileges()
-    level("info")
     banner(Config.name, Config.version)
-    scanner(modules(), False)
+    scanner(modules(), True)
     Commands.add(cmd, ver)
     pidfile(pidname(Config.name))
     forever()
@@ -164,7 +144,11 @@ def ver(event):
 
 
 def main():
-    configure(NAME, VERSION)
+    Kernel.configure(" ".join(sys.argv[1:]))
+    if check("b"):
+        threading.excepthook = threadhook
+    if check('z'):
+        Config.debug = True
     if check("c"):
         wrap(console)
     elif check("d"):

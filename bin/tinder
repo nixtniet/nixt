@@ -14,21 +14,27 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client
-from nixt.command import command, parse, scan
-from nixt.configs import Config, configure
+from nixt.clients import Client, Output
+from nixt.command import Commands, command
+from nixt.configs import Config
+from nixt.kernels import Kernel, scanner
 from nixt.message import Message
-from nixt.outputs import Output
-from nixt.package import Mods, getmod, modules
+from nixt.methods import fmt, parse
+from nixt.package import modules
 from nixt.threads import launch, threadhook
 from nixt.utility import elapsed
 from nixt.workdir import Workdir
 
 
-NAME = "nixt" ; VERSION = 434
+Config.debug = True
+Config.name = "objz"
+Config.opts = "m"
+Config.version = 110
 
 
-configure(NAME, VERSION)
+Kernel.configure(" ".join(sys.argv[1:]))
+
+
 Workdir.wdr = ".test"
 
 
@@ -107,20 +113,6 @@ def payload(todo):
             events.put(evt)
 
 
-def scanner(names=None):
-    if names is None:
-        names = modules()
-    mods = []
-    for name in names:
-        if name in Mods.ignore:
-            continue
-        mod = getmod(name)
-        if mod:
-            mods.append(mod)
-            scan(mod)
-    return mods
-
-
 def main():
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
@@ -129,7 +121,7 @@ def main():
         threading.excepthook = threadhook
     if "v" in Config.opts:
         banner(Config.name, Config.version)
-    scanner()
+    scanner(modules())
     if "z" in Config.opts:
         Pool.init(CLI, os.cpu_count())
     else:
@@ -151,15 +143,19 @@ def main():
         thr.join()
     launch(consume)
     nrevents = events.qsize()
-    events.join()
+    try:
+        events.join()
+    except (KeyboardInterrupt, EOFError):
+        os._exit(0)
     endtime = time.time()
     lap = elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
     if "v" in Config.opts:
+        print(fmt(Config))
         print(f"{nrs} events left.")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
-    sys.exit()
+    os._exit(0)
 
 
 examples = {

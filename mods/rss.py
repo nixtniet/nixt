@@ -20,20 +20,17 @@ from urllib.parse import quote_plus, urlencode
 
 
 from nixt.brokers import Broker
-from nixt.locater import find, fntime, last
+from nixt.configs import Config
 from nixt.methods import fmt
 from nixt.objects import Object, update
-from nixt.persist import write
+from nixt.persist import find, fntime, last, write
 from nixt.repeats import Repeater
 from nixt.threads import launch
 from nixt.utility import elapsed, spl
 from nixt.workdir import getpath
 
 
-DEBUG = False
-
-
-def init(cfg):
+def init():
     fetcher = Fetcher()
     fetcher.start()
     if fetcher.seenfn:
@@ -45,7 +42,9 @@ def init(cfg):
 
 fetchlock = _thread.allocate_lock()
 importlock = _thread.allocate_lock()
-errors: dict[str, float] = {}
+
+
+errors = {}
 skipped = []
 
 
@@ -132,7 +131,7 @@ class Fetcher(Object):
             txt = f"[{feedname}] "
         for obj in result:
             txt2 = txt + self.display(obj)
-            for bot in Broker.all():
+            for bot in Broker.all("announce"):
                 bot.announce(txt2)
         return counter
 
@@ -285,7 +284,7 @@ def cdata(line):
 
 def getfeed(url, items):
     result = [Object(), Object()]
-    if DEBUG or url in errors and (time.time() - errors[url]) < 600:
+    if Config.debug or url in errors and (time.time() - errors[url]) < 600:
         return result
     try:
         rest = geturl(url)
@@ -489,7 +488,7 @@ def rss(event):
 
 
 def syn(event):
-    if DEBUG:
+    if Config.debug:
         return
     fetcher = Fetcher()
     fetcher.start(False)

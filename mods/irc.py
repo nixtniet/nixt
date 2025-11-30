@@ -12,15 +12,14 @@ import time
 
 
 from nixt.brokers import Broker
+from nixt.clients import Output
 from nixt.command import command
 from nixt.configs import Config as Main
-from nixt.defines import LEVELS
-from nixt.locater import last
 from nixt.message import Message
 from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
-from nixt.outputs import Output
-from nixt.persist import write
+from nixt.persist import last, write
+from nixt.statics import LEVELS
 from nixt.threads import launch
 from nixt.workdir import getpath
 
@@ -31,7 +30,7 @@ IGNORE = ["PING", "PONG", "PRIVMSG"]
 lock = threading.RLock()
 
 
-def init(cfg):
+def init():
     irc = IRC()
     irc.start()
     irc.events.joined.wait(30.0)
@@ -47,6 +46,7 @@ class Config(Object):
     channel = f"#{Main.name}"
     commands = True
     control = "!"
+    ignore = ["PING", "PONG", "PRIVMSG"] 
     name = Main.name
     nick = Main.name
     word = ""
@@ -198,8 +198,8 @@ class IRC(Output):
             pass
 
     def display(self, event):
-        for key in sorted(event.result, key=lambda x: x):
-            txt = event.result.get(key)
+        for key in sorted(event._result):
+            txt = event._result.get(key)
             if not txt:
                 continue
             textlist = []
@@ -331,7 +331,7 @@ class IRC(Output):
         rawstr = str(txt)
         rawstr = rawstr.replace("\u0001", "")
         rawstr = rawstr.replace("\001", "")
-        rlog("debug", txt, IGNORE)
+        rlog("debug", txt, Config.ignore)
         obj = Event()
         obj.args = []
         obj.rawstr = rawstr
@@ -418,7 +418,7 @@ class IRC(Output):
 
     def raw(self, text):
         text = text.rstrip()
-        rlog("debug", text, IGNORE)
+        rlog("debug", text, Config.ignore)
         text = text[:500]
         text += "\r\n"
         text = bytes(text, "utf-8")

@@ -10,14 +10,12 @@ import time
 
 
 from nixt.brokers import Broker
+from nixt.configs import Config
 from nixt.objects import Object
 from nixt.threads import launch
 
 
-DEBUG = False
-
-
-def init(cfg):
+def init():
     udp = UDP()
     udp.start()
     logging.warning("http://%s:%s", Cfg.host, Cfg.port)
@@ -46,7 +44,7 @@ class UDP(Object):
     def output(self, txt, addr=None):
         if addr:
             Cfg.addr = addr
-        for bot in Broker.all():
+        for bot in Broker.all("announce"):
             bot.announce(txt.replace("\00", ""))
 
     def loop(self):
@@ -77,7 +75,7 @@ class UDP(Object):
 
 
 def toudp(host, port, txt):
-    if DEBUG:
+    if Config.debug:
         return
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))

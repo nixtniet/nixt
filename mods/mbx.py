@@ -6,10 +6,10 @@ import os
 import time
 
 
-from nixt.locater import find
 from nixt.methods import fmt
 from nixt.objects import Object, keys, update
-from nixt.persist import write
+from nixt.persist import find, write
+from nixt.statics import MONTH
 from nixt.utility import elapsed, extract_date
 
 
@@ -112,19 +112,3 @@ def mbx(event):
         nrs += 1
     if nrs:
         event.reply("ok %s" % nrs)
-
-
-MONTH = {
-    'Jan': 1,
-    'Feb': 2,
-    'Mar': 3,
-    'Apr': 4,
-    'May': 5,
-    'Jun': 6,
-    'Jul': 7,
-    'Aug': 8,
-    'Sep': 9,
-    'Oct': 10,
-    'Nov': 11,
-    'Dec': 12
-}

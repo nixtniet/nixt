@@ -4,7 +4,7 @@
 "fields"
 
 
-from nixt.locater import attrs
+from nixt.persist import attrs
 from nixt.workdir import types
 
 
