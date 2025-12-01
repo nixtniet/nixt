@@ -54,7 +54,9 @@ def fmt(obj, args=[], skip=[], plain=False, empty=False):
 def name(obj):
     rpr = repr(obj)
     if "method" in rpr:
-        return rpr.split("method")[1].split()[0]
+        meth = rpr.split("method")[1].split()[0].split(".")[-1]
+        clz = rpr.split("object")[0].split()[-1].split(".")[-1]
+        return f"{clz}.{meth}"
     if "function" in rpr:
         return rpr.split("function")[1].split()[0]
     return repr(obj)

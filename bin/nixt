@@ -25,9 +25,9 @@ from nixt.utility import check, spl, wrapped
 from nixt.workdir import pidname
 
 
-Config.ignore = "udp"
+Config.ignore = "wsd,udp"
 Config.name = "nixt" 
-Config.version = 150
+Config.version = 434
 
 
 class CLI(Client):
