@@ -45,7 +45,7 @@ class Thread(threading.Thread):
             self.event = args[0]
         try:
             self.result = func(*args)
-        except (KeyboardInterrupt, EOFError) as ex:
+        except (KeyboardInterrupt, EOFError):
             if self.event:
                 self.event.ready()
             _thread.interrupt_main()
