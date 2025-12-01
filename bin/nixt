@@ -25,9 +25,15 @@ from nixt.utility import spl, wrapped
 from nixt.workdir import pidname
 
 
+"config"
+
+
 Config.ignore = "wsd,udp"
 Config.name = "nixt" 
 Config.version = 440
+
+
+"clients"
 
 
 class CLI(Client):
@@ -53,21 +59,6 @@ class Console(CLI):
         evt.text = input("> ")
         evt.kind = "command"
         return evt
-
-
-"in the beginning"
-
-
-def banner():
-    tme = time.ctime(time.time()).replace("  ", " ")
-    logger = logging.getLogger()
-    print("%s %s since %s (%s)" % (
-                                   Config.name.upper(),
-                                   Config.version,
-                                   tme,
-                                   logging.getLevelName(logger.getEffectiveLevel())
-                                  ))
-    sys.stdout.flush()
 
 
 "scripts"
@@ -132,6 +123,18 @@ def service():
 
 
 "utility"
+
+
+def banner():
+    tme = time.ctime(time.time()).replace("  ", " ")
+    logger = logging.getLogger()
+    print("%s %s since %s (%s)" % (
+                                   Config.name.upper(),
+                                   Config.version,
+                                   tme,
+                                   logging.getLevelName(logger.getEffectiveLevel())
+                                  ))
+    sys.stdout.flush()
 
 
 def check(text):
