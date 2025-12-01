@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+import re
+
+
 from .objects import fqn, items
 
 
@@ -53,13 +56,14 @@ def fmt(obj, args=[], skip=[], plain=False, empty=False):
 
 def name(obj):
     rpr = repr(obj)
-    if "method" in rpr:
-        meth = rpr.split("method")[1].split()[0].split(".")[-1]
-        clz = rpr.split("object")[0].split()[-1].split(".")[-1]
-        return f"{clz}.{meth}"
-    if "function" in rpr:
-        return rpr.split("function")[1].split()[0]
-    return repr(obj)
+    match = re.search(r" (.*)\.(.*?) of (.*)\.(.*?) ", rpr)
+    if match:
+        base, method, module, clz = match.groups()
+        return f"{clz}.{method}"
+    match = re.search("function (.+) at", rpr)
+    if match:
+        return match.groups()[0]
+    return rpr
 
 
 def parse(obj, text):

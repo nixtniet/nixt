@@ -20,17 +20,26 @@ class Kernel:
         Mods.configure()
 
 
-def scanner(names,init=False):
+def init(names):
+    for mod in mods(names):
+        if init and "init" in dir(mod):
+            thr = launch(mod.init)
+            yield mod, thr
+
+
+def mods(names):
     mods = []
     for name in names:
         mod = Mods.get(name)
         if not mod:
             continue
-        scan(mod)
-        if init and "init" in dir(mod):
-            thr = launch(mod.init)
-            mods.append((mod, thr))
+        mods.append(mod)
     return mods
+
+
+def scanner(names):
+    for mod in mods(names):
+        scan(mod)
 
 
 def __dir__():
