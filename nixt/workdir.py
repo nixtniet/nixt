@@ -15,7 +15,7 @@ class Workdir:
 
     @staticmethod
     def configure(name):
-        Workdir.wdr = os.path.expanduser(f"~/.{name}")
+        Workdir.wdr = Workdir.wdr or os.path.expanduser(f"~/.{name}")
         skel()
 
 
@@ -60,7 +60,6 @@ def store(fnm: str = ""):
 
 
 def types():
-    skel()
     return os.listdir(store())
 
 

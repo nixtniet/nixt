@@ -2,9 +2,9 @@
 
 
 import importlib.util
+import inspect
 import os
 import pathlib
-import sys
 import time
 
 
@@ -14,37 +14,6 @@ from .statics import TIMES
 def cdir(path):
     pth = pathlib.Path(path)
     pth.parent.mkdir(parents=True, exist_ok=True)
-
-
-def check(text):
-    args = sys.argv[1:]
-    for arg in args:
-        if not arg.startswith("-"):
-            continue
-        for char in text:
-            if char in arg:
-                return True
-    return False
-
-
-def daemon(verbose=False):
-    pid = os.fork()
-    if pid != 0:
-        os._exit(0)
-    os.setsid()
-    pid2 = os.fork()
-    if pid2 != 0:
-        os._exit(0)
-    if not verbose:
-        with open('/dev/null', 'r', encoding="utf-8") as sis:
-            os.dup2(sis.fileno(), sys.stdin.fileno())
-        with open('/dev/null', 'a+', encoding="utf-8") as sos:
-            os.dup2(sos.fileno(), sys.stdout.fileno())
-        with open('/dev/null', 'a+', encoding="utf-8") as ses:
-            os.dup2(ses.fileno(), sys.stderr.fileno())
-    os.umask(0)
-    os.chdir("/")
-    os.nice(10)
 
 
 def elapsed(seconds, short=True):
@@ -106,11 +75,6 @@ def forever():
             break
 
 
-def getmain(name):
-    main = sys.modules.get("__main__")
-    return getattr(main, name, None)
-
-
 def importer(name, pth=""):
     if pth and os.path.exists(pth):
         spec = importlib.util.spec_from_file_location(name, pth)
@@ -121,7 +85,6 @@ def importer(name, pth=""):
     mod = importlib.util.module_from_spec(spec)
     if not mod:
         return None
-    sys.modules[name] = mod
     spec.loader.exec_module(mod)
     return mod
 
@@ -159,22 +122,7 @@ def spl(txt):
 
 
 def where(obj):
-    import inspect
     return os.path.dirname(inspect.getfile(obj))
-
-
-def wrap(func):
-    import termios
-    old = None
-    try:
-        old = termios.tcgetattr(sys.stdin.fileno())
-    except termios.error:
-        pass
-    try:
-        wrapped(func)
-    finally:
-        if old:
-            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
 def wrapped(func):
@@ -187,8 +135,6 @@ def wrapped(func):
 def __dir__():
     return (
         'cdir',
-        'check',
-        'daemon',
         'elapsed',
         'extract_date',
         'forever',
@@ -199,6 +145,5 @@ def __dir__():
         'privileges',
         'spl',
         'where',
-        'wrap',
         'wrapped'
    )

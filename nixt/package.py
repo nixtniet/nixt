@@ -2,7 +2,6 @@
 
 
 import os
-import sys
 
 
 from .configs import Config
@@ -44,7 +43,7 @@ class Mods:
                 pth = modpath
                 mname = f"{packname}.{name}"
                 break
-        return sys.modules.get(mname, None) or importer(mname, pth)
+        return importer(mname, pth)
 
 
 def modules():

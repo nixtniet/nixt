@@ -32,9 +32,6 @@ Config.opts = "m"
 Config.version = 110
 
 
-Kernel.configure(" ".join(sys.argv[1:]))
-
-
 Workdir.wdr = ".test"
 
 
@@ -116,7 +113,7 @@ def payload(todo):
 def main():
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
-    parse(Config, " ".join(sys.argv[1:]))
+    Kernel.configure(" ".join(sys.argv[1:]))
     if "b" in Config.opts:
         threading.excepthook = threadhook
     if "v" in Config.opts:
