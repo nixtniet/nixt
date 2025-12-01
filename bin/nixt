@@ -92,8 +92,12 @@ def console():
     Commands.add(cmd, ver)
     csl = Console()
     scanner(mods)
-    mods = Config.sets.get("init", mods)
-    for _mod, thr in init(mods):
+    if "a" in Config.opts:
+        inits = modules()
+    else:
+        inits = spl(Config.sets.get("init", ""))
+    mds = list(init(inits))
+    for mod, thr in mds:
         if "w" in Config.opts:
             thr.join(30.0)
     csl.start()

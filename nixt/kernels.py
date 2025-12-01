@@ -23,18 +23,11 @@ class Kernel:
 def init(names):
     for mod in mods(names):
         if init and "init" in dir(mod):
-            thr = launch(mod.init)
-            yield mod, thr
+            yield mod, launch(mod.init)
 
 
 def mods(names):
-    mods = []
-    for name in names:
-        mod = Mods.get(name)
-        if not mod:
-            continue
-        mods.append(mod)
-    return mods
+    return {Mods.get(x) for x in sorted(names)}
 
 
 def scanner(names):
@@ -45,5 +38,7 @@ def scanner(names):
 def __dir__():
     return (
         'Kernel',
+        'inits',
+        'mods',
         'scanner'
     )
