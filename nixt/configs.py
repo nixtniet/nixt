@@ -4,7 +4,7 @@
 "forced presence"
 
 
-from .utility import Default
+from nixt.utility import Default
 
 
 class Config(Default):

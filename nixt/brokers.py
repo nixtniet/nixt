@@ -1,7 +1,21 @@
 # This file is placed in the Public Domain.
 
+"""an object for a string
 
-"an object for a string"
+The repr() of an object is used a a string to retrieve the object from the broker.
+
+examples:
+
+>>> from nixt.brokers import Broker
+>>> b = Broker()
+>>> from nixt.objects import Object
+>>> o = Object()
+>>> b.add(o)
+>>> oo = b.get(repr(o))
+>>> o == oo
+True
+
+"""
 
 
 class Broker:
@@ -23,7 +37,7 @@ class Broker:
         return Broker.objects.get(origin)
 
     @staticmethod
-    def like(origin):
+    def like(txt):
         for orig in Broker.objects:
             if origin.split()[0] in orig.split()[0]:
                 yield orig

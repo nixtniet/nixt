@@ -10,10 +10,10 @@ import threading
 import time
 
 
-from .objects import Object, fqn, items, keys, update
-from .serials import dump, load
-from .utility import cdir
-from .workdir import getpath, long, store
+from nixt.objects import Object, fqn, items, keys, update
+from nixt.serials import dump, load
+from nixt.utility import cdir
+from nixt.workdir import getpath, long, store
 
 
 lock = threading.RLock()

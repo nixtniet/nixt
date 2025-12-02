@@ -7,7 +7,7 @@
 import inspect
 
 
-from .objects import fqn, items
+from nixt.objects import fqn, items
 
 
 def edit(obj, setter={}, skip=False):

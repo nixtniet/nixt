@@ -11,8 +11,8 @@ import pathlib
 import time
 
 
-from .objects import Object
-from .statics import TIMES
+from nixt.objects import Object
+from nixt.statics import TIMES
 
 
 class Default(Object):

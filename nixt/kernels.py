@@ -4,13 +4,13 @@
 "at the beginning"
 
 
-from .command import scan
-from .configs import Config
-from .loggers import level
-from .methods import parse
-from .package import Mods, mods
-from .threads import launch
-from .workdir import Workdir
+from nixt.command import scan
+from nixt.configs import Config
+from nixt.loggers import level
+from nixt.methods import parse
+from nixt.package import Mods, mods
+from nixt.threads import launch
+from nixt.workdir import Workdir
 
 
 class Kernel:

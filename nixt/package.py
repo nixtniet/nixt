@@ -7,9 +7,9 @@
 import os
 
 
-from .configs import Config
-from .utility import importer, spl
-from .workdir import moddir
+from nixt.configs import Config
+from nixt.utility import importer, spl
+from nixt.workdir import moddir
 
 
 class Mods:

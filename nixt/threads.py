@@ -12,7 +12,7 @@ import time
 import _thread
 
 
-from .methods import name
+from nixt.methods import name
 
 
 class Thread(threading.Thread):

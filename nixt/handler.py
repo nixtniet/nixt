@@ -7,7 +7,7 @@
 import queue
 
 
-from .threads import launch
+from nixt.threads import launch
 
 
 class Handler:

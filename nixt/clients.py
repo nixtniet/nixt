@@ -1,7 +1,25 @@
 # This file is placed in the Public Domain.
 
 
-"client-side event handling"
+"""client-side event handling
+
+examples:
+
+>>> from nixt.clients import CLI
+>>> c = CLI()
+>>> c.start()
+>>> def hello(event):
+...    event.reply("hello!")
+>>> from nixt.command import Commands
+>>> Commands.add(hello)
+>>> from nixt.message import Message
+>>> m = Message()
+>>> m.kind = "command"
+>>> m.txt = "hello"
+>>> c.put(m)
+
+
+"""
 
 
 import logging
@@ -10,9 +28,10 @@ import threading
 import _thread
 
 
-from .brokers import Broker
-from .handler import Handler
-from .threads import launch
+from nixt.brokers import Broker
+from nixt.command import command
+from nixt.handler import Handler
+from nixt.threads import launch
 
 
 class Client(Handler):
@@ -51,6 +70,13 @@ class Client(Handler):
             _thread.interrupt_main()
 
 
+class CLI(Client):
+ 
+     def __init__(self):
+         super().__init__()
+         self.register("command", command)
+
+
 class Output(Client):
 
     def output(self):
@@ -74,5 +100,6 @@ class Output(Client):
 def __dir__():
     return (
         'Client',
+        'CLI',
         'Output'
     )
