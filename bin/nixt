@@ -12,16 +12,15 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, command
+from nixt.command import Commands, command, scanner
 from nixt.clients import Client
 from nixt.configs import Config
-from nixt.kernels import Kernel, init, scanner
+from nixt.kernels import Kernel, init
 from nixt.message import Message
 from nixt.package import modules
 from nixt.statics import SYSTEMD
 from nixt.threads import threadhook
-from nixt.utility import forever, pidfile, privileges
-from nixt.utility import spl, wrapped
+from nixt.utility import forever, pidfile, privileges, spl, wrapped
 from nixt.workdir import pidname
 
 

@@ -4,9 +4,6 @@
 import logging
 
 
-from .statics import LEVELS
-
-
 class Logging:
 
     datefmt = "%H:%M:%S"
@@ -21,13 +18,10 @@ class Format(logging.Formatter):
 
 
 def level(loglevel):
-    lvl = LEVELS.get(loglevel)
-    if not lvl:
-        return
     logger = logging.getLogger()
     for handler in logger.handlers:
         logger.removeHandler(handler)
-    logger.setLevel(lvl)
+    logger.setLevel(loglevel.upper())
     formatter = Format(Logging.format, datefmt=Logging.datefmt)
     ch = logging.StreamHandler()
     ch.setFormatter(formatter)

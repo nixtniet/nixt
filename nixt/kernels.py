@@ -32,15 +32,8 @@ def init(names, wait=False):
         thr.join()
 
 
-def scanner(names):
-    for mod in mods(names):
-        scan(mod)
-
-
 def __dir__():
     return (
         'Kernel',
-        'inits',
-        'mods',
-        'scanner'
+        'inits'
     )

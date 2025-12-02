@@ -6,6 +6,7 @@ import inspect
 
 from .brokers import display
 from .methods import parse
+from .package import mods
 
 
 class Commands:
@@ -41,9 +42,16 @@ def scan(module):
         Commands.add(cmdz)
 
 
+def scanner(names):
+    for mod in mods(names):
+        scan(mod)
+
+
+
 def __dir__():
     return (
         'Commands',
         'command',
-        'scan'
+        'scan',
+        'scanner'
     )
