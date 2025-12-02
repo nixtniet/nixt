@@ -1,7 +1,10 @@
 # This file is placed in the Public Domain.
 
 
-from .objects import Default
+"forced presence"
+
+
+from .utility import Default
 
 
 class Config(Default):

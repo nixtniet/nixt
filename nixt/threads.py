@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"threads make it non blocking"
+
+
 import logging
 import os
 import queue
@@ -35,23 +38,20 @@ class Thread(threading.Thread):
             super().join(timeout or None)
             return self.result
         except (KeyboardInterrupt, EOFError) as ex:
-            if self.event:
-                self.event.ready()
+            self.event and self.event.ready()
             raise ex
 
     def run(self):
         func, args = self.queue.get()
-        if args and "ready" in dir(args[0]):
+        if args and hasattr(args[0], "ready"):
             self.event = args[0]
         try:
             self.result = func(*args)
         except (KeyboardInterrupt, EOFError):
-            if self.event:
-                self.event.ready()
+            self.event and self.event.ready()
             _thread.interrupt_main()
         except Exception as ex:
-            if self.event:
-                self.event.ready()
+            self.event and self.event.ready()
             raise ex
 
 
@@ -69,8 +69,7 @@ def threadhook(args):
     exc = value.with_traceback(trace)
     if kind not in (KeyboardInterrupt, EOFError):
         logging.exception(exc)
-    if thr and thr.event and "ready" in dir(thr.event):
-        thr.event.ready()
+    thr.event and thr.event.ready()
     _thread.interrupt_main()
 
 

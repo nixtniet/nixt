@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"write ypur own commands"
+
+
 import inspect
 
 
@@ -23,13 +26,13 @@ class Commands:
 
     @staticmethod
     def get(cmd):
-        return Commands.cmds.get(cmd)
+        return Commands.cmds.get(cmd, None)
 
 
 def command(evt):
     parse(evt, evt.text)
-    if evt.cmd in Commands.cmds:
-        func = Commands.get(evt.cmd)
+    func = Commands.get(evt.cmd)
+    if func:
         func(evt)
         display(evt)
     evt.ready()
@@ -42,16 +45,9 @@ def scan(module):
         Commands.add(cmdz)
 
 
-def scanner(names):
-    for mod in mods(names):
-        scan(mod)
-
-
-
 def __dir__():
     return (
         'Commands',
         'command',
-        'scan',
-        'scanner'
+        'scan'
     )

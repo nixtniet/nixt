@@ -19,12 +19,8 @@ from nixt.message import Message
 from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
 from nixt.persist import last, write
-from nixt.statics import LEVELS
 from nixt.threads import launch
 from nixt.workdir import getpath
-
-
-IGNORE = ["PING", "PONG", "PRIVMSG"] 
 
 
 lock = threading.RLock()
@@ -331,7 +327,7 @@ class IRC(Output):
         rawstr = str(txt)
         rawstr = rawstr.replace("\u0001", "")
         rawstr = rawstr.replace("\001", "")
-        rlog("debug", txt, Config.ignore)
+        rlog(txt)
         obj = Event()
         obj.args = []
         obj.rawstr = rawstr
@@ -418,7 +414,7 @@ class IRC(Output):
 
     def raw(self, text):
         text = text.rstrip()
-        rlog("debug", text, Config.ignore)
+        rlog(text)
         text = text[:500]
         text += "\r\n"
         text = bytes(text, "utf-8")
@@ -650,10 +646,8 @@ def pwd(event):
 "utility"
 
 
-def rlog(loglevel, txt, ignore=None):
-    if ignore is None:
-        ignore = []
-    for ign in ignore:
+def rlog(txt):
+    for ign in Config.ignore:
         if ign in str(txt):
             return
-    logging.log(LEVELS.get(loglevel), txt)
+    logging.debug(txt)

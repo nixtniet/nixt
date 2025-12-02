@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"persistence through storage"
+
+
 import json
 import os
 import threading
@@ -30,9 +33,10 @@ class Cache:
 
     @staticmethod
     def sync(path, obj):
-        if path not in Cache.objects:
-            return Cache.add(path, obj)
-        update(Cache.objects[path], obj)
+        try:
+            update(Cache.objects[path], obj)
+        except KeyError:
+            Cache.add(path, obj)
 
 
 def attrs(kind):
@@ -48,7 +52,7 @@ def deleted(obj):
 
 def find(kind, selector={}, removed=False, matching=False):
     fullname = long(kind)
-    for pth in sorted(fns(fullname), key=lambda x: fntime(x)):
+    for pth in fns(fullname):
         obj = Cache.get(pth)
         if not obj:
             obj = Object()
@@ -115,14 +119,16 @@ def search(obj, selector={}, matching=False):
     for key, value in items(selector):
         val = getattr(obj, key, None)
         if not val:
-            continue
-        if matching and value == val:
-            res = True
-        elif str(value).lower() in str(val).lower():
-            res = True
-        else:
             res = False
             break
+        elif matching and value != val:
+            res = False
+            break
+        elif str(value).lower() not in str(val).lower():
+            res = False
+            break
+        else:
+            res = True
     return res
 
 

@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"multiple directory modules"
+
+
 import os
 
 
@@ -39,10 +42,11 @@ class Mods:
             return None
         for packname, path in Mods.dirs.items():
             modpath = os.path.join(path, name + ".py")
-            if os.path.exists(modpath):
-                pth = modpath
-                mname = f"{packname}.{name}"
-                break
+            if not os.path.exists(modpath):
+                continue
+            pth = modpath
+            mname = f"{packname}.{name}"
+            break
         return importer(mname, pth)
 
 

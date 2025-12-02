@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"client-side event handling"
+
+
 import logging
 import queue
 import threading

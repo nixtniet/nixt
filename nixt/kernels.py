@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"at the beginning"
+
+
 from .command import scan
 from .configs import Config
 from .loggers import level
@@ -32,8 +35,14 @@ def init(names, wait=False):
         thr.join()
 
 
+def scanner(names):
+    for mod in mods(names):
+        scan(mod)
+
+
 def __dir__():
     return (
         'Kernel',
-        'inits'
+        'inits',
+        'scanner'
     )

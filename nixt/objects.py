@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"a clean namespace"
+
+
 import types
 
 
@@ -22,12 +25,6 @@ class Object:
 
     def __str__(self):
         return str(self.__dict__)
-
-
-class Default(Object):
-
-    def __getattr__(self, key):
-        return self.__dict__.get(key, "")
 
 
 def construct(obj, *args, **kwargs):
@@ -89,7 +86,6 @@ def values(obj):
 
 def __dir__():
     return (
-        'Default',
         'Object',
         'Reserved',
         'construct',

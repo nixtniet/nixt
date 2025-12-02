@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"statics don't change"
+
+
 MONTH = {
     'Jan': 1,
     'Feb': 2,
@@ -43,7 +46,6 @@ TIMES = [
 
 def __dir__():
     return (
-        'LEVELS',
         'MONTH',
         'SYSTEMD',
         'TIMES'

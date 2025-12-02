@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"functions with an object as the first argument"
+
+
 import inspect
 
 

@@ -1,8 +1,10 @@
 # This file is placed in the Public Domain.
 
 
+"handle your own events"
+
+
 import queue
-import threading
 
 
 from .threads import launch
@@ -13,18 +15,20 @@ class Handler:
     def __init__(self):
         self.cbs = {}
         self.queue = queue.Queue()
-        self.stopped = threading.Event()
 
     def callback(self, event):
-        if event.kind not in self.cbs:
-            return event.ready()
-        func = self.cbs.get(event.kind)
+        func = self.cbs.get(event.kind, None)
+        if not func:
+            event.ready()
+            return
         name = event.text and event.text.split()[0]
         event._thr = launch(func, event, name=name)
 
     def loop(self):
-        while not self.stopped.isSet():
+        while True:
             event = self.poll()
+            if not event:
+                break
             event.orig = repr(self)
             self.callback(event)
 
@@ -38,11 +42,10 @@ class Handler:
         self.cbs[kind] = callback
 
     def start(self):
-        self.stopped.clear()
         launch(self.loop)
 
     def stop(self):
-        self.stopped.set()
+        self.queue.put(None)
 
 
 def __dir__():

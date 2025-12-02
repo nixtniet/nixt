@@ -1,11 +1,14 @@
 # This file is placed in the Public Domain.
 
 
+"only message"
+
+
 import threading
 import time
 
 
-from .objects import Default
+from .utility import Default
 
 
 class Message(Default):

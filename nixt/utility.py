@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"dumpyard"
+
+
 import importlib.util
 import inspect
 import os
@@ -8,7 +11,14 @@ import pathlib
 import time
 
 
+from .objects import Object
 from .statics import TIMES
+
+
+class Default(Object):
+
+    def __getattr__(self, key):
+        return self.__dict__.get(key, "")
 
 
 def cdir(path):

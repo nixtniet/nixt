@@ -20,7 +20,7 @@ def fnd(event):
         return
     otype = event.args[0]
     nmr = 0
-    for fnm, obj in find(otype, event.gets):
+    for fnm, obj in sorted(find(otype, event.gets), key=lambda x: fntime(x[0])):
         event.reply(f"{nmr} {fmt(obj)} {elapsed(time.time()-fntime(fnm))}")
         nmr += 1
     if not nmr:
