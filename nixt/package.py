@@ -46,6 +46,10 @@ class Mods:
         return importer(mname, pth)
 
 
+def mods(names):
+    return [Mods.get(x) for x in sorted(names) if x in modules()]
+
+
 def modules():
     mods = []
     for name, path in Mods.dirs.items():
@@ -63,5 +67,6 @@ def modules():
 def __dir__():
     return (
         'Mods',
+        'mods',
         'modules'
     )

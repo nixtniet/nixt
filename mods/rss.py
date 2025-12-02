@@ -36,7 +36,7 @@ def init():
     if fetcher.seenfn:
         logging.warning("since %s", elapsed(time.time()-fntime(fetcher.seenfn)))
     else:
-        logging.warning("since %s", time.ctime(time.time()))
+        logging.warning("since %s", time.ctime(time.time()).replace("  ", " "))
     return fetcher
 
 

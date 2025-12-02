@@ -48,7 +48,7 @@ def deleted(obj):
 
 def find(kind, selector={}, removed=False, matching=False):
     fullname = long(kind)
-    for pth in fns(fullname):
+    for pth in sorted(fns(fullname), key=lambda x: fntime(x)):
         obj = Cache.get(pth)
         if not obj:
             obj = Object()

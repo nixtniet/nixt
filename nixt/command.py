@@ -22,13 +22,13 @@ class Commands:
 
     @staticmethod
     def get(cmd):
-        return Commands.cmds.get(cmd, None)
+        return Commands.cmds.get(cmd)
 
 
 def command(evt):
     parse(evt, evt.text)
-    func = Commands.get(evt.cmd)
-    if func:
+    if evt.cmd in Commands.cmds:
+        func = Commands.get(evt.cmd)
         func(evt)
         display(evt)
     evt.ready()
@@ -36,10 +36,9 @@ def command(evt):
 
 def scan(module):
     for key, cmdz in inspect.getmembers(module, inspect.isfunction):
-        if key.startswith("cb"):
+        if 'event' not in inspect.signature(cmdz).parameters:
             continue
-        if 'event' in inspect.signature(cmdz).parameters:
-            Commands.add(cmdz)
+        Commands.add(cmdz)
 
 
 def __dir__():

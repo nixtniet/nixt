@@ -18,21 +18,17 @@ class Broker:
 
     @staticmethod
     def get(origin):
-        return Broker.objects.get(origin, None)
+        return Broker.objects.get(origin)
 
     @staticmethod
     def like(origin):
-        res = []
         for orig in Broker.objects:
             if origin.split()[0] in orig.split()[0]:
-                res.append(orig)
-        return res
+                yield orig
 
 
 def display(evt):
     bot = Broker.get(evt.orig)
-    if not bot:
-        return
     bot.display(evt)
 
 

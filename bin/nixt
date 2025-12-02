@@ -87,10 +87,7 @@ def console():
         inits = modules()
     else:
         inits = spl(Config.sets.get("init", ""))
-    mds = list(init(inits))
-    for mod, thr in mds:
-        if "w" in Config.opts:
-            thr.join(30.0)
+    init(inits, "w" in Config.opts)
     csl.start()
     forever()
 

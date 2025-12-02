@@ -36,7 +36,8 @@ def elapsed(seconds, short=True):
     nsec   -= hours * hour
     minutes = int(nsec / minute)
     nsec   -= int(minute * minutes)
-    sec     = int(nsec)
+    sec     = float(nsec)
+    #nsec   -= sec
     if yeas:
         txt += f"{yeas}y"
     if weeks:
@@ -50,7 +51,8 @@ def elapsed(seconds, short=True):
     if minutes:
         txt += f"{minutes}m"
     if sec:
-        txt += f"{sec}s"
+        txt += f"{sec:.2f}"
+    txt += "s"
     txt = txt.strip()
     return txt
 

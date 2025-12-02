@@ -26,9 +26,9 @@ class Message(Default):
         self._result[time.time()] = text
 
     def wait(self, timeout=0.0):
-        self._ready.wait(timeout or None)
         if self._thr:
             self._thr.join(timeout)
+        self._ready.wait(timeout or None)
 
 
 def __dir__():

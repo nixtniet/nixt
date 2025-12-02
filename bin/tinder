@@ -158,11 +158,10 @@ def main():
 examples = {
     "cmd": [""],
     "dis": [""],
-    "dne": ["", "test2"],
+    "dne": ["", "bla"],
     "dpl": ["hnrss title,url", ""],
     "flt": [""],
     "fnd": ["", "log", "rss", "config", "todo"],
-    "log": ["", "test"],
     "man": [""],
     "mod": [""],
     "mre": [""],
@@ -172,7 +171,6 @@ examples = {
     "req": [""],
     "res": ["", "hnrss"],
     "srv": [""],
-    "tdo": ["", "test2", "test3"],
     "thr": [""],
     "upt": [""]
 }
@@ -181,14 +179,14 @@ examples = {
 pre = {
     "cfg": ["", "nick=mekker"],
     "imp": ["", "testing/feeds.opml"],
-    "log": ["", "bla"],
-    "rss": ["","http://hnrss.org/newest"],
-    "tdo": ["", "mekker"]
+    "log": ["", "log add"],
+    "rss": ["", "http://hnrss.org/newest"],
+    "tdo": ["", "todo add"]
 }
 
 
 post = {
-    "dne": ["", "hnrss"],
+    "dne": ["", "mekker"],
     "exp": [""],
     "rem": ["", "hnrss"]
 }

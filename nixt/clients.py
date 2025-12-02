@@ -27,11 +27,9 @@ class Client(Handler):
 
     def display(self, event):
         with self.olock:
-            for tme in sorted(event._result.keys()):
-                self.dosay(
-                           event.channel,
-                           event._result.get(tme)
-                          )
+            for tme in event._result:
+                txt = event._result.get(tme)
+                self.dosay(event.channel, txt)
 
     def dosay(self, channel, text):
         self.say(channel, text)

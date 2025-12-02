@@ -5,7 +5,7 @@ from .command import scan
 from .configs import Config
 from .loggers import level
 from .methods import parse
-from .package import Mods
+from .package import Mods, mods
 from .threads import launch
 from .workdir import Workdir
 
@@ -20,14 +20,16 @@ class Kernel:
         Mods.configure()
 
 
-def init(names):
+def init(names, wait=False):
+    thrs = []
     for mod in mods(names):
-        if init and "init" in dir(mod):
-            yield mod, launch(mod.init)
-
-
-def mods(names):
-    return {Mods.get(x) for x in sorted(names)}
+        if init and "init" not in dir(mod):
+            continue
+        thr = launch(mod.init)
+        if wait:
+            thrs.append(thr)
+    for thr in thrs:
+        thr.join()
 
 
 def scanner(names):
