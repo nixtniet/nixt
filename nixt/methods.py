@@ -57,14 +57,6 @@ def fmt(obj, args=[], skip=[], plain=False, empty=False):
     return txt.strip()
 
 
-def name(obj):
-    if inspect.ismethod(obj):
-        return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
-    if inspect.isfunction(obj):
-        return repr(obj).split()[1]
-    return repr(obj)
-
-
 def parse(obj, text):
     data = {
         "args": [],

@@ -1,18 +1,16 @@
 # This file is placed in the Public Domain.
 
 
-"threads make it non blocking"
+"make it not blocking"
 
 
+import inspect
 import logging
 import os
 import queue
 import threading
 import time
 import _thread
-
-
-from nixt.methods import name
 
 
 class Thread(threading.Thread):
@@ -38,7 +36,8 @@ class Thread(threading.Thread):
             super().join(timeout or None)
             return self.result
         except (KeyboardInterrupt, EOFError) as ex:
-            self.event and self.event.ready()
+            if self.event:
+                self.event.ready()
             raise ex
 
     def run(self):
@@ -48,10 +47,12 @@ class Thread(threading.Thread):
         try:
             self.result = func(*args)
         except (KeyboardInterrupt, EOFError):
-            self.event and self.event.ready()
+            if self.event:
+                self.event.ready()
             _thread.interrupt_main()
         except Exception as ex:
-            self.event and self.event.ready()
+            if self.event:
+                self.event.ready()
             raise ex
 
 
@@ -62,6 +63,14 @@ def launch(func, *args, **kwargs):
         return thread
     except (KeyboardInterrupt, EOFError):
         os._exit(0)
+
+
+def name(obj):
+    if inspect.ismethod(obj):
+        return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
+    if inspect.isfunction(obj):
+        return repr(obj).split()[1]
+    return repr(obj)
 
 
 def threadhook(args):
@@ -77,6 +86,7 @@ def __dir__():
     return (
         'Thread',
         'launch',
+        'name',
         'threadhook'
     )
-    
+ 

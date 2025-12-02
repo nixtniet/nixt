@@ -8,8 +8,7 @@ import threading
 import time
 
 
-from nixt.methods import name
-from nixt.threads import launch
+from nixt.threads import launch, name
 
 
 class Timy(threading.Timer):

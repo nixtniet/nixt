@@ -194,8 +194,8 @@ class IRC(Output):
             pass
 
     def display(self, event):
-        for key in sorted(event._result):
-            txt = event._result.get(key)
+        for key in sorted(event.result):
+            txt = event.result.get(key)
             if not txt:
                 continue
             textlist = []

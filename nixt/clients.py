@@ -1,25 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"""client-side event handling
-
-examples:
-
->>> from nixt.clients import CLI
->>> c = CLI()
->>> c.start()
->>> def hello(event):
-...    event.reply("hello!")
->>> from nixt.command import Commands
->>> Commands.add(hello)
->>> from nixt.message import Message
->>> m = Message()
->>> m.kind = "command"
->>> m.txt = "hello"
->>> c.put(m)
-
-
-"""
+"client-side event handling"
 
 
 import logging
@@ -37,7 +19,7 @@ from nixt.threads import launch
 class Client(Handler):
 
     def __init__(self):
-        Handler.__init__(self)
+        super().__init__()
         self.olock = threading.RLock()
         self.oqueue = queue.Queue()
         self.silent = True
@@ -49,8 +31,8 @@ class Client(Handler):
 
     def display(self, event):
         with self.olock:
-            for tme in event._result:
-                txt = event._result.get(tme)
+            for tme in event.result:
+                txt = event.result.get(tme)
                 self.dosay(event.channel, txt)
 
     def dosay(self, channel, text):

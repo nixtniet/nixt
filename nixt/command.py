@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"write ypur own commands"
+"write your own commands"
 
 
 import inspect

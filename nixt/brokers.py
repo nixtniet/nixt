@@ -1,21 +1,7 @@
 # This file is placed in the Public Domain.
 
-"""an object for a string
 
-The repr() of an object is used a a string to retrieve the object from the broker.
-
-examples:
-
->>> from nixt.brokers import Broker
->>> b = Broker()
->>> from nixt.objects import Object
->>> o = Object()
->>> b.add(o)
->>> oo = b.get(repr(o))
->>> o == oo
-True
-
-"""
+"an object for a string"
 
 
 class Broker:

@@ -10,6 +10,7 @@ from nixt.brokers import Broker
 from nixt.message import Message
 from nixt.objects import Object, construct, keys
 from nixt.repeats import Repeater
+from nixt.threads import name
 from nixt.utility import elapsed
 
 

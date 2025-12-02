@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"at the beginning"
+"in the beginning"
 
 
 from nixt.command import scan
