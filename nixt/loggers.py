@@ -21,15 +21,14 @@ class Format(logging.Formatter):
 
 
 def level(loglevel):
-    logger = logging.getLogger()
-    for handler in logger.handlers:
-        logger.removeHandler(handler)
-    logger.setLevel(loglevel.upper())
-    formatter = Format(Logging.format, datefmt=Logging.datefmt)
-    ch = logging.StreamHandler()
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
-
+    formatter = Format(Logging.format, Logging.datefmt)
+    stream = logging.StreamHandler()
+    stream.setFormatter(formatter)
+    logger = logging.basicConfig(
+                                 level=loglevel.upper(),
+                                 handlers=[stream,],
+                                 force=True
+                                )
 
 def __dir__():
     return (
