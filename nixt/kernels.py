@@ -12,10 +12,10 @@ import time
 from nixt.command import Commands
 from nixt.configs import Config
 from nixt.loggers import Logging
-from nixt.methods import parse
+from nixt.methods import Methods
 from nixt.package import Mods
-from nixt.threads import launch
-from nixt.utility import spl
+from nixt.threads import Threads
+from nixt.utility import Utils
 from nixt.workdir import Workdir
 
 
@@ -46,7 +46,7 @@ class Kernel:
 
     @staticmethod
     def configure(txt):
-        parse(Config, txt)
+        Methods.parse(Config, txt)
         Logging.level(Config.sets.level or "info")
         Workdir.configure(Config.name)
         Mods.configure()
@@ -62,11 +62,11 @@ class Kernel:
     @staticmethod
     def init(names, wait=False):
         thrs = []
-        for name in spl(names):
+        for name in Utils.spl(names):
             mod = Mods.get(name)
             if "init" not in dir(mod):
                 continue
-            thrs.append(launch(mod.init))
+            thrs.append(Threads.launch(mod.init))
         if wait:
             for thr in thrs:
                 thr.join()

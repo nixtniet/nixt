@@ -10,10 +10,8 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.configs import Config
+from nixt.nucleus import Config, Threads, Workdir
 from nixt.objects import Object
-from nixt.threads import launch
-from nixt.workdir import Workdir
 
 
 def init():

@@ -12,18 +12,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands
-from nixt.clients import CLI
-from nixt.configs import Config
-from nixt.kernels import Kernel
-from nixt.message import Message
+from nixt.nucleus import Commands, CLI, Config, Kernel, Message, Threads, Utils
 from nixt.statics import SYSTEMD
-from nixt.threads import threadhook
-from nixt.utility import forever, privileges, spl, wrapped
-from nixt.workdir import Workdir
-
-
-"config"
 
 
 Config.ignore = "wsd,udp"
@@ -32,9 +22,6 @@ Config.version = 440
 
 
 TXT = " ".join(sys.argv[1:])
-
-
-"clients"
 
 
 class CLI(CLI):
@@ -154,7 +141,7 @@ def wrap(func):
     except termios.error:
         pass
     try:
-        wrapped(func)
+        Utils.wrapped(func)
     finally:
         if old:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
@@ -191,9 +178,9 @@ def main():
     elif check("d"):
         background()
     elif check("s"):
-        wrapped(service)
+        Utils.wrapped(service)
     else:
-        wrapped(control)
+        Utils.wrapped(control)
 
 
 if __name__ == "__main__":

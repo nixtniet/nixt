@@ -14,16 +14,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client, Output
-from nixt.command import Commands
-from nixt.configs import Config
-from nixt.kernels import Kernel
-from nixt.message import Message
-from nixt.methods import fmt, parse
-from nixt.package import Mods
-from nixt.threads import launch, threadhook
-from nixt.utility import elapsed
-from nixt.workdir import Workdir
+from nixt.nucleus import Client, Commands, Config, Kernel, Message, Methods
+from nixt.nucleus import Output, Mods, Threads, Utils, Workdir
 
 
 Config.debug = True
@@ -115,7 +107,7 @@ def main():
         shutil.rmtree(Workdir.wdr)
     Kernel.boot(" ".join(sys.argv[1:]), init=False)
     if "b" in Config.opts:
-        threading.excepthook = threadhook
+        threading.excepthook = Threads.threadhook
     if "v" in Config.opts:
         banner(Config.name, Config.version)
     if "z" in Config.opts:
@@ -126,29 +118,29 @@ def main():
     thrs = []
     NRS = Config.index or 1
     for _x in range(NRS):
-        thrs.append(launch(payload, pre))
+        thrs.append(Threads.launch(payload, pre))
     for thr in thrs:
         thr.join()
     for _x in range(NRS):
-        thrs.append(launch(payload, examples))
+        thrs.append(Threads.launch(payload, examples))
     for thr in thrs:
         thr.join()
     for _x in range(NRS):
-        thrs.append(launch(payload, post))
+        thrs.append(Threads.launch(payload, post))
     for thr in thrs:
         thr.join()
-    launch(consume)
+    Threads.launch(consume)
     nrevents = events.qsize()
     try:
         events.join()
     except (KeyboardInterrupt, EOFError):
         os._exit(0)
     endtime = time.time()
-    lap = elapsed(endtime-starttime)
+    lap = Utils.elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
     if "v" in Config.opts:
-        print(fmt(Config))
+        print(Methods.fmt(Config))
         print(f"{nrs} events left.")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
     os._exit(0)

@@ -68,7 +68,7 @@ class Workdir:
             return
         pth = pathlib.Path(path)
         pth.mkdir(parents=True, exist_ok=True)
-        pth = pathlib.Path(moddir())
+        pth = pathlib.Path(Workdir.moddir())
         pth.mkdir(parents=True, exist_ok=True)
 
     @staticmethod

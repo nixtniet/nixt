@@ -9,10 +9,8 @@ import threading
 import time
 
 
-from nixt.brokers import Broker
-from nixt.configs import Config
+from nixt.nucleus import Broker, Config, Threads
 from nixt.objects import Object
-from nixt.threads import launch
 
 
 def init():
@@ -71,7 +69,7 @@ class UDP(Object):
                          )
 
     def start(self):
-        launch(self.loop)
+        Threads.launch(self.loop)
 
 
 def toudp(host, port, txt):

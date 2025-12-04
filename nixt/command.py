@@ -7,8 +7,8 @@
 import inspect
 
 
-from nixt.brokers import display
-from nixt.methods import parse
+from nixt.brokers import Broker
+from nixt.methods import Methods
 
 
 class Commands:
@@ -25,11 +25,11 @@ class Commands:
 
     @staticmethod
     def command(evt):
-        parse(evt, evt.text)
+        Methods.parse(evt, evt.text)
         func = Commands.get(evt.cmd)
         if func:
             func(evt)
-            display(evt)
+            Broker.display(evt)
         evt.ready()
 
     @staticmethod

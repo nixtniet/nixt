@@ -11,16 +11,10 @@ import threading
 import time
 
 
-from nixt.brokers import Broker
-from nixt.clients import Output
-from nixt.command import Commands
 from nixt.configs import Config as Main
-from nixt.message import Message
-from nixt.methods import edit, fmt
+from nixt.nucleus import Broker, Commands, Disk, Locater, Message, Methods
+from nixt.nucleus import Output, Threads, Workdir
 from nixt.objects import Object, keys
-from nixt.persist import Disk, Locater
-from nixt.threads import launch
-from nixt.workdir import Workdir
 
 
 lock = threading.RLock()
@@ -31,7 +25,7 @@ def init():
     irc.start()
     irc.events.joined.wait(30.0)
     if irc.events.joined.is_set():
-        logging.warning(fmt(irc.cfg, skip=["name", "word", "realname", "username"]))
+        logging.warning(Methods.fmt(irc.cfg, skip=["name", "word", "realname", "username"]))
     else:
         irc.stop()
     return irc
@@ -452,7 +446,7 @@ class IRC(Output):
         self.state.keeprunning = False
         self.state.stopkeep = True
         self.stop()
-        launch(init)
+        Threads.launch(init)
 
     def size(self, chan):
         if chan in self.cache:
@@ -488,8 +482,8 @@ class IRC(Output):
         self.events.joined.clear()
         Output.start(self)
         if not self.state.keeprunning:
-            launch(self.keep)
-        launch(
+            Threads.launch(self.keep)
+        Threads.launch(
             self.doconnect,
             self.cfg.server or "localhost",
             self.cfg.nick,
@@ -524,7 +518,7 @@ def cb_error(evt):
     bot = Broker.get(evt.orig)
     bot.state.nrerror += 1
     bot.state.error = evt.text
-    logging.debug(fmt(evt))
+    logging.debug(MEthods.fmt(evt))
 
 
 def cb_h903(evt):
@@ -580,7 +574,7 @@ def cb_privmsg(evt):
         if evt.text:
             evt.text = evt.text[0].lower() + evt.text[1:]
         if evt.text:
-            launch(Commands.command, evt)
+            Threads.launch(Commands.command, evt)
 
 
 def cb_quit(evt):
@@ -600,14 +594,14 @@ def cfg(event):
     fnm = Locater.last(config)
     if not event.sets:
         event.reply(
-            fmt(
+            Methods.fmt(
                 config,
                 keys(config),
-                skip="control,name,word,realname,sleep,username".split(","),
+                skip="control,name,word,realname,sleep,username".split(",")
             )
         )
     else:
-        edit(config, event.sets)
+        Methods.edit(config, event.sets)
         Disk.write(config, fnm or Workdir.getpath(config))
         event.reply("ok")
 

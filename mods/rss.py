@@ -19,22 +19,16 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.brokers import Broker
-from nixt.configs import Config
-from nixt.methods import fmt
+from nixt.nucleus import Broker, Config, Disk, Locater, Methods, Repeater
+from nixt.nucleus import Threads, Utils, Workdir
 from nixt.objects import Object, update
-from nixt.persist import Disk, Locater
-from nixt.repeats import Repeater
-from nixt.threads import launch
-from nixt.utility import elapsed, spl
-from nixt.workdir import Workdir
 
 
 def init():
     fetcher = Fetcher()
     fetcher.start()
     if fetcher.seenfn:
-        logging.warning("since %s", elapsed(time.time()-Locater.fntime(fetcher.seenfn)))
+        logging.warning("since %s", Utils.elapsed(time.time()-Locater.fntime(fetcher.seenfn)))
     else:
         logging.warning("since %s", time.ctime(time.time()).replace("  ", " "))
     return fetcher
@@ -138,7 +132,7 @@ class Fetcher(Object):
     def run(self, silent=False):
         thrs = []
         for _fn, feed in Locater.find("rss.Rss"):
-            thrs.append(launch(self.fetch, feed, silent))
+            thrs.append(Threads.launch(self.fetch, feed, silent))
         return thrs
 
     def start(self, repeat=True):
@@ -188,7 +182,7 @@ class Parser:
         for line in Parser.getitems(txt, toke):
             line = line.strip()
             obj = Object()
-            for itm in spl(items):
+            for itm in Utils.spl(items):
                 val = Parser.getitem(line, itm)
                 if val:
                     val = unescape(val.strip())
@@ -253,7 +247,7 @@ class OPML:
             if not attrz:
                 continue
             obj = Object()
-            for itm in spl(itemz):
+            for itm in Utils.spl(itemz):
                 if itm == "link":
                     itm = "href"
                 val = OPML.getvalue(attrz, itm)
@@ -467,8 +461,8 @@ def rss(event):
         nrs = 0
         for fnm, fed in Locater.find("rss.Rss"):
             nrs += 1
-            elp = elapsed(time.time() - Locater.fntime(fnm))
-            txt = fmt(fed)
+            elp = Utils.elapsed(time.time() - Locater.fntime(fnm))
+            txt = Methods.fmt(fed)
             event.reply(f"{nrs} {txt} {elp}")
         if not nrs:
             event.reply("no feed found.")

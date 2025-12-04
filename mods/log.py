@@ -6,7 +6,7 @@ import time
 
 from nixt.objects import Object
 from nixt.persist import Disk, Locater
-from nixt.utility import elapsed
+from nixt.utility import Utils
 
 
 class Log(Object):
@@ -20,7 +20,7 @@ def log(event):
     if not event.rest:
         nmr = 0
         for fnm, obj in Locater.find('log', event.gets):
-            lap = elapsed(time.time() - Locater.fntime(fnm))
+            lap = Utils.elapsed(time.time() - Locater.fntime(fnm))
             event.reply(f'{nmr} {obj.txt} {lap}')
             nmr += 1
         if not nmr:

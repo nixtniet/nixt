@@ -13,7 +13,7 @@ import _thread
 from nixt.brokers import Broker
 from nixt.command import Commands
 from nixt.handler import Handler
-from nixt.threads import launch
+from nixt.threads import Threads
 
 
 class Client(Handler):
@@ -71,7 +71,7 @@ class Output(Client):
             self.oqueue.task_done()
 
     def start(self):
-        launch(self.output)
+        Threads.launch(self.output)
         super().start()
 
     def stop(self):

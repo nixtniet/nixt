@@ -6,11 +6,9 @@ import os
 import time
 
 
-from nixt.methods import fmt
+from nixt.nucleus import Disk, Locater, Methods, Utils
 from nixt.objects import Object, keys, update
-from nixt.persist import Disk, Locater
 from nixt.statics import MONTH
-from nixt.utility import elapsed, extract_date
 
 
 class Email(Object):
@@ -69,19 +67,19 @@ def eml(event):
     args = set(args)
     result = sorted(
                     Locater.find("email", event.gets),
-                    key=lambda x: extract_date(todate(getattr(x[1], "Date", "")))
+                    key=lambda x: Utils.extract_date(todate(getattr(x[1], "Date", "")))
                    )
     if event.index:
         obj = result[event.index]
         if obj:
             obj = obj[-1]
             tme = getattr(obj, "Date", "")
-            event.reply(f'{event.index} {fmt(obj, args, plain=True)} {elapsed(time.time() - extract_date(todate(tme)))}')
+            event.reply(f'{event.index} {fmt(obj, args, plain=True)} {Utils.elapsed(time.time() - UTils.extract_date(todate(tme)))}')
     else:
         for _fn, obj in result:
             nrs += 1
             tme = getattr(obj, "Date", "")
-            event.reply(f'{nrs} {fmt(obj, args, plain=True)} {elapsed(time.time() - extract_date(todate(tme)))}')
+            event.reply(f'{nrs} {fmt(obj, args, plain=True)} {Utils.elapsed(time.time() - Utils.extract_date(todate(tme)))}')
     if not result:
         event.reply("no emails found.")
 

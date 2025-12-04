@@ -6,12 +6,8 @@ import logging
 import time
 
 
-from nixt.brokers import Broker
-from nixt.message import Message
+from nixt.nucleus import Broker, Message, Repeater, Utils
 from nixt.objects import Object, construct, keys
-from nixt.repeats import Repeater
-from nixt.threads import name
-from nixt.utility import elapsed
 
 
 def init():
@@ -27,7 +23,7 @@ def init():
             name = aliases.get(key)
             repeater = Repeater(sec, cbstats, evt, thrname=name)
             repeater.start()
-            logging.warning("since %s", elapsed(time.time()-STARTTIME))
+            logging.warning("since %s", Utils.elapsed(time.time()-STARTTIME))
 
 
 "defines"
@@ -131,7 +127,7 @@ def hourly():
 
 def cbnow(_evt):
     delta = time.time() - STARTTIME
-    txt = elapsed(delta) + " "
+    txt = UTils.elapsed(delta) + " "
     for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
@@ -154,13 +150,13 @@ def cbstats(evt):
         delta2 = time.time() - getday()
         thisday = int(delta2/needed)
         txt = "%s %s #%s (%s/%s/%s) every %s" % (
-            elapsed(delta),
+            Utils.elapsed(delta),
             getalias(nme).upper(),
             nrtimes,
             thisday,
             nrday,
             nryear,
-            elapsed(needed)
+            Utils.elapsed(needed)
         )
         for bot in Broker.all("announce"):
             bot.announce(txt)
@@ -171,7 +167,7 @@ def cbstats(evt):
 
 def dis(event):
     delta = time.time() - STARTTIME
-    txt = elapsed(delta) + " "
+    txt = Utils.elapsed(delta) + " "
     for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
@@ -192,13 +188,13 @@ def now(event):
         nrday = int(DAY/needed)
         thisday = int(DAY % needed)
         txt = "%s %s #%s (%s/%s/%s) every %s" % (
-            elapsed(delta),
+            Utils.elapsed(delta),
             getalias(nme),
             nrtimes,
             thisday,
             nrday,
             nryear,
-            elapsed(needed)
+            Utils.elapsed(needed)
         )
         event.reply(txt)
 

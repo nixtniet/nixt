@@ -13,7 +13,7 @@ from nixt.objects import Object, items
 from nixt.persist import Disk, Locater
 from nixt.repeats import Timed
 from nixt.statics import MONTH
-from nixt.utility import elapsed, extract_date
+from nixt.utility import Utils
 from nixt.workdir import Workdir
 
 
@@ -157,7 +157,7 @@ def to_day(daystr):
         line = previous + " " + word
         previous = word
         try:
-            res = extract_date(line.strip())
+            res = Utils.extract_date(line.strip())
             break
         except ValueError:
             res = None
@@ -176,7 +176,7 @@ def tmr(event):
         for tme, txt in items(Timers.timers):
             lap = float(tme) - time.time()
             if lap > 0:
-                event.reply(f'{nmr} {" ".join(txt)} {elapsed(lap)}')
+                event.reply(f'{nmr} {" ".join(txt)} {Utils.elapsed(lap)}')
                 nmr += 1
         if not nmr:
             event.reply("no timers.")
@@ -213,4 +213,4 @@ def tmr(event):
     bot = Broker.get(event.orig)
     timer = Timed(diff, bot.say, event.orig, event.channel, txt)
     timer.start()
-    event.reply("ok " +  elapsed(diff))
+    event.reply("ok " + Utils.elapsed(diff))

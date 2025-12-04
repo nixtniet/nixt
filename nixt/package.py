@@ -8,7 +8,7 @@ import os
 
 
 from nixt.configs import Config
-from nixt.utility import importer, spl
+from nixt.utility import Utils
 from nixt.workdir import Workdir
 
 
@@ -49,7 +49,7 @@ class Mods:
             break
         if not mname:
             return
-        mod = importer(mname, pth)
+        mod = Utils.importer(mname, pth)
         if not mod:
             return
         Mods.modules[name] = mod
@@ -59,7 +59,7 @@ class Mods:
     def list(ignore=""):
         mods = []
         for name, path in Mods.dirs.items():
-            if name in spl(ignore):
+            if name in Utils.spl(ignore):
                 continue
             if not os.path.exists(path):
                 continue
@@ -71,7 +71,7 @@ class Mods:
 
     @staticmethod
     def mods(names):
-        return [Mods.get(x) for x in sorted(spl(names))]
+        return [Mods.get(x) for x in sorted(Utils.spl(names))]
 
 
 def __dir__():

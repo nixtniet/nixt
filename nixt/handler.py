@@ -7,7 +7,7 @@
 import queue
 
 
-from nixt.threads import launch
+from nixt.threads import Threads
 
 
 class Handler:
@@ -22,7 +22,7 @@ class Handler:
             event.ready()
             return
         name = event.text and event.text.split()[0]
-        event._thr = launch(func, event, name=name)
+        event._thr = Threads.launch(func, event, name=name)
 
     def loop(self):
         while True:
@@ -42,7 +42,7 @@ class Handler:
         self.cbs[kind] = callback
 
     def start(self):
-        launch(self.loop)
+        Threads.launch(self.loop)
 
     def stop(self):
         self.queue.put(None)
