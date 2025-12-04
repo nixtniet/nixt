@@ -90,7 +90,6 @@ def __dir__():
         'Reserved',
         'construct',
         'fqn',
-        'getid',
         'items',
         'keys',
         'update',

@@ -7,12 +7,6 @@
 import logging
 
 
-class Logging:
-
-    datefmt = "%H:%M:%S"
-    format = "%(module).3s %(message)s"
-
-
 class Format(logging.Formatter):
 
     def format(self, record):
@@ -20,18 +14,24 @@ class Format(logging.Formatter):
         return logging.Formatter.format(self, record)
 
 
-def level(loglevel):
-    formatter = Format(Logging.format, Logging.datefmt)
-    stream = logging.StreamHandler()
-    stream.setFormatter(formatter)
-    logger = logging.basicConfig(
-                                 level=loglevel.upper(),
-                                 handlers=[stream,],
-                                 force=True
-                                )
+class Logging:
+
+    datefmt = "%H:%M:%S"
+    format = "%(module).3s %(message)s"
+
+    @staticmethod
+    def level(loglevel):
+        formatter = Format(Logging.format, Logging.datefmt)
+        stream = logging.StreamHandler()
+        stream.setFormatter(formatter)
+        logger = logging.basicConfig(
+                                     level=loglevel.upper(),
+                                     handlers=[stream,],
+                                     force=True
+                                    )
+
 
 def __dir__():
     return (
         'Logging',
-        'level'
     )

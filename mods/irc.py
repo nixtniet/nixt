@@ -13,7 +13,7 @@ import time
 
 from nixt.brokers import Broker
 from nixt.clients import Output
-from nixt.command import command
+from nixt.command import Commands
 from nixt.configs import Config as Main
 from nixt.message import Message
 from nixt.methods import edit, fmt
@@ -579,7 +579,7 @@ def cb_privmsg(evt):
         if evt.text:
             evt.text = evt.text[0].lower() + evt.text[1:]
         if evt.text:
-            launch(command, evt)
+            launch(Commands.command, evt)
 
 
 def cb_quit(evt):

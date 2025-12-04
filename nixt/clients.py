@@ -11,7 +11,7 @@ import _thread
 
 
 from nixt.brokers import Broker
-from nixt.command import command
+from nixt.command import Commands
 from nixt.handler import Handler
 from nixt.threads import launch
 
@@ -56,7 +56,7 @@ class CLI(Client):
  
      def __init__(self):
          super().__init__()
-         self.register("command", command)
+         self.register("command", Commands.command)
 
 
 class Output(Client):

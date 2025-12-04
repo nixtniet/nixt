@@ -1,8 +1,8 @@
 # This file is placed in the Public Domain.
 
 
-from nixt.package import modules
+from nixt.package import Mods
 
 
 def mod(event):
-    event.reply(",".join(modules()))
+    event.reply(Mods.list())

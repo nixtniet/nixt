@@ -47,33 +47,34 @@ class Mods:
             pth = modpath
             mname = f"{packname}.{name}"
             break
+        if not mname:
+            return
         mod = importer(mname, pth)
+        if not mod:
+            return
         Mods.modules[name] = mod
         return mod
 
+    @staticmethod
+    def list(ignore=""):
+        mods = []
+        for name, path in Mods.dirs.items():
+            if name in spl(ignore):
+                continue
+            if not os.path.exists(path):
+                continue
+            mods.extend([
+                x[:-3] for x in os.listdir(path)
+                if x.endswith(".py") and not x.startswith("__")
+           ])
+        return ",".join(sorted(mods))
 
-def mods(names):
-    res = [Mods.get(x) for x in sorted(names)]
-    return res
-
-
-def modules(ignore=""):
-    mods = []
-    for name, path in Mods.dirs.items():
-        if name in spl(ignore):
-            continue
-        if not os.path.exists(path):
-            continue
-        mods.extend([
-            x[:-3] for x in os.listdir(path)
-            if x.endswith(".py") and not x.startswith("__")
-        ])
-    return sorted(mods)
+    @staticmethod
+    def mods(names):
+        return [Mods.get(x) for x in sorted(spl(names))]
 
 
 def __dir__():
     return (
         'Mods',
-        'mods',
-        'modules'
     )

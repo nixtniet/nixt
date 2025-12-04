@@ -12,12 +12,11 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, command
+from nixt.command import Commands
 from nixt.clients import CLI
 from nixt.configs import Config
 from nixt.kernels import Kernel
 from nixt.message import Message
-from nixt.package import modules
 from nixt.statics import SYSTEMD
 from nixt.threads import threadhook
 from nixt.utility import forever, privileges, spl, wrapped
@@ -67,7 +66,7 @@ def background():
     Kernel.boot(TXT)
     Commands.add(cmd, ver)
     pidfile(pidname(Config.name))
-    forever()
+    Kernel.forever()
 
 
 def console():
@@ -76,7 +75,7 @@ def console():
     Commands.add(cmd, ver)
     csl = Console()
     csl.start()
-    forever()
+    Kernel.forever()
 
 
 def control():
@@ -90,7 +89,7 @@ def control():
     evt.orig = repr(csl)
     evt.text = " ".join(sys.argv[1:])
     evt.type = "command"
-    command(evt)
+    Commands.command(evt)
     evt.wait()
 
 
@@ -98,7 +97,7 @@ def service():
     Kernel.boot()
     Commands.add(cmd, ver)
     pidfile(pidname(Config.name))
-    forever()
+    Kernel.forever()
 
 
 "utility"

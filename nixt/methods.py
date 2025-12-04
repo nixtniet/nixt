@@ -4,8 +4,6 @@
 "functions with an object as the first argument"
 
 
-
-
 from nixt.objects import fqn, items
 from nixt.utility import Default
 

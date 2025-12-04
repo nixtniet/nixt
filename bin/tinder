@@ -15,19 +15,19 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client, Output
-from nixt.command import Commands, command
+from nixt.command import Commands
 from nixt.configs import Config
-from nixt.kernels import Kernel, scanner
+from nixt.kernels import Kernel
 from nixt.message import Message
 from nixt.methods import fmt, parse
-from nixt.package import modules
+from nixt.package import Mods
 from nixt.threads import launch, threadhook
 from nixt.utility import elapsed
 from nixt.workdir import Workdir
 
 
 Config.debug = True
-Config.name = "objz"
+Config.name = "nixt"
 Config.opts = "m"
 Config.version = 110
 
@@ -42,7 +42,7 @@ class CLI(Output):
 
     def __init__(self):
         Output.__init__(self)
-        self.register("command", command)
+        self.register("command", Commands.command)
 
     def raw(self, txt):
         if "v" in Config.opts:
@@ -113,12 +113,11 @@ def payload(todo):
 def main():
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
-    Kernel.configure(" ".join(sys.argv[1:]))
+    Kernel.boot(" ".join(sys.argv[1:]), init=False)
     if "b" in Config.opts:
         threading.excepthook = threadhook
     if "v" in Config.opts:
         banner(Config.name, Config.version)
-    scanner(modules())
     if "z" in Config.opts:
         Pool.init(CLI, os.cpu_count())
     else:

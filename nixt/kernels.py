@@ -9,19 +9,17 @@ import os
 import time
 
 
-from nixt.command import scan
+from nixt.command import Commands
 from nixt.configs import Config
-from nixt.loggers import level
+from nixt.loggers import Logging
 from nixt.methods import parse
-from nixt.package import Mods, mods, modules
+from nixt.package import Mods
 from nixt.threads import launch
 from nixt.utility import spl
 from nixt.workdir import Workdir
 
 
 class Kernel:
-
-    modules = {}
 
     @staticmethod
     def banner(stream):
@@ -37,20 +35,29 @@ class Kernel:
         stream.flush()
 
     @staticmethod
-    def boot(txt, stream=None):
+    def boot(txt, stream=None, init=True):
         Kernel.privileges()
         Kernel.configure(txt)
         if stream and "v" in Config.opts:
             Kernel.banner(stream)
-        Kernel.scanner(modules())
-        Kernel.init(Config.sets.init or modules(), "w" in Config.opts)
+        Kernel.scanner(Mods.list())
+        if init:
+            Kernel.init(Config.sets.init or Mods.list(), "w" in Config.opts)
 
     @staticmethod
     def configure(txt):
         parse(Config, txt)
-        level(Config.sets.level or "info")
+        Logging.level(Config.sets.level or "info")
         Workdir.configure(Config.name)
         Mods.configure()
+
+    @staticmethod
+    def forever():
+        while True:
+            try:
+                time.sleep(0.1)
+            except (KeyboardInterrupt, EOFError):
+                break
 
     @staticmethod
     def init(names, wait=False):
@@ -74,9 +81,8 @@ class Kernel:
 
     @staticmethod
     def scanner(names):
-        for mod in mods(names):
-            Kernel.modules[mod.__name__] = mod
-            scan(mod)
+        for mod in Mods.mods(names):
+            Commands.scan(mod)
 
 
 def __dir__():
