@@ -20,7 +20,7 @@ from nixt.message import Message
 from nixt.statics import SYSTEMD
 from nixt.threads import threadhook
 from nixt.utility import forever, privileges, spl, wrapped
-from nixt.workdir import pidfile, pidname
+from nixt.workdir import Workdir
 
 
 "config"
@@ -65,7 +65,7 @@ def background():
     daemon(check("v"))
     Kernel.boot(TXT)
     Commands.add(cmd, ver)
-    pidfile(pidname(Config.name))
+    Workdir.pidfile(Workdir.pidname(Config.name))
     Kernel.forever()
 
 
@@ -81,7 +81,7 @@ def console():
 def control():
     if len(sys.argv) == 1:
         return
-    Kernel.boot(TXT)
+    Kernel.boot(TXT, init=False)
     Commands.add(cmd, srv, ver)
     csl = CLI()
     csl.silent = False
@@ -96,7 +96,7 @@ def control():
 def service():
     Kernel.boot()
     Commands.add(cmd, ver)
-    pidfile(pidname(Config.name))
+    Workdir.pidfile(Workdir.pidname(Config.name))
     Kernel.forever()
 
 

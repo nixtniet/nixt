@@ -18,9 +18,9 @@ from nixt.configs import Config as Main
 from nixt.message import Message
 from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
-from nixt.persist import last, write
+from nixt.persist import Disk, Locater
 from nixt.threads import launch
-from nixt.workdir import getpath
+from nixt.workdir import Workdir
 
 
 lock = threading.RLock()
@@ -480,6 +480,7 @@ class IRC(Output):
         self.state.lastline = splitted[-1]
 
     def start(self):
+        Locater.last(self.cfg)
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
         self.events.ready.clear()
@@ -596,7 +597,7 @@ def cb_quit(evt):
 
 def cfg(event):
     config = Config()
-    fnm = last(config)
+    fnm = Locater.last(config)
     if not event.sets:
         event.reply(
             fmt(
@@ -607,7 +608,7 @@ def cfg(event):
         )
     else:
         edit(config, event.sets)
-        write(config, fnm or getpath(config))
+        Disk.write(config, fnm or Workdir.getpath(config))
         event.reply("ok")
 
 

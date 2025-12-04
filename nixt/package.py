@@ -9,7 +9,7 @@ import os
 
 from nixt.configs import Config
 from nixt.utility import importer, spl
-from nixt.workdir import moddir
+from nixt.workdir import Workdir
 
 
 class Mods:
@@ -27,7 +27,7 @@ class Mods:
     def configure():
         name = Mods.package + ".modules" 
         Mods.add(name, os.path.join(Mods.path, "modules"))
-        Mods.add("modules", moddir())
+        Mods.add("modules", Workdir.moddir())
         if "n" in Config.opts:
             name = Mods.package + ".network" 
             Mods.add(name, os.path.join(Mods.path, "network"))

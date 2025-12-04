@@ -17,79 +17,70 @@ class Workdir:
     wdr = ""
 
     @staticmethod
+    def cdir(path):
+        pth = pathlib.Path(path)
+        pth.parent.mkdir(parents=True, exist_ok=True)
+
+    @staticmethod
     def configure(name):
         Workdir.wdr = Workdir.wdr or os.path.expanduser(f"~/.{name}")
-        skel()
+        Workdir.skel()
 
+    @staticmethod
+    def getpath(obj):
+        return Workdir.store(Workdir.ident(obj))
 
-def cdir(path):
-    pth = pathlib.Path(path)
-    pth.parent.mkdir(parents=True, exist_ok=True)
+    @staticmethod
+    def ident(obj):
+        return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
 
+    @staticmethod
+    def long(name: str):
+        split = name.split(".")[-1].lower()
+        res = name
+        for names in Workdir.types():
+            if split == names.split(".")[-1].lower():
+               res = names
+               break
+        return res
 
-def getpath(obj):
-    return store(ident(obj))
+    @staticmethod
+    def moddir(modname: str = ""):
+        return os.path.join(Workdir.wdr, modname or "mods")
 
+    @staticmethod
+    def pidfile(filename):
+        if os.path.exists(filename):
+            os.unlink(filename)
+        path2 = pathlib.Path(filename)
+        path2.parent.mkdir(parents=True, exist_ok=True)
+        with open(filename, "w", encoding="utf-8") as fds:
+            fds.write(str(os.getpid()))
 
-def ident(obj):
-    return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
+    @staticmethod
+    def pidname(name: str):
+        return os.path.join(Workdir.wdr, f"{name}.pid")
 
+    @staticmethod
+    def skel():
+        path = Workdir.store()
+        if os.path.exists(path):
+            return
+        pth = pathlib.Path(path)
+        pth.mkdir(parents=True, exist_ok=True)
+        pth = pathlib.Path(moddir())
+        pth.mkdir(parents=True, exist_ok=True)
 
-def long(name: str):
-    split = name.split(".")[-1].lower()
-    res = name
-    for names in types():
-        if split == names.split(".")[-1].lower():
-            res = names
-            break
-    return res
+    @staticmethod
+    def store(fnm: str = ""):
+        return os.path.join(Workdir.wdr, "store", fnm)
 
-
-def moddir(modname: str = ""):
-    return os.path.join(Workdir.wdr, modname or "mods")
-
-
-def pidfile(filename):
-    if os.path.exists(filename):
-        os.unlink(filename)
-    path2 = pathlib.Path(filename)
-    path2.parent.mkdir(parents=True, exist_ok=True)
-    with open(filename, "w", encoding="utf-8") as fds:
-        fds.write(str(os.getpid()))
-
-
-def pidname(name: str):
-    return os.path.join(Workdir.wdr, f"{name}.pid")
-
-
-def skel():
-    path = store()
-    if os.path.exists(path):
-        return
-    pth = pathlib.Path(path)
-    pth.mkdir(parents=True, exist_ok=True)
-    pth = pathlib.Path(moddir())
-    pth.mkdir(parents=True, exist_ok=True)
-
-
-def store(fnm: str = ""):
-    return os.path.join(Workdir.wdr, "store", fnm)
-
-
-def types():
-    return os.listdir(store())
+    @staticmethod
+    def types():
+        return os.listdir(Workdir.store())
 
 
 def __dir__():
     return (
         'Workdir',
-        'getid',
-        'getpath',
-        'ident',
-        'long',
-        'moddir',
-        'pidname',
-        'skel',
-        'store',
-        'types'
     )

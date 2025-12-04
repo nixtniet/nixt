@@ -10,18 +10,18 @@ import time
 
 from nixt.brokers import Broker
 from nixt.objects import Object, items
-from nixt.persist import last, write
+from nixt.persist import Disk, Locater
 from nixt.repeats import Timed
 from nixt.statics import MONTH
 from nixt.utility import elapsed, extract_date
-from nixt.workdir import getpath
+from nixt.workdir import Workdir
 
 
 rand = random.SystemRandom()
 
 
 def init():
-    Timers.path = last(Timers.timers) or getpath(Timers.timers)
+    Timers.path = Locater.last(Timers.timers) or Workdir.getpath(Timers.timers)
     remove = []
     for tme, args in items(Timers.timers):
         if not args:
@@ -40,7 +40,7 @@ def init():
     for tme in remove:
         delete(tme)
     if Timers.timers:
-        write(Timers.timers, Timers.path)
+        Disk.write(Timers.timers, Timers.path)
     logging.warning("%s timers", len(Timers.timers))
 
 
@@ -209,7 +209,7 @@ def tmr(event):
     diff = target - time.time()
     txt = " ".join(event.args[1:])
     add(target, event.orig, event.channel, txt)
-    write(Timers.timers, Timers.path or getpath(Timers.timers))
+    Disk.write(Timers.timers, Timers.path or Workdir.getpath(Timers.timers))
     bot = Broker.get(event.orig)
     timer = Timed(diff, bot.say, event.orig, event.channel, txt)
     timer.start()
