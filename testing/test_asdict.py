@@ -4,7 +4,7 @@
 import unittest
 
 
-from nixt.methods import fmt
+from nixt.methods import Methods
 from nixt.objects import Object, fqn, items, keys, update, values
 
 
@@ -144,7 +144,7 @@ class TestObject(unittest.TestCase):
 
     def test_printable(self):
         obj = Object()
-        self.assertEqual(fmt(obj), "")
+        self.assertEqual(Methods.fmt(obj), "{}")
 
     def test_getattr(self):
         obj = Object()

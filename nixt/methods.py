@@ -55,6 +55,8 @@ class Methods:
                 txt += f"{key}={value} "
             else:
                 txt += f"{key}={fqn(value)}((value))"
+        if txt == "":
+            txt = "{}"
         return txt.strip()
 
     @staticmethod
