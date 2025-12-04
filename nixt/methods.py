@@ -4,7 +4,7 @@
 "functions with an object as the first argument"
 
 
-from nixt.objects import fqn, items
+from nixt.objects import Object
 from nixt.utility import Default
 
 
@@ -12,7 +12,7 @@ class Methods:
 
     @staticmethod
     def edit(obj, setter={}, skip=False):
-        for key, val in items(setter):
+        for key, val in Object.items(setter):
             if skip and val == "":
                 continue
             try:
@@ -54,7 +54,7 @@ class Methods:
             elif isinstance(value, (int, float, dict, bool, list)):
                 txt += f"{key}={value} "
             else:
-                txt += f"{key}={fqn(value)}((value))"
+                txt += f"{key}={Object.fqn(value)}((value))"
         if txt == "":
             txt = "{}"
         return txt.strip()

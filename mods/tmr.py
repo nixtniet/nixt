@@ -8,13 +8,8 @@ import re
 import time
 
 
-from nixt.brokers import Broker
-from nixt.objects import Object, items
-from nixt.persist import Disk, Locater
-from nixt.repeats import Timed
+from nixt.classes import Broker, Disk, Locater, Object, Timed, Utils, Workdir
 from nixt.statics import MONTH
-from nixt.utility import Utils
-from nixt.workdir import Workdir
 
 
 rand = random.SystemRandom()
@@ -23,7 +18,7 @@ rand = random.SystemRandom()
 def init():
     Timers.path = Locater.last(Timers.timers) or Workdir.getpath(Timers.timers)
     remove = []
-    for tme, args in items(Timers.timers):
+    for tme, args in Object.items(Timers.timers):
         if not args:
             continue
         orig, channel, txt = args
@@ -173,7 +168,7 @@ def tmr(event):
     result = ""
     if not event.rest:
         nmr = 0
-        for tme, txt in items(Timers.timers):
+        for tme, txt in Object.items(Timers.timers):
             lap = float(tme) - time.time()
             if lap > 0:
                 event.reply(f'{nmr} {" ".join(txt)} {Utils.elapsed(lap)}')

@@ -6,12 +6,11 @@ import logging
 import time
 
 
-from nixt.kernels import Broker, Message, Repeater, Utils
-from nixt.objects import Object, construct, keys
+from nixt.classes import Broker, Message, Object, Repeater, Utils
 
 
 def init():
-    for key in keys(oorzaken):
+    for key in Object.keys(oorzaken):
         if "Psych" not in key:
             continue
         val = getattr(oorzaken, key, None)
@@ -89,7 +88,7 @@ def getday():
 
 
 def getnr(nme):
-    for k in keys(oorzaken):
+    for k in Object.keys(oorzaken):
         if nme.lower() in k.lower():
             return int(getattr(oorzaken, k))
     return 0
@@ -128,7 +127,7 @@ def hourly():
 def cbnow(_evt):
     delta = time.time() - STARTTIME
     txt = UTils.elapsed(delta) + " "
-    for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
+    for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
             continue
@@ -168,7 +167,7 @@ def cbstats(evt):
 def dis(event):
     delta = time.time() - STARTTIME
     txt = Utils.elapsed(delta) + " "
-    for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
+    for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
             continue
@@ -402,13 +401,13 @@ aantal = """
 
 
 oorzaak = Object()
-construct(oorzaak, zip(oor, aantal))
+Object.construct(oorzaak, zip(oor, aantal))
 oorzaken = Object()
 
 
 def boot():
     _nr = -1
-    for key in keys(oorzaak):
+    for key in Object.keys(oorzaak):
         _nr += 1
         if _nr == 0:
             continue

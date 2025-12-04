@@ -19,9 +19,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.kernels import Broker, Config, Disk, Locater, Methods, Repeater
-from nixt.kernels import Threads, Utils, Workdir
-from nixt.objects import Object, update
+from nixt.classes import Broker, Config, Disk, Locater, Methods, Repeater
+from nixt.classes import Object, Threads, Utils, Workdir
 
 
 def init():
@@ -100,8 +99,8 @@ class Fetcher(Object):
             for obj in reversed(getfeed(feed.rss, feed.display_list)):
                 counter += 1
                 fed = Feed()
-                update(fed, obj)
-                update(fed, feed)
+                Object.update(fed, obj)
+                Object.update(fed, feed)
                 url = urllib.parse.urlparse(fed.link)
                 if url.path and not url.path == "/":
                     uurl = f"{url.scheme}://{url.netloc}/{url.path}"
@@ -264,7 +263,7 @@ class OPML:
 
 
 def attrs(obj, txt):
-    update(obj, OPML.parse(txt))
+    Object.update(obj, OPML.parse(txt))
 
 
 def cdata(line):
@@ -352,7 +351,7 @@ def dpl(event):
     setter = {"display_list": event.args[1]}
     for fnm, feed in Locater.find("rss.Rss", {"rss": event.args[0]}):
         if feed:
-            update(feed, setter)
+            Object.update(feed, setter)
             Disk.write(feed, fnm)
     event.reply("ok")
 
@@ -364,7 +363,7 @@ def exp(event):
         for _fn, ooo in Locater.find("rss.Rss"):
             nrs += 1
             obj = Rss()
-            update(obj, ooo)
+            Object.update(obj, ooo)
             name = f"url{nrs}"
             txt = f'<outline name="{name}" display_list="{obj.display_list}" xmlUrl="{obj.rss}"/>'
             event.reply(" " * 12 + txt)
@@ -400,7 +399,7 @@ def imp(event):
                 nrskip += 1
                 continue
             feed = Rss()
-            update(feed, obj)
+            Object.update(feed, obj)
             feed.rss = obj.xmlUrl
             feed.insertid = insertid
             Disk.write(feed)
@@ -418,7 +417,7 @@ def nme(event):
     selector = {"rss": event.args[0]}
     for fnm, fed in Locater.find("rss.Rss", selector):
         feed = Rss()
-        update(feed, fed)
+        Object.update(feed, fed)
         if feed:
             feed.name = str(event.args[1])
             Disk.write(feed, fnm)
@@ -431,7 +430,7 @@ def rem(event):
         return
     for fnm, fed in Locater.find("rss.Rss"):
         feed = Rss()
-        update(feed, fed)
+        Object.update(feed, fed)
         if event.args[0] not in feed.rss:
             continue
         if feed:
@@ -447,7 +446,7 @@ def res(event):
         return
     for fnm, fed in Locater.find("rss.Rss", removed=True):
         feed = Rss()
-        update(feed, fed)
+        Object.update(feed, fed)
         if event.args[0] not in feed.rss:
             continue
         if feed:

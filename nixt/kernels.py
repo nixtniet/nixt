@@ -4,24 +4,24 @@
 "in the beginning"
 
 
-import logging
-import os
 import time
 
 
-from nixt.brokers import Broker
-from nixt.clients import Client, CLI, Output
 from nixt.command import Commands
-from nixt.configs import Config
 from nixt.loggers import Logging
-from nixt.message import Message
 from nixt.methods import Methods
 from nixt.package import Mods
-from nixt.persist import Disk, Locater
-from nixt.repeats import Repeater
 from nixt.threads import Threads
-from nixt.utility import Utils
+from nixt.utility import Default, Utils
 from nixt.workdir import Workdir
+
+
+class Config(Default):
+
+    debug = False
+    level = "info"
+    name = ""
+    version = 0
 
 
 class Kernel:
@@ -29,19 +29,17 @@ class Kernel:
     @staticmethod
     def banner(stream):
         tme = time.ctime(time.time()).replace("  ", " ")
-        logger = logging.getLogger()
         stream.write("%s %s since %s (%s)" % (
                                        Config.name.upper(),
                                        Config.version,
                                        tme,
-                                       logging.getLevelName(logger.getEffectiveLevel())
+                                       Config.level.upper()
                                       ))
         stream.write("\n")
         stream.flush()
 
     @staticmethod
     def boot(txt, stream=None, init=True):
-        Kernel.privileges()
         Kernel.configure(txt)
         if stream and "v" in Config.opts:
             Kernel.banner(stream)
@@ -54,7 +52,7 @@ class Kernel:
         Methods.parse(Config, txt)
         Logging.level(Config.sets.level or "info")
         Workdir.configure(Config.name)
-        Mods.configure()
+        Mods.configure("m" in Config.opts)
 
     @staticmethod
     def forever():
@@ -77,14 +75,13 @@ class Kernel:
                 thr.join()
 
     @staticmethod
-    def privileges():
-        import getpass
-        import pwd
-        pwnam2 = pwd.getpwnam(getpass.getuser())
-        os.setgid(pwnam2.pw_gid)
-        os.setuid(pwnam2.pw_uid)
-
-    @staticmethod
     def scanner(names):
         for mod in Mods.mods(names):
             Commands.scan(mod)
+
+
+def __dir__():
+    return (
+        'Config',
+        'Kernel'
+    )

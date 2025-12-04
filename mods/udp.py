@@ -9,7 +9,7 @@ import threading
 import time
 
 
-from nixt.kernels import Broker, Config, Threads
+from nixt.classes import Broker, Config, Threads
 from nixt.objects import Object
 
 

@@ -4,7 +4,7 @@
 import time
 
 
-from nixt.kernels import Locater, Methods, Utils, Workdir
+from nixt.classes import Locater, Methods, Utils, Workdir
 
 
 def fnd(event):

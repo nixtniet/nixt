@@ -4,10 +4,9 @@
 import os
 
 
-from nixt.configs import Config
-from nixt.package import Mods
+from nixt.classes import Config, Mods
 
 
 def pth(event):
-    path = os.path.join(Mods.path, 'kernels', "index.html")
+    path = os.path.join(Mods.path, 'classes', "index.html")
     event.reply(f"file://{path}")

@@ -34,9 +34,7 @@ class Broker:
                 yield orig
 
 
-
 def __dir__():
     return (
         'Broker',
-        'display'
     )

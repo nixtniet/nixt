@@ -87,6 +87,7 @@ class Threads:
 
 def __dir__():
     return (
-        'Thread',
+        'Task',
+        'Threads',
     )
  

@@ -7,7 +7,6 @@
 import os
 
 
-from nixt.configs import Config
 from nixt.utility import Utils
 from nixt.workdir import Workdir
 
@@ -24,14 +23,14 @@ class Mods:
         Mods.dirs[name] = path
 
     @staticmethod
-    def configure():
+    def configure(local=False, network=False):
         name = Mods.package + ".modules" 
         Mods.add(name, os.path.join(Mods.path, "modules"))
         Mods.add("modules", Workdir.moddir())
-        if "n" in Config.opts:
+        if network:
             name = Mods.package + ".network" 
             Mods.add(name, os.path.join(Mods.path, "network"))
-        if "m" in Config.opts:
+        if local:
             Mods.add("mods", "mods")
 
     @staticmethod

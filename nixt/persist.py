@@ -10,8 +10,8 @@ import threading
 import time
 
 
-from nixt.objects import Object, fqn, items, keys, update
-from nixt.serials import dump, load
+from nixt.objects import Object
+from nixt.serials import Json
 from nixt.workdir import Workdir
 
 
@@ -33,7 +33,7 @@ class Cache:
     @staticmethod
     def sync(path, obj):
         try:
-            update(Cache.objects[path], obj)
+            Object.update(Cache.objects[path], obj)
         except KeyError:
             Cache.add(path, obj)
 
@@ -45,7 +45,7 @@ class Disk:
         with lock:
             with open(path, "r", encoding="utf-8") as fpt:
                 try:
-                    update(obj, load(fpt))
+                    Object.update(obj, Json.load(fpt))
                 except json.decoder.JSONDecodeError as ex:
                     ex.add_note(path)
                     raise ex
@@ -57,7 +57,7 @@ class Disk:
                 path = Workdir.getpath(obj)
             Workdir.cdir(path)
             with open(path, "w", encoding="utf-8") as fpt:
-                dump(obj, fpt, indent=4)
+                Json.dump(obj, fpt, indent=4)
             Cache.sync(path, obj)
             return path
 
@@ -68,7 +68,7 @@ class Locater:
     def attrs(kind):
         objs = list(find(kind))
         if objs:
-            return list(keys(objs[0][1]))
+            return list(Object.keys(objs[0][1]))
         return []
 
     @staticmethod
@@ -118,20 +118,20 @@ class Locater:
     @staticmethod
     def last(obj, selector={}):
         result = sorted(
-                        Locater.find(fqn(obj), selector),
+                        Locater.find(Object.fqn(obj), selector),
                         key=lambda x: Locater.fntime(x[0])
                        )
         res = ""
         if result:
             inp = result[-1]
-            update(obj, inp[-1])
+            Object.update(obj, inp[-1])
             res = inp[0]
         return res
 
     @staticmethod
     def search(obj, selector={}, matching=False):
         res = False
-        for key, value in items(selector):
+        for key, value in Object.items(selector):
             val = getattr(obj, key, None)
             if not val:
                 res = False

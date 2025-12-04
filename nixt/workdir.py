@@ -9,7 +9,7 @@ import os
 import pathlib
 
 
-from nixt.objects import fqn
+from nixt.objects import Object
 
 
 class Workdir:
@@ -32,7 +32,7 @@ class Workdir:
 
     @staticmethod
     def ident(obj):
-        return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
+        return os.path.join(Object.fqn(obj), *str(datetime.datetime.now()).split())
 
     @staticmethod
     def long(name: str):

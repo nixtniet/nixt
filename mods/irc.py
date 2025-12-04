@@ -11,10 +11,9 @@ import threading
 import time
 
 
-from nixt.configs import Config as Main
-from nixt.kernels import Broker, Commands, Disk, Locater, Message, Methods
-from nixt.kernels import Output, Threads, Workdir
-from nixt.objects import Object, keys
+from nixt.classes import Config as Main
+from nixt.classes import Broker, Commands, Disk, Locater, Message, Methods
+from nixt.classes import Object, Output, Threads, Workdir
 
 
 lock = threading.RLock()

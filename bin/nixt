@@ -12,7 +12,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.kernels import Commands, CLI, Config, Kernel, Message, Threads, Utils
+from nixt.classes import Commands, CLI, Message, Threads, Utils
+from nixt.kernels import Kernel, Config
 from nixt.statics import SYSTEMD
 
 
@@ -91,6 +92,14 @@ class Runtime:
         os.nice(10)
 
     @staticmethod
+    def privileges():
+        import getpass
+        import pwd
+        pwnam2 = pwd.getpwnam(getpass.getuser())
+        os.setgid(pwnam2.pw_gid)
+        os.setuid(pwnam2.pw_uid)
+
+    @staticmethod
     def wrap(func):
         import termios
         old = None
@@ -110,6 +119,7 @@ class Scripts:
     @staticmethod
     def background():
         Runtime.daemon(check("v"))
+        Runtime.privileges()
         Kernel.boot(TXT)
         Commands.add(cmd, ver)
         Workdir.pidfile(Workdir.pidname(Config.name))
@@ -141,6 +151,7 @@ class Scripts:
 
     @staticmethod
     def service():
+        Runtime.privileges()
         Kernel.boot()
         Commands.add(cmd, ver)
         Workdir.pidfile(Workdir.pidname(Config.name))

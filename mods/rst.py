@@ -10,7 +10,7 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.kernels import Config, Threads, Workdir
+from nixt.classes import Config, Threads, Workdir
 from nixt.objects import Object
 
 
