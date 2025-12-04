@@ -19,8 +19,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.nucleus import Broker, Config, Disk, Locater, Methods, Repeater
-from nixt.nucleus import Threads, Utils, Workdir
+from nixt.kernels import Broker, Config, Disk, Locater, Methods, Repeater
+from nixt.kernels import Threads, Utils, Workdir
 from nixt.objects import Object, update
 
 

@@ -6,7 +6,7 @@ import logging
 import time
 
 
-from nixt.nucleus import Broker, Message, Repeater, Utils
+from nixt.kernels import Broker, Message, Repeater, Utils
 from nixt.objects import Object, construct, keys
 
 

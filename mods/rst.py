@@ -10,7 +10,7 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.nucleus import Config, Threads, Workdir
+from nixt.kernels import Config, Threads, Workdir
 from nixt.objects import Object
 
 
@@ -50,7 +50,7 @@ class REST(HTTPServer, Object):
 
     def start(self):
         self._status = "ok"
-        launch(self.serve_forever)
+        Threads.launch(self.serve_forever)
 
     def request(self):
         self._last = time.time()

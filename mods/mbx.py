@@ -6,7 +6,7 @@ import os
 import time
 
 
-from nixt.nucleus import Disk, Locater, Methods, Utils
+from nixt.kernels import Disk, Locater, Methods, Utils
 from nixt.objects import Object, keys, update
 from nixt.statics import MONTH
 

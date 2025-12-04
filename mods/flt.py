@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-from nixt.nucleus import Broker, Methods, Threads
+from nixt.kernels import Broker, Methods, Threads
 
 
 def flt(event):

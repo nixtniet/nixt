@@ -4,8 +4,7 @@
 "fields"
 
 
-from nixt.persist import Locater
-from nixt.workdir import Workdir
+from nixt.kernels import Locater, Workdir
 
 
 def atr(event):

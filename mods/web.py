@@ -10,16 +10,12 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.nucleus import Config, Threads, Utils
+from nixt.kernels import Config, Mods, Threads, Utils
 from nixt.objects import Object
 
 
 def init():
-    mod = Utils.importer(f"{Config.name}.nucleus")
-    if not mod:
-        logging.warning("can't find web directory")
-        return
-    Cfg.path = mod.__path__[0]
+    Cfg.path = Mods.path
     if not os.path.exists(os.path.join(Cfg.path, 'index.html')):
         logging.warning("no index.html")
         return

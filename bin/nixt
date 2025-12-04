@@ -12,7 +12,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.nucleus import Commands, CLI, Config, Kernel, Message, Threads, Utils
+from nixt.kernels import Commands, CLI, Config, Kernel, Message, Threads, Utils
 from nixt.statics import SYSTEMD
 
 

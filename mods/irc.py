@@ -12,8 +12,8 @@ import time
 
 
 from nixt.configs import Config as Main
-from nixt.nucleus import Broker, Commands, Disk, Locater, Message, Methods
-from nixt.nucleus import Output, Threads, Workdir
+from nixt.kernels import Broker, Commands, Disk, Locater, Message, Methods
+from nixt.kernels import Output, Threads, Workdir
 from nixt.objects import Object, keys
 
 
@@ -65,7 +65,6 @@ class Config(Object):
         if name not in self:
             return ""
         return self.__getattribute__(name)
-            
 
 
 class Event(Message):
