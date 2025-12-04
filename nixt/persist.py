@@ -12,8 +12,7 @@ import time
 
 from nixt.objects import Object, fqn, items, keys, update
 from nixt.serials import dump, load
-from nixt.utility import cdir
-from nixt.workdir import getpath, long, store
+from nixt.workdir import cdir, getpath, long, store
 
 
 lock = threading.RLock()

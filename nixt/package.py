@@ -15,7 +15,7 @@ from nixt.workdir import moddir
 class Mods:
 
     dirs = {}
-    ignore = ""
+    modules = {}
     package = __spec__.parent or ""
     path = os.path.dirname(__spec__.loader.path)
 
@@ -36,10 +36,10 @@ class Mods:
 
     @staticmethod
     def get(name):
+        if name in Mods.modules:
+            return Mods.modules.get(name)
         mname = ""
         pth = ""
-        if name in spl(Mods.ignore):
-            return None
         for packname, path in Mods.dirs.items():
             modpath = os.path.join(path, name + ".py")
             if not os.path.exists(modpath):
@@ -47,23 +47,26 @@ class Mods:
             pth = modpath
             mname = f"{packname}.{name}"
             break
-        return importer(mname, pth)
+        mod = importer(mname, pth)
+        Mods.modules[name] = mod
+        return mod
 
 
 def mods(names):
-    return [Mods.get(x) for x in sorted(names) if x in modules()]
+    res = [Mods.get(x) for x in sorted(names)]
+    return res
 
 
-def modules():
+def modules(ignore=""):
     mods = []
     for name, path in Mods.dirs.items():
-        if name in spl(Mods.ignore):
+        if name in spl(ignore):
             continue
         if not os.path.exists(path):
             continue
         mods.extend([
             x[:-3] for x in os.listdir(path)
-            if x.endswith(".py") and not x.startswith("__") and x not in spl(Mods.ignore)
+            if x.endswith(".py") and not x.startswith("__")
         ])
     return sorted(mods)
 

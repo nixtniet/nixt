@@ -4,10 +4,10 @@
 "functions with an object as the first argument"
 
 
-import inspect
 
 
 from nixt.objects import fqn, items
+from nixt.utility import Default
 
 
 def edit(obj, setter={}, skip=False):
@@ -61,14 +61,14 @@ def parse(obj, text):
     data = {
         "args": [],
         "cmd": "",
-        "gets": {},
+        "gets": Default(),
         "index": None,
         "init": "",
         "opts": "",
         "otxt": text,
         "rest": "",
-        "silent": {},
-        "sets": {},
+        "silent": Default(),
+        "sets": Default(),
         "text": text
     }
     for k, v in data.items():
@@ -84,16 +84,16 @@ def parse(obj, text):
             continue
         if "-=" in spli:
             key, value = spli.split("-=", maxsplit=1)
-            obj.silent[key] = value
-            obj.gets[key] = value
+            setattr(obj.silent, key, value)
+            setattr(obj.gets, key. value)
             continue
         if "==" in spli:
             key, value = spli.split("==", maxsplit=1)
-            obj.gets[key] = value
+            setattr(obj.gets, key, value)
             continue
         if "=" in spli:
             key, value = spli.split("=", maxsplit=1)
-            obj.sets[key] = value
+            setattr(obj.sets, key, value)
             continue
         nr += 1
         if nr == 0:

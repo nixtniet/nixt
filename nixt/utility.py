@@ -7,7 +7,6 @@
 import importlib.util
 import inspect
 import os
-import pathlib
 import time
 
 
@@ -19,11 +18,6 @@ class Default(Object):
 
     def __getattr__(self, key):
         return self.__dict__.get(key, "")
-
-
-def cdir(path):
-    pth = pathlib.Path(path)
-    pth.parent.mkdir(parents=True, exist_ok=True)
 
 
 def elapsed(seconds, short=True):
@@ -107,15 +101,6 @@ def md5sum(path):
         return hashlib.md5(txt, usedforsecurity=False).hexdigest()
 
 
-def pidfile(filename):
-    if os.path.exists(filename):
-        os.unlink(filename)
-    path2 = pathlib.Path(filename)
-    path2.parent.mkdir(parents=True, exist_ok=True)
-    with open(filename, "w", encoding="utf-8") as fds:
-        fds.write(str(os.getpid()))
-
-
 def privileges():
     import getpass
     import pwd
@@ -145,14 +130,12 @@ def wrapped(func):
 
 def __dir__():
     return (
-        'cdir',
         'elapsed',
         'extract_date',
         'forever',
         'getmain',
         'importer',
         'md5sum',
-        'pidfile',
         'privileges',
         'spl',
         'where',

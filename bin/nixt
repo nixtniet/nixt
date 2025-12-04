@@ -15,13 +15,13 @@ sys.path.insert(0, os.getcwd())
 from nixt.command import Commands, command
 from nixt.clients import CLI
 from nixt.configs import Config
-from nixt.kernels import Kernel, init, scanner
+from nixt.kernels import Kernel
 from nixt.message import Message
 from nixt.package import modules
 from nixt.statics import SYSTEMD
 from nixt.threads import threadhook
-from nixt.utility import forever, pidfile, privileges, spl, wrapped
-from nixt.workdir import pidname
+from nixt.utility import forever, privileges, spl, wrapped
+from nixt.workdir import pidfile, pidname
 
 
 "config"
@@ -30,6 +30,9 @@ from nixt.workdir import pidname
 Config.ignore = "wsd,udp"
 Config.name = "nixt" 
 Config.version = 440
+
+
+TXT = " ".join(sys.argv[1:])
 
 
 "clients"
@@ -61,10 +64,7 @@ class Console(CLI):
 
 def background():
     daemon(check("v"))
-    privileges()
-    mods = modules()
-    scanner(mods)
-    init(mods)
+    Kernel.boot(TXT)
     Commands.add(cmd, ver)
     pidfile(pidname(Config.name))
     forever()
@@ -72,17 +72,9 @@ def background():
 
 def console():
     import readline # noqa: F401
-    if "v" in Config.opts:
-        banner()
-    mods = modules()
+    Kernel.boot(TXT, sys.stdout)
     Commands.add(cmd, ver)
     csl = Console()
-    scanner(mods)
-    if "a" in Config.opts:
-        inits = modules()
-    else:
-        inits = spl(Config.sets.get("init", ""))
-    init(inits, "w" in Config.opts)
     csl.start()
     forever()
 
@@ -90,8 +82,7 @@ def console():
 def control():
     if len(sys.argv) == 1:
         return
-    mods = modules()
-    scanner(mods)
+    Kernel.boot(TXT)
     Commands.add(cmd, srv, ver)
     csl = CLI()
     csl.silent = False
@@ -104,11 +95,7 @@ def control():
 
 
 def service():
-    privileges()
-    banner()
-    mods = modules()
-    scanner(mods)
-    init(mods)
+    Kernel.boot()
     Commands.add(cmd, ver)
     pidfile(pidname(Config.name))
     forever()

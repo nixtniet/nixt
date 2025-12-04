@@ -39,7 +39,7 @@ def main():
     popen(f'grep -R "import inspect" {NAME}/*.py')
     popen(f'grep -R "getpass" {NAME}/*.py')
     popen(f'grep -R "pathlib" {NAME}/*.py')
-    popen(f'grep -R {NAME} {NAME}')
+    #popen(f'grep -R {NAME} {NAME}')
 
 
 if __name__ == "__main__":

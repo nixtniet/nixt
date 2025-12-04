@@ -4,45 +4,82 @@
 "in the beginning"
 
 
+import logging
+import os
+import time
+
+
 from nixt.command import scan
 from nixt.configs import Config
 from nixt.loggers import level
 from nixt.methods import parse
-from nixt.package import Mods, mods
+from nixt.package import Mods, mods, modules
 from nixt.threads import launch
+from nixt.utility import spl
 from nixt.workdir import Workdir
 
 
 class Kernel:
 
+    modules = {}
+
+    @staticmethod
+    def banner(stream):
+        tme = time.ctime(time.time()).replace("  ", " ")
+        logger = logging.getLogger()
+        stream.write("%s %s since %s (%s)" % (
+                                       Config.name.upper(),
+                                       Config.version,
+                                       tme,
+                                       logging.getLevelName(logger.getEffectiveLevel())
+                                      ))
+        stream.write("\n")
+        stream.flush()
+
+    @staticmethod
+    def boot(txt, stream=None):
+        Kernel.privileges()
+        Kernel.configure(txt)
+        if stream and "v" in Config.opts:
+            Kernel.banner(stream)
+        Kernel.scanner(modules())
+        Kernel.init(Config.sets.init or modules(), "w" in Config.opts)
+
     @staticmethod
     def configure(txt):
         parse(Config, txt)
-        level(Config.sets.get("level", "info"))
+        level(Config.sets.level or "info")
         Workdir.configure(Config.name)
         Mods.configure()
 
-
-def init(names, wait=False):
-    thrs = []
-    for mod in mods(names):
-        if init and "init" not in dir(mod):
-            continue
-        thr = launch(mod.init)
+    @staticmethod
+    def init(names, wait=False):
+        thrs = []
+        for name in spl(names):
+            mod = Mods.get(name)
+            if "init" not in dir(mod):
+                continue
+            thrs.append(launch(mod.init))
         if wait:
-            thrs.append(thr)
-    for thr in thrs:
-        thr.join()
+            for thr in thrs:
+                thr.join()
 
+    @staticmethod
+    def privileges():
+        import getpass
+        import pwd
+        pwnam2 = pwd.getpwnam(getpass.getuser())
+        os.setgid(pwnam2.pw_gid)
+        os.setuid(pwnam2.pw_uid)
 
-def scanner(names):
-    for mod in mods(names):
-        scan(mod)
+    @staticmethod
+    def scanner(names):
+        for mod in mods(names):
+            Kernel.modules[mod.__name__] = mod
+            scan(mod)
 
 
 def __dir__():
     return (
         'Kernel',
-        'inits',
-        'scanner'
     )

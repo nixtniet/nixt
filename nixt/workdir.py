@@ -22,6 +22,11 @@ class Workdir:
         skel()
 
 
+def cdir(path):
+    pth = pathlib.Path(path)
+    pth.parent.mkdir(parents=True, exist_ok=True)
+
+
 def getpath(obj):
     return store(ident(obj))
 
@@ -42,6 +47,15 @@ def long(name: str):
 
 def moddir(modname: str = ""):
     return os.path.join(Workdir.wdr, modname or "mods")
+
+
+def pidfile(filename):
+    if os.path.exists(filename):
+        os.unlink(filename)
+    path2 = pathlib.Path(filename)
+    path2.parent.mkdir(parents=True, exist_ok=True)
+    with open(filename, "w", encoding="utf-8") as fds:
+        fds.write(str(os.getpid()))
 
 
 def pidname(name: str):
