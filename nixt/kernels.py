@@ -29,29 +29,14 @@ class Config(Default):
 class Kernel:
 
     @staticmethod
-    def banner(stream):
-        tme = time.ctime(time.time()).replace("  ", " ")
-        stream.write("%s %s since %s (%s)" % (
-                                       Config.name.upper(),
-                                       Config.version,
-                                       tme,
-                                       Config.level.upper()
-                                      ))
-        stream.write("\n")
-        stream.flush()
-
-    @staticmethod
-    def boot(txt, stream=None, init=""):
-        Kernel.configure(txt, True)
-        if stream and "v" in Config.opts:
-            Kernel.banner(stream)
+    def boot(txt, init=""):
+        Kernel.configure(True)
         Kernel.scanner(Mods.list())
         if init:
-            Kernel.init(Config.init or "irc,rss", "w" in Config.opts)
+            Kernel.init(Mods.list(), "w" in Config.opts)
 
     @staticmethod
-    def configure(txt, local=False, network=False):
-        Methods.parse(Config, txt)
+    def configure(local=False, network=False):
         Logging.level(Config.sets.level or "info")
         Workdir.configure(Config.name)
         Mods.configure(local, network)

@@ -2,12 +2,8 @@
 # This file is placed in the Public Domain.
 
 
-import getpass
 import os
-import pwd
-import readline
 import sys
-import termios
 import threading
 import time
 
@@ -15,8 +11,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.classes import Commands, CLI, Message, Mods, Threads, Utils, Workdir
-from nixt.kernels import Kernel, Config
+from nixt.classes import Commands, CLI, Methods, Message, Mods, Threads
+from nixt.classes import Config, Kernel, Utils, Workdir
 from nixt.statics import SYSTEMD
 
 
@@ -96,12 +92,15 @@ class Runtime:
 
     @staticmethod
     def privileges():
+        import getpass
+        import pwd
         pwnam2 = pwd.getpwnam(getpass.getuser())
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
 
     @staticmethod
     def wrap(func):
+        import termios
         old = None
         try:
             old = termios.tcgetattr(sys.stdin.fileno())
@@ -118,8 +117,8 @@ class Scripts:
 
     @staticmethod
     def background():
-        Runtime.privileges()
-        Kernel.configure(TXT)
+        Kernel.configure(TXT, True)
+        print(Config.init)
         Kernel.init(Config.init)
         Commands.add(Cmd.cmd, Cmd.ver)
         Workdir.pidfile(Workdir.pidname(Config.name))
@@ -127,7 +126,10 @@ class Scripts:
 
     @staticmethod
     def console():
-        Kernel.boot(TXT, sys.stdout, init=Config.init)
+        import readline
+        Methods.parse(Config, TXT)
+        Runtime.banner()
+        Kernel.boot(TXT, init=Config.init)
         Commands.add(Cmd.cmd, Cmd.ver)
         csl = Console()
         csl.start()
@@ -137,7 +139,8 @@ class Scripts:
     def control():
         if len(sys.argv) == 1:
             return
-        Kernel.boot(TXT, init=Config.init)
+        Method.parse(Config, TXT)
+        Kernel.boot()
         Commands.add(Cmd.cmd, Cmd.srv, Cmd.ver)
         csl = CLI()
         csl.silent = False
@@ -174,7 +177,6 @@ class Cmd:
 
 
 def main():
-    Mods.configure(True)
     if Runtime.check("b"):
         threading.excepthook = threadhook
     if Runtime.check('z'):
@@ -183,6 +185,7 @@ def main():
         Runtime.wrap(Scripts.console)
     elif Runtime.check("d"):
         Runtime.daemon(Runtime.check("v"))
+        Runtime.privileges()
         Scripts.background()
     elif Runtime.check("s"):
         Utils.wrapped(Scripts.service)
