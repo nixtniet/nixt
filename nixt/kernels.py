@@ -19,8 +19,10 @@ from nixt.workdir import Workdir
 class Config(Default):
 
     debug = False
+    init = "irc,rss"
     level = "info"
     name = ""
+    sets = Default()
     version = 0
 
 
@@ -39,20 +41,20 @@ class Kernel:
         stream.flush()
 
     @staticmethod
-    def boot(txt, stream=None, init=True):
-        Kernel.configure(txt)
+    def boot(txt, stream=None, init=""):
+        Kernel.configure(txt, True)
         if stream and "v" in Config.opts:
             Kernel.banner(stream)
         Kernel.scanner(Mods.list())
         if init:
-            Kernel.init(Config.sets.init or Mods.list(), "w" in Config.opts)
+            Kernel.init(Config.init or "irc,rss", "w" in Config.opts)
 
     @staticmethod
-    def configure(txt):
+    def configure(txt, local=False, network=False):
         Methods.parse(Config, txt)
         Logging.level(Config.sets.level or "info")
         Workdir.configure(Config.name)
-        Mods.configure("m" in Config.opts)
+        Mods.configure(local, network)
 
     @staticmethod
     def forever():

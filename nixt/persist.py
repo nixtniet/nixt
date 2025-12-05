@@ -66,7 +66,7 @@ class Locater:
 
     @staticmethod
     def attrs(kind):
-        objs = list(find(kind))
+        objs = list(Locater.find(kind))
         if objs:
             return list(Object.keys(objs[0][1]))
         return []

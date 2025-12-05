@@ -24,11 +24,11 @@ class Logging:
         formatter = Format(Logging.format, Logging.datefmt)
         stream = logging.StreamHandler()
         stream.setFormatter(formatter)
-        logger = logging.basicConfig(
-                                     level=loglevel.upper(),
-                                     handlers=[stream,],
-                                     force=True
-                                    )
+        logging.basicConfig(
+                            level=loglevel.upper(),
+                            handlers=[stream,],
+                            force=True
+                           )
 
 
 def __dir__():

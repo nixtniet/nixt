@@ -15,7 +15,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.classes import Commands, CLI, Message, Threads, Utils, Workdir
+from nixt.classes import Commands, CLI, Message, Mods, Threads, Utils, Workdir
 from nixt.kernels import Kernel, Config
 from nixt.statics import SYSTEMD
 
@@ -118,16 +118,16 @@ class Scripts:
 
     @staticmethod
     def background():
-        Runtime.daemon(Runtime.check("v"))
         Runtime.privileges()
-        Kernel.boot(TXT)
+        Kernel.configure(TXT)
+        Kernel.init(Config.init)
         Commands.add(Cmd.cmd, Cmd.ver)
         Workdir.pidfile(Workdir.pidname(Config.name))
         Kernel.forever()
 
     @staticmethod
     def console():
-        Kernel.boot(TXT, sys.stdout)
+        Kernel.boot(TXT, sys.stdout, init=Config.init)
         Commands.add(Cmd.cmd, Cmd.ver)
         csl = Console()
         csl.start()
@@ -137,7 +137,7 @@ class Scripts:
     def control():
         if len(sys.argv) == 1:
             return
-        Kernel.boot(TXT, init=False)
+        Kernel.boot(TXT, init=Config.init)
         Commands.add(Cmd.cmd, Cmd.srv, Cmd.ver)
         csl = CLI()
         csl.silent = False
@@ -151,8 +151,8 @@ class Scripts:
     @staticmethod
     def service():
         Runtime.privileges()
-        Kernel.boot()
-        Commands.add(cmd.cmd, Cmd.ver)
+        Kernel.boot(TXT, init=Config.init)
+        Commands.add(Cmd.cmd, Cmd.ver)
         Workdir.pidfile(Workdir.pidname(Config.name))
         Kernel.forever()
 
@@ -174,7 +174,7 @@ class Cmd:
 
 
 def main():
-    Kernel.configure(" ".join(sys.argv[1:]))
+    Mods.configure(True)
     if Runtime.check("b"):
         threading.excepthook = threadhook
     if Runtime.check('z'):
@@ -182,6 +182,7 @@ def main():
     if Runtime.check("c"):
         Runtime.wrap(Scripts.console)
     elif Runtime.check("d"):
+        Runtime.daemon(Runtime.check("v"))
         Scripts.background()
     elif Runtime.check("s"):
         Utils.wrapped(Scripts.service)

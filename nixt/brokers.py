@@ -30,7 +30,7 @@ class Broker:
     @staticmethod
     def like(txt):
         for orig in Broker.objects:
-            if origin.split()[0] in orig.split()[0]:
+            if orig.split()[0] in orig.split()[0]:
                 yield orig
 
 

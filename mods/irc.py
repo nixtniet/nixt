@@ -516,7 +516,7 @@ def cb_error(evt):
     bot = Broker.get(evt.orig)
     bot.state.nrerror += 1
     bot.state.error = evt.text
-    logging.debug(MEthods.fmt(evt))
+    logging.debug(Methods.fmt(evt))
 
 
 def cb_h903(evt):
