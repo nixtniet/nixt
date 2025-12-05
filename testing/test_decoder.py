@@ -5,7 +5,7 @@ import unittest
 
 
 from nixt.objects import Object
-from nixt.serials import dumps, loads
+from nixt.serials import Json
 
 
 class TestDecoder(unittest.TestCase):
@@ -13,7 +13,7 @@ class TestDecoder(unittest.TestCase):
     def test_loads(self):
         obj = Object()
         obj.test = "bla"
-        oobj = loads(dumps(obj))
+        oobj = Json.loads(Json.dumps(obj))
         self.assertEqual(oobj["test"], "bla")
 
     def test_doctest(self):

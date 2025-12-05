@@ -5,7 +5,7 @@ import unittest
 
 
 from nixt.methods import Methods
-from nixt.objects import Object, fqn, items, keys, update, values
+from nixt.objects import Object
 
 
 VALIDJSON = '{"test": "bla"}'
@@ -127,10 +127,10 @@ class TestObject(unittest.TestCase):
         self.assertTrue(Object().__module__, "nop")
 
     def test_kind(self):
-        self.assertEqual(fqn(Object()), "nixt.objects.Object")
+        self.assertEqual(Object.fqn(Object()), "nixt.objects.Object")
 
     def test_repr(self):
-        self.assertTrue(update(Object(),
+        self.assertTrue(Object.update(Object(),
                                {"key": "value"}).__repr__(), {"key": "value"})
 
     def test_setattr(self):
@@ -155,7 +155,7 @@ class TestObject(unittest.TestCase):
         obj = Object()
         obj.key = "value"
         self.assertEqual(
-            list(keys(obj)),
+            list(Object.keys(obj)),
             [
                 "key",
             ],
@@ -165,7 +165,7 @@ class TestObject(unittest.TestCase):
         obj = Object()
         obj.key = "value"
         self.assertEqual(
-            list(items(obj)),
+            list(Object.items(obj)),
             [
                 ("key", "value"),
             ],
@@ -180,14 +180,14 @@ class TestObject(unittest.TestCase):
         obj = Object()
         obj.key = "value"
         oobj = Object()
-        update(oobj, obj)
+        Object.update(oobj, obj)
         self.assertTrue(oobj.key, "value")
 
     def test_values(self):
         obj = Object()
         obj.key = "value"
         self.assertEqual(
-            list(values(obj)),
+            list(Object.values(obj)),
             [
                 "value",
             ],
