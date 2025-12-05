@@ -14,8 +14,9 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.kernels import Client, Commands, Config, Kernel, Message, Methods
-from nixt.kernels import Output, Mods, Threads, Utils, Workdir
+from nixt.classes import Client, Commands, Message, Methods
+from nixt.classes import Output, Mods, Threads, Utils, Workdir
+from nixt.kernels import Config, Kernel
 
 
 Config.debug = True

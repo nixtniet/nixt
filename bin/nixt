@@ -15,13 +15,13 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.classes import Commands, CLI, Message, Threads, Utils
+from nixt.classes import Commands, CLI, Message, Threads, Utils, Workdir
 from nixt.kernels import Kernel, Config
 from nixt.statics import SYSTEMD
 
 
 Config.ignore = "wsd,udp"
-Config.level = "infp"
+Config.level = "info"
 Config.name = "nixt" 
 Config.version = 440
 
@@ -118,7 +118,7 @@ class Scripts:
 
     @staticmethod
     def background():
-        Runtime.daemon(check("v"))
+        Runtime.daemon(Runtime.check("v"))
         Runtime.privileges()
         Kernel.boot(TXT)
         Commands.add(Cmd.cmd, Cmd.ver)

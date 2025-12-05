@@ -594,7 +594,7 @@ def cfg(event):
         event.reply(
             Methods.fmt(
                 config,
-                keys(config),
+                Object.keys(config),
                 skip="control,name,word,realname,sleep,username".split(",")
             )
         )
