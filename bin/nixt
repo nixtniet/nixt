@@ -2,9 +2,12 @@
 # This file is placed in the Public Domain.
 
 
-import logging
+import getpass
 import os
+import pwd
+import readline
 import sys
+import termios
 import threading
 import time
 
@@ -18,6 +21,7 @@ from nixt.statics import SYSTEMD
 
 
 Config.ignore = "wsd,udp"
+Config.level = "infp"
 Config.name = "nixt" 
 Config.version = 440
 
@@ -51,12 +55,11 @@ class Runtime:
     @staticmethod
     def banner():
         tme = time.ctime(time.time()).replace("  ", " ")
-        logger = logging.getLogger()
         print("%s %s since %s (%s)" % (
                                        Config.name.upper(),
                                        Config.version,
                                        tme,
-                                       logging.getLevelName(logger.getEffectiveLevel())
+                                       Config.level.upper()
                                       ))
         sys.stdout.flush()
 
@@ -93,15 +96,12 @@ class Runtime:
 
     @staticmethod
     def privileges():
-        import getpass
-        import pwd
         pwnam2 = pwd.getpwnam(getpass.getuser())
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
 
     @staticmethod
     def wrap(func):
-        import termios
         old = None
         try:
             old = termios.tcgetattr(sys.stdin.fileno())
@@ -121,15 +121,14 @@ class Scripts:
         Runtime.daemon(check("v"))
         Runtime.privileges()
         Kernel.boot(TXT)
-        Commands.add(cmd, ver)
+        Commands.add(Cmd.cmd, Cmd.ver)
         Workdir.pidfile(Workdir.pidname(Config.name))
         Kernel.forever()
 
     @staticmethod
     def console():
-        import readline # noqa: F401
         Kernel.boot(TXT, sys.stdout)
-        Commands.add(cmd, ver)
+        Commands.add(Cmd.cmd, Cmd.ver)
         csl = Console()
         csl.start()
         Kernel.forever()
@@ -139,7 +138,7 @@ class Scripts:
         if len(sys.argv) == 1:
             return
         Kernel.boot(TXT, init=False)
-        Commands.add(cmd, srv, ver)
+        Commands.add(Cmd.cmd, Cmd.srv, Cmd.ver)
         csl = CLI()
         csl.silent = False
         evt = Message()
@@ -153,37 +152,38 @@ class Scripts:
     def service():
         Runtime.privileges()
         Kernel.boot()
-        Commands.add(cmd, ver)
+        Commands.add(cmd.cmd, Cmd.ver)
         Workdir.pidfile(Workdir.pidname(Config.name))
         Kernel.forever()
 
 
-def cmd(event):
-    event.reply(",".join(sorted(Commands.names or Commands.cmds)))
+class Cmd:
 
+    @staticmethod
+    def cmd(event):
+        event.reply(",".join(sorted(Commands.names or Commands.cmds)))
 
-def srv(event):
-    import getpass
-    name = getpass.getuser()
-    event.reply(SYSTEMD % (Config.name.upper(), name, name, name, Config.name))
+    @staticmethod
+    def srv(event):
+        name = getpass.getuser()
+        event.reply(SYSTEMD % (Config.name.upper(), name, name, name, Config.name))
 
-
-def ver(event):
-    event.reply(f"{Config.name.upper()} {Config.version}")
+    @staticmethod
+    def ver(event):
+        event.reply(f"{Config.name.upper()} {Config.version}")
 
 
 def main():
-    check = Runtime.check
     Kernel.configure(" ".join(sys.argv[1:]))
-    if check("b"):
+    if Runtime.check("b"):
         threading.excepthook = threadhook
-    if check('z'):
+    if Runtime.check('z'):
         Config.debug = True
-    if check("c"):
+    if Runtime.check("c"):
         Runtime.wrap(Scripts.console)
-    elif check("d"):
+    elif Runtime.check("d"):
         Scripts.background()
-    elif check("s"):
+    elif Runtime.check("s"):
         Utils.wrapped(Scripts.service)
     else:
         Utils.wrapped(Scripts.control)
