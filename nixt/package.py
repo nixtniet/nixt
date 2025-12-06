@@ -31,7 +31,8 @@ class Mods:
             name = Mods.package + ".network" 
             Mods.add(name, os.path.join(Mods.path, "network"))
         if local:
-            Mods.add("mods", "mods")
+            Mods.add("mods", os.path.join(os.getcwd(), "mods"))
+        print(Mods.dirs)
 
     @staticmethod
     def get(name):
@@ -66,7 +67,7 @@ class Mods:
                 x[:-3] for x in os.listdir(path)
                 if x.endswith(".py") and not x.startswith("__")
            ])
-        return ",".join(sorted(mods))
+        return ",".join(sorted(mods)).strip()
 
     @staticmethod
     def mods(names):

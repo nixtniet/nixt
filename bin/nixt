@@ -12,7 +12,8 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.classes import Commands, CLI, Methods, Message, Mods, Threads
-from nixt.classes import Config, Kernel, Utils, Workdir
+from nixt.classes import Utils, Workdir
+from nixt.kernels import Config, Kernel
 from nixt.statics import SYSTEMD
 
 
@@ -71,7 +72,7 @@ class Runtime:
         return False
 
     @staticmethod
-    def daemon(verbose=False):
+    def daemon(verbose=False, nochdir=False):
         pid = os.fork()
         if pid != 0:
             os._exit(0)
@@ -86,8 +87,9 @@ class Runtime:
                 os.dup2(sos.fileno(), sys.stdout.fileno())
             with open('/dev/null', 'a+', encoding="utf-8") as ses:
                 os.dup2(ses.fileno(), sys.stderr.fileno())
-        os.umask(0)
-        os.chdir("/")
+        if not nochdir:
+            os.umask(0)
+            os.chdir("/")
         os.nice(10)
 
     @staticmethod
@@ -113,23 +115,25 @@ class Runtime:
                 termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
+check = Runtime.check
+
+
 class Scripts:
 
     @staticmethod
     def background():
-        Kernel.configure(TXT, True)
-        print(Config.init)
-        Kernel.init(Config.init)
-        Commands.add(Cmd.cmd, Cmd.ver)
+        Runtime.daemon(check("v"), check("m"))
+        Runtime.privileges()
+        Kernel.boot("", True, check("m"))
         Workdir.pidfile(Workdir.pidname(Config.name))
+        Commands.add(Cmd.cmd, Cmd.ver)
         Kernel.forever()
 
     @staticmethod
     def console():
         import readline
-        Methods.parse(Config, TXT)
         Runtime.banner()
-        Kernel.boot(TXT, init=Config.init)
+        Kernel.boot(TXT, True)
         Commands.add(Cmd.cmd, Cmd.ver)
         csl = Console()
         csl.start()
@@ -139,8 +143,7 @@ class Scripts:
     def control():
         if len(sys.argv) == 1:
             return
-        Method.parse(Config, TXT)
-        Kernel.boot()
+        Kernel.boot(TXT)
         Commands.add(Cmd.cmd, Cmd.srv, Cmd.ver)
         csl = CLI()
         csl.silent = False
@@ -154,7 +157,7 @@ class Scripts:
     @staticmethod
     def service():
         Runtime.privileges()
-        Kernel.boot(TXT, init=Config.init)
+        Kernel.boot("", True)
         Commands.add(Cmd.cmd, Cmd.ver)
         Workdir.pidfile(Workdir.pidname(Config.name))
         Kernel.forever()
@@ -177,17 +180,15 @@ class Cmd:
 
 
 def main():
-    if Runtime.check("b"):
+    if check("b"):
         threading.excepthook = threadhook
-    if Runtime.check('z'):
+    if check('z'):
         Config.debug = True
-    if Runtime.check("c"):
+    if check("c"):
         Runtime.wrap(Scripts.console)
-    elif Runtime.check("d"):
-        Runtime.daemon(Runtime.check("v"))
-        Runtime.privileges()
+    elif check("d"):
         Scripts.background()
-    elif Runtime.check("s"):
+    elif check("s"):
         Utils.wrapped(Scripts.service)
     else:
         Utils.wrapped(Scripts.control)

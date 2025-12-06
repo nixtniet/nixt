@@ -19,9 +19,10 @@ from nixt.workdir import Workdir
 class Config(Default):
 
     debug = False
-    init = "irc,rss"
+    init = ""
     level = "info"
     name = ""
+    opts = Default()
     sets = Default()
     version = 0
 
@@ -29,18 +30,21 @@ class Config(Default):
 class Kernel:
 
     @staticmethod
-    def boot(txt, init=""):
-        Kernel.configure(True)
-        Kernel.scanner(Mods.list())
+    def boot(txt="", init=False, local=False):
+        Methods.parse(Config, txt)
+        Kernel.configure(local)
+        Config.init = Config.sets.init or Config.init
+        Config.init = Config.init or Mods.list()
+        Kernel.scanner(Config.init)
         if init:
-            Kernel.init(Mods.list(), "w" in Config.opts)
+            Kernel.init(Config.init, "w" in Config.opts)
 
     @staticmethod
     def configure(local=False, network=False):
         Logging.level(Config.sets.level or "info")
         Workdir.configure(Config.name)
         Mods.configure(local, network)
-
+        
     @staticmethod
     def forever():
         while True:
