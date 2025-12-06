@@ -10,10 +10,10 @@ import threading
 import _thread
 
 
-from nixt.brokers import Broker
-from nixt.command import Commands
+from nixt.brokers import add
+from nixt.command import command
 from nixt.handler import Handler
-from nixt.threads import Threads
+from nixt.threads import launch
 
 
 class Client(Handler):
@@ -23,7 +23,7 @@ class Client(Handler):
         self.olock = threading.RLock()
         self.oqueue = queue.Queue()
         self.silent = True
-        Broker.add(self)
+        add(self)
 
     def announce(self, text):
         if not self.silent:
@@ -56,7 +56,7 @@ class CLI(Client):
  
      def __init__(self):
          super().__init__()
-         self.register("command", Commands.command)
+         self.register("command", command)
 
 
 class Output(Client):
@@ -71,7 +71,7 @@ class Output(Client):
             self.oqueue.task_done()
 
     def start(self):
-        Threads.launch(self.output)
+        launch(self.output)
         super().start()
 
     def stop(self):

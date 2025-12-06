@@ -6,11 +6,15 @@ import logging
 import time
 
 
-from nixt.classes import Broker, Message, Object, Repeater, Utils
+from nixt.brokers import all
+from nixt.message import Message
+from nixt.objects import Object, construct, keys
+from nixt.repeats import Repeater
+from nixt.utility import elapsed
 
 
 def init():
-    for key in Object.keys(oorzaken):
+    for key in keys(oorzaken):
         if "Psych" not in key:
             continue
         val = getattr(oorzaken, key, None)
@@ -22,7 +26,7 @@ def init():
             name = aliases.get(key)
             repeater = Repeater(sec, cbstats, evt, thrname=name)
             repeater.start()
-            logging.warning("since %s", Utils.elapsed(time.time()-STARTTIME))
+            logging.warning("since %s", elapsed(time.time()-STARTTIME))
 
 
 "defines"
@@ -88,7 +92,7 @@ def getday():
 
 
 def getnr(nme):
-    for k in Object.keys(oorzaken):
+    for k in keys(oorzaken):
         if nme.lower() in k.lower():
             return int(getattr(oorzaken, k))
     return 0
@@ -126,15 +130,15 @@ def hourly():
 
 def cbnow(_evt):
     delta = time.time() - STARTTIME
-    txt = Utils.elapsed(delta) + " "
-    for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):
+    txt = elapsed(delta) + " "
+    for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
             continue
         nrtimes = int(delta/needed)
         txt += f"{getalias(nme)} {nrtimes} | "
     txt += "https://pypi.org/project/."
-    for bot in Broker.all("announce"):
+    for bot in all("announce"):
         bot.announce(txt)
 
 
@@ -149,15 +153,15 @@ def cbstats(evt):
         delta2 = time.time() - getday()
         thisday = int(delta2/needed)
         txt = "%s %s #%s (%s/%s/%s) every %s" % (
-            Utils.elapsed(delta),
+            elapsed(delta),
             getalias(nme).upper(),
             nrtimes,
             thisday,
             nrday,
             nryear,
-            Utils.elapsed(needed)
+            elapsed(needed)
         )
-        for bot in Broker.all("announce"):
+        for bot in all("announce"):
             bot.announce(txt)
 
 
@@ -166,8 +170,8 @@ def cbstats(evt):
 
 def dis(event):
     delta = time.time() - STARTTIME
-    txt = Utils.elapsed(delta) + " "
-    for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):
+    txt = elapsed(delta) + " "
+    for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
             continue
@@ -187,13 +191,13 @@ def now(event):
         nrday = int(DAY/needed)
         thisday = int(DAY % needed)
         txt = "%s %s #%s (%s/%s/%s) every %s" % (
-            Utils.elapsed(delta),
+            elapsed(delta),
             getalias(nme),
             nrtimes,
             thisday,
             nrday,
             nryear,
-            Utils.elapsed(needed)
+            elapsed(needed)
         )
         event.reply(txt)
 
@@ -401,13 +405,13 @@ aantal = """
 
 
 oorzaak = Object()
-Object.construct(oorzaak, zip(oor, aantal))
+construct(oorzaak, zip(oor, aantal))
 oorzaken = Object()
 
 
 def boot():
     _nr = -1
-    for key in Object.keys(oorzaak):
+    for key in keys(oorzaak):
         _nr += 1
         if _nr == 0:
             continue

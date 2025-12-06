@@ -19,15 +19,23 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.classes import Broker, Config, Disk, Locater, Methods, Repeater
-from nixt.classes import Object, Threads, Utils, Workdir
+from nixt.brokers import all
+from nixt.kernels import Config
+from nixt.locater import find, fntime, last
+from nixt.methods import fmt
+from nixt.objects import Object, update
+from nixt.persist import write
+from nixt.repeats import Repeater
+from nixt.threads import launch
+from nixt.utility import elapsed, spl
+from nixt.workdir import Workdir
 
 
 def init():
     fetcher = Fetcher()
     fetcher.start()
     if fetcher.seenfn:
-        logging.warning("since %s", Utils.elapsed(time.time()-Locater.fntime(fetcher.seenfn)))
+        logging.warning("since %s", elapsed(time.time()-fntime(fetcher.seenfn)))
     else:
         logging.warning("since %s", time.ctime(time.time()).replace("  ", " "))
     return fetcher
@@ -99,8 +107,8 @@ class Fetcher(Object):
             for obj in reversed(getfeed(feed.rss, feed.display_list)):
                 counter += 1
                 fed = Feed()
-                Object.update(fed, obj)
-                Object.update(fed, feed)
+                update(fed, obj)
+                update(fed, feed)
                 url = urllib.parse.urlparse(fed.link)
                 if url.path and not url.path == "/":
                     uurl = f"{url.scheme}://{url.netloc}/{url.path}"
@@ -110,12 +118,12 @@ class Fetcher(Object):
                 if uurl in seen:
                     continue
                 if self.dosave:
-                    Disk.write(fed)
+                    write(fed)
                 result.append(fed)
             setattr(self.seen, feed.rss, urls)
             if not self.seenfn:
                 self.seenfn = Workdir.getpath(self.seen)
-            Disk.write(self.seen, self.seenfn)
+            write(self.seen, self.seenfn)
         if silent:
             return counter
         txt = ""
@@ -124,18 +132,18 @@ class Fetcher(Object):
             txt = f"[{feedname}] "
         for obj in result:
             txt2 = txt + self.display(obj)
-            for bot in Broker.all("announce"):
+            for bot in all("announce"):
                 bot.announce(txt2)
         return counter
 
     def run(self, silent=False):
         thrs = []
-        for _fn, feed in Locater.find("rss.Rss"):
-            thrs.append(Threads.launch(self.fetch, feed, silent))
+        for _fn, feed in find("rss.Rss"):
+            thrs.append(launch(self.fetch, feed, silent))
         return thrs
 
     def start(self, repeat=True):
-        self.seenfn = Locater.last(self.seen)
+        self.seenfn = last(self.seen)
         if repeat:
             repeater = Repeater(300.0, self.run)
             repeater.start()
@@ -181,7 +189,7 @@ class Parser:
         for line in Parser.getitems(txt, toke):
             line = line.strip()
             obj = Object()
-            for itm in Utils.spl(items):
+            for itm in spl(items):
                 val = Parser.getitem(line, itm)
                 if val:
                     val = unescape(val.strip())
@@ -246,7 +254,7 @@ class OPML:
             if not attrz:
                 continue
             obj = Object()
-            for itm in Utils.spl(itemz):
+            for itm in spl(itemz):
                 if itm == "link":
                     itm = "href"
                 val = OPML.getvalue(attrz, itm)
@@ -263,7 +271,7 @@ class OPML:
 
 
 def attrs(obj, txt):
-    Object.update(obj, OPML.parse(txt))
+    update(obj, OPML.parse(txt))
 
 
 def cdata(line):
@@ -349,10 +357,10 @@ def dpl(event):
         event.reply("dpl <stringinurl> <item1,item2>")
         return
     setter = {"display_list": event.args[1]}
-    for fnm, feed in Locater.find("rss.Rss", {"rss": event.args[0]}):
+    for fnm, feed in find("rss.Rss", {"rss": event.args[0]}):
         if feed:
-            Object.update(feed, setter)
-            Disk.write(feed, fnm)
+            update(feed, setter)
+            write(feed, fnm)
     event.reply("ok")
 
 
@@ -360,10 +368,10 @@ def exp(event):
     with importlock:
         event.reply(TEMPLATE)
         nrs = 0
-        for _fn, ooo in Locater.find("rss.Rss"):
+        for _fn, ooo in find("rss.Rss"):
             nrs += 1
             obj = Rss()
-            Object.update(obj, ooo)
+            update(obj, ooo)
             name = f"url{nrs}"
             txt = f'<outline name="{name}" display_list="{obj.display_list}" xmlUrl="{obj.rss}"/>'
             event.reply(" " * 12 + txt)
@@ -393,16 +401,16 @@ def imp(event):
                 continue
             if not url.startswith("http"):
                 continue
-            has = list(Locater.find("rss.Rss", {"rss": url}, matching=True))
+            has = list(find("rss.Rss", {"rss": url}, matching=True))
             if has:
                 skipped.append(url)
                 nrskip += 1
                 continue
             feed = Rss()
-            Object.update(feed, obj)
+            update(feed, obj)
             feed.rss = obj.xmlUrl
             feed.insertid = insertid
-            Disk.write(feed)
+            write(feed)
             nrs += 1
     if nrskip:
         event.reply(f"skipped {nrskip} urls.")
@@ -415,12 +423,12 @@ def nme(event):
         event.reply("nme <stringinurl> <name>")
         return
     selector = {"rss": event.args[0]}
-    for fnm, fed in Locater.find("rss.Rss", selector):
+    for fnm, fed in find("rss.Rss", selector):
         feed = Rss()
-        Object.update(feed, fed)
+        update(feed, fed)
         if feed:
             feed.name = str(event.args[1])
-            Disk.write(feed, fnm)
+            write(feed, fnm)
     event.reply("ok")
 
 
@@ -428,14 +436,14 @@ def rem(event):
     if len(event.args) != 1:
         event.reply("rem <stringinurl>")
         return
-    for fnm, fed in Locater.find("rss.Rss"):
+    for fnm, fed in find("rss.Rss"):
         feed = Rss()
-        Object.update(feed, fed)
+        update(feed, fed)
         if event.args[0] not in feed.rss:
             continue
         if feed:
             feed.__deleted__ = True
-            Disk.write(feed, fnm)
+            write(feed, fnm)
             event.reply("ok")
             break
 
@@ -444,24 +452,24 @@ def res(event):
     if len(event.args) != 1:
         event.reply("res <stringinurl>")
         return
-    for fnm, fed in Locater.find("rss.Rss", removed=True):
+    for fnm, fed in find("rss.Rss", removed=True):
         feed = Rss()
-        Object.update(feed, fed)
+        update(feed, fed)
         if event.args[0] not in feed.rss:
             continue
         if feed:
             feed.__deleted__ = False
-            Disk.write(feed, fnm)
+            write(feed, fnm)
     event.reply("ok")
 
 
 def rss(event):
     if not event.rest:
         nrs = 0
-        for fnm, fed in Locater.find("rss.Rss"):
+        for fnm, fed in find("rss.Rss"):
             nrs += 1
-            elp = Utils.elapsed(time.time() - Locater.fntime(fnm))
-            txt = Methods.fmt(fed)
+            elp = elapsed(time.time() - fntime(fnm))
+            txt = fmt(fed)
             event.reply(f"{nrs} {txt} {elp}")
         if not nrs:
             event.reply("no feed found.")
@@ -470,13 +478,13 @@ def rss(event):
     if "http://" not in url and "https://" not in url:
         event.reply("i need an url")
         return
-    for fnm, result in Locater.find("rss.Rss", {"rss": url}):
+    for fnm, result in find("rss.Rss", {"rss": url}):
         if result:
             event.reply(f"{url} is known")
             return
     feed = Rss()
     feed.rss = event.args[0]
-    Disk.write(feed)
+    write(feed)
     event.reply("ok")
 
 

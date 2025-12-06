@@ -14,9 +14,15 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.classes import Client, Commands, Message, Methods
-from nixt.classes import Output, Mods, Threads, Utils, Workdir
-from nixt.kernels import Config, Kernel
+from nixt.clients import Client, Output
+from nixt.command import Commands, command
+from nixt.kernels import Config, boot
+from nixt.message import Message
+from nixt.methods import fmt
+from nixt.package import Mods
+from nixt.threads import launch, threadhook
+from nixt.utility import elapsed
+from nixt.workdir import Workdir
 
 
 Config.debug = True
@@ -35,7 +41,7 @@ class CLI(Output):
 
     def __init__(self):
         Output.__init__(self)
-        self.register("command", Commands.command)
+        self.register("command", command)
 
     def raw(self, txt):
         if "v" in Config.opts:
@@ -106,9 +112,9 @@ def payload(todo):
 def main():
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
-    Kernel.boot(" ".join(sys.argv[1:]), init=False)
+    boot(" ".join(sys.argv[1:]), False, True)
     if "b" in Config.opts:
-        threading.excepthook = Threads.threadhook
+        threading.excepthook = threadhook
     if "v" in Config.opts:
         banner(Config.name, Config.version)
     if "z" in Config.opts:
@@ -119,29 +125,29 @@ def main():
     thrs = []
     NRS = Config.index or 1
     for _x in range(NRS):
-        thrs.append(Threads.launch(payload, pre))
+        thrs.append(launch(payload, pre))
     for thr in thrs:
         thr.join()
     for _x in range(NRS):
-        thrs.append(Threads.launch(payload, examples))
+        thrs.append(launch(payload, examples))
     for thr in thrs:
         thr.join()
     for _x in range(NRS):
-        thrs.append(Threads.launch(payload, post))
+        thrs.append(launch(payload, post))
     for thr in thrs:
         thr.join()
-    Threads.launch(consume)
+    launch(consume)
     nrevents = events.qsize()
     try:
         events.join()
     except (KeyboardInterrupt, EOFError):
         os._exit(0)
     endtime = time.time()
-    lap = Utils.elapsed(endtime-starttime)
+    lap = elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
     if "v" in Config.opts:
-        print(Methods.fmt(Config))
+        print(f"{fmt(Config)}")
         print(f"{nrs} events left.")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
     os._exit(0)

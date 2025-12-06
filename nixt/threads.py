@@ -13,12 +13,12 @@ import time
 import _thread
 
 
-class Task(threading.Thread):
+class Thread(threading.Thread):
 
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
         self.event = None
-        self.name = kwargs.get("name", Threads.name(func))
+        self.name = kwargs.get("name", name(func))
         self.queue = queue.Queue()
         self.result = None
         self.starttime = time.time()
@@ -56,38 +56,37 @@ class Task(threading.Thread):
             raise ex
 
 
-class Threads:
+def launch(func, *args, **kwargs):
+    try:
+        thread = Thread(func, *args, **kwargs)
+        thread.start()
+        return thread
+    except (KeyboardInterrupt, EOFError):
+        os._exit(0)
 
-    @staticmethod
-    def launch(func, *args, **kwargs):
-        try:
-            thread = Task(func, *args, **kwargs)
-            thread.start()
-            return thread
-        except (KeyboardInterrupt, EOFError):
-            os._exit(0)
 
-    @staticmethod
-    def name(obj):
-        if inspect.ismethod(obj):
-            return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
-        if inspect.isfunction(obj):
-            return repr(obj).split()[1]
-        return repr(obj)
+def name(obj):
+    if inspect.ismethod(obj):
+        return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
+    if inspect.isfunction(obj):
+        return repr(obj).split()[1]
+    return repr(obj)
 
-    @staticmethod
-    def threadhook(args):
-        kind, value, trace, thr = args
-        exc = value.with_traceback(trace)
-        if kind not in (KeyboardInterrupt, EOFError):
-            logging.exception(exc)
-        thr.event and thr.event.ready()
-        _thread.interrupt_main()
+
+def threadhook(args):
+    kind, value, trace, thr = args
+    exc = value.with_traceback(trace)
+    if kind not in (KeyboardInterrupt, EOFError):
+        logging.exception(exc)
+    thr.event and thr.event.ready()
+    _thread.interrupt_main()
 
 
 def __dir__():
     return (
-        'Task',
-        'Threads',
+        'Thread',
+        'launch',
+        'name',
+        'threadhook'
     )
  

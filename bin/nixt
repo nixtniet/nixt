@@ -11,19 +11,19 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.classes import Commands, CLI, Methods, Message, Mods, Threads
-from nixt.classes import Utils, Workdir
-from nixt.kernels import Config, Kernel
+from nixt.clients import CLI
+from nixt.command import Commands, add, command
+from nixt.kernels import Config, boot, configure, forever
+from nixt.message import Message
+from nixt.methods import parse
 from nixt.statics import SYSTEMD
+from nixt.utility import wrapped
 
 
 Config.ignore = "wsd,udp"
 Config.level = "info"
 Config.name = "nixt" 
 Config.version = 440
-
-
-TXT = " ".join(sys.argv[1:])
 
 
 class CLI(CLI):
@@ -47,136 +47,134 @@ class Console(CLI):
         return evt
 
 
-class Runtime:
-
-    @staticmethod
-    def banner():
-        tme = time.ctime(time.time()).replace("  ", " ")
-        print("%s %s since %s (%s)" % (
-                                       Config.name.upper(),
-                                       Config.version,
-                                       tme,
-                                       Config.level.upper()
-                                      ))
-        sys.stdout.flush()
-
-    @staticmethod
-    def check(text):
-        args = sys.argv[1:]
-        for arg in args:
-            if not arg.startswith("-"):
-                continue
-            for char in text:
-                if char in arg:
-                    return True
-        return False
-
-    @staticmethod
-    def daemon(verbose=False, nochdir=False):
-        pid = os.fork()
-        if pid != 0:
-            os._exit(0)
-        os.setsid()
-        pid2 = os.fork()
-        if pid2 != 0:
-            os._exit(0)
-        if not verbose:
-            with open('/dev/null', 'r', encoding="utf-8") as sis:
-                os.dup2(sis.fileno(), sys.stdin.fileno())
-            with open('/dev/null', 'a+', encoding="utf-8") as sos:
-                os.dup2(sos.fileno(), sys.stdout.fileno())
-            with open('/dev/null', 'a+', encoding="utf-8") as ses:
-                os.dup2(ses.fileno(), sys.stderr.fileno())
-        if not nochdir:
-            os.umask(0)
-            os.chdir("/")
-        os.nice(10)
-
-    @staticmethod
-    def privileges():
-        import getpass
-        import pwd
-        pwnam2 = pwd.getpwnam(getpass.getuser())
-        os.setgid(pwnam2.pw_gid)
-        os.setuid(pwnam2.pw_uid)
-
-    @staticmethod
-    def wrap(func):
-        import termios
-        old = None
-        try:
-            old = termios.tcgetattr(sys.stdin.fileno())
-        except termios.error:
-            pass
-        try:
-            Utils.wrapped(func)
-        finally:
-            if old:
-                termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+"runtime"
 
 
-check = Runtime.check
+def banner():
+    tme = time.ctime(time.time()).replace("  ", " ")
+    print("%s %s since %s (%s)" % (
+                                   Config.name.upper(),
+                                   Config.version,
+                                   tme,
+                                   Config.level.upper()
+                                  ))
+    sys.stdout.flush()
 
 
-class Scripts:
+def check(text):
+    args = sys.argv[1:]
+    for arg in args:
+        if not arg.startswith("-"):
+            continue
+        for char in text:
+            if char in arg:
+                return True
 
-    @staticmethod
-    def background():
-        Runtime.daemon(check("v"), check("m"))
-        Runtime.privileges()
-        Kernel.boot("", True, check("m"))
-        Workdir.pidfile(Workdir.pidname(Config.name))
-        Commands.add(Cmd.cmd, Cmd.ver)
-        Kernel.forever()
+    return False
 
-    @staticmethod
-    def console():
-        import readline
-        Runtime.banner()
-        Kernel.boot(TXT, True)
-        Commands.add(Cmd.cmd, Cmd.ver)
-        csl = Console()
-        csl.start()
-        Kernel.forever()
-
-    @staticmethod
-    def control():
-        if len(sys.argv) == 1:
-            return
-        Kernel.boot(TXT)
-        Commands.add(Cmd.cmd, Cmd.srv, Cmd.ver)
-        csl = CLI()
-        csl.silent = False
-        evt = Message()
-        evt.orig = repr(csl)
-        evt.text = " ".join(sys.argv[1:])
-        evt.type = "command"
-        Commands.command(evt)
-        evt.wait()
-
-    @staticmethod
-    def service():
-        Runtime.privileges()
-        Kernel.boot("", True)
-        Commands.add(Cmd.cmd, Cmd.ver)
-        Workdir.pidfile(Workdir.pidname(Config.name))
-        Kernel.forever()
+def daemon(verbose=False, nochdir=False):
+    pid = os.fork()
+    if pid != 0:
+        os._exit(0)
+    os.setsid()
+    pid2 = os.fork()
+    if pid2 != 0:
+        os._exit(0)
+    if not verbose:
+        with open('/dev/null', 'r', encoding="utf-8") as sis:
+            os.dup2(sis.fileno(), sys.stdin.fileno())
+        with open('/dev/null', 'a+', encoding="utf-8") as sos:
+            os.dup2(sos.fileno(), sys.stdout.fileno())
+        with open('/dev/null', 'a+', encoding="utf-8") as ses:
+            os.dup2(ses.fileno(), sys.stderr.fileno())
+    if not nochdir:
+        os.umask(0)
+        os.chdir("/")
+    os.nice(10)
 
 
-class Cmd:
+def privileges():
+    import getpass
+    import pwd
+    pwnam2 = pwd.getpwnam(getpass.getuser())
+    os.setgid(pwnam2.pw_gid)
+    os.setuid(pwnam2.pw_uid)
 
-    @staticmethod
-    def cmd(event):
-        event.reply(",".join(sorted(Commands.names or Commands.cmds)))
 
-    @staticmethod
-    def srv(event):
-        name = getpass.getuser()
-        event.reply(SYSTEMD % (Config.name.upper(), name, name, name, Config.name))
+def wrap(func):
+    import termios
+    old = None
+    try:
+        old = termios.tcgetattr(sys.stdin.fileno())
+    except termios.error:
+        pass
+    try:
+        wrapped(func)
+    finally:
+        if old:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
-    @staticmethod
-    def ver(event):
-        event.reply(f"{Config.name.upper()} {Config.version}")
+
+"scripts"
+
+
+def background():
+    daemon(check("v"), check("m"))
+    privileges()
+    boot("", True, check("m"))
+    pidfile(Workdir.pidname(Config.name))
+    add(cmd, ver)
+    forever()
+
+
+def console():
+    import readline
+    banner()
+    boot(" ".join(sys.argv[1:]), True, check("m"))
+    add(cmd, ver)
+    csl = Console()
+    csl.start()
+    forever()
+
+
+def control():
+    if len(sys.argv) == 1:
+        return
+    boot(" ".join(sys.argv[1:]), False, check("m"))
+    add(cmd, srv, ver)
+    csl = CLI()
+    csl.silent = False
+    evt = Message()
+    evt.orig = repr(csl)
+    evt.text = " ".join(sys.argv[1:])
+    evt.type = "command"
+    command(evt)
+    evt.wait()
+
+
+def service():
+    privileges()
+    boot("", True, check("m"))
+    add(cmd, ver)
+    pidfile(Workdir.pidname(Config.name))
+    forever()
+
+
+"commands"
+
+
+def cmd(event):
+    event.reply(",".join(sorted(Commands.names or Commands.cmds)))
+
+def srv(event):
+    name = getpass.getuser()
+    event.reply(SYSTEMD % (Config.name.upper(), name, name, name, Config.name))
+
+def ver(event):
+    event.reply(f"{Config.name.upper()} {Config.version}")
+
+
+"runtime"
 
 
 def main():
@@ -185,13 +183,13 @@ def main():
     if check('z'):
         Config.debug = True
     if check("c"):
-        Runtime.wrap(Scripts.console)
+        wrap(console)
     elif check("d"):
-        Scripts.background()
+        background()
     elif check("s"):
-        Utils.wrapped(Scripts.service)
+        wrapped(service)
     else:
-        Utils.wrapped(Scripts.control)
+        wrapped(control)
 
 
 if __name__ == "__main__":

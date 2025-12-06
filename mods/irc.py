@@ -11,9 +11,17 @@ import threading
 import time
 
 
-from nixt.classes import Config as Main
-from nixt.classes import Broker, Commands, Disk, Locater, Message, Methods
-from nixt.classes import Object, Output, Threads, Workdir
+from nixt.brokers import Broker
+from nixt.clients import Output
+from nixt.command import command
+from nixt.kernels import Config as Main
+from nixt.locater import last
+from nixt.message import Message
+from nixt.methods import fmt, edit
+from nixt.persist import write
+from nixt.objects import Object, keys
+from nixt.threads import launch
+from nixt.workdir import getpath
 
 
 lock = threading.RLock()
@@ -24,7 +32,7 @@ def init():
     irc.start()
     irc.events.joined.wait(30.0)
     if irc.events.joined.is_set():
-        logging.warning(Methods.fmt(irc.cfg, skip=["name", "word", "realname", "username"]))
+        logging.warning(fmt(irc.cfg, skip=["name", "word", "realname", "username"]))
     else:
         irc.stop()
     return irc
@@ -444,7 +452,7 @@ class IRC(Output):
         self.state.keeprunning = False
         self.state.stopkeep = True
         self.stop()
-        Threads.launch(init)
+        launch(init)
 
     def size(self, chan):
         if chan in self.cache:
@@ -472,7 +480,7 @@ class IRC(Output):
         self.state.lastline = splitted[-1]
 
     def start(self):
-        Locater.last(self.cfg)
+        last(self.cfg)
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
         self.events.ready.clear()
@@ -480,8 +488,8 @@ class IRC(Output):
         self.events.joined.clear()
         Output.start(self)
         if not self.state.keeprunning:
-            Threads.launch(self.keep)
-        Threads.launch(
+            launch(self.keep)
+        launch(
             self.doconnect,
             self.cfg.server or "localhost",
             self.cfg.nick,
@@ -516,7 +524,7 @@ def cb_error(evt):
     bot = Broker.get(evt.orig)
     bot.state.nrerror += 1
     bot.state.error = evt.text
-    logging.debug(Methods.fmt(evt))
+    logging.debug(fmt(evt))
 
 
 def cb_h903(evt):
@@ -572,7 +580,7 @@ def cb_privmsg(evt):
         if evt.text:
             evt.text = evt.text[0].lower() + evt.text[1:]
         if evt.text:
-            Threads.launch(Commands.command, evt)
+            launch(command, evt)
 
 
 def cb_quit(evt):
@@ -589,18 +597,18 @@ def cb_quit(evt):
 
 def cfg(event):
     config = Config()
-    fnm = Locater.last(config)
+    fnm = last(config)
     if not event.sets:
         event.reply(
-            Methods.fmt(
+            fmt(
                 config,
-                Object.keys(config),
+                keys(config),
                 skip="control,name,word,realname,sleep,username".split(",")
             )
         )
     else:
-        Methods.edit(config, event.sets)
-        Disk.write(config, fnm or Workdir.getpath(config))
+        edit(config, event.sets)
+        write(config, fnm or getpath(config))
         event.reply("ok")
 
 

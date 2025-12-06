@@ -19,16 +19,16 @@ class Logging:
     datefmt = "%H:%M:%S"
     format = "%(module).3s %(message)s"
 
-    @staticmethod
-    def level(loglevel):
-        formatter = Format(Logging.format, Logging.datefmt)
-        stream = logging.StreamHandler()
-        stream.setFormatter(formatter)
-        logging.basicConfig(
-                            level=loglevel.upper(),
-                            handlers=[stream,],
-                            force=True
-                           )
+
+def level(loglevel):
+    formatter = Format(Logging.format, Logging.datefmt)
+    stream = logging.StreamHandler()
+    stream.setFormatter(formatter)
+    logging.basicConfig(
+                        level=loglevel.upper(),
+                        handlers=[stream,],
+                        force=True
+                       )
 
 
 def __dir__():
