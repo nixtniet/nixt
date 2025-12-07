@@ -12,7 +12,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import CLI
-from nixt.command import Commands, add, command
+from nixt.command import Commands, command
 from nixt.kernels import Config, boot, configure, forever
 from nixt.message import Message
 from nixt.methods import parse
@@ -72,6 +72,7 @@ def check(text):
 
     return False
 
+
 def daemon(verbose=False, nochdir=False):
     pid = os.fork()
     if pid != 0:
@@ -123,7 +124,7 @@ def background():
     privileges()
     boot("", True, check("m"))
     pidfile(Workdir.pidname(Config.name))
-    add(cmd, ver)
+    Commands.add(cmd, ver)
     forever()
 
 
@@ -131,7 +132,7 @@ def console():
     import readline
     banner()
     boot(" ".join(sys.argv[1:]), True, check("m"))
-    add(cmd, ver)
+    Commands.add(cmd, ver)
     csl = Console()
     csl.start()
     forever()
@@ -141,7 +142,7 @@ def control():
     if len(sys.argv) == 1:
         return
     boot(" ".join(sys.argv[1:]), False, check("m"))
-    add(cmd, srv, ver)
+    Commands.add(cmd, srv, ver)
     csl = CLI()
     csl.silent = False
     evt = Message()
@@ -155,7 +156,7 @@ def control():
 def service():
     privileges()
     boot("", True, check("m"))
-    add(cmd, ver)
+    Commands.add(cmd, ver)
     pidfile(Workdir.pidname(Config.name))
     forever()
 

@@ -16,15 +16,15 @@ class Workdir:
 
     wdr = ""
 
+    @staticmethod
+    def configure(name):
+       Workdir.wdr = Workdir.wdr or os.path.expanduser(f"~/.{name}")
+       skel()
+
 
 def cdir(path):
     pth = pathlib.Path(path)
     pth.parent.mkdir(parents=True, exist_ok=True)
-
-
-def configure(name):
-    Workdir.wdr = Workdir.wdr or os.path.expanduser(f"~/.{name}")
-    skel()
 
 
 def getpath(obj):
@@ -84,7 +84,6 @@ def __dir__():
     return (
         'Workdir',
         'cdir',
-        'configure',
         'getpath',
         'ident',
         'lomg',

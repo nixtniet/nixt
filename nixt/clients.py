@@ -10,7 +10,7 @@ import threading
 import _thread
 
 
-from nixt.brokers import add
+from nixt.brokers import Broker
 from nixt.command import command
 from nixt.handler import Handler
 from nixt.threads import launch
@@ -23,7 +23,7 @@ class Client(Handler):
         self.olock = threading.RLock()
         self.oqueue = queue.Queue()
         self.silent = True
-        add(self)
+        Broker.add(self)
 
     def announce(self, text):
         if not self.silent:

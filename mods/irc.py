@@ -507,13 +507,15 @@ class IRC(Output):
 "callbacks"
 
 
+get = Broker.get
+
 def cb_auth(evt):
-    bot = Broker.get(evt.orig)
+    bot = get(evt.orig)
     bot.docommand(f"AUTHENTICATE {bot.cfg.word or bot.cfg.password}")
 
 
 def cb_cap(evt):
-    bot = Broker.get(evt.orig)
+    bot = get(evt.orig)
     if (bot.cfg.word or bot.cfg.password) and "ACK" in evt.arguments:
         bot.direct("AUTHENTICATE PLAIN")
     else:
@@ -521,20 +523,20 @@ def cb_cap(evt):
 
 
 def cb_error(evt):
-    bot = Broker.get(evt.orig)
+    bot = get(evt.orig)
     bot.state.nrerror += 1
     bot.state.error = evt.text
     logging.debug(fmt(evt))
 
 
 def cb_h903(evt):
-    bot = Broker.get(evt.orig)
+    bot = get(evt.orig)
     bot.direct("CAP END")
     bot.events.authed.set()
 
 
 def cb_h904(evt):
-    bot = Broker.get(evt.orig)
+    bot = get(evt.orig)
     bot.direct("CAP END")
     bot.events.authed.set()
 
@@ -548,24 +550,24 @@ def cb_log(evt):
 
 
 def cb_ready(evt):
-    bot = Broker.get(evt.orig)
+    bot = get(evt.orig)
     bot.events.ready.set()
 
 
 def cb_001(evt):
-    bot = Broker.get(evt.orig)
+    bot = get(evt.orig)
     bot.events.logon.set()
 
 
 def cb_notice(evt):
-    bot = Broker.get(evt.orig)
+    bot = get(evt.orig)
     if evt.text.startswith("VERSION"):
         txt = f"\001VERSION {Config.name.upper()} {Config.version} - {bot.cfg.username}\001"
         bot.docommand("NOTICE", evt.channel, txt)
 
 
 def cb_privmsg(evt):
-    bot = Broker.get(evt.orig)
+    bot = get(evt.orig)
     if not bot.cfg.commands:
         return
     if evt.text:
@@ -584,7 +586,7 @@ def cb_privmsg(evt):
 
 
 def cb_quit(evt):
-    bot = Broker.get(evt.orig)
+    bot = get(evt.orig)
     logging.debug("quit from %s", bot.cfg.server)
     bot.state.nrerror += 1
     bot.state.error = evt.text
@@ -616,7 +618,7 @@ def mre(event):
     if not event.channel:
         event.reply("channel is not set.")
         return
-    bot = Broker.get(event.orig)
+    bot = getbtoker(event.orig)
     if "cache" not in dir(bot):
         event.reply("bot is missing cache")
         return

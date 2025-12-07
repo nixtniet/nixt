@@ -20,13 +20,20 @@ class Cache:
 
     objects = {}
 
+    @staticmethod
+    def add(path, obj):
+        Cache.objects[path] = obj
 
-def add(path, obj):
-    Cache.objects[path] = obj
+    @staticmethod
+    def get(path):
+        return Cache.objects.get(path, None)
 
-
-def get(path):
-    return Cache.objects.get(path, None)
+    @staticmethod
+    def sync(path, obj):
+        try:
+            update(Cache.objects[path], obj)
+        except KeyError:
+            add(path, obj)
 
 
 def read(obj, path):
@@ -38,12 +45,6 @@ def read(obj, path):
                 ex.add_note(path)
                 raise ex
 
-def sync(path, obj):
-    try:
-        update(Cache.objects[path], obj)
-    except KeyError:
-        add(path, obj)
-
 
 def write(obj, path=""):
     with lock:
@@ -52,7 +53,7 @@ def write(obj, path=""):
         cdir(path)
         with open(path, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)
-        sync(path, obj)
+        Cache.sync(path, obj)
         return path
 
 

@@ -8,38 +8,34 @@ class Broker:
 
     objects = {}
 
-
-def add(obj):
-    Broker.objects[repr(obj)] = obj
+    @staticmethod
+    def add(obj):
+        Broker.objects[repr(obj)] = obj
         
+    @staticmethod
+    def all(attr):
+        for obj in Broker.objects.values():
+           if attr in dir(obj):
+               yield obj
 
-def all(attr):
-    for obj in Broker.objects.values():
-        if attr in dir(obj):
-            yield obj
+    @staticmethod
+    def get(origin):
+        return Broker.objects.get(origin)
+
+    @staticmethod
+    def like(txt):
+        for orig in Broker.objects:
+            if orig.split()[0] in orig.split()[0]:
+                yield orig
 
 
 def display(evt):
-    bot = get(evt.orig)
+    bot = Broker.get(evt.orig)
     bot.display(evt)
-
-
-def get(origin):
-    return Broker.objects.get(origin)
-
-
-def like(txt):
-    for orig in Broker.objects:
-        if orig.split()[0] in orig.split()[0]:
-            yield orig
 
 
 def __dir__():
     return (
         'Broker',
-        'add',
-        'all',
-        'display',
-        'get',
-        'like'
+        'display'
     )

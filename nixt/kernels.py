@@ -10,13 +10,10 @@ import time
 from nixt.command import scan
 from nixt.loggers import level
 from nixt.methods import parse
-from nixt.package import get, list, mods
+from nixt.package import Mods,  modules, mods
 from nixt.threads import launch
 from nixt.utility import Default, spl
-
-
-from nixt.package import configure as confmod
-from nixt.workdir import configure as confwdr
+from nixt.workdir import Workdir
 
 
 class Config(Default):
@@ -31,17 +28,19 @@ class Config(Default):
 
 
 def configure(local=False, network=False):
-    Config.init = Config.sets.init or Config.init
-    Config.init = Config.init or list()
+    #Config.init = Config.sets.init or Config.init
+    #Config.init = Config.init or modules()
     level(Config.sets.level or "info")
-    confwdr(Config.name)
-    confmod(local, network)
+    Workdir.configure(Config.name)
+    Mods.configure(local, network)
+    if "a" in Config.opts:
+        Config.init = modules()
 
 
 def boot(txt="", doinit=False, local=False):
     parse(Config, txt)
     configure(local)
-    scanner(list())
+    scanner(Config.init)
     if doinit:
         init(Config.init, "w" in Config.opts)
 
@@ -57,7 +56,7 @@ def forever():
 def init(names, wait=False):
     thrs = []
     for name in spl(names):
-        mod = get(name)
+        mod = Mods.get(name)
         if "init" not in dir(mod):
             continue
         thrs.append(launch(mod.init))
