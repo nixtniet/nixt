@@ -12,12 +12,14 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import CLI
-from nixt.command import Commands, command
-from nixt.kernels import Config, boot, configure, forever
+from nixt.command import Commands, addcmd, command, getcmd
+from nixt.kernels import Config, Kernel, forever, init, scanner
 from nixt.message import Message
 from nixt.methods import parse
+from nixt.package import modules
 from nixt.statics import SYSTEMD
 from nixt.utility import wrapped
+from nixt.workdir import Workdir, pidfile, pidname
 
 
 Config.ignore = "wsd,udp"
@@ -122,17 +124,24 @@ def wrap(func):
 def background():
     daemon(check("v"), check("m"))
     privileges()
-    boot("", True, check("m"))
-    pidfile(Workdir.pidname(Config.name))
-    Commands.add(cmd, ver)
+    pidfile(pidname(Config.name))
+    addcmd(cmd, ver)
+    scanner(modules() or "irc,rss")
+    init(modules() or "irc,rss")
     forever()
 
 
 def console():
     import readline
     banner()
-    boot(" ".join(sys.argv[1:]), True, check("m"))
-    Commands.add(cmd, ver)
+    parse(Config, " ".join(sys.argv[1:]))
+    if "a" in Config.opts:
+        Config.init = modules()
+    else:
+        Config.init = Config.sets.init or Config.init
+    scanner(Config.init)
+    addcmd(cmd, ver)
+    init(Config.init, "w" in Config.opts)
     csl = Console()
     csl.start()
     forever()
@@ -141,8 +150,8 @@ def console():
 def control():
     if len(sys.argv) == 1:
         return
-    boot(" ".join(sys.argv[1:]), False, check("m"))
-    Commands.add(cmd, srv, ver)
+    scanner(modules())
+    addcmd(cmd, srv, ver)
     csl = CLI()
     csl.silent = False
     evt = Message()
@@ -155,9 +164,9 @@ def control():
 
 def service():
     privileges()
-    boot("", True, check("m"))
-    Commands.add(cmd, ver)
-    pidfile(Workdir.pidname(Config.name))
+    pidfile(pidname(Config.name))
+    scanner(Config.init or "irc,rss")
+    init(Config.init or "irc,rss")
     forever()
 
 
@@ -179,6 +188,7 @@ def ver(event):
 
 
 def main():
+    Kernel.configure(check("m"), check("n"))
     if check("b"):
         threading.excepthook = threadhook
     if check('z'):

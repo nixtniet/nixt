@@ -22,27 +22,17 @@ class Config(Default):
     init = ""
     level = "info"
     name = ""
-    opts = Default()
+    opts = ""
     sets = Default()
     version = 0
 
 
-def configure(local=False, network=False):
-    #Config.init = Config.sets.init or Config.init
-    #Config.init = Config.init or modules()
-    level(Config.sets.level or "info")
-    Workdir.configure(Config.name)
-    Mods.configure(local, network)
-    if "a" in Config.opts:
-        Config.init = modules()
+class Kernel:
 
-
-def boot(txt="", doinit=False, local=False):
-    parse(Config, txt)
-    configure(local)
-    scanner(Config.init)
-    if doinit:
-        init(Config.init, "w" in Config.opts)
+    def configure(local=False, network=False):
+        level(Config.sets.level or "info")
+        Workdir.configure(Config.name or "nixt")
+        Mods.configure(local, network)
 
 
 def forever():

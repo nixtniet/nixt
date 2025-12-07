@@ -79,7 +79,7 @@ def threadhook(args):
     if kind not in (KeyboardInterrupt, EOFError):
         logging.exception(exc)
     thr.event and thr.event.ready()
-    _thread.interrupt_main()
+    os._exit(0)
 
 
 def __dir__():
