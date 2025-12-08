@@ -2,7 +2,6 @@
 # This file is placed in the Public Domain.
 
 
-import logging
 import os
 import queue
 import shutil
@@ -16,10 +15,10 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.clients import Client, Output
 from nixt.command import Commands, command
-from nixt.kernels import Config, boot
+from nixt.kernels import Config, Kernel, scanner
 from nixt.message import Message
-from nixt.methods import fmt
-from nixt.package import Mods
+from nixt.methods import fmt, parse
+from nixt.package import modules
 from nixt.threads import launch, threadhook
 from nixt.utility import elapsed
 from nixt.workdir import Workdir
@@ -79,14 +78,25 @@ class Pool:
 
 def banner(name, version):
     tme = time.ctime(time.time()).replace("  ", " ")
-    logger = logging.getLogger()
     print("%s %s since %s (%s)" % (
                                    name.upper(),
                                    version,
                                    tme,
-                                   logging.getLevelName(logger.getEffectiveLevel())
+                                   Config.level
                                   ))
     sys.stdout.flush()
+
+
+def check(text):
+    args = sys.argv[1:]
+    for arg in args:
+        if not arg.startswith("-"):
+            continue
+        for char in text:
+            if char in arg:
+                return True
+
+    return False
 
 
 def consume():
@@ -112,7 +122,9 @@ def payload(todo):
 def main():
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
-    boot(" ".join(sys.argv[1:]), False, True)
+    Kernel.configure(check("m"), check('n'))
+    parse(Config, " ".join(sys.argv[1:]))
+    scanner(modules())
     if "b" in Config.opts:
         threading.excepthook = threadhook
     if "v" in Config.opts:

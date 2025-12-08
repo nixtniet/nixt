@@ -10,10 +10,10 @@ import time
 from .command import scan
 from .loggers import level
 from .methods import parse
-from .package import Mods,  modules, mods
+from .package import Mods, confmod, modules, mods
 from .threads import launch
 from .utility import Default, spl
-from .workdir import Workdir
+from .workdir import Workdir, confwdr
 
 
 class Config(Default):
@@ -31,8 +31,8 @@ class Kernel:
 
     def configure(local=False, network=False):
         level(Config.sets.level or "info")
-        Workdir.configure(Config.name or "nixt")
-        Mods.configure(local, network)
+        confwdr(Config.name or "nixt")
+        confmod(local, network)
 
 
 def forever():

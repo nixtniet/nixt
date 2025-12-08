@@ -18,41 +18,41 @@ class Mods:
     package = __spec__.parent or ""
     path = os.path.dirname(__spec__.loader.path)
 
-    @staticmethod
-    def add(name: str, path):
-        Mods.dirs[name] = path
 
-    @staticmethod
-    def configure(local=False, network=False):
-        name = Mods.package + ".modules" 
-        Mods.add(name, os.path.join(Mods.path, "modules"))
-        Mods.add("modules", moddir())
-        if network:
-            name = Mods.package + ".network" 
-            Mods.add(name, os.path.join(Mods.path, "network"))
-        if local:
-            Mods.add("mods", os.path.join(os.getcwd(), "mods"))
+def adddir(name: str, path):
+    Mods.dirs[name] = path
 
-    @staticmethod
-    def get(name):
-        if name in Mods.modules:
-            return Mods.modules.get(name)
-        mname = ""
-        pth = ""
-        for packname, path in Mods.dirs.items():
-            modpath = os.path.join(path, name + ".py")
-            if not os.path.exists(modpath):
-                continue
-            pth = modpath
-            mname = f"{packname}.{name}"
-            break
-        if not mname:
-            return
-        mod = importer(mname, pth)
-        if not mod:
-           return
-        Mods.modules[name] = mod
-        return mod
+
+def confmod(local=False, network=False):
+    name = Mods.package + ".modules" 
+    adddir(name, os.path.join(Mods.path, "modules"))
+    adddir("modules", moddir())
+    if network:
+        name = Mods.package + ".network" 
+        adddir(name, os.path.join(Mods.path, "network"))
+    if local:
+        adddir("mods", os.path.join(os.getcwd(), "mods"))
+
+
+def getmod(name):
+    if name in Mods.modules:
+        return Mods.modules.get(name)
+    mname = ""
+    pth = ""
+    for packname, path in Mods.dirs.items():
+        modpath = os.path.join(path, name + ".py")
+        if not os.path.exists(modpath):
+            continue
+        pth = modpath
+        mname = f"{packname}.{name}"
+        break
+    if not mname:
+        return
+    mod = importer(mname, pth)
+    if not mod:
+        return
+    Mods.modules[name] = mod
+    return mod
 
 
 def modules(ignore=""):
@@ -70,12 +70,15 @@ def modules(ignore=""):
 
 
 def mods(names):
-    return [Mods.get(x) for x in sorted(spl(names))]
+    return [getmod(x) for x in sorted(spl(names))]
 
 
 def __dir__():
     return (
         'Mods',
+        'adddir',
+        'confmod',
+        'getmod',
         'modules',
         'mods'
     )

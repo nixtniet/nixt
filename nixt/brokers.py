@@ -30,7 +30,7 @@ def like(txt):
 
 
 def display(evt):
-    bot = Broker.get(evt.orig)
+    bot = getobj(evt.orig)
     bot.display(evt)
 
 
