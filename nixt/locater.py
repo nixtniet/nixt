@@ -8,99 +8,75 @@ import os
 import time
 
 
+from .methods import Methods
 from .objects import Object, fqn, items, keys, update
-from .persist import addcache, getcache, read
-from .workdir import long, store
+from .persist import Cache, Disk
+from .workdir import Workdir
 
 
-def attrs(kind):
-    objs = list(find(kind))
-    if objs:
-        return list(keys(objs[0][1]))
-    return []
+class Locater:
 
+    @staticmethod
+    def attrs(kind):
+        objs = list(Locater.find(kind))
+        if objs:
+            return list(keys(objs[0][1]))
+        return []
 
-def deleted(obj):
-    return "__deleted__" in dir(obj) and obj.__deleted__
-
-
-def find(kind, selector={}, removed=False, matching=False):
-    fullname = long(kind)
-    for pth in fns(fullname):
-        obj = getcache(pth)
-        if not obj:
-            obj = Object()
-            read(obj, pth)
-            addcache(pth, obj)
-        if not removed and deleted(obj):
-            continue
-        if selector and not search(obj, selector, matching):
-            continue
-        yield pth, obj
-
-
-def fns(kind):
-    path = store(kind)
-    for rootdir, dirs, _files in os.walk(path, topdown=True):
-        for dname in dirs:
-            if dname.count("-") != 2:
+    @staticmethod
+    def find(kind, selector={}, removed=False, matching=False):
+        fullname = Workdir.long(kind)
+        for pth in Locater.fns(fullname):
+            obj = Cache.get(pth)
+            if not obj:
+                obj = Object()
+                Disk.read(obj, pth)
+                Cache.add(pth, obj)
+            if not removed and Methods.deleted(obj):
                 continue
-            ddd = os.path.join(rootdir, dname)
-            for fll in os.listdir(ddd):
-                yield os.path.join(ddd, fll)
+            if selector and not Methods.search(obj, selector, matching):
+                continue
+            yield pth, obj
 
+    @staticmethod
+    def fns(kind):
+        path = Workdir.store(kind)
+        for rootdir, dirs, _files in os.walk(path, topdown=True):
+            for dname in dirs:
+                if dname.count("-") != 2:
+                    continue
+                ddd = os.path.join(rootdir, dname)
+                for fll in os.listdir(ddd):
+                    yield os.path.join(ddd, fll)
 
-def fntime(daystr):
-    datestr = " ".join(daystr.split(os.sep)[-2:])
-    datestr = datestr.replace("_", " ")
-    if "." in datestr:
-        datestr, rest = datestr.rsplit(".", 1)
-    else:
-        rest = ""
-    timed = time.mktime(time.strptime(datestr, "%Y-%m-%d %H:%M:%S"))
-    if rest:
-        timed += float("." + rest)
-    return float(timed)
-
-
-def last(obj, selector={}):
-    result = sorted(
-                    find(fqn(obj), selector),
-                    key=lambda x: fntime(x[0])
-                   )
-    res = ""
-    if result:
-        inp = result[-1]
-        update(obj, inp[-1])
-        res = inp[0]
-    return res
-
-
-def search(obj, selector={}, matching=False):
-    res = False
-    for key, value in items(selector):
-        val = getattr(obj, key, None)
-        if not val:
-            res = False
-            break
-        elif matching and value != val:
-            res = False
-            break
-        elif str(value).lower() not in str(val).lower():
-            res = False
-            break
+    @staticmethod
+    def fntime(daystr):
+        datestr = " ".join(daystr.split(os.sep)[-2:])
+        datestr = datestr.replace("_", " ")
+        if "." in datestr:
+            datestr, rest = datestr.rsplit(".", 1)
         else:
-            res = True
-    return res
+            rest = ""
+        timed = time.mktime(time.strptime(datestr, "%Y-%m-%d %H:%M:%S"))
+        if rest:
+            timed += float("." + rest)
+        return float(timed)
+
+    @staticmethod
+    def last(obj, selector={}):
+        result = sorted(
+                        Locater.find(fqn(obj), selector),
+                        key=lambda x: Locater.fntime(x[0])
+                       )
+        res = ""
+        if result:
+            inp = result[-1]
+            update(obj, inp[-1])
+            res = inp[0]
+        return res
 
 
 def __dir__():
     return (
-        'attrs',
-        'deleted',
-        'find',
-        'fns',
-        'fntime',
-        'last',
-        'search'
+        'Locater',
     )

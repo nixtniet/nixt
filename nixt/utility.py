@@ -4,121 +4,235 @@
 "dumpyard"
 
 
+import datetime
 import importlib.util
 import inspect
 import os
 import time
 
 
-from .objects import Object
-from .statics import TIMES
+from .objects import Object, fqn
+from .statics import MONTH, TIMES
 
 
-class Default(Object):
+class Time:
 
-    def __getattr__(self, key):
-        return self.__dict__.get(key, "")
-
-
-def elapsed(seconds, short=True):
-    txt = ""
-    nsec = float(seconds)
-    if nsec < 1:
-        return f"{nsec:.2f}s"
-    yea     = 365 * 24 * 60 * 60
-    week    = 7 * 24 * 60 * 60
-    nday    = 24 * 60 * 60
-    hour    = 60 * 60
-    minute  = 60
-    yeas    = int(nsec / yea)
-    nsec   -= yeas * yea
-    weeks   = int(nsec / week)
-    nsec   -= weeks * week
-    nrdays  = int(nsec / nday)
-    nsec   -= nrdays * nday
-    hours   = int(nsec / hour)
-    nsec   -= hours * hour
-    minutes = int(nsec / minute)
-    nsec   -= minutes * minute
-    sec     = int(nsec / 1)
-    nsec   -= nsec - sec
-    if yeas:
-        txt += f"{yeas}y"
-    if weeks:
-        nrdays += weeks * 7
-    if nrdays:
-        txt += f"{nrdays}d"
-    if hours:
-        txt += f"{hours}h"
-    if short and txt:
-        return txt.strip()
-    if minutes:
-        txt += f"{minutes}m"
-    if sec:
-        txt += f"{sec}s"
-    txt = txt.strip()
-    return txt
-
-
-def extract_date(daystr):
-    daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
-    res = time.time()
-    for fmat in TIMES:
+    @staticmethod
+    def day(daystr):
+        day = None
+        month = None
+        yea = None
         try:
-            res = time.mktime(time.strptime(daystr, fmat))
-            break
+            ymdre = re.search(r'(\d+)-(\d+)-(\d+)', daystr)
+            if ymdre:
+                (day, month, yea) = ymdre.groups()
+        except ValueError:
+            try:
+                ymre = re.search(r'(\d+)-(\d+)', daystr)
+                if ymre:
+                    (day, month) = ymre.groups()
+                    yea = time.strftime("%Y", time.localtime())
+            except Exception as ex:
+                raise NoDate(daystr) from ex
+        if day:
+            day = int(day)
+            month = int(month)
+            yea = int(yea)
+            date = f"{day} {MONTH[month]} {yea}"
+            return time.mktime(time.strptime(date, r"%d %b %Y"))
+        raise NoDate(daystr)
+
+    @staticmethod
+    def hour(daystr):
+        try:
+            hmsre = re.search(r'(\d+):(\d+):(\d+)', str(daystr))
+            hours = 60 * 60 * (int(hmsre.group(1)))
+            hoursmin = hours  + int(hmsre.group(2)) * 60
+            hmsres = hoursmin + int(hmsre.group(3))
+        except AttributeError:
+            pass
         except ValueError:
             pass
-    return res
+        try:
+            hmre = re.search(r'(\d+):(\d+)', str(daystr))
+            hours = 60 * 60 * (int(hmre.group(1)))
+            hmsres = hours + int(hmre.group(2)) * 60
+        except AttributeError:
+            return 0
+        except ValueError:
+           return 0
+        return hmsres
+
+    @staticmethod
+    def time(txt):
+        try:
+            target = get_day(txt)
+        except NoDate:
+            target = to_day(today())
+        hour =  get_hour(txt)
+        if hour:
+            target += hour
+        return target
+
+    @staticmethod
+    def parse(txt):
+        seconds = 0
+        target = 0
+        txt = str(txt)
+        for word in txt.split():
+            if word.startswith("+"):
+                seconds = int(word[1:])
+                return time.time() + seconds
+            if word.startswith("-"):
+                seconds = int(word[1:])
+                return time.time() - seconds
+        if not target:
+            try:
+                target = get_day(txt)
+            except NoDate:
+               target = to_day(today())
+            hour = get_hour(txt)
+            if hour:
+                target += hour
+        return target
+
+    @staticmethod
+    def extract(daystr):
+        previous = ""
+        line = ""
+        daystr = str(daystr)
+        res = None
+        for word in daystr.split():
+            line = previous + " " + word
+            previous = word
+            try:
+                res = extract_date(line.strip())
+                break
+            except ValueError:
+                res = None
+            line = ""
+        return res
+
+    @staticmethod
+    def today():
+        return str(datetime.datetime.today()).split()[0]
 
 
-def importer(name, pth=""):
-    if pth and os.path.exists(pth):
-        spec = importlib.util.spec_from_file_location(name, pth)
-    else:
-        spec = importlib.util.find_spec(name)
-    if not spec or not spec.loader:
-        return None
-    mod = importlib.util.module_from_spec(spec)
-    if not mod:
-        return None
-    spec.loader.exec_module(mod)
-    return mod
+class Utils:
 
+    @staticmethod
+    def cdir(path):
+        pth = pathlib.Path(path)
+        pth.parent.mkdir(parents=True, exist_ok=True)
 
-def md5sum(path):
-    import hashlib
-    with open(path, "r", encoding="utf-8") as file:
-        txt = file.read().encode("utf-8")
-        return hashlib.md5(txt, usedforsecurity=False).hexdigest()
+    @staticmethod
+    def elapsed(seconds, short=True):
+        txt = ""
+        nsec = float(seconds)
+        if nsec < 1:
+            return f"{nsec:.2f}s"
+        yea     = 365 * 24 * 60 * 60
+        week    = 7 * 24 * 60 * 60
+        nday    = 24 * 60 * 60
+        hour    = 60 * 60
+        minute  = 60
+        yeas    = int(nsec / yea)
+        nsec   -= yeas * yea
+        weeks   = int(nsec / week)
+        nsec   -= weeks * week
+        nrdays  = int(nsec / nday)
+        nsec   -= nrdays * nday
+        hours   = int(nsec / hour)
+        nsec   -= hours * hour
+        minutes = int(nsec / minute)
+        nsec   -= minutes * minute
+        sec     = int(nsec / 1)
+        nsec   -= nsec - sec
+        if yeas:
+            txt += f"{yeas}y"
+        if weeks:
+            nrdays += weeks * 7
+        if nrdays:
+            txt += f"{nrdays}d"
+        if hours:
+            txt += f"{hours}h"
+        if short and txt:
+            return txt.strip()
+        if minutes:
+            txt += f"{minutes}m"
+        if sec:
+            txt += f"{sec}s"
+        txt = txt.strip()
+        return txt
 
+    @staticmethod
+    def extract_date(daystr):
+        daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
+        res = time.time()
+        for fmat in TIMES:
+            try:
+                res = time.mktime(time.strptime(daystr, fmat))
+                break
+            except ValueError:
+                pass
+        return res
 
-def spl(txt):
-    try:
-        result = txt.split(",")
-    except (TypeError, ValueError):
-        result = []
-    return [x for x in result if x]
+    @staticmethod
+    def ident(obj):
+        return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
 
+    @staticmethod
+    def importer(name, pth=""):
+        if pth and os.path.exists(pth):
+            spec = importlib.util.spec_from_file_location(name, pth)
+        else:
+            spec = importlib.util.find_spec(name)
+        if not spec or not spec.loader:
+            return None
+        mod = importlib.util.module_from_spec(spec)
+        if not mod:
+            return None
+        spec.loader.exec_module(mod)
+        return mod
 
-def where(obj):
-     return os.path.dirname(inspect.getfile(obj))
+    @staticmethod
+    def md5sum(path):
+        import hashlib
+        with open(path, "r", encoding="utf-8") as file:
+            txt = file.read().encode("utf-8")
+            return hashlib.md5(txt, usedforsecurity=False).hexdigest()
 
+    @staticmethod
+    def pidfile(filename):
+        if os.path.exists(filename):
+            os.unlink(filename)
+        path2 = pathlib.Path(filename)
+        path2.parent.mkdir(parents=True, exist_ok=True)
+        with open(filename, "w", encoding="utf-8") as fds:
+            fds.write(str(os.getpid()))
 
-def wrapped(func):
-    try:
-        func()
-    except (KeyboardInterrupt, EOFError):
-        pass
+    @staticmethod
+    def spl(txt):
+        try:
+           result = txt.split(",")
+        except (TypeError, ValueError):
+           result = []
+        return [x for x in result if x]
+
+    @staticmethod
+    def where(obj):
+        return os.path.dirname(inspect.getfile(obj))
+
+    @staticmethod
+    def wrapped(func):
+        try:
+            func()
+        except (KeyboardInterrupt, EOFError):
+            pass
 
 
 def __dir__():
     return (
-        'elapsed',
-        'extract_date',
-        'importer',
-        'md5sum',
-        'spl',
-        'where',
-        'wrapped'
+        'Time',
+        'Utils'
     )

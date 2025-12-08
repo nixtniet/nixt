@@ -9,8 +9,9 @@ import threading
 
 
 from .objects import update
-from .serials import dump, load
-from .workdir import cdir, getpath
+from .serials import Json
+from .utility import Utils
+from .workdir import Workdir
 
 
 lock = threading.RLock()
@@ -20,49 +21,48 @@ class Cache:
 
     objects = {}
 
+    @staticmethod
+    def add(path, obj):
+        Cache.objects[path] = obj
 
-def addcache(path, obj):
-    Cache.objects[path] = obj
+    @staticmethod
+    def get(path):
+        return Cache.objects.get(path, None)
 
-
-def getcache(path):
-    return Cache.objects.get(path, None)
-
-
-def sync(path, obj):
-    try:
-        update(Cache.objects[path], obj)
-    except KeyError:
-        addcache(path, obj)
-
-
-def read(obj, path):
-    with lock:
-        with open(path, "r", encoding="utf-8") as fpt:
-             try:
-                update(obj, load(fpt))
-             except json.decoder.JSONDecodeError as ex:
-                ex.add_note(path)
-                raise ex
+    @staticmethod
+    def sync(path, obj):
+        try:
+            update(Cache.objects[path], obj)
+        except KeyError:
+            addcache(path, obj)
 
 
-def write(obj, path=""):
-    with lock:
-        if path == "":
-            path = getpath(obj)
-        cdir(path)
-        with open(path, "w", encoding="utf-8") as fpt:
-            dump(obj, fpt, indent=4)
-        sync(path, obj)
-        return path
+class Disk:
+
+    @staticmethod
+    def read(obj, path):
+        with lock:
+            with open(path, "r", encoding="utf-8") as fpt:
+                try:
+                    update(obj, Json.load(fpt))
+                except json.decoder.JSONDecodeError as ex:
+                    ex.add_note(path)
+                    raise ex
+
+    @staticmethod
+    def write(obj, path=""):
+        with lock:
+            if path == "":
+                path = Workdir.path(obj)
+            Utils.cdir(path)
+            with open(path, "w", encoding="utf-8") as fpt:
+                Json.dump(obj, fpt, indent=4)
+            Cache.sync(path, obj)
+            return path
 
 
 def __dir__():
     return (
         'Cache',
-        'addcache',
-        'getcache',
-        'read',
-        'sync',
-        'write'
+        'Disk'
     )

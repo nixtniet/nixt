@@ -19,16 +19,23 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.brokers import all
+from nixt.brokers import Broker
 from nixt.kernels import Config
-from nixt.locater import find, fntime, last
-from nixt.methods import fmt
+from nixt.locater import Locater
+from nixt.methods import Methods
 from nixt.objects import Object, update
-from nixt.persist import write
+from nixt.persist import Disk
 from nixt.repeats import Repeater
-from nixt.threads import launch
-from nixt.utility import elapsed, spl
+from nixt.threads import Threads
+from nixt.utility import Utils
 from nixt.workdir import Workdir
+
+
+elapsed = Utils.elapsed
+fmt = Methods.fmt
+find = Locater.find
+fntime = Locater.fntime
+write = Disk.write
 
 
 def init():
@@ -122,7 +129,7 @@ class Fetcher(Object):
                 result.append(fed)
             setattr(self.seen, feed.rss, urls)
             if not self.seenfn:
-                self.seenfn = Workdir.getpath(self.seen)
+                self.seenfn = Workdir.path(self.seen)
             write(self.seen, self.seenfn)
         if silent:
             return counter
@@ -132,18 +139,18 @@ class Fetcher(Object):
             txt = f"[{feedname}] "
         for obj in result:
             txt2 = txt + self.display(obj)
-            for bot in all("announce"):
+            for bot in Broker.all("announce"):
                 bot.announce(txt2)
         return counter
 
     def run(self, silent=False):
         thrs = []
         for _fn, feed in find("rss.Rss"):
-            thrs.append(launch(self.fetch, feed, silent))
+            thrs.append(Threads.launch(self.fetch, feed, silent))
         return thrs
 
     def start(self, repeat=True):
-        self.seenfn = last(self.seen)
+        self.seenfn = Locater.last(self.seen)
         if repeat:
             repeater = Repeater(300.0, self.run)
             repeater.start()
@@ -189,7 +196,7 @@ class Parser:
         for line in Parser.getitems(txt, toke):
             line = line.strip()
             obj = Object()
-            for itm in spl(items):
+            for itm in Utils.spl(items):
                 val = Parser.getitem(line, itm)
                 if val:
                     val = unescape(val.strip())
@@ -254,7 +261,7 @@ class OPML:
             if not attrz:
                 continue
             obj = Object()
-            for itm in spl(itemz):
+            for itm in Utils.spl(itemz):
                 if itm == "link":
                     itm = "href"
                 val = OPML.getvalue(attrz, itm)

@@ -10,10 +10,10 @@ import threading
 import _thread
 
 
-from .brokers import addobj
-from .command import command
+from .brokers import Broker
+from .command import Commands
 from .handler import Handler
-from .threads import launch
+from .threads import Threads
 
 
 class Client(Handler):
@@ -23,7 +23,7 @@ class Client(Handler):
         self.olock = threading.RLock()
         self.oqueue = queue.Queue()
         self.silent = True
-        addobj(self)
+        Broker.add(self)
 
     def announce(self, text):
         if not self.silent:
@@ -56,7 +56,7 @@ class CLI(Client):
  
      def __init__(self):
          super().__init__()
-         self.register("command", command)
+         self.register("command", Commands.command)
 
 
 class Output(Client):
@@ -71,7 +71,7 @@ class Output(Client):
             self.oqueue.task_done()
 
     def start(self):
-        launch(self.output)
+        Threads.launch(self.output)
         super().start()
 
     def stop(self):

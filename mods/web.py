@@ -13,7 +13,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from nixt.kernels import Config
 from nixt.objects import Object
 from nixt.package import Mods
-from nixt.threads import launch
+from nixt.threads import Threads
 
 
 def init():
@@ -56,7 +56,7 @@ class HTTP(HTTPServer, Object):
         self.shutdown()
 
     def start(self):
-        launch(self.serve_forever)
+        Threads.launch(self.serve_forever)
         self._status = "ok"
 
     def request(self):

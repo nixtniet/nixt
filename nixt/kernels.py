@@ -7,13 +7,13 @@
 import time
 
 
-from .command import scan
-from .loggers import level
-from .methods import parse
-from .package import Mods, confmod, modules, mods
-from .threads import launch
-from .utility import Default, spl
-from .workdir import Workdir, confwdr
+from .command import Commands
+from .loggers import Logging
+from .objects import Default
+from .package import Mods
+from .threads import Threads
+from .utility import Utils
+from .workdir import Workdir
 
 
 class Config(Default):
@@ -29,42 +29,40 @@ class Config(Default):
 
 class Kernel:
 
+    @staticmethod
     def configure(local=False, network=False):
-        level(Config.sets.level or "info")
-        confwdr(Config.name or "nixt")
-        confmod(local, network)
+        Logging.level(Config.sets.level or "info")
+        Workdir.configure(Config.name or "nixt")
+        Mods.configure(local, network)
 
+    @staticmethod
+    def forever():
+        while True:
+            try:
+                time.sleep(0.1)
+            except (KeyboardInterrupt, EOFError):
+                break
 
-def forever():
-    while True:
-        try:
-            time.sleep(0.1)
-        except (KeyboardInterrupt, EOFError):
-            break
+    @staticmethod
+    def init(names, wait=False):
+        thrs = []
+        for name in Utils.spl(names):
+            mod = Mods.get(name)
+            if "init" not in dir(mod):
+                continue
+            thrs.append(Threads.launch(mod.init))
+        if wait:
+            for thr in thrs:
+                thr.join()
 
-
-def init(names, wait=False):
-    thrs = []
-    for name in spl(names):
-        mod = Mods.get(name)
-        if "init" not in dir(mod):
-            continue
-        thrs.append(launch(mod.init))
-    if wait:
-        for thr in thrs:
-            thr.join()
-
-def scanner(names):
-    for mod in mods(names):
-        scan(mod)
+    @staticmethod
+    def scanner(names):
+        for mod in Mods.mods(names):
+            Commands.scan(mod)
 
 
 def __dir__():
     return (
         'Config',
-        'boot',
-        'configure',
-        'forever',
-        'init',
-        'scanner'
+        'Kernel'
     )

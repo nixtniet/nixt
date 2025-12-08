@@ -11,19 +11,21 @@ import threading
 import time
 
 
-from nixt.brokers import getobj
+from nixt.brokers import Broker
 from nixt.clients import Output
-from nixt.command import command
+from nixt.command import Commands
 from nixt.kernels import Config as Main
-from nixt.locater import last
+from nixt.locater import Locater
 from nixt.message import Message
-from nixt.methods import fmt, edit
-from nixt.persist import write
+from nixt.methods import Methods
+from nixt.persist import Disk
 from nixt.objects import Object, keys
-from nixt.threads import launch
-from nixt.workdir import getpath
+from nixt.threads import Threads
+from nixt.workdir import Workdir
 
 
+fmt = Methods.fmt
+get = Broker.get
 lock = threading.RLock()
 
 
@@ -91,7 +93,7 @@ class Event(Message):
         self.text = ""
 
     def dosay(self, txt):
-        bot = getobj(self.orig)
+        bot = get(self.orig)
         bot.dosay(self.channel, txt)
 
 
@@ -452,7 +454,7 @@ class IRC(Output):
         self.state.keeprunning = False
         self.state.stopkeep = True
         self.stop()
-        launch(init)
+        Threads.launch(init)
 
     def size(self, chan):
         if chan in self.cache:
@@ -480,7 +482,7 @@ class IRC(Output):
         self.state.lastline = splitted[-1]
 
     def start(self):
-        last(self.cfg)
+        Locater.last(self.cfg)
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
         self.events.ready.clear()
@@ -488,8 +490,8 @@ class IRC(Output):
         self.events.joined.clear()
         Output.start(self)
         if not self.state.keeprunning:
-            launch(self.keep)
-        launch(
+            Threads.launch(self.keep)
+        Threads.launch(
             self.doconnect,
             self.cfg.server or "localhost",
             self.cfg.nick,
@@ -508,12 +510,12 @@ class IRC(Output):
 
 
 def cb_auth(evt):
-    bot = getobj(evt.orig)
+    bot = get(evt.orig)
     bot.docommand(f"AUTHENTICATE {bot.cfg.word or bot.cfg.password}")
 
 
 def cb_cap(evt):
-    bot = getobj(evt.orig)
+    bot = get(evt.orig)
     if (bot.cfg.word or bot.cfg.password) and "ACK" in evt.arguments:
         bot.direct("AUTHENTICATE PLAIN")
     else:
@@ -521,20 +523,20 @@ def cb_cap(evt):
 
 
 def cb_error(evt):
-    bot = getobj(evt.orig)
+    bot = get(evt.orig)
     bot.state.nrerror += 1
     bot.state.error = evt.text
     logging.debug(fmt(evt))
 
 
 def cb_h903(evt):
-    bot = getobj(evt.orig)
+    bot = get(evt.orig)
     bot.direct("CAP END")
     bot.events.authed.set()
 
 
 def cb_h904(evt):
-    bot = getobj(evt.orig)
+    bot = get(evt.orig)
     bot.direct("CAP END")
     bot.events.authed.set()
 
@@ -548,24 +550,24 @@ def cb_log(evt):
 
 
 def cb_ready(evt):
-    bot = getobj(evt.orig)
+    bot = get(evt.orig)
     bot.events.ready.set()
 
 
 def cb_001(evt):
-    bot = getobj(evt.orig)
+    bot = get(evt.orig)
     bot.events.logon.set()
 
 
 def cb_notice(evt):
-    bot = getobj(evt.orig)
+    bot = get(evt.orig)
     if evt.text.startswith("VERSION"):
         txt = f"\001VERSION {Config.name.upper()} {Config.version} - {bot.cfg.username}\001"
         bot.docommand("NOTICE", evt.channel, txt)
 
 
 def cb_privmsg(evt):
-    bot = getobj(evt.orig)
+    bot = get(evt.orig)
     if not bot.cfg.commands:
         return
     if evt.text:
@@ -580,11 +582,11 @@ def cb_privmsg(evt):
         if evt.text:
             evt.text = evt.text[0].lower() + evt.text[1:]
         if evt.text:
-            launch(command, evt)
+            Threads.launch(Commands.command, evt)
 
 
 def cb_quit(evt):
-    bot = getobj(evt.orig)
+    bot = get(evt.orig)
     logging.debug("quit from %s", bot.cfg.server)
     bot.state.nrerror += 1
     bot.state.error = evt.text
@@ -597,7 +599,7 @@ def cb_quit(evt):
 
 def cfg(event):
     config = Config()
-    fnm = last(config)
+    fnm = Locater.last(config)
     if not event.sets:
         event.reply(
             fmt(
@@ -607,8 +609,8 @@ def cfg(event):
             )
         )
     else:
-        edit(config, event.sets)
-        write(config, fnm or getpath(config))
+        Methods.edit(config, event.sets)
+        Disk.write(config, fnm or Workdir.path(config))
         event.reply("ok")
 
 
@@ -616,7 +618,7 @@ def mre(event):
     if not event.channel:
         event.reply("channel is not set.")
         return
-    bot = getbtoker(event.orig)
+    bot = get(event.orig)
     if "cache" not in dir(bot):
         event.reply("bot is missing cache")
         return

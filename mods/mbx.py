@@ -6,12 +6,17 @@ import os
 import time
 
 
-from nixt.locater import find
-from nixt.methods import fmt
+from nixt.locater import Locater
+from nixt.methods import Methods
 from nixt.objects import Object
-from nixt.persist import write
+from nixt.persist import Disk
 from nixt.statics import MONTH
-from nixt.utility import elapsed, extract_date
+from nixt.utility import Utils
+
+
+elapsed = Utils.elapsed
+extract = Utils.extract_date
+fmt = Methods.fmt
 
 
 class Email(Object):
@@ -70,19 +75,19 @@ def eml(event):
     args = set(args)
     result = sorted(
                     find("email", event.gets),
-                    key=lambda x: extract_date(todate(getattr(x[1], "Date", "")))
+                    key=lambda x: extract(todate(getattr(x[1], "Date", "")))
                    )
     if event.index:
         obj = result[event.index]
         if obj:
             obj = obj[-1]
             tme = getattr(obj, "Date", "")
-            event.reply(f'{event.index} {fmt(obj, args, plain=True)} {elapsed(time.time() - extract_date(todate(tme)))}')
+            event.reply(f'{event.index} {fmt(obj, args, plain=True)} {elapsed(time.time() - extract(todate(tme)))}')
     else:
         for _fn, obj in result:
             nrs += 1
             tme = getattr(obj, "Date", "")
-            event.reply(f'{nrs} {fmt(obj, args, plain=True)} {elapsed(time.time() - extract_date(todate(tme)))}')
+            event.reply(f'{nrs} {fmt(obj, args, plain=True)} {elapsed(time.time() - extract(todate(tme)))}')
     if not result:
         event.reply("no emails found.")
 
@@ -112,7 +117,7 @@ def mbx(event):
             if payload.get_content_type() == 'text/plain':
                 obj.text += payload.get_payload()
         obj.text = obj.text.replace("\\n", "\n")
-        write(obj)
+        Disk.write(obj)
         nrs += 1
     if nrs:
         event.reply("ok %s" % nrs)

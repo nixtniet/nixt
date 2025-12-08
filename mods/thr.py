@@ -5,7 +5,7 @@ import threading
 import time
 
 
-from nixt.utility import elapsed
+from nixt.utility import Utils
 
 
 STARTTIME = time.time()
@@ -25,7 +25,7 @@ def thr(event):
         result.append((uptime, thread.name))
     res = []
     for uptime, txt in sorted(result, key=lambda x: x[0]):
-        lap = elapsed(uptime)
+        lap = Utils.elapsed(uptime)
         res.append(f"{txt}/{lap}")
     if res:
         event.reply(" ".join(res))
