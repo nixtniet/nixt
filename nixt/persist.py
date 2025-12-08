@@ -8,9 +8,9 @@ import json
 import threading
 
 
-from nixt.objects import update
-from nixt.serials import dump, load
-from nixt.workdir import cdir, getpath
+from .objects import update
+from .serials import dump, load
+from .workdir import cdir, getpath
 
 
 lock = threading.RLock()
@@ -20,20 +20,20 @@ class Cache:
 
     objects = {}
 
-    @staticmethod
-    def add(path, obj):
-        Cache.objects[path] = obj
 
-    @staticmethod
-    def get(path):
-        return Cache.objects.get(path, None)
+def addcache(path, obj):
+    Cache.objects[path] = obj
 
-    @staticmethod
-    def sync(path, obj):
-        try:
-            update(Cache.objects[path], obj)
-        except KeyError:
-            add(path, obj)
+
+def getcache(path):
+    return Cache.objects.get(path, None)
+
+
+def sync(path, obj):
+    try:
+        update(Cache.objects[path], obj)
+    except KeyError:
+        addcache(path, obj)
 
 
 def read(obj, path):
@@ -53,13 +53,16 @@ def write(obj, path=""):
         cdir(path)
         with open(path, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)
-        Cache.sync(path, obj)
+        sync(path, obj)
         return path
 
 
 def __dir__():
     return (
         'Cache',
+        'addcache',
+        'getcache',
         'read',
+        'sync',
         'write'
     )

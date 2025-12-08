@@ -4,8 +4,8 @@
 import unittest
 
 
-from nixt.methods import Methods
-from nixt.objects import Object
+from nixt.methods import fmt
+from nixt.objects import Object, fqn, items, keys, update, values
 
 
 VALIDJSON = '{"test": "bla"}'
@@ -124,13 +124,13 @@ class TestObject(unittest.TestCase):
         self.assertEqual(len(obj), 0)
 
     def test_module(self):
-        self.assertTrue(Object().__module__, "nop")
+        self.assertTrue(Object().__module__, "nixt.obejcts")
 
     def test_kind(self):
-        self.assertEqual(Object.fqn(Object()), "nixt.objects.Object")
+        self.assertEqual(fqn(Object()), "nixt.objects.Object")
 
     def test_repr(self):
-        self.assertTrue(Object.update(Object(),
+        self.assertTrue(update(Object(),
                                {"key": "value"}).__repr__(), {"key": "value"})
 
     def test_setattr(self):
@@ -144,7 +144,7 @@ class TestObject(unittest.TestCase):
 
     def test_printable(self):
         obj = Object()
-        self.assertEqual(Methods.fmt(obj), "{}")
+        self.assertEqual(fmt(obj), "{}")
 
     def test_getattr(self):
         obj = Object()
@@ -155,7 +155,7 @@ class TestObject(unittest.TestCase):
         obj = Object()
         obj.key = "value"
         self.assertEqual(
-            list(Object.keys(obj)),
+            list(keys(obj)),
             [
                 "key",
             ],
@@ -165,7 +165,7 @@ class TestObject(unittest.TestCase):
         obj = Object()
         obj.key = "value"
         self.assertEqual(
-            list(Object.items(obj)),
+            list(items(obj)),
             [
                 ("key", "value"),
             ],
@@ -180,14 +180,14 @@ class TestObject(unittest.TestCase):
         obj = Object()
         obj.key = "value"
         oobj = Object()
-        Object.update(oobj, obj)
+        update(oobj, obj)
         self.assertTrue(oobj.key, "value")
 
     def test_values(self):
         obj = Object()
         obj.key = "value"
         self.assertEqual(
-            list(Object.values(obj)),
+            list(values(obj)),
             [
                 "value",
             ],

@@ -8,25 +8,25 @@ class Broker:
 
     objects = {}
 
-    @staticmethod
-    def add(obj):
-        Broker.objects[repr(obj)] = obj
+
+def addobj(obj):
+    Broker.objects[repr(obj)] = obj
         
-    @staticmethod
-    def all(attr):
-        for obj in Broker.objects.values():
-           if attr in dir(obj):
-               yield obj
 
-    @staticmethod
-    def get(origin):
-        return Broker.objects.get(origin)
+def all(attr):
+    for obj in Broker.objects.values():
+       if attr in dir(obj):
+           yield obj
 
-    @staticmethod
-    def like(txt):
-        for orig in Broker.objects:
-            if orig.split()[0] in orig.split()[0]:
-                yield orig
+
+def getobj(origin):
+    return Broker.objects.get(origin)
+
+
+def like(txt):
+    for orig in Broker.objects:
+        if orig.split()[0] in orig.split()[0]:
+            yield orig
 
 
 def display(evt):
@@ -37,5 +37,9 @@ def display(evt):
 def __dir__():
     return (
         'Broker',
-        'display'
+        'addobj',
+        'all',
+        'display',
+        'getobj',
+        'like'
     )

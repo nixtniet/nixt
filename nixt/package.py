@@ -7,8 +7,8 @@
 import os
 
 
-from nixt.workdir import moddir
-from nixt.utility import importer, spl
+from .workdir import moddir
+from .utility import importer, spl
 
 
 class Mods:

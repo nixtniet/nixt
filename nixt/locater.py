@@ -8,9 +8,9 @@ import os
 import time
 
 
-from nixt.objects import Object, fqn, items, keys, update
-from nixt.persist import Cache, read
-from nixt.workdir import long, store
+from .objects import Object, fqn, items, keys, update
+from .persist import addcache, getcache, read
+from .workdir import long, store
 
 
 def attrs(kind):
@@ -27,11 +27,11 @@ def deleted(obj):
 def find(kind, selector={}, removed=False, matching=False):
     fullname = long(kind)
     for pth in fns(fullname):
-        obj = Cache.get(pth)
+        obj = getcache(pth)
         if not obj:
             obj = Object()
             read(obj, pth)
-            Cache.add(pth, obj)
+            addcache(pth, obj)
         if not removed and deleted(obj):
             continue
         if selector and not search(obj, selector, matching):

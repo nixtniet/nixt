@@ -9,7 +9,7 @@ import os
 import pathlib
 
 
-from nixt.objects import fqn
+from .objects import fqn
 
 
 class Workdir:

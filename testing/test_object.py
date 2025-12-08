@@ -7,8 +7,8 @@
 import unittest
 
 
-from nixt.methods import Methods
-from nixt.objects import Object
+from nixt.methods import fmt
+from nixt.objects import Object, items, keys, update, values
 
 
 import nixt.objects
@@ -103,7 +103,7 @@ class TestObject(unittest.TestCase):
 
     def test_fmt(self):
         obj = Object()
-        self.assertEqual(Methods.fmt(obj), "{}")
+        self.assertEqual(fmt(obj), "{}")
 
     def test_format(self):
         obj = Object()
@@ -132,7 +132,7 @@ class TestObject(unittest.TestCase):
         obj = Object()
         obj.key = "value"
         self.assertEqual(
-            list(Object.items(obj)),
+            list(items(obj)),
             [
                 ("key", "value"),
             ],
@@ -142,7 +142,7 @@ class TestObject(unittest.TestCase):
         obj = Object()
         obj.key = "value"
         self.assertEqual(
-            list(Object.keys(obj)),
+            list(keys(obj)),
             [
                 "key",
             ],
@@ -170,7 +170,7 @@ class TestObject(unittest.TestCase):
         self.assertEqual(obj.key, "value")
 
     def test_repr(self):
-        self.assertTrue(Object.update(Object(), {"key": "value"}).__repr__(), {"key": "value"})
+        self.assertTrue(update(Object(), {"key": "value"}).__repr__(), {"key": "value"})
 
     def test_setattr(self):
         obj = Object()
@@ -185,14 +185,14 @@ class TestObject(unittest.TestCase):
         obj = Object()
         obj.key = "value"
         oobj = Object()
-        Object.update(oobj, obj)
+        update(oobj, obj)
         self.assertTrue(oobj.key, "value")
 
     def test_values(self):
         obj = Object()
         obj.key = "value"
         self.assertEqual(
-            list(Object.values(obj)),
+            list(values(obj)),
             [
                 "value",
             ],

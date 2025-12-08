@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.methods import Methods
+from nixt.methods import fmt
 from nixt.objects import Object
 
 
@@ -16,4 +16,4 @@ class TestMethods(unittest.TestCase):
     def testformat(self):
         o = Object()
         o.a = "b"
-        self.assertEqual(Methods.fmt(o), 'a="b"')
+        self.assertEqual(fmt(o), 'a="b"')

@@ -22,10 +22,16 @@ from nixt.utility import wrapped
 from nixt.workdir import Workdir, pidfile, pidname
 
 
+"config"
+
+
 Config.ignore = "wsd,udp"
 Config.level = "info"
 Config.name = "nixt" 
 Config.version = 440
+
+
+"clients"
 
 
 class CLI(CLI):
@@ -176,9 +182,11 @@ def service():
 def cmd(event):
     event.reply(",".join(sorted(Commands.names or Commands.cmds)))
 
+
 def srv(event):
     name = getpass.getuser()
     event.reply(SYSTEMD % (Config.name.upper(), name, name, name, Config.name))
+
 
 def ver(event):
     event.reply(f"{Config.name.upper()} {Config.version}")

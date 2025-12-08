@@ -10,8 +10,8 @@ import os
 import time
 
 
-from nixt.objects import Object
-from nixt.statics import TIMES
+from .objects import Object
+from .statics import TIMES
 
 
 class Default(Object):

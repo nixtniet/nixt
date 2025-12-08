@@ -8,7 +8,7 @@ import re
 import time
 
 
-from nixt.brokers import Broker
+from nixt.brokers import getobj, like
 from nixt.locater import last
 from nixt.objects import Object, items
 from nixt.repeats import Timed
@@ -28,12 +28,12 @@ def init():
         if not args:
             continue
         orig, channel, txt = args
-        for origin in Broker.like(orig):
+        for origin in like(orig):
             if not origin:
                 continue
             diff = float(tme) - time.time()
             if diff > 0:
-                bot = Broker.get(origin)
+                bot = getobj(origin)
                 timer = Timed(diff, bot.say, channel, txt)
                 timer.start()
             else:
@@ -211,7 +211,7 @@ def tmr(event):
     txt = " ".join(event.args[1:])
     add(target, event.orig, event.channel, txt)
     write(Timers.timers, Timers.path or getpath(Timers.timers))
-    bot = Broker.get(event.orig)
+    bot = getobj(event.orig)
     timer = Timed(diff, bot.say, event.orig, event.channel, txt)
     timer.start()
     event.reply("ok " + elapsed(diff))

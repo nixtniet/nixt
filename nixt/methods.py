@@ -4,8 +4,8 @@
 "functions with an object as the first argument"
 
 
-from nixt.objects import Object, items
-from nixt.utility import Default
+from .objects import Object, items
+from .utility import Default
 
 
 def edit(obj, setter={}, skip=False):

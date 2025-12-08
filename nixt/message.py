@@ -8,7 +8,7 @@ import threading
 import time
 
 
-from nixt.utility import Default
+from .utility import Default
 
 
 class Message(Default):

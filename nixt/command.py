@@ -7,8 +7,8 @@
 import inspect
 
 
-from nixt.brokers import display
-from nixt.methods import parse
+from .brokers import display
+from .methods import parse
 
 
 class Commands:

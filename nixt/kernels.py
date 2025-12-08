@@ -7,13 +7,13 @@
 import time
 
 
-from nixt.command import scan
-from nixt.loggers import level
-from nixt.methods import parse
-from nixt.package import Mods,  modules, mods
-from nixt.threads import launch
-from nixt.utility import Default, spl
-from nixt.workdir import Workdir
+from .command import scan
+from .loggers import level
+from .methods import parse
+from .package import Mods,  modules, mods
+from .threads import launch
+from .utility import Default, spl
+from .workdir import Workdir
 
 
 class Config(Default):
