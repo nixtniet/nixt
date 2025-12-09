@@ -4,8 +4,11 @@
 import unittest
 
 
-from nixt.methods import fmt
+from nixt.methods import Methods
 from nixt.objects import Object, fqn, items, keys, update, values
+
+
+fmt = Methods.fmt
 
 
 VALIDJSON = '{"test": "bla"}'

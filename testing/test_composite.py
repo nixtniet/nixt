@@ -5,7 +5,7 @@ import unittest
 
 
 from nixt.objects import Object
-from nixt.persist import read, write
+from nixt.persist import Disk
 
 
 class TestComposite(unittest.TestCase):
@@ -20,7 +20,7 @@ class TestComposite(unittest.TestCase):
         obj = Object()
         obj.obj = Object()
         obj.obj.a = "test"
-        fnm = write(obj)
+        fnm = Disk.write(obj)
         ooo = Object()
-        read(ooo, fnm)
+        Disk.read(ooo, fnm)
         self.assertTrue(ooo.obj)

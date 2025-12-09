@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.methods import fmt
+from nixt.methods import Methods
 from nixt.objects import Object, items, keys, update, values
 
 
@@ -103,7 +103,7 @@ class TestObject(unittest.TestCase):
 
     def test_fmt(self):
         obj = Object()
-        self.assertEqual(fmt(obj), "{}")
+        self.assertEqual(Methods.fmt(obj), "{}")
 
     def test_format(self):
         obj = Object()

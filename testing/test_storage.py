@@ -10,7 +10,7 @@ sys.path.insert(0, ".")
 
 
 from nixt.objects import Object
-from nixt.persist import Cache, write
+from nixt.persist import Cache, Disk
 from nixt.workdir import Workdir
 
 
@@ -22,11 +22,7 @@ Workdir.wdr = '.test'
 
 ATTRS1 = (
     'Cache',
-    'addcache',
-    'getcache',
-    'read',
-    'sync',
-    'write'
+    'Disk'
 )
 
 
@@ -52,5 +48,5 @@ class TestStorage(unittest.TestCase):
 
     def test_save(self):
         obj = Object()
-        opath = write(obj)
+        opath = Disk.write(obj)
         self.assertTrue(os.path.exists(opath))

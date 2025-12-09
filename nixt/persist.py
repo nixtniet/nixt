@@ -34,7 +34,7 @@ class Cache:
         try:
             update(Cache.objects[path], obj)
         except KeyError:
-            addcache(path, obj)
+            Cache.add(path, obj)
 
 
 class Disk:
