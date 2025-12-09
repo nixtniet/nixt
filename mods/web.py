@@ -17,7 +17,7 @@ from nixt.threads import Threads
 
 
 def init():
-    Cfg.path = Mods.path
+    Cfg.path = os.path.join(Mods.path, "network", "html")
     if not os.path.exists(os.path.join(Cfg.path, 'index.html')):
         logging.warning("no index.html")
         return

@@ -31,8 +31,9 @@ class Kernel:
 
     @staticmethod
     def configure(local=False, network=False):
+        assert Config.name
         Logging.level(Config.sets.level or "info")
-        Workdir.configure(Config.name or "nixt")
+        Workdir.configure(Config.name)
         Mods.configure(local, network)
 
     @staticmethod

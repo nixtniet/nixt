@@ -8,5 +8,5 @@ from nixt.package import Mods
 
 
 def pth(event):
-    path = os.path.join(Mods.path, 'classes', "index.html")
+    path = os.path.join(Mods.path, 'network', 'html', "index.html")
     event.reply(f"file://{path}")

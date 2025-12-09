@@ -105,7 +105,7 @@ class RESTHandler(BaseHTTPRequestHandler):
         try:
             with open(fnm, "r", encoding="utf-8") as file:
                 txt = file.read()
-                file.cnixte()
+                file.close()
             self.write_header("text/html")
             self.send(html(txt))
         except (TypeError, FileNotFoundError, IsADirectoryError) as ex:
