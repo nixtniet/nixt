@@ -15,7 +15,7 @@ from nixt.utility import Utils
 
 
 elapsed = Utils.elapsed
-extract = Utils.extract_date
+extract = Utils.extractdate
 fmt = Methods.fmt
 
 
@@ -74,7 +74,7 @@ def eml(event):
             args.remove(key)
     args = set(args)
     result = sorted(
-                    find("email", event.gets),
+                    Locater.find("email", event.gets),
                     key=lambda x: extract(todate(getattr(x[1], "Date", "")))
                    )
     if event.index:

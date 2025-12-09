@@ -1,10 +1,8 @@
 # This file is placed in the Public Domain.
 
 
-import datetime
 import logging
 import random
-import re
 import time
 
 
@@ -13,8 +11,7 @@ from nixt.locater import Locater
 from nixt.objects import Object, items
 from nixt.repeats import Timed
 from nixt.persist import Disk
-from nixt.statics import MONTH
-from nixt.utility import Time, Utils
+from nixt.utility import NoDate, Time, Utils
 from nixt.workdir import Workdir
 
 
@@ -45,11 +42,6 @@ def init():
     logging.warning("%s timers", len(Timers.timers))
 
 
-class NoDate(Exception):
-
-    pass
-
-
 class Timer(Object):
 
     pass
@@ -73,7 +65,7 @@ def tmr(event):
     result = ""
     if not event.rest:
         nmr = 0
-        for tme, txt in Object.items(Timers.timers):
+        for tme, txt in items(Timers.timers):
             lap = float(tme) - time.time()
             if lap > 0:
                 event.reply(f'{nmr} {" ".join(txt)} {Utils.elapsed(lap)}')
@@ -96,10 +88,10 @@ def tmr(event):
         target = time.time() + seconds
     else:
         try:
-            target = get_day(event.rest)
+            target = Time.day(event.rest)
         except NoDate:
-            target = to_day(today())
-        hour =  get_hour(event.rest)
+            target = Time.extract(Time.today())
+        hour =  Time.hour(event.rest)
         if hour:
             target += hour
     target += rand.random() 
@@ -110,7 +102,7 @@ def tmr(event):
     txt = " ".join(event.args[1:])
     Timers.add(target, event.orig, event.channel, txt)
     Disk.write(Timers.timers, Timers.path or Workdir.path(Timers.timers))
-    bot = getobj(event.orig)
+    bot = Broker.get(event.orig)
     timer = Timed(diff, bot.say, event.orig, event.channel, txt)
     timer.start()
     event.reply("ok " + Utils.elapsed(diff))

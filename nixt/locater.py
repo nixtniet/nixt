@@ -9,7 +9,7 @@ import time
 
 
 from .methods import Methods
-from .objects import Object, fqn, items, keys, update
+from .objects import Object, fqn, keys, update
 from .persist import Cache, Disk
 from .workdir import Workdir
 

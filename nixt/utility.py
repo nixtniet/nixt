@@ -9,11 +9,17 @@ import importlib.util
 import inspect
 import os
 import pathlib
+import re
 import time
 
 
-from .objects import Object, fqn
+from .objects import fqn
 from .statics import MONTH, TIMES
+
+
+class NoDate(Exception):
+
+    pass
 
 
 class Time:
@@ -67,10 +73,10 @@ class Time:
     @staticmethod
     def time(txt):
         try:
-            target = get_day(txt)
+            target = Time.day(txt)
         except NoDate:
-            target = to_day(today())
-        hour =  get_hour(txt)
+            target = Time.extract(Time.today())
+        hour =  Time.hour(txt)
         if hour:
             target += hour
         return target
@@ -89,10 +95,10 @@ class Time:
                 return time.time() - seconds
         if not target:
             try:
-                target = get_day(txt)
+                target = Time.day(txt)
             except NoDate:
-               target = to_day(today())
-            hour = get_hour(txt)
+               target = Time.extract(Time.today())
+            hour = Time.hour(txt)
             if hour:
                 target += hour
         return target
@@ -107,7 +113,7 @@ class Time:
             line = previous + " " + word
             previous = word
             try:
-                res = extract_date(line.strip())
+                res = Utils.extractdate(line.strip())
                 break
             except ValueError:
                 res = None
@@ -167,7 +173,7 @@ class Utils:
         return txt
 
     @staticmethod
-    def extract_date(daystr):
+    def extractdate(daystr):
         daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
         res = time.time()
         for fmat in TIMES:

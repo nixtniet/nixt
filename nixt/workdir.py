@@ -4,12 +4,10 @@
 "where objects are stored"
 
 
-import datetime
 import os
 import pathlib
 
 
-from .objects import fqn
 from .utility import Utils
 
 
@@ -51,7 +49,7 @@ class Workdir:
             return
         pth = pathlib.Path(path)
         pth.mkdir(parents=True, exist_ok=True)
-        pth = pathlib.Path(moddir())
+        pth = pathlib.Path(Workdir.moddir())
         pth.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
