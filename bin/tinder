@@ -14,13 +14,13 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client, Output
-from nixt.command import Commands, command
-from nixt.kernels import Config, Kernel, scanner
+from nixt.command import Commands
+from nixt.kernels import Config, Kernel
 from nixt.message import Message
-from nixt.methods import fmt, parse
-from nixt.package import modules
-from nixt.threads import launch, threadhook
-from nixt.utility import elapsed
+from nixt.methods import Methods
+from nixt.package import Mods
+from nixt.threads import Threads
+from nixt.utility import Utils
 from nixt.workdir import Workdir
 
 
@@ -40,7 +40,7 @@ class CLI(Output):
 
     def __init__(self):
         Output.__init__(self)
-        self.register("command", command)
+        self.register("command", Commands.command)
 
     def raw(self, txt):
         if "v" in Config.opts:
@@ -120,13 +120,14 @@ def payload(todo):
 
 
 def main():
+    launch = Threads.launch
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
     Kernel.configure(check("m"), check('n'))
-    parse(Config, " ".join(sys.argv[1:]))
-    scanner(modules())
+    Methods.parse(Config, " ".join(sys.argv[1:]))
+    Kernel.scanner(Mods.list())
     if "b" in Config.opts:
-        threading.excepthook = threadhook
+        threading.excepthook = Threading.threadhook
     if "v" in Config.opts:
         banner(Config.name, Config.version)
     if "z" in Config.opts:
@@ -155,11 +156,11 @@ def main():
     except (KeyboardInterrupt, EOFError):
         os._exit(0)
     endtime = time.time()
-    lap = elapsed(endtime-starttime)
+    lap = Utils.elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
     if "v" in Config.opts:
-        print(f"{fmt(Config)}")
+        print(f"{Methods.fmt(Config)}")
         print(f"{nrs} events left.")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
     os._exit(0)
