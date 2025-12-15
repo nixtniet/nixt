@@ -6,7 +6,7 @@ import os
 import time
 
 
-from nixt.classes import Disk, Locate, Method, Object, Static, Time
+from nixt.classes import Dict, Disk, Locate, Method, Object, Static, Time
 
 
 class Email(Object):
@@ -58,7 +58,7 @@ def eml(event):
     if len(event.args) > 1:
         args.extend(event.args[1:])
     if event.gets:
-        args.extend(Object.keys(event.gets))
+        args.extend(Dict.keys(event.gets))
     for key in event.silent:
         if key in args:
             args.remove(key)
@@ -101,7 +101,7 @@ def mbx(event):
     nrs = 0
     for mail in thing:
         obj = Email()
-        Object.update(obj, dict(mail._headers))
+        Dict.update(obj, dict(mail._headers))
         obj.text = ""
         for payload in mail.walk():
             if payload.get_content_type() == 'text/plain':

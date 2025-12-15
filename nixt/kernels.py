@@ -8,24 +8,22 @@ import time
 
 
 from .command import Commands
+from .configs import Config
 from .objects import Default
 from .package import Mods
 from .threads import Thread
 from .utility import Utils
 
 
-class Config(Default):
-
-    debug = False
-    init = ""
-    level = "info"
-    name = ""
-    opts = ""
-    sets = Default()
-    version = 0
-
-
 class Kernel:
+
+    @staticmethod
+    def boot(txt):
+        Workdir.wdr = Workdir.wdr or os.path.join(f"{Config.name}")
+        Workdir.skel()
+        Kernel.parse(txt)
+        Kernel.scanner(Mods.list())
+        Kernel.init(Mods.list())
 
     @staticmethod
     def forever():

@@ -28,30 +28,21 @@ class Object:
     def __str__(self):
         return str(self.__dict__)
 
+
+class Dict:
+
     @staticmethod
     def construct(obj, *args, **kwargs):
         if args:
             val = args[0]
             if isinstance(val, zip):
-                Object.update(obj, dict(val))
+                Dict.update(obj, dict(val))
             elif isinstance(val, dict):
-                Object.update(obj, val)
+                Dict.update(obj, val)
             else:
-                Object.update(obj, vars(val))
+                Dict.update(obj, vars(val))
         if kwargs:
-            Object.update(obj, kwargs)
-
-    @staticmethod
-    def fqn(obj):
-        kin = str(type(obj)).split()[-1][1:-2]
-        if kin == "type":
-            tpe = type(obj)
-            kin = f"{tpe.__module__}.{tpe.__name__}"
-        return kin
-
-    @staticmethod
-    def ident(obj):
-        return os.path.join(Object.fqn(obj), *str(datetime.datetime.now()).split())
+            Dict.update(obj, kwargs)
 
     @staticmethod
     def items(obj):
@@ -70,15 +61,15 @@ class Object:
     @staticmethod
     def update(obj, data, empty=True):
         if isinstance(obj, type):
-            for k, v in Object.items(data):
+            for k, v in Dict.items(data):
                 if isinstance(getattr(obj, k, None), types.MethodType):
                     raise Reserved(k)
                 setattr(obj, k, v)
         elif isinstance(obj, dict):
-            for k, v in Object.items(data):
+            for k, v in Dict.items(data):
                 setattr(obj, k, v)
         else:
-            for key, value in Object.items(data):
+            for key, value in Dict.items(data):
                 if not empty and not value:
                     continue
                 setattr(obj, key, value)
@@ -99,6 +90,7 @@ class Default(Object):
 def __dir__():
     return (
         'Default',
+        'Dict',
         'Object',
         'Reserved'
     )

@@ -12,7 +12,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.classes import CLI, Commands, Config, Kernel, Message, Method
-from nixt.classes import Log, Mods, Static, Utils, Workdir
+from nixt.classes import Log, Mods, Static, Thread, Utils, Workdir
 
 
 Config.ignore = "wsd,udp"
@@ -49,9 +49,10 @@ class Runtime:
     @staticmethod
     def banner():
         tme = time.ctime(time.time()).replace("  ", " ")
-        print("%s %s since %s (%s)" % (
+        print("%s %s %s since %s (%s)" % (
                                        Config.name.upper(),
                                        Config.version,
+                                       Config.opts.upper(),
                                        tme,
                                        Config.level.upper()
                                       ))
@@ -180,13 +181,13 @@ class Cmds:
 
     @staticmethod
     def ver(event):
-        event.reply(f"{Config.name.upper()} {Config.version}")
+        event.reply(f"{Config.name.upper()} {Config.version} {Config.opts}")
 
 
 def main():
     Workdir.skel()
     if Runtime.check("b"):
-        threading.excepthook = threadhook
+        threading.excepthook = Thread.threadhook
     if Runtime.check('z'):
         Config.debug = True
     if Runtime.check("c"):

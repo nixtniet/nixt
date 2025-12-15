@@ -14,7 +14,9 @@ from .handler import Output as Output
 from .kernels import Kernel as Kernel
 from .loggers import Log as Log
 from .message import Message as Message
-from .methods import Method as Method
+from .methods import Method
+from .objects import Default as Default
+from .objects import Dict as Dict
 from .objects import Object as Object
 from .package import Mods as Mods
 from .persist import Disk as Disk
@@ -39,6 +41,8 @@ def __dir__():
         'Client',
         'Commands',
         'Config',
+        'Default',
+        'Dict',
         'Disk',
         'Handler',
         'Json',

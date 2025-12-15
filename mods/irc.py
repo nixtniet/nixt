@@ -11,8 +11,8 @@ import threading
 import time
 
 
-from nixt.classes import Broker, Commands, Disk, Locate, Message, Method
-from nixt.classes import Object, Output, Thread, Workdir
+from nixt.classes import Broker, Commands, Dict, Disk, Locate, Message
+from nixt.classes import Method, Object, Output, Thread, Workdir
 from nixt.configs import Config as Main
 
 
@@ -594,7 +594,7 @@ def cfg(event):
         event.reply(
             Method.fmt(
                 config,
-                Object.keys(config),
+                Dict.keys(config),
                 skip="control,name,word,realname,sleep,username".split(",")
             )
         )

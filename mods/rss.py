@@ -19,7 +19,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.classes import Broker, Config, Disk, Locate, Method, Object
+from nixt.classes import Broker, Config, Dict, Disk, Locate, Method, Object
 from nixt.classes import Repeater, Thread, Time, Utils, Workdir
 
 
@@ -99,8 +99,8 @@ class Fetcher(Object):
             for obj in reversed(getfeed(feed.rss, feed.display_list)):
                 counter += 1
                 fed = Feed()
-                Object.update(fed, obj)
-                Object.update(fed, feed)
+                Dict.update(fed, obj)
+                Dict.update(fed, feed)
                 url = urllib.parse.urlparse(fed.link)
                 if url.path and not url.path == "/":
                     uurl = f"{url.scheme}://{url.netloc}/{url.path}"
@@ -263,7 +263,7 @@ class OPML:
 
 
 def attrs(obj, txt):
-    Object.update(obj, OPML.parse(txt))
+    Dict.update(obj, OPML.parse(txt))
 
 
 def cdata(line):
@@ -351,7 +351,7 @@ def dpl(event):
     setter = {"display_list": event.args[1]}
     for fnm, feed in Locate.find("rss.Rss", {"rss": event.args[0]}):
         if feed:
-            Object.update(feed, setter)
+            Dict.update(feed, setter)
             Disk.write(feed, fnm)
     event.reply("ok")
 
@@ -363,7 +363,7 @@ def exp(event):
         for _fn, ooo in Locate.find("rss.Rss"):
             nrs += 1
             obj = Rss()
-            Object.update(obj, ooo)
+            Dict.update(obj, ooo)
             name = f"url{nrs}"
             txt = f'<outline name="{name}" display_list="{obj.display_list}" xmlUrl="{obj.rss}"/>'
             event.reply(" " * 12 + txt)
@@ -399,7 +399,7 @@ def imp(event):
                 nrskip += 1
                 continue
             feed = Rss()
-            Object.update(feed, obj)
+            Dict.update(feed, obj)
             feed.rss = obj.xmlUrl
             feed.insertid = insertid
             Disk.write(feed)
@@ -417,7 +417,7 @@ def nme(event):
     selector = {"rss": event.args[0]}
     for fnm, fed in Locate.find("rss.Rss", selector):
         feed = Rss()
-        Object.update(feed, fed)
+        Dict.update(feed, fed)
         if feed:
             feed.name = str(event.args[1])
             Disk.write(feed, fnm)
@@ -430,7 +430,7 @@ def rem(event):
         return
     for fnm, fed in Locate.find("rss.Rss"):
         feed = Rss()
-        Object.update(feed, fed)
+        Dict.update(feed, fed)
         if event.args[0] not in feed.rss:
             continue
         if feed:
@@ -446,7 +446,7 @@ def res(event):
         return
     for fnm, fed in Locate.find("rss.Rss", removed=True):
         feed = Rss()
-        Object.update(feed, fed)
+        Dict.update(feed, fed)
         if event.args[0] not in feed.rss:
             continue
         if feed:

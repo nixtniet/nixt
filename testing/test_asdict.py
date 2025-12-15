@@ -4,7 +4,7 @@
 import unittest
 
 
-from nixt.classes import Object
+from nixt.classes import Dict, Object
 
 
 VALIDJSON = '{"test": "bla"}'
@@ -125,11 +125,8 @@ class TestObject(unittest.TestCase):
     def test_module(self):
         self.assertTrue(Object().__module__, "nixt.obejcts")
 
-    def test_kind(self):
-        self.assertEqual(Object.fqn(Object()), "nixt.objects.Object")
-
     def test_repr(self):
-        self.assertTrue(Object.update(Object(),
+        self.assertTrue(Dict.update(Object(),
                                {"key": "value"}).__repr__(), {"key": "value"})
 
     def test_setattr(self):
@@ -150,7 +147,7 @@ class TestObject(unittest.TestCase):
         obj = Object()
         obj.key = "value"
         self.assertEqual(
-            list(Object.keys(obj)),
+            list(Dict.keys(obj)),
             [
                 "key",
             ],
@@ -160,7 +157,7 @@ class TestObject(unittest.TestCase):
         obj = Object()
         obj.key = "value"
         self.assertEqual(
-            list(Object.items(obj)),
+            list(Dict.items(obj)),
             [
                 ("key", "value"),
             ],
@@ -175,14 +172,14 @@ class TestObject(unittest.TestCase):
         obj = Object()
         obj.key = "value"
         oobj = Object()
-        Object.update(oobj, obj)
+        Dict.update(oobj, obj)
         self.assertTrue(oobj.key, "value")
 
     def test_values(self):
         obj = Object()
         obj.key = "value"
         self.assertEqual(
-            list(Object.values(obj)),
+            list(Dict.values(obj)),
             [
                 "value",
             ],

@@ -13,6 +13,7 @@ import re
 import time
 
 
+from .methods import Method
 from .objects import Object
 from .statics import Static
 
@@ -199,7 +200,7 @@ class Utils:
 
     @staticmethod
     def ident(obj):
-        return os.path.join(Object.fqn(obj), *str(datetime.datetime.now()).split())
+        return os.path.join(Method.fqn(obj), *str(datetime.datetime.now()).split())
 
     @staticmethod
     def importer(name, pth=""):

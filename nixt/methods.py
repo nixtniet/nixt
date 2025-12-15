@@ -4,7 +4,7 @@
 "functions with an object as the first argument"
 
 
-from .objects import Default, Object
+from .objects import Default, Dict
 
 
 class Method:
@@ -15,7 +15,7 @@ class Method:
 
     @staticmethod
     def edit(obj, setter={}, skip=False):
-        for key, val in Object.items(setter):
+        for key, val in Dict.items(setter):
             if skip and val == "":
                 continue
             try:
@@ -57,10 +57,18 @@ class Method:
             elif isinstance(value, (int, float, dict, bool, list)):
                 txt += f"{key}={value} "
             else:
-                txt += f"{key}={Object.fqn(value)}((value))"
+                txt += f"{key}={Method.fqn(value)}((value))"
         if txt == "":
              txt = "{}"
         return txt.strip()
+
+    @staticmethod
+    def fqn(obj):
+        kin = str(type(obj)).split()[-1][1:-2]
+        if kin == "type":
+            tpe = type(obj)
+            kin = f"{tpe.__module__}.{tpe.__name__}"
+        return kin
 
     @staticmethod
     def parse(obj, text):
@@ -117,7 +125,7 @@ class Method:
     @staticmethod
     def search(obj, selector={}, matching=False):
         res = False
-        for key, value in Object.items(selector):
+        for key, value in Dict.items(selector):
             val = getattr(obj, key, None)
             if not val:
                 res = False

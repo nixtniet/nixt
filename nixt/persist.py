@@ -11,7 +11,7 @@ import time
 
 
 from .methods import Method
-from .objects import Object
+from .objects import Dict, Object
 from .serials import Json
 from .utility import Time, Utils
 from .workdir import Workdir
@@ -35,7 +35,7 @@ class Cache:
     @staticmethod
     def sync(path, obj):
         try:
-            Object.update(Cache.objects[path], obj)
+            Dict.update(Cache.objects[path], obj)
         except KeyError:
             Cache.add(path, obj)
 
@@ -47,7 +47,7 @@ class Disk:
         with lock:
             with open(path, "r", encoding="utf-8") as fpt:
                 try:
-                    Object.update(obj, Json.load(fpt))
+                    Dict.update(obj, Json.load(fpt))
                 except json.decoder.JSONDecodeError as ex:
                     ex.add_note(path)
                     raise ex
@@ -102,13 +102,13 @@ class Locate:
     @staticmethod
     def last(obj, selector={}):
         result = sorted(
-                        Locate.find(Object.fqn(obj), selector),
+                        Locate.find(Method.fqn(obj), selector),
                         key=lambda x: Time.fntime(x[0])
                        )
         res = ""
         if result:
             inp = result[-1]
-            Object.update(obj, inp[-1])
+            Dict.update(obj, inp[-1])
             res = inp[0]
         return res
 
