@@ -6,8 +6,8 @@ import random
 import time
 
 
-from nixt.classes import Broker, Disk, Locater, Object, Static
-from nixt.classes import Time, Utils, Workdir
+from nixt.classes import Broker, Disk, Locate, Object
+from nixt.classes import Time, Timed, Utils, Workdir
 from nixt.utility import NoDate
 
 
@@ -15,7 +15,7 @@ rand = random.SystemRandom()
 
 
 def init():
-    Timers.path = Locater.last(Timers.timers) or Workdir.path(Timers.timers)
+    Timers.path = Locate.last(Timers.timers) or Workdir.path(Timers.timers)
     remove = []
     for tme, args in Object.items(Timers.timers):
         if not args:
@@ -61,7 +61,7 @@ def tmr(event):
     result = ""
     if not event.rest:
         nmr = 0
-        for tme, txt in items(Timers.timers):
+        for tme, txt in Object.items(Timers.timers):
             lap = float(tme) - time.time()
             if lap > 0:
                 event.reply(f'{nmr} {" ".join(txt)} {Utils.elapsed(lap)}')

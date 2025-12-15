@@ -102,6 +102,36 @@ class Time:
         return txt
 
     @staticmethod
+    def extract(daystr):
+        previous = ""
+        line = ""
+        daystr = str(daystr)
+        res = None
+        for word in daystr.split():
+            line = previous + " " + word
+            previous = word
+            try:
+                res = Utils.extractdate(line.strip())
+                break
+            except ValueError:
+                res = None
+            line = ""
+        return res
+
+    @staticmethod
+    def fntime(daystr):
+        datestr = " ".join(daystr.split(os.sep)[-2:])
+        datestr = datestr.replace("_", " ")
+        if "." in datestr:
+            datestr, rest = datestr.rsplit(".", 1)
+        else:
+            rest = ""
+        timed = time.mktime(time.strptime(datestr, "%Y-%m-%d %H:%M:%S"))
+        if rest:
+            timed += float("." + rest)
+        return float(timed)
+
+    @staticmethod
     def hour(daystr):
         try:
             hmsre = re.search(r'(\d+):(\d+):(\d+)', str(daystr))
@@ -154,23 +184,6 @@ class Time:
             if hour:
                 target += hour
         return target
-
-    @staticmethod
-    def extract(daystr):
-        previous = ""
-        line = ""
-        daystr = str(daystr)
-        res = None
-        for word in daystr.split():
-            line = previous + " " + word
-            previous = word
-            try:
-                res = Utils.extractdate(line.strip())
-                break
-            except ValueError:
-                res = None
-            line = ""
-        return res
 
     @staticmethod
     def today():

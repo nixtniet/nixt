@@ -13,8 +13,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.classes import Client, Commands, Config, Kernel, Message, Methods
-from nixt.classes import Mods, Output, Threads, Time, Utils, Workdir
+from nixt.classes import Client, Commands, Config, Kernel, Message, Method
+from nixt.classes import Mods, Output, Thread, Time, Utils, Workdir
 
 
 Config.debug = True
@@ -114,10 +114,10 @@ def main():
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
     Workdir.skel()
-    Methods.parse(Config, " ".join(sys.argv[1:]))
+    Method.parse(Config, " ".join(sys.argv[1:]))
     Kernel.scanner(Mods.list())
     if "b" in Config.opts:
-        threading.excepthook = Threading.threadhook
+        threading.excepthook = Thread.threadhook
     if "v" in Config.opts:
         banner(Config.name, Config.version)
     if "z" in Config.opts:
@@ -128,18 +128,18 @@ def main():
     thrs = []
     NRS = Config.index or 1
     for _x in range(NRS):
-        thrs.append(Threads.launch(payload, pre))
+        thrs.append(Thread.launch(payload, pre))
     for thr in thrs:
         thr.join()
     for _x in range(NRS):
-        thrs.append(Threads.launch(payload, examples))
+        thrs.append(Thread.launch(payload, examples))
     for thr in thrs:
         thr.join()
     for _x in range(NRS):
-        thrs.append(Threads.launch(payload, post))
+        thrs.append(Thread.launch(payload, post))
     for thr in thrs:
         thr.join()
-    Threads.launch(consume)
+    Thread.launch(consume)
     nrevents = events.qsize()
     try:
         events.join()
@@ -150,7 +150,7 @@ def main():
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
     if "v" in Config.opts:
-        print(f"{Methods.fmt(Config)}")
+        print(f"{Method.fmt(Config)}")
         print(f"{nrs} events left.")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
     os._exit(0)

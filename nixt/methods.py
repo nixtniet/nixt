@@ -7,7 +7,7 @@
 from .objects import Default, Object
 
 
-class Methods:
+class Method:
 
     @staticmethod
     def deleted(obj):
@@ -135,5 +135,5 @@ class Methods:
 
 def __dir__():
     return (
-        'Methods',
+        'Method',
     )

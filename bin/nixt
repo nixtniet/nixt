@@ -11,8 +11,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.classes import CLI, Commands, Config, Kernel, Message, Methods
-from nixt.classes import Logging, Mods, Static, Utils, Workdir
+from nixt.classes import CLI, Commands, Config, Kernel, Message, Method
+from nixt.classes import Log, Mods, Static, Utils, Workdir
 
 
 Config.ignore = "wsd,udp"
@@ -128,9 +128,9 @@ class Scripts:
     @staticmethod
     def console():
         import readline
-        Methods.parse(Config, " ".join(sys.argv[1:]))
+        Method.parse(Config, " ".join(sys.argv[1:]))
         Runtime.banner()
-        Logging.level(Config.sets.level or Config.level)
+        Log.level(Config.sets.level or Config.level)
         if "a" in Config.opts:
             Config.init = Mods.list()
         else:

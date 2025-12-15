@@ -22,7 +22,8 @@ Workdir.wdr = '.test'
 
 ATTRS1 = (
     'Cache',
-    'Disk'
+    'Disk',
+    'Locate'
 )
 
 

@@ -4,7 +4,7 @@
 import os
 
 
-from nixt.package import Mods
+from nixt.classes import Mods
 
 
 def pth(event):

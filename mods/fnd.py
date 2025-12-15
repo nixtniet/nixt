@@ -4,7 +4,7 @@
 import time
 
 
-from nixt.classes import Locater, Methods, Time, Utils, Workdir
+from nixt.classes import Locate, Method, Time, Workdir
 
 
 def fnd(event):
@@ -17,8 +17,8 @@ def fnd(event):
         return
     otype = event.args[0]
     nmr = 0
-    for fnm, obj in sorted(Locater.find(otype, event.gets), key=lambda x: Locater.fntime(x[0])):
-        event.reply(f"{nmr} {Methods.fmt(obj)} {Time.elapsed(time.time()-Locater.fntime(fnm))}")
+    for fnm, obj in sorted(Locate.find(otype, event.gets), key=lambda x: Time.fntime(x[0])):
+        event.reply(f"{nmr} {Method.fmt(obj)} {Time.elapsed(time.time()-Time.fntime(fnm))}")
         nmr += 1
     if not nmr:
         event.reply("no result")

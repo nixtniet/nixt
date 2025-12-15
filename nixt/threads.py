@@ -18,7 +18,7 @@ class Task(threading.Thread):
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
         self.event = None
-        self.name = kwargs.get("name", Threads.name(func))
+        self.name = kwargs.get("name", Thread.name(func))
         self.queue = queue.Queue()
         self.result = None
         self.starttime = time.time()
@@ -56,7 +56,7 @@ class Task(threading.Thread):
             raise ex
 
 
-class Threads:
+class Thread:
 
     @staticmethod
     def launch(func, *args, **kwargs):
@@ -87,6 +87,6 @@ class Threads:
 
 def __dir__():
     return (
-        'Threads',
+        'Thread',
     )
  

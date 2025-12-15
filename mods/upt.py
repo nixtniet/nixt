@@ -4,7 +4,7 @@
 import time
 
 
-from nixt.utility import Time
+from nixt.classes import Time
 
 
 STARTTIME = time.time()

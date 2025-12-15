@@ -10,10 +10,10 @@ import threading
 import time
 
 
-from .methods import Methods
+from .methods import Method
 from .objects import Object
 from .serials import Json
-from .utility import Utils
+from .utility import Time, Utils
 from .workdir import Workdir
 
 
@@ -64,11 +64,11 @@ class Disk:
             return path
 
 
-class Locater:
+class Locate:
 
     @staticmethod
     def attrs(kind):
-        objs = list(Locater.find(kind))
+        objs = list(Locate.find(kind))
         if objs:
             return list(Object.keys(objs[0][1]))
         return []
@@ -76,15 +76,15 @@ class Locater:
     @staticmethod
     def find(kind, selector={}, removed=False, matching=False):
         fullname = Workdir.long(kind)
-        for pth in Locater.fns(fullname):
+        for pth in Locate.fns(fullname):
             obj = Cache.get(pth)
             if not obj:
                 obj = Object()
                 Disk.read(obj, pth)
                 Cache.add(pth, obj)
-            if not removed and Methods.deleted(obj):
+            if not removed and Method.deleted(obj):
                 continue
-            if selector and not Methods.search(obj, selector, matching):
+            if selector and not Method.search(obj, selector, matching):
                 continue
             yield pth, obj
 
@@ -100,23 +100,10 @@ class Locater:
                     yield os.path.join(ddd, fll)
 
     @staticmethod
-    def fntime(daystr):
-        datestr = " ".join(daystr.split(os.sep)[-2:])
-        datestr = datestr.replace("_", " ")
-        if "." in datestr:
-            datestr, rest = datestr.rsplit(".", 1)
-        else:
-            rest = ""
-        timed = time.mktime(time.strptime(datestr, "%Y-%m-%d %H:%M:%S"))
-        if rest:
-            timed += float("." + rest)
-        return float(timed)
-
-    @staticmethod
     def last(obj, selector={}):
         result = sorted(
-                        Locater.find(Object.fqn(obj), selector),
-                        key=lambda x: Locater.fntime(x[0])
+                        Locate.find(Object.fqn(obj), selector),
+                        key=lambda x: Time.fntime(x[0])
                        )
         res = ""
         if result:
@@ -130,5 +117,5 @@ def __dir__():
     return (
         'Cache',
         'Disk',
-        'Locater'
+        'Locate'
     )

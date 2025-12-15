@@ -6,10 +6,7 @@ import os
 import time
 
 
-from nixt.classes import Disk, Locater, Methods, Object, Static, Utils
-
-
-fmt = Methods.fmt
+from nixt.classes import Disk, Locate, Method, Object, Static, Time
 
 
 class Email(Object):
@@ -67,7 +64,7 @@ def eml(event):
             args.remove(key)
     args = set(args)
     result = sorted(
-                    Locater.find("email", event.gets),
+                    Locate.find("email", event.gets),
                     key=lambda x: Time.date(Time.todate(getattr(x[1], "Date", "")))
                    )
     if event.index:
@@ -75,12 +72,12 @@ def eml(event):
         if obj:
             obj = obj[-1]
             tme = getattr(obj, "Date", "")
-            event.reply(f'{event.index} {Methods.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - Time.date(todate(tme)))}')
+            event.reply(f'{event.index} {Method.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - Time.date(todate(tme)))}')
     else:
         for _fn, obj in result:
             nrs += 1
             tme = getattr(obj, "Date", "")
-            event.reply(f'{nrs} {Methods.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - Time.date(todate(tme)))}')
+            event.reply(f'{nrs} {Method.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - Time.date(todate(tme)))}')
     if not result:
         event.reply("no emails found.")
 

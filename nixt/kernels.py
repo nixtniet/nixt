@@ -8,12 +8,10 @@ import time
 
 
 from .command import Commands
-from .loggers import Logging
 from .objects import Default
 from .package import Mods
-from .threads import Threads
+from .threads import Thread
 from .utility import Utils
-from .workdir import Workdir
 
 
 class Config(Default):
@@ -44,7 +42,7 @@ class Kernel:
             mod = Mods.get(name)
             if "init" not in dir(mod):
                 continue
-            thrs.append(Threads.launch(mod.init))
+            thrs.append(Thread.launch(mod.init))
         if wait:
             for thr in thrs:
                 thr.join()

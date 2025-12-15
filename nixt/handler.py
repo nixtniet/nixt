@@ -12,7 +12,7 @@ import _thread
 
 from .brokers import Broker
 from .command import Commands
-from .threads import Threads
+from .threads import Thread
 
 
 class Handler:
@@ -27,7 +27,7 @@ class Handler:
             event.ready()
             return
         name = event.text and event.text.split()[0]
-        event._thr = Threads.launch(func, event, name=name)
+        event._thr = Thread.launch(func, event, name=name)
 
     def loop(self):
         while True:
@@ -47,7 +47,7 @@ class Handler:
         self.cbs[kind] = callback
 
     def start(self):
-        Threads.launch(self.loop)
+        Thread.launch(self.loop)
 
     def stop(self):
         self.queue.put(None)
@@ -108,7 +108,7 @@ class Output(Client):
             self.oqueue.task_done()
 
     def start(self):
-        Threads.launch(self.output)
+        Thread.launch(self.output)
         super().start()
 
     def stop(self):

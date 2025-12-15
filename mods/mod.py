@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-from nixt.package import Mods
+from nixt.classes import Mods
 
 
 def mod(event):

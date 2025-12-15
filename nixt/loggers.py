@@ -14,14 +14,14 @@ class Format(logging.Formatter):
         return logging.Formatter.format(self, record)
 
 
-class Logging:
+class Log:
 
     datefmt = "%H:%M:%S"
     format = "%(module).3s %(message)s"
 
     @staticmethod
     def level(loglevel):
-        formatter = Format(Logging.format, Logging.datefmt)
+        formatter = Format(Log.format, Log.datefmt)
         stream = logging.StreamHandler()
         stream.setFormatter(formatter)
         logging.basicConfig(
@@ -33,5 +33,5 @@ class Logging:
 
 def __dir__():
     return (
-        'Logging',
+        'Log',
     )

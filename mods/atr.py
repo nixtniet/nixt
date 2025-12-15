@@ -4,7 +4,7 @@
 "fields"
 
 
-from nixt.classes import Locater, Workdir
+from nixt.classes import Locate, Workdir
 
 
 def atr(event):
@@ -15,7 +15,7 @@ def atr(event):
         else:
             event.reply("no types")
         return
-    items = Locater.attrs(event.args[0])
+    items = Locate.attrs(event.args[0])
     if not items:
         event.reply("no fields")
     else:

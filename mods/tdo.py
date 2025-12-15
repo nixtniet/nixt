@@ -4,7 +4,7 @@
 import time
 
 
-from nixt.classes import Disk, Locater, Object, Utils
+from nixt.classes import Disk, Locate, Object, Time, Utils
 
 
 class Todo(Object):
@@ -20,7 +20,7 @@ def dne(event):
         return
     selector = {'txt': event.args[0]}
     nmr = 0
-    for fnm, obj in Locater.find('todo', selector):
+    for fnm, obj in Locate.find('todo', selector):
         nmr += 1
         obj.__deleted__ = True
         Disk.write(obj, fnm)
@@ -33,8 +33,8 @@ def dne(event):
 def tdo(event):
     if not event.rest:
         nmr = 0
-        for fnm, obj in Locater.find('todo', event.gets):
-            lap = Utils.elapsed(time.time()-Locater.fntime(fnm))
+        for fnm, obj in Locate.find('todo', event.gets):
+            lap = Time.elapsed(time.time()-Time.fntime(fnm))
             event.reply(f'{nmr} {obj.txt} {lap}')
             nmr += 1
         if not nmr:

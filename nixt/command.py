@@ -7,7 +7,7 @@
 import inspect
 
 
-from .methods import Methods
+from .methods import Method
 
 
 class Commands:
@@ -24,7 +24,7 @@ class Commands:
 
     @staticmethod
     def command(evt):
-        Methods.parse(evt, evt.text)
+        Method.parse(evt, evt.text)
         func = Commands.get(evt.cmd)
         if func:
            func(evt)

@@ -1,7 +1,7 @@
 # This file is been placed in the Public Domain.
 
 
-from nixt.workdir import Workdir
+from nixt.classes import Workdir
 
 
 def lst(event):

@@ -7,7 +7,6 @@
 import os
 
 
-from .workdir import Workdir
 from .utility import Utils
 
 

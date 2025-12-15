@@ -7,8 +7,7 @@
 import unittest
 
 
-from nixt.clients import Client
-from nixt.message import Message
+from nixt.classes import Client, Message
 
 
 def hello(event):

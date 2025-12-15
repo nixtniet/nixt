@@ -10,10 +10,7 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.kernels import Config
-from nixt.objects import Object
-from nixt.package import Mods
-from nixt.threads import Threads
+from nixt.classes import Config, Mods, Object, Thread
 
 
 def init():
@@ -56,7 +53,7 @@ class HTTP(HTTPServer, Object):
         self.shutdown()
 
     def start(self):
-        Threads.launch(self.serve_forever)
+        Thread.launch(self.serve_forever)
         self._status = "ok"
 
     def request(self):
