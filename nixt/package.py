@@ -23,17 +23,6 @@ class Mods:
         Mods.dirs[name] = path
 
     @staticmethod
-    def configure(local=False, network=False):
-        name = Mods.package + ".modules" 
-        Mods.add(name, os.path.join(Mods.path, "modules"))
-        Mods.add("modules", Workdir.moddir())
-        if network:
-            name = Mods.package + ".network" 
-            Mods.add(name, os.path.join(Mods.path, "network"))
-        if local:
-            Mods.add("mods", os.path.join(os.getcwd(), "mods"))
-
-    @staticmethod
     def get(name):
         if name in Mods.modules:
             return Mods.modules.get(name)

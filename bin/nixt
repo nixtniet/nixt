@@ -11,21 +11,16 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import CLI
-from nixt.command import Commands
-from nixt.kernels import Config, Kernel
-from nixt.message import Message
-from nixt.methods import Methods
-from nixt.package import Mods
-from nixt.statics import SYSTEMD
-from nixt.utility import Utils
-from nixt.workdir import Workdir
+from nixt.classes import CLI, Commands, Config, Kernel, Message, Methods
+from nixt.classes import Logging, Mods, Static, Utils, Workdir
 
 
 Config.ignore = "wsd,udp"
 Config.level = "info"
 Config.name = "nixt" 
 Config.version = 440
+Mods.add("mods", "mods")
+Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
 
 
 class CLI(CLI):
@@ -133,8 +128,9 @@ class Scripts:
     @staticmethod
     def console():
         import readline
-        Runtime.banner()
         Methods.parse(Config, " ".join(sys.argv[1:]))
+        Runtime.banner()
+        Logging.level(Config.sets.level or Config.level)
         if "a" in Config.opts:
             Config.init = Mods.list()
         else:
@@ -180,7 +176,7 @@ class Cmds:
     @staticmethod
     def srv(event):
         name = getpass.getuser()
-        event.reply(SYSTEMD % (Config.name.upper(), name, name, name, Config.name))
+        event.reply(Static.SYSTEMD % (Config.name.upper(), name, name, name, Config.name))
 
     @staticmethod
     def ver(event):
@@ -188,17 +184,16 @@ class Cmds:
 
 
 def main():
-    check = Runtime.check
-    Kernel.configure(check("m"), check("n"))
-    if check("b"):
+    Workdir.skel()
+    if Runtime.check("b"):
         threading.excepthook = threadhook
-    if check('z'):
+    if Runtime.check('z'):
         Config.debug = True
-    if check("c"):
+    if Runtime.check("c"):
         Runtime.wrap(Scripts.console)
-    elif check("d"):
+    elif Runtime.check("d"):
         Scripts.background()
-    elif check("s"):
+    elif Runtime.check("s"):
         Utils.wrapped(Scripts.service)
     else:
         Utils.wrapped(Scripts.control)

@@ -6,18 +6,11 @@ import logging
 import time
 
 
-from nixt.brokers import Broker
-from nixt.message import Message
-from nixt.objects import Object, construct, keys
-from nixt.repeats import Repeater
-from nixt.utility import Utils
-
-
-elapsed = Utils.elapsed
+from nixt.classes import Broker, Message, Object, Repeater, Time, Utils
 
 
 def init():
-    for key in keys(oorzaken):
+    for key in Object.keys(oorzaken):
         if "Psych" not in key:
             continue
         val = getattr(oorzaken, key, None)
@@ -29,7 +22,7 @@ def init():
             name = aliases.get(key)
             repeater = Repeater(sec, cbstats, evt, thrname=name)
             repeater.start()
-            logging.warning("since %s", elapsed(time.time()-STARTTIME))
+            logging.warning("since %s", Time.elapsed(time.time()-STARTTIME))
 
 
 "defines"
@@ -95,7 +88,7 @@ def getday():
 
 
 def getnr(nme):
-    for k in keys(oorzaken):
+    for k in Object.keys(oorzaken):
         if nme.lower() in k.lower():
             return int(getattr(oorzaken, k))
     return 0
@@ -133,8 +126,8 @@ def hourly():
 
 def cbnow(_evt):
     delta = time.time() - STARTTIME
-    txt = elapsed(delta) + " "
-    for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
+    txt = Time.elapsed(delta) + " "
+    for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
             continue
@@ -156,13 +149,13 @@ def cbstats(evt):
         delta2 = time.time() - getday()
         thisday = int(delta2/needed)
         txt = "%s %s #%s (%s/%s/%s) every %s" % (
-            elapsed(delta),
+            Time.elapsed(delta),
             getalias(nme).upper(),
             nrtimes,
             thisday,
             nrday,
             nryear,
-            elapsed(needed)
+            Time.elapsed(needed)
         )
         for bot in Broker.all("announce"):
             bot.announce(txt)
@@ -173,8 +166,8 @@ def cbstats(evt):
 
 def dis(event):
     delta = time.time() - STARTTIME
-    txt = elapsed(delta) + " "
-    for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
+    txt = Time.elapsed(delta) + " "
+    for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
             continue
@@ -194,13 +187,13 @@ def now(event):
         nrday = int(DAY/needed)
         thisday = int(DAY % needed)
         txt = "%s %s #%s (%s/%s/%s) every %s" % (
-            elapsed(delta),
+            Time.elapsed(delta),
             getalias(nme),
             nrtimes,
             thisday,
             nrday,
             nryear,
-            elapsed(needed)
+            Time.elapsed(needed)
         )
         event.reply(txt)
 
@@ -408,13 +401,13 @@ aantal = """
 
 
 oorzaak = Object()
-construct(oorzaak, zip(oor, aantal))
+Object.construct(oorzaak, zip(oor, aantal))
 oorzaken = Object()
 
 
 def boot():
     _nr = -1
-    for key in keys(oorzaak):
+    for key in Object.keys(oorzaak):
         _nr += 1
         if _nr == 0:
             continue

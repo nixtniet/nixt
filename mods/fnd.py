@@ -4,10 +4,7 @@
 import time
 
 
-from nixt.locater import Locater
-from nixt.methods import Methods
-from nixt.utility import Utils
-from nixt.workdir import Workdir
+from nixt.classes import Locater, Methods, Time, Utils, Workdir
 
 
 def fnd(event):
@@ -18,14 +15,10 @@ def fnd(event):
         else:
             event.reply("no data yet.")
         return
-    elapsed = Utils.elapsed
-    find = Locater.find
-    fmt = Methods.fmt
-    fntime = Locater.fntime
     otype = event.args[0]
     nmr = 0
-    for fnm, obj in sorted(find(otype, event.gets), key=lambda x: fntime(x[0])):
-        event.reply(f"{nmr} {fmt(obj)} {elapsed(time.time()-fntime(fnm))}")
+    for fnm, obj in sorted(Locater.find(otype, event.gets), key=lambda x: Locater.fntime(x[0])):
+        event.reply(f"{nmr} {Methods.fmt(obj)} {Time.elapsed(time.time()-Locater.fntime(fnm))}")
         nmr += 1
     if not nmr:
         event.reply("no result")

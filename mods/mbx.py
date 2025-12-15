@@ -6,16 +6,9 @@ import os
 import time
 
 
-from nixt.locater import Locater
-from nixt.methods import Methods
-from nixt.objects import Object
-from nixt.persist import Disk
-from nixt.statics import MONTH
-from nixt.utility import Utils
+from nixt.classes import Disk, Locater, Methods, Object, Static, Utils
 
 
-elapsed = Utils.elapsed
-extract = Utils.extractdate
 fmt = Methods.fmt
 
 
@@ -36,7 +29,7 @@ def todate(date):
         if "-" in res[3]:
             raise ValueError
         int(res[3])
-        ddd = "{:4}-{:#02}-{:#02} {:6}".format(res[3], MONTH[res[2]], int(res[1]), res[4])
+        ddd = "{:4}-{:#02}-{:#02} {:6}".format(res[3], Static.MONTH[res[2]], int(res[1]), res[4])
     except (IndexError, KeyError, ValueError) as ex:
         try:
             if "+" in res[4]:
@@ -44,16 +37,16 @@ def todate(date):
             if "-" in res[4]:
                 raise ValueError from ex
             int(res[4])
-            ddd = "{:4}-{:#02}-{:02} {:6}".format(res[4], MONTH[res[1]], int(res[2]), res[3])
+            ddd = "{:4}-{:#02}-{:02} {:6}".format(res[4], Static.MONTH[res[1]], int(res[2]), res[3])
         except (IndexError, KeyError, ValueError):
             try:
-                ddd = "{:4}-{:#02}-{:02} {:6}".format(res[2], MONTH[res[1]], int(res[0]), res[3])
+                ddd = "{:4}-{:#02}-{:02} {:6}".format(res[2], Static.MONTH[res[1]], int(res[0]), res[3])
             except (IndexError, KeyError):
                 try:
-                    ddd = "{:4}-{:#02}-{:02}".format(res[2], MONTH[res[1]], int(res[0]))
+                    ddd = "{:4}-{:#02}-{:02}".format(res[2], Static.MONTH[res[1]], int(res[0]))
                 except (IndexError, KeyError):
                     try:
-                        ddd = "{:4}-{:#02}".format(res[2], MONTH[res[1]])
+                        ddd = "{:4}-{:#02}".format(res[2], Static.MONTH[res[1]])
                     except (IndexError, KeyError):
                         try:
                             ddd = "{:4}".format(res[2])
@@ -75,19 +68,19 @@ def eml(event):
     args = set(args)
     result = sorted(
                     Locater.find("email", event.gets),
-                    key=lambda x: extract(todate(getattr(x[1], "Date", "")))
+                    key=lambda x: Time.date(Time.todate(getattr(x[1], "Date", "")))
                    )
     if event.index:
         obj = result[event.index]
         if obj:
             obj = obj[-1]
             tme = getattr(obj, "Date", "")
-            event.reply(f'{event.index} {fmt(obj, args, plain=True)} {elapsed(time.time() - extract(todate(tme)))}')
+            event.reply(f'{event.index} {Methods.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - Time.date(todate(tme)))}')
     else:
         for _fn, obj in result:
             nrs += 1
             tme = getattr(obj, "Date", "")
-            event.reply(f'{nrs} {fmt(obj, args, plain=True)} {elapsed(time.time() - extract(todate(tme)))}')
+            event.reply(f'{nrs} {Methods.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - Time.date(todate(tme)))}')
     if not result:
         event.reply("no emails found.")
 

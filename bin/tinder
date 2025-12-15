@@ -13,23 +13,14 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client, Output
-from nixt.command import Commands
-from nixt.kernels import Config, Kernel
-from nixt.message import Message
-from nixt.methods import Methods
-from nixt.package import Mods
-from nixt.threads import Threads
-from nixt.utility import Utils
-from nixt.workdir import Workdir
+from nixt.classes import Client, Commands, Config, Kernel, Message, Methods
+from nixt.classes import Mods, Output, Threads, Time, Utils, Workdir
 
 
 Config.debug = True
 Config.name = "nixt"
-Config.opts = "m"
 Config.version = 110
-
-
+Mods.add("mods", "mods")
 Workdir.wdr = ".test"
 
 
@@ -120,10 +111,9 @@ def payload(todo):
 
 
 def main():
-    launch = Threads.launch
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
-    Kernel.configure(check("m"), check('n'))
+    Workdir.skel()
     Methods.parse(Config, " ".join(sys.argv[1:]))
     Kernel.scanner(Mods.list())
     if "b" in Config.opts:
@@ -138,25 +128,25 @@ def main():
     thrs = []
     NRS = Config.index or 1
     for _x in range(NRS):
-        thrs.append(launch(payload, pre))
+        thrs.append(Threads.launch(payload, pre))
     for thr in thrs:
         thr.join()
     for _x in range(NRS):
-        thrs.append(launch(payload, examples))
+        thrs.append(Threads.launch(payload, examples))
     for thr in thrs:
         thr.join()
     for _x in range(NRS):
-        thrs.append(launch(payload, post))
+        thrs.append(Threads.launch(payload, post))
     for thr in thrs:
         thr.join()
-    launch(consume)
+    Threads.launch(consume)
     nrevents = events.qsize()
     try:
         events.join()
     except (KeyboardInterrupt, EOFError):
         os._exit(0)
     endtime = time.time()
-    lap = Utils.elapsed(endtime-starttime)
+    lap = Time.elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
     if "v" in Config.opts:

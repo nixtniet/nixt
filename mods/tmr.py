@@ -6,13 +6,9 @@ import random
 import time
 
 
-from nixt.brokers import Broker
-from nixt.locater import Locater
-from nixt.objects import Object, items
-from nixt.repeats import Timed
-from nixt.persist import Disk
-from nixt.utility import NoDate, Time, Utils
-from nixt.workdir import Workdir
+from nixt.classes import Broker, Disk, Locater, Object, Static
+from nixt.classes import Time, Utils, Workdir
+from nixt.utility import NoDate
 
 
 rand = random.SystemRandom()
@@ -21,7 +17,7 @@ rand = random.SystemRandom()
 def init():
     Timers.path = Locater.last(Timers.timers) or Workdir.path(Timers.timers)
     remove = []
-    for tme, args in items(Timers.timers):
+    for tme, args in Object.items(Timers.timers):
         if not args:
             continue
         orig, channel, txt = args

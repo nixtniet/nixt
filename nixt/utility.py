@@ -13,8 +13,8 @@ import re
 import time
 
 
-from .objects import fqn
-from .statics import MONTH, TIMES
+from .objects import Object
+from .statics import Static
 
 
 class NoDate(Exception):
@@ -23,6 +23,18 @@ class NoDate(Exception):
 
 
 class Time:
+
+    @staticmethod
+    def date(daystr):
+        daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
+        res = time.time()
+        for fmat in Static.TIMES:
+            try:
+                res = time.mktime(time.strptime(daystr, fmat))
+                break
+            except ValueError:
+                pass
+        return res
 
     @staticmethod
     def day(daystr):
@@ -45,9 +57,49 @@ class Time:
             day = int(day)
             month = int(month)
             yea = int(yea)
-            date = f"{day} {MONTH[month]} {yea}"
+            date = f"{day} {Static.MONTH[month]} {yea}"
             return time.mktime(time.strptime(date, r"%d %b %Y"))
         raise NoDate(daystr)
+
+    @staticmethod
+    def elapsed(seconds, short=True):
+        txt = ""
+        nsec = float(seconds)
+        if nsec < 1:
+            return f"{nsec:.2f}s"
+        yea     = 365 * 24 * 60 * 60
+        week    = 7 * 24 * 60 * 60
+        nday    = 24 * 60 * 60
+        hour    = 60 * 60
+        minute  = 60
+        yeas    = int(nsec / yea)
+        nsec   -= yeas * yea
+        weeks   = int(nsec / week)
+        nsec   -= weeks * week
+        nrdays  = int(nsec / nday)
+        nsec   -= nrdays * nday
+        hours   = int(nsec / hour)
+        nsec   -= hours * hour
+        minutes = int(nsec / minute)
+        nsec   -= minutes * minute
+        sec     = int(nsec / 1)
+        nsec   -= nsec - sec
+        if yeas:
+            txt += f"{yeas}y"
+        if weeks:
+            nrdays += weeks * 7
+        if nrdays:
+            txt += f"{nrdays}d"
+        if hours:
+            txt += f"{hours}h"
+        if short and txt:
+            return txt.strip()
+        if minutes:
+            txt += f"{minutes}m"
+        if sec:
+            txt += f"{sec}s"
+        txt = txt.strip()
+        return txt
 
     @staticmethod
     def hour(daystr):
@@ -133,60 +185,8 @@ class Utils:
         pth.parent.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
-    def elapsed(seconds, short=True):
-        txt = ""
-        nsec = float(seconds)
-        if nsec < 1:
-            return f"{nsec:.2f}s"
-        yea     = 365 * 24 * 60 * 60
-        week    = 7 * 24 * 60 * 60
-        nday    = 24 * 60 * 60
-        hour    = 60 * 60
-        minute  = 60
-        yeas    = int(nsec / yea)
-        nsec   -= yeas * yea
-        weeks   = int(nsec / week)
-        nsec   -= weeks * week
-        nrdays  = int(nsec / nday)
-        nsec   -= nrdays * nday
-        hours   = int(nsec / hour)
-        nsec   -= hours * hour
-        minutes = int(nsec / minute)
-        nsec   -= minutes * minute
-        sec     = int(nsec / 1)
-        nsec   -= nsec - sec
-        if yeas:
-            txt += f"{yeas}y"
-        if weeks:
-            nrdays += weeks * 7
-        if nrdays:
-            txt += f"{nrdays}d"
-        if hours:
-            txt += f"{hours}h"
-        if short and txt:
-            return txt.strip()
-        if minutes:
-            txt += f"{minutes}m"
-        if sec:
-            txt += f"{sec}s"
-        txt = txt.strip()
-        return txt
-
-    @staticmethod
-    def extractdate(daystr):
-        daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
-        res = time.time()
-        for fmat in TIMES:
-            try:
-                res = time.mktime(time.strptime(daystr, fmat))
-                break
-            except ValueError:
-                pass
-        return res
-
-    @staticmethod
     def ident(obj):
-        return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
+        return os.path.join(Object.fqn(obj), *str(datetime.datetime.now()).split())
 
     @staticmethod
     def importer(name, pth=""):

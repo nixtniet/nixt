@@ -16,11 +16,6 @@ class Workdir:
     wdr = ""
 
     @staticmethod
-    def configure(name):
-        Workdir.wdr = Workdir.wdr or os.path.expanduser(f"~/.{name}")
-        Workdir.skel()
-
-    @staticmethod
     def path(obj):
         return Workdir.store(Utils.ident(obj))
 
