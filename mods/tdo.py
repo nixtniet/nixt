@@ -4,7 +4,7 @@
 import time
 
 
-from nixt.classes import Disk, Locate, Object, Time, Utils
+from nixt.classes import Disk, Locate, Object, Time
 
 
 class Todo(Object):

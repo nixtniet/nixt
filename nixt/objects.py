@@ -4,8 +4,6 @@
 "a clean namespace"
 
 
-import datetime
-import os
 import types
 
 

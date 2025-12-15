@@ -4,15 +4,16 @@
 "in the beginning"
 
 
+import os
 import time
 
 
 from .command import Commands
 from .configs import Config
-from .objects import Default
 from .package import Mods
 from .threads import Thread
 from .utility import Utils
+from .workdir import Workdir
 
 
 class Kernel:
@@ -53,6 +54,5 @@ class Kernel:
 
 def __dir__():
     return (
-        'Config',
-        'Kernel'
+        'Kernel',
     )

@@ -8,7 +8,6 @@ class Broker:
 
     objects = {}
 
-
     @staticmethod
     def add(obj):
         Broker.objects[repr(obj)] = obj

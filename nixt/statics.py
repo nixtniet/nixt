@@ -6,7 +6,6 @@
 
 class Static:
 
-
     MONTH = {
         'Jan': 1,
         'Feb': 2,
@@ -22,7 +21,6 @@ class Static:
        'Dec': 12
     }
 
-
     SYSTEMD = """[Unit]
 Description=%s
 After=network-online.target
@@ -35,7 +33,6 @@ ExecStart=/home/%s/.local/bin/%s -s
 
 [Install]
 WantedBy=multi-user.target"""
-
 
     TIMES = [
         "%Y-%M-%D %H:%M:%S",

@@ -7,7 +7,6 @@
 import json
 import os
 import threading
-import time
 
 
 from .methods import Method

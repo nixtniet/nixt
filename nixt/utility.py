@@ -14,7 +14,6 @@ import time
 
 
 from .methods import Method
-from .objects import Object
 from .statics import Static
 
 

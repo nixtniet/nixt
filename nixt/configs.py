@@ -10,6 +10,7 @@ from .objects import Default
 class Config(Default):
 
     debug = False
+    gets = Default()
     init = ""
     level = "info"
     name = ""

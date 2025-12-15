@@ -6,7 +6,7 @@ import logging
 import time
 
 
-from nixt.classes import Broker, Dict, Message, Method, Object, Repeater, Time
+from nixt.classes import Broker, Dict, Message, Object, Repeater, Time
 
 
 def init():
