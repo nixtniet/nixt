@@ -4,7 +4,7 @@
 import unittest
 
 
-from mods.rss import OPML
+from examples.rss import OPML
 
 
 TXT = """<opml version="1.0">
