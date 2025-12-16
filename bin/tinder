@@ -121,8 +121,6 @@ def main():
     Workdir.skel()
     Method.parse(Config, " ".join(sys.argv[1:]))
     Kernel.scanner(Mods.list())
-    if "b" in Config.opts:
-        threading.excepthook = Thread.threadhook
     if "v" in Config.opts:
         banner(Config.name, Config.version)
     if "z" in Config.opts:
@@ -158,8 +156,7 @@ def main():
         print(f"{Method.fmt(Config)}")
         print(f"{nrs} events left.")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
-    raise Exception("end!")
-    #os._exit(0)
+    os._exit(0)
 
 
 examples = {
