@@ -15,6 +15,9 @@ from nixt.classes import CLI, Commands, Config, Kernel, Message, Method
 from nixt.classes import Log, Mods, Static, Thread, Utils, Workdir
 
 
+TXT = " ".join(sys.argv[1:])
+
+
 Config.ignore = "wsd,udp"
 Config.level = "info"
 Config.name = "nixt" 
@@ -141,38 +144,29 @@ class Scripts:
         Runtime.daemon(check("v"), check("m"))
         Runtime.privileges()
         Workdir.pidfile(Workdir.pidname(Config.name))
-        Commands.add(Cmds.cmd, Cmds.ver)
-        Kernel.scanner(Mods.list() or "irc,rss")
-        Kernel.init(Mods.list() or "irc,rss")
-        Runtime.forever()
+        Kernel.boot(None, TXT, Cmds)
+        Kernel.scanner()
+        Kernel.init()
 
     @staticmethod
     def console():
         import readline
-        Method.parse(Config, " ".join(sys.argv[1:]))
         Runtime.banner()
-        Log.level(Config.sets.level or Config.level)
-        if "a" in Config.opts:
-            Config.init = Mods.list()
-        else:
-            Config.init = Config.sets.init or Config.init
-        Kernel.scanner(Mods.list())
-        Commands.add(Cmds.cmd, Cmds.ver)
-        Kernel.init(Config.init, "w" in Config.opts)
+        Kernel.boot(TXT)
+        Kernel.scanner(Cmds.cmd, Cmds.ver)
+        Kernel.init(wait="w" in Config.opts)
         csl = Console()
         csl.start()
-        Runtime.forever()
+        Kernel.forever()
 
     @staticmethod
     def control():
         if len(sys.argv) == 1:
             return
-        Kernel.scanner(Mods.list())
-        Commands.add(Cmds.cmd, Cmds.srv, Cmds.ver)
-        csl = CLI()
-        csl.silent = False
+        Kernel.boot(TXT)
+        cli = CLI()
         evt = Message()
-        evt.orig = repr(csl)
+        evt.orig = repr(cli)
         evt.text = " ".join(sys.argv[1:])
         evt.type = "command"
         Commands.command(evt)
@@ -182,10 +176,7 @@ class Scripts:
     def service():
         Runtime.privileges()
         Workdir.pidfile(Utils.pidname(Config.name))
-        Kernel.scanner(Config.init or "irc,rss")
-        Commands.add(Cmds.cmd, Cmds.ver)
-        Kernel.init(Config.init or "irc,rss")
-        Runtime.forever()
+        Kernel.boot(None, TXT, Cmds)
 
 
 class Cmds:

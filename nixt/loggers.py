@@ -17,7 +17,7 @@ class Format(logging.Formatter):
 class Log:
 
     datefmt = "%H:%M:%S"
-    format = "%(module).3s %(message)s"
+    format = f"%(module)-4s %(message)s"
 
     @staticmethod
     def level(loglevel):

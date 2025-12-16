@@ -7,8 +7,8 @@
 from .brokers import Broker as Broker
 from .command import Commands as Commands
 from .configs import Config as Config
-from .handler import Client as Client
 from .handler import CLI as CLI
+from .handler import Client as Client
 from .handler import Handler as Handler
 from .handler import Output as Output
 from .kernels import Kernel as Kernel
@@ -36,8 +36,8 @@ from .workdir import Workdir as Workdir
 def __dir__():
     return (
         'Broker',
-        'CLI',
         'Cache',
+        'CLI',
         'Client',
         'Commands',
         'Config',

@@ -4,11 +4,15 @@
 "in the beginning"
 
 
+import logging
 import os
+import time
 
 
 from .command import Commands
 from .configs import Config
+from .loggers import Log
+from .objects import Default, Dict
 from .package import Mods
 from .threads import Thread
 from .utility import Utils
@@ -21,14 +25,25 @@ class Kernel:
     def boot(txt):
         Workdir.wdr = Workdir.wdr or os.path.join(f"{Config.name}")
         Workdir.skel()
-        Kernel.parse(txt)
-        Kernel.scanner(Mods.list())
-        Kernel.init(Mods.list())
+        Kernel.parse(Config, txt)
+        Log.level(Config.sets.level or Config.level or "info")
 
     @staticmethod
-    def init(names, wait=False):
+    def forever():
+        while True:
+            try:
+                time.sleep(0.1)
+            except (KeyboardInterrupt, EOFError):
+                break
+
+    @staticmethod
+    def init(names=None, wait=False):
+        if not names:
+            names = Mods.list()
         thrs = []
         for name in Utils.spl(names):
+            if name in Config.ignore:
+                continue
             mod = Mods.get(name)
             if "init" not in dir(mod):
                 continue
@@ -38,8 +53,66 @@ class Kernel:
                 thr.join()
 
     @staticmethod
-    def scanner(names):
+    def parse(obj, text):
+        data = {
+            "args": [],
+            "cmd": "",
+            "gets": Default(),
+            "index": None,
+            "init": "",
+            "opts": "",
+            "otxt": text,
+            "rest": "",
+            "silent": Default(),
+            "sets": Default(),
+            "text": text
+        }
+        for k, v in data.items():
+            setattr(obj, k, getattr(obj, k, v) or v)
+        args = []
+        nr = -1
+        for spli in text.split():
+            if spli.startswith("-"):
+                try:
+                    obj.index = int(spli[1:])
+                except ValueError:
+                    obj.opts += spli[1:]
+                continue
+            if "-=" in spli:
+                key, value = spli.split("-=", maxsplit=1)
+                setattr(obj.silent, key, value)
+                setattr(obj.gets, key. value)
+                continue
+            if "==" in spli:
+                key, value = spli.split("==", maxsplit=1)
+                setattr(obj.gets, key, value)
+                continue
+            if "=" in spli:
+                key, value = spli.split("=", maxsplit=1)
+                setattr(obj.sets, key, value)
+                continue
+            nr += 1
+            if nr == 0:
+                obj.cmd = spli
+                continue
+            args.append(spli)
+        if args:
+            obj.args = args
+            obj.text  = obj.cmd or ""
+            obj.rest = " ".join(obj.args)
+            obj.text  = obj.cmd + " " + obj.rest
+        else:
+            obj.text = obj.cmd or ""
+
+    @staticmethod
+    def scanner(*cmds):
+        if cmds:
+            for cmd in cmds:
+                Commands.add(cmd)
+        names = Mods.list()
         for mod in Mods.mods(names):
+            if mod.__name__ in Config.ignore:
+                continue
             Commands.scan(mod)
 
 

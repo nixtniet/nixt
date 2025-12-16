@@ -76,7 +76,12 @@ class Dict:
     def values(obj):
        if isinstance(obj, dict):
            return obj.values()
-       return obj.__dict__.values()
+       res = []
+       for key in dir(obj):
+           if key.startswith("_"):
+               continue
+           res.append(getattr(obj, key))
+       return res
 
 
 class Default(Object):
