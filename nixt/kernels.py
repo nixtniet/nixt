@@ -27,14 +27,6 @@ class Kernel:
         Kernel.init(Mods.list())
 
     @staticmethod
-    def forever():
-        while True:
-            try:
-                time.sleep(0.1)
-            except (KeyboardInterrupt, EOFError):
-                break
-
-    @staticmethod
     def init(names, wait=False):
         thrs = []
         for name in Utils.spl(names):

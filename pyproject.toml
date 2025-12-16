@@ -32,5 +32,13 @@ classifiers = [
 [tool.setuptools]
 packages = [
     'nixt',
+    'nixt.modules',
+    'nixt.network',
+    'nixt.nucleus'
 ]
-include-package-data = false
+include-package-data = true
+
+
+[tool.setuptools.package-data]
+"examples" = ["*"]
+"nixt.nucleus" = ["*"]

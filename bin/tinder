@@ -20,8 +20,13 @@ from nixt.classes import Mods, Output, Thread, Time, Utils, Workdir
 Config.debug = True
 Config.name = "nixt"
 Config.version = 110
-Mods.add("mods", "mods")
+
+
 Workdir.wdr = ".test"
+
+
+Mods.add("examples", "examples")
+Mods.add('modules', Workdir.moddir())
 
 
 events = queue.Queue()
@@ -153,7 +158,8 @@ def main():
         print(f"{Method.fmt(Config)}")
         print(f"{nrs} events left.")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
-    os._exit(0)
+    raise Exception("end!")
+    #os._exit(0)
 
 
 examples = {
@@ -187,6 +193,7 @@ pre = {
 
 
 post = {
+    "dbg": [""],
     "dne": ["", "mekker"],
     "exp": [""],
     "rem": ["", "hnrss"]

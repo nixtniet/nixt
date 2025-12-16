@@ -1,3 +1,0 @@
-include bin/clean
-include bin/nixt
-recursive-include mods *

@@ -19,8 +19,13 @@ Config.ignore = "wsd,udp"
 Config.level = "info"
 Config.name = "nixt" 
 Config.version = 440
-Mods.add("mods", "mods")
+
+
 Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
+
+
+Mods.add("modules", Workdir.moddir())
+Mods.add("examples", "examples")
 
 
 class CLI(CLI):
@@ -92,6 +97,14 @@ class Runtime:
         os.nice(10)
 
     @staticmethod
+    def forever():
+        while True:
+            try:
+                time.sleep(0.1)
+            except (KeyboardInterrupt, EOFError):
+                break
+
+    @staticmethod
     def privileges():
         import getpass
         import pwd
@@ -108,10 +121,17 @@ class Runtime:
         except termios.error:
             pass
         try:
-            Utils.wrapped(func)
+            Runtime.wrapped(func)
         finally:
             if old:
                 termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+
+    @staticmethod
+    def wrapped(func):
+        try:
+            func()
+        except (KeyboardInterrupt, EOFError):
+            pass
 
 
 class Scripts:
@@ -124,7 +144,7 @@ class Scripts:
         Commands.add(Cmds.cmd, Cmds.ver)
         Kernel.scanner(Mods.list() or "irc,rss")
         Kernel.init(Mods.list() or "irc,rss")
-        Kernel.forever()
+        Runtime.forever()
 
     @staticmethod
     def console():
@@ -136,12 +156,12 @@ class Scripts:
             Config.init = Mods.list()
         else:
             Config.init = Config.sets.init or Config.init
-        Kernel.scanner(Config.init)
+        Kernel.scanner(Mods.list())
         Commands.add(Cmds.cmd, Cmds.ver)
         Kernel.init(Config.init, "w" in Config.opts)
         csl = Console()
         csl.start()
-        Kernel.forever()
+        Runtime.forever()
 
     @staticmethod
     def control():
@@ -165,7 +185,7 @@ class Scripts:
         Kernel.scanner(Config.init or "irc,rss")
         Commands.add(Cmds.cmd, Cmds.ver)
         Kernel.init(Config.init or "irc,rss")
-        Kernel.forever()
+        Runtime.forever()
 
 
 class Cmds:
@@ -186,8 +206,6 @@ class Cmds:
 
 def main():
     Workdir.skel()
-    if Runtime.check("b"):
-        threading.excepthook = Thread.threadhook
     if Runtime.check('z'):
         Config.debug = True
     if Runtime.check("c"):
@@ -195,9 +213,9 @@ def main():
     elif Runtime.check("d"):
         Scripts.background()
     elif Runtime.check("s"):
-        Utils.wrapped(Scripts.service)
+        Runtime.wrapped(Scripts.service)
     else:
-        Utils.wrapped(Scripts.control)
+        Runtime.wrapped(Scripts.control)
 
 
 if __name__ == "__main__":

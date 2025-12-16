@@ -51,9 +51,10 @@ class Task(threading.Thread):
                 self.event.ready()
             _thread.interrupt_main()
         except Exception as ex:
+            logging.exception(ex)
             if self.event:
                 self.event.ready()
-            raise ex
+            _thread.interrupt_main()
 
 
 class Thread:
@@ -74,15 +75,6 @@ class Thread:
         if inspect.isfunction(obj):
            return repr(obj).split()[1]
         return repr(obj)
-
-    @staticmethod
-    def threadhook(args):
-        kind, value, trace, thr = args
-        exc = value.with_traceback(trace)
-        if kind not in (KeyboardInterrupt, EOFError):
-            logging.exception(exc)
-        thr.event and thr.event.ready()
-        os._exit(0)
 
 
 def __dir__():

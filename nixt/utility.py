@@ -243,13 +243,6 @@ class Utils:
     def where(obj):
         return os.path.dirname(inspect.getfile(obj))
 
-    @staticmethod
-    def wrapped(func):
-        try:
-            func()
-        except (KeyboardInterrupt, EOFError):
-            pass
-
 
 def __dir__():
     return (
