@@ -37,9 +37,8 @@ class Kernel:
                 break
 
     @staticmethod
-    def init(names=None, wait=False):
-        if not names:
-            names = Mods.list()
+    def init(wait=False):
+        names = Mods.list()
         thrs = []
         for name in Utils.spl(names):
             if name in Config.ignore:
@@ -106,9 +105,8 @@ class Kernel:
 
     @staticmethod
     def scanner(*cmds):
-        if cmds:
-            for cmd in cmds:
-                Commands.add(cmd)
+        for cmd in cmds:
+            Commands.add(cmd)
         names = Mods.list()
         for mod in Mods.mods(names):
             if mod.__name__ in Config.ignore:

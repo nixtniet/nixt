@@ -3,6 +3,7 @@
 
 
 import os
+import pathlib
 import sys
 import threading
 import time
@@ -108,6 +109,16 @@ class Runtime:
                 break
 
     @staticmethod
+    def pidfile(filename):
+        if os.path.exists(filename):
+            os.unlink(filename)
+        path2 = pathlib.Path(filename)
+        path2.parent.mkdir(parents=True, exist_ok=True)
+        with open(filename, "w", encoding="utf-8") as fds:
+            fds.write(str(os.getpid()))
+
+
+    @staticmethod
     def privileges():
         import getpass
         import pwd
@@ -141,12 +152,13 @@ class Scripts:
 
     @staticmethod
     def background():
-        Runtime.daemon(check("v"), check("m"))
+        Runtime.daemon(Runtime.check("v"), Runtime.check("m"))
         Runtime.privileges()
-        Workdir.pidfile(Workdir.pidname(Config.name))
-        Kernel.boot(None, TXT, Cmds)
-        Kernel.scanner()
+        Runtime.pidfile(Workdir.pidname(Config.name))
+        Kernel.boot(TXT)
+        Kernel.scanner(Cmds.cmd, Cmds.ver)
         Kernel.init()
+        Kernel.forever()
 
     @staticmethod
     def console():
@@ -154,7 +166,7 @@ class Scripts:
         Runtime.banner()
         Kernel.boot(TXT)
         Kernel.scanner(Cmds.cmd, Cmds.ver)
-        Kernel.init(wait="w" in Config.opts)
+        Kernel.init("w" in Config.opts)
         csl = Console()
         csl.start()
         Kernel.forever()
@@ -164,6 +176,7 @@ class Scripts:
         if len(sys.argv) == 1:
             return
         Kernel.boot(TXT)
+        Kernel.scanner(Cmds.cmd, Cmds.srv, Cmds.ver)
         cli = CLI()
         evt = Message()
         evt.orig = repr(cli)
@@ -175,8 +188,11 @@ class Scripts:
     @staticmethod
     def service():
         Runtime.privileges()
-        Workdir.pidfile(Utils.pidname(Config.name))
-        Kernel.boot(None, TXT, Cmds)
+        Runtime.pidfile(Workdir.pidname(Config.name))
+        Kernel.boot(TXT)
+        Kernel.scanner(Cmds.cmd, Cmds.ver)
+        Kernel.init()
+        Kernel.forever()
 
 
 class Cmds:

@@ -223,15 +223,6 @@ class Utils:
             return hashlib.md5(txt, usedforsecurity=False).hexdigest()
 
     @staticmethod
-    def pidfile(filename):
-        if os.path.exists(filename):
-            os.unlink(filename)
-        path2 = pathlib.Path(filename)
-        path2.parent.mkdir(parents=True, exist_ok=True)
-        with open(filename, "w", encoding="utf-8") as fds:
-            fds.write(str(os.getpid()))
-
-    @staticmethod
     def spl(txt):
         try:
            result = txt.split(",")

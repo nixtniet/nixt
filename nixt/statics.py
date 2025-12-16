@@ -23,7 +23,7 @@ class Static:
 
     SYSTEMD = """[Unit]
 Description=%s
-After=network-online.target
+After=multi-user.target
 
 [Service]
 Type=simple
