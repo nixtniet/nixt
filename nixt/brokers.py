@@ -22,7 +22,6 @@ class Broker:
     def get(origin):
         return Broker.objects.get(origin)
 
-
     @staticmethod
     def like(txt):
         for orig in Broker.objects:
