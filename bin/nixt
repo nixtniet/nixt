@@ -12,24 +12,14 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.classes import CLI, Commands, Config, Kernel, Message, Method
+from nixt.classes import CLI, Commands, Config, Dict, Kernel, Message, Method
 from nixt.classes import Log, Mods, Static, Thread, Utils, Workdir
-
-
-TXT = " ".join(sys.argv[1:])
 
 
 Config.ignore = "wsd,udp"
 Config.level = "info"
 Config.name = "nixt" 
 Config.version = 440
-
-
-Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
-
-
-Mods.add("modules", Workdir.moddir())
-Mods.add("examples", "examples")
 
 
 class CLI(CLI):
@@ -137,8 +127,9 @@ class Runtime:
         try:
             Runtime.wrapped(func)
         finally:
-            if old:
-                termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+            pass
+        if old:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
     @staticmethod
     def wrapped(func):
@@ -150,12 +141,14 @@ class Runtime:
 
 class Scripts:
 
+    TXT = " ".join(sys.argv[1:])
+
     @staticmethod
     def background():
         Runtime.daemon(Runtime.check("v"), Runtime.check("m"))
         Runtime.privileges()
         Runtime.pidfile(Workdir.pidname(Config.name))
-        Kernel.boot(TXT)
+        Kernel.boot(Scripts.TXT)
         Kernel.scanner(Cmds.cmd, Cmds.ver)
         Kernel.init()
         Kernel.forever()
@@ -164,7 +157,7 @@ class Scripts:
     def console():
         import readline
         Runtime.banner()
-        Kernel.boot(TXT)
+        Kernel.boot(Scripts.TXT)
         Kernel.scanner(Cmds.cmd, Cmds.ver)
         Kernel.init("w" in Config.opts)
         csl = Console()
@@ -175,8 +168,8 @@ class Scripts:
     def control():
         if len(sys.argv) == 1:
             return
-        Kernel.boot(TXT)
-        Kernel.scanner(Cmds.cmd, Cmds.srv, Cmds.ver)
+        Kernel.boot(Scripts.TXT)
+        Kernel.scanner(*Dict.values(Cmds))
         cli = CLI()
         evt = Message()
         evt.orig = repr(cli)
@@ -189,7 +182,7 @@ class Scripts:
     def service():
         Runtime.privileges()
         Runtime.pidfile(Workdir.pidname(Config.name))
-        Kernel.boot(TXT)
+        Kernel.boot(Scripts.TXT)
         Kernel.scanner(Cmds.cmd, Cmds.ver)
         Kernel.init()
         Kernel.forever()
@@ -201,8 +194,25 @@ class Cmds:
     def cmd(event):
         event.reply(",".join(sorted(Commands.names or Commands.cmds)))
 
+    def cpy(event):
+        import shutil
+        path = os.path.join(
+                            Mods.path.rsplit("nixt")[-3],
+                            "nixt",
+                            "share",
+                            "nixt",
+                            "examples"
+                           ) 
+        if not os.path.exists(path):
+            event.reply(f"{path} doesn't exist.")
+            return
+        event.reply(f"using {path}")
+        shutil.copytree(path, Workdir.moddir(), dirs_exist_ok=True)
+        event.reply("done")
+
     @staticmethod
     def srv(event):
+        import getpass
         name = getpass.getuser()
         event.reply(Static.SYSTEMD % (Config.name.upper(), name, name, name, Config.name))
 
@@ -212,7 +222,6 @@ class Cmds:
 
 
 def main():
-    Workdir.skel()
     if Runtime.check('z'):
         Config.debug = True
     if Runtime.check("c"):

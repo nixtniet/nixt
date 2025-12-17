@@ -23,10 +23,11 @@ class Kernel:
 
     @staticmethod
     def boot(txt):
-        Workdir.wdr = Workdir.wdr or os.path.join(f"{Config.name}")
+        Workdir.wdr = Workdir.wdr or os.path.expanduser(f"~/.{Config.name}")
         Workdir.skel()
         Kernel.parse(Config, txt)
         Log.level(Config.sets.level or Config.level or "info")
+        Mods.add("modules", Workdir.moddir())
 
     @staticmethod
     def forever():

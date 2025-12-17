@@ -18,7 +18,7 @@ class Mods:
     path = os.path.dirname(__spec__.loader.path)
 
     @staticmethod
-    def add(name: str, path):
+    def add(name, path):
         Mods.dirs[name] = path
 
     @staticmethod
