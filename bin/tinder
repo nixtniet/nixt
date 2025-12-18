@@ -120,7 +120,7 @@ def main():
         shutil.rmtree(Workdir.wdr)
     Workdir.skel()
     Method.parse(Config, " ".join(sys.argv[1:]))
-    Kernel.scanner(Mods.list())
+    Kernel.scanner()
     if "v" in Config.opts:
         banner(Config.name, Config.version)
     if "z" in Config.opts:

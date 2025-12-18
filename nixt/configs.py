@@ -11,6 +11,7 @@ class Config(Default):
 
     debug = False
     gets = Default()
+    ignore = ""
     init = ""
     level = "info"
     name = ""

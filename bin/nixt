@@ -16,10 +16,19 @@ from nixt.classes import CLI, Commands, Config, Dict, Kernel, Message, Method
 from nixt.classes import Log, Mods, Static, Thread, Utils, Workdir
 
 
+"defines"
+
+
 Config.ignore = "wsd,udp"
 Config.level = "info"
 Config.name = "nixt" 
 Config.version = 440
+
+
+expand = Utils.expand
+
+
+"clients"
 
 
 class CLI(CLI):
@@ -41,6 +50,9 @@ class Console(CLI):
         evt.text = input("> ")
         evt.kind = "command"
         return evt
+
+
+"runtime"
 
 
 class Runtime:
@@ -139,22 +151,19 @@ class Runtime:
             pass
 
 
-Utils.expand(Kernel)
-Utils.expand(Runtime)
-Utils.expand(Commands, "command")
-
-
-TXT = " ".join(sys.argv[1:])
+"scripts"
 
 
 class Scripts:
+
+    TXT = " ".join(sys.argv[1:])
 
     @staticmethod
     def background():
         daemon(Runtime.check("v"), Runtime.check("m"))
         privileges()
         pidfile(Workdir.pidname(Config.name))
-        boot(TXT)
+        boot(Scripts.TXT)
         scanner(Cmds.cmd, Cmds.ver)
         init()
         forever()
@@ -163,7 +172,9 @@ class Scripts:
     def console():
         import readline
         banner()
-        boot(TXT)
+        if check("0"):
+            Config.ignore = Mods.list()
+        boot(Scripts.TXT)
         scanner(Cmds.cmd, Cmds.ver)
         init("w" in Config.opts)
         csl = Console()
@@ -174,7 +185,7 @@ class Scripts:
     def control():
         if len(sys.argv) == 1:
             return
-        boot(TXT)
+        boot(Scripts.TXT)
         scanner(*Dict.values(Cmds))
         cli = CLI()
         evt = Message()
@@ -188,10 +199,13 @@ class Scripts:
     def service():
         privileges()
         pidfile(Workdir.pidname(Config.name))
-        boot(TXT)
+        boot(Scripts.TXT)
         scanner(Cmds.cmd, Cmds.ver)
         init()
         forever()
+
+
+"commands"
 
 
 class Cmds:
@@ -227,17 +241,28 @@ class Cmds:
         event.reply(f"{Config.name.upper()} {Config.version} {Config.opts}")
 
 
+"namespace"
+
+
+expand(Kernel)
+expand(Runtime)
+expand(Commands, "command")
+
+
+"runtime"
+
+
 def main():
-    if Runtime.check('z'):
+    if check('z'):
         Config.debug = True
-    if Runtime.check("c"):
-        Runtime.wrap(Scripts.console)
-    elif Runtime.check("d"):
+    if check("c"):
+        wrap(Scripts.console)
+    elif check("d"):
         Scripts.background()
     elif Runtime.check("s"):
-        Runtime.wrapped(Scripts.service)
+        wrapped(Scripts.service)
     else:
-        Runtime.wrapped(Scripts.control)
+        wrapped(Scripts.control)
 
 
 if __name__ == "__main__":

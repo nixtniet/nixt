@@ -7,7 +7,11 @@
 import os
 
 
+from .configs import Config
 from .utility import Utils
+
+
+spl = Utils.spl
 
 
 class Mods:
@@ -46,7 +50,7 @@ class Mods:
     def list(ignore=""):
         mods = []
         for name, path in Mods.dirs.items():
-            if name in Utils.spl(ignore):
+            if name in spl(ignore):
                 continue
             if not os.path.exists(path):
                 continue
@@ -58,7 +62,10 @@ class Mods:
 
     @staticmethod
     def mods(names):
-        return [Mods.get(x) for x in sorted(Utils.spl(names))]
+        return [
+                Mods.get(x) for x in sorted(spl(names))
+                if x not in spl(Config.ignore)
+                or x in spl(Config.sets.init)]
 
 
 def __dir__():

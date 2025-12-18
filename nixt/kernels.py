@@ -19,6 +19,9 @@ from .utility import Utils
 from .workdir import Workdir
 
 
+spl = Utils.spl
+
+
 class Kernel:
 
     @staticmethod
@@ -28,6 +31,8 @@ class Kernel:
         Kernel.parse(Config, txt)
         Log.level(Config.sets.level or Config.level or "info")
         Mods.add("modules", Workdir.moddir())
+        if "0" in Config.opts:
+            Config.ignore = Mods.list()
 
     @staticmethod
     def forever():
@@ -39,10 +44,10 @@ class Kernel:
 
     @staticmethod
     def init(wait=False):
-        names = Mods.list()
+        names = Mods.list(Config.ignore)
         thrs = []
-        for name in Utils.spl(names):
-            if name in Config.ignore:
+        for name in spl(names):
+            if name in Config.ignore and name not in spl(Config.sets.init):
                 continue
             mod = Mods.get(name)
             if "init" not in dir(mod):
@@ -110,7 +115,7 @@ class Kernel:
             Commands.add(cmd)
         names = Mods.list()
         for mod in Mods.mods(names):
-            if mod.__name__ in Config.ignore:
+            if mod.__name__ in Config.ignore and mod.__name__ not in spl(Config.sets.init):
                 continue
             Commands.scan(mod)
 
