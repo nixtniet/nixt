@@ -139,53 +139,59 @@ class Runtime:
             pass
 
 
-class Scripts:
+Utils.expand(Kernel)
+Utils.expand(Runtime)
+Utils.expand(Commands, "command")
 
-    TXT = " ".join(sys.argv[1:])
+
+TXT = " ".join(sys.argv[1:])
+
+
+class Scripts:
 
     @staticmethod
     def background():
-        Runtime.daemon(Runtime.check("v"), Runtime.check("m"))
-        Runtime.privileges()
-        Runtime.pidfile(Workdir.pidname(Config.name))
-        Kernel.boot(Scripts.TXT)
-        Kernel.scanner(Cmds.cmd, Cmds.ver)
-        Kernel.init()
-        Kernel.forever()
+        daemon(Runtime.check("v"), Runtime.check("m"))
+        privileges()
+        pidfile(Workdir.pidname(Config.name))
+        boot(TXT)
+        scanner(Cmds.cmd, Cmds.ver)
+        init()
+        forever()
 
     @staticmethod
     def console():
         import readline
-        Runtime.banner()
-        Kernel.boot(Scripts.TXT)
-        Kernel.scanner(Cmds.cmd, Cmds.ver)
-        Kernel.init("w" in Config.opts)
+        banner()
+        boot(TXT)
+        scanner(Cmds.cmd, Cmds.ver)
+        init("w" in Config.opts)
         csl = Console()
         csl.start()
-        Kernel.forever()
+        forever()
 
     @staticmethod
     def control():
         if len(sys.argv) == 1:
             return
-        Kernel.boot(Scripts.TXT)
-        Kernel.scanner(*Dict.values(Cmds))
+        boot(TXT)
+        scanner(*Dict.values(Cmds))
         cli = CLI()
         evt = Message()
         evt.orig = repr(cli)
         evt.text = " ".join(sys.argv[1:])
         evt.type = "command"
-        Commands.command(evt)
+        command(evt)
         evt.wait()
 
     @staticmethod
     def service():
-        Runtime.privileges()
-        Runtime.pidfile(Workdir.pidname(Config.name))
-        Kernel.boot(Scripts.TXT)
-        Kernel.scanner(Cmds.cmd, Cmds.ver)
-        Kernel.init()
-        Kernel.forever()
+        privileges()
+        pidfile(Workdir.pidname(Config.name))
+        boot(TXT)
+        scanner(Cmds.cmd, Cmds.ver)
+        init()
+        forever()
 
 
 class Cmds:

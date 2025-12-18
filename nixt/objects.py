@@ -43,12 +43,26 @@ class Dict:
             Dict.update(obj, kwargs)
 
     @staticmethod
+    def dict(obj):
+        res = {}
+        for key in dir(obj):
+            if key.startswith("_"):
+                continue
+            res[key] = getattr(obj, key)
+        return res
+
+    @staticmethod
     def items(obj):
         if isinstance(obj, dict):
             return obj.items()
         if isinstance(obj, types.MappingProxyType):
             return obj.items()
-        return obj.__dict__.items()
+        res = []
+        for key in dir(obj):
+            if key.startswith("_"):
+                continue
+            res.append((key, getattr(obj, key)))
+        return res
 
     @staticmethod
     def keys(obj):

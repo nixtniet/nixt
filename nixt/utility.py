@@ -14,6 +14,7 @@ import time
 
 
 from .methods import Method
+from .objects import Dict
 from .statics import Static
 
 
@@ -196,6 +197,16 @@ class Utils:
     def cdir(path):
         pth = pathlib.Path(path)
         pth.parent.mkdir(parents=True, exist_ok=True)
+
+    @staticmethod
+    def expand(cls, keys=None):
+        #stack = inspect.stack(1)[1]
+        #context = stack.code_context[0]
+        #print(dir(stack.frame))
+        for key, value in Dict.items(cls):
+            if keys and key not in Utils.spl(keys):
+                continue
+            inspect.stack(1)[1].frame.f_globals[key] = value
 
     @staticmethod
     def ident(obj):
