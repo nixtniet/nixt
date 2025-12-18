@@ -4,7 +4,6 @@
 "in the beginning"
 
 
-import logging
 import os
 import time
 
@@ -12,7 +11,7 @@ import time
 from .command import Commands
 from .configs import Config
 from .loggers import Log
-from .objects import Default, Dict
+from .objects import Default
 from .package import Mods
 from .threads import Thread
 from .utility import Utils
