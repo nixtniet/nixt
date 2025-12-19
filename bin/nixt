@@ -19,7 +19,7 @@ from nixt.classes import Log, Mods, Static, Thread, Utils, Workdir
 "defines"
 
 
-Config.ignore = "wsd,udp"
+Config.ignore = "rst,web,wsd,udp"
 Config.level = "info"
 Config.name = "nixt" 
 Config.version = 440
@@ -162,8 +162,8 @@ class Scripts:
     def background():
         daemon(Runtime.check("v"), Runtime.check("m"))
         privileges()
-        pidfile(Workdir.pidname(Config.name))
         boot(Scripts.TXT)
+        pidfile(Workdir.pidname(Config.name))
         scanner(Cmds.cmd, Cmds.ver)
         init()
         forever()
@@ -198,8 +198,9 @@ class Scripts:
     @staticmethod
     def service():
         privileges()
-        pidfile(Workdir.pidname(Config.name))
+        banner()
         boot(Scripts.TXT)
+        pidfile(Workdir.pidname(Config.name))
         scanner(Cmds.cmd, Cmds.ver)
         init()
         forever()
@@ -259,7 +260,7 @@ def main():
         wrap(Scripts.console)
     elif check("d"):
         Scripts.background()
-    elif Runtime.check("s"):
+    elif check("s"):
         wrapped(Scripts.service)
     else:
         wrapped(Scripts.control)
