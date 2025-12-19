@@ -4,19 +4,20 @@
 "fields"
 
 
-from nixt.classes import Locate, Workdir
+from nixt.persist import attrs 
+from nixt.workdir import types
 
 
 def atr(event):
     if not event.rest:
-        res = sorted([x.split('.')[-1].lower() for x in Workdir.types()])
+        res = sorted([x.split('.')[-1].lower() for x in types()])
         if res:
             event.reply(",".join(res))
         else:
             event.reply("no types")
         return
-    items = Locate.attrs(event.args[0])
-    if not items:
+    itms = attrs(event.args[0])
+    if not itms:
         event.reply("no fields")
     else:
-        event.reply(",".join(items))
+        event.reply(",".join(itms))

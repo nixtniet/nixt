@@ -8,118 +8,117 @@ import os
 import time
 
 
-from .command import Commands
+from .command import add, scan
 from .configs import Config
-from .loggers import Log
+from .loggers import level
 from .objects import Default
-from .package import Mods
-from .threads import Thread
-from .utility import Utils
-from .workdir import Workdir
+from .package import dirs, list, mod, mods
+from .threads import launch
+from .utility import spl
+from .workdir import Workdir, moddir, skel
 
 
-spl = Utils.spl
+def boot(txt):
+    Workdir.wdr = Workdir.wdr or os.path.expanduser(f"~/.{Config.name}")
+    skel()
+    parse(Config, txt)
+    level(Config.sets.level or Config.level or "info")
+    dirs("modules", moddir())
+    dirs('examples', 'examples')
+    if "0" in Config.opts:
+        Config.ignore = list()
 
 
-class Kernel:
+def forever():
+    while True:
+        try:
+            time.sleep(0.1)
+        except (KeyboardInterrupt, EOFError):
+            break
 
-    @staticmethod
-    def boot(txt):
-        Workdir.wdr = Workdir.wdr or os.path.expanduser(f"~/.{Config.name}")
-        Workdir.skel()
-        Kernel.parse(Config, txt)
-        Log.level(Config.sets.level or Config.level or "info")
-        Mods.add("modules", Workdir.moddir())
-        if "0" in Config.opts:
-            Config.ignore = Mods.list()
 
-    @staticmethod
-    def forever():
-        while True:
+def init(wait=False):
+    names = list(Config.ignore)
+    thrs = []
+    for name in spl(names):
+        if name in Config.ignore and name not in spl(Config.sets.init):
+            continue
+        module = mod(name)
+        if "init" not in dir(module):
+            continue
+        thrs.append(launch(module.init))
+    if wait:
+        for thr in thrs:
+            thr.join()
+
+
+def parse(obj, text):
+    data = {
+        "args": [],
+        "cmd": "",
+        "gets": Default(),
+        "index": None,
+        "init": "",
+        "opts": "",
+        "otxt": text,
+        "rest": "",
+        "silent": Default(),
+        "sets": Default(),
+        "text": text
+    }
+    for k, v in data.items():
+        setattr(obj, k, getattr(obj, k, v) or v)
+    args = []
+    nr = -1
+    for spli in text.split():
+        if spli.startswith("-"):
             try:
-                time.sleep(0.1)
-            except (KeyboardInterrupt, EOFError):
-                break
+                obj.index = int(spli[1:])
+            except ValueError:
+                obj.opts += spli[1:]
+            continue
+        if "-=" in spli:
+            key, value = spli.split("-=", maxsplit=1)
+            setattr(obj.silent, key, value)
+            setattr(obj.gets, key. value)
+            continue
+        if "==" in spli:
+            key, value = spli.split("==", maxsplit=1)
+            setattr(obj.gets, key, value)
+            continue
+        if "=" in spli:
+            key, value = spli.split("=", maxsplit=1)
+            setattr(obj.sets, key, value)
+            continue
+        nr += 1
+        if nr == 0:
+            obj.cmd = spli
+            continue
+        args.append(spli)
+    if args:
+        obj.args = args
+        obj.text  = obj.cmd or ""
+        obj.rest = " ".join(obj.args)
+        obj.text  = obj.cmd + " " + obj.rest
+    else:
+        obj.text = obj.cmd or ""
 
-    @staticmethod
-    def init(wait=False):
-        names = Mods.list(Config.ignore)
-        thrs = []
-        for name in spl(names):
-            if name in Config.ignore and name not in spl(Config.sets.init):
-                continue
-            mod = Mods.get(name)
-            if "init" not in dir(mod):
-                continue
-            thrs.append(Thread.launch(mod.init))
-        if wait:
-            for thr in thrs:
-                thr.join()
 
-    @staticmethod
-    def parse(obj, text):
-        data = {
-            "args": [],
-            "cmd": "",
-            "gets": Default(),
-            "index": None,
-            "init": "",
-            "opts": "",
-            "otxt": text,
-            "rest": "",
-            "silent": Default(),
-            "sets": Default(),
-            "text": text
-        }
-        for k, v in data.items():
-            setattr(obj, k, getattr(obj, k, v) or v)
-        args = []
-        nr = -1
-        for spli in text.split():
-            if spli.startswith("-"):
-                try:
-                    obj.index = int(spli[1:])
-                except ValueError:
-                    obj.opts += spli[1:]
-                continue
-            if "-=" in spli:
-                key, value = spli.split("-=", maxsplit=1)
-                setattr(obj.silent, key, value)
-                setattr(obj.gets, key. value)
-                continue
-            if "==" in spli:
-                key, value = spli.split("==", maxsplit=1)
-                setattr(obj.gets, key, value)
-                continue
-            if "=" in spli:
-                key, value = spli.split("=", maxsplit=1)
-                setattr(obj.sets, key, value)
-                continue
-            nr += 1
-            if nr == 0:
-                obj.cmd = spli
-                continue
-            args.append(spli)
-        if args:
-            obj.args = args
-            obj.text  = obj.cmd or ""
-            obj.rest = " ".join(obj.args)
-            obj.text  = obj.cmd + " " + obj.rest
-        else:
-            obj.text = obj.cmd or ""
-
-    @staticmethod
-    def scanner(*cmds):
-        for cmd in cmds:
-            Commands.add(cmd)
-        names = Mods.list()
-        for mod in Mods.mods(names):
-            if mod.__name__ in Config.ignore and mod.__name__ not in spl(Config.sets.init):
-                continue
-            Commands.scan(mod)
+def scanner(*cmds):
+    for cmd in cmds:
+        add(cmd)
+    names = list()
+    for module in mods(names):
+        if module.__name__ in Config.ignore and module.__name__ not in spl(Config.sets.init):
+            continue
+        scan(module)
 
 
 def __dir__():
     return (
-        'Kernel',
+        'boot',
+        'forever',
+        'init',
+        'parse',
+        'scanner'
     )

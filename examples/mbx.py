@@ -6,7 +6,11 @@ import os
 import time
 
 
-from nixt.classes import Dict, Disk, Locate, Method, Object, Static, Time
+from nixt.defines import MONTH
+from nixt.methods import fmt
+from nixt.objects import Object, keys, update
+from nixt.persist import find, write
+from nixt.timings import date, elapsed
 
 
 class Email(Object):
@@ -26,7 +30,7 @@ def todate(date):
         if "-" in res[3]:
             raise ValueError
         int(res[3])
-        ddd = "{:4}-{:#02}-{:#02} {:6}".format(res[3], Static.MONTH[res[2]], int(res[1]), res[4])
+        ddd = "{:4}-{:#02}-{:#02} {:6}".format(res[3], MONTH[res[2]], int(res[1]), res[4])
     except (IndexError, KeyError, ValueError) as ex:
         try:
             if "+" in res[4]:
@@ -34,16 +38,16 @@ def todate(date):
             if "-" in res[4]:
                 raise ValueError from ex
             int(res[4])
-            ddd = "{:4}-{:#02}-{:02} {:6}".format(res[4], Static.MONTH[res[1]], int(res[2]), res[3])
+            ddd = "{:4}-{:#02}-{:02} {:6}".format(res[4], MONTH[res[1]], int(res[2]), res[3])
         except (IndexError, KeyError, ValueError):
             try:
-                ddd = "{:4}-{:#02}-{:02} {:6}".format(res[2], Static.MONTH[res[1]], int(res[0]), res[3])
+                ddd = "{:4}-{:#02}-{:02} {:6}".format(res[2], MONTH[res[1]], int(res[0]), res[3])
             except (IndexError, KeyError):
                 try:
-                    ddd = "{:4}-{:#02}-{:02}".format(res[2], Static.MONTH[res[1]], int(res[0]))
+                    ddd = "{:4}-{:#02}-{:02}".format(res[2], MONTH[res[1]], int(res[0]))
                 except (IndexError, KeyError):
                     try:
-                        ddd = "{:4}-{:#02}".format(res[2], Static.MONTH[res[1]])
+                        ddd = "{:4}-{:#02}".format(res[2], MONTH[res[1]])
                     except (IndexError, KeyError):
                         try:
                             ddd = "{:4}".format(res[2])
@@ -58,26 +62,26 @@ def eml(event):
     if len(event.args) > 1:
         args.extend(event.args[1:])
     if event.gets:
-        args.extend(Dict.keys(event.gets))
+        args.extend(keys(event.gets))
     for key in event.silent:
         if key in args:
             args.remove(key)
     args = set(args)
     result = sorted(
-                    Locate.find("email", event.gets),
-                    key=lambda x: Time.date(Time.todate(getattr(x[1], "Date", "")))
+                    find("email", event.gets),
+                    key=lambda x: date(todate(getattr(x[1], "Date", "")))
                    )
     if event.index:
         obj = result[event.index]
         if obj:
             obj = obj[-1]
             tme = getattr(obj, "Date", "")
-            event.reply(f'{event.index} {Method.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - Time.date(todate(tme)))}')
+            event.reply(f'{event.index} {fmt(obj, args, plain=True)} {elapsed(time.time() - date(todate(tme)))}')
     else:
         for _fn, obj in result:
             nrs += 1
             tme = getattr(obj, "Date", "")
-            event.reply(f'{nrs} {Method.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - Time.date(todate(tme)))}')
+            event.reply(f'{nrs} {fmt(obj, args, plain=True)} {elapsed(time.time() - date(todate(tme)))}')
     if not result:
         event.reply("no emails found.")
 
@@ -101,13 +105,13 @@ def mbx(event):
     nrs = 0
     for mail in thing:
         obj = Email()
-        Dict.update(obj, dict(mail._headers))
+        update(obj, dict(mail._headers))
         obj.text = ""
         for payload in mail.walk():
             if payload.get_content_type() == 'text/plain':
                 obj.text += payload.get_payload()
         obj.text = obj.text.replace("\\n", "\n")
-        Disk.write(obj)
+        write(obj)
         nrs += 1
     if nrs:
         event.reply("ok %s" % nrs)

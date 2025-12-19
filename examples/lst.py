@@ -1,11 +1,11 @@
 # This file is been placed in the Public Domain.
 
 
-from nixt.classes import Workdir
+from nixt.workdir import types
 
 
 def lst(event):
-    tps = Workdir.types()
+    tps = types()
     if tps:
         event.reply(",".join({x.split(".")[-1].lower() for x in tps}))
     else:

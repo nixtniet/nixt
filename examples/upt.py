@@ -4,11 +4,11 @@
 import time
 
 
-from nixt.classes import Time
+from nixt.timings import elapsed
 
 
 STARTTIME = time.time()
 
 
 def upt(event):
-    event.reply(Time.elapsed(time.time()-STARTTIME))
+    event.reply(elapsed(time.time()-STARTTIME))

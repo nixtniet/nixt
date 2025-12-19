@@ -10,9 +10,9 @@ import threading
 import _thread
 
 
-from .brokers import Broker
-from .command import Commands
-from .threads import Thread
+from .brokers import add
+from .command import command
+from .threads import launch
 
 
 class Handler:
@@ -27,7 +27,7 @@ class Handler:
             event.ready()
             return
         name = event.text and event.text.split()[0]
-        event._thr = Thread.launch(func, event, name=name)
+        event._thr = launch(func, event, name=name)
 
     def loop(self):
         while True:
@@ -47,7 +47,7 @@ class Handler:
         self.cbs[kind] = callback
 
     def start(self):
-        Thread.launch(self.loop)
+        launch(self.loop)
 
     def stop(self):
         self.queue.put(None)
@@ -60,7 +60,7 @@ class Client(Handler):
         self.olock = threading.RLock()
         self.oqueue = queue.Queue()
         self.silent = True
-        Broker.add(self)
+        add(self)
 
     def announce(self, text):
         if not self.silent:
@@ -93,7 +93,7 @@ class CLI(Client):
  
      def __init__(self):
          super().__init__()
-         self.register("command", Commands.command)
+         self.register("command", command)
 
 
 class Output(Client):
@@ -108,7 +108,7 @@ class Output(Client):
             self.oqueue.task_done()
 
     def start(self):
-        Thread.launch(self.output)
+        launch(self.output)
         super().start()
 
     def stop(self):

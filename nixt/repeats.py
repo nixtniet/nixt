@@ -8,14 +8,14 @@ import threading
 import time
 
 
-from .threads import Thread
+from .threads import launch, name
 
 
 class Timy(threading.Timer):
 
     def __init__(self, sleep, func, *args, **kwargs):
         super().__init__(sleep, func)
-        self.name = kwargs.get("name", Thread.name(func))
+        self.name = kwargs.get("name", name(func))
         self.sleep = sleep
         self.state = {}
         self.state["latest"] = time.time()
@@ -30,7 +30,7 @@ class Timed:
         self.func = func
         self.kwargs = kwargs
         self.sleep = sleep
-        self.name = thrname or kwargs.get("name", Thread.name(func))
+        self.name = thrname or kwargs.get("name", name(func))
         self.target = time.time() + self.sleep
         self.timer = None
 
@@ -52,12 +52,12 @@ class Timed:
 class Repeater(Timed):
 
     def run(self):
-        Thread.launch(self.start)
+        launch(self.start)
         super().run()
 
 
 def __dir__():
     return (
         'Repeater',
-        'Timed'
+        'Timed',
     )

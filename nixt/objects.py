@@ -27,75 +27,71 @@ class Object:
         return str(self.__dict__)
 
 
-class Dict:
-
-    @staticmethod
-    def construct(obj, *args, **kwargs):
-        if args:
-            val = args[0]
-            if isinstance(val, zip):
-                Dict.update(obj, dict(val))
-            elif isinstance(val, dict):
-                Dict.update(obj, val)
-            else:
-                Dict.update(obj, vars(val))
-        if kwargs:
-            Dict.update(obj, kwargs)
-
-    @staticmethod
-    def dict(obj):
-        res = {}
-        for key in dir(obj):
-            if key.startswith("_"):
-                continue
-            res[key] = getattr(obj, key)
-        return res
-
-    @staticmethod
-    def items(obj):
-        if isinstance(obj, dict):
-            return obj.items()
-        if isinstance(obj, types.MappingProxyType):
-            return obj.items()
-        res = []
-        for key in dir(obj):
-            if key.startswith("_"):
-                continue
-            res.append((key, getattr(obj, key)))
-        return res
-
-    @staticmethod
-    def keys(obj):
-        if isinstance(obj, dict):
-            return obj.keys()
-        return obj.__dict__.keys()
-
-    @staticmethod
-    def update(obj, data, empty=True):
-        if isinstance(obj, type):
-            for k, v in Dict.items(data):
-                if isinstance(getattr(obj, k, None), types.MethodType):
-                    raise Reserved(k)
-                setattr(obj, k, v)
-        elif isinstance(obj, dict):
-            for k, v in Dict.items(data):
-                setattr(obj, k, v)
+def construct(obj, *args, **kwargs):
+    if args:
+        val = args[0]
+        if isinstance(val, zip):
+            update(obj, dict(val))
+        elif isinstance(val, dict):
+            update(obj, val)
         else:
-            for key, value in Dict.items(data):
-                if not empty and not value:
-                    continue
-                setattr(obj, key, value)
+            update(obj, vars(val))
+    if kwargs:
+        update(obj, kwargs)
 
-    @staticmethod
-    def values(obj):
-       if isinstance(obj, dict):
-           return obj.values()
-       res = []
-       for key in dir(obj):
-           if key.startswith("_"):
-               continue
-           res.append(getattr(obj, key))
-       return res
+
+def asdict(obj):
+    res = {}
+    for key in dir(obj):
+        if key.startswith("_"):
+            continue
+        res[key] = getattr(obj, key)
+    return res
+
+
+def items(obj):
+    if isinstance(obj, dict):
+        return obj.items()
+    if isinstance(obj, types.MappingProxyType):
+        return obj.items()
+    res = []
+    for key in dir(obj):
+        if key.startswith("_"):
+            continue
+        res.append((key, getattr(obj, key)))
+    return res
+
+
+def keys(obj):
+    if isinstance(obj, dict):
+        return obj.keys()
+    return obj.__dict__.keys()
+
+
+def update(obj, data, empty=True):
+    if isinstance(obj, type):
+        for k, v in items(data):
+            if isinstance(getattr(obj, k, None), types.MethodType):
+                raise Reserved(k)
+            setattr(obj, k, v)
+    elif isinstance(obj, dict):
+        for k, v in items(data):
+            setattr(obj, k, v)
+    else:
+        for key, value in items(data):
+            if not empty and not value:
+                continue
+            setattr(obj, key, value)
+
+def values(obj):
+   if isinstance(obj, dict):
+       return obj.values()
+   res = []
+   for key in dir(obj):
+       if key.startswith("_"):
+           continue
+       res.append(getattr(obj, key))
+   return res
 
 
 class Default(Object):
@@ -107,7 +103,10 @@ class Default(Object):
 def __dir__():
     return (
         'Default',
-        'Dict',
         'Object',
-        'Reserved'
+        'construct',
+        'items',
+        'keys',
+        'update',
+        'values'
     )
