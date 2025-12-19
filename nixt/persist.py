@@ -50,11 +50,11 @@ def attrs(kind):
 def find(kind, selector={}, removed=False, matching=False):
     fullname = long(kind)
     for pth in fns(fullname):
-        obj = Cache.get(pth)
+        obj = get(pth)
         if not obj:
             obj = Object()
             read(obj, pth)
-            Cache.add(pth, obj)
+            add(pth, obj)
         if not removed and deleted(obj):
             continue
         if selector and not search(obj, selector, matching):

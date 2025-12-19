@@ -11,14 +11,14 @@ from nixt.objects import Object, items
 from nixt.persist import last, write
 from nixt.repeats import Timed
 from nixt.timings import NoDate, day, elapsed, extract, hour, today
-from nixt.workdir import path
+from nixt.workdir import getpath
 
 
 rand = random.SystemRandom()
 
 
 def init():
-    Timers.path = last(Timers.timers) or path(Timers.timers)
+    Timers.path = last(Timers.timers) or getpath(Timers.timers)
     remove = []
     for tme, args in items(Timers.timers):
         if not args:
@@ -100,7 +100,7 @@ def tmr(event):
     diff = target - time.time()
     txt = " ".join(event.args[1:])
     Timers.add(target, event.orig, event.channel, txt)
-    write(Timers.timers, Timers.path or path(Timers.timers))
+    write(Timers.timers, Timers.path or getpath(Timers.timers))
     bot = get(event.orig)
     timer = Timed(diff, bot.say, event.orig, event.channel, txt)
     timer.start()

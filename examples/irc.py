@@ -20,7 +20,7 @@ from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
 from nixt.persist import last, write 
 from nixt.threads import launch
-from nixt.workdir import path
+from nixt.workdir import getpath
 
  
 lock = threading.RLock()
@@ -607,7 +607,7 @@ def cfg(event):
         )
     else:
         edit(config, event.sets)
-        write(config, fnm or path(config))
+        write(config, fnm or getpath(config))
         event.reply("ok")
 
 
