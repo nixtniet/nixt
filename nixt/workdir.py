@@ -16,7 +16,7 @@ class Workdir:
     wdr = ""
 
 
-def path(obj):
+def getpath(obj):
     return store(ident(obj))
 
 
@@ -59,7 +59,7 @@ def types():
 def __dir__():
     return (
         'Workdir',
-        'path',
+        'getpath',
         'long',
         'moddir',
         'pidname',

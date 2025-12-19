@@ -14,7 +14,7 @@ from .objects import Object, update
 from .serials import dump, load
 from .timings import fntime
 from .utility import cdir
-from .workdir import long,  store
+from .workdir import getpath, long, store
 
 
 lock = threading.RLock()
@@ -99,7 +99,7 @@ def read(obj, path):
 def write(obj, path=""):
     with lock:
         if path == "":
-            path = path(obj)
+            path = getpath(obj)
         cdir(path)
         with open(path, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)

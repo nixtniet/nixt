@@ -28,7 +28,7 @@ from nixt.repeats import Repeater
 from nixt.threads import launch
 from nixt.timings import elapsed, fntime
 from nixt.utility import spl 
-from nixt.workdir import path
+from nixt.workdir import getpath
 
 
 def init():
@@ -122,7 +122,7 @@ class Fetcher(Object):
                 result.append(fed)
             setattr(self.seen, feed.rss, urls)
             if not self.seenfn:
-                self.seenfn = path(self.seen)
+                self.seenfn = getpath(self.seen)
             write(self.seen, self.seenfn)
         if silent:
             return counter
