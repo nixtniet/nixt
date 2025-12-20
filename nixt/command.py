@@ -16,11 +16,15 @@ class Commands:
     names = {}
 
 
-def add(*args):
+def enable(*args):
     for func in args:
         name = func.__name__
         Commands.cmds[name] = func
         Commands.names[name] = func.__module__.split(".")[-1]
+
+
+def cmds(cmd):
+    return Commands.cmds.get(cmd, None)
 
 
 def command(evt):
@@ -32,22 +36,18 @@ def command(evt):
     evt.ready()
 
 
-def cmds(cmd):
-    return Commands.cmds.get(cmd, None)
-
-
 def scan(module):
     for key, cmdz in inspect.getmembers(module, inspect.isfunction):
         if 'event' not in inspect.signature(cmdz).parameters:
             continue
-        add(cmdz)
+        enable(cmdz)
 
 
 def __dir__():
     return (
         'Commands',
-        'add',
         'command',
         'cmds',
+        'enable',
         'scan'
     )

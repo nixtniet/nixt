@@ -9,8 +9,10 @@ class Broker:
     objects = {}
 
 
-def add(obj):
-    Broker.objects[repr(obj)] = obj
+def ticket(obj):
+    tick = repr(obj)
+    Broker.objects[tick] = obj
+    return tick
 
 
 def objs(attr):
@@ -19,7 +21,7 @@ def objs(attr):
             yield obj
 
 
-def get(origin):
+def broker(origin):
     return Broker.objects.get(origin)
 
 
@@ -32,8 +34,8 @@ def like(txt):
 def __dir__():
     return (
         'Broker',
-        'add',
+        'broker',
+        'like',
         'objs',
-        'get',
-        'like'
+        'ticket',
     )

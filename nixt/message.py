@@ -8,7 +8,7 @@ import threading
 import time
 
 
-from .brokers import get
+from .brokers import broker
 from .objects import Default
 
 
@@ -25,7 +25,7 @@ class Message(Default):
         self.orig = ""
 
     def display(self):
-        bot = get(self.orig)
+        bot = broker(self.orig)
         bot.display(self)
 
     def ready(self):

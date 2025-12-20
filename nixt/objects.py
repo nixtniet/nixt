@@ -104,6 +104,7 @@ def __dir__():
     return (
         'Default',
         'Object',
+        'asdict',
         'construct',
         'items',
         'keys',

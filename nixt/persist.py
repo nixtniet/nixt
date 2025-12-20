@@ -14,7 +14,7 @@ from .objects import Object, update
 from .serials import dump, load
 from .timings import fntime
 from .utility import cdir
-from .workdir import getpath, long, store
+from .workdir import getpath, long, storage
 
 
 lock = threading.RLock()
@@ -52,7 +52,7 @@ def find(kind, selector={}, removed=False, matching=False):
 
 
 def fns(kind):
-    path = store(kind)
+    path = storage(kind)
     for rootdir, dirs, _files in os.walk(path, topdown=True):
         for dname in dirs:
             if dname.count("-") != 2:

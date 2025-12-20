@@ -6,7 +6,7 @@ import random
 import time
 
 
-from nixt.brokers import get, like
+from nixt.brokers import broker, like
 from nixt.objects import Object, items
 from nixt.persist import last, write
 from nixt.repeats import Timed
@@ -29,7 +29,7 @@ def init():
                 continue
             diff = float(tme) - time.time()
             if diff > 0:
-                bot = get(origin)
+                bot = broker(origin)
                 timer = Timed(diff, bot.say, channel, txt)
                 timer.start()
             else:
@@ -101,7 +101,7 @@ def tmr(event):
     txt = " ".join(event.args[1:])
     Timers.add(target, event.orig, event.channel, txt)
     write(Timers.timers, Timers.path or getpath(Timers.timers))
-    bot = get(event.orig)
+    bot = broker(event.orig)
     timer = Timed(diff, bot.say, event.orig, event.channel, txt)
     timer.start()
     event.reply("ok " + elapsed(diff))

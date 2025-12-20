@@ -13,7 +13,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from nixt.configs import Config
 from nixt.objects import Object
 from nixt.threads import launch
-from nixt.workdir import store, types
+from nixt.workdir import storage, types
 
 
 def init():
@@ -92,7 +92,7 @@ class RESTHandler(BaseHTTPRequestHandler):
                 txt += f'<a href="http://{Cfg.hostname}:{Cfg.port}/{fnm}">{fnm}</a><br>\n'
             self.send(html(txt.strip()))
             return
-        fnm = store() + self.path
+        fnm = storage() + self.path
         fnm = os.path.abspath(fnm)
         if os.path.isdir(fnm):
             self.write_header("text/html")

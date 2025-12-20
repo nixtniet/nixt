@@ -11,7 +11,7 @@ import threading
 import time
 
 
-from nixt.brokers import get
+from nixt.brokers import broker
 from nixt.command import command
 from nixt.configs import Config as Main
 from nixt.handler import Output
@@ -90,7 +90,7 @@ class Event(Message):
         self.text = ""
 
     def dosay(self, txt):
-        bot = get(self.orig)
+        bot = broker(self.orig)
         bot.dosay(self.channel, txt)
 
 
@@ -507,12 +507,12 @@ class IRC(Output):
 
 
 def cb_auth(evt):
-    bot = get(evt.orig)
+    bot = broker(evt.orig)
     bot.docommand(f"AUTHENTICATE {bot.cfg.word or bot.cfg.password}")
 
 
 def cb_cap(evt):
-    bot = get(evt.orig)
+    bot = broker(evt.orig)
     if (bot.cfg.word or bot.cfg.password) and "ACK" in evt.arguments:
         bot.direct("AUTHENTICATE PLAIN")
     else:
@@ -520,20 +520,20 @@ def cb_cap(evt):
 
 
 def cb_error(evt):
-    bot = get(evt.orig)
+    bot = broker(evt.orig)
     bot.state.nrerror += 1
     bot.state.error = evt.text
     logging.debug(fmt(evt))
 
 
 def cb_h903(evt):
-    bot = get(evt.orig)
+    bot = broker(evt.orig)
     bot.direct("CAP END")
     bot.events.authed.set()
 
 
 def cb_h904(evt):
-    bot = get(evt.orig)
+    bot = broker(evt.orig)
     bot.direct("CAP END")
     bot.events.authed.set()
 
@@ -547,24 +547,24 @@ def cb_log(evt):
 
 
 def cb_ready(evt):
-    bot = get(evt.orig)
+    bot = broker(evt.orig)
     bot.events.ready.set()
 
 
 def cb_001(evt):
-    bot = get(evt.orig)
+    bot = broker(evt.orig)
     bot.events.logon.set()
 
 
 def cb_notice(evt):
-    bot = get(evt.orig)
+    bot = broker(evt.orig)
     if evt.text.startswith("VERSION"):
         txt = f"\001VERSION {Config.name.upper()} {Config.version} - {bot.cfg.username}\001"
         bot.docommand("NOTICE", evt.channel, txt)
 
 
 def cb_privmsg(evt):
-    bot = get(evt.orig)
+    bot = broker(evt.orig)
     if not bot.cfg.commands:
         return
     if evt.text:
@@ -583,7 +583,7 @@ def cb_privmsg(evt):
 
 
 def cb_quit(evt):
-    bot = get(evt.orig)
+    bot = broker(evt.orig)
     logging.debug("quit from %s", bot.cfg.server)
     bot.state.nrerror += 1
     bot.state.error = evt.text
@@ -615,7 +615,7 @@ def mre(event):
     if not event.channel:
         event.reply("channel is not set.")
         return
-    bot = get(event.orig)
+    bot = broker(event.orig)
     if "cache" not in dir(bot):
         event.reply("bot is missing cache")
         return

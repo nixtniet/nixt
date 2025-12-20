@@ -17,7 +17,7 @@ class Workdir:
 
 
 def getpath(obj):
-    return store(ident(obj))
+    return storage(ident(obj))
 
 
 def long(name: str):
@@ -39,19 +39,19 @@ def pidname(name: str):
 
 
 def skel():
-    path = store()
+    path = storage()
     pth = pathlib.Path(path)
     pth.mkdir(parents=True, exist_ok=True)
     pth = pathlib.Path(moddir())
     pth.mkdir(parents=True, exist_ok=True)
 
 
-def store(fnm: str = ""):
+def storage(fnm: str = ""):
     return os.path.join(Workdir.wdr, "store", fnm)
 
 
 def types():
-    return os.listdir(store())
+    return os.listdir(storage())
 
 
 def __dir__():
@@ -62,6 +62,6 @@ def __dir__():
         'moddir',
         'pidname',
         'skel',
-        'store',
+        'storage',
         'types'
     )

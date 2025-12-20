@@ -120,7 +120,6 @@ def parse(obj, text):
         obj.text = obj.cmd or ""
 
 
-
 def search(obj, selector={}, matching=False):
     res = False
     for key, value in items(selector):
