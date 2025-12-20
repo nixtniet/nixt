@@ -40,8 +40,6 @@ def pidname(name: str):
 
 def skel():
     path = store()
-    if os.path.exists(path):
-        return
     pth = pathlib.Path(path)
     pth.mkdir(parents=True, exist_ok=True)
     pth = pathlib.Path(moddir())

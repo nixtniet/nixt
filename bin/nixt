@@ -197,13 +197,16 @@ def cmd(event):
 
 def cpy(event):
     import shutil
-    path = os.path.join(
-                        Mods.path.rsplit("nixt")[-3],
-                        "nixt",
-                        "share",
-                        "nixt",
-                        "examples"
-                       ) 
+    if os.path.exists("examples"):
+        path = "examples"
+    else:
+        path = os.path.join(
+                   Mods.path.rsplit("nixt")[-3],
+                  "nixt",
+                  "share",
+                  "nixt",
+                  "examples"
+               ) 
     if not os.path.exists(path):
         event.reply(f"{path} doesn't exist.")
         return
