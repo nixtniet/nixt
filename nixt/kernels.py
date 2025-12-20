@@ -13,7 +13,7 @@ from .command import scan
 from .configs import Config
 from .loggers import level
 from .methods import parse
-from .package import mod, mods
+from .package import mod, mods, modules
 from .threads import launch
 from .utility import spl
 from .workdir import Workdir, skel
@@ -34,12 +34,12 @@ def forever():
             break
 
 
-def init(names, wait=False):
+def init(pkg, names, wait=False):
     thrs = []
     for name in spl(names):
         if name in Config.ignore and name not in spl(Config.sets.init):
             continue
-        module = mod(name)
+        module = mod(pkg, name)
         if "init" not in dir(module):
             continue
         thrs.append(launch(module.init))
@@ -57,8 +57,8 @@ def pidfile(filename):
         fds.write(str(os.getpid()))
 
 
-def scanner(names):
-    for module in mods(names):
+def scanner(pkg, names=""):
+    for module in mods(pkg, names or modules(pkg)):
         if module.__name__ in Config.ignore and module.__name__ not in spl(Config.sets.init):
             continue
         scan(module)

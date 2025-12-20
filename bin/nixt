@@ -3,7 +3,6 @@
 
 
 import os
-import pathlib
 import sys
 import time
 
@@ -17,7 +16,7 @@ from nixt.defines import SYSTEMD
 from nixt.handler import CLI
 from nixt.kernels import boot, forever, init, pidfile, scanner, wrapped
 from nixt.message import Message
-from nixt.package import Mods, dirs, modules
+from nixt.package import Mods, modules
 from nixt.workdir import moddir, pidname
 
 
@@ -28,18 +27,18 @@ Config.version = 440
 
 
 if os.path.exists("examples"):
-    dirs("examples", "examples")
+    import examples as MODS
 else:
-    dirs("modules", moddir)
+    MODS = None    
 
 
-class CLI(CLI):
+class Line(CLI):
 
     def raw(self, text):
         print(text.encode('utf-8', 'replace').decode("utf-8"))
 
 
-class Console(CLI):
+class Console(Line):
 
     def callback(self, event):
         if not event.text:
@@ -65,9 +64,9 @@ def background():
     privileges()
     boot(TXT)
     pidfile(pidname(Config.name))
-    scanner(modules())
-    add(cmd, ver)
-    init(modules())
+    scanner(MODS)
+    add(cmd, mod, ver)
+    init(MODS, modules(MODS))
     forever()
 
 
@@ -78,13 +77,13 @@ def console():
         Config.ignore = list()
     boot(TXT)
     banner()
-    scanner(modules())
-    add(cmd, ver)
+    scanner(MODS)
+    add(cmd, mod, ver)
     if "a" in Config.opts:
-        mds = modules()
+        mds = modules(MODS)
     else:
         mds = Config.sets.init
-    init(mds, "w" in Config.opts)
+    init(MODS, mds, "w" in Config.opts)
     csl = Console()
     csl.start()
     forever()
@@ -94,9 +93,9 @@ def control():
     if len(sys.argv) == 1:
         return
     boot(TXT)
-    scanner(modules())
-    add(cmd, cpy, srv, ver)
-    cli = CLI()
+    scanner(MODS)
+    add(cmd, cpy, mod, srv, ver)
+    cli = Line()
     evt = Message()
     evt.orig = repr(cli)
     evt.text = " ".join(sys.argv[1:])
@@ -110,9 +109,9 @@ def service():
     boot(TXT)
     banner()
     pidfile(pidname(Config.name))
-    add(cmd, ver)
-    scanner(modules())
-    init(modules())
+    add(cmd, mod, ver)
+    scanner(MODS)
+    init(MODS, modules(MODS))
     forever()
 
 
@@ -212,6 +211,10 @@ def cpy(event):
     event.reply(f"using {path}")
     shutil.copytree(path, moddir(), dirs_exist_ok=True)
     event.reply("done")
+
+
+def mod(event):
+    event.reply(modules(MODS))
 
 
 def srv(event):

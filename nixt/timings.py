@@ -31,27 +31,27 @@ def date(daystr):
 
 
 def day(daystr):
-    day = None
+    days = None
     month = None
     yea = None
     try:
         ymdre = re.search(r'(\d+)-(\d+)-(\d+)', daystr)
         if ymdre:
-            (day, month, yea) = ymdre.groups()
+            (days, month, yea) = ymdre.groups()
     except ValueError:
         try:
             ymre = re.search(r'(\d+)-(\d+)', daystr)
             if ymre:
-                (day, month) = ymre.groups()
+                (days, month) = ymre.groups()
                 yea = time.strftime("%Y", time.localtime())
         except Exception as ex:
             raise NoDate(daystr) from ex
-    if day:
-        day = int(day)
+    if days:
+        days = int(days)
         month = int(month)
         yea = int(yea)
-        date = f"{day} {MONTH[month]} {yea}"
-        return time.mktime(time.strptime(date, r"%d %b %Y"))
+        dte = f"{days} {MONTH[month]} {yea}"
+        return time.mktime(time.strptime(dte, r"%d %b %Y"))
     raise NoDate(daystr)
 
 
@@ -63,7 +63,7 @@ def elapsed(seconds, short=True):
     yea     = 365 * 24 * 60 * 60
     week    = 7 * 24 * 60 * 60
     nday    = 24 * 60 * 60
-    hour    = 60 * 60
+    hou    = 60 * 60
     minute  = 60
     yeas    = int(nsec / yea)
     nsec   -= yeas * yea
@@ -71,8 +71,8 @@ def elapsed(seconds, short=True):
     nsec   -= weeks * week
     nrdays  = int(nsec / nday)
     nsec   -= nrdays * nday
-    hours   = int(nsec / hour)
-    nsec   -= hours * hour
+    hours   = int(nsec / hou)
+    nsec   -= hours * hou
     minutes = int(nsec / minute)
     nsec   -= minutes * minute
     sec     = int(nsec / 1)
@@ -119,10 +119,10 @@ def fntime(daystr):
         datestr, rest = datestr.rsplit(".", 1)
     else:
         rest = ""
-    timed = time.mktime(time.strptime(datestr, "%Y-%m-%d %H:%M:%S"))
+    timd = time.mktime(time.strptime(datestr, "%Y-%m-%d %H:%M:%S"))
     if rest:
-        timed += float("." + rest)
-    return float(timed)
+        timd += float("." + rest)
+    return float(timd)
 
 
 def hour(daystr):
