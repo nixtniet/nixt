@@ -24,9 +24,9 @@ class Message(Default):
         self.kind = "event"
         self.orig = ""
 
-    def display(evt):
-        bot = get(evt.orig)
-        bot.display(evt)
+    def display(self):
+        bot = get(self.orig)
+        bot.display(self)
         
     def ready(self):
         self._ready.set()
