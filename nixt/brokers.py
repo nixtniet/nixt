@@ -9,20 +9,18 @@ class Broker:
     objects = {}
 
 
-def store(obj):
-    tick = repr(obj)
-    Broker.objects[tick] = obj
-    return tick
+def add(obj):
+    Broker.objects[repr(obj)] = obj
+
+
+def broker(origin):
+    return Broker.objects.get(origin)
 
 
 def objs(attr):
     for obj in Broker.objects.values():
         if attr in dir(obj):
             yield obj
-
-
-def broker(origin):
-    return Broker.objects.get(origin)
 
 
 def like(txt):
@@ -33,8 +31,8 @@ def like(txt):
 
 def __dir__():
     return (
+        'add',
         'broker',
         'like',
-        'objs',
-        'store'
+        'objs'
     )

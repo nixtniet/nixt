@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"multiple directory modules"
+"module management"
 
 
 import os

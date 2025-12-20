@@ -71,7 +71,6 @@ def last(obj, selector={}):
         inp = result[-1]
         update(obj, inp[-1])
         res = inp[0]
-
     return res
 
 

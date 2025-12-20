@@ -87,10 +87,10 @@ def wrapped(func):
 
 def __dir__():
     return (
+        'banner',
         'boot',
         'forever',
         'init',
-        'parse',
         'pidfile',
         'scanner',
         'wrapped'

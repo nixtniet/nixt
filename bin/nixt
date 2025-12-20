@@ -4,7 +4,6 @@
 
 import os
 import sys
-import time
 
 
 sys.path.insert(0, os.getcwd())
@@ -20,13 +19,13 @@ from nixt.package import Mods, modules
 from nixt.workdir import Workdir, moddir, pidname
 
 
-"defines"
+TXT = " ".join(sys.argv[1:])
 
 
 Config.ignore = "rst,web,wsd,udp"
 Config.level = "info"
 Config.name = "nixt" 
-Config.version = 440
+Config.version = 441
 
 
 Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
@@ -37,9 +36,6 @@ try:
     import mods as MODS
 except ModuleNotFoundError:
     MODS = None
-
-
-"clients"
 
 
 class Line(CLI):
@@ -61,107 +57,6 @@ class Console(Line):
         evt.text = input("> ")
         evt.kind = "command"
         return evt
-
-
-"scripts"
-
-
-TXT = " ".join(sys.argv[1:])
-
-
-def background():
-    daemon(check("v"), check("m"))
-    privileges()
-    boot(TXT)
-    pidfile(pidname(Config.name))
-    scanner(MODS)
-    enable(cmd, mod, ver)
-    init(MODS, modules(MODS))
-    forever()
-
-
-def console():
-    import readline
-    readline.redisplay()
-    if check("0"):
-        Config.ignore = list()
-    boot(TXT)
-    scanner(MODS)
-    enable(cmd, mod, ver)
-    if "a" in Config.opts:
-        mds = modules(MODS)
-    else:
-        mds = Config.sets.init
-    init(MODS, mds, "w" in Config.opts)
-    csl = Console()
-    csl.start()
-    forever()
-
-
-def control():
-    if len(sys.argv) == 1:
-        return
-    boot(TXT)
-    scanner(MODS)
-    enable(cmd, cpy, mod, srv, ver)
-    cli = Line()
-    evt = Message()
-    evt.orig = repr(cli)
-    evt.text = " ".join(sys.argv[1:])
-    evt.type = "command"
-    command(evt)
-    evt.wait()
-
-
-def service():
-    privileges()
-    boot(TXT)
-    pidfile(pidname(Config.name))
-    enable(cmd, mod, ver)
-    scanner(MODS)
-    init(MODS, modules(MODS))
-    forever()
-
-
-"commands"
-
-
-def cmd(event):
-    event.reply(",".join(sorted(Commands.names or Commands.cmds)))
-
-
-def cpy(event):
-    import shutil
-    if os.path.exists("examples"):
-        path = "examples"
-    else:
-        path = os.path.join(
-                   Mods.path.rsplit("nixt")[-3],
-                  "nixt",
-                  "share",
-                  "nixt",
-                  "examples"
-               ) 
-    if not os.path.exists(path):
-        event.reply(f"{path} doesn't exist.")
-        return
-    event.reply(f"using {path}")
-    shutil.copytree(path, moddir(), dirs_exist_ok=True)
-    event.reply("done")
-
-
-def mod(event):
-    event.reply(modules(MODS))
-
-
-def srv(event):
-    import getpass
-    name = getpass.getuser()
-    event.reply(SYSTEMD % (Config.name.upper(), name, name, name, Config.name))
-
-
-def ver(event):
-    event.reply(f"{Config.name.upper()} {Config.version} {Config.opts}")
 
 
 "utilities"
@@ -221,6 +116,84 @@ def wrap(func):
         pass
     if old:
         termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+
+
+"scripts"
+
+
+def background():
+    daemon(check("v"), check("m"))
+    privileges()
+    boot(TXT)
+    pidfile(pidname(Config.name))
+    scanner(MODS)
+    enable(cmd, mod, ver)
+    init(MODS, modules(MODS))
+    forever()
+
+
+def console():
+    import readline
+    readline.redisplay()
+    if check("0"):
+        Config.ignore = list()
+    boot(TXT)
+    scanner(MODS)
+    enable(cmd, mod, ver)
+    if "a" in Config.opts:
+        mds = modules(MODS)
+    else:
+        mds = Config.sets.init
+    init(MODS, mds, "w" in Config.opts)
+    csl = Console()
+    csl.start()
+    forever()
+
+
+def control():
+    if len(sys.argv) == 1:
+        return
+    boot(TXT)
+    scanner(MODS)
+    enable(cmd, mod, srv, ver)
+    cli = Line()
+    evt = Message()
+    evt.orig = repr(cli)
+    evt.text = " ".join(sys.argv[1:])
+    evt.type = "command"
+    command(evt)
+    evt.wait()
+
+
+def service():
+    privileges()
+    boot(TXT)
+    pidfile(pidname(Config.name))
+    enable(cmd, mod, ver)
+    scanner(MODS)
+    init(MODS, modules(MODS))
+    forever()
+
+
+"commands"
+
+
+def cmd(event):
+    event.reply(",".join(sorted(Commands.names or Commands.cmds)))
+
+
+def mod(event):
+    event.reply(modules(MODS))
+
+
+def srv(event):
+    import getpass
+    name = getpass.getuser()
+    event.reply(SYSTEMD % (Config.name.upper(), name, name, name, Config.name))
+
+
+def ver(event):
+    event.reply(f"{Config.name.upper()} {Config.version} {Config.opts}")
 
 
 "runtime"
