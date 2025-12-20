@@ -44,7 +44,7 @@ def mod(name):
     return mod
 
 
-def list(ignore=""):
+def modules(ignore=""):
     mods = []
     for name, path in Mods.dirs.items():
         if name in spl(ignore):
@@ -70,6 +70,6 @@ def __dir__():
         'Mods',
         'dirs',
         'mod',
-        'list',
-        'mods'
+        'mods',
+        'modules'
     )

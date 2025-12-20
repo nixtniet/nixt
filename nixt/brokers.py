@@ -11,12 +11,12 @@ class Broker:
 
 def add(obj):
     Broker.objects[repr(obj)] = obj
-        
 
-def all(attr):
-   for obj in Broker.objects.values():
-       if attr in dir(obj):
-           yield obj
+
+def objs(attr):
+    for obj in Broker.objects.values():
+        if attr in dir(obj):
+            yield obj
 
 
 def get(origin):
@@ -33,7 +33,7 @@ def __dir__():
     return (
         'Broker',
         'add',
-        'all',
+        'objs',
         'get',
         'like'
     )

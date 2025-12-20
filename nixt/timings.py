@@ -78,13 +78,13 @@ def elapsed(seconds, short=True):
     sec     = int(nsec / 1)
     nsec   -= nsec - sec
     if yeas:
-       txt += f"{yeas}y"
+        txt += f"{yeas}y"
     if weeks:
-       nrdays += weeks * 7
+        nrdays += weeks * 7
     if nrdays:
-       txt += f"{nrdays}d"
+        txt += f"{nrdays}d"
     if hours:
-       txt += f"{hours}h"
+        txt += f"{hours}h"
     if short and txt:
         return txt.strip()
     if minutes:
@@ -93,6 +93,7 @@ def elapsed(seconds, short=True):
         txt += f"{sec}s"
     txt = txt.strip()
     return txt
+
 
 def extract(daystr):
     previous = ""

@@ -90,10 +90,10 @@ class Client(Handler):
 
 
 class CLI(Client):
- 
-     def __init__(self):
-         super().__init__()
-         self.register("command", command)
+
+    def __init__(self):
+        super().__init__()
+        self.register("command", command)
 
 
 class Output(Client):

@@ -1,13 +1,13 @@
 # This file is placed in the Public Domain.
 
 
-from nixt.brokers import all
+from nixt.brokers import objs
 from nixt.methods import fmt
 from nixt.threads import name
 
 
 def flt(event):
-    clts = all("announce")
+    clts = objs("announce")
     if event.args:
         index = int(event.args[0])
         if index < len(clts):

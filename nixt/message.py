@@ -27,7 +27,7 @@ class Message(Default):
     def display(self):
         bot = get(self.orig)
         bot.display(self)
-        
+
     def ready(self):
         self._ready.set()
 

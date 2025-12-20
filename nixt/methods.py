@@ -29,7 +29,7 @@ def edit(obj, setter={}, skip=False):
             setattr(obj, key, True)
         elif val in ["False", "false"]:
             setattr(obj, key, False)
-        else: 
+        else:
             setattr(obj, key, val)
 
 
@@ -41,7 +41,7 @@ def fmt(obj, args=[], skip=[], plain=False, empty=False):
         if key.startswith("__"):
             continue
         if key in skip:
-           continue
+            continue
         value = getattr(obj, key, None)
         if value is None:
             continue
@@ -120,6 +120,7 @@ def parse(obj, text):
         obj.text = obj.cmd or ""
 
 
+
 def search(obj, selector={}, matching=False):
     res = False
     for key, value in items(selector):
@@ -127,14 +128,13 @@ def search(obj, selector={}, matching=False):
         if not val:
             res = False
             break
-        elif matching and value != val:
+        if matching and value != val:
             res = False
             break
-        elif str(value).lower() not in str(val).lower():
+        if str(value).lower() not in str(val).lower():
             res = False
             break
-        else:
-            res = True
+        res = True
     return res
 
 

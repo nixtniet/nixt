@@ -11,13 +11,13 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, command
+from nixt.command import Commands, add, command
 from nixt.configs import Config
 from nixt.defines import SYSTEMD
 from nixt.handler import CLI
-from nixt.kernels import boot, init, scanner
+from nixt.kernels import boot, forever, init, pidfile, scanner, wrapped
 from nixt.message import Message
-from nixt.package import Mods
+from nixt.package import Mods, dirs, modules
 from nixt.workdir import moddir, pidname
 
 
@@ -25,6 +25,12 @@ Config.ignore = "rst,web,wsd,udp"
 Config.level = "info"
 Config.name = "nixt" 
 Config.version = 440
+
+
+if os.path.exists("examples"):
+    dirs("examples", "examples")
+else:
+    dirs("modules", moddir)
 
 
 class CLI(CLI):
@@ -48,6 +54,9 @@ class Console(CLI):
         return evt
 
 
+"scripts"
+
+
 TXT = " ".join(sys.argv[1:])
 
 
@@ -56,20 +65,26 @@ def background():
     privileges()
     boot(TXT)
     pidfile(pidname(Config.name))
-    scanner(cmd, ver)
-    init()
+    scanner(modules())
+    add(cmd, ver)
+    init(modules())
     forever()
 
 
 def console():
     import readline
     readline.redisplay()
-    banner()
     if check("0"):
         Config.ignore = list()
     boot(TXT)
-    scanner(cmd, ver)
-    init("w" in Config.opts)
+    banner()
+    scanner(modules())
+    add(cmd, ver)
+    if "a" in Config.opts:
+        mds = modules()
+    else:
+        mds = Config.sets.init
+    init(mds, "w" in Config.opts)
     csl = Console()
     csl.start()
     forever()
@@ -79,7 +94,8 @@ def control():
     if len(sys.argv) == 1:
         return
     boot(TXT)
-    scanner(cmd, cpy, srv, ver)
+    scanner(modules())
+    add(cmd, cpy, srv, ver)
     cli = CLI()
     evt = Message()
     evt.orig = repr(cli)
@@ -91,23 +107,27 @@ def control():
 
 def service():
     privileges()
-    banner()
     boot(TXT)
+    banner()
     pidfile(pidname(Config.name))
-    scanner(cmd, ver)
-    init()
+    add(cmd, ver)
+    scanner(modules())
+    init(modules())
     forever()
+
+
+"utilities"
 
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
     print("%s %s %s since %s (%s)" % (
-                                      Config.name.upper(),
-                                      Config.version,
-                                      Config.opts.upper(),
-                                      tme,
-                                      Config.level.upper()
-                                     ))
+        Config.name.upper(),
+        Config.version,
+        Config.opts.strip().upper(),
+        tme,
+        Config.level.upper()
+    ))
     sys.stdout.flush()
 
 
@@ -144,23 +164,6 @@ def daemon(verbose=False, nochdir=False):
     os.nice(10)
 
 
-def forever():
-    while True:
-        try:
-            time.sleep(0.1)
-        except (KeyboardInterrupt, EOFError):
-            break
-
-
-def pidfile(filename):
-    if os.path.exists(filename):
-        os.unlink(filename)
-    path2 = pathlib.Path(filename)
-    path2.parent.mkdir(parents=True, exist_ok=True)
-    with open(filename, "w", encoding="utf-8") as fds:
-        fds.write(str(os.getpid()))
-
-
 def privileges():
     import getpass
     import pwd
@@ -184,11 +187,7 @@ def wrap(func):
         termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
-def wrapped(func):
-    try:
-        func()
-    except (KeyboardInterrupt, EOFError):
-        pass
+"scripts"
 
 
 def cmd(event):
@@ -223,6 +222,9 @@ def srv(event):
 
 def ver(event):
     event.reply(f"{Config.name.upper()} {Config.version} {Config.opts}")
+
+
+"runtime"
 
 
 def main():

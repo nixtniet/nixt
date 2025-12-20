@@ -24,9 +24,9 @@ def long(name: str):
     split = name.split(".")[-1].lower()
     res = name
     for names in types():
-       if split == names.split(".")[-1].lower():
-           res = names
-           break
+        if split == names.split(".")[-1].lower():
+            res = names
+            break
     return res
 
 

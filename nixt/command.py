@@ -25,14 +25,14 @@ def add(*args):
 
 def command(evt):
     parse(evt, evt.text)
-    func = get(evt.cmd)
+    func = cmds(evt.cmd)
     if func:
         func(evt)
         evt.display()
     evt.ready()
 
 
-def get(cmd):
+def cmds(cmd):
     return Commands.cmds.get(cmd, None)
 
 
@@ -48,6 +48,6 @@ def __dir__():
         'Commands',
         'add',
         'command',
-        'get',
+        'cmds',
         'scan'
     )

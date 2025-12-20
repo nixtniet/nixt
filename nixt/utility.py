@@ -46,9 +46,9 @@ def md5sum(path):
 
 def spl(txt):
     try:
-       result = txt.split(",")
+        result = txt.split(",")
     except (TypeError, ValueError):
-       result = []
+        result = []
     return [x for x in result if x]
 
 

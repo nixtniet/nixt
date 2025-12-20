@@ -4,18 +4,19 @@
 "in the beginning"
 
 
+import pathlib
 import os
 import time
 
 
-from .command import add, scan
+from .command import scan
 from .configs import Config
 from .loggers import level
-from .objects import Default
-from .package import dirs, list, mod, mods
+from .methods import parse
+from .package import mod, mods
 from .threads import launch
 from .utility import spl
-from .workdir import Workdir, moddir, skel
+from .workdir import Workdir, skel
 
 
 def boot(txt):
@@ -23,10 +24,6 @@ def boot(txt):
     skel()
     parse(Config, txt)
     level(Config.sets.level or Config.level or "info")
-    dirs("modules", moddir())
-    dirs('examples', 'examples')
-    if "0" in Config.opts:
-        Config.ignore = list()
 
 
 def forever():
@@ -37,8 +34,7 @@ def forever():
             break
 
 
-def init(wait=False):
-    names = list(Config.ignore)
+def init(names, wait=False):
     thrs = []
     for name in spl(names):
         if name in Config.ignore and name not in spl(Config.sets.init):
@@ -52,66 +48,27 @@ def init(wait=False):
             thr.join()
 
 
-def parse(obj, text):
-    data = {
-        "args": [],
-        "cmd": "",
-        "gets": Default(),
-        "index": None,
-        "init": "",
-        "opts": "",
-        "otxt": text,
-        "rest": "",
-        "silent": Default(),
-        "sets": Default(),
-        "text": text
-    }
-    for k, v in data.items():
-        setattr(obj, k, getattr(obj, k, v) or v)
-    args = []
-    nr = -1
-    for spli in text.split():
-        if spli.startswith("-"):
-            try:
-                obj.index = int(spli[1:])
-            except ValueError:
-                obj.opts += spli[1:]
-            continue
-        if "-=" in spli:
-            key, value = spli.split("-=", maxsplit=1)
-            setattr(obj.silent, key, value)
-            setattr(obj.gets, key. value)
-            continue
-        if "==" in spli:
-            key, value = spli.split("==", maxsplit=1)
-            setattr(obj.gets, key, value)
-            continue
-        if "=" in spli:
-            key, value = spli.split("=", maxsplit=1)
-            setattr(obj.sets, key, value)
-            continue
-        nr += 1
-        if nr == 0:
-            obj.cmd = spli
-            continue
-        args.append(spli)
-    if args:
-        obj.args = args
-        obj.text  = obj.cmd or ""
-        obj.rest = " ".join(obj.args)
-        obj.text  = obj.cmd + " " + obj.rest
-    else:
-        obj.text = obj.cmd or ""
+def pidfile(filename):
+    if os.path.exists(filename):
+        os.unlink(filename)
+    path2 = pathlib.Path(filename)
+    path2.parent.mkdir(parents=True, exist_ok=True)
+    with open(filename, "w", encoding="utf-8") as fds:
+        fds.write(str(os.getpid()))
 
 
-def scanner(*cmds):
-    for cmd in cmds:
-        add(cmd)
-    names = list()
+def scanner(names):
     for module in mods(names):
         if module.__name__ in Config.ignore and module.__name__ not in spl(Config.sets.init):
             continue
         scan(module)
+
+
+def wrapped(func):
+    try:
+        func()
+    except (KeyboardInterrupt, EOFError):
+        pass
 
 
 def __dir__():
@@ -120,5 +77,7 @@ def __dir__():
         'forever',
         'init',
         'parse',
-        'scanner'
+        'pidfile',
+        'scanner',
+        'wrapped'
     )

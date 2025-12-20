@@ -19,7 +19,7 @@ from nixt.handler import Output
 from nixt.kernels import parse, scanner
 from nixt.message import Message
 from nixt.methods import fmt
-from nixt.package import dirs
+from nixt.package import dirs, modules
 from nixt.threads import launch
 from nixt.timings import elapsed
 from nixt.workdir import Workdir, skel
@@ -28,15 +28,10 @@ from nixt.workdir import Workdir, skel
 Config.debug = True
 Config.name = "nixt"
 Config.version = 110
-
-
 Workdir.wdr = ".test"
 
 
 dirs("examples", "examples")
-#Mods.add('modules', Workdir.moddir())
-
-
 events = queue.Queue()
 
 
@@ -82,12 +77,7 @@ class Pool:
 
 def banner(name, version):
     tme = time.ctime(time.time()).replace("  ", " ")
-    print("%s %s since %s (%s)" % (
-        name.upper(),
-        version,
-        tme,
-        Config.level
-    ))
+    print(f"{name.upper()} {version} since {tme} ({Config.level})")
     sys.stdout.flush()
 
 
@@ -104,11 +94,11 @@ def check(text):
 
 def consume():
     while True:
-       try:
+        try:
             event = events.get()
             event.wait()
             events.task_done()
-       except (KeyboardInterrupt, EOFError):
+        except (KeyboardInterrupt, EOFError):
             os._exit(0)
 
 
@@ -164,7 +154,7 @@ def main():
         shutil.rmtree(Workdir.wdr)
     skel()
     parse(Config, " ".join(sys.argv[1:]))
-    scanner()
+    scanner(modules())
     if "v" in Config.opts:
         banner(Config.name, Config.version)
     if "z" in Config.opts:
@@ -173,16 +163,16 @@ def main():
         Pool.init(CLI, 1)
     starttime = time.time()
     thrs = []
-    NRS = Config.index or 1
-    for _x in range(NRS):
+    nrs = Config.index or 1
+    for _x in range(nrs):
         thrs.append(launch(payload, pre))
     for thr in thrs:
         thr.join()
-    for _x in range(NRS):
+    for _x in range(nrs):
         thrs.append(launch(payload, examples))
     for thr in thrs:
         thr.join()
-    for _x in range(NRS):
+    for _x in range(nrs):
         thrs.append(launch(payload, post))
     for thr in thrs:
         thr.join()

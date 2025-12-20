@@ -25,21 +25,6 @@ class Cache:
     objects = {}
 
 
-def add(path, obj):
-    Cache.objects[path] = obj
-
-
-def get(path):
-    return Cache.objects.get(path, None)
-
-
-def sync(path, obj):
-    try:
-        update(Cache.objects[path], obj)
-    except KeyError:
-        add(path, obj)
-
-
 def attrs(kind):
     objs = list(find(kind))
     if objs:
@@ -47,14 +32,18 @@ def attrs(kind):
     return []
 
 
+def cache(path):
+    return Cache.objects.get(path, None)
+
+
 def find(kind, selector={}, removed=False, matching=False):
     fullname = long(kind)
     for pth in fns(fullname):
-        obj = get(pth)
+        obj = cache(pth)
         if not obj:
             obj = Object()
             read(obj, pth)
-            add(pth, obj)
+            put(pth, obj)
         if not removed and deleted(obj):
             continue
         if selector and not search(obj, selector, matching):
@@ -86,6 +75,10 @@ def last(obj, selector={}):
     return res
 
 
+def put(path, obj):
+    Cache.objects[path] = obj
+
+
 def read(obj, path):
     with lock:
         with open(path, "r", encoding="utf-8") as fpt:
@@ -94,6 +87,13 @@ def read(obj, path):
             except json.decoder.JSONDecodeError as ex:
                 ex.add_note(path)
                 raise ex
+
+
+def sync(path, obj):
+    try:
+        update(Cache.objects[path], obj)
+    except KeyError:
+        put(path, obj)
 
 
 def write(obj, path=""):

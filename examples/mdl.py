@@ -6,7 +6,7 @@ import logging
 import time
 
 
-from nixt.brokers import all
+from nixt.brokers import objs
 from nixt.message import Message
 from nixt.objects import Object, construct, keys
 from nixt.repeats import Repeater
@@ -138,7 +138,7 @@ def cbnow(_evt):
         nrtimes = int(delta/needed)
         txt += f"{getalias(nme)} {nrtimes} | "
     txt += "https://pypi.org/project/genocide"
-    for bot in all("announce"):
+    for bot in objs("announce"):
         bot.announce(txt)
 
 
@@ -161,7 +161,7 @@ def cbstats(evt):
             nryear,
             elapsed(needed)
         )
-        for bot in all("announce"):
+        for bot in objs("announce"):
             bot.announce(txt)
 
 

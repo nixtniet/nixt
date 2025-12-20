@@ -84,14 +84,14 @@ def update(obj, data, empty=True):
             setattr(obj, key, value)
 
 def values(obj):
-   if isinstance(obj, dict):
-       return obj.values()
-   res = []
-   for key in dir(obj):
-       if key.startswith("_"):
-           continue
-       res.append(getattr(obj, key))
-   return res
+    if isinstance(obj, dict):
+        return obj.values()
+    res = []
+    for key in dir(obj):
+        if key.startswith("_"):
+            continue
+        res.append(getattr(obj, key))
+    return res
 
 
 class Default(Object):

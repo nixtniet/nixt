@@ -2,8 +2,8 @@
 
 
 
-from nixt.package import list
+from nixt.package import modules
 
 
 def mod(event):
-    event.reply(list())
+    event.reply(modules())
