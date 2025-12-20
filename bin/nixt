@@ -5,7 +5,6 @@
 import os
 import pathlib
 import sys
-import threading
 import time
 
 
@@ -14,16 +13,12 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.command import Commands, command
 from nixt.configs import Config
+from nixt.defines import SYSTEMD
 from nixt.handler import CLI
 from nixt.kernels import boot, init, scanner
 from nixt.message import Message
-from nixt.loggers import level
 from nixt.package import Mods
-from nixt.threads import launch
 from nixt.workdir import moddir, pidname
-
-
-TXT = " ".join(sys.argv[1:])
 
 
 Config.ignore = "rst,web,wsd,udp"
@@ -53,8 +48,11 @@ class Console(CLI):
         return evt
 
 
+TXT = " ".join(sys.argv[1:])
+
+
 def background():
-    daemon(Runtime.check("v"), Runtime.check("m"))
+    daemon(check("v"), check("m"))
     privileges()
     boot(TXT)
     pidfile(pidname(Config.name))
@@ -65,6 +63,7 @@ def background():
 
 def console():
     import readline
+    readline.redisplay()
     banner()
     if check("0"):
         Config.ignore = list()
@@ -216,7 +215,7 @@ def cpy(event):
 def srv(event):
     import getpass
     name = getpass.getuser()
-    event.reply(Static.SYSTEMD % (Config.name.upper(), name, name, name, Config.name))
+    event.reply(SYSTEMD % (Config.name.upper(), name, name, name, Config.name))
 
 
 def ver(event):

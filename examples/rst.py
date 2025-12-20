@@ -10,7 +10,10 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.classes import Config, Object, Thread, Workdir
+from nixt.configs import Config
+from nixt.objects import Object
+from nixt.threads import launch
+from nixt.workdir import store, types
 
 
 def init():
@@ -49,7 +52,7 @@ class REST(HTTPServer, Object):
 
     def start(self):
         self._status = "ok"
-        Thread.launch(self.serve_forever)
+        launch(self.serve_forever)
 
     def request(self):
         self._last = time.time()
@@ -85,11 +88,11 @@ class RESTHandler(BaseHTTPRequestHandler):
         if self.path == "/":
             self.write_header("text/html")
             txt = ""
-            for fnm in Workdir.types():
+            for fnm in types():
                 txt += f'<a href="http://{Cfg.hostname}:{Cfg.port}/{fnm}">{fnm}</a><br>\n'
             self.send(html(txt.strip()))
             return
-        fnm = Workdir.store() + self.path
+        fnm = store() + self.path
         fnm = os.path.abspath(fnm)
         if os.path.isdir(fnm):
             self.write_header("text/html")

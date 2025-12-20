@@ -13,8 +13,16 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.classes import Client, Commands, Config, Kernel, Message, Method
-from nixt.classes import Mods, Output, Thread, Time, Utils, Workdir
+from nixt.command import command
+from nixt.configs import Config
+from nixt.handler import Output
+from nixt.kernels import parse, scanner
+from nixt.message import Message
+from nixt.methods import fmt
+from nixt.package import dirs
+from nixt.threads import launch
+from nixt.timings import elapsed
+from nixt.workdir import Workdir, skel
 
 
 Config.debug = True
@@ -25,19 +33,18 @@ Config.version = 110
 Workdir.wdr = ".test"
 
 
-Mods.add("examples", "examples")
+dirs("examples", "examples")
 #Mods.add('modules', Workdir.moddir())
 
 
 events = queue.Queue()
-expand = Utils.expand
 
 
 class CLI(Output):
 
     def __init__(self):
         Output.__init__(self)
-        self.register("command", Commands.command)
+        self.register("command", command)
 
     def raw(self, txt):
         if "v" in Config.opts:
@@ -46,7 +53,7 @@ class CLI(Output):
 
 class Pool:
 
-    clients: list[Client] = []
+    clients = []
     lock = threading.RLock()
     nrcpu = 1
     nrlast = 0
@@ -73,94 +80,83 @@ class Pool:
             Pool.nrlast += 1
 
 
-class Runtime:
-
-    def banner(name, version):
-        tme = time.ctime(time.time()).replace("  ", " ")
-        print("%s %s since %s (%s)" % (
-                                       name.upper(),
-                                       version,
-                                       tme,
-                                       Config.level
-                                      ))
-        sys.stdout.flush()
+def banner(name, version):
+    tme = time.ctime(time.time()).replace("  ", " ")
+    print("%s %s since %s (%s)" % (
+        name.upper(),
+        version,
+        tme,
+        Config.level
+    ))
+    sys.stdout.flush()
 
 
-    def check(text):
-        args = sys.argv[1:]
-        for arg in args:
-            if not arg.startswith("-"):
-                continue
-            for char in text:
-                if char in arg:
-                    return True
-        return False
+def check(text):
+    args = sys.argv[1:]
+    for arg in args:
+        if not arg.startswith("-"):
+            continue
+        for char in text:
+            if char in arg:
+                return True
+    return False
 
 
-    def consume():
-        while True:
-            try:
-                event = events.get()
-                event.wait()
-                events.task_done()
-            except (KeyboardInterrupt, EOFError):
-                os._exit(0)
+def consume():
+    while True:
+       try:
+            event = events.get()
+            event.wait()
+            events.task_done()
+       except (KeyboardInterrupt, EOFError):
+            os._exit(0)
 
 
-    def payload(todo):
-        for cmd, example in todo.items():
-            for ex in example:
-                evt = Message()
-                evt.text = f"{cmd} {ex}"
-                evt.kind = "command"
-                Pool.put(evt)
-                events.put(evt)
-
-class Examples:
-
-    examples = {
-        "cmd": [""],
-        "dis": [""],
-        "dne": ["", "bla"],
-        "dpl": ["hnrss title,url", ""],
-        "flt": [""],
-        "fnd": ["", "log", "rss", "config", "todo"],
-        "man": [""],
-        "mod": [""],
-        "mre": [""],
-        "nme": ["", "hnrss hackernews"],
-        "now": [""],
-        "pwd": ["", "bla mekker"],
-        "req": [""],
-        "res": ["", "hnrss"],
-        "srv": [""],
-        "thr": [""],
-        "upt": [""]
-    }
-
-    pre = {
-        "cfg": ["", "nick=mekker"],
-        "imp": ["", "testing/feeds.opml"],
-        "log": ["", "log add"],
-        "rss": ["", "http://hnrss.org/newest"],
-        "tdo": ["", "todo add"]
-    }
-
-    post = {
-        "dbg": [""],
-        "dne": ["", "mekker"],
-        "exp": [""],
-        "rem": ["", "hnrss"]
-    }
+def payload(todo):
+    for cmd, example in todo.items():
+        for ex in example:
+            evt = Message()
+            evt.text = f"{cmd} {ex}"
+            evt.kind = "command"
+            Pool.put(evt)
+            events.put(evt)
 
 
+examples = {
+    "cmd": [""],
+    "dis": [""],
+    "dne": ["", "bla"],
+    "dpl": ["hnrss title,url", ""],
+    "flt": [""],
+    "fnd": ["", "log", "rss", "config", "todo"],
+    "man": [""],
+    "mod": [""],
+    "mre": [""],
+    "nme": ["", "hnrss hackernews"],
+    "now": [""],
+    "pwd": ["", "bla mekker"],
+    "req": [""],
+    "res": ["", "hnrss"],
+    "srv": [""],
+    "thr": [""],
+    "upt": [""]
+}
 
-expand(Examples)
-expand(Kernel)
-expand(Method, "parse")
-expand(Runtime)
-expand(Thread, "launch")
-expand(Workdir, "skel")
+pre = {
+    "cfg": ["", "nick=mekker"],
+    "imp": ["", "testing/feeds.opml"],
+    "log": ["", "log add"],
+    "rss": ["", "http://hnrss.org/newest"],
+    "tdo": ["", "todo add"]
+}
+
+post = {
+    "dbg": [""],
+    "dne": ["", "mekker"],
+    "exp": [""],
+    "rem": ["", "hnrss"]
+}
+
 
 
 def main():
@@ -197,11 +193,11 @@ def main():
     except (KeyboardInterrupt, EOFError):
         os._exit(0)
     endtime = time.time()
-    lap = Time.elapsed(endtime-starttime)
+    lap = elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
     if "v" in Config.opts:
-        print(f"{Method.fmt(Config)}")
+        print(f"{fmt(Config)}")
         print(f"{nrs} events left.")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
     os._exit(0)
