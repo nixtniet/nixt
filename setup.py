@@ -10,6 +10,7 @@ import setuptools
 setuptools.setup(
     data_files=[
         ('share/nixt/examples', [
+            'examples/__init__.py',
             'examples/atr.py',
             'examples/flt.py',
             'examples/fnd.py',

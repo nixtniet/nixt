@@ -9,7 +9,7 @@ class Broker:
     objects = {}
 
 
-def ticket(obj):
+def store(obj):
     tick = repr(obj)
     Broker.objects[tick] = obj
     return tick
@@ -33,9 +33,8 @@ def like(txt):
 
 def __dir__():
     return (
-        'Broker',
         'broker',
         'like',
         'objs',
-        'ticket',
+        'store'
     )

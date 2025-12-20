@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"static doesn't change"
+"by definition"
 
 
 MONTH = {

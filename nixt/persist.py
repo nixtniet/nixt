@@ -10,7 +10,7 @@ import threading
 
 
 from .methods import deleted, fqn, search
-from .objects import Object, update
+from .objects import Object, keys, update
 from .serials import dump, load
 from .timings import fntime
 from .utility import cdir
@@ -28,7 +28,7 @@ class Cache:
 def attrs(kind):
     objs = list(find(kind))
     if objs:
-        return list(Object.keys(objs[0][1]))
+        return list(keys(objs[0][1]))
     return []
 
 

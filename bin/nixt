@@ -86,7 +86,6 @@ def console():
     if check("0"):
         Config.ignore = list()
     boot(TXT)
-    banner()
     scanner(MODS)
     enable(cmd, mod, ver)
     if "a" in Config.opts:
@@ -117,7 +116,6 @@ def control():
 def service():
     privileges()
     boot(TXT)
-    banner()
     pidfile(pidname(Config.name))
     enable(cmd, mod, ver)
     scanner(MODS)
@@ -167,18 +165,6 @@ def ver(event):
 
 
 "utilities"
-
-
-def banner():
-    tme = time.ctime(time.time()).replace("  ", " ")
-    print("%s %s %s since %s (%s)" % (
-        Config.name.upper(),
-        Config.version,
-        Config.opts.strip().upper(),
-        tme,
-        Config.level.upper()
-    ))
-    sys.stdout.flush()
 
 
 def check(text):

@@ -10,7 +10,7 @@ import threading
 import _thread
 
 
-from .brokers import ticket
+from .brokers import store
 from .command import command
 from .threads import launch
 
@@ -60,7 +60,7 @@ class Client(Handler):
         self.olock = threading.RLock()
         self.oqueue = queue.Queue()
         self.silent = True
-        ticket(self)
+        store(self)
 
     def announce(self, text):
         if not self.silent:

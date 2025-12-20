@@ -4,8 +4,9 @@
 "in the beginning"
 
 
-import pathlib
+import logging
 import os
+import pathlib
 import time
 
 
@@ -19,11 +20,24 @@ from .utility import spl
 from .workdir import Workdir, skel
 
 
+def banner():
+    tme = time.ctime(time.time()).replace("  ", " ")
+    logging.info("%s %s %s since %s (%s)", 
+        Config.name.upper(),
+        Config.version,
+        Config.opts.strip().upper(),
+        tme,
+        Config.level.upper()
+    )
+
+
 def boot(txt):
     Workdir.wdr = Workdir.wdr or os.path.expanduser(f"~/.{Config.name}")
     skel()
     parse(Config, txt)
     level(Config.sets.level or Config.level or "info")
+    if "v" in Config.opts:
+        banner()
 
 
 def forever():
@@ -59,7 +73,7 @@ def pidfile(filename):
 
 def scanner(pkg, names=""):
     for module in mods(pkg, names or modules(pkg)):
-        if module.__name__ in Config.ignore and module.__name__ not in spl(Config.sets.init):
+        if module and module.__name__ in Config.ignore and module.__name__ not in spl(Config.sets.init):
             continue
         scan(module)
 

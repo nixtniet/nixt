@@ -35,9 +35,9 @@ def init():
     fetcher = Fetcher()
     fetcher.start()
     if fetcher.seenfn:
-        logging.warning("since %s", elapsed(time.time()-fntime(fetcher.seenfn)))
+        logging.warning("RSS since %s", elapsed(time.time()-fntime(fetcher.seenfn)))
     else:
-        logging.warning("since %s", time.ctime(time.time()).replace("  ", " "))
+        logging.warning("RSS since %s", time.ctime(time.time()).replace("  ", " "))
     return fetcher
 
 
