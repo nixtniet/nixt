@@ -35,6 +35,8 @@ def boot(txt):
     Workdir.wdr = Workdir.wdr or os.path.expanduser(f"~/.{Config.name}")
     skel()
     parse(Config, txt)
+    if "ignore" in Config.sets:
+        Config.ignore = Config.sets.ignore
     level(Config.sets.level or Config.level or "info")
     if "v" in Config.opts:
         banner()

@@ -2,6 +2,7 @@
 # This file is placed in the Public Domain.
 
 
+import importlib.util
 import os
 import sys
 
@@ -29,13 +30,6 @@ Config.version = 441
 
 
 Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
-sys.path.insert(0, Workdir.wdr)
-
-
-try:
-    import mods as MODS
-except ModuleNotFoundError:
-    MODS = None
 
 
 class Line(CLI):
@@ -59,7 +53,7 @@ class Console(Line):
         return evt
 
 
-"utilities"
+"utility"
 
 
 def check(text):
@@ -95,6 +89,21 @@ def daemon(verbose=False, nochdir=False):
     os.nice(10)
 
 
+def importer(name, pth=""):
+    if pth and os.path.exists(pth):
+        spec = importlib.util.spec_from_file_location(name, pth)
+    else:
+        spec = importlib.util.find_spec(name)
+    if not spec or not spec.loader:
+        return None
+    mod = importlib.util.module_from_spec(spec)
+    if not mod:
+        return None
+    sys.modules[name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def privileges():
     import getpass
     import pwd
@@ -119,6 +128,9 @@ def wrap(func):
 
 
 "scripts"
+
+
+MODS = importer("mods", os.path.join(moddir(), "__init__.py"))
 
 
 def background():
