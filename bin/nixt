@@ -2,9 +2,9 @@
 # This file is placed in the Public Domain.
 
 
-import importlib.util
 import os
 import sys
+import time
 
 
 sys.path.insert(0, os.getcwd())
@@ -14,22 +14,20 @@ from nixt.command import Commands, enable, command
 from nixt.configs import Config
 from nixt.defines import SYSTEMD
 from nixt.handler import CLI
-from nixt.kernels import boot, forever, init, pidfile, scanner, wrapped
+from nixt.kernels import boot, forever, init, pidfile, scanner
 from nixt.message import Message
-from nixt.package import Mods, modules
-from nixt.workdir import Workdir, moddir, pidname
+from nixt.package import dirs, modules
+from nixt.utility import wrapped
+from nixt.workdir import Workdir, pidname
 
 
-TXT = " ".join(sys.argv[1:])
-
-
-Config.ignore = "rst,web,wsd,udp"
+Config.ignore = "udp"
 Config.level = "info"
 Config.name = "nixt" 
 Config.version = 441
 
 
-Workdir.wdr = os.path.expanduser(f"~/.{Config.name}")
+TXT = " ".join(sys.argv[1:])
 
 
 class Line(CLI):
@@ -54,6 +52,18 @@ class Console(Line):
 
 
 "utility"
+
+
+def banner():
+    tme = time.ctime(time.time()).replace("  ", " ")
+    print("%s %s %s since %s (%s)" % (
+        Config.name.upper(),
+        Config.version,
+        Config.opts.strip().upper(),
+        tme,
+        Config.level.upper()
+    ))
+    sys.stdout.flush()
 
 
 def check(text):
@@ -89,21 +99,6 @@ def daemon(verbose=False, nochdir=False):
     os.nice(10)
 
 
-def importer(name, pth=""):
-    if pth and os.path.exists(pth):
-        spec = importlib.util.spec_from_file_location(name, pth)
-    else:
-        spec = importlib.util.find_spec(name)
-    if not spec or not spec.loader:
-        return None
-    mod = importlib.util.module_from_spec(spec)
-    if not mod:
-        return None
-    sys.modules[name] = mod
-    spec.loader.exec_module(mod)
-    return mod
-
-
 def privileges():
     import getpass
     import pwd
@@ -130,17 +125,14 @@ def wrap(func):
 "scripts"
 
 
-MODS = importer("mods", os.path.join(moddir(), "__init__.py"))
-
-
 def background():
     daemon(check("v"), check("m"))
     privileges()
     boot(TXT)
     pidfile(pidname(Config.name))
-    scanner(MODS)
     enable(cmd, mod, ver)
-    init(MODS, modules(MODS))
+    scanner(modules())
+    init(modules())
     forever()
 
 
@@ -150,13 +142,15 @@ def console():
     if check("0"):
         Config.ignore = list()
     boot(TXT)
-    scanner(MODS)
+    if "v" in Config.opts:
+        banner()
+    scanner()
     enable(cmd, mod, ver)
     if "a" in Config.opts:
-        mds = modules(MODS)
+        mds = modules()
     else:
         mds = Config.sets.init
-    init(MODS, mds, "w" in Config.opts)
+    init(mds, "w" in Config.opts)
     csl = Console()
     csl.start()
     forever()
@@ -166,7 +160,7 @@ def control():
     if len(sys.argv) == 1:
         return
     boot(TXT)
-    scanner(MODS)
+    scanner()
     enable(cmd, mod, srv, ver)
     cli = Line()
     evt = Message()
@@ -180,10 +174,12 @@ def control():
 def service():
     privileges()
     boot(TXT)
+    if "v" in Config.opts:
+        banner()
     pidfile(pidname(Config.name))
     enable(cmd, mod, ver)
-    scanner(MODS)
-    init(MODS, modules(MODS))
+    scanner()
+    init(modules())
     forever()
 
 

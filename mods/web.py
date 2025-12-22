@@ -24,10 +24,10 @@ def init():
     try:
         server = HTTP((Cfg.hostname, int(Cfg.port)), HTTPHandler)
         server.start()
-        logging.warning("WEB http://%s:%s", Cfg.hostname, Cfg.port)
+        logging.warning("http://%s:%s", Cfg.hostname, Cfg.port)
         return server
     except OSError as ex:
-        logging.warning("WEB %s", str(ex))
+        logging.warning("%s", str(ex))
 
 
 class Cfg:

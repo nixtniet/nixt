@@ -19,6 +19,7 @@ class NoDate(Exception):
 
 
 def date(daystr):
+    "return date from string."
     daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
     res = time.time()
     for fmat in TIMES:
@@ -31,6 +32,7 @@ def date(daystr):
 
 
 def day(daystr):
+    "day part in a string."
     days = None
     month = None
     yea = None
@@ -56,6 +58,7 @@ def day(daystr):
 
 
 def elapsed(seconds, short=True):
+    "seconds to string."
     txt = ""
     nsec = float(seconds)
     if nsec < 1:
@@ -96,6 +99,7 @@ def elapsed(seconds, short=True):
 
 
 def extract(daystr):
+    "extract date/time from string."
     previous = ""
     line = ""
     daystr = str(daystr)
@@ -113,6 +117,7 @@ def extract(daystr):
 
 
 def fntime(daystr):
+    "return time from path."
     datestr = " ".join(daystr.split(os.sep)[-2:])
     datestr = datestr.replace("_", " ")
     if "." in datestr:
@@ -126,6 +131,7 @@ def fntime(daystr):
 
 
 def hour(daystr):
+    "return hour in string."
     try:
         hmsre = re.search(r'(\d+):(\d+):(\d+)', str(daystr))
         hours = 60 * 60 * (int(hmsre.group(1)))
@@ -147,6 +153,7 @@ def hour(daystr):
 
 
 def timed(txt):
+    "scan string for date/time."
     try:
         target = day(txt)
     except NoDate:
@@ -158,6 +165,7 @@ def timed(txt):
 
 
 def parse(txt):
+    "parse text for date/time."
     seconds = 0
     target = 0
     txt = str(txt)
@@ -180,6 +188,7 @@ def parse(txt):
 
 
 def today():
+    "return start of the day."
     return str(datetime.datetime.today()).split()[0]
 
 

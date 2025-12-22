@@ -20,7 +20,7 @@ def init():
     try:
         rest = REST((Cfg.hostname, int(Cfg.port)), RESTHandler)
         rest.start()
-        logging.warning("RST http://%s:%s", Cfg.hostname, Cfg.port)
+        logging.warning("http://%s:%s", Cfg.hostname, Cfg.port)
         return rest
     except OSError as ex:
         logging.error(str(ex))

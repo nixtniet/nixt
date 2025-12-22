@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"in the beginning"
+"in the beginning."
 
 
 import logging
@@ -14,35 +14,25 @@ from .command import scan
 from .configs import Config
 from .loggers import level
 from .methods import parse
-from .package import mod, mods, modules
+from .package import configure, mod, mods, modules
 from .threads import launch
 from .utility import spl
 from .workdir import Workdir, skel
 
 
-def banner():
-    tme = time.ctime(time.time()).replace("  ", " ")
-    logging.info("%s %s %s since %s (%s)", 
-        Config.name.upper(),
-        Config.version,
-        Config.opts.strip().upper(),
-        tme,
-        Config.level.upper()
-    )
-
-
 def boot(txt):
+    "set important variables like workdir and module paths."
     Workdir.wdr = Workdir.wdr or os.path.expanduser(f"~/.{Config.name}")
     skel()
     parse(Config, txt)
+    configure()
     if "ignore" in Config.sets:
         Config.ignore = Config.sets.ignore
     level(Config.sets.level or Config.level or "info")
-    if "v" in Config.opts:
-        banner()
 
 
 def forever():
+    "run forever until ctrl-c."
     while True:
         try:
             time.sleep(0.1)
@@ -50,21 +40,26 @@ def forever():
             break
 
 
-def init(pkg, names, wait=False):
-    thrs = []
+def init(names=None, wait=False):
+    "run init function of modules."
+    if names is None:
+        names = modules()
+    mods = []
     for name in spl(names):
-        if name in Config.ignore and name not in spl(Config.sets.init):
+        module = mod(name)
+        if not module:
             continue
-        module = mod(pkg, name)
-        if "init" not in dir(module):
-            continue
-        thrs.append(launch(module.init))
+        if "init" in dir(module):
+            thr = launch(module.init)
+            mods.append((module, thr))
     if wait:
-        for thr in thrs:
+        for module, thr in mods:
             thr.join()
+    return mods
 
 
 def pidfile(filename):
+    "write pidfile."
     if os.path.exists(filename):
         os.unlink(filename)
     path2 = pathlib.Path(filename)
@@ -73,18 +68,17 @@ def pidfile(filename):
         fds.write(str(os.getpid()))
 
 
-def scanner(pkg, names=""):
-    for module in mods(pkg, names or modules(pkg)):
-        if module and module.__name__ in Config.ignore and module.__name__ not in spl(Config.sets.init):
+def scanner(names=None):
+    "scan named modules for commands."
+    if names is None:
+        names = modules()
+    mods = []
+    for name in spl(names):
+        module = mod(name)
+        if not module:
             continue
         scan(module)
-
-
-def wrapped(func):
-    try:
-        func()
-    except (KeyboardInterrupt, EOFError):
-        pass
+    return mods
 
 
 def __dir__():
@@ -94,6 +88,5 @@ def __dir__():
         'forever',
         'init',
         'pidfile',
-        'scanner',
-        'wrapped'
+        'scanner'
     )

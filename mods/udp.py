@@ -18,7 +18,7 @@ from nixt.threads import launch
 def init():
     udp = UDP()
     udp.start()
-    logging.warning("UDP http://%s:%s", Cfg.host, Cfg.port)
+    logging.warning("http://%s:%s", Cfg.host, Cfg.port)
     return udp
 
 

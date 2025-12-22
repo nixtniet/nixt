@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"log exceptions"
+"log exceptions."
 
 
 import logging
@@ -17,10 +17,11 @@ class Format(logging.Formatter):
 class Log:
 
     datefmt = "%H:%M:%S"
-    format = "%(message)s"
+    format = "%(module).3s %(message)s"
 
 
 def level(loglevel):
+    "set log level."
     formatter = Format(Log.format, Log.datefmt)
     stream = logging.StreamHandler()
     stream.setFormatter(formatter)

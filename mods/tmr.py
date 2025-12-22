@@ -38,7 +38,7 @@ def init():
         Timers.delete(tme)
     if Timers.timers:
         write(Timers.timers, Timers.path)
-    logging.warning("TMR %s timers", len(Timers.timers))
+    logging.warning("%s timers", len(Timers.timers))
 
 
 class Timer(Object):

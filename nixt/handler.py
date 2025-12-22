@@ -22,6 +22,7 @@ class Handler:
         self.queue = queue.Queue()
 
     def callback(self, event):
+        "run callback function with event."
         func = self.cbs.get(event.kind, None)
         if not func:
             event.ready()
@@ -30,6 +31,7 @@ class Handler:
         event._thr = launch(func, event, name=name)
 
     def loop(self):
+        "event loop."
         while True:
             event = self.poll()
             if not event:
@@ -38,18 +40,23 @@ class Handler:
             self.callback(event)
 
     def poll(self):
+        "return an event to process."
         return self.queue.get()
 
     def put(self, event):
+        "put event on queue."
         self.queue.put(event)
 
     def register(self, kind, callback):
+        "register callback."
         self.cbs[kind] = callback
 
     def start(self):
+        "start event handler loop."
         launch(self.loop)
 
     def stop(self):
+        "stop event handler loop."
         self.queue.put(None)
 
 
@@ -63,25 +70,31 @@ class Client(Handler):
         add(self)
 
     def announce(self, text):
+        "announce text to all channels."
         if not self.silent:
             self.raw(text)
 
     def display(self, event):
+        "display event results."
         with self.olock:
             for tme in event.result:
                 txt = event.result.get(tme)
                 self.dosay(event.channel, txt)
 
     def dosay(self, channel, text):
+        "say called by display."
         self.say(channel, text)
 
     def raw(self, text):
+        "raw output."
         raise NotImplementedError("raw")
 
     def say(self, channel, text):
+        "say text in channel."
         self.raw(text)
 
     def wait(self):
+        "wait for output to finish."
         try:
             self.oqueue.join()
         except Exception as ex:
@@ -99,6 +112,7 @@ class CLI(Client):
 class Output(Client):
 
     def output(self):
+        "output loop."
         while True:
             event = self.oqueue.get()
             if event is None:
@@ -108,10 +122,12 @@ class Output(Client):
             self.oqueue.task_done()
 
     def start(self):
+        "start output loop."
         launch(self.output)
         super().start()
 
     def stop(self):
+        "stop output loop."
         self.oqueue.put(None)
         super().stop()
 

@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"write your own commands"
+"write your own commands."
 
 
 import inspect
@@ -17,10 +17,12 @@ class Commands:
 
 
 def cmds(cmd):
+    "return command."
     return Commands.cmds.get(cmd, None)
 
 
 def command(evt):
+    "command callback."
     parse(evt, evt.text)
     func = cmds(evt.cmd)
     if func:
@@ -30,6 +32,7 @@ def command(evt):
 
 
 def enable(*args):
+    "add functions to commands."
     for func in args:
         name = func.__name__
         Commands.cmds[name] = func
@@ -37,6 +40,7 @@ def enable(*args):
 
 
 def scan(module):
+    "scan a module for command, function with event as first argument."
     for key, cmdz in inspect.getmembers(module, inspect.isfunction):
         if 'event' not in inspect.signature(cmdz).parameters:
             continue

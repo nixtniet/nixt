@@ -19,7 +19,7 @@ def init():
     event = Message()
     repeater = Repeater(3600.0,  wsd, event)
     repeater.start()
-    logging.warning("WSD %s wise", len(TXT.split("\n")))
+    logging.warning("%s wise", len(TXT.split("\n")))
 
 
 def wsd(event):

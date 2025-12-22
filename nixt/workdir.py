@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"where objects are stored"
+"where objects are stored."
 
 
 import os
@@ -17,10 +17,12 @@ class Workdir:
 
 
 def getpath(obj):
+    "return path for object."
     return storage(ident(obj))
 
 
-def long(name: str):
+def long(name):
+    "match full qualified name by substring."
     split = name.split(".")[-1].lower()
     res = name
     for names in types():
@@ -31,14 +33,17 @@ def long(name: str):
 
 
 def moddir(modname: str = ""):
+    "return modules string."
     return os.path.join(Workdir.wdr, modname or "mods")
 
 
 def pidname(name: str):
+    "return name of pidfile."
     return os.path.join(Workdir.wdr, f"{name}.pid")
 
 
 def skel():
+    "create directories."
     path = storage()
     pth = pathlib.Path(path)
     pth.mkdir(parents=True, exist_ok=True)
@@ -47,10 +52,12 @@ def skel():
 
 
 def storage(fnm: str = ""):
+    "return path to store."
     return os.path.join(Workdir.wdr, "store", fnm)
 
 
 def types():
+    "return stored types."
     return os.listdir(storage())
 
 

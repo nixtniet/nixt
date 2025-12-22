@@ -8,10 +8,12 @@ from .objects import Default, items
 
 
 def deleted(obj):
+    "check whether obj had deleted flag set."
     return "__deleted__" in dir(obj) and obj.__deleted__
 
 
 def edit(obj, setter={}, skip=False):
+    "update object with dict."
     for key, val in items(setter):
         if skip and val == "":
             continue
@@ -34,6 +36,7 @@ def edit(obj, setter={}, skip=False):
 
 
 def fmt(obj, args=[], skip=[], plain=False, empty=False):
+    "format object info printable string."
     if args == []:
         args = list(obj.__dict__.keys())
     txt = ""
@@ -61,6 +64,7 @@ def fmt(obj, args=[], skip=[], plain=False, empty=False):
 
 
 def fqn(obj):
+    "full qualified name."
     kin = str(type(obj)).split()[-1][1:-2]
     if kin == "type":
         tpe = type(obj)
@@ -69,6 +73,7 @@ def fqn(obj):
 
 
 def parse(obj, text):
+    "parse text for command."
     data = {
         "args": [],
         "cmd": "",
@@ -121,6 +126,7 @@ def parse(obj, text):
 
 
 def search(obj, selector={}, matching=False):
+    "check whether object matches search criteria."
     res = False
     for key, value in items(selector):
         val = getattr(obj, key, None)

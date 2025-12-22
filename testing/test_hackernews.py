@@ -4,7 +4,7 @@
 import unittest
 
 
-from examples.rss import Parser
+from mods.rss import Parser
 
 
 class TestParse(unittest.TestCase):

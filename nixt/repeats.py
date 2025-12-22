@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"things are repeating"
+"things are repeating."
 
 
 import threading
@@ -35,16 +35,19 @@ class Timed:
         self.timer = None
 
     def run(self):
+        "run timed function."
         self.timer.latest = time.time()
         self.func(*self.args)
 
     def start(self):
+        "start timer."
         self.kwargs["name"] = self.name
         timer = Timy(self.sleep, self.run, *self.args, **self.kwargs)
         timer.start()
         self.timer = timer
 
     def stop(self):
+        "stop timer."
         if self.timer:
             self.timer.cancel()
 
@@ -52,6 +55,7 @@ class Timed:
 class Repeater(Timed):
 
     def run(self):
+        "run function and launch timer for next run."
         launch(self.start)
         super().run()
 

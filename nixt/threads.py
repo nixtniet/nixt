@@ -32,6 +32,7 @@ class Thread(threading.Thread):
         yield from dir(self)
 
     def join(self, timeout=0.0):
+        "join thread and return result."
         try:
             super().join(timeout or None)
             return self.result
@@ -41,6 +42,7 @@ class Thread(threading.Thread):
             raise ex
 
     def run(self):
+        "run function."
         func, args = self.queue.get()
         if args and hasattr(args[0], "ready"):
             self.event = args[0]
@@ -58,15 +60,17 @@ class Thread(threading.Thread):
 
 
 def launch(func, *args, **kwargs):
+    "run function in a thread."
     try:
         thread = Thread(func, *args, **kwargs)
         thread.start()
         return thread
     except (KeyboardInterrupt, EOFError):
-        os._exit(0)
+        _thread.interrupt_main()
 
 
 def name(obj):
+    "return string of function/method."
     if inspect.ismethod(obj):
         return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
     if inspect.isfunction(obj):

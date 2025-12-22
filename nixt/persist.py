@@ -26,6 +26,7 @@ class Cache:
 
 
 def attrs(kind):
+    "show attributes for kind of objects."
     objs = list(find(kind))
     if objs:
         return list(keys(objs[0][1]))
@@ -33,10 +34,12 @@ def attrs(kind):
 
 
 def cache(path):
+    "return object from cache."
     return Cache.objects.get(path, None)
 
 
 def find(kind, selector={}, removed=False, matching=False):
+    "locate objects by matching atributes."
     fullname = long(kind)
     for pth in fns(fullname):
         obj = cache(pth)
@@ -52,6 +55,7 @@ def find(kind, selector={}, removed=False, matching=False):
 
 
 def fns(kind):
+    "return file names by kind of object."
     path = storage(kind)
     for rootdir, dirs, _files in os.walk(path, topdown=True):
         for dname in dirs:
@@ -61,7 +65,9 @@ def fns(kind):
             for fll in os.listdir(ddd):
                 yield os.path.join(ddd, fll)
 
+
 def last(obj, selector={}):
+    "return last saved version."
     result = sorted(
                     find(fqn(obj), selector),
                     key=lambda x: fntime(x[0])
@@ -75,10 +81,12 @@ def last(obj, selector={}):
 
 
 def put(path, obj):
+    "put object into cache."
     Cache.objects[path] = obj
 
 
 def read(obj, path):
+    "read object from path."
     with lock:
         with open(path, "r", encoding="utf-8") as fpt:
             try:
@@ -89,6 +97,7 @@ def read(obj, path):
 
 
 def sync(path, obj):
+    "update cached object."
     try:
         update(Cache.objects[path], obj)
     except KeyError:
@@ -96,6 +105,7 @@ def sync(path, obj):
 
 
 def write(obj, path=""):
+    "write object to disk."
     with lock:
         if path == "":
             path = getpath(obj)
