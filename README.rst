@@ -12,8 +12,7 @@ N I X T
 
 ::
 
-    >>> from nixt.objects import Object
-    >>> from nixt.serials import dumps, loads
+    >>> from nixt.defines import Object, dumps, loads
     >>> o = Object()
     >>> o.a = "b"
     >>> print(loads(dumps(o)))

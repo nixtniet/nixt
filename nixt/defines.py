@@ -4,7 +4,7 @@
 "definitions"
 
 
-from .brokers import Broker, add, like, objs
+from .brokers import broker, add, like, objs
 from .clients import Client, CLI, Output
 from .command import Commands, cmds, command, enable, scan
 from .configs import Config
@@ -13,11 +13,12 @@ from .loggers import level
 from .message import Message
 from .methods import deleted, edit, fmt, fqn, parse, search
 from .objects import Object, asdict , construct, items, keys, update, values
-from .persist import cache, put, read, sync, write
+from .persist import cache, last, find, put, read, sync, write
 from .repeats import Repeater, Timed
 from .serials import dump, dumps, load, loads
 from .threads import launch
-from .timings import date, day, elapsed, extract, fntime, hour, time, parsetxt, today
+from .timings import NoDate, date, day, elapsed, extract, fntime, hour, time
+from .timings import parsetxt, today
 from .utility import cdir, ident, md5sum, spl, where, wrapped
 from .workdir import Workdir, getpath, long, moddir, pidname, skel, storage, types
 
@@ -49,11 +50,12 @@ def __dir__():
         'deleted',
         'dump',
         'dumps',
+        'edit',
         'elapsed',
         'enable',
         'extract',
         'fntime',
-        'edit',
+        'find',
         'fmt',
         'fqn',
         'getpath',
@@ -61,8 +63,9 @@ def __dir__():
         'ident',
         'items',
         'keys',
-        'level',
+        'last',
         'launch',
+        'level',
         'like',
         'load',
         'loads',

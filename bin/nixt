@@ -18,10 +18,10 @@ sys.path.insert(0, os.getcwd())
 from nixt.clients import CLI
 from nixt.command import Commands, enable, command, scan
 from nixt.configs import Config
-from nixt.defines import SYSTEMD
 from nixt.loggers import level
 from nixt.message import Message
 from nixt.methods import parse
+from nixt.statics import SYSTEMD
 from nixt.threads import launch
 from nixt.utility import spl, where, wrapped
 from nixt.workdir import Workdir, moddir, pidname, skel

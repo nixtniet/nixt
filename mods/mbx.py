@@ -6,11 +6,10 @@ import os
 import time
 
 
-from nixt.defines import MONTH
 from nixt.methods import fmt
 from nixt.objects import Object, keys, update
-from nixt.persist import find
-from nixt.storage import write
+from nixt.persist import find, write
+from nixt.statics import MONTH
 from nixt.timings import date, elapsed
 
 
