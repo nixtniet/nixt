@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-from nixt.brokers import broker
+from nixt.defines import broker
 
 
 def sil(event):

@@ -224,7 +224,7 @@ opml
 """
 
 
-from nixt.configs import Config
+from nixt.defines import Config
 
 
 def man(event):

@@ -7,9 +7,7 @@ import logging
 from random import SystemRandom
 
 
-from nixt.brokers import objs
-from nixt.message import Message
-from nixt.repeats import Repeater
+from nixt.defines import Message, Repeater, objs
 
 
 rand = SystemRandom()

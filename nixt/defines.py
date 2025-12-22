@@ -14,10 +14,11 @@ from .message import Message
 from .methods import deleted, edit, fmt, fqn, parse, search
 from .objects import Default, Object
 from .objects import asdict , construct, items, keys, update, values
-from .persist import cache, last, find, put, read, sync, write
+from .persist import attrs, cache, last, find, put, read, sync, write
 from .repeats import Repeater, Timed
 from .serials import dump, dumps, load, loads
-from .threads import launch
+from .statics import MONTH, SYSTEMD
+from .threads import launch, name
 from .timings import NoDate, date, day, elapsed, extract, fntime, hour, time
 from .timings import parsetxt, today
 from .utility import cdir, ident, md5sum, spl, where, wrapped
@@ -26,6 +27,8 @@ from .workdir import Workdir, getpath, long, moddir, pidname, skel, storage, typ
 
 def __dir__():
     return (
+        'MONTH',
+        'SYSTEMD',
         'Client',
         'CLI',
         'Commands',

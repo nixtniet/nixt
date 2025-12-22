@@ -1,9 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-from nixt.brokers import objs
-from nixt.methods import fmt
-from nixt.threads import name
+from nixt.defines import fmt, name, objs
 
 
 def flt(event):

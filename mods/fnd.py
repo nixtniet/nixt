@@ -4,10 +4,7 @@
 import time
 
 
-from nixt.methods import fmt
-from nixt.persist import find
-from nixt.timings import elapsed, fntime
-from nixt.workdir import types
+from nixt.defines import elapsed, find, fmt, fntime, types
 
 
 def fnd(event):
