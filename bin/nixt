@@ -23,7 +23,7 @@ from nixt.defines import moddir, pidname, skel, where, wrapped
 Config.ignore = "udp"
 Config.level = "info"
 Config.name = "nixt" 
-Config.version = 441
+Config.version = 451
 
 
 TXT = " ".join(sys.argv[1:])
