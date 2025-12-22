@@ -24,7 +24,7 @@ from nixt.timings import elapsed
 from nixt.workdir import Workdir, skel
 
 
-import examples as MODS
+import mods as MODS
 
 
 Config.debug = True

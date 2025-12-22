@@ -8,8 +8,9 @@ import time
 
 from nixt.brokers import broker, like
 from nixt.objects import Object, items
-from nixt.persist import last, write
+from nixt.persist import last
 from nixt.repeats import Timed
+from nixt.storage import write
 from nixt.timings import NoDate, day, elapsed, extract, hour, today
 from nixt.workdir import getpath
 

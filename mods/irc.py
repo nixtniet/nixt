@@ -18,7 +18,8 @@ from nixt.handler import Output
 from nixt.message import Message
 from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
-from nixt.persist import last, write 
+from nixt.persist import last
+from nixt.storage import write 
 from nixt.threads import launch
 from nixt.workdir import getpath
 

@@ -4,9 +4,11 @@
 import os
 
 
-from nixt.package import Mods
+from nixt.configs import Config
+from nixt.utility import where
 
 
 def pth(event):
-    path = os.path.join(Mods.path, 'network', 'html', "index.html")
+    fn = where(Config)
+    path = os.path.join(fn, 'network', 'html', "index.html")
     event.reply(f"file://{path}")

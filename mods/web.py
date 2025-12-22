@@ -12,12 +12,12 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 from nixt.configs import Config
 from nixt.objects import Object
-from nixt.package import Mods
 from nixt.threads import launch
 
 
 def init():
-    Cfg.path = os.path.join(Mods.path, "network", "html")
+    Cfg.path = where(Config)
+    #Cfg.path = os.path.join(Mods.path, "network", "html")
     if not os.path.exists(os.path.join(Cfg.path, 'index.html')):
         logging.warning("no index.html")
         return
