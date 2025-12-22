@@ -6,7 +6,6 @@
 
 
 import importlib.util
-import logging
 import os
 import pathlib
 import time
@@ -23,7 +22,6 @@ from nixt.defines import SYSTEMD
 from nixt.loggers import level
 from nixt.message import Message
 from nixt.methods import parse
-from nixt.objects import Default
 from nixt.threads import launch
 from nixt.utility import spl, where, wrapped
 from nixt.workdir import Workdir, moddir, pidname, skel
@@ -212,6 +210,7 @@ class Mods:
     path = where(scan)
     package = os.path.dirname(path).split(".")[-1]
 
+
 def configure():
     "configure directories to load modules from."
     name = Mods.package + ".modules" 
@@ -358,7 +357,7 @@ def cmd(event):
 
 def mod(event):
     "list available commands."
-    event.reply(modules(MODS))
+    event.reply(modules())
 
 
 def srv(event):

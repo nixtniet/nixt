@@ -1,1 +1,1 @@
-pylint -d C,R,W,E0401,E0402  nixt examples bin/nixt bin/tinder
+pylint -d C,R,W,E0401,E0402  nixt mods bin/nixt bin/tinder

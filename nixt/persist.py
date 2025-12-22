@@ -4,17 +4,14 @@
 "persistence through storage"
 
 
-import json
 import os
-import threading
 
 
 from .methods import deleted, fqn, search
 from .objects import Object, keys, update
-from .serials import dump, load
+from .storage import cache, put, read
 from .timings import fntime
-from .utility import cdir
-from .workdir import getpath, long, storage
+from .workdir import long, storage
 
 
 def attrs(kind):

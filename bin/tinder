@@ -13,14 +13,14 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import command
+from nixt.clients import Output
+from nixt.command import command, scan
 from nixt.configs import Config
-from nixt.handler import Output
-from nixt.kernels import parse, scanner
 from nixt.message import Message
-from nixt.methods import fmt
+from nixt.methods import fmt, parse
 from nixt.threads import launch
 from nixt.timings import elapsed
+from nixt.utility import spl
 from nixt.workdir import Workdir, skel
 
 
@@ -111,6 +111,19 @@ def payload(todo):
             evt.kind = "command"
             Pool.put(evt)
             events.put(evt)
+
+
+def scanner(pkg, names=None):
+    "scan named modules for commands."
+    if names is None:
+        names = ",".join([x[:-3] for x in os.listdir(pkg.__path__[0])])
+    mods = []
+    for name in spl(names):
+        module = getattr(pkg, name, None)
+        if not module:
+            continue
+        scan(module)
+    return mods
 
 
 examples = {

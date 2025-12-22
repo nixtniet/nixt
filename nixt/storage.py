@@ -5,16 +5,13 @@
 
 
 import json
-import os
 import threading
 
 
-from .methods import deleted, fqn, search
-from .objects import Object, keys, update
+from .objects import update
 from .serials import dump, load
-from .timings import fntime
 from .utility import cdir
-from .workdir import getpath, long, storage
+from .workdir import getpath
 
 
 lock = threading.RLock()
