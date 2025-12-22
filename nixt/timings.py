@@ -10,7 +10,7 @@ import re
 import time
 
 
-from .defines import MONTH, TIMES
+from .statics import MONTH, TIMES
 
 
 class NoDate(Exception):
@@ -164,7 +164,7 @@ def timed(txt):
     return target
 
 
-def parse(txt):
+def parsetxt(txt):
     "parse text for date/time."
     seconds = 0
     target = 0
@@ -201,6 +201,6 @@ def __dir__():
         'fntime',
         'hour',
         'time',
-        'parse',
+        'parsetxt',
         'today'
     )
