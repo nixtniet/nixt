@@ -13,14 +13,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Output
-from nixt.command import command, scanner
-from nixt.configs import Config
-from nixt.message import Message
-from nixt.methods import fmt, parse
-from nixt.threads import launch
-from nixt.timings import elapsed
-from nixt.workdir import Workdir, skel
+from nixt.defines import Config, Message, Output, Workdir
+from nixt.defines import command, elapsed, fmt, launch, parse, scanner, skel
 
 
 import mods as MODS
