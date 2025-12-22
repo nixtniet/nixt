@@ -14,7 +14,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Output
-from nixt.command import command, scan
+from nixt.command import command, scan, scanner
 from nixt.configs import Config
 from nixt.message import Message
 from nixt.methods import fmt, parse
@@ -111,19 +111,6 @@ def payload(todo):
             evt.kind = "command"
             Pool.put(evt)
             events.put(evt)
-
-
-def scanner(pkg, names=None):
-    "scan named modules for commands."
-    if names is None:
-        names = ",".join([x[:-3] for x in os.listdir(pkg.__path__[0])])
-    mods = []
-    for name in spl(names):
-        module = getattr(pkg, name, None)
-        if not module:
-            continue
-        scan(module)
-    return mods
 
 
 examples = {

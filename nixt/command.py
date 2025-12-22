@@ -8,6 +8,7 @@ import inspect
 
 
 from .methods import parse
+from .utility import spl
 
 
 class Commands:
@@ -45,6 +46,19 @@ def scan(module):
         if 'event' not in inspect.signature(cmdz).parameters:
             continue
         enable(cmdz)
+
+
+def scanner(pkg, names=None):
+    "scan package for commands."
+    if names is None:
+        names = ",".join(dir(pkg))
+    mods = []
+    for name in spl(names):
+        module = getattr(pkg, name, None)
+        if not module:
+            continue
+        scan(module)
+    return mods
 
 
 def __dir__():
