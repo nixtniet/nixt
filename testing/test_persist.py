@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.persist import Cache
+from nixt.storage import Cache
 
 
 class TestPersist(unittest.TestCase):

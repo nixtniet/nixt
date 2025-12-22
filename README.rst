@@ -4,11 +4,9 @@ N I X T
 
 **NAME**
 
-
 |
 | ``NIXT`` - NIXT
 |
-
 
 **SYNOPSIS**
 

@@ -5,7 +5,7 @@ import unittest
 
 
 from nixt.objects import Object
-from nixt.persist import read, write
+from nixt.storage import read, write
 
 
 class TestComposite(unittest.TestCase):
