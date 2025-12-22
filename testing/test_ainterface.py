@@ -19,13 +19,13 @@ import nixt.brokers
 import nixt.clients
 import nixt.command
 import nixt.configs
+import nixt.defines
 import nixt.handler
 import nixt.message
 import nixt.methods
 import nixt.objects
 import nixt.persist
 import nixt.repeats
-import nixt.storage
 import nixt.threads
 import nixt.utility
 
@@ -38,13 +38,13 @@ PACKAGE = [
     'clients',
     'command',
     'configs',
+    'defines',
     'handler',
     'message',
     'methods',
     'objects',
     'persist',
     'repeats',
-    'storage',
     'threads',
     'utility'
 ]

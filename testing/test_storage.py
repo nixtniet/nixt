@@ -9,12 +9,11 @@ import unittest
 sys.path.insert(0, ".")
 
 
-from nixt.objects import Object
-from nixt.storage import Cache, write
-from nixt.workdir import Workdir
+from nixt.defines import Object, Workdir, write
+from nixt.persist import Cache
 
 
-import nixt.storage
+import nixt.persist
 
 
 Workdir.wdr = '.test'
@@ -22,7 +21,11 @@ Workdir.wdr = '.test'
 
 ATTRS1 = (
     'Cache',
+    'attrs',
     'cache',
+    'find',
+    'fns',
+    'last',
     'put',
     'read',
     'sync',
@@ -43,7 +46,7 @@ class TestStorage(unittest.TestCase):
 
     def test_dirmodule(self):
         self.assertEqual(
-                         dir(nixt.storage),
+                         dir(nixt.persist),
                          list(ATTRS1)
                         )
 

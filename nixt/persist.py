@@ -123,7 +123,7 @@ def __dir__():
         'cache',
         'find',
         'fns',
-        'last'
+        'last',
         'put',
         'read',
         'sync',

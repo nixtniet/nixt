@@ -14,13 +14,12 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Output
-from nixt.command import command, scan, scanner
+from nixt.command import command, scanner
 from nixt.configs import Config
 from nixt.message import Message
 from nixt.methods import fmt, parse
 from nixt.threads import launch
 from nixt.timings import elapsed
-from nixt.utility import spl
 from nixt.workdir import Workdir, skel
 
 

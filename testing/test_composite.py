@@ -4,8 +4,7 @@
 import unittest
 
 
-from nixt.objects import Object
-from nixt.storage import read, write
+from nixt.defines import Object, read, write
 
 
 class TestComposite(unittest.TestCase):
