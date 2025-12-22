@@ -12,9 +12,9 @@ import time
 
 
 from nixt.brokers import broker
+from nixt.clients import Output
 from nixt.command import command
 from nixt.configs import Config as Main
-from nixt.handler import Output
 from nixt.message import Message
 from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
