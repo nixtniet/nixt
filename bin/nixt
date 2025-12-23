@@ -201,7 +201,7 @@ class Mods:
     dirs = {}
     modules = {}
     path = where(scan)
-    package = os.path.dirname(path).split(".")[-1]
+    package = os.path.dirname(path).split(os.sep)[-1]
 
 
 def configure():
