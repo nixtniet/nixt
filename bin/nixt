@@ -20,7 +20,7 @@ from nixt.defines import command, enable, parse, launch, level, scan, spl
 from nixt.defines import moddir, pidname, skel, where, wrapped
 
 
-Config.ignore = "udp"
+Config.ignore = "man,mbx,rst,udp"
 Config.level = "info"
 Config.name = "nixt" 
 Config.version = 451
