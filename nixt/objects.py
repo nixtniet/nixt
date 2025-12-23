@@ -69,13 +69,8 @@ def keys(obj):
     "return object keys."
     if isinstance(obj, dict):
         return obj.keys()
-    res = []
-    for key in dir(obj):
-        if key.startswith("_"):
-            continue
-        res.append(key)
-    return res
-
+    return obj.__dict__.keys()
+    
 
 def update(obj, data, empty=True):
     "update object,"
