@@ -14,15 +14,17 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Config, Message, Output, Workdir
-from nixt.defines import command, elapsed, fmt, launch, parse, scanner, skel
+from nixt.defines import command, elapsed, fmt, launch, parse, scanner, skel 
+from nixt.defines import addpkg
 
 
-import mods as MODS
+import examples as MODS
 
 
 Config.debug = True
-Config.name = "nixt"
-Config.version = 110
+Config.level = "info"
+Config.name = "rssbot"
+Config.version = 658
 Workdir.wdr = ".test"
 
 
@@ -107,31 +109,42 @@ def payload(todo):
 
 
 examples = {
+    "atr": [""],
     "cmd": [""],
     "dis": [""],
     "dne": ["", "bla"],
     "dpl": ["hnrss title,url", ""],
-    "flt": [""],
+    "eml": ["", "root@localhost"],
+    "flt": ["", "0"],
     "fnd": ["", "log", "rss", "config", "todo"],
-    "man": [""],
+    "lou": [""],
+    "man": ["", "test"],
+    "mbx": [""],
     "mod": [""],
     "mre": [""],
     "nme": ["", "hnrss hackernews"],
     "now": [""],
+    "pth": [""],
     "pwd": ["", "bla mekker"],
     "req": [""],
     "res": ["", "hnrss"],
+    "sil": [""],
+    "slg": [""],
     "srv": [""],
+    "syn": [""],
     "thr": [""],
-    "upt": [""]
+    "tmr": ["", "22:00 test"],
+    "upt": [""],
+    "ver": [""],
+    "wsd": [""]
 }
 
 pre = {
     "cfg": ["", "nick=mekker"],
-    "imp": ["", "testing/feeds.opml"],
+    "imp": ["", "tests/feeds.opml"],
     "log": ["", "log add"],
     "rss": ["", "http://hnrss.org/newest"],
-    "tdo": ["", "todo add"]
+    "tdo": ["", "test"]
 }
 
 post = {
@@ -148,7 +161,8 @@ def main():
         shutil.rmtree(Workdir.wdr)
     skel()
     parse(Config, " ".join(sys.argv[1:]))
-    scanner(MODS)
+    addpkg(MODS)
+    scanner()
     if "v" in Config.opts:
         banner(Config.name, Config.version)
     if "z" in Config.opts:
