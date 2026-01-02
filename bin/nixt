@@ -77,11 +77,10 @@ def configure():
     path = moddir()
     if os.path.exists(path):
         adddir("modules", path)
-    if "m" in Config.opts:
-        if os.path.exists("examples"):
-            adddir("mods", "examples")
-        elif os.path.exists("mods"):
-            adddir("mods", "mods")
+    if os.path.exists("examples"):
+        adddir("mods", "examples")
+    elif os.path.exists("mods"):
+        adddir("mods", "mods")
 
 
 "scripts"
