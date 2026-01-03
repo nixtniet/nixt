@@ -241,7 +241,7 @@ examples = {
 
 pre = {
     "cfg": ["", "nick=mekker"],
-    "imp": ["", "tests/feeds.opml"],
+    "imp": ["", "testing/feeds.opml"],
     "log": ["", "log add"],
     "rss": ["", "http://hnrss.org/newest"],
     "tdo": ["", "test"]
