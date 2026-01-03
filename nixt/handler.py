@@ -57,7 +57,5 @@ class Handler:
 
 def __dir__():
     return (
-        'CLI',
-        'Client',
-        'Output'
+        'Handler',
     )

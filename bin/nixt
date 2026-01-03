@@ -28,7 +28,7 @@ Config.level = "info"
 Config.name = "nixt" 
 Config.opts = ""
 Config.txt = " ".join(sys.argv[1:])
-Config.version = 452
+Config.version = 453
 
 
 "clients"

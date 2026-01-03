@@ -9,11 +9,8 @@ import logging
 import time
 
 
-from nixt.brokers import objs
-from nixt.message import Message
-from nixt.objects import Object, construct, keys
-from nixt.threads import Repeater
-from nixt.utility import elapsed
+from nixt.defines import Message, Object, Repeater
+from nixt.defines import construct, elapsed, objs, keys
 
 
 def init():
