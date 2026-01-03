@@ -15,8 +15,8 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Config, Message, Output, Workdir
-from nixt.defines import command, elapsed, fmt, launch, parse, skel, spl 
-from nixt.defines import scan
+from nixt.defines import command, elapsed, fmt, launch, moddir, parse
+from nixt.defines import scan, skel, spl
 
 
 Config.debug = True
