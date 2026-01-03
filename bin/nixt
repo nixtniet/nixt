@@ -6,6 +6,7 @@
 
 
 import importlib.util
+import logging
 import os
 import pathlib
 import sys
@@ -17,7 +18,7 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.defines import SYSTEMD, CLI, Commands, Config, Message, Workdir
 from nixt.defines import command, enable, launch, level, moddir, parse, pidname
-from nixt.defines import scan, skel, spl, wrapped
+from nixt.defines import scan, skel, spl, where, wrapped
 
 
 "config"
@@ -72,21 +73,18 @@ def banner():
 
 
 def configure():
+    adddir("modules", moddir())
     if os.path.exists("examples"):
         adddir("mods", "examples")
-        return
-    if os.path.exists("mods"):
+    elif os.path.exists("mods"):
         adddir("mods", "mods")
-        return
-    path = os.path.expanduser(f"~/.local/share/pipx/venvs/{Config.name}/share/{Config.name}/examples/")
+    path = os.path.join(where(Config), "modules")
     if os.path.exists(path):
         adddir(f"{Config.name}.modules", path)
-        return
-    path = moddir()
-    if os.path.exists(path):
-        adddir("modules", path)
-    print(Mods.dirs)
-
+    else:
+        path = os.path.expanduser(f"~/.local/share/pipx/venvs/{Config.name}/share/{Config.name}/examples/")
+        if os.path.exists(path):
+            adddir(f"{Config.name}.modules", path)
 
 "modules"
 
@@ -183,7 +181,7 @@ def boot(cfg):
     skel()
     parse(cfg, cfg.txt)
     level(cfg.sets.level or cfg.level or "info")
-
+    configure()
 
 def check(text):
     "check for options."
@@ -321,7 +319,7 @@ def control():
         return
     boot(Config)
     scanner()
-    enable(cmd, mod, srv, ver)
+    enable(cmd, drs, mod, srv, ver)
     cli = Line()
     evt = Message()
     evt.orig = repr(cli)
@@ -351,6 +349,11 @@ def cmd(event):
     event.reply(",".join(sorted(Commands.names or Commands.cmds)))
 
 
+def drs(event):
+    "show package directories."
+    event.reply(",".join(Mods.dirs.values()))
+
+
 def mod(event):
     "list available commands."
     event.reply(modules())
@@ -373,7 +376,6 @@ def ver(event):
 
 def main():
     "runtime."
-    configure()
     if check('z'):
         Config.debug = True
     if check("c"):
