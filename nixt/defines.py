@@ -15,11 +15,11 @@ from .message import Message
 from .methods import deleted, edit, fmt, fqn, parse, search
 from .objects import Default, Object
 from .objects import asdict , construct, items, keys, update, values
+from .package import adddir, getmod, modules, scanner
 from .persist import attrs, cache, last, find, put, read, sync, write
-from .repeats import Repeater, Timed
 from .serials import dump, dumps, load, loads
 from .statics import MONTH, SYSTEMD
-from .threads import launch, name
+from .threads import Repeater, Timed, launch, name
 from .timings import NoDate, date, day, elapsed, extract, fntime, hour, time
 from .timings import parsetxt, today
 from .utility import cdir, ident, md5sum, spl, where, wrapped
@@ -42,6 +42,7 @@ def __dir__():
         'Repeater',
         'Timed',
         'Workdir',
+        'adddir',
         'addobj',
         'asdict',
         'cache',
@@ -61,6 +62,7 @@ def __dir__():
         'fmt',
         'fntime',
         'fqn',
+        'getmod',
         'getpath',
         'getstore',
         'hour',
@@ -76,6 +78,7 @@ def __dir__():
         'loads',
         'long',
         'moddir',
+        'modules',
         'md5sum',
         'objs',
         'parse',
@@ -84,6 +87,7 @@ def __dir__():
         'put',
         'read',
         'scan',
+        'scanner',
         'search',
         'skel',
         'sync',

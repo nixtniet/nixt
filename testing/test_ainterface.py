@@ -22,8 +22,8 @@ import nixt.handler
 import nixt.message
 import nixt.methods
 import nixt.objects
+import nixt.package
 import nixt.persist
-import nixt.repeats
 import nixt.threads
 import nixt.timings
 import nixt.utility
@@ -41,8 +41,8 @@ PACKAGE = [
     'message',
     'methods',
     'objects',
+    'package',
     'persist',
-    'repeats',
     'threads',
     'timings',
     'utility',
