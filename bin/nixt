@@ -5,7 +5,9 @@
 "main program"
 
 
+import importlib.util
 import os
+import pathlib
 import sys
 import time
 
@@ -13,10 +15,9 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import SYSTEMD, CLI, Commands, Config, Message, Mods
-from nixt.defines import adddir, boot, check, command, daemon, enable
-from nixt.defines import forever, init, moddir, modules, pidfile, pidname
-from nixt.defines import pkgdir, privileges, scanner, wrap, wrapped
+from nixt.defines import SYSTEMD, CLI, Commands, Config, Message, Workdir
+from nixt.defines import command, enable, launch, level, moddir, parse, pidname
+from nixt.defines import scan, skel, spl, wrapped
 
 
 "config"
@@ -71,16 +72,213 @@ def banner():
 
 
 def configure():
+    if os.path.exists("examples"):
+        adddir("mods", "examples")
+        return
+    if os.path.exists("mods"):
+        adddir("mods", "mods")
+        return
     path = os.path.expanduser(f"~/.local/share/pipx/venvs/{Config.name}/share/{Config.name}/examples/")
     if os.path.exists(path):
         adddir(f"{Config.name}.modules", path)
+        return
     path = moddir()
     if os.path.exists(path):
         adddir("modules", path)
-    if os.path.exists("examples"):
-        adddir("mods", "examples")
-    elif os.path.exists("mods"):
-        adddir("mods", "mods")
+    print(Mods.dirs)
+
+
+"modules"
+
+
+class Mods:
+
+    dirs = {}
+    modules = {}
+
+
+def adddir(name, path):
+    "add module directory."
+    Mods.dirs[name] = path
+
+
+def addpkg(*pkgs):
+    "register package directory."
+    for pkg in pkgs:
+        adddir(pkg.__name__, pkg.__path__[0])
+
+
+def getmod(name):
+    "import module by name." 
+    if name in Mods.modules:
+        return Mods.modules[name]
+    mname = ""
+    pth = ""
+    for packname, path in Mods.dirs.items():
+        modpath = os.path.join(path, name + ".py")
+        if os.path.exists(modpath):
+            pth = modpath
+            mname = f"{packname}.{name}"
+            break
+    return importer(mname, pth)
+
+
+def importer(name, pth=""):
+    "import module by path."
+    if pth and os.path.exists(pth):
+        spec = importlib.util.spec_from_file_location(name, pth)
+    else:
+        spec = importlib.util.find_spec(name)
+    if not spec or not spec.loader:
+        return None
+    mod = importlib.util.module_from_spec(spec)
+    if not mod:
+        return None
+    Mods.modules[name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def pkgdir(name):
+    return f".local/share/pipx/venvs/{name}/share/{name}/examples"
+
+
+def mods(names):
+    "list of named modules."
+    return [getmod(x) for x in sorted(spl(names))]
+
+
+def modules():
+    "comma seperated list of available modules."
+    mods = []
+    for name, path in Mods.dirs.items():
+        if not os.path.exists(path):
+            continue
+        mods.extend([
+            x[:-3] for x in os.listdir(path)
+            if x.endswith(".py") and not x.startswith("__")
+        ])
+    return ",".join(sorted(mods))
+
+
+def scanner(names=None):
+    "scan named modules for commands."
+    if names is None:
+        names = modules()
+    mods = []
+    for name in spl(names):
+        module = getmod(name)
+        if not module:
+            continue
+        scan(module)
+    return mods
+
+
+"runtime"
+
+
+def boot(cfg):
+    "in the beginning."
+    Workdir.wdr = Workdir.wdr or os.path.expanduser(f"~/.{cfg.name}")
+    skel()
+    parse(cfg, cfg.txt)
+    level(cfg.sets.level or cfg.level or "info")
+
+
+def check(text):
+    "check for options."
+    args = sys.argv[1:]
+    for arg in args:
+        if not arg.startswith("-"):
+            continue
+        for char in text:
+               if char in arg:
+                   return True
+        return False
+
+
+def daemon(verbose=False, nochdir=False):
+    "run in the background."
+    pid = os.fork()
+    if pid != 0:
+        os._exit(0)
+    os.setsid()
+    pid2 = os.fork()
+    if pid2 != 0:
+        os._exit(0)
+    if not verbose:
+        with open('/dev/null', 'r', encoding="utf-8") as sis:
+            os.dup2(sis.fileno(), sys.stdin.fileno())
+        with open('/dev/null', 'a+', encoding="utf-8") as sos:
+            os.dup2(sos.fileno(), sys.stdout.fileno())
+        with open('/dev/null', 'a+', encoding="utf-8") as ses:
+            os.dup2(ses.fileno(), sys.stderr.fileno())
+    if not nochdir:
+        os.umask(0)
+        os.chdir("/")
+    os.nice(10)
+
+
+def forever():
+    "run forever until ctrl-c."
+    while True:
+        try:
+            time.sleep(0.1)
+        except (KeyboardInterrupt, EOFError):
+            break
+
+
+def init(names=None, wait=False):
+    "run init function of modules."
+    if names is None:
+        names = modules()
+    mods = []
+    for name in spl(names):
+        module = getmod(name)
+        if not module:
+            continue
+        if "init" in dir(module):
+            thr = launch(module.init)
+            mods.append((module, thr))
+    if wait:
+        for module, thr in mods:
+            thr.join()
+    return mods
+
+
+def pidfile(filename):
+    "write pidfile."
+    if os.path.exists(filename):
+        os.unlink(filename)
+    path2 = pathlib.Path(filename)
+    path2.parent.mkdir(parents=True, exist_ok=True)
+    with open(filename, "w", encoding="utf-8") as fds:
+        fds.write(str(os.getpid()))
+
+
+def privileges():
+    "drop privileges."
+    import getpass
+    import pwd
+    pwnam2 = pwd.getpwnam(getpass.getuser())
+    os.setgid(pwnam2.pw_gid)
+    os.setuid(pwnam2.pw_uid)
+
+
+def wrap(func):
+    "restore console."
+    import termios
+    old = None
+    try:
+        old = termios.tcgetattr(sys.stdin.fileno())
+    except termios.error:
+        pass
+    try:
+        wrapped(func)
+    finally:
+        pass
+    if old:
+        termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
 "scripts"
@@ -170,7 +368,7 @@ def ver(event):
     event.reply(f"{Config.name.upper()} {Config.version} {Config.opts}")
 
 
-"runtime"
+"main"
 
 
 def main():

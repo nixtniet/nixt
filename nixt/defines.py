@@ -15,16 +15,13 @@ from .message import Message
 from .methods import deleted, edit, fmt, fqn, parse, search
 from .objects import Default, Object
 from .objects import asdict , construct, items, keys, update, values
-from .package import Mods, adddir, addpkg, getmod, importer, mods
-from .package import modules, pkgdir, scanner
 from .persist import attrs, cache, last, find, put, read, sync, write
-from .runtime import boot, check, daemon, forever, init, pidfile
-from .runtime import privileges, wrap
+from .repeats import Repeater, Timed
 from .serials import dump, dumps, load, loads
 from .statics import MONTH, SYSTEMD
-from .threads import Repeater, Timed, launch, name
-from .utility import NoDate, date, day, elapsed, extract, fntime, hour, time
-from .utility import parsetxt, today
+from .threads import launch, name
+from .timings import NoDate, date, day, elapsed, extract, fntime, hour, time
+from .timings import parsetxt, today
 from .utility import cdir, ident, md5sum, spl, where, wrapped
 from .workdir import Workdir, getpath, getstore, long, moddir, pidname, skel, kinds
 

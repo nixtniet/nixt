@@ -22,10 +22,10 @@ import nixt.handler
 import nixt.message
 import nixt.methods
 import nixt.objects
-import nixt.package
 import nixt.persist
-import nixt.runtime
+import nixt.repeats
 import nixt.threads
+import nixt.timings
 import nixt.utility
 import nixt.workdir
 
@@ -41,10 +41,10 @@ PACKAGE = [
     'message',
     'methods',
     'objects',
-    'package',
     'persist',
-    'runtime',
+    'repeats',
     'threads',
+    'timings',
     'utility',
     'workdir'
 ]
