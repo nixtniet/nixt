@@ -5,7 +5,7 @@ N I X T
 **NAME**
 
 |
-| ``NIXT`` - NIXT
+| ``nixt`` - NIXT
 |
 
 **SYNOPSIS**
