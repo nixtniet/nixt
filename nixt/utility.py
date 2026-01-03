@@ -32,6 +32,10 @@ def md5sum(path):
         return hashlib.md5(txt, usedforsecurity=False).hexdigest()
 
 
+def pipxdir(name):
+    return f".local/share/pipx/venvs/{name}/share/{name}/examples"
+
+
 def spl(txt):
     "return list from command seperated string."
     try:
@@ -59,6 +63,7 @@ def __dir__():
         'cdir',
         'ident',
         'md5sum',
+        'pipxdir',
         'spl',
         'where',
         'wrapped'

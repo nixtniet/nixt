@@ -72,20 +72,6 @@ def banner():
     sys.stdout.flush()
 
 
-def configure():
-    adddir("modules", moddir())
-    if os.path.exists("examples"):
-        adddir("mods", "examples")
-    elif os.path.exists("mods"):
-        adddir("mods", "mods")
-    path = os.path.join(where(Config), "modules")
-    if os.path.exists(path):
-        adddir(f"{Config.name}.modules", path)
-    else:
-        path = os.path.expanduser(f"~/.local/share/pipx/venvs/{Config.name}/share/{Config.name}/examples/")
-        if os.path.exists(path):
-            adddir(f"{Config.name}.modules", path)
-
 "modules"
 
 
@@ -181,7 +167,8 @@ def boot(cfg):
     skel()
     parse(cfg, cfg.txt)
     level(cfg.sets.level or cfg.level or "info")
-    configure()
+    adddir("modules", moddir())
+
 
 def check(text):
     "check for options."
@@ -302,7 +289,7 @@ def console():
     if "v" in Config.opts:
         banner()
     scanner()
-    enable(cmd, mod, ver)
+    enable(cmd, drs, mod, ver)
     if "a" in Config.opts:
         mds = modules()
     else:
