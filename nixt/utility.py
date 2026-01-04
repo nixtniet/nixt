@@ -8,6 +8,7 @@ import datetime
 import inspect
 import os
 import pathlib
+import time
 
 
 from .methods import fqn
@@ -17,6 +18,26 @@ def cdir(path):
     "create directory."
     pth = pathlib.Path(path)
     pth.parent.mkdir(parents=True, exist_ok=True)
+
+
+def check(text, argstr):
+    "check for options."
+    for arg in argstr.split():
+        if not arg.startswith("-"):
+            continue
+        for char in text:
+               if char in arg:
+                   return True
+        return False
+
+
+def forever():
+    "run forever until ctrl-c."
+    while True:
+        try:
+            time.sleep(0.1)
+        except (KeyboardInterrupt, EOFError):
+            break
 
 
 def ident(obj):
@@ -61,6 +82,8 @@ def wrapped(func):
 def __dir__():
     return (
         'cdir',
+        'check',
+        'forever',
         'ident',
         'md5sum',
         'pipxdir',

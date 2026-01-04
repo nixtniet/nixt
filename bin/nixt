@@ -22,8 +22,11 @@ from nixt.methods import parse
 from nixt.package import adddir, getmod, modules, scanner
 from nixt.statics import SYSTEMD
 from nixt.threads import launch
-from nixt.utility import spl, wrapped
+from nixt.utility import check, forever, spl, wrapped
 from nixt.workdir import Workdir, moddir, pidfile, pidname, skel
+
+
+TXT = " ".join(sys.argv[1:])
 
 
 "config"
@@ -33,7 +36,7 @@ Config.ignore = "rst,udp,web"
 Config.level = "info"
 Config.name = "nixt" 
 Config.opts = ""
-Config.txt = " ".join(sys.argv[1:])
+Config.txt = TXT
 Config.version = 453
 
 
@@ -92,18 +95,6 @@ def boot(cfg):
         adddir("modules", moddir())
 
 
-def check(text):
-    "check for options."
-    args = sys.argv[1:]
-    for arg in args:
-        if not arg.startswith("-"):
-            continue
-        for char in text:
-               if char in arg:
-                   return True
-        return False
-
-
 def daemon(verbose=False, nochdir=False):
     "run in the background."
     pid = os.fork()
@@ -124,15 +115,6 @@ def daemon(verbose=False, nochdir=False):
         os.umask(0)
         os.chdir("/")
     os.nice(10)
-
-
-def forever():
-    "run forever until ctrl-c."
-    while True:
-        try:
-            time.sleep(0.1)
-        except (KeyboardInterrupt, EOFError):
-            break
 
 
 def init(names=None, wait=False):
@@ -183,7 +165,7 @@ def wrap(func):
 
 def background():
     "background script."
-    daemon(check("v"), check("m"))
+    daemon(check("v", TXT), check("m", TXT))
     privileges()
     boot(Config)
     pidfile(pidname(Config.name))
@@ -269,13 +251,11 @@ def ver(event):
 
 def main():
     "runtime."
-    if check('z'):
-        Config.debug = True
-    if check("c"):
-        wrap(console)
-    elif check("d"):
+    if check("d", TXT):
         background()
-    elif check("s"):
+    elif check("c", TXT):
+        wrap(console)
+    elif check("s", TXT):
         wrapped(service)
     else:
         wrapped(control)
