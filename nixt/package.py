@@ -1,5 +1,7 @@
+# This file is placed in the Public Domain.
 
-"modules"
+
+"module management"
 
 
 import importlib.util
@@ -7,6 +9,7 @@ import os
 
 
 from .command import scan
+from .threads import launch
 from .utility import spl
 
 
@@ -58,6 +61,24 @@ def importer(name, pth=""):
     return mod
 
 
+def init(names=None, wait=False):
+    "run init function of modules."
+    if names is None:
+        names = modules()
+    mods = []
+    for name in spl(names):
+        module = getmod(name)
+        if not module:
+            continue
+        if "init" in dir(module):
+            thr = launch(module.init)
+            mods.append((module, thr))
+    if wait:
+        for module, thr in mods:
+            thr.join()
+    return mods
+
+
 def mods(names):
     "list of named modules."
     return [getmod(x) for x in sorted(spl(names))]
@@ -96,6 +117,7 @@ def __dir__():
         'addpkg',
         'getmod',
         'importer',
+        'init',
         'mods',
         'modules',
         'scanner'

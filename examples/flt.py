@@ -2,7 +2,6 @@
 
 
 from nixt.brokers import objs
-from nixt.methods import fmt
 from nixt.threads import name
 
 
@@ -11,8 +10,8 @@ def flt(event):
     if event.args:
         index = int(event.args[0])
         if index < len(clts):
-            event.reply(fmt(clts[index]))
+            event.reply(str(type((clts[index]))))
         else:
-            event.reply(f"only {len(clts)} clients in fleet.")
+            event.reply("no matching client in fleet.")
         return
     event.reply(' | '.join([name(o) for o in clts]))

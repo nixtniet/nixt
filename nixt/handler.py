@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"handle your own events"
+"handle events"
 
 
 import queue

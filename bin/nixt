@@ -19,10 +19,9 @@ from nixt.configs import Config
 from nixt.loggers import level
 from nixt.message import Message
 from nixt.methods import parse
-from nixt.package import adddir, getmod, modules, scanner
+from nixt.package import adddir, init, modules, scanner
 from nixt.statics import SYSTEMD
-from nixt.threads import launch
-from nixt.utility import check, forever, spl, wrapped
+from nixt.utility import check, forever, wrapped
 from nixt.workdir import Workdir, moddir, pidfile, pidname, skel
 
 
@@ -36,7 +35,6 @@ Config.ignore = "rst,udp,web"
 Config.level = "info"
 Config.name = "nixt" 
 Config.opts = ""
-Config.txt = TXT
 Config.version = 453
 
 
@@ -71,7 +69,7 @@ class Console(Line):
 
 
 def banner():
-    "hello"
+    "hello."
     tme = time.ctime(time.time()).replace("  ", " ")
     print("%s %s %s since %s (%s)" % (
         Config.name.upper(),
@@ -87,7 +85,7 @@ def boot(cfg):
     "in the beginning."
     Workdir.wdr = Workdir.wdr or os.path.expanduser(f"~/.{cfg.name}")
     skel()
-    parse(cfg, cfg.txt)
+    parse(cfg, TXT)
     level(cfg.sets.level or cfg.level or "info")
     if "e" in Config.opts:
         adddir("modules", "examples")
@@ -115,24 +113,6 @@ def daemon(verbose=False, nochdir=False):
         os.umask(0)
         os.chdir("/")
     os.nice(10)
-
-
-def init(names=None, wait=False):
-    "run init function of modules."
-    if names is None:
-        names = modules()
-    mods = []
-    for name in spl(names):
-        module = getmod(name)
-        if not module:
-            continue
-        if "init" in dir(module):
-            thr = launch(module.init)
-            mods.append((module, thr))
-    if wait:
-        for module, thr in mods:
-            thr.join()
-    return mods
 
 
 def privileges():
@@ -246,11 +226,11 @@ def ver(event):
     event.reply(f"{Config.name.upper()} {Config.version} {Config.opts.upper()}")
 
 
-"main"
+"runtime"
 
 
 def main():
-    "runtime."
+    "main"
     if check("d", TXT):
         background()
     elif check("c", TXT):

@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"handle your own events"
+"client event handler"
 
 
 import logging
@@ -78,12 +78,12 @@ class Output(Client):
             self.oqueue.task_done()
 
     def start(self):
-        "start output loop."
+        "start loop."
         launch(self.output)
         super().start()
 
     def stop(self):
-        "stop output loop."
+        "stop loop."
         self.oqueue.put(None)
         super().stop()
 

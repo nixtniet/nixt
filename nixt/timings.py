@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"time related functions"
+
+
 import datetime
 import os
 import re
