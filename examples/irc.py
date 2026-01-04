@@ -11,11 +11,18 @@ import threading
 import time
 
 
-from nixt.defines import Config as Main
-from nixt.defines import Message, Object, Output
-from nixt.defines import broker, command, edit, fmt, getpath, last, launch
-from nixt.defines import keys, write
- 
+from nixt.brokers import broker
+from nixt.clients import Output
+from nixt.command import command
+from nixt.configs import Config as Main
+from nixt.locater import last
+from nixt.message import Message
+from nixt.methods import edit, fmt
+from nixt.objects import Object, keys
+from nixt.persist import write
+from nixt.threads import launch
+from nixt.workdir import getpath
+
  
 lock = threading.RLock()
 

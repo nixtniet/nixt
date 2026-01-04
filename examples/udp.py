@@ -9,7 +9,10 @@ import threading
 import time
 
 
-from nixt.defines import Config, Object, launch, objs
+from nixt.brokers import objs
+from nixt.configs import Config
+from nixt.objects import Object
+from nixt.threads import launch
 
 
 def init():

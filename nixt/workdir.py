@@ -37,6 +37,16 @@ def moddir(modname: str = ""):
     return os.path.join(Workdir.wdr, modname or "mods")
 
 
+def pidfile(filename):
+    "write pidfile."
+    if os.path.exists(filename):
+        os.unlink(filename)
+    path2 = pathlib.Path(filename)
+    path2.parent.mkdir(parents=True, exist_ok=True)
+    with open(filename, "w", encoding="utf-8") as fds:
+        fds.write(str(os.getpid()))
+
+
 def pidname(name: str):
     "return name of pidfile."
     return os.path.join(Workdir.wdr, f"{name}.pid")

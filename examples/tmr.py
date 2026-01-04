@@ -6,9 +6,13 @@ import random
 import time
 
 
-from nixt.defines import NoDate, Object, Timed
-from nixt.defines import extract, hour, items, today, write
-from nixt.defines import broker, elapsed, day, getpath, last, like
+from nixt.brokers import broker, like
+from nixt.locater import last
+from nixt.objects import Object, items
+from nixt.persist import write
+from nixt.threads import Timed
+from nixt.timings import NoDate, day, elapsed, extract, hour, today
+from nixt.workdir import getpath
 
 
 rand = random.SystemRandom()

@@ -10,7 +10,10 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.defines import Config, Object, launch, where
+from nixt.configs import Config
+from nixt.objects import Object
+from nixt.threads import launch
+from nixt.utility import where
 
 
 def init():

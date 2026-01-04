@@ -4,7 +4,8 @@
 "fields"
 
 
-from nixt.defines import attrs, kinds
+from nixt.locater import attrs
+from nixt.workdir import kinds
 
 
 def atr(event):

@@ -6,8 +6,12 @@ import os
 import time
 
 
-from nixt.defines import MONTH, Object, date, elapsed, find, keys, update
-from nixt.defines import fmt, write
+from nixt.locater import find
+from nixt.methods import fmt
+from nixt.objects import Object, keys, update
+from nixt.persist import write
+from nixt.statics import MONTH
+from nixt.timings import date, elapsed
 
 
 class Email(Object):

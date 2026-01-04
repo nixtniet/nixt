@@ -19,9 +19,16 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.defines import Config, Object, Repeater
-from nixt.defines import elapsed, fmt, find, last, launch, objs
-from nixt.defines import fntime, getpath, spl, update, write
+from nixt.brokers import objs
+from nixt.configs import Config
+from nixt.locater import find, last
+from nixt.methods import fmt
+from nixt.objects import Object, update
+from nixt.persist import write
+from nixt.threads import Repeater, launch
+from nixt.timings import elapsed, fntime
+from nixt.utility import spl
+from nixt.workdir import getpath
 
 
 def init():

@@ -14,13 +14,17 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import SYSTEMD, CLI, Commands, Config, Message, Workdir
-from nixt.defines import adddir, command, enable, getmod, launch, level, moddir
-from nixt.defines import modules, parse, pidname, scanner, skel, spl
-from nixt.defines import wrapped
-
-
-from nixt.package import Mods
+from nixt.clients import CLI
+from nixt.command import Commands, command, enable
+from nixt.configs import Config
+from nixt.loggers import level
+from nixt.message import Message
+from nixt.methods import parse
+from nixt.package import adddir, getmod, modules, scanner
+from nixt.statics import SYSTEMD
+from nixt.threads import launch
+from nixt.utility import spl, wrapped
+from nixt.workdir import Workdir, moddir, pidfile, skel
 
 
 "config"
@@ -59,6 +63,68 @@ class Console(Line):
         evt.text = input("> ")
         evt.kind = "command"
         return evt
+
+
+"scripts"
+
+
+def background():
+    "background script."
+    daemon(check("v"), check("m"))
+    privileges()
+    boot(Config)
+    pidfile(pidname(Config.name))
+    enable(cmd, mod, ver)
+    scanner(modules())
+    init(modules())
+    forever()
+
+
+def console():
+    "console script."
+    import readline
+    readline.redisplay()
+    boot(Config)
+    if "v" in Config.opts:
+        banner()
+    scanner()
+    enable(cmd, drs, mod, ver)
+    if "a" in Config.opts:
+        mds = modules()
+    else:
+        mds = Config.sets.init
+    init(mds, "w" in Config.opts)
+    csl = Console()
+    csl.start()
+    forever()
+
+
+def control():
+    "cli script."
+    if len(sys.argv) == 1:
+        return
+    boot(Config)
+    scanner()
+    enable(cmd, drs, mod, srv, ver)
+    cli = Line()
+    evt = Message()
+    evt.orig = repr(cli)
+    evt.text = " ".join(sys.argv[1:])
+    evt.type = "command"
+    command(evt)
+    evt.wait()
+
+
+def service():
+    "service script."
+    privileges()
+    boot(Config)
+    banner()
+    pidfile(pidname(Config.name))
+    enable(cmd, mod, ver)
+    scanner()
+    init(modules())
+    forever()
 
 
 "utility"
@@ -147,16 +213,6 @@ def init(names=None, wait=False):
     return mods
 
 
-def pidfile(filename):
-    "write pidfile."
-    if os.path.exists(filename):
-        os.unlink(filename)
-    path2 = pathlib.Path(filename)
-    path2.parent.mkdir(parents=True, exist_ok=True)
-    with open(filename, "w", encoding="utf-8") as fds:
-        fds.write(str(os.getpid()))
-
-
 def privileges():
     "drop privileges."
     import getpass
@@ -182,79 +238,12 @@ def wrap(func):
         termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
-"scripts"
-
-
-def background():
-    "background script."
-    daemon(check("v"), check("m"))
-    privileges()
-    boot(Config)
-    pidfile(pidname(Config.name))
-    enable(cmd, mod, ver)
-    scanner(modules())
-    init(modules())
-    forever()
-
-
-def console():
-    "console script."
-    import readline
-    readline.redisplay()
-    boot(Config)
-    if "v" in Config.opts:
-        banner()
-    scanner()
-    enable(cmd, drs, mod, ver)
-    if "a" in Config.opts:
-        mds = modules()
-    else:
-        mds = Config.sets.init
-    init(mds, "w" in Config.opts)
-    csl = Console()
-    csl.start()
-    forever()
-
-
-def control():
-    "cli script."
-    if len(sys.argv) == 1:
-        return
-    boot(Config)
-    scanner()
-    enable(cmd, drs, mod, srv, ver)
-    cli = Line()
-    evt = Message()
-    evt.orig = repr(cli)
-    evt.text = " ".join(sys.argv[1:])
-    evt.type = "command"
-    command(evt)
-    evt.wait()
-
-
-def service():
-    "service script."
-    privileges()
-    boot(Config)
-    banner()
-    pidfile(pidname(Config.name))
-    enable(cmd, mod, ver)
-    scanner()
-    init(modules())
-    forever()
-
-
 "commands"
 
 
 def cmd(event):
     "list available commands."
     event.reply(",".join(sorted(Commands.names or Commands.cmds)))
-
-
-def drs(event):
-    "show package directories."
-    event.reply(",".join(Mods.dirs.values()))
 
 
 def mod(event):

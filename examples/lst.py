@@ -1,7 +1,7 @@
 # This file is been placed in the Public Domain.
 
 
-from nixt.defines import kinds
+from nixt.workdir import kinds
 
 
 def lst(event):

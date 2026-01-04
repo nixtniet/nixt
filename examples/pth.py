@@ -4,7 +4,8 @@
 import os
 
 
-from nixt.defines import Config, where
+from nixt.configs import Config
+from nixt.utility import where
 
 
 def pth(event):
