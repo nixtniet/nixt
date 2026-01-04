@@ -86,7 +86,10 @@ def boot(cfg):
     skel()
     parse(cfg, cfg.txt)
     level(cfg.sets.level or cfg.level or "info")
-    adddir("modules", moddir())
+    if "e" in Config.opts:
+        adddir("modules", "examples")
+    else:
+        adddir("modules", moddir())
 
 
 def check(text):
