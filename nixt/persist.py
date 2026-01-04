@@ -4,17 +4,14 @@
 "persistence through storage"
 
 
-import os
 import json
 import threading
 
 
-from .methods import deleted, fqn, search
-from .objects import Object, keys, update
+from .objects import update
 from .serials import dump, load
-from .timings import fntime
 from .utility import cdir
-from .workdir import getpath, getstore, long
+from .workdir import getpath
 
 
 lock = threading.RLock()
@@ -23,14 +20,6 @@ lock = threading.RLock()
 class Cache:
 
     objects = {}
-
-
-def attrs(kind):
-    "show attributes for kind of objects."
-    objs = list(find(kind))
-    if objs:
-        return list(keys(objs[0][1]))
-    return []
 
 
 def cache(path):

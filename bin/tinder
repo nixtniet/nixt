@@ -2,7 +2,6 @@
 # This file is placed in the Public Domain.
 
 
-import importlib.util
 import os
 import queue
 import shutil
@@ -15,15 +14,14 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Output
-from nixt.command import command, scan
+from nixt.command import command
 from nixt.configs import Config
 from nixt.message import Message
 from nixt.methods import fmt, parse
-from nixt.package import adddir, scanner
+from nixt.package import adddir, modules, scanner
 from nixt.threads import launch
 from nixt.timings import elapsed
-from nixt.utility import spl
-from nixt.workdir import Workdir, moddir, skel
+from nixt.workdir import Workdir, skel
 
 
 Config.debug = True
@@ -175,7 +173,7 @@ def main():
     skel()
     parse(Config, " ".join(sys.argv[1:]))
     adddir("modules", "examples")
-    scanner()
+    scanner(modules())
     if "v" in Config.opts:
         banner(Config.name, Config.version)
     if "z" in Config.opts:

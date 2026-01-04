@@ -63,7 +63,7 @@ def mods(names):
     return [getmod(x) for x in sorted(spl(names))]
 
 
-def modules():
+def modules(ignore=""):
     "comma seperated list of available modules."
     mods = []
     for name, path in Mods.dirs.items():
@@ -71,15 +71,15 @@ def modules():
             continue
         mods.extend([
             x[:-3] for x in os.listdir(path)
-            if x.endswith(".py") and not x.startswith("__")
+            if x.endswith(".py") and
+            not x.startswith("__") and
+            x[:-3] not in spl(ignore)
         ])
     return ",".join(sorted(mods))
 
 
-def scanner(names=None):
+def scanner(names):
     "scan named modules for commands."
-    if names is None:
-        names = modules()
     mods = []
     for name in spl(names):
         module = getmod(name)

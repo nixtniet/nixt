@@ -8,7 +8,7 @@ import os
 
 
 from .methods import deleted, fqn, search
-from .objects import Object, update
+from .objects import Object, keys, update
 from .persist import cache, put, read
 from .timings import fntime
 from .workdir import getstore, long

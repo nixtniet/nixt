@@ -6,7 +6,6 @@
 
 
 import os
-import pathlib
 import sys
 import time
 
@@ -24,13 +23,13 @@ from nixt.package import adddir, getmod, modules, scanner
 from nixt.statics import SYSTEMD
 from nixt.threads import launch
 from nixt.utility import spl, wrapped
-from nixt.workdir import Workdir, moddir, pidfile, skel
+from nixt.workdir import Workdir, moddir, pidfile, pidname, skel
 
 
 "config"
 
 
-Config.ignore = ""
+Config.ignore = "rst,udp,web"
 Config.level = "info"
 Config.name = "nixt" 
 Config.opts = ""
@@ -63,68 +62,6 @@ class Console(Line):
         evt.text = input("> ")
         evt.kind = "command"
         return evt
-
-
-"scripts"
-
-
-def background():
-    "background script."
-    daemon(check("v"), check("m"))
-    privileges()
-    boot(Config)
-    pidfile(pidname(Config.name))
-    enable(cmd, mod, ver)
-    scanner(modules())
-    init(modules())
-    forever()
-
-
-def console():
-    "console script."
-    import readline
-    readline.redisplay()
-    boot(Config)
-    if "v" in Config.opts:
-        banner()
-    scanner()
-    enable(cmd, drs, mod, ver)
-    if "a" in Config.opts:
-        mds = modules()
-    else:
-        mds = Config.sets.init
-    init(mds, "w" in Config.opts)
-    csl = Console()
-    csl.start()
-    forever()
-
-
-def control():
-    "cli script."
-    if len(sys.argv) == 1:
-        return
-    boot(Config)
-    scanner()
-    enable(cmd, drs, mod, srv, ver)
-    cli = Line()
-    evt = Message()
-    evt.orig = repr(cli)
-    evt.text = " ".join(sys.argv[1:])
-    evt.type = "command"
-    command(evt)
-    evt.wait()
-
-
-def service():
-    "service script."
-    privileges()
-    boot(Config)
-    banner()
-    pidfile(pidname(Config.name))
-    enable(cmd, mod, ver)
-    scanner()
-    init(modules())
-    forever()
 
 
 "utility"
@@ -238,6 +175,67 @@ def wrap(func):
         termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
+"scripts"
+
+
+def background():
+    "background script."
+    daemon(check("v"), check("m"))
+    privileges()
+    boot(Config)
+    pidfile(pidname(Config.name))
+    enable(cmd, mod, ver)
+    scanner(modules(Config.ignore))
+    init(modules(Config.ignore))
+    forever()
+
+
+def console():
+    "console script."
+    import readline
+    readline.redisplay()
+    boot(Config)
+    if "v" in Config.opts:
+        banner()
+    scanner(modules(Config.ignore))
+    enable(cmd, mod, ver)
+    mds = Config.sets.init
+    if not mds and "a" in Config.opts:
+        mds = modules(Config.ignore)
+    init(mds, "w" in Config.opts)
+    csl = Console()
+    csl.start()
+    forever()
+
+
+def control():
+    "cli script."
+    if len(sys.argv) == 1:
+        return
+    boot(Config)
+    scanner(modules(Config.ignore))
+    enable(cmd, mod, srv, ver)
+    cli = Line()
+    evt = Message()
+    evt.orig = repr(cli)
+    evt.text = " ".join(sys.argv[1:])
+    evt.type = "command"
+    command(evt)
+    evt.wait()
+
+
+def service():
+    "service script."
+    privileges()
+    boot(Config)
+    banner()
+    pidfile(pidname(Config.name))
+    enable(cmd, mod, ver)
+    scanner(modules(Config.ignore))
+    init(modules(Config.ignore))
+    forever()
+
+
 "commands"
 
 
@@ -260,7 +258,7 @@ def srv(event):
 
 def ver(event):
     "show version."
-    event.reply(f"{Config.name.upper()} {Config.version} {Config.opts}")
+    event.reply(f"{Config.name.upper()} {Config.version} {Config.opts.upper()}")
 
 
 "main"
