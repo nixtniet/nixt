@@ -19,7 +19,7 @@ class NoDate(Exception):
 
 
 def date(daystr):
-    "return date from string."
+    "date from string."
     daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
     res = time.time()
     for fmat in TIMES:
@@ -117,7 +117,7 @@ def extract(daystr):
 
 
 def fntime(daystr):
-    "return time from path."
+    "time from path."
     datestr = " ".join(daystr.split(os.sep)[-2:])
     datestr = datestr.replace("_", " ")
     if "." in datestr:
@@ -131,7 +131,7 @@ def fntime(daystr):
 
 
 def hour(daystr):
-    "return hour in string."
+    "hour in string."
     try:
         hmsre = re.search(r'(\d+):(\d+):(\d+)', str(daystr))
         hours = 60 * 60 * (int(hmsre.group(1)))
@@ -188,7 +188,7 @@ def parsetxt(txt):
 
 
 def today():
-    "return start of the day."
+    "start of the day."
     return str(datetime.datetime.today()).split()[0]
 
 

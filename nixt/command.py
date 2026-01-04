@@ -17,7 +17,7 @@ class Commands:
 
 
 def getcmd(cmd):
-    "return command."
+    "command by string."
     return Commands.cmds.get(cmd, None)
 
 
@@ -40,7 +40,7 @@ def enable(*args):
 
 
 def scan(module):
-    "scan a module for command, function with event as first argument."
+    "scan a module for functions with event as first argument."
     for key, cmdz in inspect.getmembers(module, inspect.isfunction):
         if 'event' not in inspect.signature(cmdz).parameters:
             continue

@@ -58,7 +58,7 @@ def pipxdir(name):
 
 
 def spl(txt):
-    "return list from command seperated string."
+    "list from comma seperated string."
     try:
         result = txt.split(",")
     except (TypeError, ValueError):
@@ -67,7 +67,7 @@ def spl(txt):
 
 
 def where(obj):
-    "return path where object is defined."
+    "path where object is defined."
     return os.path.dirname(inspect.getfile(obj))
 
 

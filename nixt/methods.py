@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"functions with an object as the first argument"
+"an object as the first argument"
 
 
 from .objects import Default, items

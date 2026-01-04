@@ -118,7 +118,7 @@ def launch(func, *args, **kwargs):
 
 
 def name(obj):
-    "return string of function/method."
+    "string of function/method."
     if inspect.ismethod(obj):
         return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
     if inspect.isfunction(obj):

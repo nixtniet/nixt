@@ -23,7 +23,7 @@ class Cache:
 
 
 def cache(path):
-    "return object from cache."
+    "get object from cache."
     return Cache.objects.get(path, None)
 
 
@@ -66,11 +66,7 @@ def write(obj, path=""):
 def __dir__():
     return (
         'Cache',
-        'attrs',
         'cache',
-        'find',
-        'fns',
-        'last',
         'put',
         'read',
         'sync',

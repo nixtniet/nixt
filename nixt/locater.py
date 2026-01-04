@@ -39,7 +39,7 @@ def find(kind, selector={}, removed=False, matching=False):
 
 
 def fns(kind):
-    "return file names by kind of object."
+    "file names by kind of object."
     path = getstore(kind)
     for rootdir, dirs, _files in os.walk(path, topdown=True):
         for dname in dirs:
@@ -51,7 +51,7 @@ def fns(kind):
 
 
 def last(obj, selector={}):
-    "return last saved version."
+    "last saved version."
     result = sorted(
                     find(fqn(obj), selector),
                     key=lambda x: fntime(x[0])

@@ -35,7 +35,7 @@ class Handler:
             self.callback(event)
 
     def poll(self):
-        "return an event to process."
+        "returns event to process."
         return self.queue.get()
 
     def put(self, event):

@@ -15,19 +15,19 @@ def addobj(obj):
 
 
 def broker(origin):
-    "return object by repr(obj)."
+    "object by repr(obj)."
     return Broker.objects.get(origin)
 
 
 def objs(attr):
-    "return object with a certain attribute."
+    "object with a certain attribute."
     for obj in Broker.objects.values():
         if attr in dir(obj):
             yield obj
 
 
 def like(txt):
-    "return all objects that have a substring in their key."
+    "all keys with a substring in their key."
     for orig in Broker.objects:
         if orig.split()[0] in orig.split()[0]:
             yield orig

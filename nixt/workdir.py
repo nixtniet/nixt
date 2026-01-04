@@ -17,7 +17,7 @@ class Workdir:
 
 
 def getpath(obj):
-    "return path for object."
+    "path for object."
     return getstore(ident(obj))
 
 
@@ -33,7 +33,7 @@ def long(name):
 
 
 def moddir(modname: str = ""):
-    "return modules string."
+    "modules directory."
     return os.path.join(Workdir.wdr, modname or "mods")
 
 
@@ -48,7 +48,7 @@ def pidfile(filename):
 
 
 def pidname(name: str):
-    "return name of pidfile."
+    "name of pidfile."
     return os.path.join(Workdir.wdr, f"{name}.pid")
 
 
@@ -62,12 +62,12 @@ def skel():
 
 
 def getstore(fnm: str = ""):
-    "return path to store."
+    "path to store."
     return os.path.join(Workdir.wdr, "store", fnm)
 
 
 def kinds():
-    "return stored types."
+    "stored types."
     return os.listdir(getstore())
 
 
