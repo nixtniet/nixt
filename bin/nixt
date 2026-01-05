@@ -21,7 +21,7 @@ from nixt.message import Message
 from nixt.methods import parse
 from nixt.package import adddir, init, modules, scanner
 from nixt.statics import SYSTEMD
-from nixt.utility import check, forever, wrapped
+from nixt.utility import check, forever, pipxdir, wrapped
 from nixt.workdir import Workdir, moddir, pidfile, pidname, skel
 
 
@@ -179,7 +179,7 @@ def control():
         return
     boot(Config)
     scanner(modules(Config.ignore))
-    enable(cmd, mod, srv, ver)
+    enable(cmd, exa, mod, srv, ver)
     cli = Line()
     evt = Message()
     evt.orig = repr(cli)
@@ -207,6 +207,15 @@ def service():
 def cmd(event):
     "list available commands."
     event.reply(",".join(sorted(Commands.names or Commands.cmds)))
+
+
+def exa(event):
+    "location of examples."
+    path = pipxdir(Config.name)
+    if not os.path.exists(os.path.expanduser(path)):
+        event.reply("pipx examples directory is not there.")
+        return
+    event.reply(f"examples are at {path}")
 
 
 def mod(event):

@@ -54,7 +54,7 @@ def md5sum(path):
 
 
 def pipxdir(name):
-    return f".local/share/pipx/venvs/{name}/share/{name}/examples"
+    return f"~/.local/share/pipx/venvs/{name}/share/{name}/examples"
 
 
 def spl(txt):
