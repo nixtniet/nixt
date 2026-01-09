@@ -11,7 +11,6 @@ import _thread
 
 
 from .brokers import addobj
-from .command import command
 from .handler import Handler
 from .threads import launch
 
@@ -20,9 +19,10 @@ class Client(Handler):
 
     def __init__(self):
         super().__init__()
+        self.iqueue = queue.Queue()
         self.olock = threading.RLock()
-        self.oqueue = queue.Queue()
         self.silent = True
+        self.stopped = threading.Event()
         addobj(self)
 
     def announce(self, text):
@@ -41,6 +41,18 @@ class Client(Handler):
         "say called by display."
         self.say(channel, text)
 
+    def input(self):
+        "event loop."
+        while True:
+            event = self.poll()
+            if not event or self.stopped.is_set():
+                break
+            self.put(event)
+
+    def poll(self):
+        "return event."
+        return self.iqueue.get()
+
     def raw(self, text):
         "raw output."
         raise NotImplementedError("raw")
@@ -49,23 +61,20 @@ class Client(Handler):
         "say text in channel."
         self.raw(text)
 
-    def wait(self):
-        "wait for output to finish."
-        try:
-            self.oqueue.join()
-        except Exception as ex:
-            logging.exception(ex)
-            _thread.interrupt_main()
+    def start(self):
+        super().start()
+        launch(self.input)
 
-
-class CLI(Client):
-
-    def __init__(self):
-        super().__init__()
-        self.register("command", command)
+    def stop(self):
+        self.stopped.set()
+        super().stop()
 
 
 class Output(Client):
+
+    def __init__(self):
+        super().__init__()
+        self.oqueue = queue.Queue()
 
     def output(self):
         "output loop."
@@ -79,18 +88,25 @@ class Output(Client):
 
     def start(self):
         "start loop."
-        launch(self.output)
         super().start()
+        launch(self.output)
 
     def stop(self):
         "stop loop."
-        self.oqueue.put(None)
         super().stop()
+        self.oqueue.put(None)
+
+    def wait(self):
+        "wait for output to finish."
+        try:
+            self.oqueue.join()
+        except Exception as ex:
+            logging.exception(ex)
+            _thread.interrupt_main()
 
 
 def __dir__():
     return (
-        'CLI',
         'Client',
         'Output'
     )

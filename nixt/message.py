@@ -8,7 +8,6 @@ import threading
 import time
 
 
-from .brokers import broker
 from .objects import Default
 
 
@@ -24,11 +23,6 @@ class Message(Default):
         self.kind = "event"
         self.orig = ""
 
-    def display(self):
-        "call display on originating client."
-        bot = broker(self.orig)
-        bot.display(self)
-
     def ready(self):
         "flag message as ready."
         self._ready.set()
@@ -39,9 +33,9 @@ class Message(Default):
 
     def wait(self, timeout=0.0):
         "wait for completion."
+        self._ready.wait(timeout or None)
         if self.thr:
             self.thr.join(timeout)
-        self._ready.wait(timeout or None)
 
 
 def __dir__():

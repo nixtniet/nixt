@@ -1,1 +1,1 @@
-ruff check nixt examples bin/nixt bin/tinder
+ruff check nixt nixt/modules bin/nixt bin/tinder

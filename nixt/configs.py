@@ -12,7 +12,11 @@ class Config(Default):
     pass
 
 
+Cfg = Config()
+Cfg.name = Config.__module__.split(".")[0]
+
+
 def __dir__():
     return (
-        'Config',
+        'Cfg',
     )

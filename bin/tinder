@@ -15,19 +15,20 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.clients import Output
 from nixt.command import command
-from nixt.configs import Config
+from nixt.configs import Cfg
 from nixt.message import Message
 from nixt.methods import fmt, parse
 from nixt.package import adddir, modules, scanner
 from nixt.threads import launch
 from nixt.timings import elapsed
+from nixt.utility import wrapped
 from nixt.workdir import Workdir, skel
 
 
-Config.debug = True
-Config.level = "info"
-Config.name = "nixt"
-Config.version = 453
+Cfg.debug = True
+Cfg.level = "info"
+Cfg.name = "nixt"
+Cfg.version = 3
 Workdir.wdr = ".test"
 
 
@@ -41,7 +42,7 @@ class CLI(Output):
         self.register("command", command)
 
     def raw(self, txt):
-        if "v" in Config.opts:
+        if "v" in Cfg.opts:
             print(txt)
 
 
@@ -79,7 +80,7 @@ class Pool:
 
 def banner(name, version):
     tme = time.ctime(time.time()).replace("  ", " ")
-    print(f"{name.upper()} {version} since {tme} ({Config.level})")
+    print(f"{name.upper()} {version} since {tme} ({Cfg.level})")
     sys.stdout.flush()
 
 
@@ -167,50 +168,58 @@ post = {
 "runtime"
 
 
+def wrap(func):
+    "restore console."
+    import termios
+    old = None
+    try:
+        old = termios.tcgetattr(sys.stdin.fileno())
+    except termios.error:
+        pass
+    try:
+        wrapped(func)
+    finally:
+        pass
+    if old:
+        termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+
+
 def main():
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
     skel()
-    parse(Config, " ".join(sys.argv[1:]))
+    parse(Cfg, " ".join(sys.argv[1:]))
     adddir("modules", "examples")
     scanner(modules())
-    if "v" in Config.opts:
-        banner(Config.name, Config.version)
-    if "z" in Config.opts:
+    if "v" in Cfg.opts:
+        banner(Cfg.name, Cfg.version)
+    if "z" in Cfg.opts:
         Pool.init(CLI, os.cpu_count())
     else:
         Pool.init(CLI, 1)
     starttime = time.time()
-    thrs = []
-    nrs = Config.index or 1
+    nrs = Cfg.index or 1
     for _x in range(nrs):
-        thrs.append(launch(payload, pre))
-    for thr in thrs:
-        thr.join()
+        payload(pre)
     for _x in range(nrs):
-        thrs.append(launch(payload, examples))
-    for thr in thrs:
-        thr.join()
+        payload(examples)
     for _x in range(nrs):
-        thrs.append(launch(payload, post))
-    for thr in thrs:
-        thr.join()
+        payload(post)
     launch(consume)
     nrevents = events.qsize()
     try:
         events.join()
     except (KeyboardInterrupt, EOFError):
-        os._exit(0)
+        pass
     endtime = time.time()
     lap = elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
-    if "v" in Config.opts:
-        print(f"{fmt(Config)}")
+    if "v" in Cfg.opts:
+        print(f"{fmt(Cfg)}")
         print(f"{nrs} events left.")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
-    os._exit(0)
 
 
 if __name__ == "__main__":
-    main()
+    wrap(main)

@@ -76,6 +76,8 @@ def update(obj, data, empty=True):
     "update object,"
     if isinstance(obj, type):
         for k, v in items(data):
+            if k == "__dict__":
+                continue
             if isinstance(getattr(obj, k, None), types.MethodType):
                 raise Reserved(k)
             setattr(obj, k, v)
@@ -87,6 +89,7 @@ def update(obj, data, empty=True):
             if not empty and not value:
                 continue
             setattr(obj, key, value)
+
 
 def values(obj):
     "object's values/"

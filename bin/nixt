@@ -7,22 +7,26 @@
 
 import os
 import sys
+import threading
 import time
 
 
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import CLI
-from nixt.command import Commands, command, enable
-from nixt.configs import Config
+from nixt.clients import Client
+from nixt.command import Commands, addcmd, command
+from nixt.configs import Cfg
 from nixt.loggers import level
 from nixt.message import Message
 from nixt.methods import parse
 from nixt.package import adddir, init, modules, scanner
 from nixt.statics import SYSTEMD
-from nixt.utility import check, forever, pipxdir, wrapped
+from nixt.utility import forever, pipxdir, where, wrapped
 from nixt.workdir import Workdir, moddir, pidfile, pidname, skel
+
+
+"defines"
 
 
 TXT = " ".join(sys.argv[1:])
@@ -31,17 +35,20 @@ TXT = " ".join(sys.argv[1:])
 "config"
 
 
-Config.ignore = "rst,udp,web"
-Config.level = "info"
-Config.name = "nixt" 
-Config.opts = ""
-Config.version = 453
+Cfg.ignore = "rst,udp,web"
+Cfg.level = "info"
+Cfg.name = "nixt" 
+Cfg.version = 3
 
 
 "clients"
 
 
-class Line(CLI):
+class Line(Client):
+
+    def __init__(self):
+        super().__init__()
+        self.register("command", command)
 
     def raw(self, text):
         "write to console."
@@ -50,15 +57,25 @@ class Line(CLI):
 
 class Console(Line):
 
+    def __init__(self):
+        super().__init__()
+        self.done = threading.Event()
+        self.done.set()
+
     def callback(self, event):
         "wait for callback result."
         if not event.text:
+            event.ready()
+            self.done.set()
             return
         super().callback(event)
         event.wait()
+        self.done.set()
 
     def poll(self):
-        "poll for inpput."
+        "poll for an event."
+        self.done.wait()
+        self.done.clear()
         evt = Message()
         evt.text = input("> ")
         evt.kind = "command"
@@ -72,11 +89,11 @@ def banner():
     "hello."
     tme = time.ctime(time.time()).replace("  ", " ")
     print("%s %s %s since %s (%s)" % (
-        Config.name.upper(),
-        Config.version,
-        Config.opts.strip().upper(),
+        Cfg.name.upper(),
+        Cfg.version,
+        Cfg.opts.strip().upper(),
         tme,
-        Config.level.upper()
+        Cfg.level.upper()
     ))
     sys.stdout.flush()
 
@@ -87,10 +104,27 @@ def boot(cfg):
     skel()
     parse(cfg, TXT)
     level(cfg.sets.level or cfg.level or "info")
-    if "e" in Config.opts:
-        adddir("modules", "examples")
+    adddir(f"{Cfg.name}.modules", os.path.join(where(Message), "modules"))
+    adddir("modules", moddir())
+    if os.path.exists('examples'):
+        adddir("mods", "examples")
+    elif os.path.exists('mods'):
+        adddir("mods", "mods")
     else:
-        adddir("modules", moddir())
+        path = pipxdir(Cfg.name)
+        if os.path.exists(path):
+            adddir("mods", path)
+
+ 
+def check(text):
+    "check for options."
+    for arg in TXT.split():
+        if not arg.startswith("-"):
+            continue
+        for char in text:
+               if char in arg:
+                   return True
+        return False
 
 
 def daemon(verbose=False, nochdir=False):
@@ -102,16 +136,14 @@ def daemon(verbose=False, nochdir=False):
     pid2 = os.fork()
     if pid2 != 0:
         os._exit(0)
-    if not verbose:
-        with open('/dev/null', 'r', encoding="utf-8") as sis:
-            os.dup2(sis.fileno(), sys.stdin.fileno())
-        with open('/dev/null', 'a+', encoding="utf-8") as sos:
-            os.dup2(sos.fileno(), sys.stdout.fileno())
-        with open('/dev/null', 'a+', encoding="utf-8") as ses:
-            os.dup2(ses.fileno(), sys.stderr.fileno())
-    if not nochdir:
-        os.umask(0)
-        os.chdir("/")
+    with open('/dev/null', 'r', encoding="utf-8") as sis:
+        os.dup2(sis.fileno(), sys.stdin.fileno())
+    with open('/dev/null', 'a+', encoding="utf-8") as sos:
+        os.dup2(sos.fileno(), sys.stdout.fileno())
+    with open('/dev/null', 'a+', encoding="utf-8") as ses:
+        os.dup2(ses.fileno(), sys.stderr.fileno())
+    os.umask(0)
+    os.chdir("/")
     os.nice(10)
 
 
@@ -145,13 +177,13 @@ def wrap(func):
 
 def background():
     "background script."
-    daemon(check("v", TXT), check("m", TXT))
+    daemon()
     privileges()
-    boot(Config)
-    pidfile(pidname(Config.name))
-    enable(cmd, mod, ver)
-    scanner(modules(Config.ignore))
-    init(modules(Config.ignore))
+    boot(Cfg)
+    pidfile(pidname(Cfg.name))
+    addcmd(cmd, mod, ver)
+    scanner(modules(Cfg.ignore))
+    init(modules(Cfg.ignore))
     forever()
 
 
@@ -159,15 +191,15 @@ def console():
     "console script."
     import readline
     readline.redisplay()
-    boot(Config)
-    if "v" in Config.opts:
+    boot(Cfg)
+    if "v" in Cfg.opts:
         banner()
-    scanner(modules(Config.ignore))
-    enable(cmd, mod, ver)
-    mds = Config.sets.init
-    if not mds and "a" in Config.opts:
-        mds = modules(Config.ignore)
-    init(mds, "w" in Config.opts)
+    scanner(modules(Cfg.ignore))
+    addcmd(cmd, mod, ver)
+    mds = Cfg.sets.init
+    if not mds and "a" in Cfg.opts:
+        mds = modules(Cfg.ignore)
+    init(mds, "w" in Cfg.opts)
     csl = Console()
     csl.start()
     forever()
@@ -177,9 +209,9 @@ def control():
     "cli script."
     if len(sys.argv) == 1:
         return
-    boot(Config)
-    scanner(modules(Config.ignore))
-    enable(cmd, exa, mod, srv, ver)
+    boot(Cfg)
+    scanner(modules(Cfg.ignore))
+    addcmd(cmd, exa, mod, srv, ver)
     cli = Line()
     evt = Message()
     evt.orig = repr(cli)
@@ -192,12 +224,12 @@ def control():
 def service():
     "service script."
     privileges()
-    boot(Config)
+    boot(Cfg)
     banner()
-    pidfile(pidname(Config.name))
-    enable(cmd, mod, ver)
-    scanner(modules(Config.ignore))
-    init(modules(Config.ignore))
+    pidfile(pidname(Cfg.name))
+    addcmd(cmd, mod, ver)
+    scanner(modules(Cfg.ignore))
+    init(modules(Cfg.ignore))
     forever()
 
 
@@ -211,7 +243,7 @@ def cmd(event):
 
 def exa(event):
     "location of examples."
-    path = pipxdir(Config.name)
+    path = pipxdir(Cfg.name)
     if not os.path.exists(os.path.expanduser(path)):
         event.reply("pipx examples directory is not there.")
         return
@@ -227,12 +259,12 @@ def srv(event):
     "generate systemd service file."
     import getpass
     name = getpass.getuser()
-    event.reply(SYSTEMD % (Config.name.upper(), name, name, name, Config.name))
+    event.reply(SYSTEMD % (Cfg.name.upper(), name, name, name, Cfg.name))
 
 
 def ver(event):
     "show version."
-    event.reply(f"{Config.name.upper()} {Config.version} {Config.opts.upper()}")
+    event.reply(f"{Cfg.name.upper()} {Cfg.version} {Cfg.opts.upper()}")
 
 
 "runtime"
@@ -240,11 +272,11 @@ def ver(event):
 
 def main():
     "main"
-    if check("d", TXT):
+    if check("d"):
         background()
-    elif check("c", TXT):
+    elif check("c"):
         wrap(console)
-    elif check("s", TXT):
+    elif check("s"):
         wrapped(service)
     else:
         wrapped(control)

@@ -5,6 +5,7 @@
 
 
 import datetime
+import importlib.util
 import inspect
 import os
 import pathlib
@@ -45,6 +46,21 @@ def ident(obj):
     return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
 
 
+def importer(name, pth=""):
+    "import module by path."
+    if pth and os.path.exists(pth):
+        spec = importlib.util.spec_from_file_location(name, pth)
+    else:
+        spec = importlib.util.find_spec(name)
+    if not spec or not spec.loader:
+        return None
+    mod = importlib.util.module_from_spec(spec)
+    if not mod:
+        return None
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def md5sum(path):
     "return md5 of a file."
     import hashlib
@@ -54,6 +70,7 @@ def md5sum(path):
 
 
 def pipxdir(name):
+    "return examples directory."
     return f"~/.local/share/pipx/venvs/{name}/share/{name}/examples"
 
 
@@ -85,6 +102,7 @@ def __dir__():
         'check',
         'forever',
         'ident',
+        'importer',
         'md5sum',
         'pipxdir',
         'spl',

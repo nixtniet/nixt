@@ -7,6 +7,7 @@
 import inspect
 
 
+from .brokers import getobj
 from .methods import parse
 
 
@@ -14,6 +15,14 @@ class Commands:
 
     cmds = {}
     names = {}
+
+
+def addcmd(*args):
+    "add functions to commands."
+    for func in args:
+        name = func.__name__
+        Commands.cmds[name] = func
+        Commands.names[name] = func.__module__.split(".")[-1]
 
 
 def getcmd(cmd):
@@ -27,31 +36,24 @@ def command(evt):
     func = getcmd(evt.cmd)
     if func:
         func(evt)
-        evt.display()
+        bot = getobj(evt.orig)
+        bot.display(evt)
     evt.ready()
 
 
-def enable(*args):
-    "add functions to commands."
-    for func in args:
-        name = func.__name__
-        Commands.cmds[name] = func
-        Commands.names[name] = func.__module__.split(".")[-1]
-
-
-def scan(module):
+def scancmd(module):
     "scan a module for functions with event as first argument."
     for key, cmdz in inspect.getmembers(module, inspect.isfunction):
         if 'event' not in inspect.signature(cmdz).parameters:
             continue
-        enable(cmdz)
+        addcmd(cmdz)
 
 
 def __dir__():
     return (
         'Commands',
+        'addcmd',
         'command',
-        'enable',
         'getcmd',
-        'scan'
+        'scancmd'
     )

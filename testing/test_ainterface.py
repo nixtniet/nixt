@@ -24,6 +24,8 @@ import nixt.methods
 import nixt.objects
 import nixt.package
 import nixt.persist
+import nixt.serials
+import nixt.statics
 import nixt.threads
 import nixt.timings
 import nixt.utility
@@ -43,6 +45,8 @@ PACKAGE = [
     'objects',
     'package',
     'persist',
+    'serials',
+    'statics',
     'threads',
     'timings',
     'utility',
