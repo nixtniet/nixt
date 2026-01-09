@@ -21,7 +21,7 @@ from nixt.methods import fmt, parse
 from nixt.package import adddir, modules, scanner
 from nixt.threads import launch
 from nixt.timings import elapsed
-from nixt.utility import wrapped
+from nixt.utility import where, wrapped
 from nixt.workdir import Workdir, skel
 
 
@@ -189,7 +189,7 @@ def main():
         shutil.rmtree(Workdir.wdr)
     skel()
     parse(Cfg, " ".join(sys.argv[1:]))
-    adddir("modules", "examples")
+    adddir(f"{Cfg.name}.modules", os.path.join(where(Message), "modules"))
     scanner(modules())
     if "v" in Cfg.opts:
         banner(Cfg.name, Cfg.version)
