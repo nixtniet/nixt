@@ -38,7 +38,7 @@ TXT = " ".join(sys.argv[1:])
 Cfg.ignore = "rst,udp,web"
 Cfg.level = "info"
 Cfg.name = "nixt" 
-Cfg.version = 3
+Cfg.version = 454
 
 
 "clients"
@@ -110,10 +110,6 @@ def boot(cfg):
         adddir("mods", "examples")
     elif os.path.exists('mods'):
         adddir("mods", "mods")
-    else:
-        path = pipxdir(Cfg.name)
-        if os.path.exists(path):
-            adddir("mods", path)
 
  
 def check(text):

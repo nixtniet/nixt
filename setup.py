@@ -8,4 +8,5 @@ import setuptools
 
 
 setuptools.setup(
-    data_files=[scripts=["bin/nixt",])
+    scripts=["bin/nixt"],
+)
