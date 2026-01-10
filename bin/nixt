@@ -35,7 +35,6 @@ TXT = " ".join(sys.argv[1:])
 "config"
 
 
-Cfg.ignore = "rst,udp,web"
 Cfg.level = "info"
 Cfg.name = "nixt" 
 Cfg.version = 454
@@ -105,6 +104,8 @@ def boot(cfg):
     parse(cfg, TXT)
     level(cfg.sets.level or cfg.level or "info")
     adddir(f"{Cfg.name}.modules", os.path.join(where(Message), "modules"))
+    if "n" in Cfg.opts:
+        adddir(f"{Cfg.name}.network", os.path.join(where(Message), "network"))
     adddir("modules", moddir())
     if "m" in Cfg.opts:
         if os.path.exists('examples'):
@@ -208,7 +209,7 @@ def control():
         return
     boot(Cfg)
     scanner(modules(Cfg.ignore))
-    addcmd(cmd, exa, mod, srv, ver)
+    addcmd(cmd, mod, srv, ver)
     cli = Line()
     evt = Message()
     evt.orig = repr(cli)
@@ -236,15 +237,6 @@ def service():
 def cmd(event):
     "list available commands."
     event.reply(",".join(sorted(Commands.names or Commands.cmds)))
-
-
-def exa(event):
-    "location of examples."
-    path = pipxdir(Cfg.name)
-    if not os.path.exists(os.path.expanduser(path)):
-        event.reply("pipx examples directory is not there.")
-        return
-    event.reply(f"examples are at {path}")
 
 
 def mod(event):

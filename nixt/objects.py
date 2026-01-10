@@ -51,6 +51,11 @@ def asdict(obj):
     return res
 
 
+def isset(obj, key):
+    "return True if True."
+    return getattr(obj, key, False)
+
+
 def items(obj):
     "object's key,value pairs."
     if isinstance(obj, dict):
@@ -115,6 +120,7 @@ def __dir__():
         'Object',
         'asdict',
         'construct',
+        'isset',
         'items',
         'keys',
         'update',
