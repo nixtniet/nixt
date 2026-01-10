@@ -10,7 +10,7 @@ import time
 
 
 from nixt.brokers import objs
-from nixt.configs import Cfg
+from nixt.configs import Cfg, get
 from nixt.objects import Object
 from nixt.threads import launch
 
@@ -75,7 +75,7 @@ class UDP(Object):
 
 
 def toudp(host, port, txt):
-    if Cfg.debug:
+    if get(Cfg, "debug"):
         return
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))

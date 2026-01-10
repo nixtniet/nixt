@@ -224,7 +224,7 @@ opml
 """
 
 
-from nixt.configs import Config
+from nixt.configs import Cfg, get
 
 
 def man(event):
@@ -233,10 +233,10 @@ def man(event):
         return
     descr = event.rest
     event.reply(__doc__ % (
-        Config.name.upper(),
+        get(Cfg, 'name').upper(),
         descr,
-        *(Config.name,) * 4,
-        *(Config.name.upper(),) * 4,
-        *(Config.name,) * 32,
-        Config.name.upper()
+        *(get(Cfg,'name'),) * 4,
+        *(get(Cfg,'name').upper(),) * 4,
+        *(get(Cfg,'name'),) * 32,
+        get(Cfg,'name').upper()
         ))

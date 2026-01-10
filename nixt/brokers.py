@@ -4,6 +4,9 @@
 "an object for a string"
 
 
+from .objects import Object
+
+
 class Broker:
 
     objects = {}
@@ -13,9 +16,11 @@ def addobj(obj):
     "add object to the broker, key is repr(obj)."
     Broker.objects[repr(obj)] = obj
 
+
 def getobj(origin):
     "object by repr(obj)."
     return Broker.objects.get(origin)
+
 
 def objs(attr):
     "object with a certain attribute."
@@ -23,10 +28,11 @@ def objs(attr):
         if attr in dir(obj):
             yield obj
 
+
 def likeobj(txt):
     "all keys with a substring in their key."
     for orig in Broker.objects:
-        if orig.split()[0] in orig.split()[0]:
+        if txt in orig.split()[0]:
             yield orig
 
 

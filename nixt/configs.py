@@ -7,16 +7,22 @@
 from .objects import Default
 
 
-class Config(Default):
+class Cfg(Default):
 
-    pass
+    name = Default.__module__.split(".")[0]
 
 
-Cfg = Config()
-Cfg.name = Config.__module__.split(".")[0]
+def get(obj, *keys):
+    val = obj
+    for key in keys:
+        val = getattr(val, key, None)
+        if val is None:
+            return ""
+    return val
 
 
 def __dir__():
     return (
         'Cfg',
+        'get'
     )

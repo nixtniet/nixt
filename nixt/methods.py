@@ -37,14 +37,11 @@ def fmt(obj, args=[], skip=[], plain=False, empty=False):
             continue
         if not empty and not value:
             continue
-        print(key, value, type(value))
         if plain:
             txt += f"{value} "
         elif isinstance(value, (int, float, dict, bool, list)):
-            print(f"yo {key}")
             txt += f"{key}={value} "
         elif isinstance(value, str):
-            print(f"no {key}")
             txt += f'{key}="{value}" '
         else:
             txt += f"{key}={fqn(value)}((value))"

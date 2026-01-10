@@ -20,7 +20,7 @@ from urllib.parse import quote_plus, urlencode
 
 
 from nixt.brokers import objs
-from nixt.configs import Cfg
+from nixt.configs import Cfg, get
 from nixt.locater import find, last
 from nixt.methods import fmt
 from nixt.objects import Object, update
@@ -285,7 +285,7 @@ def cdata(line):
 
 def getfeed(url, items):
     result = [Object(), Object()]
-    if Cfg.debug or url in errors and (time.time() - errors[url]) < 600:
+    if get(Cfg, 'debug') or url in errors and (time.time() - errors[url]) < 600:
         return result
     try:
         rest = geturl(url)
@@ -489,7 +489,7 @@ def rss(event):
 
 
 def syn(event):
-    if Cfg.debug:
+    if get(Cfg, "debug"):
         return
     fetcher = Fetcher()
     fetcher.start(False)

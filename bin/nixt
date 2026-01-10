@@ -16,7 +16,7 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.clients import Client
 from nixt.command import Commands, addcmd, command
-from nixt.configs import Cfg
+from nixt.configs import Cfg, get
 from nixt.loggers import level
 from nixt.message import Message
 from nixt.methods import parse
@@ -60,6 +60,7 @@ class Console(Line):
         super().__init__()
         self.done = threading.Event()
         self.done.set()
+        self.prompting = threading.Event()
 
     def callback(self, event):
         "wait for callback result."
@@ -75,10 +76,20 @@ class Console(Line):
         "poll for an event."
         self.done.wait()
         self.done.clear()
+        self.prompting.set()
         evt = Message()
         evt.text = input("> ")
         evt.kind = "command"
+        self.prompting.clear()
         return evt
+
+    def raw(self, txt):
+        "add newline if waiting."
+        if not self.done.is_set():
+            if self.prompting.is_set():
+                sys.stdout.write("\n")
+                sys.stdout.flush()
+            super().raw(txt)
 
 
 "utility"
@@ -88,11 +99,11 @@ def banner():
     "hello."
     tme = time.ctime(time.time()).replace("  ", " ")
     print("%s %s %s since %s (%s)" % (
-        Cfg.name.upper(),
-        Cfg.version,
-        Cfg.opts.strip().upper(),
+        get(Cfg,"name").upper(),
+        get(Cfg,"version"),
+        get(Cfg,"opts").strip().upper(),
         tme,
-        Cfg.level.upper()
+        get(Cfg,"level").upper()
     ))
     sys.stdout.flush()
 
@@ -102,12 +113,12 @@ def boot(cfg):
     Workdir.wdr = Workdir.wdr or os.path.expanduser(f"~/.{cfg.name}")
     skel()
     parse(cfg, TXT)
-    level(cfg.sets.level or cfg.level or "info")
-    adddir(f"{Cfg.name}.modules", os.path.join(where(Message), "modules"))
-    if "n" in Cfg.opts:
-        adddir(f"{Cfg.name}.network", os.path.join(where(Message), "network"))
+    level(get(cfg, "sets", "level") or "info")
+    adddir(f"{get(Cfg, 'name')}.modules", os.path.join(where(Message), "modules"))
+    if check("n"):
+        adddir(f"{get(Cfg, 'name')}.network", os.path.join(where(Message), "network"))
     adddir("modules", moddir())
-    if "m" in Cfg.opts:
+    if check("m"):
         if os.path.exists('examples'):
             adddir("mods", "examples")
         elif os.path.exists('mods'):
@@ -178,10 +189,10 @@ def background():
     daemon()
     privileges()
     boot(Cfg)
-    pidfile(pidname(Cfg.name))
+    pidfile(pidname(get(Cfg, 'name')))
     addcmd(cmd, mod, ver)
-    scanner(modules(Cfg.ignore))
-    init(modules(Cfg.ignore))
+    scanner(modules(get(Cfg, 'ignore')))
+    init(modules(get(Cfg, 'ignore')))
     forever()
 
 
@@ -190,14 +201,14 @@ def console():
     import readline
     readline.redisplay()
     boot(Cfg)
-    if "v" in Cfg.opts:
+    if check('v'):
         banner()
-    scanner(modules(Cfg.ignore))
+    scanner(modules(get(Cfg, 'ignore')))
     addcmd(cmd, mod, ver)
-    mds = Cfg.sets.init
-    if not mds and "a" in Cfg.opts:
-        mds = modules(Cfg.ignore)
-    init(mds, "w" in Cfg.opts)
+    mds = get(Cfg, 'sets', 'init')
+    if not mds and check('a'):
+        mds = modules(get(Cfg, 'ignore'))
+    init(mds, check("w"))
     csl = Console()
     csl.start()
     forever()
@@ -208,7 +219,7 @@ def control():
     if len(sys.argv) == 1:
         return
     boot(Cfg)
-    scanner(modules(Cfg.ignore))
+    scanner(modules(get(Cfg, 'ignore')))
     addcmd(cmd, mod, srv, ver)
     cli = Line()
     evt = Message()
@@ -224,10 +235,10 @@ def service():
     privileges()
     boot(Cfg)
     banner()
-    pidfile(pidname(Cfg.name))
+    pidfile(pidname(get(Cfg, 'name')))
     addcmd(cmd, mod, ver)
-    scanner(modules(Cfg.ignore))
-    init(modules(Cfg.ignore))
+    scanner(modules(get(Cfg, 'ignore')))
+    init(modules(get(Cfg, 'ignore')))
     forever()
 
 
@@ -248,12 +259,12 @@ def srv(event):
     "generate systemd service file."
     import getpass
     name = getpass.getuser()
-    event.reply(SYSTEMD % (Cfg.name.upper(), name, name, name, Cfg.name))
+    event.reply(SYSTEMD % (get(Cfg, 'name').upper(), name, name, name, get(Cfg, 'name')))
 
 
 def ver(event):
     "show version."
-    event.reply(f"{Cfg.name.upper()} {Cfg.version} {Cfg.opts.upper()}")
+    event.reply(f"{get(Cfg, 'name').upper()} {get(Cfg, 'version')} {get(Cfg, 'opts').upper()}")
 
 
 "runtime"

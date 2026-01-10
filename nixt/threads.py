@@ -22,7 +22,7 @@ class Thread(threading.Thread):
         self.event = None
         self.name = kwargs.get("name", name(func))
         self.queue = queue.Queue()
-        self.result = None
+        self.result: Unknown = None
         self.starttime = time.time()
         self.stopped = threading.Event()
         self.queue.put((func, args))
