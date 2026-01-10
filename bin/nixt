@@ -106,10 +106,11 @@ def boot(cfg):
     level(cfg.sets.level or cfg.level or "info")
     adddir(f"{Cfg.name}.modules", os.path.join(where(Message), "modules"))
     adddir("modules", moddir())
-    if os.path.exists('examples'):
-        adddir("mods", "examples")
-    elif os.path.exists('mods'):
-        adddir("mods", "mods")
+    if "m" in Cfg.opts:
+        if os.path.exists('examples'):
+            adddir("mods", "examples")
+        elif os.path.exists('mods'):
+            adddir("mods", "mods")
 
  
 def check(text):
