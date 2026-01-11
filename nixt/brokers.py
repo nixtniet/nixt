@@ -4,9 +4,6 @@
 "an object for a string"
 
 
-from .objects import Object
-
-
 class Broker:
 
     objects = {}

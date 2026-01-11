@@ -10,7 +10,7 @@ import time
 
 
 from nixt.brokers import objs
-from nixt.configs import Cfg, get
+from nixt.configs import Cfg
 from nixt.objects import Object
 from nixt.threads import launch
 

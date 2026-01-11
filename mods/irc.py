@@ -14,7 +14,7 @@ import time
 from nixt.brokers import getobj
 from nixt.clients import Output
 from nixt.command import command
-from nixt.configs import Cfg, get
+from nixt.configs import Cfg
 from nixt.locater import last
 from nixt.message import Message
 from nixt.methods import edit, fmt
@@ -40,20 +40,20 @@ def init():
 
 class Config(Object):
 
-    channel = f"#{get(Cfg, 'name')}"
-    commands = get(Cfg, "sets", "commands") or False
+    channel = f"#{Cfg.name}"
+    commands = Cfg.sets.commands or True
     control = "!"
     ignore = ["PING", "PONG", "PRIVMSG"] 
-    name = get(Cfg, "name")
-    nick = get(Cfg, "name")
+    name = Cfg.name
+    nick = Cfg.name
     word = ""
     port = 6667
-    realname = get(Cfg, "name")
+    realname = Cfg.name
     sasl = False
     server = "localhost"
     servermodes = ""
     sleep = 60
-    username = get(Cfg, "name")
+    username = Cfg.name
     users = False
     version = 1
 

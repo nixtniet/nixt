@@ -5,24 +5,18 @@
 
 
 from .objects import Default
+from .utility import pkgname
 
 
-class Cfg(Default):
+class Config(Default):
 
-    name = Default.__module__.split(".")[0]
+    name = pkgname(Default)
 
 
-def get(obj, *keys):
-    val = obj
-    for key in keys:
-        val = getattr(val, key, None)
-        if val is None:
-            return ""
-    return val
+Cfg = Config()
 
 
 def __dir__():
     return (
         'Cfg',
-        'get'
     )

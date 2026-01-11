@@ -20,8 +20,6 @@ def edit(obj, setter={}, skip=False):
         typed(obj, key, val)
 
 
-
-
 def fmt(obj, args=[], skip=[], plain=False, empty=False):
     "format object info printable string."
     if args == []:
@@ -88,7 +86,7 @@ def parse(obj, text):
         if "-=" in spli:
             key, value = spli.split("-=", maxsplit=1)
             typed(obj.silent, key, value)
-            typed(obj.gets, key. value)
+            typed(obj.gets, key, value)
             continue
         if "==" in spli:
             key, value = spli.split("==", maxsplit=1)

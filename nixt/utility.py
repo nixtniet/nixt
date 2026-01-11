@@ -69,6 +69,10 @@ def md5sum(path):
         return hashlib.md5(txt, usedforsecurity=False).hexdigest()
 
 
+def pkgname(obj):
+    return obj.__module__.split(".")[0]
+
+
 def pipxdir(name):
     "return examples directory."
     return f"~/.local/share/pipx/venvs/{name}/share/{name}/examples"
@@ -105,6 +109,7 @@ def __dir__():
         'importer',
         'md5sum',
         'pipxdir',
+        'pkgname',
         'spl',
         'where',
         'wrapped'

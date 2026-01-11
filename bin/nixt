@@ -16,13 +16,12 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.clients import Client
 from nixt.command import Commands, addcmd, command
-from nixt.configs import Cfg, get
+from nixt.configs import Cfg
 from nixt.loggers import level
 from nixt.message import Message
 from nixt.methods import parse
 from nixt.package import adddir, init, modules, scanner
-from nixt.statics import SYSTEMD
-from nixt.utility import forever, pipxdir, where, wrapped
+from nixt.utility import forever, where, wrapped
 from nixt.workdir import Workdir, moddir, pidfile, pidname, skel
 
 
@@ -35,9 +34,9 @@ TXT = " ".join(sys.argv[1:])
 "config"
 
 
-Cfg.level = "info"
-Cfg.name = "nixt" 
-Cfg.version = 454
+#Cfg.level = "info"
+#Cfg.name = "nixt" 
+#Cfg.version = 454
 
 
 "clients"
@@ -99,11 +98,11 @@ def banner():
     "hello."
     tme = time.ctime(time.time()).replace("  ", " ")
     print("%s %s %s since %s (%s)" % (
-        get(Cfg,"name").upper(),
-        get(Cfg,"version"),
-        get(Cfg,"opts").strip().upper(),
+        Cfg.name.upper(),
+        Cfg.version,
+        Cfg.opts.strip().upper(),
         tme,
-        get(Cfg,"level").upper()
+        Cfg.level.upper() or 'INFO'
     ))
     sys.stdout.flush()
 
@@ -113,10 +112,10 @@ def boot(cfg):
     Workdir.wdr = Workdir.wdr or os.path.expanduser(f"~/.{cfg.name}")
     skel()
     parse(cfg, TXT)
-    level(get(cfg, "sets", "level") or "info")
-    adddir(f"{get(Cfg, 'name')}.modules", os.path.join(where(Message), "modules"))
+    level(cfg.sets.level or "info")
+    adddir(f"{Cfg.name}.modules", os.path.join(where(Message), "modules"))
     if check("n"):
-        adddir(f"{get(Cfg, 'name')}.network", os.path.join(where(Message), "network"))
+        adddir(f"{Cfg.name}.network", os.path.join(where(Message), "network"))
     adddir("modules", moddir())
     if check("m"):
         if os.path.exists('examples'):
@@ -124,7 +123,7 @@ def boot(cfg):
         elif os.path.exists('mods'):
             adddir("mods", "mods")
 
- 
+
 def check(text):
     "check for options."
     for arg in TXT.split():
@@ -135,7 +134,7 @@ def check(text):
                    return True
         return False
 
-
+ 
 def daemon(verbose=False, nochdir=False):
     "run in the background."
     pid = os.fork()
@@ -189,10 +188,10 @@ def background():
     daemon()
     privileges()
     boot(Cfg)
-    pidfile(pidname(get(Cfg, 'name')))
+    pidfile(pidname(Cfg.name))
     addcmd(cmd, mod, ver)
-    scanner(modules(get(Cfg, 'ignore')))
-    init(modules(get(Cfg, 'ignore')))
+    scanner(modules(Cfg.ignore))
+    init(modules(Cfg.ignore))
     forever()
 
 
@@ -203,11 +202,11 @@ def console():
     boot(Cfg)
     if check('v'):
         banner()
-    scanner(modules(get(Cfg, 'ignore')))
+    scanner(modules(Cfg.ignore))
     addcmd(cmd, mod, ver)
-    mds = get(Cfg, 'sets', 'init')
+    mds = Cfg.sets.init
     if not mds and check('a'):
-        mds = modules(get(Cfg, 'ignore'))
+        mds = modules(Cfg.ignore)
     init(mds, check("w"))
     csl = Console()
     csl.start()
@@ -219,7 +218,7 @@ def control():
     if len(sys.argv) == 1:
         return
     boot(Cfg)
-    scanner(modules(get(Cfg, 'ignore')))
+    scanner(modules(Cfg.ignore))
     addcmd(cmd, mod, srv, ver)
     cli = Line()
     evt = Message()
@@ -235,10 +234,10 @@ def service():
     privileges()
     boot(Cfg)
     banner()
-    pidfile(pidname(get(Cfg, 'name')))
+    pidfile(pidname(Cfg.name))
     addcmd(cmd, mod, ver)
-    scanner(modules(get(Cfg, 'ignore')))
-    init(modules(get(Cfg, 'ignore')))
+    scanner(modules(Cfg.ignore))
+    init(modules(Cfg.ignore))
     forever()
 
 
@@ -259,12 +258,29 @@ def srv(event):
     "generate systemd service file."
     import getpass
     name = getpass.getuser()
-    event.reply(SYSTEMD % (get(Cfg, 'name').upper(), name, name, name, get(Cfg, 'name')))
+    event.reply(SYSTEMD % (Cfg.name.upper(), name, name, name, Cfg.name))
 
 
 def ver(event):
     "show version."
-    event.reply(f"{get(Cfg, 'name').upper()} {get(Cfg, 'version')} {get(Cfg, 'opts').upper()}")
+    event.reply(f"{Cfg.name.upper()} {Cfg.version} {Cfg.opts.upper()}")
+
+
+"data"
+
+
+SYSTEMD = """[Unit]
+Description=%s
+After=multi-user.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
 
 
 "runtime"

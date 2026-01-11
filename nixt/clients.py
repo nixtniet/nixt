@@ -10,15 +10,11 @@ import threading
 import _thread
 
 
-from typing import final 
-
-
 from .brokers import addobj
 from .handler import Handler
 from .threads import launch
 
 
-@final
 class Client(Handler):
 
     def __init__(self):
@@ -74,7 +70,6 @@ class Client(Handler):
         super().stop()
 
 
-@final
 class Output(Client):
 
     def __init__(self):

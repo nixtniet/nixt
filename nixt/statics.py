@@ -20,20 +20,6 @@ MONTH = {
 }
 
 
-SYSTEMD = """[Unit]
-Description=%s
-After=multi-user.target
-
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
-
-
 TIMES = [
     "%Y-%M-%D %H:%M:%S",
     "%Y-%m-%d %H:%M:%S",
@@ -47,6 +33,5 @@ TIMES = [
 def __dir__():
     return (
         'MONTH',
-        'SYSTEMD',
         'TIMES'
     )
