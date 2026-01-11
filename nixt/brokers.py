@@ -35,7 +35,6 @@ def likeobj(txt):
 
 def __dir__():
     return (
-        'Broker',
         'addobj',
         'getobj',
         'objs',

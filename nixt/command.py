@@ -26,7 +26,7 @@ def addcmd(*args):
 
 
 def getcmd(cmd):
-    "command by string."
+    "get function for command."
     return Commands.cmds.get(cmd, None)
 
 
@@ -42,7 +42,7 @@ def command(evt):
 
 
 def scancmd(module):
-    "scan a module for functions with event as first argument."
+    "scan a module for functions with event as argument."
     for key, cmdz in inspect.getmembers(module, inspect.isfunction):
         if 'event' not in inspect.signature(cmdz).parameters:
             continue

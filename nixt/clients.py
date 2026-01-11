@@ -42,7 +42,7 @@ class Client(Handler):
         self.say(channel, text)
 
     def input(self):
-        "event loop."
+        "input loop."
         while True:
             event = self.poll()
             if not event or self.stopped.is_set():

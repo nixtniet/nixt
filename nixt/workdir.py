@@ -21,6 +21,16 @@ def getident(obj):
     return getstore(ident(obj))
 
 
+def getstore(fnm: str = ""):
+    "path to store."
+    return os.path.join(Workdir.wdr, "store", fnm)
+
+
+def kinds():
+    "stored types."
+    return os.listdir(getstore())
+
+
 def long(name):
     "match full qualified name by substring."
     split = name.split(".")[-1].lower()
@@ -32,9 +42,9 @@ def long(name):
     return res
 
 
-def moddir(modname: str = ""):
+def moddir():
     "modules directory."
-    return os.path.join(Workdir.wdr, modname or "mods")
+    return os.path.join(Workdir.wdr, "mods")
 
 
 def pidfile(filename):
@@ -61,25 +71,15 @@ def skel():
     pth.mkdir(parents=True, exist_ok=True)
 
 
-def getstore(fnm: str = ""):
-    "path to store."
-    return os.path.join(Workdir.wdr, "store", fnm)
-
-
-def kinds():
-    "stored types."
-    return os.listdir(getstore())
-
-
 def __dir__():
     return (
         'Workdir',
         'getident',
         'getstore',
+        'kinds',
         'long',
         'moddir',
+        'pidfile',
         'pidname',
-        'skel',
-        'storage',
-        'types'
+        'skel'
     )

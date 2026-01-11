@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"handle events"
+"a callback engine as handler"
 
 
 import queue
