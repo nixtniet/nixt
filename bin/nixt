@@ -35,9 +35,10 @@ TXT = " ".join(sys.argv[1:])
 "config"
 
 
-#Cfg.level = "info"
-#Cfg.name = "nixt" 
-#Cfg.version = 454
+Cfg.ignore = "udp"
+Cfg.level = "info"
+Cfg.name = "nixt" 
+Cfg.version = 453
 
 
 "clients"
@@ -310,7 +311,6 @@ Commands.names = {
     "tdo": "tdo",
     "thr": "thr",
     "tmr": "tmr",
-    "udp": "udp",
     "upt": "upt"
 }
 

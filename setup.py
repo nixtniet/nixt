@@ -30,6 +30,3 @@ setuptools.setup(
     scripts=[
         "bin/nixt",
     ])
-
-    scripts=["bin/nixt"],
-)
