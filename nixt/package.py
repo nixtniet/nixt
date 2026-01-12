@@ -7,7 +7,6 @@
 import os
 
 
-from .command import scancmd
 from .threads import launch
 from .utility import importer, spl
 
@@ -85,17 +84,6 @@ def modules(ignore=""):
     return ",".join(sorted(mods))
 
 
-def scanner(names):
-    "scan named modules for commands."
-    mods = []
-    for name in spl(names):
-        module = getmod(name)
-        if not module:
-            continue
-        scancmd(module)
-    return mods
-
-
 def __dir__():
     return (
         'Mods',
@@ -103,6 +91,5 @@ def __dir__():
         'addpkg',
         'init',
         'mods',
-        'modules',
-        'scanner'
+        'modules'
     )

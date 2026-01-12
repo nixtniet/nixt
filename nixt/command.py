@@ -9,6 +9,7 @@ import inspect
 
 from .brokers import getobj
 from .methods import parse
+from .package import getmod
 
 
 class Commands:
@@ -27,8 +28,13 @@ def addcmd(*args):
 
 def getcmd(cmd):
     "get function for command."
+    name = Commands.names.get(cmd, None)
+    if name:
+        mod = getmod(name)
+        if mod:
+            scan(mod)
     return Commands.cmds.get(cmd, None)
-
+        
 
 def command(evt):
     "command callback."
@@ -49,11 +55,24 @@ def scancmd(module):
         addcmd(cmdz)
 
 
+def scanner(names):
+    "scan named modules for commands."
+    mods = []
+    for name in spl(names):
+        module = getmod(name)
+        if not module:
+            continue
+        scancmd(module)
+    return mods
+
+
+
 def __dir__():
     return (
         'Commands',
         'addcmd',
         'command',
         'getcmd',
-        'scancmd'
+        'scancmd',
+        'scanner'
     )

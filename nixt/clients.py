@@ -62,10 +62,12 @@ class Client(Handler):
         self.raw(text)
 
     def start(self):
+        "start client loop."
         super().start()
         launch(self.input)
 
     def stop(self):
+        "stop client loop."
         self.stopped.set()
         super().stop()
 
@@ -87,12 +89,12 @@ class Output(Client):
             self.oqueue.task_done()
 
     def start(self):
-        "start loop."
+        "start output loop."
         super().start()
         launch(self.output)
 
     def stop(self):
-        "stop loop."
+        "stop output loop."
         super().stop()
         self.oqueue.put(None)
 
