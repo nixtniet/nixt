@@ -8,5 +8,28 @@ import setuptools
 
 
 setuptools.setup(
+    data_files=[
+        ('share/nixt/examples', [
+            'examples/__init__.py',
+            'examples/atr.py',
+            'examples/flt.py',
+            'examples/fnd.py',
+            'examples/irc.py',
+            'examples/log.py',
+            'examples/lst.py',
+            'examples/rss.py',
+            'examples/sil.py',
+            'examples/tdo.py',
+            'examples/thr.py',
+            'examples/tmr.py',
+            'examples/udp.py',
+            'examples/upt.py',
+            ]
+        )
+    ],
+    scripts=[
+        "bin/nixt",
+    ])
+
     scripts=["bin/nixt"],
 )

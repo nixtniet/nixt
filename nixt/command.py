@@ -10,6 +10,7 @@ import inspect
 from .brokers import getobj
 from .methods import parse
 from .package import getmod
+from .utility import spl
 
 
 class Commands:
@@ -28,11 +29,14 @@ def addcmd(*args):
 
 def getcmd(cmd):
     "get function for command."
+    func =  Commands.cmds.get(cmd, None)
+    if func:
+        return func
     name = Commands.names.get(cmd, None)
     if name:
         mod = getmod(name)
         if mod:
-            scan(mod)
+            scancmd(mod)
     return Commands.cmds.get(cmd, None)
         
 
@@ -58,13 +62,14 @@ def scancmd(module):
 def scanner(names):
     "scan named modules for commands."
     mods = []
+    if Commands.names:
+        return mods
     for name in spl(names):
         module = getmod(name)
         if not module:
             continue
         scancmd(module)
     return mods
-
 
 
 def __dir__():

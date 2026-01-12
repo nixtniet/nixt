@@ -15,12 +15,13 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client
-from nixt.command import Commands, addcmd, command
+from nixt.command import Commands, addcmd, command, scanner
 from nixt.configs import Cfg
 from nixt.loggers import level
 from nixt.message import Message
 from nixt.methods import parse
-from nixt.package import adddir, init, modules, scanner
+from nixt.package import Mods, adddir, init, modules
+from nixt.serials import dumps
 from nixt.utility import forever, where, wrapped
 from nixt.workdir import Workdir, moddir, pidfile, pidname, skel
 
@@ -117,12 +118,11 @@ def boot(cfg):
     if check("n"):
         adddir(f"{Cfg.name}.network", os.path.join(where(Message), "network"))
     adddir("modules", moddir())
+    if os.path.exists('examples'):
+        adddir("modz", "examples")
     if check("m"):
-        if os.path.exists('examples'):
-            adddir("mods", "examples")
-        elif os.path.exists('mods'):
+        if os.path.exists('mods'):
             adddir("mods", "mods")
-
 
 def check(text):
     "check for options."
@@ -218,7 +218,12 @@ def control():
     if len(sys.argv) == 1:
         return
     boot(Cfg)
-    scanner(modules(Cfg.ignore))
+    if check('t'):
+        Commands.names = {}
+    if not Commands.names:
+        scanner(modules(Cfg.ignore))
+    if check("t"):
+        print(dumps(Commands.names, indent=4))
     addcmd(cmd, mod, srv, ver)
     cli = Line()
     evt = Message()
@@ -281,6 +286,33 @@ ExecStart=/home/%s/.local/bin/%s -s
 
 [Install]
 WantedBy=multi-user.target"""
+
+Commands.names = {
+    "atr": "atr",
+    "flt": "flt",
+    "fnd": "fnd",
+    "cfg": "irc",
+    "mre": "irc",
+    "pwd": "irc",
+    "log": "log",
+    "lst": "lst",
+    "dpl": "rss",
+    "exp": "rss",
+    "imp": "rss",
+    "nme": "rss",
+    "rem": "rss",
+    "res": "rss",
+    "rss": "rss",
+    "syn": "rss",
+    "lou": "sil",
+    "sil": "sil",
+    "dne": "tdo",
+    "tdo": "tdo",
+    "thr": "thr",
+    "tmr": "tmr",
+    "udp": "udp",
+    "upt": "upt"
+}
 
 
 "runtime"
