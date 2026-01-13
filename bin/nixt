@@ -20,7 +20,7 @@ from nixt.configs import Cfg
 from nixt.loggers import level
 from nixt.message import Message
 from nixt.methods import parse
-from nixt.package import Mods, adddir, init, modules
+from nixt.package import adddir, init, modules
 from nixt.serials import dumps
 from nixt.utility import forever, where, wrapped
 from nixt.workdir import Workdir, moddir, pidfile, pidname, skel
