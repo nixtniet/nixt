@@ -61,7 +61,6 @@ class Console(Line):
         super().__init__()
         self.done = threading.Event()
         self.done.set()
-        self.prompting = threading.Event()
 
     def callback(self, event):
         "wait for callback result."
@@ -77,19 +76,14 @@ class Console(Line):
         "poll for an event."
         self.done.wait()
         self.done.clear()
-        self.prompting.set()
         evt = Message()
         evt.text = input("> ")
         evt.kind = "command"
-        self.prompting.clear()
         return evt
 
     def raw(self, txt):
         "add newline if waiting."
         if not self.done.is_set():
-            if self.prompting.is_set():
-                sys.stdout.write("\n")
-                sys.stdout.flush()
             super().raw(txt)
 
 
@@ -124,6 +118,7 @@ def boot(cfg):
     if check("m"):
         if os.path.exists('mods'):
             adddir("mods", "mods")
+
 
 def check(text):
     "check for options."
@@ -287,6 +282,7 @@ ExecStart=/home/%s/.local/bin/%s -s
 
 [Install]
 WantedBy=multi-user.target"""
+
 
 Commands.names = {
     "atr": "atr",
