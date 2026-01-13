@@ -216,7 +216,8 @@ def control():
     boot(Cfg)
     if check('t'):
         Commands.names = {}
-    if not Commands.names:
+    if check("m") or not Commands.names:
+        Commands.names = {}
         scanner(modules(Cfg.ignore))
     if check("t"):
         print(dumps(Commands.names, indent=4))
