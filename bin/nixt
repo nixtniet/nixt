@@ -36,15 +36,16 @@ else:
 "defines"
 
 
-DEBUG = False
-INIT = "irc,rss"
-LEVEL = "info"
-NAME = "nixt"
 TXT = " ".join(sys.argv[1:])
-VERSION = 453
 
 
-Cfg = Default()
+class Cfg:
+
+    debug = False
+    init = ""
+    level = "info"
+    name = "nixt"
+    version = 453
 
 
 "clients"
@@ -146,8 +147,8 @@ def importer(name, pth=""):
     if not mod:
         return None
     spec.loader.exec_module(mod)
-    mod.DEBUG = DEBUG
-    mod.NAME = NAME
+    mod.DEBUG = Cfg.debug
+    mod.NAME = Cfg.name
     return mod
 
 
@@ -190,12 +191,20 @@ def banner():
     "hello."
     tme = time.ctime(time.time()).replace("  ", " ")
     print("%s %s since %s (%s)" % (
-        NAME.upper(),
-        VERSION,
+        Cfg.name.upper(),
+        Cfg.version,
         tme,
-        LEVEL.upper() or 'INFO'
+        Cfg.level.upper() or 'INFO'
     ))
     sys.stdout.flush()
+
+
+def boot(*pkgs):
+    "in the beginning."
+    parse(Cfg, TXT)
+    Cfg.init = Cfg.sets.init
+    level(Cfg.level)
+    scanner(*pkgs, inits=Cfg.init)
 
 
 def check(text):
@@ -207,6 +216,18 @@ def check(text):
                if char in arg:
                    return True
         return False
+
+
+def docmd(text):
+    "parse text for command and run it."
+    for txt in text.split(" ! "):
+        cli = Line()
+        evt = Message()
+        evt.orig = repr(cli)
+        evt.text = txt
+        evt.type = "command"
+        command(evt)
+        evt.wait()
 
  
 def daemon(verbose=False, nochdir=False):
@@ -261,11 +282,9 @@ def background():
     "background script."
     daemon()
     privileges()
-    pidfile(pidname(NAME))
+    pidfile(pidname(Cfg.name))
     addcmd(cmd, mod, ver)
-    level(LEVEL)
-    scanner(MODS, inits="irc,rss")
-    init(MODS)
+    boot(MODS)
     forever()
 
 
@@ -275,9 +294,9 @@ def console():
     readline.redisplay()
     if check('v'):
         banner()
-    level(LEVEL)
-    scanner(MODS, inits=INIT)
+    boot(MODS)
     addcmd(cmd, mod, ver)
+    docmd(TXT)
     csl = Console()
     csl.start()
     forever()
@@ -287,26 +306,18 @@ def control():
     "cli script."
     if len(sys.argv) == 1:
         return
-    level(LEVEL)
-    scanner(MODS)
+    boot(MODS)
     addcmd(cmd, mod, ver)
-    cli = Line()
-    evt = Message()
-    evt.orig = repr(cli)
-    evt.text = " ".join(sys.argv[1:])
-    evt.type = "command"
-    command(evt)
-    evt.wait()
+    docmd(TXT)
 
 
 def service():
     "service script."
     privileges()
     banner()
-    pidfile(pidname(NAME))
+    pidfile(pidname(Cfg.name))
     addcmd(cmd, mod, ver)
-    level(LEVEL)
-    scanner(MODS, inits=INIT)
+    boot(MODS)
     forever()
 
 
@@ -325,7 +336,7 @@ def mod(event):
 
 def ver(event):
     "show version."
-    event.reply(f"{NAME.upper()} {VERSION}")
+    event.reply(f"{Cfg.name.upper()} {Cfg.version}")
 
 
 "runtime"

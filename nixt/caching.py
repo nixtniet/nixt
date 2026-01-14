@@ -8,7 +8,7 @@ import json
 import threading
 
 
-from nixt.methods import deleted, fqn
+from nixt.methods import deleted, fqn, search
 from nixt.objects import keys, update
 from nixt.serials import dump, load
 from nixt.utility import cdir, ident
@@ -30,14 +30,9 @@ def addpath(path, obj):
 def find(kind, selector={}, removed=False, matching=False):
     "locate objects by matching atributes."
     for pth in keys(Cache.paths):
-        print(kind, pth)
         if kind not in pth:
             continue
         obj = getpath(pth)
-        if not obj:
-            obj = Object()
-            read(obj, pth)
-            addpath(pth, obj)
         if not removed and deleted(obj):
             continue
         if selector and not search(obj, selector, matching):

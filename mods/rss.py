@@ -34,8 +34,8 @@ DEBUG = False
 def init():
     fetcher = Fetcher()
     fetcher.start()
-    if fetcher.seenfn:
-        logging.warning("since %s", elapsed(time.time()-fntime(fetcher.seenfn)))
+    if seenfn:
+        logging.warning("since %s", elapsed(time.time()-fntime(seenfn)))
     else:
         logging.warning("since %s", time.ctime(time.time()).replace("  ", " "))
     return fetcher
@@ -46,6 +46,7 @@ importlock = _thread.allocate_lock()
 
 
 errors = {}
+seenfn = ""
 skipped = []
 
 
@@ -70,12 +71,14 @@ class Urls(Object):
     pass
 
 
+seen = Urls()
+
+
 class Fetcher(Object):
+
 
     def __init__(self):
         self.dosave = False
-        self.seen = Urls()
-        self.seenfn = None
 
     @staticmethod
     def display(obj):
@@ -99,9 +102,10 @@ class Fetcher(Object):
         return result[:-2].rstrip()
 
     def fetch(self, feed, silent=False):
+        global seenfn
         with fetchlock:
             result = []
-            seen = getattr(self.seen, feed.rss, [])
+            see = getattr(seen, feed.rss, [])
             urls = []
             counter = 0
             for obj in reversed(getfeed(feed.rss, feed.display_list)):
@@ -115,15 +119,16 @@ class Fetcher(Object):
                 else:
                     uurl = fed.link
                 urls.append(uurl)
-                if uurl in seen:
+                if uurl in see:
                     continue
                 if self.dosave:
                     write(fed)
                 result.append(fed)
-            setattr(self.seen, feed.rss, urls)
-            if not self.seenfn:
-                self.seenfn = ident(self.seen)
-            write(self.seen, self.seenfn)
+            setattr(seen, feed.rss, urls)
+            if not seenfn:
+                seenfn = ident(seen)
+            write(seen, seenfn)
+            time.sleep(1.0)
         if silent:
             return counter
         txt = ""
@@ -143,7 +148,7 @@ class Fetcher(Object):
         return thrs
 
     def start(self, repeat=True):
-        self.seenfn = last(self.seen)
+        last(seen)
         if repeat:
             repeater = Repeater(300.0, self.run)
             repeater.start()
@@ -464,7 +469,6 @@ def res(event):
 
 
 def rss(event):
-    print(fqn(Rss))
     if not event.rest:
         nrs = 0
         for fnm, fed in find(fqn(Rss)):
