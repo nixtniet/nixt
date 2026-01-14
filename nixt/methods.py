@@ -50,12 +50,32 @@ def fmt(obj, args=[], skip=[], plain=False, empty=False):
 
 def fqn(obj):
     "full qualified name."
+    try:
+        return ".".join([obj.__module__, obj.__name__])
+    except AttributeError:
+        return ".".join([obj.__module__, obj.__class__.__name__])
+
+"""
+    clz = obj.__class__
+    module = clz.__module__
+    if module == "builtins":
+        return clz.__qualname__
+    return module + "." + clz.__qualname__
+    print(dir(obj))
+    print(dir(obj.__class__))
+    print(obj.__class__.mro())
+    try:
+        return obj.__class__.__module__ + "." + obj.__name__
+    except AttributeError:
+        pass
     kin = str(type(obj)).split()[-1][1:-2]
-    if kin == "type":
+    print(obj, kin)
+    if "type" in kin:
         tpe = type(obj)
+        print(tpe)
         kin = f"{tpe.__module__}.{tpe.__name__}"
     return kin
-
+"""
 
 def parse(obj, text):
     "parse text for command."

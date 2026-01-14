@@ -289,7 +289,7 @@ def control():
         return
     level(LEVEL)
     scanner(MODS)
-    addcmd(cmd, mod, srv, ver)
+    addcmd(cmd, mod, ver)
     cli = Line()
     evt = Message()
     evt.orig = repr(cli)

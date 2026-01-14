@@ -25,7 +25,7 @@ from nixt.methods import fmt, fqn
 from nixt.objects import Object, update
 from nixt.threads import launch
 from nixt.timings import Repeater, elapsed, fntime
-from nixt.utility import spl
+from nixt.utility import ident, spl
 
 
 DEBUG = False
@@ -49,14 +49,14 @@ errors = {}
 skipped = []
 
 
-class Feed:
+class Feed(Object):
 
     def __init__(self):
         self.link = ""
         self.name = ""
 
 
-class Rss:
+class Rss(Object):
 
     def __init__(self):
         self.display_list = "title,link,author"
@@ -65,7 +65,7 @@ class Rss:
         self.rss = ""
 
 
-class Urls:
+class Urls(Object):
 
     pass
 
@@ -122,7 +122,7 @@ class Fetcher(Object):
                 result.append(fed)
             setattr(self.seen, feed.rss, urls)
             if not self.seenfn:
-                self.seenfn = getident(self.seen)
+                self.seenfn = ident(self.seen)
             write(self.seen, self.seenfn)
         if silent:
             return counter
@@ -464,6 +464,7 @@ def res(event):
 
 
 def rss(event):
+    print(fqn(Rss))
     if not event.rest:
         nrs = 0
         for fnm, fed in find(fqn(Rss)):

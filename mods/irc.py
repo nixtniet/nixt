@@ -575,8 +575,8 @@ def cb_privmsg(evt):
             return
         if evt.text:
             evt.text = evt.text[0].lower() + evt.text[1:]
-        if evt.text:
-            launch(command, evt)
+        #if evt.text:
+        #    launch(command, evt)
 
 
 def cb_quit(evt):
