@@ -11,13 +11,18 @@ import threading
 import time
 
 
-from .statics import MONTH, TIMES
 from .threads import launch, name
+
+
+"exception"
 
 
 class NoDate(Exception):
 
     pass
+
+
+"c;asses"
 
 
 class Timy(threading.Timer):
@@ -67,6 +72,9 @@ class Repeater(Timed):
         "run function and launch timer for next run."
         launch(self.start)
         super().run()
+
+
+"time"
 
 
 def date(daystr):
@@ -241,6 +249,39 @@ def parsetxt(txt):
 def today():
     "start of the day."
     return str(datetime.datetime.today()).split()[0]
+
+
+
+"data"
+
+
+MONTH = {
+    'Jan': 1,
+    'Feb': 2,
+    'Mar': 3,
+    'Apr': 4,
+    'May': 5,
+    'Jun': 6,
+    'Jul': 7,
+    'Aug': 8,
+    'Sep': 9,
+    'Oct': 10,
+    'Nov': 11,
+    'Dec': 12
+}
+
+
+TIMES = [
+    "%Y-%M-%D %H:%M:%S",
+    "%Y-%m-%d %H:%M:%S",
+    "%Y-%m-%d",
+    "%d-%m-%Y",
+    "%d-%m",
+    "%m-%d"
+]
+
+
+"interface"
 
 
 def __dir__():
