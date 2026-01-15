@@ -24,7 +24,7 @@ from nixt.message import Message
 from nixt.methods import parse
 from nixt.objects import Default
 from nixt.threads import launch
-from nixt.utility import forever, wrapped
+from nixt.utility import forever, spl, wrapped
 
 
 if os.path.exists("mods"):
@@ -145,6 +145,20 @@ def importer(name, pth=""):
     return mod
 
 
+def modules(*pkgs, ignore=""):
+    "comma seperated list of available modules."
+    mods = []
+    for pkg in pkgs:
+        path = pkg.__path__[0]
+        mods.extend([
+            x[:-3] for x in os.listdir(path)
+            if x.endswith(".py") and
+            not x.startswith("__") and
+            x[:-3] not in spl(ignore)
+        ])
+    return ",".join(sorted(mods))
+
+
 def scancmd(module):
     "scan a module for functions with event as argument."
     for key, cmdz in inspect.getmembers(module, inspect.isfunction):
@@ -169,7 +183,7 @@ def scanner(*pkgs, inits=""):
             if not mod:
                 continue
             scancmd(mod)
-            if name not in inits:
+            if name not in spl(inits):
                 continue
             if "init" not in dir(mod):
                 continue
@@ -195,9 +209,13 @@ def banner():
 def boot(*pkgs):
     "in the beginning."
     parse(Cfg, TXT)
-    Cfg.init = Cfg.sets.init
+    Cfg.init = Cfg.init or Cfg.sets.init or ""
     level(Cfg.level)
-    scanner(*pkgs, inits=Cfg.init)
+    if 'a' in Cfg.opts:
+        mds = modules(*pkgs)
+    else:
+        mds = Cfg.init
+    scanner(*pkgs, inits=mds)
 
 
 def check(text):
@@ -339,7 +357,7 @@ def cmd(event):
 
 def mod(event):
     "list available commands."
-    event.reply(",".join([x for x in os.listdir(MODS.__path__[0]) if not x.startswith("__")]))
+    event.reply(",".join([x[:-3] for x in os.listdir(MODS.__path__[0]) if not x.startswith("__")]))
 
 
 def ver(event):
