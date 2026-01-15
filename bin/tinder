@@ -1,0 +1,319 @@
+#!/usr/bin/env python3
+# This file is placed in the Public Domain.
+
+
+import importlib.util
+import inspect
+import os
+import queue
+import shutil
+import sys
+import threading
+import time
+
+
+sys.path.insert(0, os.getcwd())
+
+
+from nixt.brokers import getobj
+from nixt.clients import Output
+from nixt.message import Message
+from nixt.methods import fmt, parse
+from nixt.objects import Default
+from nixt.threads import launch
+from nixt.timings import elapsed
+from nixt.utility import where, wrapped
+
+
+try:
+    import mods as MODS
+except ModuleNotFoundError:
+    MODS = None
+
+
+Cfg = Default()
+
+
+Cfg.debug = True
+Cfg.level = "info"
+Cfg.name = "nixt"
+Cfg.version = 3
+
+
+events = queue.Queue()
+
+
+class CLI(Output):
+
+    def __init__(self):
+        Output.__init__(self)
+        self.register("command", command)
+
+    def raw(self, txt):
+        if "v" in Cfg.opts:
+            print(txt)
+
+
+class Pool:
+
+    clients = []
+    lock = threading.RLock()
+    nrcpu = 1
+    nrlast = 0
+
+    @staticmethod
+    def add(client):
+        Pool.clients.append(client)
+
+    @staticmethod
+    def init(clz, nr):
+        Pool.nrcpu = nr
+        for _x in range(Pool.nrcpu):
+            clt = clz()
+            clt.start()
+            Pool.add(clt)
+
+    @staticmethod
+    def put(event):
+        with Pool.lock:
+            if Pool.nrlast >= Pool.nrcpu-1:
+                Pool.nrlast = 0
+            clt = Pool.clients[Pool.nrlast]
+            clt.put(event)
+            Pool.nrlast += 1
+
+
+"commands"
+
+
+class Commands:
+
+    cmds = {}
+    names = {}
+
+
+def addcmd(*args):
+    "add functions to commands."
+    for func in args:
+        name = func.__name__
+        Commands.cmds[name] = func
+        Commands.names[name] = func.__module__.split(".")[-1]
+
+
+def command(evt):
+    "command callback."
+    parse(evt, evt.text)
+    func = getcmd(evt.cmd)
+    if func:
+        func(evt)
+        bot = getobj(evt.orig)
+        bot.display(evt)
+    evt.ready()
+
+
+def getcmd(cmd):
+    "get function for command."
+    func =  Commands.cmds.get(cmd, None)
+    if func:
+        return func
+    name = Commands.names.get(cmd, None)
+    if name:
+        mod = getmod(name)
+        if mod:
+            scancmd(mod)
+    return Commands.cmds.get(cmd, None)
+        
+
+def importer(name, pth=""):
+    "import module by path."
+    if pth and os.path.exists(pth):
+        spec = importlib.util.spec_from_file_location(name, pth)
+    else:
+        spec = importlib.util.find_spec(name)
+    if not spec or not spec.loader:
+        return None
+    mod = importlib.util.module_from_spec(spec)
+    if not mod:
+        return None
+    spec.loader.exec_module(mod)
+    mod.DEBUG = Cfg.debug
+    mod.NAME = Cfg.name
+    return mod
+
+
+def scancmd(module):
+    "scan a module for functions with event as argument."
+    for key, cmdz in inspect.getmembers(module, inspect.isfunction):
+        if 'event' not in inspect.signature(cmdz).parameters:
+            continue
+        addcmd(cmdz)
+
+
+def scanner(*pkgs, inits=""):
+    "scan named modules for commands."
+    mods = []
+    for pkg in pkgs:
+        if not pkg:
+            continue
+        path = pkg.__path__[0]
+        for fnm in os.listdir(path):
+            if fnm.startswith("__"):
+                continue
+            name = fnm[:-3]
+            modname = f"{pkg.__name__}.{name}"
+            mod = importer(modname, os.path.join(path, fnm))
+            if not mod:
+                continue
+            scancmd(mod)
+            if name not in inits:
+                continue
+            if "init" not in dir(mod):
+                continue
+            launch(mod.init)
+    return mods
+
+
+"utilities"
+
+
+def banner(name, version):
+    tme = time.ctime(time.time()).replace("  ", " ")
+    print(f"{name.upper()} {version} since {tme} ({Cfg.level})")
+    sys.stdout.flush()
+
+
+def check(text):
+    args = sys.argv[1:]
+    for arg in args:
+        if not arg.startswith("-"):
+            continue
+        for char in text:
+            if char in arg:
+                return True
+    return False
+
+
+def consume():
+    while True:
+        try:
+            event = events.get()
+            event.wait()
+            events.task_done()
+        except (KeyboardInterrupt, EOFError):
+            os._exit(0)
+
+
+def payload(todo):
+    for cmd, example in todo.items():
+        for ex in example:
+            evt = Message()
+            evt.text = f"{cmd} {ex}"
+            evt.kind = "command"
+            Pool.put(evt)
+            events.put(evt)
+
+
+"defines"
+
+
+examples = {
+    "atr": [""],
+    "cmd": [""],
+    "dis": [""],
+    "dne": ["", "bla"],
+    "dpl": ["hnrss title,url", ""],
+    "eml": ["", "root@localhost"],
+    "flt": ["", "0"],
+    "fnd": ["", "log", "rss", "config", "todo"],
+    "lou": [""],
+    "man": ["", "test"],
+    "mbx": [""],
+    "mod": [""],
+    "mre": [""],
+    "nme": ["", "hnrss hackernews"],
+    "now": [""],
+    "pth": [""],
+    "pwd": ["", "bla mekker"],
+    "req": [""],
+    "res": ["", "hnrss"],
+    "sil": [""],
+    "slg": [""],
+    "srv": [""],
+    "syn": [""],
+    "thr": [""],
+    "tmr": ["", "22:00 test"],
+    "upt": [""],
+    "ver": [""],
+    "wsd": [""]
+}
+
+pre = {
+    "cfg": ["", "nick=mekker"],
+    "imp": ["", "testing/feeds.opml"],
+    "log": ["", "log add"],
+    "rss": ["", "http://hnrss.org/newest"],
+    "tdo": ["", "test"]
+}
+
+post = {
+    "dbg": [""],
+    "dne": ["", "mekker"],
+    "exp": [""],
+    "rem": ["", "hnrss"]
+}
+
+
+"runtime"
+
+
+def wrap(func):
+    "restore console."
+    import termios
+    old = None
+    try:
+        old = termios.tcgetattr(sys.stdin.fileno())
+    except termios.error:
+        pass
+    try:
+        wrapped(func)
+    finally:
+        pass
+    if old:
+        termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+
+
+def main():
+    parse(Cfg, " ".join(sys.argv[1:]))
+    scanner(MODS)
+    if "v" in Cfg.opts:
+        banner(Cfg.name, Cfg.version)
+    if "z" in Cfg.opts:
+        Pool.init(CLI, os.cpu_count())
+    else:
+        Pool.init(CLI, 1)
+    starttime = time.time()
+    nrs = Cfg.index or 1
+    for _x in range(nrs):
+        payload(pre)
+    for _x in range(nrs):
+        payload(examples)
+    for _x in range(nrs):
+        payload(post)
+    launch(consume)
+    nrevents = events.qsize()
+    try:
+        events.join()
+    except (KeyboardInterrupt, EOFError):
+        pass
+    endtime = time.time()
+    lap = elapsed(endtime-starttime)
+    percall = (endtime-starttime)/nrevents
+    nrs = events.qsize()
+    if "v" in Cfg.opts:
+        print(f"{fmt(Cfg)}")
+        print(f"{nrs} events left.")
+        print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
+
+
+if __name__ == "__main__":
+    wrap(main)
