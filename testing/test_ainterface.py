@@ -17,19 +17,14 @@ sys.path.insert(0, os.getcwd())
 import nixt
 import nixt.brokers
 import nixt.clients
-import nixt.command
 import nixt.handler
 import nixt.message
 import nixt.methods
 import nixt.objects
-import nixt.package
-import nixt.persist
 import nixt.serials
-import nixt.statics
 import nixt.threads
 import nixt.timings
 import nixt.utility
-import nixt.workdir
 
 
 from nixt.objects import *
@@ -38,19 +33,14 @@ from nixt.objects import *
 PACKAGE = [
     'brokers',
     'clients',
-    'command',
     'handler',
     'message',
     'methods',
     'objects',
-    'package',
-    'persist',
     'serials',
-    'statics',
     'threads',
     'timings',
-    'utility',
-    'workdir'
+    'utility'
 ]
 
 
