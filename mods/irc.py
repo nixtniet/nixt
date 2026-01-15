@@ -13,14 +13,13 @@ import time
 
 from nixt.brokers import getobj
 from nixt.clients import Output
+from nixt.command import command
 from nixt.message import Message
 from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
+from nixt.storage import last, write
 from nixt.threads import launch
 from nixt.utility import ident
-
-
-from . import last, write
 
 
 NAME = "nixt"
@@ -580,8 +579,8 @@ def cb_privmsg(evt):
             return
         if evt.text:
             evt.text = evt.text[0].lower() + evt.text[1:]
-        #if evt.text:
-        #    launch(command, evt)
+        if evt.text:
+            launch(command, evt)
 
 
 def cb_quit(evt):

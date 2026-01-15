@@ -5,10 +5,8 @@ import time
 
 
 from nixt.objects import Object
+from nixt.storage import find, write
 from nixt.timings import elapsed, fntime
-
-
-from . import find, write
 
 
 class Log(Object):

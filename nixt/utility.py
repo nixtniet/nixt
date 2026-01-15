@@ -6,12 +6,26 @@
 
 import datetime
 import inspect
+import logging
 import os
 import pathlib
 import time
 
 
 from .methods import fqn
+
+
+class Log:
+
+    datefmt = "%H:%M:%S"
+    format = "%(module).3s %(message)s"
+
+
+class Format(logging.Formatter):
+
+    def format(self, record):
+        record.module = record.module.upper()
+        return logging.Formatter.format(self, record)
 
 
 def cdir(path):
@@ -32,6 +46,18 @@ def forever():
 def ident(obj):
     "return ident string for object."
     return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
+
+
+def level(loglevel):
+    "set log level."
+    formatter = Format(Log.format, Log.datefmt)
+    stream = logging.StreamHandler()
+    stream.setFormatter(formatter)
+    logging.basicConfig(
+        level=loglevel.upper(),
+        handlers=[stream,],
+        force=True
+    )
 
 
 def md5sum(path):
@@ -75,9 +101,11 @@ def wrapped(func):
 
 def __dir__():
     return (
+        'Log',
         'cdir',
         'forever',
         'ident',
+        'level',
         'md5sum',
         'pipxdir',
         'pkgname',
@@ -85,3 +113,4 @@ def __dir__():
         'where',
         'wrapped'
     )
+
