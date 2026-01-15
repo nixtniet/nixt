@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-from nixt.caching import attrs, kinds
+from . import attrs, kinds
 
 
 def atr(event):

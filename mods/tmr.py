@@ -8,10 +8,12 @@ import time
 
 
 from nixt.brokers import getobj, likeobj
-from nixt.caching import last, write
 from nixt.objects import Object, items
 from nixt.timings import NoDate, Timed, day, elapsed, extract, hour, today
 from nixt.utility import ident
+
+
+from . import last, write
 
 
 rand = random.SystemRandom()
