@@ -8,6 +8,7 @@
 import importlib.util
 import inspect
 import os
+import pathlib
 import sys
 import threading
 import time
@@ -22,9 +23,8 @@ from nixt.loggers import level
 from nixt.message import Message
 from nixt.methods import parse
 from nixt.objects import Default
-from nixt.serials import dumps
 from nixt.threads import launch
-from nixt.utility import forever, spl, where, wrapped
+from nixt.utility import forever, wrapped
 
 
 if os.path.exists("mods"):
@@ -39,13 +39,14 @@ else:
 TXT = " ".join(sys.argv[1:])
 
 
-class Cfg:
+Cfg = Default()
 
-    debug = False
-    init = ""
-    level = "info"
-    name = "nixt"
-    version = 453
+Cfg.debug = False
+Cfg.init = ""
+Cfg.level = "info"
+Cfg.name = "nixt"
+Cfg.version = 453
+Cfg.wdr = os.path.expanduser(f"~/.{Cfg.name}")
 
 
 "clients"
@@ -124,14 +125,6 @@ def command(evt):
 
 def getcmd(cmd):
     "get function for command."
-    func =  Commands.cmds.get(cmd, None)
-    if func:
-        return func
-    name = Commands.names.get(cmd, None)
-    if name:
-        mod = getmod(name)
-        if mod:
-            scancmd(mod)
     return Commands.cmds.get(cmd, None)
         
 
@@ -250,6 +243,21 @@ def daemon(verbose=False, nochdir=False):
     os.nice(10)
 
 
+def pidfile(filename):
+    "write pidfile."
+    if os.path.exists(filename):
+        os.unlink(filename)
+    path2 = pathlib.Path(filename)
+    path2.parent.mkdir(parents=True, exist_ok=True)
+    with open(filename, "w", encoding="utf-8") as fds:
+        fds.write(str(os.getpid()))
+
+
+def pidname(name: str):
+    "name of pidfile."
+    return os.path.join(Cfg.wdr, f"{name}.pid")
+
+
 def privileges():
     "drop privileges."
     import getpass
@@ -331,7 +339,7 @@ def cmd(event):
 
 def mod(event):
     "list available commands."
-    event.reply(modules())
+    event.reply(",".join([x for x in os.listdir(MODS.__path__[0]) if not x.startswith("__")]))
 
 
 def ver(event):

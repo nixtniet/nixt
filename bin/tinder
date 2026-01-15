@@ -6,7 +6,6 @@ import importlib.util
 import inspect
 import os
 import queue
-import shutil
 import sys
 import threading
 import time
@@ -22,7 +21,7 @@ from nixt.methods import fmt, parse
 from nixt.objects import Default
 from nixt.threads import launch
 from nixt.timings import elapsed
-from nixt.utility import where, wrapped
+from nixt.utility import wrapped
 
 
 try:
@@ -113,14 +112,6 @@ def command(evt):
 
 def getcmd(cmd):
     "get function for command."
-    func =  Commands.cmds.get(cmd, None)
-    if func:
-        return func
-    name = Commands.names.get(cmd, None)
-    if name:
-        mod = getmod(name)
-        if mod:
-            scancmd(mod)
     return Commands.cmds.get(cmd, None)
         
 

@@ -4,14 +4,14 @@
 "persistence through storage"
 
 
-import json
+import os
 import threading
 
 
 from nixt.methods import deleted, fqn, search
 from nixt.objects import keys, update
-from nixt.serials import dump, load
-from nixt.utility import cdir, ident
+from nixt.timings import fntime
+from nixt.utility import ident
 
 
 lock = threading.RLock()
@@ -19,16 +19,30 @@ lock = threading.RLock()
 
 class Cache:
 
+    kinds = {}
     paths = {}
 
 
 def addpath(path, obj):
     "put object into cache."
     Cache.paths[path] = obj
+    full = path.split(os.sep)[0]
+    kind = full.split(".")[-1].lower()
+    if kind not in Cache.kinds:
+        Cache.kinds[kind] = full
 
 
-def find(kind, selector={}, removed=False, matching=False):
+def attrs(kind):
+    "show attributes for kind of objects."
+    pth, obj = find(kind, nritems=1)
+    if obj:
+        return list(keys(obj))
+    return []
+
+
+def find(kind, selector={}, removed=False, matching=False, nritems=None):
     "locate objects by matching atributes."
+    nrs = 0
     for pth in keys(Cache.paths):
         if kind not in pth:
             continue
@@ -37,7 +51,14 @@ def find(kind, selector={}, removed=False, matching=False):
             continue
         if selector and not search(obj, selector, matching):
             continue
+        if nritems and nrs >= nritems:
+            break
+        nrs += 1
         yield pth, obj
+
+
+def kinds():
+    return Cache.kinds
 
 
 def last(obj, selector={}):
@@ -86,7 +107,10 @@ def __dir__():
     return (
         'Cache',
         'addpath',
+        'find',
         'getpath',
+        'kinds',
+        'last',
         'read',
         'syncpath',
         'write'
