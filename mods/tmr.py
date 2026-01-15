@@ -8,15 +8,17 @@ import time
 
 
 from nixt.brokers import getobj, likeobj
+from nixt.caching import write
 from nixt.objects import Object, items
 from nixt.timings import NoDate, Timed, day, elapsed, extract, hour, today
+from nixt.utility import ident
 
 
 rand = random.SystemRandom()
 
 
 def init():
-    Timers.path = last(Timers.timers) or getident(Timers.timers)
+    Timers.path = last(Timers.timers) or ident(Timers.timers)
     remove = []
     for tme, args in items(Timers.timers):
         if not args:
@@ -101,7 +103,7 @@ def tmr(event):
     diff = target - time.time()
     txt = " ".join(event.args[1:])
     Timers.add(target, event.orig, event.channel, txt)
-    write(Timers.timers, Timers.path or getident(Timers.timers))
+    write(Timers.timers, Timers.path or ident(Timers.timers))
     bot = getobj(event.orig)
     timer = Timed(diff, bot.say, event.orig, event.channel, txt)
     timer.start()

@@ -12,14 +12,17 @@ import time
 
 
 from nixt.brokers import getobj
+from nixt.caching import last, write
 from nixt.clients import Output
 from nixt.message import Message
 from nixt.methods import edit, fmt
 from nixt.objects import Object, keys
 from nixt.threads import launch
+from nixt.utility import ident
 
 
 NAME = "nixt"
+
 
 lock = threading.RLock()
 
@@ -604,7 +607,7 @@ def cfg(event):
         )
     else:
         edit(config, event.sets)
-        write(config, fnm or getident(config))
+        write(config, fnm or ident(config))
         event.reply("ok")
 
 
