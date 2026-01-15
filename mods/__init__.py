@@ -4,6 +4,7 @@
 "persistence through storage"
 
 
+import json
 import os
 import threading
 
@@ -12,7 +13,7 @@ from nixt.methods import deleted, fqn, search
 from nixt.objects import keys, update
 from nixt.serials import dump, load
 from nixt.timings import fntime
-from nixt.utility import ident
+from nixt.utility import cdir, ident
 
 
 lock = threading.RLock()

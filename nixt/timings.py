@@ -22,7 +22,7 @@ class NoDate(Exception):
     pass
 
 
-"c;asses"
+"classes"
 
 
 class Timy(threading.Timer):
