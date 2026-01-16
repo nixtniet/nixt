@@ -18,7 +18,7 @@ from .methods import fqn
 class Log:
 
     datefmt = "%H:%M:%S"
-    format = "%(module).3s %(message)s"
+    format = "%(module).7s %(message)s"
 
 
 class Format(logging.Formatter):

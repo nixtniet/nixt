@@ -5,12 +5,13 @@
 
 
 import json
+import logging
 import os
 import threading
 
 
 from .methods import deleted, fqn, search
-from .objects import keys, update
+from .objects import Object, keys, update
 from .serials import dump, load
 from .timings import fntime
 from .utility import cdir, ident
@@ -60,8 +61,23 @@ def find(kind, selector={}, removed=False, matching=False, nritems=None):
         yield pth, obj
 
 
+def fns(kind):
+    "file names by kind of object."
+    if Cache.workdir:
+        path = os.path.join(Cache.workdir, kind)
+    for rootdir, dirs, _files in os.walk(path, topdown=True):
+        for dname in dirs:
+            if dname.count("-") != 2:
+                continue
+            ddd = os.path.join(rootdir, dname)
+            for fll in os.listdir(ddd):
+                yield os.path.join(ddd, fll)
+
+
 def kinds():
     "show kind on objects in cache."
+    if Cache.workdir:
+        return os.listdir(Cache.workdir)
     return Cache.kinds
 
 
@@ -82,6 +98,17 @@ def last(obj, selector={}):
 def getpath(path):
     "get object from cache."
     return Cache.paths.get(path, None)
+
+
+def persist(path):
+    "enable writing to disk."
+    logging.info("persisting to %s", path)
+    Cache.workdir = path
+    for kind in kinds():
+        for fnm in fns(kind):
+            obj = Object()
+            read(obj, fnm)
+            addpath(fnm, obj)
 
 
 def read(obj, path):
@@ -130,6 +157,7 @@ def __dir__():
         'getpath',
         'kinds',
         'last',
+        'persist',
         'read',
         'syncpath',
         'write'

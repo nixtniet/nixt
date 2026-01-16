@@ -99,8 +99,14 @@ class Default(Object):
         return self.__dict__.get(key, "")
 
 
+class Config(Default):
+
+    pass
+
+
 def __dir__():
     return (
+        'Config',
         'Default',
         'Object',
         'construct',

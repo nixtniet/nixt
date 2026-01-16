@@ -82,9 +82,10 @@ def scancmd(module):
         addcmd(cmdz)
 
 
-def scanner(*pkgs, inits=""):
+def scanner(*pkgs, inits="", wait=False):
     "scan named modules for commands."
     mods = []
+    thrs = []
     for pkg in pkgs:
         if not pkg:
             continue
@@ -102,7 +103,10 @@ def scanner(*pkgs, inits=""):
                 continue
             if "init" not in dir(mod):
                 continue
-            launch(mod.init)
+            thrs.append(launch(mod.init))
+    if wait:
+        for thr in thrs:
+            thr.join()
     return mods
 
 
