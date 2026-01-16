@@ -5,7 +5,6 @@
 
 
 import json
-import logging
 import os
 import threading
 
@@ -102,7 +101,6 @@ def getpath(path):
 
 def persist(path):
     "enable writing to disk."
-    logging.info("persisting to %s", path)
     Cache.workdir = path
     for kind in kinds():
         for fnm in fns(kind):

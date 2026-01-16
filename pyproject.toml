@@ -34,7 +34,3 @@ packages = [
     'nixt',
 ]
 include-package-data = true
-
-
-[tool.setuptools.package-data]
-"examples" = ["*"]
