@@ -33,9 +33,9 @@ class Message(Default):
 
     def wait(self, timeout=0.0):
         "wait for completion."
-        self._ready.wait(timeout or None)
         if self.thr:
             self.thr.join(timeout)
+        self._ready.wait(timeout or None)
 
 
 def __dir__():

@@ -99,6 +99,7 @@ def scanner(*pkgs, inits="", wait=False):
             if not mod:
                 continue
             scancmd(mod)
+            mods.append(mod)
             if name not in spl(inits):
                 continue
             if "init" not in dir(mod):

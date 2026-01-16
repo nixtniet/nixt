@@ -6,6 +6,7 @@ import importlib.util
 import inspect
 import os
 import queue
+import shutil
 import sys
 import threading
 import time
@@ -16,9 +17,11 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.brokers import getobj
 from nixt.clients import Output
+from nixt.command import command, scanner
 from nixt.message import Message
 from nixt.methods import fmt, parse
-from nixt.objects import Default
+from nixt.objects import Config
+from nixt.storage import persist,skel
 from nixt.threads import launch
 from nixt.timings import elapsed
 from nixt.utility import wrapped
@@ -30,16 +33,20 @@ except ModuleNotFoundError:
     MODS = None
 
 
-Cfg = Default()
+Cfg = Config()
 
 
 Cfg.debug = True
 Cfg.level = "info"
 Cfg.name = "nixt"
 Cfg.version = 3
+Cfg.wdr = ".test"
 
 
 events = queue.Queue()
+
+
+"clients"
 
 
 class CLI(Output):
@@ -82,88 +89,6 @@ class Pool:
             Pool.nrlast += 1
 
 
-"commands"
-
-
-class Commands:
-
-    cmds = {}
-    names = {}
-
-
-def addcmd(*args):
-    "add functions to commands."
-    for func in args:
-        name = func.__name__
-        Commands.cmds[name] = func
-        Commands.names[name] = func.__module__.split(".")[-1]
-
-
-def command(evt):
-    "command callback."
-    parse(evt, evt.text)
-    func = getcmd(evt.cmd)
-    if func:
-        func(evt)
-        bot = getobj(evt.orig)
-        bot.display(evt)
-    evt.ready()
-
-
-def getcmd(cmd):
-    "get function for command."
-    return Commands.cmds.get(cmd, None)
-        
-
-def importer(name, pth=""):
-    "import module by path."
-    if pth and os.path.exists(pth):
-        spec = importlib.util.spec_from_file_location(name, pth)
-    else:
-        spec = importlib.util.find_spec(name)
-    if not spec or not spec.loader:
-        return None
-    mod = importlib.util.module_from_spec(spec)
-    if not mod:
-        return None
-    spec.loader.exec_module(mod)
-    mod.DEBUG = Cfg.debug
-    mod.NAME = Cfg.name
-    return mod
-
-
-def scancmd(module):
-    "scan a module for functions with event as argument."
-    for key, cmdz in inspect.getmembers(module, inspect.isfunction):
-        if 'event' not in inspect.signature(cmdz).parameters:
-            continue
-        addcmd(cmdz)
-
-
-def scanner(*pkgs, inits=""):
-    "scan named modules for commands."
-    mods = []
-    for pkg in pkgs:
-        if not pkg:
-            continue
-        path = pkg.__path__[0]
-        for fnm in os.listdir(path):
-            if fnm.startswith("__"):
-                continue
-            name = fnm[:-3]
-            modname = f"{pkg.__name__}.{name}"
-            mod = importer(modname, os.path.join(path, fnm))
-            if not mod:
-                continue
-            scancmd(mod)
-            if name not in inits:
-                continue
-            if "init" not in dir(mod):
-                continue
-            launch(mod.init)
-    return mods
-
-
 "utilities"
 
 
@@ -204,7 +129,64 @@ def payload(todo):
             events.put(evt)
 
 
-"defines"
+"runtime"
+
+
+def wrap(func):
+    "restore console."
+    import termios
+    old = None
+    try:
+        old = termios.tcgetattr(sys.stdin.fileno())
+    except termios.error:
+        pass
+    try:
+        wrapped(func)
+    finally:
+        pass
+    if old:
+        termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+
+
+def main():
+    if "p" not in Cfg.opts and os.path.exists(Cfg.wdr):
+        shutil.rmtree(Cfg.wdr)
+    parse(Cfg, " ".join(sys.argv[1:]))
+    Cfg.wdr = Cfg.sets.wdr or ".test"
+    persist(Cfg.wdr)
+    for mod in scanner(MODS):
+        mod.DEBUG = True
+    if "v" in Cfg.opts:
+        banner(Cfg.name, Cfg.version)
+    if "z" in Cfg.opts:
+        Pool.init(CLI, os.cpu_count())
+    else:
+        Pool.init(CLI, 1)
+    starttime = time.time()
+    nrs = Cfg.index or 1
+    for _x in range(nrs):
+        payload(pre)
+    for _x in range(nrs):
+        payload(examples)
+    for _x in range(nrs):
+        payload(post)
+    launch(consume)
+    nrevents = events.qsize()
+    try:
+        events.join()
+    except (KeyboardInterrupt, EOFError):
+        pass
+    endtime = time.time()
+    lap = elapsed(endtime-starttime)
+    percall = (endtime-starttime)/nrevents
+    nrs = events.qsize()
+    if "v" in Cfg.opts:
+        print(f"{fmt(Cfg)}")
+        print(f"{nrs} events left.")
+        print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
+
+
+"date"
 
 
 examples = {
@@ -254,56 +236,7 @@ post = {
 }
 
 
-"runtime"
-
-
-def wrap(func):
-    "restore console."
-    import termios
-    old = None
-    try:
-        old = termios.tcgetattr(sys.stdin.fileno())
-    except termios.error:
-        pass
-    try:
-        wrapped(func)
-    finally:
-        pass
-    if old:
-        termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
-
-
-def main():
-    parse(Cfg, " ".join(sys.argv[1:]))
-    scanner(MODS)
-    if "v" in Cfg.opts:
-        banner(Cfg.name, Cfg.version)
-    if "z" in Cfg.opts:
-        Pool.init(CLI, os.cpu_count())
-    else:
-        Pool.init(CLI, 1)
-    starttime = time.time()
-    nrs = Cfg.index or 1
-    for _x in range(nrs):
-        payload(pre)
-    for _x in range(nrs):
-        payload(examples)
-    for _x in range(nrs):
-        payload(post)
-    launch(consume)
-    nrevents = events.qsize()
-    try:
-        events.join()
-    except (KeyboardInterrupt, EOFError):
-        pass
-    endtime = time.time()
-    lap = elapsed(endtime-starttime)
-    percall = (endtime-starttime)/nrevents
-    nrs = events.qsize()
-    if "v" in Cfg.opts:
-        print(f"{fmt(Cfg)}")
-        print(f"{nrs} events left.")
-        print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
+"trampoline"
 
 
 if __name__ == "__main__":

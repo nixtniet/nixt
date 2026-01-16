@@ -33,4 +33,4 @@ classifiers = [
 packages = [
     'nixt',
 ]
-include-package-data = true
+include-package-data = false

@@ -5,8 +5,6 @@
 "main program"
 
 
-import importlib.util
-import inspect
 import os
 import pathlib
 import sys
@@ -17,15 +15,13 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.brokers import getobj
 from nixt.clients import Client
 from nixt.command import Commands, addcmd, command, modules, scanner
 from nixt.message import Message
 from nixt.methods import parse
 from nixt.objects import Config
 from nixt.storage import persist
-from nixt.threads import launch
-from nixt.utility import forever, level, spl, wrapped
+from nixt.utility import forever, level, wrapped
 
 
 if os.path.exists("mods"):
@@ -110,17 +106,18 @@ def banner():
     sys.stdout.flush()
 
 
-def boot(*pkgs):
+def boot(*pkgs, inits=""):
     "in the beginning."
     parse(Cfg, TXT)
     Cfg.init = Cfg.init or Cfg.sets.init or ""
+    Cfg.wdr = Cfg.sets.wdr or Cfg.wdr or ""
     level(Cfg.level)
     if 'n' not in Cfg.opts:
-        persist(os.path.join(Cfg.wdr, "store"))
+        persist(Cfg.wdr)
     if 'a' in Cfg.opts:
         mds = modules(*pkgs)
     else:
-        mds = Cfg.init
+        mds = inits or Cfg.init
     for mod in scanner(*pkgs, inits=mds, wait="w" in Cfg.opts):
         mod.DEBUG = Cfg.debug
         mod.NAME = Cfg.name
@@ -139,8 +136,8 @@ def check(text):
 
 def docmd(text):
     "parse text for command and run it."
+    cli = Line()
     for txt in text.split(" ! "):
-        cli = Line()
         evt = Message()
         evt.orig = repr(cli)
         evt.text = txt
@@ -218,7 +215,7 @@ def background():
     privileges()
     pidfile(pidname(Cfg.name))
     addcmd(cmd, mod, ver)
-    boot(MODS)
+    boot(MODS, inits=Cfg.init or "irc,rss")
     forever()
 
 
@@ -251,7 +248,7 @@ def service():
     banner()
     pidfile(pidname(Cfg.name))
     addcmd(cmd, mod, ver)
-    boot(MODS)
+    boot(MODS, inits=Cfg.init or "irc,rss")
     forever()
 
 

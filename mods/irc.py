@@ -597,13 +597,13 @@ def cb_quit(evt):
 
 def cfg(event):
     config = Config()
-    fnm = last(config)
+    fnm = last(config) or ident(config)
     if not event.sets:
         event.reply(
             fmt(
                 config,
                 keys(config),
-                skip="control,name,word,realname,sleep,username".split(",")
+                skip="control,name,password,realname,sleep,username".split(",")
             )
         )
     else:
