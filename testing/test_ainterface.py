@@ -18,13 +18,13 @@ import nixt
 import nixt.brokers
 import nixt.handler
 import nixt.message
-import nixt.serials
 import nixt.threads
 
 
 import nixbot
 import nixbot.methods
 import nixbot.objects
+import nixbot.serials
 import nixbot.timings
 import nixbot.utility
 

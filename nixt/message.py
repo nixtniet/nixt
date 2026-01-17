@@ -16,11 +16,14 @@ class Message:
         self._thr = None
         self.result = {}
         self.args = []
-        self.channel = ""
         self.index = 0
         self.kind = "event"
-        self.orig = ""
-        self.waiting = False
+
+    def __getattr__(self, key):
+        return self.__dict__.get(key, "")
+
+    def __str__(self):
+        return str(self.__dict__)
 
     def ready(self):
         "flag message as ready."

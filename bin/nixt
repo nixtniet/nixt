@@ -8,7 +8,6 @@
 import os
 import pathlib
 import sys
-import threading
 import time
 
 
@@ -17,20 +16,22 @@ sys.path.insert(0, os.getcwd())
 
 from nixbot.caching import persist
 from nixbot.command import Commands, addcmd, command, modules, scanner
-from nixbot.methods import fmt, parse
+from nixbot.methods import parse
 from nixbot.objects import Config
 from nixbot.utility import forever, level, wrapped
 
 
-from nixt.handler import Client
+from nixt.handler import Console
 from nixt.message import Message
-from nixt.threads import launch
+
+
+from nixbot import modules as MODS
 
 
 if os.path.exists("mods"):
-    import mods as MODS
+    import mods as MODS2
 else:
-    MODS = None
+    MODS2 = None
 
 
 "defines"
@@ -51,7 +52,7 @@ Cfg.wdr = os.path.expanduser(f"~/.{Cfg.name}")
 "clients"
 
 
-class Line(Client):
+class Line(Console):
 
     def __init__(self):
         super().__init__()
@@ -62,7 +63,8 @@ class Line(Client):
         print(text.encode('utf-8', 'replace').decode("utf-8"))
 
 
-class Console(Line):
+class Term(Line):
+
 
     def callback(self, event):
         "wait for callback result."
@@ -76,7 +78,6 @@ class Console(Line):
         evt = Message()
         evt.text = input("> ")
         evt.kind = "command"
-        evt.waiting = True
         return evt
 
 
@@ -208,7 +209,7 @@ def background():
     privileges()
     pidfile(pidname(Cfg.name))
     addcmd(cmd, mod, ver)
-    boot(MODS, inits=Cfg.init or "irc,rss")
+    boot(MODS, MODS2, inits=Cfg.init or "irc,rss")
     forever()
 
 
@@ -216,10 +217,10 @@ def console():
     "console script."
     import readline
     readline.redisplay()
-    boot(MODS)
+    boot(MODS, MODS2)
     addcmd(cmd, mod, ver)
     docmd(TXT)
-    csl = Console()
+    csl = Term()
     csl.start()
     forever()
 
@@ -228,7 +229,7 @@ def control():
     "cli script."
     if len(sys.argv) == 1:
         return
-    boot(MODS)
+    boot(MODS, MODS2)
     addcmd(cmd, mod, ver)
     docmd(TXT)
 
@@ -239,7 +240,7 @@ def service():
     banner()
     pidfile(pidname(Cfg.name))
     addcmd(cmd, mod, ver)
-    boot(MODS, inits=Cfg.init or "irc,rss")
+    boot(MODS, MODS2, inits=Cfg.init or "irc,rss")
     forever()
 
 

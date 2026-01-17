@@ -161,7 +161,7 @@ class TestObject(unittest.TestCase):
         self.assertTrue(okd)
 
     def test_module(self):
-        self.assertEqual(Object().__module__, "nixt.objects")
+        self.assertEqual(Object().__module__, "nixbot.objects")
 
     def test_register(self):
         obj = Object()
