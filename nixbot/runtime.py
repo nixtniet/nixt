@@ -1,0 +1,280 @@
+# This file is placed in the Public Domain.
+
+
+"main program"
+
+
+import os
+import pathlib
+import sys
+import time
+
+
+sys.path.insert(0, os.getcwd())
+
+
+from nixbot.caching import persist
+from nixbot.command import Commands, addcmd, command, modules, scanner
+from nixbot.methods import parse
+from nixbot.objects import Config
+from nixbot.utility import forever, level, wrapped
+
+
+from nixt.handler import Console
+from nixt.message import Message
+
+
+from nixbot import modules as MODS
+
+
+if os.path.exists("mods"):
+    import mods as MODS2
+else:
+    MODS2 = None
+
+
+"defines"
+
+
+TXT = " ".join(sys.argv[1:])
+
+
+Cfg = Config()
+Cfg.debug = False
+Cfg.init = ""
+Cfg.level = "info"
+Cfg.name = "nixt"
+Cfg.version = 453
+Cfg.wdr = os.path.expanduser(f"~/.{Cfg.name}")
+
+
+"clients"
+
+
+class Line(Console):
+
+    def __init__(self):
+        super().__init__()
+        self.register("command", command)
+
+    def raw(self, text):
+        "write to console."
+        print(text.encode('utf-8', 'replace').decode("utf-8"))
+
+
+class Term(Line):
+
+
+    def callback(self, event):
+        "wait for callback result."
+        if not event.text:
+            event.ready()
+            return
+        super().callback(event)
+
+    def poll(self):
+        "poll for an event."
+        evt = Message()
+        evt.text = input("> ")
+        evt.kind = "command"
+        return evt
+
+
+"utility"
+
+
+def banner():
+    "hello."
+    tme = time.ctime(time.time()).replace("  ", " ")
+    print("%s %s since %s %s in %s" % (
+        Cfg.name.upper(),
+        Cfg.version,
+        tme,
+        Cfg.level.upper(),
+        Cfg.wdr
+    ))
+    sys.stdout.flush()
+
+
+def boot(*pkgs, inits=""):
+    "in the beginning."
+    parse(Cfg, TXT)
+    Cfg.init = Cfg.sets.init or Cfg.init or ""
+    Cfg.level = Cfg.sets.level or Cfg.level or "info"
+    Cfg.wdr = Cfg.sets.wdr or Cfg.wdr or ""
+    level(Cfg.level)
+    if "v" in Cfg.opts:
+        banner()
+    if 'p' not in Cfg.opts:
+        persist(Cfg.wdr)
+    if 'a' in Cfg.opts:
+        mds = modules(*pkgs)
+    else:
+        mds = inits or Cfg.init
+    for mod in scanner(*pkgs, inits=mds, wait="w" in Cfg.opts):
+        mod.DEBUG = Cfg.debug
+        mod.NAME = Cfg.name
+            
+
+def check(text):
+    "check for options."
+    for arg in TXT.split():
+        if not arg.startswith("-"):
+            continue
+        for char in text:
+               if char in arg:
+                   return True
+        return False
+
+
+def docmd(text):
+    "parse text for command and run it."
+    cli = Line()
+    for txt in text.split(" ! "):
+        evt = Message()
+        evt.orig = repr(cli)
+        evt.text = txt
+        evt.type = "command"
+        command(evt)
+        evt.wait()
+
+ 
+def daemon(verbose=False, nochdir=False):
+    "run in the background."
+    pid = os.fork()
+    if pid != 0:
+        os._exit(0)
+    os.setsid()
+    pid2 = os.fork()
+    if pid2 != 0:
+        os._exit(0)
+    with open('/dev/null', 'r', encoding="utf-8") as sis:
+        os.dup2(sis.fileno(), sys.stdin.fileno())
+    with open('/dev/null', 'a+', encoding="utf-8") as sos:
+        os.dup2(sos.fileno(), sys.stdout.fileno())
+    with open('/dev/null', 'a+', encoding="utf-8") as ses:
+        os.dup2(ses.fileno(), sys.stderr.fileno())
+    os.umask(0)
+    os.chdir("/")
+    os.nice(10)
+
+
+def pidfile(filename):
+    "write pidfile."
+    if os.path.exists(filename):
+        os.unlink(filename)
+    path2 = pathlib.Path(filename)
+    path2.parent.mkdir(parents=True, exist_ok=True)
+    with open(filename, "w", encoding="utf-8") as fds:
+        fds.write(str(os.getpid()))
+
+
+def pidname(name: str):
+    "name of pidfile."
+    return os.path.join(Cfg.wdr, f"{name}.pid")
+
+
+def privileges():
+    "drop privileges."
+    import getpass
+    import pwd
+    pwnam2 = pwd.getpwnam(getpass.getuser())
+    os.setgid(pwnam2.pw_gid)
+    os.setuid(pwnam2.pw_uid)
+
+
+def wrap(func):
+    "restore console."
+    import termios
+    old = None
+    try:
+        old = termios.tcgetattr(sys.stdin.fileno())
+    except termios.error:
+        pass
+    try:
+        wrapped(func)
+    finally:
+        pass
+    if old:
+        termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+
+
+"scripts"
+
+
+def background():
+    "background script."
+    daemon()
+    privileges()
+    pidfile(pidname(Cfg.name))
+    addcmd(cmd, mod, ver)
+    boot(MODS, MODS2, inits=Cfg.init or "irc,rss")
+    forever()
+
+
+def console():
+    "console script."
+    import readline
+    readline.redisplay()
+    boot(MODS, MODS2)
+    addcmd(cmd, mod, ver)
+    docmd(TXT)
+    csl = Term()
+    csl.start()
+    forever()
+
+
+def control():
+    "cli script."
+    if len(sys.argv) == 1:
+        return
+    boot(MODS, MODS2)
+    addcmd(cmd, mod, ver)
+    docmd(TXT)
+
+
+def service():
+    "service script."
+    privileges()
+    banner()
+    pidfile(pidname(Cfg.name))
+    addcmd(cmd, mod, ver)
+    boot(MODS, MODS2, inits=Cfg.init or "irc,rss")
+    forever()
+
+
+"commands"
+
+
+def cmd(event):
+    "list available commands."
+    event.reply(",".join(sorted(Commands.names or Commands.cmds)))
+
+
+def mod(event):
+    "list available commands."
+    event.reply(",".join([x[:-3] for x in os.listdir(MODS.__path__[0]) if not x.startswith("__")]))
+
+
+def ver(event):
+    "show version."
+    event.reply(f"{Cfg.name.upper()} {Cfg.version}")
+
+
+"runtime"
+
+
+def main():
+    "main"
+    if check("d"):
+        background()
+    elif check("c"):
+        wrap(console)
+    elif check("s"):
+        wrapped(service)
+    else:
+        wrapped(control)
+
+
+if __name__ == "__main__":
+    main()
