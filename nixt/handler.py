@@ -152,6 +152,6 @@ class Output(Client):
 def __dir__():
     return (
         'Client',
-        'Hand;er',
+        'Handler',
         'Output'
     )
