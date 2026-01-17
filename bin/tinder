@@ -17,20 +17,28 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.brokers import getobj
 from nixt.clients import Output
-from nixt.command import command, scanner
 from nixt.message import Message
 from nixt.methods import fmt, parse
 from nixt.objects import Config
-from nixt.storage import persist, skel
 from nixt.threads import launch
 from nixt.timings import elapsed
 from nixt.utility import wrapped
 
 
+from nixbot.command import command, scanner
+from nixbot.storage import persist, skel
+
+
 try:
-    import mods as MODS
+    import nixbot.modules as MODS
 except ModuleNotFoundError:
     MODS = None
+
+
+try:
+    import mods as MODS2
+except ModuleNotFoundError:
+    MODS2 = None
 
 
 Cfg = Config()
@@ -38,7 +46,7 @@ Cfg = Config()
 
 Cfg.debug = True
 Cfg.level = "info"
-Cfg.name = "nixt"
+Cfg.name = "nixbot"
 Cfg.version = 3
 Cfg.wdr = ".test"
 
@@ -154,7 +162,7 @@ def main():
     parse(Cfg, " ".join(sys.argv[1:]))
     Cfg.wdr = Cfg.sets.wdr or ".test"
     persist(Cfg.wdr)
-    for mod in scanner(MODS):
+    for mod in scanner(MODS,MODS2):
         mod.DEBUG = True
     if "v" in Cfg.opts:
         banner(Cfg.name, Cfg.version)
