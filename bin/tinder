@@ -38,6 +38,9 @@ except ModuleNotFoundError:
     MODS2 = None
 
 
+"defines"
+
+
 Cfg = Config()
 
 

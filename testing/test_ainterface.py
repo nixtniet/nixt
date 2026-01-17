@@ -14,17 +14,14 @@ import unittest
 sys.path.insert(0, os.getcwd())
 
 
-import nixt
-import nixt.brokers
-import nixt.handler
-import nixt.message
-import nixt.threads
-
-
 import nixbot
+import nixbot.brokers
+import nixbot.handler
+import nixbot.message
 import nixbot.methods
 import nixbot.objects
 import nixbot.serials
+import nixbot.threads
 import nixbot.timings
 import nixbot.utility
 

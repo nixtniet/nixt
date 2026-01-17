@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.handler import Handler
+from nixbot.handler import Handler
 
 
 class TestHandler(unittest.TestCase):

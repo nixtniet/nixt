@@ -4,8 +4,8 @@
 import time
 
 
-from nixbot.caching import find, kinds
 from nixbot.methods import fmt
+from nixbot.persist import find, kinds
 from nixbot.timings import elapsed, fntime
 
 

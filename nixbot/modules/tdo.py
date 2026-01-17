@@ -4,8 +4,8 @@
 import time
 
 
-from nixbot.caching import find, write
 from nixbot.objects import Object
+from nixbot.persist import find, write
 from nixbot.timings import elapsed, fntime
 
 

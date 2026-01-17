@@ -1,9 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-from nixt.brokers import objs
-
-
+from nixbot.brokers import objs
 from nixbot.methods import fqn
 
 

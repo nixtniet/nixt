@@ -7,11 +7,9 @@ import threading
 import time
 
 
-from nixt.brokers import getobj, likeobj
-
-
-from nixbot.caching import last, write
+from nixbot.brokers import getobj, likeobj
 from nixbot.objects import Object, items
+from nixbot.persist import last, write
 from nixbot.timings import NoDate, Timed, day, elapsed, extract, hour, today
 from nixbot.utility import ident
 

@@ -11,16 +11,14 @@ import threading
 import time
 
 
-from nixt.brokers import getobj
-from nixt.handler import Output
-from nixt.message import Message
-from nixt.threads import launch
-
-
-from nixbot.caching import last, write
+from nixbot.brokers import getobj
+from nixbot.clients import Output
 from nixbot.command import command
+from nixbot.message import Message
 from nixbot.methods import edit, fmt
 from nixbot.objects import Object, keys
+from nixbot.persist import last, write
+from nixbot.threads import launch
 from nixbot.utility import ident
 
 
@@ -568,12 +566,12 @@ def cb_notice(evt):
 
 def cb_privmsg(evt):
     bot = getobj(evt.orig)
+    print(bot)
     if not bot.cfg.commands:
         return
+    print(evt)
     if evt.text:
-        if evt.text[0] in [
-            "!",
-        ]:
+        if evt.text[0] in ["!",]:
             evt.text = evt.text[1:]
         elif evt.text.startswith(f"{bot.cfg.nick}:"):
             evt.text = evt.text[len(bot.cfg.nick) + 1 :]

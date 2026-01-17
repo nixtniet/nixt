@@ -9,11 +9,9 @@ import inspect
 import os
 
 
-from nixt.brokers import getobj
-from nixt.threads import launch
-
-
+from nixbot.brokers import getobj
 from nixbot.methods import parse
+from nixbot.threads import launch
 from nixbot.utility import spl
 
 

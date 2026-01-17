@@ -123,7 +123,7 @@ class TestObject(unittest.TestCase):
         self.assertEqual(len(obj), 0)
 
     def test_module(self):
-        self.assertTrue(Object().__module__, "nixt.obejcts")
+        self.assertTrue(Object().__module__, "nixbot.obejcts")
 
     def test_repr(self):
         self.assertTrue(update(Object(),
