@@ -11,7 +11,6 @@ import time
 class Message:
 
     def __init__(self):
-        super().__init__()
         self._ready = threading.Event()
         self._thr = None
         self.result = {}

@@ -13,15 +13,13 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.handler import Output
-from nixt.message import Message
-from nixt.threads import launch
-
-
-from nixbot.caching import persist
+from nixbot.clients import Output
 from nixbot.command import command, scanner
+from nixbot.message import Message
 from nixbot.methods import fmt, parse
 from nixbot.objects import Config
+from nixbot.persist import persist
+from nixbot.threads import launch
 from nixbot.timings import elapsed
 from nixbot.utility import wrapped
 
@@ -134,6 +132,7 @@ def payload(todo):
             evt.text = f"{cmd} {ex}"
             evt.kind = "command"
             Pool.put(evt)
+            print(evt)
             events.put(evt)
 
 
