@@ -373,6 +373,7 @@ def exp(event):
     with importlock:
         event.reply(TEMPLATE)
         nrs = 0
+        print(fqn(Rss))
         for _fn, ooo in find(fqn(Rss)):
             nrs += 1
             obj = Rss()

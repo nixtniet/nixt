@@ -21,7 +21,7 @@ from nixt.command import command, scanner
 from nixt.message import Message
 from nixt.methods import fmt, parse
 from nixt.objects import Config
-from nixt.storage import persist,skel
+from nixt.storage import persist, skel
 from nixt.threads import launch
 from nixt.timings import elapsed
 from nixt.utility import wrapped

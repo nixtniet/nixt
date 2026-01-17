@@ -18,7 +18,7 @@ sys.path.insert(0, os.getcwd())
 from nixt.clients import Client
 from nixt.command import Commands, addcmd, command, modules, scanner
 from nixt.message import Message
-from nixt.methods import parse
+from nixt.methods import fmt, parse
 from nixt.objects import Config
 from nixt.storage import persist
 from nixt.utility import forever, level, wrapped
@@ -61,34 +61,20 @@ class Line(Client):
 
 class Console(Line):
 
-    def __init__(self):
-        super().__init__()
-        self.done = threading.Event()
-        self.done.set()
-
     def callback(self, event):
         "wait for callback result."
         if not event.text:
             event.ready()
-            self.done.set()
             return
         super().callback(event)
         event.wait()
-        self.done.set()
 
     def poll(self):
         "poll for an event."
-        self.done.wait()
-        self.done.clear()
         evt = Message()
         evt.text = input("> ")
         evt.kind = "command"
         return evt
-
-    def raw(self, txt):
-        "add newline if waiting."
-        if not self.done.is_set():
-            super().raw(txt)
 
 
 "utility"
@@ -97,11 +83,12 @@ class Console(Line):
 def banner():
     "hello."
     tme = time.ctime(time.time()).replace("  ", " ")
-    print("%s %s since %s (%s)" % (
+    print("%s %s since %s %s in %s" % (
         Cfg.name.upper(),
         Cfg.version,
         tme,
-        Cfg.level.upper() or 'INFO'
+        Cfg.level.upper(),
+        Cfg.wdr
     ))
     sys.stdout.flush()
 
@@ -109,10 +96,13 @@ def banner():
 def boot(*pkgs, inits=""):
     "in the beginning."
     parse(Cfg, TXT)
-    Cfg.init = Cfg.init or Cfg.sets.init or ""
+    Cfg.init = Cfg.sets.init or Cfg.init or ""
+    Cfg.level = Cfg.sets.level or Cfg.level or "info"
     Cfg.wdr = Cfg.sets.wdr or Cfg.wdr or ""
     level(Cfg.level)
-    if 'n' not in Cfg.opts:
+    if "v" in Cfg.opts:
+        banner()
+    if 'p' not in Cfg.opts:
         persist(Cfg.wdr)
     if 'a' in Cfg.opts:
         mds = modules(*pkgs)
@@ -223,8 +213,6 @@ def console():
     "console script."
     import readline
     readline.redisplay()
-    if check('v'):
-        banner()
     boot(MODS)
     addcmd(cmd, mod, ver)
     docmd(TXT)

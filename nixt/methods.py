@@ -49,11 +49,10 @@ def fmt(obj, args=[], skip=[], plain=False, empty=False):
 
 
 def fqn(obj):
-    "full qualified name."
-    if "__name__" in dir(obj):
-        return ".".join([obj.__module__, obj.__name__])
-    else:
-        return ".".join([obj.__module__, obj.__class__.__name__])
+    kin = str(type(obj)).split()[-1][1:-2]
+    if kin == "type":
+        kin = f"{obj.__module__}.{obj.__name__}"
+    return kin
 
 
 def parse(obj, text):
