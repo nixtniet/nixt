@@ -11,8 +11,10 @@ import time
 
 from nixt.brokers import objs
 from nixt.message import Message
-from nixt.objects import Object, construct, keys
-from nixt.timings import Repeater, elapsed
+
+
+from nixbot.objects import Object, construct, keys
+from nixbot.timings import Repeater, elapsed
 
 
 def init():

@@ -9,7 +9,9 @@ from random import SystemRandom
 
 from nixt.brokers import objs
 from nixt.message import Message
-from nixt.timings import Repeater
+
+
+from nixbot.timings import Repeater
 
 
 rand = SystemRandom()

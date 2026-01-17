@@ -4,7 +4,7 @@
 "an object as the first argument"
 
 
-from .objects import Default, items
+from nixbot.objects import Default, items
 
 
 def deleted(obj):

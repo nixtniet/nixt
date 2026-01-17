@@ -20,14 +20,14 @@ from urllib.parse import quote_plus, urlencode
 
 
 from nixt.brokers import objs
-from nixt.methods import fmt, fqn
-from nixt.objects import Object, update
 from nixt.threads import launch
-from nixt.timings import Repeater, elapsed, fntime
-from nixt.utility import ident, spl
 
 
+from nixbot.methods import fmt, fqn
+from nixbot.objects import Object, update
 from nixbot.storage import find, last, write
+from nixbot.timings import Repeater, elapsed, fntime
+from nixbot.utility import ident, spl
 
 
 DEBUG = False

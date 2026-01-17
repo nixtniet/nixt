@@ -4,10 +4,8 @@
 import time
 
 
-from nixt.objects import Object
-from nixt.timings import elapsed, fntime
-
-
+from nixbot.objects import Object
+from nixbot.timings import elapsed, fntime
 from nixbot.storage import find, write
 
 

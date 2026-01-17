@@ -2,7 +2,9 @@
 
 
 from nixt.brokers import objs
-from nixt.methods import fqn
+
+
+from nixbot.methods import fqn
 
 
 def flt(event):

@@ -8,10 +8,7 @@ import threading
 import time
 
 
-from .objects import Default
-
-
-class Message(Default):
+class Message:
 
     def __init__(self):
         super().__init__()
@@ -19,9 +16,11 @@ class Message(Default):
         self._thr = None
         self.result = {}
         self.args = []
+        self.channel = ""
         self.index = 0
         self.kind = "event"
         self.orig = ""
+        self.waiting = False
 
     def ready(self):
         "flag message as ready."

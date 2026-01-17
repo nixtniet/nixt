@@ -10,8 +10,10 @@ import time
 
 
 from nixt.brokers import objs
-from nixt.objects import Object
 from nixt.threads import launch
+
+
+from nixbot.objects import Object
 
 
 DEBUG = False

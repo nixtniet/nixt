@@ -12,7 +12,7 @@ import pathlib
 import time
 
 
-from .methods import fqn
+from nixbot.methods import fqn
 
 
 class Log:

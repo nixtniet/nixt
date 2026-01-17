@@ -16,17 +16,17 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.brokers import getobj
-from nixt.clients import Output
+from nixt.handler import Output
 from nixt.message import Message
-from nixt.methods import fmt, parse
-from nixt.objects import Config
 from nixt.threads import launch
-from nixt.timings import elapsed
-from nixt.utility import wrapped
 
 
 from nixbot.command import command, scanner
+from nixbot.methods import fmt, parse
+from nixbot.objects import Config
 from nixbot.storage import persist, skel
+from nixbot.timings import elapsed
+from nixbot.utility import wrapped
 
 
 try:

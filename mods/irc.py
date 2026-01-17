@@ -12,16 +12,16 @@ import time
 
 
 from nixt.brokers import getobj
-from nixt.clients import Output
+from nixt.handler import Output
 from nixt.message import Message
-from nixt.methods import edit, fmt
-from nixt.objects import Object, keys
 from nixt.threads import launch
-from nixt.utility import ident
 
 
 from nixbot.command import command
+from nixbot.methods import edit, fmt
+from nixbot.objects import Object, keys
 from nixbot.storage import last, write
+from nixbot.utility import ident
 
 
 NAME = "nixbot"

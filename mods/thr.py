@@ -5,7 +5,7 @@ import threading
 import time
 
 
-from nixt.timings import elapsed
+from nixbot.timings import elapsed
 
 
 STARTTIME = time.time()

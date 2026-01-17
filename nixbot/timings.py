@@ -11,7 +11,7 @@ import threading
 import time
 
 
-from .threads import launch, name
+from nixt.threads import launch, name
 
 
 "exception"

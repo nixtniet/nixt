@@ -10,11 +10,13 @@ import pathlib
 import threading
 
 
-from nixt.methods import deleted, fqn, search
-from nixt.objects import Object, keys, update
 from nixt.serials import dump, load
-from nixt.timings import fntime
-from nixt.utility import cdir, ident
+
+
+from nixbot.methods import deleted, fqn, search
+from nixbot.objects import Object, keys, update
+from nixbot.timings import fntime
+from nixbot.utility import cdir, ident
 
 
 lock = threading.RLock()
