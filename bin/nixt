@@ -15,15 +15,16 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.handler import Client
-from nixt.message import Message
-
-
+from nixbot.caching import persist
 from nixbot.command import Commands, addcmd, command, modules, scanner
 from nixbot.methods import fmt, parse
 from nixbot.objects import Config
-from nixbot.storage import persist
 from nixbot.utility import forever, level, wrapped
+
+
+from nixt.handler import Client
+from nixt.message import Message
+from nixt.threads import launch
 
 
 if os.path.exists("mods"):

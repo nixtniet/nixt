@@ -16,23 +16,24 @@ sys.path.insert(0, os.getcwd())
 
 import nixt
 import nixt.brokers
-import nixt.clients
 import nixt.handler
 import nixt.message
-import nixt.methods
-import nixt.objects
 import nixt.serials
 import nixt.threads
-import nixt.timings
-import nixt.utility
 
 
-from nixt.objects import *
+import nixbot
+import nixbot.methods
+import nixbot.objects
+import nixbot.timings
+import nixbot.utility
+
+
+from nixbot.objects import *
 
 
 PACKAGE = [
     'brokers',
-    'clients',
     'handler',
     'message',
     'methods',
@@ -77,10 +78,13 @@ METHODS = [
 
 
 class TestInterface(unittest.TestCase):
+
     def test_package(self):
         okd = True
         for mod in PACKAGE:
-            mod1 = getattr(nixt, mod, None)
+            mod1 = getattr(nixbot, mod, None)
+            if not mod1:
+                mod1 = getattr(nixt, mod, None)
             if not mod1:
                 okd = False
                 print(mod)

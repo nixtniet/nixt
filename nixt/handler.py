@@ -88,8 +88,6 @@ class Client(Handler):
             if not event or self.stopped.is_set():
                 break
             self.put(event)
-            if event.waiting:
-                event.wait()
 
     def poll(self):
         "return event."

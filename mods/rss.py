@@ -23,9 +23,9 @@ from nixt.brokers import objs
 from nixt.threads import launch
 
 
+from nixbot.caching import find, last, write
 from nixbot.methods import fmt, fqn
 from nixbot.objects import Object, update
-from nixbot.storage import find, last, write
 from nixbot.timings import Repeater, elapsed, fntime
 from nixbot.utility import ident, spl
 

@@ -7,14 +7,14 @@
 import unittest
 
 
-from nixt.objects import Object, items, keys, update, values
+from nixbot.objects import Object, items, keys, update, values
 
 
-import nixt.objects
+import nixbot.objects
 
 
 OBJECT = Object()
-PACKAGE = nixt.objects
+PACKAGE = nixbot.objects
 VALIDJSON = "{'test': 'bla'}"
 VALIDPYTHON = '{"test": "bla"}'
 

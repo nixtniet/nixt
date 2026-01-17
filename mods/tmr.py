@@ -10,8 +10,8 @@ import time
 from nixt.brokers import getobj, likeobj
 
 
+from nixbot.caching import last, write
 from nixbot.objects import Object, items
-from nixbot.storage import last, write
 from nixbot.timings import NoDate, Timed, day, elapsed, extract, hour, today
 from nixbot.utility import ident
 

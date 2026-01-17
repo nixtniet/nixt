@@ -4,8 +4,10 @@
 import unittest
 
 
-from nixt.objects import Object, update
 from nixt.serials import dumps, loads
+
+
+from nixbot.objects import Object, update
 
 
 class TestTypes(unittest.TestCase):

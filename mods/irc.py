@@ -17,10 +17,10 @@ from nixt.message import Message
 from nixt.threads import launch
 
 
+from nixbot.caching import last, write
 from nixbot.command import command
 from nixbot.methods import edit, fmt
 from nixbot.objects import Object, keys
-from nixbot.storage import last, write
 from nixbot.utility import ident
 
 

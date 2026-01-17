@@ -10,11 +10,9 @@ import pathlib
 import threading
 
 
-from nixt.serials import dump, load
-
-
 from nixbot.methods import deleted, fqn, search
 from nixbot.objects import Object, keys, update
+from nixbot.serials import dump, load
 from nixbot.timings import fntime
 from nixbot.utility import cdir, ident
 

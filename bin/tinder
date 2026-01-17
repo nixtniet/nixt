@@ -21,10 +21,10 @@ from nixt.message import Message
 from nixt.threads import launch
 
 
+from nixbot.caching import persist, skel
 from nixbot.command import command, scanner
 from nixbot.methods import fmt, parse
 from nixbot.objects import Config
-from nixbot.storage import persist, skel
 from nixbot.timings import elapsed
 from nixbot.utility import wrapped
 
