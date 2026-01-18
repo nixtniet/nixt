@@ -32,7 +32,5 @@ classifiers = [
 [tool.setuptools]
 packages = [
     'nixt',
-    'nixt.modules',
-    'nixt.nucleus'
 ]
 include-package-data = false
