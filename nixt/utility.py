@@ -8,11 +8,10 @@ import datetime
 import inspect
 import logging
 import os
-import pathlib
 import time
 
 
-from nixbot.methods import fqn
+from .methods import fqn
 
 
 class Log:
@@ -26,12 +25,6 @@ class Format(logging.Formatter):
     def format(self, record):
         record.module = record.module.upper()
         return logging.Formatter.format(self, record)
-
-
-def cdir(path):
-    "create directory."
-    pth = pathlib.Path(path)
-    pth.parent.mkdir(parents=True, exist_ok=True)
 
 
 def forever():
@@ -102,7 +95,6 @@ def wrapped(func):
 def __dir__():
     return (
         'Log',
-        'cdir',
         'forever',
         'ident',
         'level',

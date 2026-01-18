@@ -7,8 +7,8 @@
 import unittest
 
 
-from nixbot.methods import fmt
-from nixbot.objects import Object
+from nixt.methods import fmt
+from nixt.objects import Object
 
 
 class TestMethods(unittest.TestCase):

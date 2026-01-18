@@ -4,7 +4,7 @@
 import unittest
 
 
-from nixbot.objects import Object
+from nixt.objects import Object
 
 
 class A(Object):

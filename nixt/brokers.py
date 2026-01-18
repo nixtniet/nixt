@@ -19,7 +19,7 @@ def getobj(origin):
     return Broker.objects.get(origin)
 
 
-def objs(attr):
+def getobjs(attr):
     "object with a certain attribute."
     for obj in Broker.objects.values():
         if attr in dir(obj):

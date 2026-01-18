@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-from nixbot.persist import attrs, kinds
+from nixt.caching import attrs, kinds
 
 
 def atr(event):

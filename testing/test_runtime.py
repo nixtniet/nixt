@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixbot.threads import Thread
+from nixt.threads import Thread
 
 
 def func():

@@ -7,8 +7,8 @@
 import unittest
 
 
-from nixbot.clients import Client
-from nixbot.message import Message
+from nixt.handler import Client
+from nixt.message import Message
 
 
 def hello(event):

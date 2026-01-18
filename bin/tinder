@@ -13,30 +13,19 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixbot.clients import Output
-from nixbot.command import command, scanner
-from nixbot.message import Message
-from nixbot.methods import fmt, parse
-from nixbot.objects import Config
-from nixbot.persist import persist
-from nixbot.threads import launch
-from nixbot.timings import elapsed
-from nixbot.utility import wrapped
+from nixt.caching import persist
+from nixt.command import command
+from nixt.message import Message
+from nixt.methods import fmt, parse
+from nixt.handler import Client
+from nixt.objects import Config
+from nixt.package import adddir, scanner
+from nixt.threads import launch
+from nixt.timings import elapsed
+from nixt.utility import wrapped
 
 
-try:
-    import nixbot.modules as MODS
-except ModuleNotFoundError:
-    MODS = None
-
-
-try:
-    import mods as MODS2
-except ModuleNotFoundError:
-    MODS2 = None
-
-
-"defines"
+import nixt.modules as MODS
 
 
 Cfg = Config()
@@ -44,7 +33,7 @@ Cfg = Config()
 
 Cfg.debug = True
 Cfg.level = "info"
-Cfg.name = "nixbot"
+Cfg.name = "nixt"
 Cfg.version = 3
 Cfg.wdr = ".test"
 
@@ -55,10 +44,10 @@ events = queue.Queue()
 "clients"
 
 
-class CLI(Output):
+class CLI(Client):
 
     def __init__(self):
-        Output.__init__(self)
+        Client.__init__(self)
         self.register("command", command)
 
     def raw(self, txt):
@@ -132,7 +121,6 @@ def payload(todo):
             evt.text = f"{cmd} {ex}"
             evt.kind = "command"
             Pool.put(evt)
-            print(evt)
             events.put(evt)
 
 
@@ -159,9 +147,10 @@ def main():
     if "p" not in Cfg.opts and os.path.exists(Cfg.wdr):
         shutil.rmtree(Cfg.wdr)
     parse(Cfg, " ".join(sys.argv[1:]))
-    Cfg.wdr = Cfg.sets.wdr or ".test"
     persist(Cfg.wdr)
-    for mod in scanner(MODS,MODS2):
+    adddir("modules", MODS.__path__[0])
+    adddir('mods', 'mods')
+    for mod in scanner():
         mod.DEBUG = True
     if "v" in Cfg.opts:
         banner(Cfg.name, Cfg.version)

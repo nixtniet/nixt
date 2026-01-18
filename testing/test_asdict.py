@@ -4,7 +4,7 @@
 import unittest
 
 
-from nixbot.objects import Object, items, keys, update, values
+from nixt.objects import Object, items, keys, update, values
 
 
 VALIDJSON = '{"test": "bla"}'
@@ -123,7 +123,7 @@ class TestObject(unittest.TestCase):
         self.assertEqual(len(obj), 0)
 
     def test_module(self):
-        self.assertTrue(Object().__module__, "nixbot.obejcts")
+        self.assertTrue(Object().__module__, "nixt.obejcts")
 
     def test_repr(self):
         self.assertTrue(update(Object(),

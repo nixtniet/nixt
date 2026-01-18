@@ -7,11 +7,11 @@ import threading
 import time
 
 
-from nixbot.brokers import getobj, likeobj
-from nixbot.objects import Object, items
-from nixbot.persist import last, write
-from nixbot.timings import NoDate, Timed, day, elapsed, extract, hour, today
-from nixbot.utility import ident
+from nixt.brokers import getobj, likeobj
+from nixt.caching import last, write
+from nixt.objects import Object, items
+from nixt.timings import NoDate, Timed, day, elapsed, extract, hour, today
+from nixt.utility import ident
 
 
 rand = random.SystemRandom()

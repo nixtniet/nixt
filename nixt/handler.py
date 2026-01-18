@@ -100,7 +100,7 @@ class Console(Client):
                 break
             event.orig = repr(self)
             self.callback(event)
-            event.wait()
+            #event.wait()
 
     def poll(self):
         "return event."

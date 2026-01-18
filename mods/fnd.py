@@ -4,9 +4,9 @@
 import time
 
 
-from nixbot.methods import fmt
-from nixbot.persist import find, kinds
-from nixbot.timings import elapsed, fntime
+from nixt.caching import find, kinds
+from nixt.methods import fmt
+from nixt.timings import elapsed, fntime
 
 
 def fnd(event):

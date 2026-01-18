@@ -1,50 +1,30 @@
 # This file is placed in the Public Domain.
 
 
-"commands"
+"module management"
 
 
 import importlib.util
-import inspect
 import os
 
 
-from nixbot.brokers import getobj
-from nixbot.methods import parse
-from nixbot.threads import launch
-from nixbot.utility import spl
+from .command import scancmd
+from .threads import launch
+from .utility import spl
 
 
-class Commands:
+class Mods:
 
-    cmds = {}
-    names = {}
-
-
-def addcmd(*args):
-    "add functions to commands."
-    for func in args:
-        name = func.__name__
-        Commands.cmds[name] = func
-        Commands.names[name] = func.__module__.split(".")[-1]
+    dirs = {}
 
 
-def command(evt):
-    "command callback."
-    parse(evt, evt.text)
-    func = getcmd(evt.cmd)
-    print(func, evt)
-    if func:
-        func(evt)
-        bot = getobj(evt.orig)
-        bot.display(evt)
-    evt.ready()
+def adddir(name, path):
+    Mods.dirs[name] = path
 
 
-def getcmd(cmd):
-    "get function for command."
-    return Commands.cmds.get(cmd, None)
-        
+def addpkg(pkg):
+    Mods.dirs[pkg.__name__] = pkg.__path__[0]
+
 
 def importer(name, pth=""):
     "import module by path."
@@ -61,11 +41,10 @@ def importer(name, pth=""):
     return mod
 
 
-def modules(*pkgs, ignore=""):
+def modules(ignore=""):
     "comma seperated list of available modules."
     mods = []
-    for pkg in pkgs:
-        path = pkg.__path__[0]
+    for pkgname, path in Mods.dirs.items():
         mods.extend([
             x[:-3] for x in os.listdir(path)
             if x.endswith(".py") and
@@ -75,27 +54,18 @@ def modules(*pkgs, ignore=""):
     return ",".join(sorted(mods))
 
 
-def scancmd(module):
-    "scan a module for functions with event as argument."
-    for key, cmdz in inspect.getmembers(module, inspect.isfunction):
-        if 'event' not in inspect.signature(cmdz).parameters:
-            continue
-        addcmd(cmdz)
-
-
-def scanner(*pkgs, inits="", wait=False):
+def scanner(inits="", wait=False):
     "scan named modules for commands."
     mods = []
     thrs = []
-    for pkg in pkgs:
-        if not pkg:
-            continue
-        path = pkg.__path__[0]
+    for pkgname, path in Mods.dirs.items():
         for fnm in os.listdir(path):
             if fnm.startswith("__"):
                 continue
+            if not fnm.endswith(".py"):
+                continue
             name = fnm[:-3]
-            modname = f"{pkg.__name__}.{name}"
+            modname = f"{pkgname}.{name}"
             mod = importer(modname, os.path.join(path, fnm))
             if not mod:
                 continue
@@ -114,12 +84,10 @@ def scanner(*pkgs, inits="", wait=False):
 
 def __dir__():
     return (
-        'Commands',
-        'addcmd',
-        'command',
-        'getcmd',
+        'Mods',
+        'adddir',
+        'addpkg',
         'importer',
         'modules',
-        'scancmd',
         'scanner'
     )

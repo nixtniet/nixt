@@ -4,7 +4,7 @@
 import os
 
 
-from nixbot.utility import where
+from nixt.utility import where
 
 
 def pth(event):

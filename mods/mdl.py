@@ -10,10 +10,10 @@ import time
 
 
 
-from nixbot.brokers import objs
-from nixbot.message import Message
-from nixbot.objects import Object, construct, keys
-from nixbot.timings import Repeater, elapsed
+from nixt.brokers import getobjs
+from nixt.message import Message
+from nixt.objects import Object, construct, keys
+from nixt.timings import Repeater, elapsed
 
 
 def init():
@@ -142,7 +142,7 @@ def cbnow(_evt):
         nrtimes = int(delta/needed)
         txt += f"{getalias(nme)} {nrtimes} | "
     txt += SOURCE
-    for bot in objs("announce"):
+    for bot in getobjs("announce"):
         bot.announce(txt)
 
 
@@ -165,7 +165,7 @@ def cbstats(evt):
             nryear,
             elapsed(needed)
         )
-        for bot in objs("announce"):
+        for bot in getobjs("announce"):
             bot.announce(txt)
 
 

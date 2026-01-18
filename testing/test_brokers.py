@@ -8,8 +8,8 @@ from nixt.brokers import Broker
 from nixt.handler import Client
 
 
-from nixbot.objects import Object, update, values
-from nixbot.serials import dumps, loads
+from nixt.objects import Object, update, values
+from nixt.serials import dumps, loads
 
 
 class TestBroker(unittest.TestCase):

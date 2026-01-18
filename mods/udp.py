@@ -9,9 +9,9 @@ import threading
 import time
 
 
-from nixbot.brokers import objs
-from nixbot.objects import Object
-from nixbot.threads import launch
+from nixt.brokers import getobjs
+from nixt.objects import Object
+from nixt.threads import launch
 
 
 DEBUG = False
@@ -46,7 +46,7 @@ class UDP(Object):
     def output(self, txt, addr=None):
         if addr:
             Config.addr = addr
-        for bot in objs("announce"):
+        for bot in getobjs("announce"):
             bot.announce(txt.replace("\00", ""))
 
     def loop(self):

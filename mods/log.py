@@ -4,9 +4,9 @@
 import time
 
 
-from nixbot.objects import Object
-from nixbot.persist import find, write
-from nixbot.timings import elapsed, fntime
+from nixt.caching import find, write
+from nixt.objects import Object
+from nixt.timings import elapsed, fntime
 
 
 class Log(Object):

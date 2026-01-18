@@ -14,22 +14,17 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixbot.clients import Console
-from nixbot.command import Commands, addcmd, command, modules, scanner
-from nixbot.message import Message
-from nixbot.methods import parse
-from nixbot.objects import Config
-from nixbot.persist import persist
-from nixbot.utility import forever, level, wrapped
+from nixt.caching import persist
+from nixt.command import Commands, addcmd, command
+from nixt.handler import Console
+from nixt.message import Message
+from nixt.methods import parse
+from nixt.objects import Config
+from nixt.package import adddir, addpkg, modules, scanner
+from nixt.utility import forever, level, wrapped
 
 
-from nixbot import modules as MODS
-
-
-if os.path.exists("mods"):
-    import mods as MODS2
-else:
-    MODS2 = None
+from nixt import modules as MODS
 
 
 "defines"
@@ -39,6 +34,8 @@ TXT = " ".join(sys.argv[1:])
 
 
 Cfg = Config()
+
+
 Cfg.debug = False
 Cfg.init = ""
 Cfg.level = "info"
@@ -70,6 +67,7 @@ class Term(Line):
             event.ready()
             return
         super().callback(event)
+        event.wait()
 
     def poll(self):
         "poll for an event."
@@ -102,15 +100,18 @@ def boot(*pkgs, inits=""):
     Cfg.level = Cfg.sets.level or Cfg.level or "info"
     Cfg.wdr = Cfg.sets.wdr or Cfg.wdr or ""
     level(Cfg.level)
+    addpkg(MODS)
+    if "m" in Cfg.opts:
+        adddir("mods", "mods")
     if "v" in Cfg.opts:
         banner()
     if 'p' not in Cfg.opts:
         persist(Cfg.wdr)
     if 'a' in Cfg.opts:
-        mds = modules(*pkgs)
+        mds = modules()
     else:
         mds = inits or Cfg.init
-    for mod in scanner(*pkgs, inits=mds, wait="w" in Cfg.opts):
+    for mod in scanner(inits=mds, wait="w" in Cfg.opts):
         mod.DEBUG = Cfg.debug
         mod.NAME = Cfg.name
             
@@ -207,7 +208,7 @@ def background():
     privileges()
     pidfile(pidname(Cfg.name))
     addcmd(cmd, mod, ver)
-    boot(MODS, MODS2, inits=Cfg.init or "irc,rss")
+    boot(MODS, inits=Cfg.init or "irc,rss")
     forever()
 
 
@@ -215,7 +216,7 @@ def console():
     "console script."
     import readline
     readline.redisplay()
-    boot(MODS, MODS2)
+    boot(MODS)
     addcmd(cmd, mod, ver)
     docmd(TXT)
     csl = Term()
@@ -227,7 +228,7 @@ def control():
     "cli script."
     if len(sys.argv) == 1:
         return
-    boot(MODS, MODS2)
+    boot(MODS)
     addcmd(cmd, mod, ver)
     docmd(TXT)
 
@@ -238,7 +239,7 @@ def service():
     banner()
     pidfile(pidname(Cfg.name))
     addcmd(cmd, mod, ver)
-    boot(MODS, MODS2, inits=Cfg.init or "irc,rss")
+    boot(MODS, inits=Cfg.init or "irc,rss")
     forever()
 
 

@@ -4,7 +4,7 @@
 "an object as the first argument"
 
 
-from nixbot.objects import Default, items
+from .objects import Default, items
 
 
 def deleted(obj):
@@ -49,6 +49,7 @@ def fmt(obj, args=[], skip=[], plain=False, empty=False):
 
 
 def fqn(obj):
+    "full qualified name."
     kin = str(type(obj)).split()[-1][1:-2]
     if kin == "type":
         kin = f"{obj.__module__}.{obj.__name__}"
@@ -127,6 +128,7 @@ def search(obj, selector={}, matching=False):
 
 
 def typed(obj, key, val):
+    "assign proper types."
     try:
         setattr(obj, key, int(val))
         return

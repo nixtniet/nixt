@@ -10,11 +10,11 @@ import pathlib
 import threading
 
 
-from nixbot.methods import deleted, fqn, search
-from nixbot.objects import Object, keys, update
-from nixbot.serials import dump, load
-from nixbot.timings import fntime
-from nixbot.utility import cdir, ident
+from .methods import deleted, fqn, search
+from .objects import Object, keys, update
+from .serials import dump, load
+from .timings import fntime
+from .utility import ident
 
 
 lock = threading.RLock()
@@ -22,7 +22,6 @@ lock = threading.RLock()
 
 class Cache:
 
-    kinds = {}
     paths = {}
     workdir = ""
 
@@ -30,10 +29,78 @@ class Cache:
 def addpath(path, obj):
     "put object into cache."
     Cache.paths[path] = obj
-    full = path.split(os.sep)[0]
-    kind = full.split(".")[-1].lower()
-    if kind not in Cache.kinds:
-        Cache.kinds[kind] = full
+
+
+def getpath(path):
+    "get object from cache."
+    return Cache.paths.get(path, None)
+
+
+def syncpath(path, obj):
+    "update cached object."
+    try:
+        update(Cache.paths[path], obj)
+    except KeyError:
+        addpath(path, obj)
+
+
+"workdir"
+
+
+def persist(path):
+    "enable writing to disk."
+    Cache.workdir = path
+    skel()
+
+
+def kinds():
+    "show kind on objects in cache."
+    return os.listdir(os.path.join(Cache.workdir, "store"))
+
+def long(name):
+    "expand to fqn."
+    split = name.split(".")[-1].lower()
+    res = name
+    for names in kinds():
+        if split == names.split(".")[-1].lower():
+            res = names
+            break
+    return res
+
+
+def skel():
+    "create directories."
+    if not Cache.workdir:
+        return
+    path = os.path.abspath(Cache.workdir)
+    workpath = os.path.join(path, "store")
+    pth = pathlib.Path(workpath)
+    pth.mkdir(parents=True, exist_ok=True)
+    modpath = os.path.join(path, "mods")
+    pth = pathlib.Path(modpath)
+    pth.mkdir(parents=True, exist_ok=True)
+
+
+def workdir():
+    "return workdir."
+    return Cache.workdir
+
+
+"utility"
+
+
+def cdir(path):
+    "create directory."
+    pth = pathlib.Path(path)
+    pth.parent.mkdir(parents=True, exist_ok=True)
+
+
+def strip(path):
+    "strip filename from path."
+    return path.split('store')[-1][1:]
+
+
+"find"
 
 
 def attrs(kind):
@@ -77,11 +144,6 @@ def fns(kind):
                 yield strip(os.path.join(ddd, fll))
 
 
-def kinds():
-    "show kind on objects in cache."
-    return os.listdir(os.path.join(Cache.workdir, "store"))
-
-
 def last(obj, selector={}):
     "last saved version."
     result = sorted(
@@ -96,26 +158,7 @@ def last(obj, selector={}):
     return res
 
 
-def long(name):
-    "expand to fqn."
-    split = name.split(".")[-1].lower()
-    res = name
-    for names in kinds():
-        if split == names.split(".")[-1].lower():
-            res = names
-            break
-    return res
-
-
-def getpath(path):
-    "get object from cache."
-    return Cache.paths.get(path, None)
-
-
-def persist(path):
-    "enable writing to disk."
-    Cache.workdir = path
-    skel()
+"storage"
 
 
 def read(obj, path):
@@ -129,30 +172,6 @@ def read(obj, path):
                 ex.add_note(path)
                 raise ex
 
-
-def skel():
-    "create directories."
-    if not Cache.workdir:
-        return
-    path = os.path.abspath(Cache.workdir)
-    workpath = os.path.join(path, "store")
-    pth = pathlib.Path(workpath)
-    pth.mkdir(parents=True, exist_ok=True)
-    modpath = os.path.join(path, "mods")
-    pth = pathlib.Path(modpath)
-    pth.mkdir(parents=True, exist_ok=True)
-
-
-def strip(path):
-    return path.split('store')[-1][1:]
-
-
-def syncpath(path, obj):
-    "update cached object."
-    try:
-        update(Cache.paths[path], obj)
-    except KeyError:
-        addpath(path, obj)
 
 
 def write(obj, path=""):
@@ -181,5 +200,6 @@ def __dir__():
         'skel',
         'strip',
         'syncpath',
+        'workdir',
         'write'
     )

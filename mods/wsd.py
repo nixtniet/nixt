@@ -7,9 +7,9 @@ import logging
 from random import SystemRandom
 
 
-from nixbot.brokers import objs
-from nixbot.message import Message
-from nixbot.timings import Repeater
+from nixt.brokers import getobjs
+from nixt.message import Message
+from nixt.timings import Repeater
 
 
 rand = SystemRandom()
@@ -23,7 +23,7 @@ def init():
 
 
 def wsd(event):
-    for bot in objs("announce"):
+    for bot in getobjs("announce"):
         bot.announce(rand.choice(TXT.split("\n")).strip()[2:])
 
 
