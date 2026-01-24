@@ -18,9 +18,10 @@ from nixt.command import Commands, addcmd, command
 from nixt.handler import Console
 from nixt.message import Message
 from nixt.methods import parse
+from nixt.objects import Default
 from nixt.package import initmods, inits, listmods, pkgname, scanner
 from nixt.persist import pidfile, setwd, workdir
-from nixt.utility import forever, level, pkgname
+from nixt.utility import forever, level
 
 
 "defines"
@@ -28,29 +29,21 @@ from nixt.utility import forever, level, pkgname
 
 try:
     from nixbot import modules as MODS
-    from nixt.modules import Cfg
 except ModuleNotFoundError:
     MODS = None
-    Cfg = None
-
-
-if not MODS:
-    try:
-        import mods as MODS
-        from mods import Cfg
-    except ModuleNotFoundError:
-        pass
-
-
-if not MODS:
-    Cfg = Default()
 
 
 "config"
 
 
+class Config(Default):
+
+    pass
+
+
+Cfg = Config()
 Cfg.level = "info"
-Cfg.name = pkgname(Cfg)
+Cfg.name = pkgname(Commands)
 Cfg.txt = " ".join(sys.argv[1:])
 Cfg.version = 181
 Cfg.wdr = os.path.expanduser(f"~/.{Cfg.name}")
@@ -191,7 +184,8 @@ def boot(inits=""):
     setwd(Cfg.wdr)
     if Cfg.wdr:
         initmods("modules", os.path.join(workdir(), "mods"))
-    initmods(MODS.__name__, MODS.__path__[0])
+    if MODS:
+        initmods(MODS.__name__, MODS.__path__[0])
     if "m" in Cfg.opts and os.path.exists("mods"):
         initmods("mods", "mods")
     if "v" in Cfg.opts:
