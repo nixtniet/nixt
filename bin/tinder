@@ -13,19 +13,31 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.caching import persist
 from nixt.command import command
 from nixt.message import Message
 from nixt.methods import fmt, parse
+from nixt.objects import Default
 from nixt.handler import Client
-from nixt.objects import Config
-from nixt.package import adddir, scanner
+from nixt.package import initmods, listmods, scanner
+from nixt.persist import setwd
 from nixt.threads import launch
-from nixt.timings import elapsed
-from nixt.utility import wrapped
+from nixt.utility import elapsed, wrapped
 
 
-import nixt.modules as MODS
+import mods as MODS
+
+"defines"
+
+
+events = queue.Queue()
+
+
+"config"
+
+
+class Config(Default):
+
+    pass
 
 
 Cfg = Config()
@@ -34,11 +46,9 @@ Cfg = Config()
 Cfg.debug = True
 Cfg.level = "info"
 Cfg.name = "nixt"
-Cfg.version = 3
+Cfg.opts = ""
+Cfg.version = 181
 Cfg.wdr = ".test"
-
-
-events = queue.Queue()
 
 
 "clients"
@@ -147,11 +157,9 @@ def main():
     if "p" not in Cfg.opts and os.path.exists(Cfg.wdr):
         shutil.rmtree(Cfg.wdr)
     parse(Cfg, " ".join(sys.argv[1:]))
-    persist(Cfg.wdr)
-    adddir("modules", MODS.__path__[0])
-    adddir('mods', 'mods')
-    for mod in scanner():
-        mod.DEBUG = True
+    setwd(Cfg.wdr)
+    initmods("modules", MODS.__path__[0])
+    scanner(listmods())
     if "v" in Cfg.opts:
         banner(Cfg.name, Cfg.version)
     if "z" in Cfg.opts:

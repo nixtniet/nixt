@@ -4,7 +4,15 @@
 "an object as the first argument"
 
 
-from .objects import Default, fqn, typed
+from .objects import Default, fqn, items
+
+
+def edit(obj, setter={}, skip=False):
+    "update object with dict."
+    for key, val in items(setter):
+        if skip and val == "":
+            continue
+        typed(obj, key, val)
 
 
 def fmt(obj, args=[], skip=[], plain=False, empty=False):
@@ -88,11 +96,33 @@ def parse(obj, text):
         obj.text = obj.cmd or ""
 
 
+def typed(obj, key, val):
+    "assign proper types."
+    try:
+        setattr(obj, key, int(val))
+        return
+    except ValueError:
+        pass
+    try:
+        setattr(obj, key, float(val))
+        return
+    except ValueError:
+        pass
+    if val in ["True", "true", True]:
+        setattr(obj, key, True)
+    elif val in ["False", "false", False]:
+        setattr(obj, key, False)
+    else:
+        setattr(obj, key, val)
+
+
 "interface"
 
 
 def __dir__():
     return (
+        'edit',
         'fmt',
-        'parse'
+        'parse',
+        'typed'
     )

@@ -90,7 +90,7 @@ def background():
     daemon()
     privileges()
     boot()
-    pidfile(NAME)
+    pidfile(Cfg.name)
     scanner(Cfg.ignore)
     addcmd(cmd, mod, ver)
     inits(Cfg.default or "irc,mdl,rss,wsd", Cfg.ignore)
@@ -126,7 +126,7 @@ def service():
     privileges()
     banner()
     boot()
-    pidfile(pidname(NAME))
+    pidfile(Cfg.name)
     scanner(listmods())
     addcmd(cmd, mod, ver)
     inits(Cfg.default or "irc,mdl,rss,wsd", Cfg.ignore)
@@ -150,12 +150,12 @@ def srv(event):
     "generate systemd service file."
     import getpass
     name = getpass.getuser()
-    event.reply(SYSTEMD % (NAME.upper(), name, name, name, NAME))
+    event.reply(SYSTEMD % (Cfg.name.upper(), name, name, name, Cfg.name))
 
 
 def ver(event):
     "show version."
-    event.reply(f"{NAME.upper()} {VERSION}")
+    event.reply(f"{Cfg.name.upper()} {Cfg.version}")
 
 
 "utility"

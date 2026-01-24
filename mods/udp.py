@@ -10,7 +10,8 @@ import time
 
 
 from nixt.brokers import getobjs
-from nixt.objects import Object
+from nixt.objects import Default, Object
+from nixt.package import pkgname
 from nixt.threads import launch
 
 

@@ -16,8 +16,8 @@ from nixt.brokers import getobj
 from nixt.command import command
 from nixt.handler import Output
 from nixt.message import Message
-from nixt.methods import fmt
-from nixt.objects import Default, Object, edit, keys
+from nixt.methods import edit, fmt
+from nixt.objects import Default, Object, keys
 from nixt.package import pkgname
 from nixt.persist import ident, last, write
 from nixt.threads import launch
