@@ -5,8 +5,8 @@
 "main program"
 
 
+import logging
 import os
-import pathlib
 import sys
 import time
 
@@ -14,33 +14,45 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.caching import persist
 from nixt.command import Commands, addcmd, command
 from nixt.handler import Console
 from nixt.message import Message
 from nixt.methods import parse
-from nixt.objects import Config
-from nixt.package import adddir, addpkg, modules, scanner
-from nixt.utility import forever, level, wrapped
-
-
-from nixt import modules as MODS
+from nixt.package import initmods, inits, listmods, pkgname, scanner
+from nixt.persist import pidfile, setwd, workdir
+from nixt.utility import forever, level, pkgname
 
 
 "defines"
 
 
-TXT = " ".join(sys.argv[1:])
+try:
+    from nixbot import modules as MODS
+    from nixt.modules import Cfg
+except ModuleNotFoundError:
+    MODS = None
+    Cfg = None
 
 
-Cfg = Config()
+if not MODS:
+    try:
+        import mods as MODS
+        from mods import Cfg
+    except ModuleNotFoundError:
+        pass
 
 
-Cfg.debug = False
-Cfg.init = ""
+if not MODS:
+    Cfg = Default()
+
+
+"config"
+
+
 Cfg.level = "info"
-Cfg.name = "nixt"
-Cfg.version = 453
+Cfg.name = pkgname(Cfg)
+Cfg.txt = " ".join(sys.argv[1:])
+Cfg.version = 181
 Cfg.wdr = os.path.expanduser(f"~/.{Cfg.name}")
 
 
@@ -77,48 +89,120 @@ class Term(Line):
         return evt
 
 
+"scripts"
+
+
+def background():
+    "background script."
+    daemon()
+    privileges()
+    boot()
+    pidfile(NAME)
+    scanner(Cfg.ignore)
+    addcmd(cmd, mod, ver)
+    inits(Cfg.default or "irc,mdl,rss,wsd", Cfg.ignore)
+    forever()
+
+
+def console():
+    "console script."
+    import readline
+    readline.redisplay()
+    boot()
+    scanner(listmods(), Cfg.ignore)
+    addcmd(cmd, mod, ver)
+    docmd(Cfg.txt)
+    inits(Cfg.init, Cfg.ignore, "w" in Cfg.opts)
+    csl = Term()
+    csl.start()
+    forever()
+
+
+def control():
+    "cli script."
+    if len(sys.argv) == 1:
+        return
+    boot()
+    scanner(listmods(), Cfg.ignore)
+    addcmd(cmd, mod, srv, ver)
+    docmd(Cfg.txt)
+
+
+def service():
+    "service script."
+    privileges()
+    banner()
+    boot()
+    pidfile(pidname(NAME))
+    scanner(listmods())
+    addcmd(cmd, mod, ver)
+    inits(Cfg.default or "irc,mdl,rss,wsd", Cfg.ignore)
+    forever()
+
+
+"commands"
+
+
+def cmd(event):
+    "list available commands."
+    event.reply(",".join(sorted(Commands.names or Commands.cmds)))
+
+
+def mod(event):
+    "list available commands."
+    event.reply(listmods(Cfg.ignore))
+
+
+def srv(event):
+    "generate systemd service file."
+    import getpass
+    name = getpass.getuser()
+    event.reply(SYSTEMD % (NAME.upper(), name, name, name, NAME))
+
+
+def ver(event):
+    "show version."
+    event.reply(f"{NAME.upper()} {VERSION}")
+
+
 "utility"
 
 
 def banner():
     "hello."
     tme = time.ctime(time.time()).replace("  ", " ")
-    print("%s %s since %s %s in %s" % (
+    print("%s %s since %s (%s)" % (
         Cfg.name.upper(),
         Cfg.version,
         tme,
         Cfg.level.upper(),
-        Cfg.wdr
     ))
     sys.stdout.flush()
 
 
-def boot(*pkgs, inits=""):
+def boot(inits=""):
     "in the beginning."
-    parse(Cfg, TXT)
+    parse(Cfg, Cfg.txt)
+    Cfg.ignore = Cfg.sets.ignore
     Cfg.init = Cfg.sets.init or Cfg.init or ""
     Cfg.level = Cfg.sets.level or Cfg.level or "info"
-    Cfg.wdr = Cfg.sets.wdr or Cfg.wdr or ""
+    Cfg.wdr = Cfg.sets.wdr or Cfg.wdr or os.path.expanduser(f"~/.{pkgname(Cfg)}")
     level(Cfg.level)
-    addpkg(MODS)
-    if "m" in Cfg.opts:
-        adddir("mods", "mods")
+    setwd(Cfg.wdr)
+    if Cfg.wdr:
+        initmods("modules", os.path.join(workdir(), "mods"))
+    initmods(MODS.__name__, MODS.__path__[0])
+    if "m" in Cfg.opts and os.path.exists("mods"):
+        initmods("mods", "mods")
     if "v" in Cfg.opts:
         banner()
-    if 'p' not in Cfg.opts:
-        persist(Cfg.wdr)
     if 'a' in Cfg.opts:
-        mds = modules()
-    else:
-        mds = inits or Cfg.init
-    for mod in scanner(inits=mds, wait="w" in Cfg.opts):
-        mod.DEBUG = Cfg.debug
-        mod.NAME = Cfg.name
-            
+        Cfg.init = listmods(Cfg.ignore)
+
 
 def check(text):
     "check for options."
-    for arg in TXT.split():
+    for arg in Cfg.txt.split():
         if not arg.startswith("-"):
             continue
         for char in text:
@@ -137,6 +221,7 @@ def docmd(text):
         evt.type = "command"
         command(evt)
         evt.wait()
+    return evt.result
 
  
 def daemon(verbose=False, nochdir=False):
@@ -159,21 +244,6 @@ def daemon(verbose=False, nochdir=False):
     os.nice(10)
 
 
-def pidfile(filename):
-    "write pidfile."
-    if os.path.exists(filename):
-        os.unlink(filename)
-    path2 = pathlib.Path(filename)
-    path2.parent.mkdir(parents=True, exist_ok=True)
-    with open(filename, "w", encoding="utf-8") as fds:
-        fds.write(str(os.getpid()))
-
-
-def pidname(name: str):
-    "name of pidfile."
-    return os.path.join(Cfg.wdr, f"{name}.pid")
-
-
 def privileges():
     "drop privileges."
     import getpass
@@ -192,73 +262,30 @@ def wrap(func):
     except termios.error:
         pass
     try:
-        wrapped(func)
-    finally:
+        func()
+    except (KeyboardInterrupt, EOFError):
         pass
+    except Exception as ex:
+        logging.exception(ex)
     if old:
         termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
-"scripts"
+"data"
 
 
-def background():
-    "background script."
-    daemon()
-    privileges()
-    pidfile(pidname(Cfg.name))
-    addcmd(cmd, mod, ver)
-    boot(MODS, inits=Cfg.init or "irc,rss")
-    forever()
+SYSTEMD = """[Unit]
+Description=%s
+After=multi-user.target
 
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
 
-def console():
-    "console script."
-    import readline
-    readline.redisplay()
-    boot(MODS)
-    addcmd(cmd, mod, ver)
-    docmd(TXT)
-    csl = Term()
-    csl.start()
-    forever()
-
-
-def control():
-    "cli script."
-    if len(sys.argv) == 1:
-        return
-    boot(MODS)
-    addcmd(cmd, mod, ver)
-    docmd(TXT)
-
-
-def service():
-    "service script."
-    privileges()
-    banner()
-    pidfile(pidname(Cfg.name))
-    addcmd(cmd, mod, ver)
-    boot(MODS, inits=Cfg.init or "irc,rss")
-    forever()
-
-
-"commands"
-
-
-def cmd(event):
-    "list available commands."
-    event.reply(",".join(sorted(Commands.names or Commands.cmds)))
-
-
-def mod(event):
-    "list available commands."
-    event.reply(",".join([x[:-3] for x in os.listdir(MODS.__path__[0]) if not x.startswith("__")]))
-
-
-def ver(event):
-    "show version."
-    event.reply(f"{Cfg.name.upper()} {Cfg.version}")
+[Install]
+WantedBy=multi-user.target"""
 
 
 "runtime"
@@ -271,9 +298,9 @@ def main():
     elif check("c"):
         wrap(console)
     elif check("s"):
-        wrapped(service)
+        wrap(service)
     else:
-        wrapped(control)
+        wrap(control)
 
 
 if __name__ == "__main__":
