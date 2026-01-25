@@ -113,6 +113,7 @@ def values(obj):
     if isinstance(obj, dict):
         return obj.values()
     elif isinstance(obj.__dict__, types.MappingProxyType):
+        res = []
         for key in obj.__dict__:
             res.append(obj[key])
         return res
