@@ -26,4 +26,4 @@ class TestBroker(unittest.TestCase):
 
     def test_add(self):
         clt = Client()
-        self.assertTrue(clt in values(Broker.objects))
+        self.assertTrue(clt in values(Broker.objs))

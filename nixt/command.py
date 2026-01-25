@@ -38,6 +38,8 @@ def scancmd(module):
         addcmd(cmdz)
 
 
+"callbacks"
+
 
 def command(evt):
     "command callback."

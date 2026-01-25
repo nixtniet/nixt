@@ -21,6 +21,7 @@ class Mods:
 
 
 def initmods(name, path):
+    "add modules directory." 
     Mods.dirs[name] = path
 
 
@@ -63,10 +64,6 @@ def listmods(ignore=""):
     return ",".join(sorted(mods))
 
 
-def pkgname(obj):
-    return obj.__module__.split(".")[0]
-
-
 "utilities"
 
 
@@ -86,6 +83,10 @@ def importer(name, pth=""):
     Mods.modules[name] = mod
     spec.loader.exec_module(mod)
     return mod
+
+
+def pkgname(obj):
+    return obj.__module__.split(".")[0]
 
 
 "runtime"

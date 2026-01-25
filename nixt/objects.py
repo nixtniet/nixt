@@ -81,20 +81,6 @@ def keys(obj):
     return obj.__dict__.keys()
 
 
-def skip(obj, chars="_"):
-    "skip keys containing chars."
-    res = {}
-    for key, value in items(obj):
-        next = False
-        for char in chars:
-            if char in key:
-                next = True
-        if next:
-            continue
-        res[key] = value
-    return res
-
-
 def update(obj, data, empty=True):
     "update object,"
     if isinstance(obj, type):

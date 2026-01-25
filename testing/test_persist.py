@@ -7,8 +7,6 @@
 import unittest
 
 
-from nixt.encoder import dumps, loads
-from nixt.objects import skip
 from nixt.persist import Cache
 
 

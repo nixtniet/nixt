@@ -96,6 +96,20 @@ def parse(obj, text):
         obj.text = obj.cmd or ""
 
 
+def skip(obj, chars="_"):
+    "skip keys containing chars."
+    res = {}
+    for key, value in items(obj):
+        next = False
+        for char in chars:
+            if char in key:
+                next = True
+        if next:
+            continue
+        res[key] = value
+    return res
+
+
 def typed(obj, key, val):
     "assign proper types."
     try:
@@ -124,5 +138,6 @@ def __dir__():
         'edit',
         'fmt',
         'parse',
+        'skip',
         'typed'
     )
