@@ -21,8 +21,8 @@ from urllib.parse import quote_plus, urlencode
 
 
 from nixt.brokers import getobjs
-from nixt.methods import fmt
-from nixt.objects import Default, Object, fqn, update
+from nixt.methods import fmt, fqn
+from nixt.objects import Default, Object, update
 from nixt.package import pkgname
 from nixt.persist import find, fntime, ident, last, write
 from nixt.threads import launch

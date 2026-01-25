@@ -28,6 +28,25 @@ class Mixin(Mix, Object):
 
 
 attrs1 = (
+         'Object',
+         'clear',
+         'construct',
+         'copy',
+         'fromkeys',
+         'get',
+         'items',
+         'keys',
+         'matchkey',
+         'pop',
+         'popitem',
+         'save',
+         'setdefault',
+         'update',
+         'values',
+        )
+
+
+attrs1 = (
     "Object",
     "construct",
     "items",

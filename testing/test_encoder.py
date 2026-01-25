@@ -4,7 +4,7 @@
 import unittest
 
 
-from nixt.encoder import dumps
+from nixt.encoder import dumps, loads
 from nixt.objects import Object
 
 
@@ -17,3 +17,12 @@ class TestEncoder(unittest.TestCase):
         obj = Object()
         obj.test = "bla"
         self.assertEqual(dumps(obj), VALIDJSON)
+
+
+class TestDecoder(unittest.TestCase):
+
+    def test_loads(self):
+        obj = Object()
+        obj.test = "bla"
+        oobj = loads(dumps(obj))
+        self.assertEqual(oobj["test"], "bla")

@@ -13,7 +13,8 @@ import time
 
 
 from .encoder import dump, load
-from .objects import Object, fqn, items, keys, update
+from .methods import fqn
+from .objects import Object, items, keys, update
 
 
 lock = threading.RLock()

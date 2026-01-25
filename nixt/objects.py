@@ -7,6 +7,10 @@
 import types
 
 
+attrs1 = (
+        )
+
+
 class Reserved(Exception):
 
     pass
@@ -27,6 +31,11 @@ class Object:
         return str(self.__dict__)
 
 
+def clear(obj):
+    "remove all items from the object."
+    obj.__dict__.clear()
+
+
 def construct(obj, *args, **kwargs):
     "object contructor."
     if args:
@@ -41,12 +50,21 @@ def construct(obj, *args, **kwargs):
         update(obj, kwargs)
 
 
-def fqn(obj):
-    "full qualified name."
-    kin = str(type(obj)).split()[-1][1:-2]
-    if kin == "type":
-        kin = f"{obj.__module__}.{obj.__name__}"
-    return kin
+def copy(obj):
+    "return shallow copy of the object."
+    oobj = type(obj)()
+    update(oobj, obj.__dict__.copy())
+    return oobj
+
+
+def fromkeys(obj, keyz, value=None):
+    "create a new object with keys from iterable and values set to value/"
+    return obj.__dict__.fromkeys(keyz, value)
+
+
+def get(obj, key, default=None):
+    "return value for key if key is in the object, otherwise return default."
+    return obj.__dict__.get(key, default)
 
 
 def items(obj):
@@ -55,12 +73,7 @@ def items(obj):
         return obj.items()
     if isinstance(obj, types.MappingProxyType):
         return obj.items()
-    res = []
-    for key in dir(obj):
-        if key.startswith("_"):
-            continue
-        res.append((key, getattr(obj, key)))
-    return sorted(res, key=lambda x: x[0])
+    return obj.__dict__.items()
 
 
 def keys(obj):
@@ -69,47 +82,58 @@ def keys(obj):
         return obj.keys()
     if isinstance(obj, types.MappingProxyType):
         return obj.keys()
-    if isinstance(obj, dict):
-        return obj.keys()
-    if isinstance(obj, type):
-        res = []
-        for key in dir(obj):
-            if key.startswith("_"):
-                continue
-            res.append(key)
-        return sorted(res)
     return obj.__dict__.keys()
+
+
+def pop(obj, key, default=None):
+    "remove key from object and return it's value. return default or KeyError."
+    return obj.__dict__.pop(key, default)
+
+
+def popitem(obj):
+    "remove and return (key, value) pair."
+    return obj.__dict__.popitem()
 
 
 def update(obj, data, empty=True):
     "update object,"
-    if isinstance(obj, type):
-        for k, v in items(data):
-            if k == "__dict__":
-                continue
-            if isinstance(getattr(obj, k, None), types.MethodType):
-                raise Reserved(k)
-            setattr(obj, k, v)
-    elif isinstance(obj, dict):
-        for k, v in items(data):
-            setattr(obj, k, v)
-    else:
-        for key, value in items(data):
-            if not empty and not value:
-                continue
+    if isinstance(obj, dict):
+        obj.update(data)
+    elif isinstance(obj.__dict__, types.MappingProxyType):
+        for key, value in data.items():
             setattr(obj, key, value)
+    elif isinstance(data, dict):
+        obj.__dict__.update(data)
+    else:
+        obj.__dict__.update(data.__dict__)
 
 
 def values(obj):
     "object's values."
     if isinstance(obj, dict):
         return obj.values()
-    res = []
-    for key in sorted(dir(obj)):
-        if key.startswith("_"):
+    elif isinstance(obj.__dict__, types.MappingProxyType):
+        for key in obj.__dict__:
+            res.append(obj[key])
+        return res
+    return obj.__dict__.values()
+
+
+"utilities"
+
+
+def skip(obj, chars="_"):
+    "skip keys containing chars."
+    res = {}
+    for key, value in items(obj):
+        next = False
+        for char in chars:
+            if char in key:
+                next = True
+        if next:
             continue
-        res.append(getattr(obj, key))
-    return sorted(res)
+        res[key] = value
+    return res
 
 
 "default"
@@ -128,11 +152,18 @@ def __dir__():
     return (
         'Default',
         'Object',
+        'clear',
         'construct',
-        'fqn',
+        'copy',
+        'fromkeys',
+        'get',
         'items',
         'keys',
-        'skip',
+        'matchkey',
+        'pop',
+        'popitem',
+        'save',
+        'setdefault',
         'update',
         'values'
     )

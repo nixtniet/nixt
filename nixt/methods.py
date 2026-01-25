@@ -4,7 +4,7 @@
 "an object as the first argument"
 
 
-from .objects import Default, fqn, items
+from .objects import Default, items
 
 
 def edit(obj, setter={}, skip=False):
@@ -41,6 +41,14 @@ def fmt(obj, args=[], skip=[], plain=False, empty=False):
     if txt == "":
         txt = "{}"
     return txt.strip()
+
+
+def fqn(obj):
+    "full qualified name."
+    kin = str(type(obj)).split()[-1][1:-2]
+    if kin == "type":
+        kin = f"{obj.__module__}.{obj.__name__}"
+    return kin
 
 
 def parse(obj, text):
@@ -137,6 +145,7 @@ def __dir__():
     return (
         'edit',
         'fmt',
+        'fqn',
         'parse',
         'skip',
         'typed'

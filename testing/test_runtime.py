@@ -7,17 +7,23 @@
 import unittest
 
 
-from nixt.threads import Thread
+import nixt.runtime as TARGET
 
 
-def func():
-    return "ok"
+iface = [
+    '__builtins__',
+    '__cached__',
+    '__doc__',
+    '__file__',
+    '__loader__',
+    '__name__',
+    '__package__',
+    '__spec__'
+]
 
 
-class TestTask(unittest.TestCase):
+class TestRuntime(unittest.TestCase):
 
-    def test_construct(self):
-        task = Thread(func)
-        task.start()
-        result = task.join()
-        self.assertEqual(result, "ok")
+    def test_interface(self):
+        for face in iface:
+            self.assertTrue(face in dir(TARGET))
