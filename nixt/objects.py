@@ -159,10 +159,8 @@ def __dir__():
         'get',
         'items',
         'keys',
-        'matchkey',
         'pop',
         'popitem',
-        'save',
         'setdefault',
         'update',
         'values'

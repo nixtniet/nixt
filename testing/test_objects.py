@@ -1,105 +1,82 @@
 # This file is placed in the Public Domain.
 
 
-"objects"
-
-
 import unittest
 
 
-from nixt.objects import Object, items, keys, update, values
+from nixt.objects import *
 
 
 import nixt.objects
 
 
-OBJECT = Object()
-PACKAGE = nixt.objects
-VALIDJSON = "{'test': 'bla'}"
-VALIDPYTHON = '{"test": "bla"}'
+TARGET = nixt.objects
+VALIDJSON = '{"test": "bla"}'
 
 
-class Mix:
-    a = "b"
+attrs1 = [
+    'Default',
+    'Object',
+    'clear',
+    'construct',
+    'copy',
+    'fromkeys',
+    'get',
+    'items',
+    'keys',
+    'pop',
+    'popitem',
+    'setdefault',
+    'update',
+    'values'
+]
 
 
-class Mixin(Mix, Object):
-    pass
-
-
-attrs1 = (
-         'Object',
-         'clear',
-         'construct',
-         'copy',
-         'fromkeys',
-         'get',
-         'items',
-         'keys',
-         'matchkey',
-         'pop',
-         'popitem',
-         'save',
-         'setdefault',
-         'update',
-         'values',
-        )
-
-
-attrs1 = (
-    "Object",
-    "construct",
-    "items",
-    "keys",
-    "update",
-    "values"
-)
-
-
-attrs2 = (
-    "__doc__",
-    "__lt__",
-    "__init__",
-    "__setattr__",
-    "__ne__",
-    "__delattr__",
-    "__eq__",
-    "__dir__",
-    "__new__",
-    "__iter__",
-    "__reduce__",
-    "__class__",
-    "__module__",
-    "__gt__",
-    "__str__",
-    "__init_subclass__",
-    "__reduce_ex__",
-    "__dict__",
-    "__subclasshook__",
-    "__le__",
-    "__contains__",
-    "__weakref__",
-    "__ge__",
-    "__sizeof__",
-    "__getattribute__",
-    "__format__",
-    "__len__",
-    "__getstate__",
-    "__repr__",
-    "__hash__",
-)
+attrs2 = [
+    '__class__',
+    '__contains__',
+    '__delattr__',
+    '__dict__',
+    '__dir__',
+    '__doc__',
+    '__eq__',
+    '__firstlineno__',
+    '__format__',
+    '__ge__',
+    '__getattribute__',
+    '__getstate__',
+    '__gt__',
+    '__hash__',
+    '__init__',
+    '__init_subclass__',
+    '__iter__',
+    '__le__',
+    '__len__',
+    '__lt__',
+    '__module__',
+    '__ne__',
+    '__new__',
+    '__reduce__',
+    '__reduce_ex__',
+    '__repr__',
+    '__setattr__',
+    '__sizeof__',
+    '__static_attributes__',
+    '__str__',
+    '__subclasshook__',
+    '__weakref__'
+]
 
 
 class TestObject(unittest.TestCase):
 
-    def test_attributes(self):
-        okd = True
-        for meth in attrs2:
-            mth = getattr(OBJECT, meth, None)
-            if mth is None:
-                okd = meth
-        self.assertTrue(okd)
+    def test_moduleinterface(self):
+        self.assertTrue(dir(TARGET) == attrs1)
 
+    def test_objectinterface(self):
+        obj = Object()
+        self.assertTrue(dir(obj) == attrs2)
+            
     def test_constructor(self):
         obj = Object()
         self.assertTrue(type(obj), Object)
@@ -109,35 +86,35 @@ class TestObject(unittest.TestCase):
         clz = obj.__class__()
         self.assertTrue("Object" in str(type(clz)))
 
+    def test_contains(self):
+        obj = Object()
+        obj.key = "value"
+        self.assertTrue("key" in obj)
+
     def test_delattr(self):
         obj = Object()
         obj.key = "value"
         del obj.key
-        self.assertTrue("key" not in dir(obj))
+        self.assertTrue("key" not in obj)
 
     def test_dict(self):
         obj = Object()
         self.assertEqual(obj.__dict__, {})
 
-    def test_fmt(self):
+    def test_doc(self):
         obj = Object()
-        self.assertEqual(format(obj), "{}")
+        self.assertEqual(obj.__doc__, None)
 
     def test_format(self):
         obj = Object()
-        self.assertEqual(format(obj), "{}")
+        self.assertEqual(obj.__format__(""), "{}")
 
     def test_getattribute(self):
         obj = Object()
         obj.key = "value"
         self.assertEqual(obj.__getattribute__("key"), "value")
 
-    def test_getattr(self):
-        obj = Object()
-        obj.key = "value"
-        self.assertEqual(getattr(obj, "key"), "value")
-
-    def test_hash(self):
+    def test_hash__(self):
         obj = Object()
         hsj = hash(obj)
         self.assertTrue(isinstance(hsj, int))
@@ -146,21 +123,11 @@ class TestObject(unittest.TestCase):
         obj = Object()
         self.assertTrue(type(Object.__init__(obj)), Object)
 
-    def test_items(self):
+    def test_iter(self):
         obj = Object()
         obj.key = "value"
-        self.assertEqual(
-            list(items(obj)),
-            [
-                ("key", "value"),
-            ],
-        )
-
-    def test_keys(self):
-        obj = Object()
-        obj.key = "value"
-        self.assertEqual(
-            list(keys(obj)),
+        self.assertTrue(
+            list(obj.__iter__()),
             [
                 "key",
             ],
@@ -170,17 +137,24 @@ class TestObject(unittest.TestCase):
         obj = Object()
         self.assertEqual(len(obj), 0)
 
-    def test_methods(self):
-        okd = True
-        for attr in attrs1:
-            att = getattr(PACKAGE, attr, None)
-            if not att:
-                okd = attr
-                break
-        self.assertTrue(okd)
+    def test_getattr(self):
+        obj = Object()
+        obj.key = "value"
+        self.assertEqual(getattr(obj, "key"), "value")
 
-    def test_module(self):
-        self.assertEqual(Object().__module__, "nixt.objects")
+    def test_keys(self):
+        obj = Object()
+        obj.key = "value"
+        self.assertEqual(list(keys(obj)), ["key"])
+
+    def test_len(self):
+        obj = Object()
+        self.assertEqual(len(obj), 0)
+
+    def test_items(self):
+        obj = Object()
+        obj.key = "value"
+        self.assertEqual(list(items(obj)), [("key", "value")])
 
     def test_register(self):
         obj = Object()
@@ -199,6 +173,10 @@ class TestObject(unittest.TestCase):
         obj = Object()
         self.assertEqual(str(obj), "{}")
 
+    def test_str(self):
+        obj = Object()
+        self.assertEqual(str(obj), "{}")
+
     def test_update(self):
         obj = Object()
         obj.key = "value"
@@ -209,9 +187,4 @@ class TestObject(unittest.TestCase):
     def test_values(self):
         obj = Object()
         obj.key = "value"
-        self.assertEqual(
-            list(values(obj)),
-            [
-                "value",
-            ],
-        )
+        self.assertEqual(list(values(obj)), ["value"])
