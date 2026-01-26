@@ -30,6 +30,11 @@ def getcmd(cmd):
     return Commands.cmds.get(cmd, None)
         
 
+def hascmd(cmd):
+    "whether cmd is registered."
+    return cmd in Commands.cmds
+
+
 def scancmd(module):
     "scan a module for functions with event as argument."
     for key, cmdz in inspect.getmembers(module, inspect.isfunction):

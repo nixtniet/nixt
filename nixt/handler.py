@@ -102,7 +102,6 @@ class Client(Handler):
 
     def raw(self, text):
         "raw output."
-        raise NotImplementedError("raw")
 
     def say(self, channel, text):
         "say text in channel."
