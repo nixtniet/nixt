@@ -4,7 +4,6 @@
 import unittest
 
 
-from nixt.brokers import Broker
 from nixt.encoder import *
 from nixt.objects import *
 
@@ -61,11 +60,3 @@ class TestTypes(unittest.TestCase):
         obj = Object()
         update(obj, loads(dumps(ooo)))
         self.assertEqual(obj.a, "b")
-
-    def test_broker(self):
-        broker1 = Broker()
-        broker1.a = "b"
-        broker2 = Broker()
-        totype(broker2, loads(dumps(broker1)))
-        self.assertTrue(broker2.a, "b")
-    

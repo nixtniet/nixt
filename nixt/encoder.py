@@ -48,18 +48,6 @@ def loads(s, *args, **kw):
     return json.loads(s, *args, **kw)
 
 
-def totype(obj, data):
-    for key in dir(obj):
-        if "_" in key:
-            continue
-        value = getattr(obj, key)
-        if isinstance(value, dict):
-            totype(getattr(obj, key), value)
-            continue
-        if key in data:
-            setattr(obj, key, value)
-
-
 "interface"
 
 
@@ -68,6 +56,5 @@ def __dir__():
        'dump',
        'dumps',
        'load',
-       'loads',
-       'totype'
+       'loads'
     )
