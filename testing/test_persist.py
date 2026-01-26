@@ -42,7 +42,12 @@ ATTRS1 = (
 )
 
 
+
 class TestPersist(unittest.TestCase):
+
+    def test_constructor(self):
+        obj = Cache()
+        self.assertTrue(type(obj), Cache)
 
     def test_interface(self):
         self.assertEqual(dir(TARGET),list(ATTRS1))

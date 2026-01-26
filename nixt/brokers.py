@@ -25,6 +25,10 @@ def getobjs(attr):
         if attr in dir(obj):
             yield obj
 
+def hasobj(obj):
+    "whether the Broker has object."
+    return repr(obj) in Broker.objs
+
 
 def likeobj(txt):
     "all keys with a substring in their key."
@@ -42,5 +46,6 @@ def __dir__():
         'addobj',
         'getobj',
         'getobjs',
+        'hasobj',
         'likeobj'
     )
