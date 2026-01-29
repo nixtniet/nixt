@@ -13,18 +13,20 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import command
+from nixt.command import Commands, command
 from nixt.message import Message
 from nixt.methods import fmt, parse
-from nixt.objects import Default
 from nixt.handler import Client
-from nixt.package import initmods, listmods, scanner
+from nixt.package import initmods, listmods, pkgname, scanner
 from nixt.persist import setwd
+from nixt.runtime import Cfg
 from nixt.threads import launch
 from nixt.utility import elapsed, wrapped
 
 
+#from nixt import modules as MODS
 import mods as MODS
+
 
 "defines"
 
@@ -34,20 +36,11 @@ events = queue.Queue()
 
 "config"
 
-
-class Config(Default):
-
-    pass
-
-
-Cfg = Config()
-
-
 Cfg.debug = True
+Cfg.ignore = ""
 Cfg.level = "info"
-Cfg.name = "nixt"
-Cfg.opts = ""
-Cfg.version = 181
+Cfg.name = pkgname(Commands)
+Cfg.txt = " ".join(sys.argv[1:])
 Cfg.wdr = ".test"
 
 
@@ -97,9 +90,9 @@ class Pool:
 "utilities"
 
 
-def banner(name, version):
+def banner(name):
     tme = time.ctime(time.time()).replace("  ", " ")
-    print(f"{name.upper()} {version} since {tme} ({Cfg.level})")
+    print(f"{name.upper()} since {tme} ({Cfg.level})")
     sys.stdout.flush()
 
 
@@ -161,7 +154,7 @@ def main():
     initmods("modules", MODS.__path__[0])
     scanner(listmods())
     if "v" in Cfg.opts:
-        banner(Cfg.name, Cfg.version)
+        banner(Cfg.name)
     if "z" in Cfg.opts:
         Pool.init(CLI, os.cpu_count())
     else:
@@ -220,7 +213,6 @@ examples = {
     "thr": [""],
     "tmr": ["", "22:00 test"],
     "upt": [""],
-    "ver": [""],
     "wsd": [""]
 }
 

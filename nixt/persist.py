@@ -76,19 +76,15 @@ def long(name):
     return res
 
 
-def pidfile(filename):
+def pidfile(name):
     "write pidfile."
+    filename = os.path.join(Workdir.wdr, f"{name}.pid")
     if os.path.exists(filename):
         os.unlink(filename)
     path2 = pathlib.Path(filename)
     path2.parent.mkdir(parents=True, exist_ok=True)
     with open(filename, "w", encoding="utf-8") as fds:
         fds.write(str(os.getpid()))
-
-
-def pidname(name):
-    "name of pidfile."
-    return os.path.join(Workdir.wdr, f"{name}.pid")
 
 
 def skel():
@@ -265,7 +261,6 @@ def __dir__():
         'kinds',
         'last',
         'pidfile',
-        'pidname',
         'read',
         'setwd',
         'skel',

@@ -8,6 +8,7 @@ import inspect
 
 
 from .brokers import getobj
+from .message import Message
 from .methods import parse
 
 
@@ -53,8 +54,20 @@ def command(evt):
     if func:
         func(evt)
         bot = getobj(evt.orig)
-        bot.display(evt)
+        if bot:
+            bot.display(evt)
     evt.ready()
+
+
+def docmd(text):
+    "parse text for command and run it."
+    for txt in text.split(" ! "):
+        evt = Message()
+        evt.text = txt
+        evt.type = "command"
+        command(evt)
+        evt.wait()
+    return evt
 
 
 "interface"
@@ -66,6 +79,7 @@ def __dir__():
         'Commands',
         'addcmd',
         'command',
+        'docmd',
         'getcmd',
         'scancmd'
     )

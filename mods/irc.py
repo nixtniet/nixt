@@ -5,7 +5,6 @@ import base64
 import logging
 import os
 import socket
-import sys
 import ssl
 import textwrap
 import threading
@@ -17,18 +16,11 @@ from nixt.command import command
 from nixt.handler import Output
 from nixt.message import Message
 from nixt.methods import edit, fmt
-from nixt.objects import Default, Object, keys
+from nixt.objects import Object, keys
 from nixt.package import pkgname
 from nixt.persist import ident, last, write
+from nixt.runtime import Cfg
 from nixt.threads import launch
-
-
-def getmain(name):
-    main = sys.modules.get("__main__")
-    return getattr(main, name)
-
-
-Cfg = getmain("Cfg") or Default()
 
 
 NAME = Cfg.name or pkgname(Object)
@@ -50,20 +42,20 @@ def init():
 
 class Config(Object):
 
-    channel = f"#{NAME}"
+    channel = f"#{Cfg.name}"
     commands = True
     control = "!"
     ignore = ["PING", "PONG", "PRIVMSG"] 
-    name = NAME
-    nick = NAME
+    name = Cfg.name
+    nick = Cfg.name
     word = ""
     port = 6667
-    realname = NAME
+    realname = Cfg.name
     sasl = False
     server = "localhost"
     servermodes = ""
     sleep = 60
-    username = NAME
+    username = Cfg.name
     users = False
     version = 1
 

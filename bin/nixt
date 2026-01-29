@@ -14,38 +14,27 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, addcmd, command
+from nixt.command import Commands, addcmd, command, docmd
 from nixt.handler import Console
 from nixt.message import Message
 from nixt.methods import parse
 from nixt.objects import Default
 from nixt.package import initmods, inits, listmods, pkgname, scanner
 from nixt.persist import pidfile, setwd, workdir
+from nixt.runtime import Cfg
 from nixt.utility import forever, level
 
 
-"defines"
-
-
-try:
-    from nixbot import modules as MODS
-except ModuleNotFoundError:
-    MODS = None
-
+#from nixt import modules as MODS
+import mods as MODS
 
 "config"
 
 
-class Config(Default):
-
-    pass
-
-
-Cfg = Config()
+Cfg.ignore = "rst,udp,web"
 Cfg.level = "info"
 Cfg.name = pkgname(Commands)
 Cfg.txt = " ".join(sys.argv[1:])
-Cfg.version = 181
 Cfg.wdr = os.path.expanduser(f"~/.{Cfg.name}")
 
 
@@ -92,7 +81,7 @@ def background():
     boot()
     pidfile(Cfg.name)
     scanner(Cfg.ignore)
-    addcmd(cmd, mod, ver)
+    addcmd(cmd, mod)
     inits(Cfg.default or "irc,mdl,rss,wsd", Cfg.ignore)
     forever()
 
@@ -103,7 +92,7 @@ def console():
     readline.redisplay()
     boot()
     scanner(listmods(), Cfg.ignore)
-    addcmd(cmd, mod, ver)
+    addcmd(cmd, mod)
     docmd(Cfg.txt)
     inits(Cfg.init, Cfg.ignore, "w" in Cfg.opts)
     csl = Term()
@@ -117,8 +106,10 @@ def control():
         return
     boot()
     scanner(listmods(), Cfg.ignore)
-    addcmd(cmd, mod, srv, ver)
-    docmd(Cfg.txt)
+    addcmd(cmd, mod, srv)
+    evt = docmd(Cfg.txt)
+    for line in evt.result.values():
+        print(line)
 
 
 def service():
@@ -128,7 +119,7 @@ def service():
     boot()
     pidfile(Cfg.name)
     scanner(listmods())
-    addcmd(cmd, mod, ver)
+    addcmd(cmd, mod)
     inits(Cfg.default or "irc,mdl,rss,wsd", Cfg.ignore)
     forever()
 
@@ -153,20 +144,14 @@ def srv(event):
     event.reply(SYSTEMD % (Cfg.name.upper(), name, name, name, Cfg.name))
 
 
-def ver(event):
-    "show version."
-    event.reply(f"{Cfg.name.upper()} {Cfg.version}")
-
-
 "utility"
 
 
 def banner():
     "hello."
     tme = time.ctime(time.time()).replace("  ", " ")
-    print("%s %s since %s (%s)" % (
+    print("%s since %s (%s)" % (
         Cfg.name.upper(),
-        Cfg.version,
         tme,
         Cfg.level.upper(),
     ))
@@ -176,7 +161,7 @@ def banner():
 def boot(inits=""):
     "in the beginning."
     parse(Cfg, Cfg.txt)
-    Cfg.ignore = Cfg.sets.ignore
+    Cfg.ignore = Cfg.sets.ignore or Cfg.ignore or ""
     Cfg.init = Cfg.sets.init or Cfg.init or ""
     Cfg.level = Cfg.sets.level or Cfg.level or "info"
     Cfg.wdr = Cfg.sets.wdr or Cfg.wdr or os.path.expanduser(f"~/.{pkgname(Cfg)}")
@@ -205,19 +190,6 @@ def check(text):
         return False
 
 
-def docmd(text):
-    "parse text for command and run it."
-    cli = Line()
-    for txt in text.split(" ! "):
-        evt = Message()
-        evt.orig = repr(cli)
-        evt.text = txt
-        evt.type = "command"
-        command(evt)
-        evt.wait()
-    return evt.result
-
- 
 def daemon(verbose=False, nochdir=False):
     "run in the background."
     pid = os.fork()

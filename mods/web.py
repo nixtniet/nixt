@@ -10,21 +10,10 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.objects import Default, Object
-from nixt.package import pkgname
+from nixt.objects import Object
+from nixt.runtime import Cfg
 from nixt.threads import launch
 from nixt.utility import where
-
-
-def getmain(name):
-    main = sys.modules.get("__main__")
-    return getattr(main, name)
-
-
-Cfg = getmain("Cfg") or Default()
-
-
-NAME = Cfg.name or pkgname(Object)
 
 
 def init():

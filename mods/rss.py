@@ -7,7 +7,6 @@ import http.client
 import logging
 import os
 import re
-import sys
 import time
 import urllib
 import urllib.parse
@@ -22,22 +21,11 @@ from urllib.parse import quote_plus, urlencode
 
 from nixt.brokers import getobjs
 from nixt.methods import fmt, fqn
-from nixt.objects import Default, Object, update
-from nixt.package import pkgname
+from nixt.objects import Object, update
 from nixt.persist import find, fntime, ident, last, write
+from nixt.runtime import Cfg
 from nixt.threads import launch
 from nixt.utility import Repeater, elapsed, spl
-
-
-def getmain(name):
-    main = sys.modules.get("__main__")
-    return getattr(main, name)
-
-
-Cfg = getmain("Cfg") or Default()
-
-
-NAME = Cfg.name or pkgname(Object)
 
 
 def init():

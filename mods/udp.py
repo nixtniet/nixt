@@ -10,20 +10,9 @@ import time
 
 
 from nixt.brokers import getobjs
-from nixt.objects import Default, Object
-from nixt.package import pkgname
+from nixt.objects import Object
+from nixt.runtime import Cfg
 from nixt.threads import launch
-
-
-def getmain(name):
-    main = sys.modules.get("__main__")
-    return getattr(main, name)
-
-
-Cfg = getmain("Cfg") or Default()
-
-
-NAME = Cfg.name or pkgname(Object)
 
 
 def init():

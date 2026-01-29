@@ -10,21 +10,10 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.objects import Default, Object
-from nixt.package import pkgname
+from nixt.objects import Object
 from nixt.persist import kinds, workdir
+from nixt.runtime import Cfg
 from nixt.threads import launch
-
-
-def getmain(name):
-    main = sys.modules.get("__main__")
-    return getattr(main, name)
-
-
-Cfg = getmain("Cfg") or Default()
-
-
-NAME = Cfg.name or pkgname(Object)
 
 
 def init():
@@ -100,7 +89,7 @@ class RESTHandler(BaseHTTPRequestHandler):
             self.write_header("text/html")
             txt = ""
             for fnm in kinds():
-                txt += f'<a href="http://{Cfg.hostname}:{Cfg.port}/{fnm}">{fnm}</a><br>\n'
+                txt += f'<a href="http://{Config.hostname}:{Config.port}/{fnm}">{fnm}</a><br>\n'
             self.send(html(txt.strip()))
             return
         fnm = os.path.join(workdir(), self.path)
@@ -110,7 +99,7 @@ class RESTHandler(BaseHTTPRequestHandler):
             txt = ""
             for fnn in os.listdir(fnm):
                 filename = self.path  + os.sep + fnn
-                txt += f'<a href="http://{Cfg.hostname}:{Cfg.port}/{filename}">{filename}</a><br>\n'
+                txt += f'<a href="http://{Config.hostname}:{Config.port}/{filename}">{filename}</a><br>\n'
             self.send(txt.strip())
             return
         try:
