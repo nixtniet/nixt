@@ -24,11 +24,12 @@ from nixt.threads import launch
 from nixt.utility import elapsed, wrapped
 
 
-#from nixt import modules as MODS
-import mods as MODS
+from nixt import modules as MODS
 
-
-"defines"
+try:
+    import mods as MODS2
+except ModuleNotFoundError:
+    MODS2 = None
 
 
 events = queue.Queue()
@@ -152,6 +153,7 @@ def main():
     parse(Cfg, " ".join(sys.argv[1:]))
     setwd(Cfg.wdr)
     initmods("modules", MODS.__path__[0])
+    initmods("mods", MODS2.__path__[0])
     scanner(listmods())
     if "v" in Cfg.opts:
         banner(Cfg.name)

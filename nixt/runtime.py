@@ -13,3 +13,9 @@ class Config(Default):
 
 
 Cfg = Config()
+
+
+def __dir__():
+    return (
+        'Cfg',
+    )

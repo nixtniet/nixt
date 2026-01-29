@@ -44,9 +44,6 @@ def scancmd(module):
         addcmd(cmdz)
 
 
-"callbacks"
-
-
 def command(evt):
     "command callback."
     parse(evt, evt.text)
@@ -68,9 +65,6 @@ def docmd(text):
         command(evt)
         evt.wait()
     return evt
-
-
-"interface"
 
 
 def __dir__():

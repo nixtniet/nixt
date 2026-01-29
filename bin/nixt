@@ -18,27 +18,21 @@ from nixt.command import Commands, addcmd, command, docmd
 from nixt.handler import Console
 from nixt.message import Message
 from nixt.methods import parse
-from nixt.objects import Default
 from nixt.package import initmods, inits, listmods, pkgname, scanner
 from nixt.persist import pidfile, setwd, workdir
 from nixt.runtime import Cfg
 from nixt.utility import forever, level
 
 
-#from nixt import modules as MODS
-import mods as MODS
-
-"config"
+from nixt import modules as MODS
 
 
 Cfg.ignore = "rst,udp,web"
 Cfg.level = "info"
 Cfg.name = pkgname(Commands)
 Cfg.txt = " ".join(sys.argv[1:])
+Cfg.version = 453
 Cfg.wdr = os.path.expanduser(f"~/.{Cfg.name}")
-
-
-"clients"
 
 
 class Line(Console):
@@ -53,7 +47,6 @@ class Line(Console):
 
 
 class Term(Line):
-
 
     def callback(self, event):
         "wait for callback result."
@@ -71,9 +64,6 @@ class Term(Line):
         return evt
 
 
-"scripts"
-
-
 def background():
     "background script."
     daemon()
@@ -81,7 +71,7 @@ def background():
     boot()
     pidfile(Cfg.name)
     scanner(Cfg.ignore)
-    addcmd(cmd, mod)
+    addcmd(cmd, mod, ver)
     inits(Cfg.default or "irc,mdl,rss,wsd", Cfg.ignore)
     forever()
 
@@ -92,7 +82,7 @@ def console():
     readline.redisplay()
     boot()
     scanner(listmods(), Cfg.ignore)
-    addcmd(cmd, mod)
+    addcmd(cmd, mod, ver)
     docmd(Cfg.txt)
     inits(Cfg.init, Cfg.ignore, "w" in Cfg.opts)
     csl = Term()
@@ -106,7 +96,7 @@ def control():
         return
     boot()
     scanner(listmods(), Cfg.ignore)
-    addcmd(cmd, mod, srv)
+    addcmd(cmd, mod, srv, ver)
     evt = docmd(Cfg.txt)
     for line in evt.result.values():
         print(line)
@@ -119,12 +109,9 @@ def service():
     boot()
     pidfile(Cfg.name)
     scanner(listmods())
-    addcmd(cmd, mod)
+    addcmd(cmd, mod, ver)
     inits(Cfg.default or "irc,mdl,rss,wsd", Cfg.ignore)
     forever()
-
-
-"commands"
 
 
 def cmd(event):
@@ -134,7 +121,11 @@ def cmd(event):
 
 def mod(event):
     "list available commands."
-    event.reply(listmods(Cfg.ignore))
+    mods = listmods(Cfg.ignore)
+    if not mods:
+        event.reply("no modules available")
+        return
+    event.reply(mods)
 
 
 def srv(event):
@@ -144,14 +135,17 @@ def srv(event):
     event.reply(SYSTEMD % (Cfg.name.upper(), name, name, name, Cfg.name))
 
 
-"utility"
+def ver(event):
+    "show verson."
+    event.reply(f"{Cfg.name.upper()} {Cfg.version}")
 
 
 def banner():
     "hello."
     tme = time.ctime(time.time()).replace("  ", " ")
-    print("%s since %s (%s)" % (
+    print("%s %s since %s (%s)" % (
         Cfg.name.upper(),
+        Cfg.version,
         tme,
         Cfg.level.upper(),
     ))
@@ -237,9 +231,6 @@ def wrap(func):
         termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
-"data"
-
-
 SYSTEMD = """[Unit]
 Description=%s
 After=multi-user.target
@@ -252,9 +243,6 @@ ExecStart=/home/%s/.local/bin/%s -s
 
 [Install]
 WantedBy=multi-user.target"""
-
-
-"runtime"
 
 
 def main():

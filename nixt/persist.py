@@ -20,9 +20,6 @@ from .objects import Object, items, keys, update
 lock = threading.RLock()
 
 
-"cache"
-
-
 class Cache:
 
     paths = {}
@@ -44,9 +41,6 @@ def syncpath(path, obj):
         update(Cache.paths[path], obj)
     except KeyError:
         addpath(path, obj)
-
-
-"workdir"
 
 
 class Workdir:
@@ -105,7 +99,9 @@ def workdir():
     return Workdir.wdr
 
 
-"storage"
+class Disk:
+
+    pass
 
 
 def read(obj, path):
@@ -134,7 +130,9 @@ def write(obj, path=""):
         return path
 
 
-"find"
+class Locate:
+
+    pass
 
 
 def attrs(kind):
@@ -192,7 +190,9 @@ def last(obj, selector={}):
     return res
 
 
-"utility"
+class Utils:
+
+    pass
 
 
 def cdir(path):
@@ -246,9 +246,6 @@ def search(obj, selector={}, matching=False):
 def strip(path):
     "strip filename from path."
     return path.split('store')[-1][1:]
-
-
-"interface"
 
 
 def __dir__():

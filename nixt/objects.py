@@ -120,9 +120,6 @@ def values(obj):
     return obj.__dict__.values()
 
 
-"utilities"
-
-
 def skip(obj, chars="_"):
     "skip keys containing chars."
     res = {}
@@ -137,16 +134,10 @@ def skip(obj, chars="_"):
     return res
 
 
-"default"
-
-
 class Default(Object):
 
     def __getattr__(self, key):
         return self.__dict__.get(key, "")
-
-
-"interface"
 
 
 def __dir__():
