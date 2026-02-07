@@ -1,12 +1,12 @@
 # This file is placed in the Public Domain.
 
 
-from nixt.brokers import getobjs
-from nixt.methods import fqn
+from nixt.brokers import Broker
+from nixt.objects import Methods
 
 
 def flt(event):
-    clts = list(getobjs("announce"))
+    clts = list(Broker.objs("announce"))
     if event.args:
         index = int(event.args[0])
         if index < len(clts):
@@ -14,4 +14,4 @@ def flt(event):
         else:
             event.reply("no matching client in fleet.")
         return
-    event.reply(' | '.join([fqn(o).split(".")[-1] for o in clts]))
+    event.reply(' | '.join([Methods.fqn(o).split(".")[-1] for o in clts]))

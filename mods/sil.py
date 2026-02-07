@@ -1,16 +1,16 @@
 # This file is placed in the Public Domain.
 
 
-from nixt.brokers import getobj
+from nixt.brokers import Broker
 
 
 def sil(event):
-    bot = getobj(event.orig)
+    bot = Broker.get(event.orig)
     bot.silent = True
     event.reply("ok")
 
 
 def lou(event):
-    bot = getobj(event.orig)
+    bot = Broker.get(event.orig)
     bot.silent = False
     event.reply("ok")
