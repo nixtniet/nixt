@@ -23,8 +23,7 @@ from urllib.parse import quote_plus, urlencode
 
 from nixt.brokers import Broker
 from nixt.clients import ClientPool
-from nixt.modules import Cfg
-from nixt.objects import Default, Dict, Object, Methods
+from nixt.objects import Config, Default, Dict, Object, Methods
 from nixt.persist import Disk, Locate
 from nixt.threads import Thread
 from nixt.utility import Repeater, Time, Utils
@@ -33,7 +32,8 @@ from nixt.utility import Repeater, Time, Utils
 "init"
 
 
-def init():
+def init(cfg):
+    Dict.update(Cfg, cfg)
     ClientPool.init(1, Runner)
     fetcher = Fetcher()
     fetcher.start()
@@ -55,6 +55,9 @@ seenlock = threading.RLock()
 errors = {}
 seenfn = ""
 skipped = []
+
+
+Cfg = Config()
 
 
 "classes"

@@ -18,7 +18,7 @@ from nixt.command import Commands
 from nixt.clients import Console
 from nixt.message import Message
 from nixt.modules import Cfg
-from nixt.objects import Methods
+from nixt.objects import Default, Methods
 from nixt.package import Mods
 from nixt.utility import Utils
 from nixt.persist import Disk, Workdir
@@ -31,6 +31,12 @@ from nixt import modules as MODS
 "config"
 
 
+class Config(Default):
+
+    pass
+
+
+Cfg = Config()
 Cfg.commands = True
 Cfg.ignore = "rst,udp,web"
 Cfg.level = "info"
@@ -87,7 +93,7 @@ class Scripts:
         Workdir.pidfile(Cfg.name)
         Mods.scanner(Mods.list(), Cfg.ignore)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        Mods.inits(Cfg.default or "irc,mdl,rss,wsd", Cfg.ignore)
+        Mods.inits(Cfg, Cfg.default or "irc,mdl,rss,wsd", Cfg.ignore)
         Runtime.forever()
 
     @staticmethod
@@ -99,7 +105,7 @@ class Scripts:
         Mods.scanner(Mods.list(), Cfg.ignore)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Commands.cmd(Cfg.txt)
-        Mods.inits(Cfg.init, Cfg.ignore, "w" in Cfg.opts)
+        Mods.inits(Cfg, Cfg.init, Cfg.ignore, "w" in Cfg.opts)
         csl = Term()
         csl.start()
         Runtime.forever()
@@ -125,7 +131,7 @@ class Scripts:
         Workdir.pidfile(Cfg.name)
         Mods.scanner(Mods.list())
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        Mods.inits(Cfg.default or "irc,mdl,rss,wsd", Cfg.ignore)
+        Mods.inits(Cfg, Cfg.default or "irc,mdl,rss,wsd", Cfg.ignore)
         Runtime.forever()
 
 

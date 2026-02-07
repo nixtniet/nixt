@@ -10,12 +10,12 @@ import time
 
 
 from nixt.brokers import Broker
-from nixt.modules import Cfg
 from nixt.objects import Object
 from nixt.threads import Thread
 
 
-def init():
+def init(cfg):
+    Dict.update(Cfg, cfg)
     udp = UDP()
     udp.start()
     logging.warning("http://%s:%s", Config.host, Config.port)
@@ -27,6 +27,9 @@ class Config(Object):
     addr = ""
     host = "localhost"
     port = 5500
+
+
+Cfg = Config()
 
 
 class UDP(Object):

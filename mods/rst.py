@@ -11,7 +11,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from nixt.modules import Cfg
-from nixt.objects import Object
+from nixt.objects import Dict, Object
 from nixt.persist import Workdir
 from nixt.threads import Thread
 
@@ -19,7 +19,8 @@ from nixt.threads import Thread
 "init"
 
 
-def init():
+def init(cfg):
+    Dict.update(Cfg, cfg)
     try:
         rest = REST((Config.hostname, int(Config.port)), RESTHandler)
         rest.start()
@@ -36,6 +37,9 @@ class Config:
 
     hostname = "localhost"
     port     = 10102
+
+
+Cfg = Config()
 
 
 "rest"

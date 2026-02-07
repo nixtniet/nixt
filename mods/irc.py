@@ -15,21 +15,17 @@ from nixt.brokers import Broker
 from nixt.clients import Output
 from nixt.command import Commands
 from nixt.message import Message
-from nixt.modules import Cfg
 from nixt.objects import Dict, Object, Methods
 from nixt.persist import Disk, Locate
 from nixt.threads import Thread
 from nixt.utility import Utils
 
 
-NAME = Cfg.name or Utils.pkgname(Object)
-
-
 lock = threading.RLock()
 
 
-def init():
-    irc = IRC()
+def init(cfg):
+    irc = IRC(cfg)
     irc.start()
     irc.events.joined.wait(30.0)
     if irc.events.joined.is_set():
@@ -41,33 +37,24 @@ def init():
 
 class Config(Object):
 
-    channel = f"#{Cfg.name}"
-    commands = Cfg.commands or False
-    control = "!"
     ignore = ["PING", "PONG", "PRIVMSG"] 
-    name = Cfg.name
-    nick = Cfg.name
-    word = ""
-    port = 6667
-    realname = Cfg.name
-    sasl = False
-    server = "localhost"
-    servermodes = ""
-    sleep = 60
-    username = Cfg.name
-    users = False
-    version = 1
 
-    def __init__(self):
-        super().__init__()
-        self.channel = Config.channel
-        self.commands = Config.commands
-        self.name = Config.name
-        self.nick = Config.nick
-        self.port = Config.port
-        self.realname = Config.realname
-        self.server = Config.server
-        self.username = Config.username
+    def __init__(self, cfg):
+        self.channel = f"#{cfg.name}"
+        self.commands = cfg.commands or False
+        self.control = "!"
+        self.name = cfg.name
+        self.nick = cfg.name
+        self.word = ""
+        self.port = 6667
+        self.realname = cfg.name
+        self.sasl = False
+        self.server = "localhost"
+        self.servermodes = ""
+        self.sleep = 60
+        self.username = cfg.name
+        self.users = False
+        self.version = 1
 
     def __getattr__(self, name):
         if name not in self:
@@ -113,11 +100,11 @@ wrapper = TextWrap()
 
 class IRC(Output):
 
-    def __init__(self):
+    def __init__(self, cfg):
         Output.__init__(self)
         self.buffer = []
         self.cache = {}
-        self.cfg = Config()
+        self.cfg = Config(cfg)
         self.channels = []
         self.events = Object()
         self.events.authed = threading.Event()
