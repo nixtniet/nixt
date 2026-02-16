@@ -47,34 +47,6 @@ def shutdown():
     Run.fetcher.stop()
 
 
-"persist"
-
-
-class Feed(Default):
-
-    pass
-
-
-class Modified:
-
-    pass
-
-
-class Rss(Default):
-
-    def __init__(self):
-        super().__init__()
-        self.display_list = "title,link,author"
-        self.insertid = None
-        self.name = ""
-        self.rss = ""
-
-
-class Urls:
-
-    pass
-
-
 "fetcher"
 
 
@@ -378,9 +350,9 @@ class Helpers:
             if "link" not in items:
                 items += ",link"
             if feed.rss.endswith("atom"):
-                yield from Parser.parse(str(response.data, "utf-8"), "entry", items) or []
+                yield from Parser.parse(str(response.data, "utf-8", errors='ignore'), "entry", items) or []
             else:
-                yield from Parser.parse(str(response.data, "utf-8"), "item", items) or []
+                yield from Parser.parse(str(response.data, "utf-8", errors='ignore'), "item", items) or []
         except TimeoutError:
             return result
         except (
@@ -464,6 +436,34 @@ class Helpers:
     def useragent(txt):
         "produce useragent string."
         return "Mozilla/5.0 (X11; Linux x86_64) " + txt
+
+
+"persist"
+
+
+class Feed(Default):
+
+    pass
+
+
+class Modified:
+
+    pass
+
+
+class Rss(Default):
+
+    def __init__(self):
+        super().__init__()
+        self.display_list = "title,link,author"
+        self.insertid = None
+        self.name = ""
+        self.rss = ""
+
+
+class Urls:
+
+    pass
 
 
 "state"

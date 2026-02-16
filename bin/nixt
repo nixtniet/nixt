@@ -33,6 +33,7 @@ from nixt import modules as MODS
 Cfg.commands = True
 Cfg.ignore   = "rst,udp,web"
 Cfg.level    = "info"
+Cfg.local    = True
 Cfg.modules  = ""
 Cfg.name     = Utils.pkgname(Commands)
 Cfg.poll     = 300
@@ -184,22 +185,23 @@ class Runtime:
     @staticmethod
     def boot(args):
         "in the beginning."
-        Cfg.all = args.all
-        Cfg.level = args.level
-        Cfg.mods = args.mods
-        Cfg.port = args.port
-        Cfg.room = args.room
-        Cfg.server = args.connect
+        Cfg.all     = args.all
+        Cfg.level   = args.level
+        Cfg.local   = Cfg.local or args.local
+        Cfg.mods    = args.mods
+        Cfg.port    = args.port
+        Cfg.room    = args.room
+        Cfg.server  = args.connect
         Cfg.verbose = args.verbose
-        Cfg.wait = args.wait
-        Cfg.wdr = args.wdr or os.path.expanduser(f"~/.{Utils.pkgname(Cfg)}")
+        Cfg.wait    = args.wait
+        Cfg.wdr     = args.wdr or os.path.expanduser(f"~/.{Utils.pkgname(Cfg)}")
         Log.level(Cfg.level)
         Workdir.setwd(Cfg.wdr)
         if Cfg.wdr:
             Mods.init("modules", os.path.join(Workdir.workdir(), "mods"))
         if MODS:
             Mods.init(MODS.__name__, MODS.__path__[0])
-        if args.local:
+        if Cfg.local:
             Mods.init('mods', 'mods')
         if Cfg.verbose:
             Runtime.banner()
