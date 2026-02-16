@@ -6,7 +6,7 @@ import unittest
 
 from nixt.brokers import Broker
 from nixt.clients import Client
-from nixt.decoder import Json
+from nixt.encoder import Json
 from nixt.objects import Dict, Object
 
 

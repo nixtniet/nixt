@@ -4,7 +4,7 @@
 import unittest
 
 
-from nixt.decoder import *
+from nixt.encoder import *
 from nixt.objects import *
 
 
