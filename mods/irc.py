@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"internet relay chat"
+
+
 import base64
 import logging
 import os
@@ -13,19 +16,28 @@ import time
 
 from nixt.brokers import Broker
 from nixt.clients import Output
-from nixt.command import Commands
+from nixt.command import Cfg, Commands
 from nixt.message import Message
-from nixt.objects import Dict, Object, Methods
+from nixt.objects import Default, Dict, Object, Methods
+from nixt.package import Mods
 from nixt.persist import Disk, Locate
 from nixt.threads import Thread
-from nixt.utility import Utils
+
+
+"defines"
+
+
+NAME = Mods.pkgname(Broker)
 
 
 lock = threading.RLock()
 
 
-def init(cfg):
-    irc = IRC(cfg)
+"init"
+
+
+def init():
+    irc = IRC()
     irc.start()
     irc.events.joined.wait(30.0)
     if irc.events.joined.is_set():
@@ -35,24 +47,28 @@ def init(cfg):
     return irc
 
 
-class Config(Object):
+"config"
+
+
+class Config(Default):
 
     ignore = ["PING", "PONG", "PRIVMSG"] 
 
-    def __init__(self, cfg):
-        self.channel = f"#{cfg.name}"
-        self.commands = cfg.commands or False
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.name = Cfg.name or NAME
+        self.channel = Cfg.room or f"#{self.name}"
+        self.commands = Cfg.commands or False
         self.control = "!"
-        self.name = cfg.name
-        self.nick = cfg.name
+        self.nick = Cfg.name or NAME
         self.word = ""
-        self.port = 6667
-        self.realname = cfg.name
-        self.sasl = False
-        self.server = "localhost"
+        self.port = Cfg.port or 6667
+        self.realname = Cfg.name or NAME
+        self.sasl = (self.port == 6697 and True) or False
+        self.server = Cfg.server or "localhost"
         self.servermodes = ""
         self.sleep = 60
-        self.username = cfg.name
+        self.username = Cfg.name or NAME
         self.users = False
         self.version = 1
 
@@ -60,6 +76,9 @@ class Config(Object):
         if name not in self:
             return ""
         return self.__getattribute__(name)
+
+
+"event"
 
 
 class Event(Message):
@@ -83,6 +102,9 @@ class Event(Message):
         bot.dosay(self.channel, txt)
 
 
+"wraper"
+
+
 class TextWrap(textwrap.TextWrapper):
 
     def __init__(self):
@@ -98,13 +120,16 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
+"irc"
+
+
 class IRC(Output):
 
-    def __init__(self, cfg):
+    def __init__(self):
         Output.__init__(self)
         self.buffer = []
         self.cache = {}
-        self.cfg = Config(cfg)
+        self.cfg = Config()
         self.channels = []
         self.events = Object()
         self.events.authed = threading.Event()
@@ -228,7 +253,7 @@ class IRC(Output):
                         self.events.joined.set()
                         continue
                     break
-            except (socket.timeout, ssl.SSLError, OSError, ConnectionResetError) as ex:
+            except (socket.error, socket.timeout, ssl.SSLError, OSError, ConnectionResetError) as ex:
                 self.events.joined.set()
                 self.state.error = str(ex)
                 logging.debug("%s", str(type(ex)) + " " + str(ex))
@@ -435,6 +460,7 @@ class IRC(Output):
         self.doconnect(self.cfg.server, self.cfg.nick, int(self.cfg.port))
 
     def restart(self):
+        logging.debug("restart")
         self.events.joined.set()
         self.state.pongcheck = False
         self.state.keeprunning = False
@@ -484,6 +510,7 @@ class IRC(Output):
         )
 
     def stop(self):
+        logging.warn("stopping")
         self.state.stopkeep = True
         Output.stop(self)
 

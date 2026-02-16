@@ -6,19 +6,19 @@ import os
 import queue
 import shutil
 import sys
+import threading
 import time
 
 
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client, ClientPool
-from nixt.command import Commands
-from nixt.modules import Cfg
+from nixt.clients import Client
+from nixt.command import Cfg, Commands
 from nixt.message import Message
 from nixt.objects import Methods
 from nixt.package import Mods
-from nixt.persist import Workdir
+from nixt.persist import Disk, Workdir
 from nixt.threads import Thread
 from nixt.utility import Time, Utils
 
@@ -43,7 +43,7 @@ Cfg.ignore = ""
 Cfg.level = "info"
 Cfg.name = Mods.pkgname(Commands)
 Cfg.txt = " ".join(sys.argv[1:])
-Cfg.version = 7
+Cfg.version = 100
 Cfg.wdr = ".test"
 
 
@@ -59,6 +59,36 @@ class CLI(Client):
     def raw(self, txt):
         if "v" in Cfg.opts:
             print(txt)
+
+
+class ClientPool:
+
+    clients = []
+    lock = threading.RLock()
+    nrcpu = 1
+    nrlast = 0
+
+    @staticmethod
+    def add(client):
+        ClientPool.clients.append(client)
+
+    @staticmethod
+    def init(nrcpu, cls):
+        ClientPool.nrcpu = nrcpu
+        for _x in range(ClientPool.nrcpu):
+            clt = cls()
+            clt.start()
+            ClientPool.add(clt)
+
+    @staticmethod
+    def put(*args):
+        with ClientPool.lock:
+            if ClientPool.nrlast >= ClientPool.nrcpu-1:
+                ClientPool.nrlast = 0
+            clt = ClientPool.clients[ClientPool.nrlast]
+            clt.put(*args)
+            ClientPool.nrlast += 1
+
 
 
 "utilities"
@@ -123,6 +153,8 @@ def wrap(func):
 def main():
     if "p" not in Cfg.opts and os.path.exists(Cfg.wdr):
         shutil.rmtree(Cfg.wdr)
+    if "b" in Cfg.opts:
+        Disk.cache()
     Methods.parse(Cfg, " ".join(sys.argv[1:]))
     Workdir.setwd(Cfg.wdr)
     Mods.init("modules", MODS.__path__[0])
@@ -154,7 +186,7 @@ def main():
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
     if "v" in Cfg.opts:
-        print(f"{Methods.fmt(Cfg)}")
+        print(f"{Methods.fmt(Cfg, skip='otxt,txt')}")
         print(f"{nrs} events left.")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
 

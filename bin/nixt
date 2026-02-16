@@ -5,6 +5,7 @@
 "main program"
 
 
+import argparse
 import logging
 import os
 import sys
@@ -14,14 +15,12 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands
+from nixt.command import Cfg, Commands
 from nixt.clients import Console
 from nixt.message import Message
-from nixt.modules import Cfg
-from nixt.objects import Default, Methods
 from nixt.package import Mods
 from nixt.utility import Utils
-from nixt.persist import Disk, Workdir
+from nixt.persist import Workdir
 from nixt.utility import Log
 
 
@@ -31,20 +30,18 @@ from nixt import modules as MODS
 "config"
 
 
-class Config(Default):
-
-    pass
-
-
-Cfg = Config()
 Cfg.commands = True
-Cfg.ignore = "rst,udp,web"
-Cfg.level = "info"
-Cfg.name = Utils.pkgname(Commands)
-Cfg.poll = 300
-Cfg.txt = " ".join(sys.argv[1:])
-Cfg.version = 7
-Cfg.wdr = os.path.expanduser(f"~/.{Cfg.name}")
+Cfg.ignore   = "rst,udp,web"
+Cfg.level    = "info"
+Cfg.modules  = ""
+Cfg.name     = Utils.pkgname(Commands)
+Cfg.poll     = 300
+Cfg.port     = 6667
+Cfg.room     = f"#{Cfg.name}"
+Cfg.server   = "localhost"
+Cfg.txt      = " ".join(sys.argv[1:])
+Cfg.version  = 455
+Cfg.wdr      = os.path.expanduser(f"~/.{Cfg.name}")
 
 
 "clients"
@@ -61,7 +58,7 @@ class Line(Console):
         print(text.encode('utf-8', 'replace').decode("utf-8"))
 
 
-class Term(Line):
+class CSL(Line):
 
     def callback(self, event):
         "wait for callback result."
@@ -85,37 +82,37 @@ class Term(Line):
 class Scripts:
 
     @staticmethod
-    def background():
+    def background(args):
         "background script."
         Runtime.daemon()
         Runtime.privileges()
-        Runtime.boot()
+        Runtime.boot(args)
         Workdir.pidfile(Cfg.name)
         Mods.scanner(Mods.list(), Cfg.ignore)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        Mods.inits(Cfg, Cfg.default or "irc,mdl,rss,wsd", Cfg.ignore)
+        Mods.inits(Cfg.default or "irc,mdl,rss,wsd", Cfg.ignore)
         Runtime.forever()
 
     @staticmethod
-    def console():
+    def console(args):
         "console script."
         import readline
         readline.redisplay()
-        Runtime.boot()
+        Runtime.boot(args)
         Mods.scanner(Mods.list(), Cfg.ignore)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Commands.cmd(Cfg.txt)
-        Mods.inits(Cfg, Cfg.init, Cfg.ignore, "w" in Cfg.opts)
-        csl = Term()
+        Mods.inits(Cfg.modules, Cfg.ignore, Cfg.wait)
+        csl = CSL()
         csl.start()
         Runtime.forever()
 
     @staticmethod
-    def control():
+    def control(args):
         "cli script."
         if len(sys.argv) == 1:
             return
-        Runtime.boot()
+        Runtime.boot(args)
         Mods.scanner(Mods.list(), Cfg.ignore)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.srv, Cmd.ver)
         evt = Commands.cmd(Cfg.txt)
@@ -123,15 +120,15 @@ class Scripts:
             print(line)
 
     @staticmethod
-    def service():
+    def service(args):
         "service script."
         Runtime.privileges()
         Runtime.banner()
-        Runtime.boot()
+        Runtime.boot(args)
         Workdir.pidfile(Cfg.name)
         Mods.scanner(Mods.list())
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        Mods.inits(Cfg, Cfg.default or "irc,mdl,rss,wsd", Cfg.ignore)
+        Mods.inits(Cfg.default or "irc,mdl,rss,wsd", Cfg.ignore)
         Runtime.forever()
 
 
@@ -176,54 +173,38 @@ class Runtime:
     def banner():
         "hello."
         tme = time.ctime(time.time()).replace("  ", " ")
-        print("%s %s since %s (%s/%s/%s)" % (
+        print("%s %s since %s (%s)" % (
             Cfg.name.upper(),
             Cfg.version,
             tme,
-            (Cfg.commands and "COMMAND") or (not Cfg.commands and 'NOCOMMAND'),
             Cfg.level.upper(),
-            (Disk.cached() and 'CACHED') or (not Disk.cached() and 'DIRECT')
         ))
         sys.stdout.flush()
 
     @staticmethod
-    def boot(inits=""):
+    def boot(args):
         "in the beginning."
-        Methods.parse(Cfg, Cfg.txt)
-        Cfg.ignore = Cfg.sets.ignore or Cfg.ignore or ""
-        Cfg.init = Cfg.sets.init or Cfg.init or ""
-        Cfg.level = Cfg.sets.level or Cfg.level or "info"
-        try:
-            Cfg.poll = int(Cfg.sets.poll)
-            Cfg.poll > 60
-        except ValueError:
-            pass
-        Cfg.wdr = Cfg.sets.wdr or Cfg.wdr or os.path.expanduser(f"~/.{Utils.pkgname(Cfg)}")
+        Cfg.all = args.all
+        Cfg.level = args.level
+        Cfg.mods = args.mods
+        Cfg.port = args.port
+        Cfg.room = args.room
+        Cfg.server = args.connect
+        Cfg.verbose = args.verbose
+        Cfg.wait = args.wait
+        Cfg.wdr = args.wdr or os.path.expanduser(f"~/.{Utils.pkgname(Cfg)}")
         Log.level(Cfg.level)
         Workdir.setwd(Cfg.wdr)
         if Cfg.wdr:
             Mods.init("modules", os.path.join(Workdir.workdir(), "mods"))
         if MODS:
             Mods.init(MODS.__name__, MODS.__path__[0])
-        if "m" in Cfg.opts and os.path.exists("mods"):
-            Mods.init("mods", "mods")
-        if "v" in Cfg.opts:
+        if args.local:
+            Mods.init('mods', 'mods')
+        if Cfg.verbose:
             Runtime.banner()
-        if 'a' in Cfg.opts:
-            Cfg.init = Mods.list(Cfg.ignore)
-        if 'x' in Cfg.opts:
-            Cfg.commands = True
-
-    @staticmethod
-    def check(text):
-        "check for options."
-        for arg in Cfg.txt.split():
-            if not arg.startswith("-"):
-                continue
-            for char in text:
-               if char in arg:
-                   return True
-            return False
+        if Cfg.all:
+            Cfg.modules = Mods.list(Cfg.ignore)
 
     @staticmethod
     def daemon(verbose=False, nochdir=False):
@@ -255,6 +236,25 @@ class Runtime:
                 break
 
     @staticmethod
+    def getargs():
+        "parse commandline arguments."
+        parser = argparse.ArgumentParser(description=f"{Cfg.name.upper()}")
+        parser.add_argument("-a", "--all", action="store_true", help="load all modules")
+        parser.add_argument("-c", "--console", action="store_true", help="start console")
+        parser.add_argument("-d", "--daemon", action="store_true", help="start background daemon")
+        parser.add_argument("-l", "--level", default=Cfg.level, help='set loglevel')
+        parser.add_argument("-m", "--mods", default="", help='modules to load')
+        parser.add_argument("-p", "--port", default=Cfg.port, help='set port to connect to')
+        parser.add_argument("-r", "--room", help='set room/channel to joinl')
+        parser.add_argument("-s", "--service", action="store_true", help="start service")
+        parser.add_argument("-v", "--verbose", action='store_true',help='enable verbose')
+        parser.add_argument("-w", "--wait", action='store_true',help='wait for services to start')
+        parser.add_argument("-z", "--connect", default=Cfg.server, help="server to connect to")
+        parser.add_argument("--local", action="store_true", help="use local mods directory")
+        parser.add_argument("--wdr", help='set working directory')
+        return parser.parse_known_args()
+
+    @staticmethod
     def privileges():
         "drop privileges."
         import getpass
@@ -264,7 +264,7 @@ class Runtime:
         os.setuid(pwnam2.pw_uid)
 
     @staticmethod
-    def wrap(func):
+    def wrap(func, *args):
         "restore console."
         import termios
         old = None
@@ -273,7 +273,7 @@ class Runtime:
         except termios.error:
             pass
         try:
-            func()
+            func(*args)
         except (KeyboardInterrupt, EOFError):
             pass
         except Exception as ex:
@@ -304,19 +304,17 @@ WantedBy=multi-user.target"""
 
 def main():
     "main"
-    check = Runtime.check
-    if check('b'):
-        Disk.cache()
-    if check("d"):
-        Scripts.background()
-    elif check("c"):
-        Runtime.wrap(Scripts.console)
-    elif check("s"):
-        Runtime.wrap(Scripts.service)
+    args, rest = Runtime.getargs()
+    if args.daemon:
+        Scripts.background(args)
+    elif args.console:
+        Runtime.wrap(Scripts.console, args)
+    elif args.service:
+        Runtime.wrap(Scripts.service, args)
     else:
-        Runtime.wrap(Scripts.control)
+        Runtime.wrap(Scripts.control, args)
+    Mods.shutdown()
 
 
 if __name__ == "__main__":
     main()
-

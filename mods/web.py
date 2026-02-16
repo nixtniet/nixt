@@ -10,14 +10,13 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.modules import Cfg
+from nixt.command import Cfg
 from nixt.objects import Object
 from nixt.threads import Thread
 from nixt.utility import Utils
 
 
-def init(cfg):
-    Dict.update(Cfg, cfg)
+def init():
     Config.path = os.path.join(Utils.where(Object), "nucleus")
     if not os.path.exists(os.path.join(Config.path, 'index.html')):
         logging.warning("no index.html")
@@ -33,12 +32,10 @@ def init(cfg):
 
 class Config:
 
+    debug = False
     hostname = "localhost"
     path = ""
     port = 8000
-
-
-Cfg = Config()
 
 
 class HTTP(HTTPServer, Object):
