@@ -153,8 +153,6 @@ def wrap(func):
 def main():
     if "p" not in Cfg.opts and os.path.exists(Cfg.wdr):
         shutil.rmtree(Cfg.wdr)
-    if "b" in Cfg.opts:
-        Disk.cache()
     Methods.parse(Cfg, " ".join(sys.argv[1:]))
     Workdir.setwd(Cfg.wdr)
     Mods.init("modules", MODS.__path__[0])
