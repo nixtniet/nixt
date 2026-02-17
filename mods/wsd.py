@@ -9,22 +9,48 @@ from random import SystemRandom
 
 from nixt.brokers import Broker
 from nixt.message import Message
+from nixt.objects import Dict, Methods
+from nixt.persist import Disk, Locate
 from nixt.utility import Repeater
 
 
-rand = SystemRandom()
-
-
 def init():
+    global seenfn
+    seenfn = Locate.last(seen) or Methods.ident(seen)
     event = Message()
-    repeater = Repeater(3600.0,  wsd, event)
+    repeater = Repeater(5.0,  wsd, event)
     repeater.start()
     logging.warning("%s wise", len(TXT.split("\n")))
 
 
+def shutdown():
+    Disk.write(seen, seenfn)
+
+
+class Seen:
+
+    pass
+
+
+rand = SystemRandom()
+seen = Seen()
+seenfn = ""
+
+
 def wsd(event):
+    global seen
+    txt = ""
+    for nrs in range(len(TXTLIST)):
+        txt = rand.choice(TXTLIST)
+        if txt in Dict.keys(seen):
+            continue
+        setattr(seen, txt, "")
+        break
+    else:
+        seen = Seen()
+        txt = "* reset"
     for bot in Broker.objs("announce"):
-        bot.announce(rand.choice(TXT.split("\n")).strip()[2:])
+        bot.announce(txt.strip()[2:])
 
 
 TXT = """| wijsheid, wijs !
@@ -208,3 +234,6 @@ TXT = """| wijsheid, wijs !
 | duiding
 | coding
 """
+
+
+TXTLIST = [x for x in TXT.split("\n") if x and '=' not in x]
