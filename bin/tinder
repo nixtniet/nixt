@@ -43,7 +43,7 @@ Cfg.ignore = ""
 Cfg.level = "info"
 Cfg.name = Mods.pkgname(Commands)
 Cfg.txt = " ".join(sys.argv[1:])
-Cfg.version = 100
+Cfg.version = 455
 Cfg.wdr = ".test"
 
 
