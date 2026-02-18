@@ -9,8 +9,7 @@ from random import SystemRandom
 
 from nixt.brokers import Broker
 from nixt.message import Message
-from nixt.objects import Dict, Methods
-from nixt.persist import Disk, Locate, StateFul
+from nixt.persist import StateFul
 from nixt.utility import Repeater
 
 
