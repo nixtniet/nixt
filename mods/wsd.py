@@ -10,47 +10,58 @@ from random import SystemRandom
 from nixt.brokers import Broker
 from nixt.message import Message
 from nixt.objects import Dict, Methods
-from nixt.persist import Disk, Locate
+from nixt.persist import Disk, Locate, StateFul
 from nixt.utility import Repeater
 
 
+'defines'
+
+
+rand = SystemRandom()
+
+
+"init"
+
+
 def init():
-    global seenfn
-    seenfn = Locate.last(seen) or Methods.ident(seen)
+    state.load()
     event = Message()
     repeater = Repeater(5.0,  wsd, event)
     repeater.start()
-    logging.warning("%s wise", len(TXT.split("\n")))
+    logging.warning("%s wise", len(TXTLIST))
 
 
-def shutdown():
-    Disk.write(seen, seenfn)
+"state"
 
 
-class Seen:
+class State(StateFul):
 
     pass
 
 
-rand = SystemRandom()
-seen = Seen()
-seenfn = ""
+state = State()
+
+
+"commands"
 
 
 def wsd(event):
-    global seen
     txt = ""
+    if 'seen' not in dir(state):
+        state.seen = []
     for nrs in range(len(TXTLIST)):
         txt = rand.choice(TXTLIST)
-        if txt in Dict.keys(seen):
+        if txt in state.seen:
             continue
-        setattr(seen, txt, "")
+        state.seen.append(txt)
         break
     else:
-        seen = Seen()
+        state.seen = []
         txt = "* reset"
+    state.dump()
     for bot in Broker.objs("announce"):
         bot.announce(txt.strip()[2:])
+
 
 
 TXT = """| wijsheid, wijs !

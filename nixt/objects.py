@@ -124,7 +124,18 @@ class Dict:
     @staticmethod
     def update(obj, data, empty=True):
         "update object,"
-        if isinstance(obj, dict):
+        if isinstance(obj, type):
+            if isinstance(data, type):
+                for key in dir(data):
+                    if '_' in key:
+                        continue
+                    value = getattr(data, key, None)
+                    if value:
+                        setattr(obj, key, value)
+            else:
+                for key, value in Dict.items(data):
+                    setattr(obj, key, value)
+        elif isinstance(obj, dict):
             obj.update(data)
         elif isinstance(obj.__dict__, types.MappingProxyType):
             for key, value in data.items():

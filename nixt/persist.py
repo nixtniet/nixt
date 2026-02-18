@@ -119,6 +119,19 @@ class Locate:
             yield pth, obj
 
     @staticmethod
+    def first(obj, selector={}):
+        result = sorted(
+                        Locate.find(Methods.fqn(obj), selector),
+                        key=lambda x: Time.fntime(x[0])
+                       )
+        res = ""
+        if result:
+            inp = result[0]
+            Dict.update(obj, inp[-1])
+            res = inp[0]
+        return res        
+
+    @staticmethod
     def fns(kind):
         "file names by kind of object."
         path = os.path.join(Workdir.wdr, "store", kind)
@@ -148,6 +161,24 @@ class Locate:
     def strip(path):
         "strip filename from path."
         return path.split('store')[-1][1:]
+
+
+"state"
+
+
+class StateFul:
+
+    def __init__(self):
+        super().__init__()
+        self.fnm = ""
+
+    def dump(self):
+        if not self.fnm:
+            self.fnm = Locate.first(self) or Methods.ident(self)
+        Disk.write(self, self.fnm)
+    
+    def load(self):
+        Locate.first(self)
 
 
 "workdir"
@@ -216,5 +247,6 @@ def __dir__():
     return (
         'Disk',
         'Locate',
+        'StateFul',
         'Workdir'
     )

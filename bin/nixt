@@ -34,7 +34,7 @@ Cfg.commands = True
 Cfg.ignore   = "rst,udp,web"
 Cfg.level    = "info"
 Cfg.local    = True
-Cfg.modules  = ""
+Cfg.mods     = ""
 Cfg.name     = Utils.pkgname(Commands)
 Cfg.poll     = 300
 Cfg.port     = 6667
@@ -103,7 +103,7 @@ class Scripts:
         Mods.scanner(Mods.list(), Cfg.ignore)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Commands.cmd(Cfg.txt)
-        Mods.inits(Cfg.modules, Cfg.ignore, Cfg.wait)
+        Mods.inits(Cfg.mods, Cfg.ignore, Cfg.wait)
         csl = CSL()
         csl.start()
         Runtime.forever()
@@ -206,7 +206,7 @@ class Runtime:
         if Cfg.verbose:
             Runtime.banner()
         if Cfg.all:
-            Cfg.modules = Mods.list(Cfg.ignore)
+            Cfg.mods = Mods.list(Cfg.ignore)
 
     @staticmethod
     def daemon(verbose=False, nochdir=False):
