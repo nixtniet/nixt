@@ -201,7 +201,7 @@ examples = {
     "flt": ["", "0"],
     "fnd": ["", "log", "rss", "config", "todo"],
     "lou": [""],
-    "man": ["", "test"],
+    "man": ["", "nixt"],
     "mbx": [""],
     "mod": [""],
     "mre": [""],
