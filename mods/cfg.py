@@ -4,7 +4,6 @@
 "configuration"
 
 
-from nixt.command import Main
 from nixt.objects import Dict, Methods
 from nixt.package import Mods
 from nixt.persist import Disk, Locate
@@ -17,7 +16,7 @@ def cfg(event):
     if event.args:
         name = event.args[0]
     if not name:
-        event.reply("cfg <modulename>")
+        event.reply(f"cfg <{Mods.has('Cfg') or 'modulename'}>")
         return
     if not cfg:
         modlist = list(Mods.get(name))

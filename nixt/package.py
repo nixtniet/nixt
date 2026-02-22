@@ -37,6 +37,14 @@ class Mods:
             return result[0]
 
     @staticmethod
+    def has(attr):
+        result = []
+        for mod in Mods.modules.values():
+            if getattr(mod, attr, False):
+                result.append(mod.__name__.split(".")[-1])
+        return ",".join(result)
+
+    @staticmethod
     def iter(modlist, ignore=""):
         "loop over modules."
         for pkgname, path in Mods.dirs.items():

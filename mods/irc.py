@@ -18,9 +18,9 @@ from nixt.brokers import Broker
 from nixt.clients import Output
 from nixt.command import Commands, Main
 from nixt.message import Message
-from nixt.objects import Default, Dict, Object, Methods
+from nixt.objects import Default, Object, Methods
 from nixt.package import Mods
-from nixt.persist import Disk, Locate
+from nixt.persist import Locate
 from nixt.threads import Thread
 
 

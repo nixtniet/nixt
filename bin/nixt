@@ -19,7 +19,6 @@ from nixt.command import Commands, Main
 from nixt.clients import Console
 from nixt.message import Message
 from nixt.package import Mods
-from nixt.persist import Disk, Locate
 from nixt.utility import Utils
 from nixt.persist import Workdir
 from nixt.utility import Log
@@ -31,14 +30,14 @@ from nixt import modules as MODS
 "config"
 
 
-Main.debug   = False
-Main.ignore  = "rst,udp,web"
-Main.level   = "info"
-Main.local   = True
-Main.name    = Utils.pkgname(Commands)
-Main.txt     = " ".join(sys.argv[1:])
+Main.debug = False
+Main.ignore = "rst,udp,web"
+Main.level = "info"
+Main.local = True
+Main.name = Utils.pkgname(Commands)
+Main.txt = " ".join(sys.argv[1:])
 Main.version = 8
-Main.wdr     = os.path.expanduser(f"~/.{Main.name}")
+Main.wdr = os.path.expanduser(f"~/.{Main.name}")
 
 
 "clients"
@@ -52,7 +51,7 @@ class Line(Console):
 
     def raw(self, text):
         "write to console."
-        out(txt)
+        Runtime.out(text)
 
 
 class CSL(Line):
@@ -182,7 +181,7 @@ class Runtime:
     def boot(args):
         "in the beginning."
         Main.all     = args.all or Main.all
-        Main.level   = args.level or Nain.level
+        Main.level   = args.level or Main.level
         Main.local   = args.local or Main.local
         Main.mods    = args.mods or Main.mods
         Main.txt     = args.txt
