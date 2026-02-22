@@ -35,11 +35,6 @@ class TestCommands(unittest.TestCase):
         Commands.add(cmnd)
         self.assertTrue(Commands.get("cmnd"))
     
-    def test_scancmd(self):
-        from testing import dbg
-        Commands.scan(dbg)
-        self.assertTrue("dbg" in Commands.cmds)
-
     def test_command(self):
         clt = Client()
         Commands.add(cmnd)

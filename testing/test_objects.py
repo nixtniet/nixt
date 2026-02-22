@@ -4,7 +4,7 @@
 import unittest
 
 
-from nixt.objects import Dict, Object
+from nixt.objects import Dict, Methods, Object
 
 
 import nixt.objects
@@ -182,3 +182,11 @@ class TestComposite(unittest.TestCase):
         obj.obj = Object()
         obj.obj.a = "test"
         self.assertEqual(obj.obj.a, "test")
+
+
+class TestMethods(unittest.TestCase):
+
+    def testformat(self):
+        o = Object()
+        o.a = "b"
+        self.assertEqual(Methods.fmt(o), 'a="b"')
