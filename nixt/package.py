@@ -1,0 +1,138 @@
+# This file is placed in the Public Domain.
+
+
+"module management"
+
+
+import importlib.util
+import logging
+import os
+
+
+from .command import Commands
+from .objects import Dict
+from .threads import Thread
+from .utility import Utils
+
+
+"mods"
+
+
+class Mods:
+
+    dirs = {}
+    modules = {}
+
+    @staticmethod
+    def init(name, path):
+        "add modules directory." 
+        if os.path.exists(path):
+            Mods.dirs[name] = path
+
+    @staticmethod
+    def get(name):
+        "return module."
+        result = list(Mods.iter(name))
+        if result:
+            return result[0]
+
+    @staticmethod
+    def iter(modlist, ignore=""):
+        "loop over modules."
+        for pkgname, path in Mods.dirs.items():
+            if not os.path.exists(path):
+                continue
+            for fnm in os.listdir(path):
+                if fnm.startswith("__"):
+                    continue
+                if not fnm.endswith(".py"):
+                    continue
+                name = fnm[:-3]
+                if name not in Utils.spl(modlist):
+                    continue
+                if ignore and name in Utils.spl(ignore):
+                    continue
+                modname = f"{pkgname}.{name}"
+                mod =  Mods.modules.get(modname, None)
+                if not mod:
+                    mod = Mods.importer(modname, os.path.join(path, fnm))
+                if mod:
+                    yield name, mod
+
+    @staticmethod
+    def list(ignore=""):
+        "comma seperated list of available modules."
+        mods = []
+        for pkgname, path in Mods.dirs.items():
+            mods.extend([
+                x[:-3] for x in os.listdir(path)
+                if x.endswith(".py") and
+                not x.startswith("__") and
+                x[:-3] not in Utils.spl(ignore)
+            ])
+        return ",".join(sorted(mods))
+
+    @staticmethod
+    def importer(name, pth=""):
+        "import module by path."
+        if pth and os.path.exists(pth):
+            spec = importlib.util.spec_from_file_location(name, pth)
+        else:
+            spec = importlib.util.find_spec(name)
+        if not spec or not spec.loader:
+            logging.debug(f"missing spec or loader for {name}")
+            return None
+        mod = importlib.util.module_from_spec(spec)
+        if not mod:
+            logging.debug(f"can't load {name} module from spec")
+            return None
+        Mods.modules[name] = mod
+        spec.loader.exec_module(mod)
+        return mod
+
+    @staticmethod
+    def pkgname(obj):
+        "package name of an object."
+        return obj.__module__.split(".")[0]
+
+    @staticmethod
+    def inits(modlist, ignore="", wait=False):
+        "scan named modules for commands."
+        thrs = []
+        for name, mod in Mods.iter(modlist, ignore):
+            if "init" in dir(mod):
+                thrs.append((name, Thread.launch(mod.init)))
+        if wait:
+            for name, thr in thrs:
+                thr.join()
+        
+    @staticmethod
+    def scanner(modlist, ignore="", noconfig=False):
+        "scan named modules for commands."
+        res = []
+        for name, mod in Mods.iter(modlist, ignore):
+            Commands.scan(mod)
+            if not noconfig and "configure" in dir(mod):
+                mod.configure()
+            res.append((name, mod))
+        return res
+
+    @staticmethod
+    def shutdown():
+        "call shutdown on modules."
+        logging.debug("shutdown")
+        for mod in Dict.values(Mods.modules):
+            if "shutdown" in dir(mod):
+                try:
+                    mod.shutdown()
+                except Exception as ex:
+                    logging.exception(ex)
+
+
+"interface"
+
+
+def __dir__():
+    return (
+        'Mods',
+    )
