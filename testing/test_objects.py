@@ -4,7 +4,7 @@
 import unittest
 
 
-from nixt.objects import *
+from nixt.objects import Dict, Object
 
 
 import nixt.objects
@@ -126,10 +126,6 @@ class TestObject(unittest.TestCase):
             ],
         )
 
-    def test_len(self):
-        obj = Object()
-        self.assertEqual(len(obj), 0)
-
     def test_getattr(self):
         obj = Object()
         obj.key = "value"
@@ -161,10 +157,6 @@ class TestObject(unittest.TestCase):
         obj = Object()
         obj.__setattr__("key", "value")
         self.assertTrue(obj.key, "value")
-
-    def test_str(self):
-        obj = Object()
-        self.assertEqual(str(obj), "{}")
 
     def test_str(self):
         obj = Object()

@@ -9,7 +9,7 @@ import unittest
 
 from nixt.clients import Client
 from nixt.command import Commands
-from nixt.objects import Dict, Object
+from nixt.objects import Dict
 from nixt.message import Message
 
 
