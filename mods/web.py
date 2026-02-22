@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"web server"
+
+
 import logging
 import os
 import sys
@@ -10,7 +13,7 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.command import Cfg
+from nixt.command import Main
 from nixt.objects import Object
 from nixt.threads import Thread
 from nixt.utility import Utils
@@ -98,7 +101,7 @@ class HTTPHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if "favicon" in self.path:
             return
-        if Cfg.debug:
+        if Main.debug:
             return
         if self.path == "/":
             self.path = "index.html"

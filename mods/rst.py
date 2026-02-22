@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"rest server"
+
+
 import logging
 import os
 import sys
@@ -10,7 +13,7 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.command import Cfg
+from nixt.command import Main
 from nixt.objects import Object
 from nixt.persist import Workdir
 from nixt.threads import Thread
@@ -94,7 +97,7 @@ class RESTHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        if Cfg.debug:
+        if Main.debug:
             return
         if "favicon" in self.path:
             return

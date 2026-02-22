@@ -25,7 +25,7 @@ from urllib.parse import quote_plus, urlencode
 
 
 from nixt.brokers import Broker
-from nixt.command import Cfg
+from nixt.command import Main
 from nixt.objects import Default, Dict, Methods
 from nixt.persist import Disk, Locate
 from nixt.threads import Thread
@@ -33,6 +33,10 @@ from nixt.utility import Repeater, Time, Utils
 
 
 "init"
+
+
+def configure():
+    Locate.first(Cfg)
 
 
 def init():
@@ -45,6 +49,18 @@ def init():
 def shutdown():
     "shutdown."
     Run.fetcher.stop()
+
+
+'config'
+
+
+class Config(Default):
+
+    pass
+
+
+Cfg = Config()
+Cfg.polltime = 300
 
 
 "fetcher"
@@ -71,7 +87,7 @@ class Fetcher:
         State.seenfn = Locate.last(State.seen) or Methods.ident(State.seen)
         State.modifiedfn = Locate.last(State.modified) or Methods.ident(State.modified)
         if repeat:
-            repeater = Repeater(Cfg.poll or 600, self.run)
+            repeater = Repeater(Cfg.polltime, self.run)
             repeater.start()
 
     def stop(self):
@@ -188,7 +204,7 @@ class RunnerPool:
     @staticmethod
     def put(*args):
         if not RunnerPool.runners:
-            RunnerPool.init(1, Runner)
+            RunnerPool.init(RunnerPool.nrcpu, Runner)
         with RunnerPool.lock:
             if RunnerPool.nrlast >= RunnerPool.nrcpu-1:
                 RunnerPool.nrlast = 0
@@ -478,6 +494,7 @@ class Run:
 
 class State:
 
+    configfn = ""
     modified = Modified()
     modifiedfn = ""
     seenfn = ""
@@ -534,9 +551,11 @@ def err(event):
         if not event.rest:
             nrs += 1
             event.reply(f"{nrs} {Methods.fmt(obj)}")
-    if event.rest:
+    if not nrs:
+        event.reply("no feed errors.")
+    else:
         event.reply(f'{nre} feeds reset.')
-
+    
 
 def exp(event):
     with Run.importlock:
@@ -672,7 +691,7 @@ def rss(event):
 
 
 def syn(event):
-    if Cfg.debug:
+    if Main.debug:
         return
     fetcher = Fetcher()
     fetcher.start(False)

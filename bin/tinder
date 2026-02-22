@@ -14,7 +14,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client
-from nixt.command import Cfg, Commands
+from nixt.command import Commands, Main
 from nixt.message import Message
 from nixt.objects import Methods
 from nixt.package import Mods
@@ -38,13 +38,13 @@ events = queue.Queue()
 "config"
 
 
-Cfg.debug = True
-Cfg.ignore = ""
-Cfg.level = "info"
-Cfg.name = Mods.pkgname(Commands)
-Cfg.txt = " ".join(sys.argv[1:])
-Cfg.version = 455
-Cfg.wdr = ".test"
+Main.debug = True
+Main.ignore = ""
+Main.level = "info"
+Main.name = Mods.pkgname(Commands)
+Main.txt = " ".join(sys.argv[1:])
+Main.version = 8
+Main.wdr = ".test"
 
 
 "clients"
@@ -57,7 +57,7 @@ class CLI(Client):
         self.register("command", Commands.command)
 
     def raw(self, txt):
-        if "v" in Cfg.opts:
+        if "v" in Main.opts:
             print(txt)
 
 
@@ -90,13 +90,12 @@ class ClientPool:
             ClientPool.nrlast += 1
 
 
-
 "utilities"
 
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    print(f"{Cfg.name.upper()} {Cfg.version} since {tme} ({Cfg.level})")
+    print(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level})")
     sys.stdout.flush()
 
 
@@ -151,22 +150,22 @@ def wrap(func):
 
 
 def main():
-    if "p" not in Cfg.opts and os.path.exists(Cfg.wdr):
-        shutil.rmtree(Cfg.wdr)
-    Methods.parse(Cfg, " ".join(sys.argv[1:]))
-    Workdir.setwd(Cfg.wdr)
+    if "p" not in Main.opts and os.path.exists(Main.wdr):
+        shutil.rmtree(Main.wdr)
+    Methods.parse(Main, " ".join(sys.argv[1:]))
+    Workdir.setwd(Main.wdr)
     Mods.init("modules", MODS.__path__[0])
     if MODS2:
         Mods.init("mods", MODS2.__path__[0])
     Mods.scanner(Mods.list())
-    if "v" in Cfg.opts:
+    if "v" in Main.opts:
         banner()
-    if "z" in Cfg.opts:
+    if "z" in Main.opts:
         ClientPool.init(os.cpu_count(), CLI)
     else:
         ClientPool.init(1, CLI)
     starttime = time.time()
-    nrs = Cfg.index or 1
+    nrs = Main.index or 1
     for _x in range(nrs):
         payload(pre)
     for _x in range(nrs):
@@ -183,8 +182,8 @@ def main():
     lap = Time.elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
-    if "v" in Cfg.opts:
-        print(f"{Methods.fmt(Cfg, skip='otxt,txt')}")
+    if "v" in Main.opts:
+        print(f"{Methods.fmt(Main, skip='otxt,txt')}")
         print(f"{nrs} events left.")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
 

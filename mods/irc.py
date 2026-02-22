@@ -16,7 +16,7 @@ import time
 
 from nixt.brokers import Broker
 from nixt.clients import Output
-from nixt.command import Cfg, Commands
+from nixt.command import Commands, Main
 from nixt.message import Message
 from nixt.objects import Default, Dict, Object, Methods
 from nixt.package import Mods
@@ -39,12 +39,16 @@ lock = threading.RLock()
 def init():
     irc = IRC()
     irc.start()
-    irc.events.joined.wait(30.0)
+    irc.events.joined.wait(60.0)
     if irc.events.joined.is_set():
-        logging.warning("%s", Methods.fmt(irc.cfg, skip=["name", "word", "realname", "username"]))
+        logging.warning("%s", Methods.fmt(irc.cfg, skip=["name", "word", "realname", "username", "version"]))
     else:
         irc.stop()
     return irc
+
+
+def configure():
+    Locate.first(Cfg)
 
 
 "config"
@@ -56,26 +60,29 @@ class Config(Default):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.name = Cfg.name or NAME
-        self.channel = Cfg.room or f"#{self.name}"
-        self.commands = Cfg.commands or False
+        self.name = Main.name or NAME
+        self.channel = f"#{self.name}"
+        self.commands = True
         self.control = "!"
-        self.nick = Cfg.name or NAME
+        self.nick = Main.name or NAME
         self.word = ""
-        self.port = Cfg.port or 6667
-        self.realname = Cfg.name or NAME
+        self.port = 6667
+        self.realname = Main.name or NAME
         self.sasl = (self.port == 6697 and True) or False
-        self.server = Cfg.server or "localhost"
+        self.server = "localhost"
         self.servermodes = ""
         self.sleep = 60
-        self.username = Cfg.name or NAME
+        self.username = Main.name or NAME
         self.users = False
-        self.version = 1
+        self.version = Main.version
 
     def __getattr__(self, name):
         if name not in self:
             return ""
         return self.__getattribute__(name)
+
+
+Cfg = Config()
 
 
 "event"
@@ -129,7 +136,7 @@ class IRC(Output):
         Output.__init__(self)
         self.buffer = []
         self.cache = {}
-        self.cfg = Config()
+        self.cfg = Cfg
         self.channels = []
         self.events = Object()
         self.events.authed = threading.Event()
@@ -144,6 +151,7 @@ class IRC(Output):
         self.state.keeprunning = False
         self.state.last = time.time()
         self.state.lastline = ""
+        self.state.nickchange = 0
         self.state.nrconnect = 0
         self.state.nrerror = 0
         self.state.nrsend = 0
@@ -247,7 +255,7 @@ class IRC(Output):
             try:
                 if self.connect(server, port):
                     self.logon(self.cfg.server, self.cfg.nick)
-                    self.events.joined.wait(15.0)
+                    self.events.joined.wait(45.0)
                     if not self.events.joined.is_set():
                         self.disconnect()
                         self.events.joined.set()
@@ -287,7 +295,8 @@ class IRC(Output):
             self.events.joined.set()
         elif cmd == "433":
             self.state.error = txt
-            nck = self.cfg.nick = self.cfg.nick + "_"
+            self.state.nickchange += 1
+            nck = self.cfg.nick + ("_" * self.state.nickchange)
             self.docommand("NICK", nck)
         return evt
 
@@ -607,6 +616,7 @@ def cb_quit(evt):
 "commands"
 
 
+'''
 def cfg(event):
     config = Config()
     fnm = Locate.last(config) or Methods.ident(config)
@@ -622,7 +632,7 @@ def cfg(event):
         Methods.edit(config, event.sets)
         Disk.write(config, fnm or Methods.ident(config))
         event.reply("ok")
-
+'''
 
 def mre(event):
     if not event.channel:

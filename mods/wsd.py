@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"wisdom"
+
+
 import logging
 
 
@@ -25,7 +28,7 @@ rand = SystemRandom()
 def init():
     state.load()
     event = Message()
-    repeater = Repeater(5.0,  wsd, event)
+    repeater = Repeater(3600,  wsd, event)
     repeater.start()
     logging.warning("%s wise", len(TXTLIST))
 

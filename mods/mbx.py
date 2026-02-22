@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"mailbox"
+
+
 import mailbox
 import os
 import time
@@ -64,10 +67,12 @@ def todate(date):
 
 
 def eml(event):
+    print(event)
     nrs = -1
     args = ["From", "Subject"]
-    if len(event.args) > 1:
-        args.extend(event.args[1:])
+    #if len(event.args) > 1:
+    #    args.extend(event.args[1:])
+    args.extend(event.args)
     if event.gets:
         args.extend(Dict.keys(event.gets))
     for key in event.silent:

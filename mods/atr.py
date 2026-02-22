@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"show attributes"
+
+
 from nixt.persist import Locate, Workdir
 
 

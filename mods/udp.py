@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"udp to irc relay"
+
+
 import logging
 import select
 import socket
@@ -10,7 +13,7 @@ import time
 
 
 from nixt.brokers import Broker
-from nixt.command import Cfg
+from nixt.command import Main
 from nixt.objects import Object
 from nixt.threads import Thread
 
@@ -76,7 +79,7 @@ class UDP(Object):
 
 
 def toudp(host, port, txt):
-    if Cfg.debug:
+    if Main.debug:
         return
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))
