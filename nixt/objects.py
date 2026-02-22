@@ -9,15 +9,7 @@ import os
 import types
 
 
-"exceptions"
-
-
-class Reserved(Exception):
-
-    pass
-
-
-"objects"
+"object"
 
 
 class Object:

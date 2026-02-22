@@ -38,6 +38,7 @@ class Mods:
 
     @staticmethod
     def has(attr):
+        "return list of modules containing an attribute."
         result = []
         for mod in Mods.modules.values():
             if getattr(mod, attr, False):
@@ -97,11 +98,6 @@ class Mods:
         Mods.modules[name] = mod
         spec.loader.exec_module(mod)
         return mod
-
-    @staticmethod
-    def pkgname(obj):
-        "package name of an object."
-        return obj.__module__.split(".")[0]
 
     @staticmethod
     def inits(modlist, ignore="", wait=False):

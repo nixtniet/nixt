@@ -12,13 +12,7 @@ import time
 import _thread
 
 
-"defines"
-
-
-lock = threading.RLock()
-
-
-"tasks"
+"task"
 
 
 class Task(threading.Thread):
@@ -72,10 +66,12 @@ class Task(threading.Thread):
 
 class Thread:
 
+    lock = threading.RLock()
+
     @staticmethod
     def launch(func, *args, **kwargs):
         "run function in a thread."
-        with lock:
+        with Thread.lock:
             try:
                 task = Task(func, *args, **kwargs)
                 task.start()

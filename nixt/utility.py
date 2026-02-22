@@ -16,6 +16,9 @@ import time
 from .threads import Thread
 
 
+"exceptions"
+
+
 class NoDate(Exception):
 
     pass
@@ -285,15 +288,6 @@ class Time:
 
 
 class Utils:
-
-    @staticmethod
-    def forever():
-        "run forever until ctrl-c."
-        while True:
-            try:
-                time.sleep(0.1)
-            except (KeyboardInterrupt, EOFError):
-                break
 
     @staticmethod
     def md5sum(path):
