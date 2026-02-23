@@ -11,9 +11,6 @@ import threading
 from .threads import Thread
 
 
-"handler"
-
-
 class Handler:
 
     def __init__(self):
@@ -56,9 +53,6 @@ class Handler:
         "stop event handler loop."
         self.running.clear()
         self.queue.put(None)
-
-
-"interface"
 
 
 def __dir__():

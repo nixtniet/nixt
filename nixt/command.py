@@ -12,13 +12,7 @@ from .message import Message
 from .objects import Config, Methods
 
 
-"config"
-
-
 Main = Config()
-
-
-"commands"
 
 
 class Commands:
@@ -74,9 +68,6 @@ class Commands:
             if 'event' not in inspect.signature(cmdz).parameters:
                continue
             Commands.add(cmdz)
-
-
-"interface"
 
 
 def __dir__():

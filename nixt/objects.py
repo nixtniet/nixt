@@ -9,9 +9,6 @@ import os
 import types
 
 
-"object"
-
-
 class Object:
 
     def __contains__(self, key):
@@ -41,9 +38,6 @@ class Config(Default):
            Dict.update(self, args[0])
         if kwargs:
            Dict.update(self, kwargs)
-
-
-"dict"
 
 
 class Dict:
@@ -147,9 +141,6 @@ class Dict:
                 res.append(obj[key])
             return res
         return obj.__dict__.values()
-
-
-"methods"
 
 
 class Methods:
@@ -312,9 +303,6 @@ class Methods:
             setattr(obj, key, False)
         else:
             setattr(obj, key, val)
-
-
-"interface"
 
 
 def __dir__():

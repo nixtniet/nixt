@@ -18,9 +18,6 @@ from .utility import Time
 lock = threading.RLock()
 
 
-"cache"
-
-
 class Cache:
 
     paths = {}
@@ -42,9 +39,6 @@ class Cache:
             Dict.update(Cache.paths[path], obj)
         except KeyError:
             Cache.add(path, obj)
-
-
-"disk"
 
 
 class Disk:
@@ -82,9 +76,6 @@ class Disk:
                 Json.dump(obj, fpt, indent=4)
             Cache.sync(path, obj)
             return path
-
-
-"locate"
 
 
 class Locate:
@@ -167,9 +158,6 @@ class Locate:
         return path.split('store')[-1][1:]
 
 
-"state"
-
-
 class StateFul:
 
     def __init__(self):
@@ -183,9 +171,6 @@ class StateFul:
     
     def load(self):
         Locate.first(self)
-
-
-"workdir"
 
 
 class Workdir:
@@ -247,9 +232,6 @@ class Workdir:
     def workdir():
         "return workdir."
         return Workdir.wdr
-
-
-"interface"
 
 
 def __dir__():

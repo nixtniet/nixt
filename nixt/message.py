@@ -8,9 +8,6 @@ import threading
 import time
 
 
-'message'
-
-
 class Message:
 
     def __init__(self):
@@ -40,9 +37,6 @@ class Message:
         self._ready.wait(timeout or None)
         if self._thr:
             self._thr.join(timeout)
-
-
-"interface"
 
 
 def __dir__():
