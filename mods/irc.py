@@ -20,7 +20,6 @@ from nixt.command import Commands
 from nixt.message import Message
 from nixt.objects import Default, Dict, Object, Methods
 from nixt.objects import Config as Configuration
-from nixt.persist import Locate
 from nixt.threads import Thread
 from nixt.utility import Utils
 

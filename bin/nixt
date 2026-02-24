@@ -38,7 +38,8 @@ Cfg.ignore = "rst,udp,web"
 Cfg.level = "info"
 Cfg.local = True
 Cfg.mods = ""
-Cfg.name = Utils.pkgname(Commands)
+Cfg.name = "nixt"
+Cfg.nochdir = False
 Cfg.txt = " ".join(sys.argv[1:])
 Cfg.version = 8
 Cfg.wdr = os.path.expanduser(f"~/.{Cfg.name}")
@@ -78,11 +79,11 @@ class Scripts:
     @staticmethod
     def background(args):
         "background script."
-        Runtime.daemon()
+        Runtime.daemon(Cfg.verbose, Cfg.nochdir)
         Runtime.privileges()
         Runtime.boot(args)
         Workdir.pidfile(Cfg.name)
-        Runtime.scanner(Cfg, Mods.list())
+        Runtime.scanner(Cfg)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Runtime.init(Cfg)
         Runtime.forever()
@@ -93,11 +94,10 @@ class Scripts:
         import readline
         readline.redisplay()
         Runtime.boot(args)
-        Cfg.mods = Cfg.mods or Mods.list()
-        Runtime.scanner(Cfg)
+        Runtime.scanner(Cfg, Mods.list(Cfg.ignore))
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Commands.cmd(Cfg.txt)
-        Runtime.init(Cfg)
+        Runtime.init(Cfg, Cfg.mods)
         csl = CSL()
         csl.start()
         Runtime.forever()
@@ -108,8 +108,7 @@ class Scripts:
         if len(sys.argv) == 1:
             return
         Runtime.boot(args)
-        Cfg.mods = Cfg.mods or Mods.list()
-        Runtime.scanner(Cfg)
+        Runtime.scanner(Cfg, Mods.list(Cfg.ignore))
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.srv, Cmd.ver)
         evt = Commands.cmd(Cfg.txt)
         for line in evt.result.values():
@@ -177,18 +176,11 @@ class Runtime:
         "in the beginning."
         Methods.parse(Cfg, args.txt)
         Dict.update(Cfg, Cfg.sets)
-        Cfg.all     = args.all or Cfg.all
-        Cfg.level   = args.level or Cfg.level
-        Cfg.local   = args.local or Cfg.local
-        Cfg.mods    = args.mods or Cfg.mods
-        Cfg.txt     = args.txt
-        Cfg.verbose = args.verbose or Cfg.verbose
-        Cfg.wait    = args.wait or Cfg.wait
-        Cfg.wdr     = args.wdr or Cfg.wdr or os.path.expanduser(f"~/.{Utils.pkgname(Config)}")
+        Dict.update(Cfg, Dict.reduce(vars(args)))
         Workdir.setwd(Cfg.wdr)
         Log.level(Cfg.level)
         if Cfg.wdr:
-            Mods.init("modules", os.path.join(Workdir.workdir(), "mods"))
+            Mods.init("modules", os.path.join(Cfg.wdr, "mods"))
         if MODS:
             Mods.init(MODS.__name__, MODS.__path__[0])
         if Cfg.local:
@@ -196,7 +188,7 @@ class Runtime:
         if Cfg.verbose:
             Runtime.banner()
         if Cfg.all:
-            Cfg.mods = Cfg.mods or Mods.list(Cfg.ignore)
+            Cfg.mods = Mods.list(Cfg.ignore)
 
     @staticmethod
     def daemon(verbose=False, nochdir=False):
@@ -208,14 +200,16 @@ class Runtime:
         pid2 = os.fork()
         if pid2 != 0:
             os._exit(0)
-        with open('/dev/null', 'r', encoding="utf-8") as sis:
-            os.dup2(sis.fileno(), sys.stdin.fileno())
-        with open('/dev/null', 'a+', encoding="utf-8") as sos:
-            os.dup2(sos.fileno(), sys.stdout.fileno())
-        with open('/dev/null', 'a+', encoding="utf-8") as ses:
-            os.dup2(ses.fileno(), sys.stderr.fileno())
+        if not verbose:
+            with open('/dev/null', 'r', encoding="utf-8") as sis:
+                os.dup2(sis.fileno(), sys.stdin.fileno())
+            with open('/dev/null', 'a+', encoding="utf-8") as sos:
+                os.dup2(sos.fileno(), sys.stdout.fileno())
+            with open('/dev/null', 'a+', encoding="utf-8") as ses:
+                os.dup2(ses.fileno(), sys.stderr.fileno())
         os.umask(0)
-        os.chdir("/")
+        if not nochdir:
+            os.chdir("/")
         os.nice(10)
 
     @staticmethod
@@ -244,10 +238,10 @@ class Runtime:
         return parser.parse_known_args()
 
     @staticmethod
-    def init(cfg):
+    def init(cfg, modlist):
         "scan named modules for commands."
         thrs = []
-        for name, mod in Mods.iter(cfg.mods or cfg.default, cfg.ignore):
+        for name, mod in Mods.iter(modlist, cfg.ignore):
             if "init" in dir(mod):
                 thrs.append((name, Thread.launch(mod.init)))
         if cfg.wait:
@@ -268,10 +262,10 @@ class Runtime:
         os.setuid(pwnam2.pw_uid)
 
     @staticmethod
-    def scanner(cfg):
+    def scanner(cfg, modlist):
         "scan named modules for commands."
         res = []
-        for name, mod in Mods.iter(cfg.mods or cfg.default, cfg.ignore):
+        for name, mod in Mods.iter(modlist, cfg.ignore):
             Commands.scan(mod)
             if "configure" in dir(mod):
                 mod.configure(cfg)

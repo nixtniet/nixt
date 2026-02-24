@@ -107,6 +107,14 @@ class Dict:
         return obj.__dict__.popitem()
 
     @staticmethod
+    def reduce(obj):
+        result = {}
+        for key, value in Dict.items(obj):
+            if value:
+                result[key] = value
+        return result
+
+    @staticmethod
     def update(obj, data, empty=True):
         "update object,"
         if isinstance(obj, type):

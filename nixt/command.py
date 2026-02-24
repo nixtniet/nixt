@@ -9,7 +9,7 @@ import inspect
 
 from .brokers import Broker
 from .message import Message
-from .objects import Config, Methods
+from .objects import Methods
 
 
 class Commands:
@@ -70,5 +70,4 @@ class Commands:
 def __dir__():
     return (
         'Commands',
-        'Main'
     )

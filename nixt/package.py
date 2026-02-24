@@ -9,9 +9,7 @@ import logging
 import os
 
 
-from .command import Commands
 from .objects import Dict
-from .threads import Thread
 from .utility import Utils
 
 
@@ -26,6 +24,7 @@ class Mods:
         result = list(Mods.iter(name))
         if result:
             return result[0]
+        return []
 
     @staticmethod
     def has(attr):
