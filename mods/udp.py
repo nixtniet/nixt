@@ -13,24 +13,26 @@ import time
 
 
 from nixt.brokers import Broker
-from nixt.command import Main
-from nixt.objects import Object
+from nixt.objects import Config, Dict, Object
 from nixt.threads import Thread
+
+
+Cfg = Config()
+
+
+def configure(cfg):
+    Dict.update(Cfg, cfg)
+    Cfg.addr = ""
+    Cfg.debug = Cfg.debug or False
+    Cfg.host = Cfg.host or "localhost"
+    Cfg.port = Cfg.port or 5500
 
 
 def init():
     udp = UDP()
     udp.start()
-    logging.warning("http://%s:%s", Config.host, Config.port)
+    logging.warning("http://%s:%s", Cfg.host, Cfg.port)
     return udp
-
-
-class Config(Object):
-
-    addr = ""
-    host = "localhost"
-    port = 5500
-
 
 
 class UDP(Object):
@@ -47,13 +49,13 @@ class UDP(Object):
 
     def output(self, txt, addr=None):
         if addr:
-            Config.addr = addr
+            Cfg.addr = addr
         for bot in Broker.objs("announce"):
             bot.announce(txt.replace("\00", ""))
 
     def loop(self):
         try:
-            self._sock.bind((Config.host, Config.port))
+            self._sock.bind((Cfg.host, Cfg.port))
         except socket.gaierror:
             return
         self.ready.set()
@@ -71,7 +73,7 @@ class UDP(Object):
         self._sock.settimeout(0.01)
         self._sock.sendto(
                           bytes("exit", "utf-8"),
-                          (Config.host, Config.port)
+                          (Cfg.host, Cfg.port)
                          )
 
     def start(self):
@@ -79,7 +81,7 @@ class UDP(Object):
 
 
 def toudp(host, port, txt):
-    if Main.debug:
+    if Cfg.debug:
         return
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))
@@ -87,7 +89,7 @@ def toudp(host, port, txt):
 
 def udp(event):
     if event.rest:
-        toudp(Config.host, Config.port, event.rest)
+        toudp(Cfg.host, Cfg.port, event.rest)
         return
     if not select.select(
                          [sys.stdin, ],
@@ -116,6 +118,6 @@ def udp(event):
                 stop = True
                 break
             size += len(txt)
-            toudp(Config.host, Config.port, txt)
+            toudp(Cfg.host, Cfg.port, txt)
         if stop:
             break

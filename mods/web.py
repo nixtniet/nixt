@@ -13,32 +13,35 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.command import Main
-from nixt.objects import Object
+from nixt.objects import Config, Dict, Object
 from nixt.threads import Thread
 from nixt.utility import Utils
 
 
+Cfg = Config()
+
+
+def configure(cfg):
+    Dict.update(Cfg, cfg)
+    Cfg.debug = Cfg.debug or False
+    Cfg.hostname = Cfg.hostname or "localhost"
+    Cfg.path = Cfg.path or ""
+    Cfg.port = Cfg.port or 8000
+    
+
 def init():
-    Config.path = os.path.join(Utils.where(Object), "nucleus")
-    if not os.path.exists(os.path.join(Config.path, 'index.html')):
+    Cfg.path = os.path.join(Utils.where(Object), "nucleus")
+    if not os.path.exists(os.path.join(Cfg.path, 'index.html')):
         logging.warning("no index.html")
         return
     try:
-        server = HTTP((Config.hostname, int(Config.port)), HTTPHandler)
+        server = HTTP((Cfg.hostname, int(Cfg.port)), HTTPHandler)
         server.start()
-        logging.warning("http://%s:%s", Config.hostname, Config.port)
+        logging.warning("http://%s:%s", Cfg.hostname, Cfg.port)
         return server
     except OSError as ex:
         logging.warning("%s", str(ex))
 
-
-class Config:
-
-    debug = False
-    hostname = "localhost"
-    path = ""
-    port = 8000
 
 
 class HTTP(HTTPServer, Object):
@@ -101,11 +104,11 @@ class HTTPHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if "favicon" in self.path:
             return
-        if Main.debug:
+        if Cfg.debug:
             return
         if self.path == "/":
             self.path = "index.html"
-        self.path = Config.path + os.sep + self.path
+        self.path = Cfg.path + os.sep + self.path
         if not os.path.exists(self.path):
             self.write_header("text/html")
             self.send_response(404)

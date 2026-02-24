@@ -25,45 +25,28 @@ from urllib.parse import quote_plus, urlencode
 
 
 from nixt.brokers import Broker
-from nixt.command import Main
-from nixt.objects import Default, Dict, Methods
+from nixt.objects import Config, Default, Dict, Methods
 from nixt.persist import Disk, Locate
 from nixt.threads import Thread
 from nixt.utility import Repeater, Time, Utils
 
 
-"init"
+Cfg = Config()
 
 
-def configure():
-    Locate.first(Cfg)
+def configure(cfg):
+    Dict.update(Cfg, cfg)
+    Cfg.polltime = Cfg.polltime or 300
 
 
 def init():
-    "initializer."
     RunnerPool.init(1, Runner)
     Run.fetcher.start()
     logging.warning("%s feeds", Locate.count("rss"))
 
 
 def shutdown():
-    "shutdown."
     Run.fetcher.stop()
-
-
-'config'
-
-
-class Config(Default):
-
-    pass
-
-
-Cfg = Config()
-Cfg.polltime = 300
-
-
-"fetcher"
 
 
 class Fetcher:
@@ -94,9 +77,6 @@ class Fetcher:
         logging.debug("stopped fetcher")
         Disk.write(State.modified, State.modifiedfn)
         self.stopped.set()
-
-
-"runner"
 
 
 class Runner:
@@ -179,9 +159,6 @@ class Runner:
         self.stopped.set()
 
 
-"pool"
-
-
 class RunnerPool:
 
     runners = []
@@ -211,9 +188,6 @@ class RunnerPool:
             clt = RunnerPool.runners[RunnerPool.nrlast]
             clt.put(*args)
             RunnerPool.nrlast += 1
-
-
-"parser"
 
 
 class Parser:
@@ -260,9 +234,6 @@ class Parser:
                 if val:
                     obj[itm] = Helpers.striphtml(Helpers.unescape(val.strip())).replace("\n", "")
             yield obj
-
-
-"opml"
 
 
 class OPML:
@@ -315,9 +286,6 @@ class OPML:
                     itm = "href"
                 obj[itm] = OPML.getvalue(attrz, itm)
             yield obj
-
-
-"utilities"
 
 
 class Helpers:
@@ -454,9 +422,6 @@ class Helpers:
         return "Mozilla/5.0 (X11; Linux x86_64) " + txt
 
 
-"persist"
-
-
 class Feed(Default):
 
     pass
@@ -482,9 +447,6 @@ class Urls:
     pass
 
 
-"state"
-
-
 class Run:
 
     fetcher = Fetcher()
@@ -500,9 +462,6 @@ class State:
     seenfn = ""
     seen = Urls()
     skipped = []
-
-
-"commands"
 
 
 def atr(event):
@@ -691,15 +650,12 @@ def rss(event):
 
 
 def syn(event):
-    if Main.debug:
+    if Cfg.debug:
         return
     fetcher = Fetcher()
     fetcher.start(False)
     nrs = fetcher.run(True)
     event.reply(f"{nrs} feeds synced")
-
-
-"data"
 
 
 TEMPLATE = """<opml version="1.0">

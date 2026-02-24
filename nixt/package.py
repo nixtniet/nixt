@@ -21,12 +21,6 @@ class Mods:
     modules = {}
 
     @staticmethod
-    def init(name, path):
-        "add modules directory." 
-        if os.path.exists(path):
-            Mods.dirs[name] = path
-
-    @staticmethod
     def get(name):
         "return module."
         result = list(Mods.iter(name))
@@ -41,6 +35,12 @@ class Mods:
             if getattr(mod, attr, False):
                 result.append(mod.__name__.split(".")[-1])
         return ",".join(result)
+
+    @staticmethod
+    def init(name, path):
+        "add modules directory." 
+        if os.path.exists(path):
+            Mods.dirs[name] = path
 
     @staticmethod
     def iter(modlist, ignore=""):
@@ -95,28 +95,6 @@ class Mods:
         Mods.modules[name] = mod
         spec.loader.exec_module(mod)
         return mod
-
-    @staticmethod
-    def inits(modlist, ignore="", wait=False):
-        "scan named modules for commands."
-        thrs = []
-        for name, mod in Mods.iter(modlist, ignore):
-            if "init" in dir(mod):
-                thrs.append((name, Thread.launch(mod.init)))
-        if wait:
-            for name, thr in thrs:
-                thr.join()
-        
-    @staticmethod
-    def scanner(modlist, ignore="", noconfig=False):
-        "scan named modules for commands."
-        res = []
-        for name, mod in Mods.iter(modlist, ignore):
-            Commands.scan(mod)
-            if not noconfig and "configure" in dir(mod):
-                mod.configure()
-            res.append((name, mod))
-        return res
 
     @staticmethod
     def shutdown():

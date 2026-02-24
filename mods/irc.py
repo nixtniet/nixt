@@ -16,24 +16,22 @@ import time
 
 from nixt.brokers import Broker
 from nixt.clients import Output
-from nixt.command import Commands, Main
+from nixt.command import Commands
 from nixt.message import Message
-from nixt.objects import Default, Object, Methods
+from nixt.objects import Default, Dict, Object, Methods
+from nixt.objects import Config as Configuration
 from nixt.persist import Locate
 from nixt.threads import Thread
 from nixt.utility import Utils
 
 
-"defines"
+Cfg = Configuration()
 
 
-NAME = Utils.pkgname(Broker)
-
-
-lock = threading.RLock()
-
-
-"init"
+def configure(cfg):
+    Dict.update(Cfg, cfg)
+    Cfg.name = Cfg.name or Utils.pkgname(Configuration)
+    Cfg.version = Cfg.version or 1
 
 
 def init():
@@ -47,45 +45,32 @@ def init():
     return irc
 
 
-def configure():
-    Locate.first(Cfg)
-
-
-"config"
-
-
 class Config(Default):
 
     ignore = ["PING", "PONG", "PRIVMSG"] 
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.name = Main.name or NAME
+        self.name = Cfg.name
         self.channel = f"#{self.name}"
         self.commands = True
         self.control = "!"
-        self.nick = Main.name or NAME
+        self.nick = Cfg.name
         self.word = ""
         self.port = 6667
-        self.realname = Main.name or NAME
+        self.realname = Cfg.name
         self.sasl = (self.port == 6697 and True) or False
         self.server = "localhost"
         self.servermodes = ""
         self.sleep = 60
-        self.username = Main.name or NAME
+        self.username = Cfg.name
         self.users = False
-        self.version = Main.version
+        self.version = Cfg.version or 1
 
     def __getattr__(self, name):
         if name not in self:
             return ""
         return self.__getattribute__(name)
-
-
-Cfg = Config()
-
-
-"event"
 
 
 class Event(Message):
@@ -109,9 +94,6 @@ class Event(Message):
         bot.dosay(self.channel, txt)
 
 
-"wraper"
-
-
 class TextWrap(textwrap.TextWrapper):
 
     def __init__(self):
@@ -127,16 +109,13 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-"irc"
-
-
 class IRC(Output):
 
     def __init__(self):
         Output.__init__(self)
         self.buffer = []
         self.cache = {}
-        self.cfg = Cfg
+        self.cfg = Config()
         self.channels = []
         self.events = Object()
         self.events.authed = threading.Event()
@@ -144,6 +123,7 @@ class IRC(Output):
         self.events.joined = threading.Event()
         self.events.logon = threading.Event()
         self.events.ready = threading.Event()
+        self.lock = threading.RLock()
         self.silent = False
         self.sock = None
         self.state = Object()
@@ -204,7 +184,7 @@ class IRC(Output):
         return False
 
     def direct(self, txt):
-        with lock:
+        with self.lock:
             time.sleep(2.0)
             self.raw(txt)
 
@@ -235,7 +215,7 @@ class IRC(Output):
                 self.say(event.channel, f"use !mre to show more (+{length})")
 
     def docommand(self, cmd, *args):
-        with lock:
+        with self.lock:
             if not args:
                 self.raw(cmd)
             elif len(args) == 1:
@@ -527,9 +507,6 @@ class IRC(Output):
         self.events.ready.wait()
 
 
-"callbacks"
-
-
 def cb_auth(evt):
     bot = Broker.get(evt.orig)
     bot.docommand(f"AUTHENTICATE {bot.cfg.word or bot.cfg.password}")
@@ -613,27 +590,6 @@ def cb_quit(evt):
         bot.stop()
 
 
-"commands"
-
-
-'''
-def cfg(event):
-    config = Config()
-    fnm = Locate.last(config) or Methods.ident(config)
-    if not event.sets:
-        event.reply(
-            Methods.fmt(
-                config,
-                Dict.keys(config),
-                skip="control,name,password,realname,sleep,username".split(",")
-            )
-        )
-    else:
-        Methods.edit(config, event.sets)
-        Disk.write(config, fnm or Methods.ident(config))
-        event.reply("ok")
-'''
-
 def mre(event):
     if not event.channel:
         event.reply("channel is not set.")
@@ -664,9 +620,6 @@ def pwd(event):
     base = base64.b64encode(enc)
     dcd = base.decode("ascii")
     event.reply(dcd)
-
-
-"utility"
 
 
 def rlog(txt):

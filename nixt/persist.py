@@ -229,9 +229,9 @@ class Workdir:
         pth.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
-    def workdir():
+    def workdir(path=""):
         "return workdir."
-        return Workdir.wdr
+        return os.path.join(Workdir.wdr, path)
 
 
 def __dir__():

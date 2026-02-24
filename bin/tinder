@@ -14,9 +14,9 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.clients import Client
-from nixt.command import Commands, Main
+from nixt.command import Commands
 from nixt.message import Message
-from nixt.objects import Methods
+from nixt.objects import Config, Methods
 from nixt.package import Mods
 from nixt.persist import Workdir
 from nixt.threads import Thread
@@ -35,19 +35,16 @@ except ModuleNotFoundError:
 events = queue.Queue()
 
 
-"config"
+Cfg = Config()
 
 
-Main.debug = True
-Main.ignore = ""
-Main.level = "info"
-Main.name = Utils.pkgname(Commands)
-Main.txt = " ".join(sys.argv[1:])
-Main.version = 8
-Main.wdr = ".test"
-
-
-"clients"
+Cfg.debug = True
+Cfg.ignore = ""
+Cfg.level = "info"
+Cfg.name = Utils.pkgname(Commands)
+Cfg.txt = " ".join(sys.argv[1:])
+Cfg.version = 8
+Cfg.wdr = ".test"
 
 
 class CLI(Client):
@@ -57,7 +54,7 @@ class CLI(Client):
         self.register("command", Commands.command)
 
     def raw(self, txt):
-        if "v" in Main.opts:
+        if "v" in Cfg.opts:
             print(txt)
 
 
@@ -90,12 +87,9 @@ class ClientPool:
             ClientPool.nrlast += 1
 
 
-"utilities"
-
-
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    print(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level})")
+    print(f"{Cfg.name.upper()} {Cfg.version} since {tme} ({Cfg.level})")
     sys.stdout.flush()
 
 
@@ -130,11 +124,17 @@ def payload(todo):
             events.put(evt)
 
 
-"runtime"
+def scanner(cfg):
+    res = []
+    for name, mod in Mods.iter(cfg.mods or cfg.default, cfg.ignore):
+        Commands.scan(mod)
+        if "configure" in dir(mod):
+            mod.configure(cfg)
+        res.append((name, mod))
+    return res
 
 
 def wrap(func):
-    "restore console."
     import termios
     old = None
     try:
@@ -150,22 +150,23 @@ def wrap(func):
 
 
 def main():
-    if "p" not in Main.opts and os.path.exists(Main.wdr):
-        shutil.rmtree(Main.wdr)
-    Methods.parse(Main, " ".join(sys.argv[1:]))
-    Workdir.setwd(Main.wdr)
+    if "p" not in Cfg.opts and os.path.exists(Cfg.wdr):
+        shutil.rmtree(Cfg.wdr)
+    Methods.parse(Cfg, " ".join(sys.argv[1:]))
+    Workdir.setwd(Cfg.wdr)
     Mods.init("modules", MODS.__path__[0])
     if MODS2:
         Mods.init("mods", MODS2.__path__[0])
-    Mods.scanner(Mods.list())
-    if "v" in Main.opts:
+    Cfg.mods = Cfg.mods or Mods.list()
+    scanner(Cfg)
+    if "v" in Cfg.opts:
         banner()
-    if "z" in Main.opts:
+    if "z" in Cfg.opts:
         ClientPool.init(os.cpu_count(), CLI)
     else:
         ClientPool.init(1, CLI)
     starttime = time.time()
-    nrs = Main.index or 1
+    nrs = Cfg.index or 1
     for _x in range(nrs):
         payload(pre)
     for _x in range(nrs):
@@ -182,13 +183,10 @@ def main():
     lap = Time.elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
-    if "v" in Main.opts:
-        print(f"{Methods.fmt(Main, skip='otxt,txt')}")
+    if "v" in Cfg.opts:
+        print(f"{Methods.fmt(Cfg, skip='otxt,txt')}")
         print(f"{nrs} events left.")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
-
-
-"date"
 
 
 examples = {
@@ -237,9 +235,6 @@ post = {
     "exp": [""],
     "rem": ["", "hnrss"]
 }
-
-
-"trampoline"
 
 
 if __name__ == "__main__":

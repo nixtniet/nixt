@@ -12,9 +12,6 @@ from .message import Message
 from .objects import Config, Methods
 
 
-Main = Config()
-
-
 class Commands:
 
     cmds = {}

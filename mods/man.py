@@ -224,19 +224,16 @@ opml
 """
 
 
-NAME = "nixt"
-
-
 def man(event):
     if not event.rest:
-        event.reply("man <description>")
+        event.reply("man <name> <description>")
         return
-    descr = event.rest
+    name, descr = event.args[0], " ".join(event.args[1:])
     event.reply(__doc__ % (
-        NAME.upper(),
+        name,
         descr,
-        *(NAME,) * 4,
-        *(NAME.upper(),) * 4,
-        *(NAME,) * 32,
-        NAME.upper()
+        *(name,) * 4,
+        *(name.upper(),) * 4,
+        *(name,) * 32,
+        name.upper()
         ))
