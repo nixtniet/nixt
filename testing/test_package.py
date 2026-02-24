@@ -12,6 +12,6 @@ from nixt.package import Mods
 
 class TestPackage(unittest.TestCase):
 
-    def test_init(self):
-        Mods.init("mods", "mods")
+    def test_add(self):
+        Mods.add("mods", "mods")
         self.assertTrue("mods" in Mods.dirs)
