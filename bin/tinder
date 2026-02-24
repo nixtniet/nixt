@@ -126,7 +126,7 @@ def payload(todo):
 
 def scanner(cfg):
     res = []
-    for name, mod in Mods.iter(cfg.mods or cfg.default, cfg.ignore):
+    for name, mod in Mods.iter(Mods.list()):
         Commands.scan(mod)
         if "configure" in dir(mod):
             mod.configure(cfg)
@@ -154,9 +154,9 @@ def main():
         shutil.rmtree(Cfg.wdr)
     Methods.parse(Cfg, " ".join(sys.argv[1:]))
     Workdir.setwd(Cfg.wdr)
-    Mods.init("modules", MODS.__path__[0])
+    Mods.add("modules", MODS.__path__[0])
     if MODS2:
-        Mods.init("mods", MODS2.__path__[0])
+        Mods.add("mods", MODS2.__path__[0])
     Cfg.mods = Cfg.mods or Mods.list()
     scanner(Cfg)
     if "v" in Cfg.opts:

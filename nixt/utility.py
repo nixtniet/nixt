@@ -275,6 +275,15 @@ class Time:
 class Utils:
 
     @staticmethod
+    def forever():
+        "run forever until ctrl-c."
+        while True:
+            try:
+                time.sleep(0.1)
+            except (KeyboardInterrupt, EOFError):
+                break
+
+    @staticmethod
     def md5sum(path):
         "return md5 of a file."
         import hashlib

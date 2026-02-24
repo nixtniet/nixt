@@ -20,10 +20,8 @@ from nixt.clients import Console
 from nixt.message import Message
 from nixt.objects import Config, Dict, Methods
 from nixt.package import Mods
-from nixt.utility import Utils
 from nixt.persist import Workdir
-from nixt.threads import Thread
-from nixt.utility import Log
+from nixt.utility import Log, Utils
 
 
 from nixt import modules as MODS
@@ -86,7 +84,7 @@ class Scripts:
         Mods.scanner(Cfg)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Mods.init(Cfg)
-        Runtime.forever()
+        Utils.forever()
 
     @staticmethod
     def console(args):
@@ -100,7 +98,7 @@ class Scripts:
         Mods.init(Cfg, default=False)
         csl = CSL()
         csl.start()
-        Runtime.forever()
+        Utils.forever()
 
     @staticmethod
     def control(args):
@@ -125,7 +123,7 @@ class Scripts:
         Mods.scanner(Cfg)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Mods.init(Cfg)
-        Runtime.forever()
+        Utils.forever()
 
 
 class Cmd:
@@ -213,15 +211,6 @@ class Runtime:
         os.nice(10)
 
     @staticmethod
-    def forever():
-        "run forever until ctrl-c."
-        while True:
-            try:
-                time.sleep(0.1)
-            except (KeyboardInterrupt, EOFError):
-                break
-
-    @staticmethod
     def getargs():
         "parse commandline arguments."
         parser = argparse.ArgumentParser(description=f"{Cfg.name.upper()}")
@@ -249,7 +238,6 @@ class Runtime:
         pwnam2 = pwd.getpwnam(getpass.getuser())
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
-
 
     @staticmethod
     def wrap(func, *args):
