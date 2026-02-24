@@ -47,13 +47,12 @@ class Mods:
     def init(cfg, default=True):
         "scan named modules for commands."
         thrs = []
-        for name, mod in Mods.iter(cfg.mods or (default and cfg.default) , cfg.ignore):
+        for name, mod in Mods.iter(cfg.mods or cfg.default , cfg.ignore):
             if "init" in dir(mod):
                 thrs.append((name, Thread.launch(mod.init)))
         if cfg.wait:
             for name, thr in thrs:
                 thr.join()
-
 
     @staticmethod
     def iter(modlist, ignore=""):

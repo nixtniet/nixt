@@ -1,4 +1,298 @@
 # This file is placed in the Public Domain.
 
 
-"in case setup.py binary installs are not longer possible, but your runtime here"
+"main program"
+
+
+import argparse
+import logging
+import os
+import sys
+import time
+
+
+from .command import Commands
+from .clients import Console
+from .message import Message
+from .objects import Config, Dict, Methods
+from .package import Mods
+from .persist import Workdir
+from .utility import Log, Utils
+
+
+from . import modules as MODS
+
+
+Cfg = Config()
+
+
+Cfg.debug = False
+Cfg.default = "irc,mdl,rss,wsd"
+Cfg.ignore = "rst,udp,web"
+Cfg.level = "info"
+Cfg.local = True
+Cfg.mods = ""
+Cfg.name = Utils.pkgname(Commands)
+Cfg.nochdir = False
+Cfg.txt = " ".join(sys.argv[1:])
+Cfg.version = 8
+Cfg.wdr = os.path.expanduser(f"~/.{Cfg.name}")
+
+
+class Line(Console):
+
+    def __init__(self):
+        super().__init__()
+        self.register("command", Commands.command)
+
+    def raw(self, text):
+        "write to console."
+        Runtime.out(text)
+
+
+class CSL(Line):
+
+    def callback(self, event):
+        "wait for callback result."
+        if not event.text:
+            event.ready()
+            return
+        super().callback(event)
+        event.wait()
+
+    def poll(self):
+        "poll for an event."
+        evt = Message()
+        evt.text = input("> ")
+        evt.kind = "command"
+        return evt
+
+
+class Scripts:
+
+    @staticmethod
+    def background(args):
+        "background script."
+        Runtime.daemon(Cfg.verbose, Cfg.nochdir)
+        Runtime.privileges()
+        Runtime.boot(args)
+        Workdir.pidfile(Cfg.name)
+        Mods.scanner(Cfg)
+        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
+        Mods.init(Cfg)
+        Utils.forever()
+
+    @staticmethod
+    def console(args):
+        "console script."
+        import readline
+        readline.redisplay()
+        Runtime.boot(args)
+        Mods.scanner(Cfg)
+        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
+        Commands.cmd(Cfg.txt)
+        Mods.init(Cfg, default=False)
+        csl = CSL()
+        csl.start()
+        Utils.forever()
+
+    @staticmethod
+    def control(args):
+        "cli script."
+        if len(sys.argv) == 1:
+            return
+        Runtime.boot(args)
+        Cfg.mods = Mods.list(Cfg.ignore)
+        Mods.scanner(Cfg)
+        Commands.add(Cmd.cmd, Cmd.mod, Cmd.srv, Cmd.ver)
+        evt = Commands.cmd(Cfg.txt)
+        for line in evt.result.values():
+            Runtime.out(line)
+
+    @staticmethod
+    def service(args):
+        "service script."
+        Runtime.privileges()
+        Runtime.banner()
+        Runtime.boot(args)
+        Workdir.pidfile(Cfg.name)
+        Mods.scanner(Cfg)
+        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
+        Mods.init(Cfg)
+        Utils.forever()
+
+
+class Cmd:
+
+    @staticmethod
+    def cmd(event):
+        "list available commands."
+        event.reply(",".join(sorted(Commands.names or Commands.cmds)))
+
+    @staticmethod
+    def mod(event):
+        "list available commands."
+        mods = Mods.list(Cfg.ignore)
+        if not mods:
+            event.reply("no modules available")
+            return
+        event.reply(mods)
+
+    @staticmethod
+    def srv(event):
+        "generate systemd service file."
+        import getpass
+        name = getpass.getuser()
+        event.reply(SYSTEMD % (Cfg.name.upper(), name, name, name, Cfg.name))
+
+    @staticmethod
+    def ver(event):
+        "show verson."
+        event.reply(f"{Cfg.name.upper()} {Cfg.version}")
+
+
+class Runtime:
+    
+    @staticmethod
+    def banner():
+        "hello."
+        tme = time.ctime(time.time()).replace("  ", " ")
+        print("%s %s since %s (%s)" % (
+            Cfg.name.upper(),
+            Cfg.version,
+            tme,
+            Cfg.level.upper(),
+        ))
+        sys.stdout.flush()
+
+    @staticmethod
+    def boot(args):
+        "in the beginning."
+        Methods.parse(Cfg, args.txt)
+        Dict.update(Cfg, Cfg.sets)
+        Dict.update(Cfg, Dict.reduce(vars(args)))
+        Workdir.setwd(Cfg.wdr)
+        Log.level(Cfg.level)
+        if Cfg.wdr:
+            Mods.add("modules", os.path.join(Cfg.wdr, "mods"))
+        if MODS:
+            Mods.add(MODS.__name__, MODS.__path__[0])
+        if Cfg.local:
+            Mods.add('mods', 'mods')
+        if Cfg.verbose:
+            Runtime.banner()
+        if Cfg.all:
+            Cfg.mods = Mods.list(Cfg.ignore)
+
+    @staticmethod
+    def daemon(verbose=False, nochdir=False):
+        "run in the background."
+        pid = os.fork()
+        if pid != 0:
+            os._exit(0)
+        os.setsid()
+        pid2 = os.fork()
+        if pid2 != 0:
+            os._exit(0)
+        if not verbose:
+            with open('/dev/null', 'r', encoding="utf-8") as sis:
+                os.dup2(sis.fileno(), sys.stdin.fileno())
+            with open('/dev/null', 'a+', encoding="utf-8") as sos:
+                os.dup2(sos.fileno(), sys.stdout.fileno())
+            with open('/dev/null', 'a+', encoding="utf-8") as ses:
+                os.dup2(ses.fileno(), sys.stderr.fileno())
+        os.umask(0)
+        if not nochdir:
+            os.chdir("/")
+        os.nice(10)
+
+    @staticmethod
+    def getargs():
+        "parse commandline arguments."
+        parser = argparse.ArgumentParser(prog=Cfg.name, description=f"{Cfg.name.upper()}")
+        parser.add_argument("-a", "--all", action="store_true", help="load all modules")
+        parser.add_argument("-c", "--console", action="store_true", help="start console")
+        parser.add_argument("-d", "--daemon", action="store_true", help="start background daemon")
+        parser.add_argument("-l", "--level", default=Cfg.level, help='set loglevel')
+        parser.add_argument("-m", "--mods", default="", help='modules to load')
+        parser.add_argument("-s", "--service", action="store_true", help="start service")
+        parser.add_argument("-v", "--verbose", action='store_true',help='enable verbose')
+        parser.add_argument("-w", "--wait", action='store_true',help='wait for services to start')
+        parser.add_argument("--local", action="store_true", help="use local mods directory")
+        parser.add_argument("--wdr", help='set working directory')
+        return parser.parse_known_args()
+
+    @staticmethod
+    def init(cfg, default=True):
+        "scan named modules for commands."
+        thrs = []
+        for name, mod in Mods.iter(cfg.mods or cfg.default , cfg.ignore):
+            if "init" in dir(mod):
+                thrs.append((name, Thread.launch(mod.init)))
+        if cfg.wait:
+            for name, thr in thrs:
+                thr.join()
+
+    @staticmethod
+    def out(txt):
+        print(txt.encode('utf-8', 'replace').decode("utf-8"))
+
+    @staticmethod
+    def privileges():
+        "drop privileges."
+        import getpass
+        import pwd
+        pwnam2 = pwd.getpwnam(getpass.getuser())
+        os.setgid(pwnam2.pw_gid)
+        os.setuid(pwnam2.pw_uid)
+
+    @staticmethod
+    def wrap(func, *args):
+        "restore console."
+        import termios
+        old = None
+        try:
+            old = termios.tcgetattr(sys.stdin.fileno())
+        except termios.error:
+            pass
+        try:
+            func(*args)
+        except (KeyboardInterrupt, EOFError):
+            pass
+        except Exception as ex:
+            logging.exception(ex)
+        if old:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+
+
+SYSTEMD = """[Unit]
+Description=%s
+After=multi-user.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
+
+
+def main():
+    "main"
+    args, arguments = Runtime.getargs()
+    args.txt = " ".join(arguments)
+    if args.daemon:
+        Scripts.background(args)
+    elif args.console:
+        Runtime.wrap(Scripts.console, args)
+    elif args.service:
+        Runtime.wrap(Scripts.service, args)
+    else:
+        Runtime.wrap(Scripts.control, args)
+    Mods.shutdown()
+
+
+if __name__ == "__main__":
+    main()
