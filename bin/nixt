@@ -83,9 +83,9 @@ class Scripts:
         Runtime.privileges()
         Runtime.boot(args)
         Workdir.pidfile(Cfg.name)
-        Runtime.scanner(Cfg)
+        Mods.scanner(Cfg)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        Runtime.init(Cfg)
+        Mods.init(Cfg)
         Runtime.forever()
 
     @staticmethod
@@ -94,10 +94,10 @@ class Scripts:
         import readline
         readline.redisplay()
         Runtime.boot(args)
-        Runtime.scanner(Cfg, Mods.list(Cfg.ignore))
+        Mods.scanner(Cfg)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Commands.cmd(Cfg.txt)
-        Runtime.init(Cfg, Cfg.mods)
+        Mods.init(Cfg, default=False)
         csl = CSL()
         csl.start()
         Runtime.forever()
@@ -108,7 +108,8 @@ class Scripts:
         if len(sys.argv) == 1:
             return
         Runtime.boot(args)
-        Runtime.scanner(Cfg, Mods.list(Cfg.ignore))
+        Cfg.mods = Mods.list(Cfg.ignore)
+        Mods.scanner(Cfg)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.srv, Cmd.ver)
         evt = Commands.cmd(Cfg.txt)
         for line in evt.result.values():
@@ -121,10 +122,9 @@ class Scripts:
         Runtime.banner()
         Runtime.boot(args)
         Workdir.pidfile(Cfg.name)
-        Cfg.mods = Cfg.mods or Mods.list()
-        Runtime.scanner(Cfg)
+        Mods.scanner(Cfg)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        Runtime.init(Cfg)
+        Mods.init(Cfg)
         Runtime.forever()
 
 
@@ -180,11 +180,11 @@ class Runtime:
         Workdir.setwd(Cfg.wdr)
         Log.level(Cfg.level)
         if Cfg.wdr:
-            Mods.init("modules", os.path.join(Cfg.wdr, "mods"))
+            Mods.add("modules", os.path.join(Cfg.wdr, "mods"))
         if MODS:
-            Mods.init(MODS.__name__, MODS.__path__[0])
+            Mods.add(MODS.__name__, MODS.__path__[0])
         if Cfg.local:
-            Mods.init('mods', 'mods')
+            Mods.add('mods', 'mods')
         if Cfg.verbose:
             Runtime.banner()
         if Cfg.all:
@@ -238,17 +238,6 @@ class Runtime:
         return parser.parse_known_args()
 
     @staticmethod
-    def init(cfg, modlist):
-        "scan named modules for commands."
-        thrs = []
-        for name, mod in Mods.iter(modlist, cfg.ignore):
-            if "init" in dir(mod):
-                thrs.append((name, Thread.launch(mod.init)))
-        if cfg.wait:
-            for name, thr in thrs:
-                thr.join()
-
-    @staticmethod
     def out(txt):
         print(txt.encode('utf-8', 'replace').decode("utf-8"))
 
@@ -261,27 +250,6 @@ class Runtime:
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
 
-    @staticmethod
-    def scanner(cfg, modlist):
-        "scan named modules for commands."
-        res = []
-        for name, mod in Mods.iter(modlist, cfg.ignore):
-            Commands.scan(mod)
-            if "configure" in dir(mod):
-                mod.configure(cfg)
-            res.append((name, mod))
-        return res
-
-    @staticmethod
-    def shutdown():
-        "call shutdown on modules."
-        logging.debug("shutdown")
-        for mod in Dict.values(Mods.modules):
-            if "shutdown" in dir(mod):
-                try:
-                    mod.shutdown()
-                except Exception as ex:
-                    logging.exception(ex)
 
     @staticmethod
     def wrap(func, *args):
@@ -328,7 +296,7 @@ def main():
         Runtime.wrap(Scripts.service, args)
     else:
         Runtime.wrap(Scripts.control, args)
-    Runtime.shutdown()
+    Mods.shutdown()
 
 
 if __name__ == "__main__":

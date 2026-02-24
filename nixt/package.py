@@ -9,7 +9,9 @@ import logging
 import os
 
 
+from .command import Commands
 from .objects import Dict
+from .threads import Thread
 from .utility import Utils
 
 
@@ -17,6 +19,12 @@ class Mods:
 
     dirs = {}
     modules = {}
+
+    @staticmethod
+    def add(name, path):
+        "add modules directory." 
+        if os.path.exists(path):
+            Mods.dirs[name] = path
 
     @staticmethod
     def get(name):
@@ -36,10 +44,16 @@ class Mods:
         return ",".join(result)
 
     @staticmethod
-    def init(name, path):
-        "add modules directory." 
-        if os.path.exists(path):
-            Mods.dirs[name] = path
+    def init(cfg, default=True):
+        "scan named modules for commands."
+        thrs = []
+        for name, mod in Mods.iter(cfg.mods or (default and cfg.default) , cfg.ignore):
+            if "init" in dir(mod):
+                thrs.append((name, Thread.launch(mod.init)))
+        if cfg.wait:
+            for name, thr in thrs:
+                thr.join()
+
 
     @staticmethod
     def iter(modlist, ignore=""):
@@ -94,6 +108,17 @@ class Mods:
         Mods.modules[name] = mod
         spec.loader.exec_module(mod)
         return mod
+
+    @staticmethod
+    def scanner(cfg, default=True):
+        "scan named modules for commands."
+        res = []
+        for name, mod in Mods.iter(cfg.mods or (default and cfg.default) , cfg.ignore):
+            Commands.scan(mod)
+            if "configure" in dir(mod):
+                mod.configure(cfg)
+            res.append((name, mod))
+        return res
 
     @staticmethod
     def shutdown():
