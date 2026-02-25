@@ -9,9 +9,6 @@ import logging
 import os
 
 
-from .command import Commands
-from .objects import Dict
-from .threads import Thread
 from .utility import Utils
 
 
