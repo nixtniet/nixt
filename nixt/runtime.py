@@ -1,3 +1,4 @@
+##!/usr/bin/env python3
 # This file is placed in the Public Domain.
 
 
@@ -11,17 +12,20 @@ import sys
 import time
 
 
-from .command import Commands
-from .clients import Console, Main
-from .message import Message
-from .objects import Dict, Methods
-from .package import Mods
-from .persist import Disk, Locate, Workdir
-from .threads import Thread
-from .utility import Log, Utils
+#sys.path.insert(0, os.getcwd())
 
 
-from . import modules as MODS
+from nixt.command import Commands
+from nixt.clients import Console, Main
+from nixt.message import Message
+from nixt.objects import Dict, Methods
+from nixt.package import Mods
+from nixt.persist import Disk, Locate, Workdir
+from nixt.threads import Thread
+from nixt.utility import Log, Utils
+
+
+from nixt import modules as MODS
 
 
 Main.all = False
@@ -37,6 +41,7 @@ Main.noignore = False
 Main.txt = " ".join(sys.argv[1:])
 Main.verbose = False
 Main.version = 8
+Main.wait = False
 Main.wdr = os.path.expanduser(f"~/.{Main.name}")
 
 
@@ -147,7 +152,11 @@ class Runtime:
     def init(cfg, default=True):
         "scan named modules for commands."
         thrs = []
-        for name, mod in Mods.iter(cfg.mods or cfg.default , cfg.ignore):
+        if default:
+           defs = cfg.default
+        else:
+           defs = ""
+        for name, mod in Mods.iter(cfg.mods or defs, cfg.ignore):
             if "init" in dir(mod):
                 thrs.append((name, Thread.launch(mod.init)))
         if cfg.wait:
@@ -171,7 +180,11 @@ class Runtime:
     def scanner(cfg, default=True):
         "scan named modules for commands."
         res = []
-        for name, mod in Mods.iter(cfg.mods or (default and cfg.default) , cfg.ignore):
+        if default:
+           defs = cfg.default
+        else:
+           defs = ""
+        for name, mod in Mods.iter(cfg.mods or defs or Mods.list(), cfg.ignore):
             Commands.scan(mod)
             if "configure" in dir(mod):
                 mod.configure(cfg)
@@ -229,7 +242,7 @@ class Scripts:
         import readline
         readline.redisplay()
         Runtime.boot(args)
-        Runtime.scanner(Main)
+        Runtime.scanner(Main, False)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Commands.cmd(Main.txt)
         Runtime.init(Main, default=False)
