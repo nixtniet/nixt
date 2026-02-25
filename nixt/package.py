@@ -43,17 +43,6 @@ class Mods:
         return ",".join(result)
 
     @staticmethod
-    def init(cfg, default=True):
-        "scan named modules for commands."
-        thrs = []
-        for name, mod in Mods.iter(cfg.mods or cfg.default , cfg.ignore):
-            if "init" in dir(mod):
-                thrs.append((name, Thread.launch(mod.init)))
-        if cfg.wait:
-            for name, thr in thrs:
-                thr.join()
-
-    @staticmethod
     def iter(modlist, ignore=""):
         "loop over modules."
         for pkgname, path in Mods.dirs.items():
@@ -106,28 +95,6 @@ class Mods:
         Mods.modules[name] = mod
         spec.loader.exec_module(mod)
         return mod
-
-    @staticmethod
-    def scanner(cfg, default=True):
-        "scan named modules for commands."
-        res = []
-        for name, mod in Mods.iter(cfg.mods or (default and cfg.default) , cfg.ignore):
-            Commands.scan(mod)
-            if "configure" in dir(mod):
-                mod.configure(cfg)
-            res.append((name, mod))
-        return res
-
-    @staticmethod
-    def shutdown():
-        "call shutdown on modules."
-        logging.debug("shutdown")
-        for mod in Dict.values(Mods.modules):
-            if "shutdown" in dir(mod):
-                try:
-                    mod.shutdown()
-                except Exception as ex:
-                    logging.exception(ex)
 
 
 def __dir__():

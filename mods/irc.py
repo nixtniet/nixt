@@ -19,12 +19,9 @@ from nixt.clients import Main, Output
 from nixt.command import Commands
 from nixt.message import Message
 from nixt.objects import Configuration, Object, Methods
+from nixt.persist import Locate
 from nixt.threads import Thread
 from nixt.utility import Utils
-
-
-def configure(cfg):
-    Config.version = cfg.version
 
 
 def init():
@@ -476,6 +473,7 @@ class IRC(Output):
         Output.start(self)
         if not self.state.keeprunning:
            Thread.launch(self.keep)
+        Locate.first(self.cfg)
         Thread.launch(
             self.doconnect,
             self.cfg.server or "localhost",

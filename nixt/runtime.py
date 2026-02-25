@@ -33,6 +33,7 @@ Main.local = True
 Main.mods = ""
 Main.name = Utils.pkgname(Commands)
 Main.nochdir = False
+Main.noignore = False
 Main.txt = " ".join(sys.argv[1:])
 Main.verbose = False
 Main.version = 8
@@ -90,6 +91,8 @@ class Runtime:
         Dict.update(Main, Dict.reduce(vars(args)))
         Workdir.setwd(Main.wdr)
         Log.level(Main.level)
+        if Main.noignore:
+            Main.ignore = ""
         if Main.wdr:
             Mods.add("modules", os.path.join(Main.wdr, "mods"))
         if MODS:
@@ -132,6 +135,7 @@ class Runtime:
         parser.add_argument("-d", "--daemon", action="store_true", help="start background daemon")
         parser.add_argument("-l", "--level", default=Main.level, help='set loglevel')
         parser.add_argument("-m", "--mods", default="", help='modules to load')
+        parser.add_argument("-n", "--noignore", action="store_true", help="disable ignore")
         parser.add_argument("-s", "--service", action="store_true", help="start service")
         parser.add_argument("-v", "--verbose", action='store_true',help='enable verbose')
         parser.add_argument("-w", "--wait", action='store_true',help='wait for services to start')
@@ -162,6 +166,29 @@ class Runtime:
         pwnam2 = pwd.getpwnam(getpass.getuser())
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
+ 
+    @staticmethod
+    def scanner(cfg, default=True):
+        "scan named modules for commands."
+        res = []
+        for name, mod in Mods.iter(cfg.mods or (default and cfg.default) , cfg.ignore):
+            Commands.scan(mod)
+            if "configure" in dir(mod):
+                mod.configure(cfg)
+            res.append((name, mod))
+        return res
+
+    @staticmethod
+    def shutdown():
+        "call shutdown on modules."
+        logging.debug("shutdown")
+        for mod in Dict.values(Mods.modules):
+            if "shutdown" in dir(mod):
+                try:
+                    mod.shutdown()
+                except Exception as ex:
+                    logging.exception(ex)
+
 
     @staticmethod
     def wrap(func, *args):
@@ -191,9 +218,9 @@ class Scripts:
         Runtime.privileges()
         Runtime.boot(args)
         Workdir.pidfile(Main.name)
-        Mods.scanner(Main)
+        Runtime.scanner(Main)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        Mods.init(Main)
+        Runtime.init(Main)
         Utils.forever()
 
     @staticmethod
@@ -202,10 +229,10 @@ class Scripts:
         import readline
         readline.redisplay()
         Runtime.boot(args)
-        Mods.scanner(Main)
+        Runtime.scanner(Main)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Commands.cmd(Main.txt)
-        Mods.init(Main, default=False)
+        Runtime.init(Main, default=False)
         csl = CSL()
         csl.start()
         Utils.forever()
@@ -217,7 +244,7 @@ class Scripts:
             return
         Runtime.boot(args)
         Main.mods = Mods.list(Main.ignore)
-        Mods.scanner(Main)
+        Runtime.scanner(Main)
         Commands.add(Cmd.cfg, Cmd.cmd, Cmd.mod, Cmd.srv, Cmd.ver)
         evt = Commands.cmd(Main.txt)
         for line in evt.result.values():
@@ -230,9 +257,9 @@ class Scripts:
         Runtime.banner()
         Runtime.boot(args)
         Workdir.pidfile(Main.name)
-        Mods.scanner(Main)
+        Runtime.scanner(Main)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        Mods.init(Main)
+        Runtime.init(Main)
         Utils.forever()
 
 
@@ -263,7 +290,7 @@ class Cmd:
             )
             return
         Methods.edit(cfg, event.sets)
-        Disk.write(cfg, fnm)
+        Disk.write(Methods.skip(cfg), fnm)
         event.reply("ok")
 
     @staticmethod
@@ -319,7 +346,7 @@ def main():
         Runtime.wrap(Scripts.service, args)
     else:
         Runtime.wrap(Scripts.control, args)
-    Mods.shutdown()
+    Runtime.shutdown()
 
 
 if __name__ == "__main__":
