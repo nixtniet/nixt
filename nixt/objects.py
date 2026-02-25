@@ -30,7 +30,7 @@ class Default(Object):
         return self.__dict__.get(key, "")
 
 
-class Config(Default):
+class Configuration(Default):
 
     def __init__(self, *args, **kwargs):
         super().__init__()
@@ -315,7 +315,7 @@ class Methods:
 
 def __dir__():
     return (
-        'Config',
+        'Configuration',
         'Default',
         'Dict',
         'Methods',

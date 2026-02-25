@@ -27,12 +27,11 @@ class Mods:
             Mods.dirs[name] = path
 
     @staticmethod
-    def get(name):
+    def get(modname):
         "return module."
-        result = list(Mods.iter(name))
+        result = list(Mods.iter(modname))
         if result:
-            return result[0]
-        return []
+            return result[0][-1]
 
     @staticmethod
     def has(attr):

@@ -12,7 +12,13 @@ import _thread
 
 from .brokers import Broker
 from .handler import Handler
+from .objects import Configuration
 from .threads import Thread
+
+
+class Main(Configuration):
+
+    pass
 
 
 class Client(Handler):
@@ -120,5 +126,6 @@ def __dir__():
     return (
         'Client',
         'Console',
+        'Main',
         'Output'
     )

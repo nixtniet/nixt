@@ -25,18 +25,11 @@ from urllib.parse import quote_plus, urlencode
 
 
 from nixt.brokers import Broker
-from nixt.objects import Config, Default, Dict, Methods
+from nixt.clients import Main
+from nixt.objects import Configuration, Default, Dict, Methods
 from nixt.persist import Disk, Locate
 from nixt.threads import Thread
 from nixt.utility import Repeater, Time, Utils
-
-
-Cfg = Config()
-
-
-def configure(cfg):
-    Dict.update(Cfg, cfg)
-    Cfg.polltime = Cfg.polltime or 300
 
 
 def init():
@@ -47,6 +40,11 @@ def init():
 
 def shutdown():
     Run.fetcher.stop()
+
+
+class Config(Configuration):
+
+    polltime = 300
 
 
 class Fetcher:
@@ -70,7 +68,7 @@ class Fetcher:
         State.seenfn = Locate.last(State.seen) or Methods.ident(State.seen)
         State.modifiedfn = Locate.last(State.modified) or Methods.ident(State.modified)
         if repeat:
-            repeater = Repeater(Cfg.polltime, self.run)
+            repeater = Repeater(Config.polltime, self.run)
             repeater.start()
 
     def stop(self):

@@ -15,22 +15,16 @@ import time
 
 
 from nixt.brokers import Broker
-from nixt.clients import Output
+from nixt.clients import Main, Output
 from nixt.command import Commands
 from nixt.message import Message
-from nixt.objects import Default, Dict, Object, Methods
-from nixt.objects import Config as Configuration
+from nixt.objects import Configuration, Default, Dict, Object, Methods
 from nixt.threads import Thread
 from nixt.utility import Utils
 
 
-Cfg = Configuration()
-
-
 def configure(cfg):
-    Dict.update(Cfg, cfg)
-    Cfg.name = Cfg.name or Utils.pkgname(Configuration)
-    Cfg.version = Cfg.version or 1
+    Config.version = cfg.version
 
 
 def init():
@@ -46,30 +40,22 @@ def init():
 
 class Config(Default):
 
+    name = Main.name or Utils.pkgname(Commands)
+    channel = f"#{name}"
+    commands = True
+    control = "!"
     ignore = ["PING", "PONG", "PRIVMSG"] 
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.name = Cfg.name
-        self.channel = f"#{self.name}"
-        self.commands = True
-        self.control = "!"
-        self.nick = Cfg.name
-        self.word = ""
-        self.port = 6667
-        self.realname = Cfg.name
-        self.sasl = (self.port == 6697 and True) or False
-        self.server = "localhost"
-        self.servermodes = ""
-        self.sleep = 60
-        self.username = Cfg.name
-        self.users = False
-        self.version = Cfg.version or 1
-
-    def __getattr__(self, name):
-        if name not in self:
-            return ""
-        return self.__getattribute__(name)
+    nick = name
+    word = ""
+    port = 6667
+    realname = name
+    sasl = (port == 6697 and True) or False
+    server = "localhost"
+    servermodes = ""
+    sleep = 60
+    username = name
+    users = False
+    version = 1
 
 
 class Event(Message):
