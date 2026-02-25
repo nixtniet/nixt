@@ -18,7 +18,7 @@ from nixt.brokers import Broker
 from nixt.clients import Main, Output
 from nixt.command import Commands
 from nixt.message import Message
-from nixt.objects import Configuration, Default, Dict, Object, Methods
+from nixt.objects import Configuration, Object, Methods
 from nixt.threads import Thread
 from nixt.utility import Utils
 
@@ -38,7 +38,7 @@ def init():
     return irc
 
 
-class Config(Default):
+class Config(Configuration):
 
     name = Main.name or Utils.pkgname(Commands)
     channel = f"#{name}"

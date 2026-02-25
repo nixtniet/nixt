@@ -17,6 +17,7 @@ from .message import Message
 from .objects import Dict, Methods
 from .package import Mods
 from .persist import Disk, Locate, Workdir
+from .threads import Thread
 from .utility import Log, Utils
 
 

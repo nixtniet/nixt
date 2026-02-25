@@ -15,7 +15,7 @@ VALIDJSON = '{"test": "bla"}'
 
 
 attrs1 = [
-    'Config',
+    'Configuration',
     'Default',
     'Dict',
     'Methods',

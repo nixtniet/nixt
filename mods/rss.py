@@ -648,7 +648,7 @@ def rss(event):
 
 
 def syn(event):
-    if Cfg.debug:
+    if Main.debug:
         return
     fetcher = Fetcher()
     fetcher.start(False)

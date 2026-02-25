@@ -1,1 +1,1 @@
-ruff check nixt mods bin/nixt bin/tinder testing $* ;
+ruff check nixt mods bin/tinder testing $* ;

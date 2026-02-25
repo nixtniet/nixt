@@ -13,28 +13,26 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.objects import Config, Dict, Object
+from nixt.clients import Main
+from nixt.objects import Configuration, Object
 from nixt.persist import Workdir
 from nixt.threads import Thread
 
 
-Cfg = Config()
-
-
-def configure(cfg):
-    Dict.update(Cfg, cfg)
-    Cfg.hostname = Cfg.hostname or "localhost"
-    Cfg.port = Cfg.port or 10102
-
-
 def init():
     try:
-        rest = REST((Cfg.hostname, int(Cfg.port)), RESTHandler)
+        rest = REST((Config.hostname, int(Config.port)), RESTHandler)
         rest.start()
-        logging.warning("http://%s:%s", Cfg.hostname, Cfg.port)
+        logging.warning("http://%s:%s", Config.hostname, Config.port)
         return rest
     except OSError as ex:
         logging.error(str(ex))
+
+
+class Config(Configuration):
+
+    hostname = "localhost"
+    port = 10102
 
 
 class REST(HTTPServer, Object):
@@ -86,7 +84,7 @@ class RESTHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        if Cfg.debug:
+        if Main.debug:
             return
         if "favicon" in self.path:
             return
@@ -94,7 +92,7 @@ class RESTHandler(BaseHTTPRequestHandler):
             self.write_header("text/html")
             txt = ""
             for fnm in Workdir.kinds():
-                txt += f'<a href="http://{Cfg.hostname}:{Cfg.port}/{fnm}">{fnm}</a><br>\n'
+                txt += f'<a href="http://{Config.hostname}:{Config.port}/{fnm}">{fnm}</a><br>\n'
             self.send(html(txt.strip()))
             return
         if self.path.startswith("/"):
@@ -108,7 +106,7 @@ class RESTHandler(BaseHTTPRequestHandler):
             txt = ""
             for fnn in os.listdir(fnm):
                 filename = self.path  + os.sep + fnn
-                txt += f'<a href="http://{Cfg.hostname}:{Cfg.port}/{filename}">{filename}</a><br>\n'
+                txt += f'<a href="http://{Config.hostname}:{Config.port}/{filename}">{filename}</a><br>\n'
             self.send(txt.strip())
             return
         try:
