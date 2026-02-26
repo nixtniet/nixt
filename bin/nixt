@@ -1,1 +1,1 @@
-python3 -m nixt.runtime --local $* ;
+python3 -c 'import nixt.runtime ; nixt.runtime.main()'  --local $* ;

@@ -26,7 +26,7 @@ from . import modules as MODS
 
 Main.default = "irc,mdl,rss,wsd"
 Main.ignore = "man,rst,udp,web"
-Main.version = 8
+Main.version = 455
 Main.wdr = os.path.expanduser(f"~/.{Main.name}")
 
 
