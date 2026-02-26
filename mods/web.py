@@ -13,8 +13,8 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.clients import Main
 from nixt.objects import Configuration, Object
+from nixt.persist import Main
 from nixt.threads import Thread
 from nixt.utility import Utils
 
@@ -37,6 +37,7 @@ class Config(Configuration):
 
     hostname = "localhost"
     path = ""
+    port = 8000
 
 
 class HTTP(HTTPServer, Object):

@@ -26,8 +26,8 @@ class Object:
 
 class Default(Object):
 
-    def __getattr__(self, key):
-        return self.__dict__.get(key, "")
+    def __getattr__(cls, key):
+        return cls.__dict__.get(key, "")
 
 
 class Configuration(Default):
@@ -81,6 +81,8 @@ class Dict:
     @staticmethod
     def items(obj):
         "object's key,value pairs."
+        if isinstance(obj, type):
+            return [(x, getattr(obj, x)) for x in dir(obj) if not x.startswith("_")] 
         if isinstance(obj, dict):
             return obj.items()
         if isinstance(obj, types.MappingProxyType):
@@ -95,6 +97,13 @@ class Dict:
         if isinstance(obj, types.MappingProxyType):
             return obj.keys()
         return obj.__dict__.keys()
+
+    @staticmethod
+    def merge(obj, obj2):
+        for key, value in Dict.items(obj2):
+            if not value and getattr(obj, key, False):
+                continue
+            setattr(obj, key, value)
 
     @staticmethod
     def pop(obj, key, default=None):
@@ -171,6 +180,8 @@ class Methods:
         "format object info printable string."
         if args == []:
             args = list(obj.__dict__.keys())
+        if args == []:
+            args = [x for x in dir(obj) if not x.startswith("_")]
         txt = ""
         for key in args:
             if key.startswith("__"):

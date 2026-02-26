@@ -15,11 +15,11 @@ import time
 
 
 from nixt.brokers import Broker
-from nixt.clients import Main, Output
+from nixt.clients import Output
 from nixt.command import Commands
 from nixt.message import Message
 from nixt.objects import Configuration, Object, Methods
-from nixt.persist import Locate
+from nixt.persist import Locate, Main
 from nixt.threads import Thread
 from nixt.utility import Utils
 
@@ -29,7 +29,7 @@ def init():
     irc.start()
     irc.events.joined.wait(60.0)
     if irc.events.joined.is_set():
-        logging.warning("%s", Methods.fmt(irc.cfg, skip=["name", "word", "realname", "username", "version"]))
+        logging.warning("%s", Methods.fmt(irc.cfg, skip=["name", "ignore", "word", "realname", "username", "version"]))
     else:
         irc.stop()
     return irc

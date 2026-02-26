@@ -13,17 +13,17 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Client, Main
-from nixt.command import Commands
-from nixt.message import Message
-from nixt.objects import Default, Methods
-from nixt.package import Mods
-from nixt.persist import Workdir
-from nixt.threads import Thread
-from nixt.utility import Time, Utils
+from bigtalk.clients import Client, Main
+from bigtalk.command import Commands
+from bigtalk.message import Message
+from bigtalk.objects import Default, Methods
+from bigtalk.package import Mods
+from bigtalk.persist import Workdir
+from bigtalk.threads import Thread
+from bigtalk.utility import Time, Utils
 
 
-from nixt import modules as MODS
+from bigtalk import modules as MODS
 
 
 try:

@@ -9,7 +9,7 @@ import inspect
 
 from .brokers import Broker
 from .message import Message
-from .objects import Methods
+from .objects import Configuration, Methods
 
 
 class Commands:

@@ -11,11 +11,17 @@ import threading
 
 
 from .encoder import Json
-from .objects import Default, Dict, Methods
-from .utility import Time
+from .objects import Configuration, Default, Dict, Methods
+from .utility import Time, Utils
 
 
-lock = threading.RLock()
+class Main(Configuration):
+
+    debug = False
+    level = "info"
+    name = Utils.pkgname(Configuration)
+    version = 1
+    wdr = f".{name}"
 
 
 class Cache:
@@ -43,6 +49,8 @@ class Cache:
 
 class Disk:
 
+    lock = threading.RLock()
+
     @staticmethod
     def cdir(path):
         "create directory."
@@ -53,7 +61,7 @@ class Disk:
     @staticmethod
     def read(obj, path, base="store"):
         "read object from path."
-        with lock:
+        with Disk.lock:
             pth = os.path.join(Workdir.wdr, base, path)
             if not os.path.exists(pth):
                 return
@@ -67,7 +75,7 @@ class Disk:
     @staticmethod
     def write(obj, path="", base="store"):
         "write object to disk."
-        with lock:
+        with Disk.lock:
             if path == "":
                 path = Methods.ident(obj)
             pth = os.path.join(Workdir.wdr, base, path)
@@ -175,7 +183,7 @@ class StateFul:
 
 class Workdir:
 
-    wdr = ""
+    wdr = "." + Main.name
 
     @staticmethod
     def setwd(path):
@@ -238,6 +246,7 @@ def __dir__():
     return (
         'Disk',
         'Locate',
+        'Main',
         'StateFul',
         'Workdir'
     )

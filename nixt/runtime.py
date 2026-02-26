@@ -1,4 +1,3 @@
-##!/usr/bin/env python3
 # This file is placed in the Public Domain.
 
 
@@ -12,36 +11,22 @@ import sys
 import time
 
 
-#sys.path.insert(0, os.getcwd())
+from .command import Commands
+from .clients import Console
+from .message import Message
+from .objects import Dict, Methods
+from .package import Mods
+from .persist import Disk, Locate, Main, Workdir
+from .threads import Thread
+from .utility import Log, Utils
 
 
-from nixt.command import Commands
-from nixt.clients import Console, Main
-from nixt.message import Message
-from nixt.objects import Dict, Methods
-from nixt.package import Mods
-from nixt.persist import Disk, Locate, Workdir
-from nixt.threads import Thread
-from nixt.utility import Log, Utils
+from . import modules as MODS
 
 
-from nixt import modules as MODS
-
-
-Main.all = False
-Main.debug = False
 Main.default = "irc,mdl,rss,wsd"
-Main.ignore = "rst,udp,web"
-Main.level = "info"
-Main.local = True
-Main.mods = ""
-Main.name = Utils.pkgname(Commands)
-Main.nochdir = False
-Main.noignore = False
-Main.txt = " ".join(sys.argv[1:])
-Main.verbose = False
+Main.ignore = "man,rst,udp,web"
 Main.version = 8
-Main.wait = False
 Main.wdr = os.path.expanduser(f"~/.{Main.name}")
 
 
@@ -93,9 +78,9 @@ class Runtime:
         "in the beginning."
         Methods.parse(Main, args.txt)
         Dict.update(Main, Main.sets)
-        Dict.update(Main, Dict.reduce(vars(args)))
+        Dict.merge(Main, vars(args))
         Workdir.setwd(Main.wdr)
-        Log.level(Main.level)
+        Log.level(Main.level or "info")
         if Main.noignore:
             Main.ignore = ""
         if Main.wdr:
@@ -360,7 +345,3 @@ def main():
     else:
         Runtime.wrap(Scripts.control, args)
     Runtime.shutdown()
-
-
-if __name__ == "__main__":
-    main()

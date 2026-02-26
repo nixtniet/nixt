@@ -93,6 +93,10 @@ class Mods:
         spec.loader.exec_module(mod)
         return mod
 
+    @staticmethod
+    def pkg(package):
+        return Mods.add(package.__name__, package.__path__[0])
+
 
 def __dir__():
     return (

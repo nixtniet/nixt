@@ -1,1 +1,1 @@
-python3 -m nixt.runtime $* ;
+python3 -m nixt.runtime --local $* ;
