@@ -5,9 +5,10 @@ import unittest
 
 
 from nixt.brokers import Broker
-from nixt.clients import Client
+from nixt.handler import Client
 from nixt.encoder import Json
-from nixt.objects import Dict, Object
+from nixt.methods import Dict
+from nixt.objects import Object
 
 
 class TestBroker(unittest.TestCase):

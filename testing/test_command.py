@@ -7,10 +7,10 @@
 import unittest
 
 
-from nixt.clients import Client
 from nixt.command import Commands
-from nixt.objects import Dict
+from nixt.handler import Client
 from nixt.message import Message
+from nixt.methods import Dict
 
 
 def cmnd(event):
@@ -19,19 +19,15 @@ def cmnd(event):
 
 class TestCommands(unittest.TestCase):
 
-    def test_construct(self):
-        cmds = Commands()
-        self.assertEqual(type(cmds), Commands)
-
-    def test_addcmd(self):
+    def test_add(self):
         Commands.add(cmnd)
         self.assertTrue(Commands.has("cmnd"))
     
-    def test_getcmd(self):
+    def test_get(self):
         Commands.add(cmnd)
         self.assertTrue(Commands.get("cmnd"))
 
-    def test_hascmd(self):
+    def test_has(self):
         Commands.add(cmnd)
         self.assertTrue(Commands.get("cmnd"))
     

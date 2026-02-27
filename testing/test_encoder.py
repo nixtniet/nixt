@@ -5,7 +5,8 @@ import unittest
 
 
 from nixt.encoder import Json
-from nixt.objects import Dict, Object
+from nixt.methods import Dict
+from nixt.objects import Object
 
 
 VALIDJSON = '{"test": "bla"}'

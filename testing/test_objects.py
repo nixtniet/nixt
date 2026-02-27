@@ -4,7 +4,8 @@
 import unittest
 
 
-from nixt.objects import Dict, Methods, Object
+from nixt.methods import Dict, Methods
+from nixt.objects import Object
 
 
 import nixt.objects
@@ -15,11 +16,10 @@ VALIDJSON = '{"test": "bla"}'
 
 
 attrs1 = [
-    'Configuration',
+    'Config',
     'Default',
-    'Dict',
-    'Methods',
-    'Object'
+    'Object',
+    'Statics'
 ]
 
 

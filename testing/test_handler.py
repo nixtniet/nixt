@@ -7,8 +7,7 @@
 import unittest
 
 
-from nixt.clients import Client
-from nixt.handler import Handler
+from nixt.handler import Client, Handler
 from nixt.message import Message
 
 

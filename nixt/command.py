@@ -10,10 +10,10 @@ import inspect
 from .brokers import Broker
 from .message import Message
 from .methods import Methods
-from .objects import Statics
+from .objects import Static
 
 
-class Commands(Statics):
+class Commands(Static):
 
     cmds = {}
     names = {}
