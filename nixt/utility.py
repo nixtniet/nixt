@@ -11,6 +11,7 @@ import os
 import re
 import threading
 import time
+import types
 
 
 from .threads import Thread
@@ -313,13 +314,6 @@ class Utils(Statics):
     def where(obj):
         "path where object is defined."
         return os.path.dirname(inspect.getfile(obj))
-
-    def wrapped(func):
-        "wrap function in a try/except, silence ctrl-c/ctrl-d."
-        try:
-           func()
-        except (KeyboardInterrupt, EOFError):
-            pass
 
 
 MONTH = {

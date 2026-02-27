@@ -4,8 +4,7 @@
 import unittest
 
 
-from nixt.methods import Dict, Methods
-from nixt.objects import Object
+from nixt.objects import Object, fmt, items, keys, values, update
 
 
 import nixt.objects
@@ -16,10 +15,28 @@ VALIDJSON = '{"test": "bla"}'
 
 
 attrs1 = [
-    'Config',
     'Default',
     'Object',
-    'Statics'
+    'clear',
+    'construct',
+    'copy',
+    'edit',
+    'fmt',
+    'fqn',
+    'fromkeys',
+    'get',
+    'items',
+    'keys',
+    'merge',
+    'parse',
+    'pop',
+    'popitem',
+    'reduce',
+    'search',
+    'skip',
+    'typed',
+    'update',
+    'values'
 ]
 
 
@@ -134,7 +151,7 @@ class TestObject(unittest.TestCase):
     def test_keys(self):
         obj = Object()
         obj.key = "value"
-        self.assertEqual(list(Dict.keys(obj)), ["key"])
+        self.assertEqual(list(keys(obj)), ["key"])
 
     def test_len(self):
         obj = Object()
@@ -143,7 +160,7 @@ class TestObject(unittest.TestCase):
     def test_items(self):
         obj = Object()
         obj.key = "value"
-        self.assertEqual(list(Dict.items(obj)), [("key", "value")])
+        self.assertEqual(list(items(obj)), [("key", "value")])
 
     def test_register(self):
         obj = Object()
@@ -151,7 +168,7 @@ class TestObject(unittest.TestCase):
         self.assertEqual(obj.key, "value")
 
     def test_repr(self):
-        self.assertTrue(Dict.update(Object(), {"key": "value"}).__repr__(), {"key": "value"})
+        self.assertTrue(update(Object(), {"key": "value"}).__repr__(), {"key": "value"})
 
     def test_setattr(self):
         obj = Object()
@@ -166,13 +183,13 @@ class TestObject(unittest.TestCase):
         obj = Object()
         obj.key = "value"
         oobj = Object()
-        Dict.update(oobj, obj)
+        update(oobj, obj)
         self.assertTrue(oobj.key, "value")
 
     def test_values(self):
         obj = Object()
         obj.key = "value"
-        self.assertEqual(list(Dict.values(obj)), ["value"])
+        self.assertEqual(list(values(obj)), ["value"])
 
 
 class TestComposite(unittest.TestCase):
@@ -189,4 +206,4 @@ class TestMethods(unittest.TestCase):
     def testformat(self):
         o = Object()
         o.a = "b"
-        self.assertEqual(Methods.fmt(o), 'a="b"')
+        self.assertEqual(fmt(o), 'a="b"')

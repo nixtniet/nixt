@@ -12,7 +12,7 @@ import time
 
 from nixt.brokers import Broker
 from nixt.objects import Object, items
-from nixt.persist import Locate, ident, last, write
+from nixt.persist import ident, last, write
 from nixt.utility import NoDate, Time, Timed
 
 
@@ -105,7 +105,7 @@ def tmr(event):
     diff = target - time.time()
     txt = " ".join(event.args[1:])
     Timers.add(target, event.orig, event.channel, txt)
-    write(Timers.timers, Timers.path or DIsk.ident(Timers.timers))
+    write(Timers.timers, Timers.path or ident(Timers.timers))
     bot = Broker.get(event.orig)
     timer = Timed(diff, bot.say, event.orig, event.channel, txt)
     timer.start()

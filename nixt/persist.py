@@ -11,7 +11,7 @@ import pathlib
 import threading
 
 
-from .encoder import Json
+from .encoder import dump, load
 from .objects import Default, fqn, keys, search, update
 from .utility import Statics, Time, Utils
 
@@ -89,14 +89,16 @@ class Locate(Statics):
                     continue
                 ddd = os.path.join(rootdir, dname)
                 for fll in os.listdir(ddd):
-                    yield Locate.strip(os.path.join(ddd, fll))
-
-    def strip(path):
-        "strip filename from path."
-        return path.split('store')[-1][1:]
+                    yield Workdir.strip(os.path.join(ddd, fll))
 
 
 class Workdir(Statics):
+
+    def cdir(path):
+        "create directory."
+        pth = pathlib.Path(path)
+        if not os.path.exists(pth.parent):
+            pth.parent.mkdir(parents=True, exist_ok=True)
 
     def kinds():
         "show kind on objects in cache."
@@ -144,16 +146,13 @@ class Workdir(Statics):
         Main.wdr = path
         Workdir.skel()
 
+    def strip(path):
+        "strip filename from path."
+        return path.split('store')[-1][1:]
+
     def workdir(path=""):
         "return workdir."
         return os.path.join(Main.wdr, path)
-
-
-def cdir(path):
-    "create directory."
-    pth = pathlib.Path(path)
-    if not os.path.exists(pth.parent):
-        pth.parent.mkdir(parents=True, exist_ok=True)
 
 
 def deleted(obj):
@@ -201,7 +200,7 @@ def read(obj, path, base="store"):
             return
         with open(pth, "r", encoding="utf-8") as fpt:
             try:
-                update(obj, Json.load(fpt))
+                update(obj, load(fpt))
             except json.decoder.JSONDecodeError as ex:
                 ex.add_note(path)
                 raise ex
@@ -212,9 +211,9 @@ def write(obj, path="", base="store"):
         if path == "":
             path = ident(obj)
         pth = os.path.join(Main.wdr, base, path)
-        cdir(pth)
+        Workdir.cdir(pth)
         with open(pth, "w", encoding="utf-8") as fpt:
-            Json.dump(obj, fpt, indent=4)
+            dump(obj, fpt, indent=4)
         Cache.sync(path, obj)
         return path
 
@@ -225,7 +224,6 @@ def __dir__():
         'Locate',
         'Main',
         'Workdir',
-        'cdir',
         'deleted',
         'first',
         'ident',

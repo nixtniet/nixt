@@ -4,8 +4,6 @@
 "a clean namespace"
 
 
-import datetime
-import os
 import types
 
 
@@ -318,7 +316,7 @@ def __dir__():
         'reduce',
         'search',
         'skip',
-        'typed'
+        'typed',
         'update',
         'values'
     )

@@ -6,9 +6,8 @@ import unittest
 
 from nixt.brokers import Broker
 from nixt.handler import Client
-from nixt.encoder import Json
-from nixt.methods import Dict
-from nixt.objects import Object
+from nixt.encoder import dumps, loads
+from nixt.objects import Object, update
 
 
 class TestBroker(unittest.TestCase):
@@ -45,12 +44,12 @@ class TestBroker(unittest.TestCase):
 
     def test_json(self):
         Broker.a = "b"
-        s = Json.dumps(Broker)
-        o = Json.loads(s)
+        s = dumps(Broker)
+        o = loads(s)
         self.assertEqual(o["a"], "b")
         
     def test_update(self):
         o = {}
         o["a"] = "b"
-        Dict.update(Broker, o)
+        update(Broker, o)
         self.assertEqual(Broker.a, "b")

@@ -13,7 +13,7 @@ import time
 
 
 from nixt.brokers import Broker
-from nixt.objects import Object
+from nixt.objects import Default
 from nixt.persist import Main
 from nixt.threads import Thread
 
@@ -21,7 +21,7 @@ from nixt.threads import Thread
 def init():
     udp = UDP()
     udp.start()
-    logging.warning("http://%s:%s", Config.host, Config.port)
+    logging.warning("http://%s:%s", Cfg.host, Cfg.port)
     return udp
 
 

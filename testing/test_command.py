@@ -10,7 +10,7 @@ import unittest
 from nixt.command import Commands
 from nixt.handler import Client
 from nixt.message import Message
-from nixt.methods import Dict
+from nixt.objects import values
 
 
 def cmnd(event):
@@ -38,4 +38,4 @@ class TestCommands(unittest.TestCase):
         evt.text = "cmnd"
         evt.orig = repr(clt)
         Commands.command(evt)
-        self.assertTrue("yo!" in Dict.values(evt.result))
+        self.assertTrue("yo!" in values(evt.result))

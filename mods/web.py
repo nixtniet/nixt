@@ -20,14 +20,14 @@ from nixt.utility import Utils
 
 
 def init():
-    Config.path = os.path.join(Utils.where(Object), "nucleus")
-    if not os.path.exists(os.path.join(Config.path, 'index.html')):
+    Cfg.path = os.path.join(Utils.where(Object), "nucleus")
+    if not os.path.exists(os.path.join(Cfg.path, 'index.html')):
         logging.warning("no index.html")
         return
     try:
-        server = HTTP((Config.hostname, int(Config.port)), HTTPHandler)
+        server = HTTP((Cfg.hostname, int(Cfg.port)), HTTPHandler)
         server.start()
-        logging.warning("http://%s:%s", Config.hostname, Config.port)
+        logging.warning("http://%s:%s", Cfg.hostname, Cfg.port)
         return server
     except OSError as ex:
         logging.warning("%s", str(ex))

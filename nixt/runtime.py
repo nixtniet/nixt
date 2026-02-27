@@ -16,7 +16,7 @@ from .handler import Console
 from .message import Message
 from .objects import edit, fmt, keys, merge, parse, skip, values, update 
 from .package import Mods
-from .persist import Disk, Locate, Main, Workdir
+from .persist import Main, Workdir, first, ident, write
 from .threads import Thread
 from .utility import Log, Statics, Utils
 
@@ -263,7 +263,7 @@ class Cmd(Statics):
         if not cfg:
             event.reply("no configuration found.")
             return
-        fnm = Locate.first(cfg) or Disk.ident(cfg)
+        fnm = first(cfg) or ident(cfg)
         if not event.sets:
             event.reply(
                 fmt(
@@ -274,7 +274,7 @@ class Cmd(Statics):
             )
             return
         edit(cfg, event.sets)
-        Disk.write(skip(cfg), fnm)
+        write(skip(cfg), fnm)
         event.reply("ok")
 
     def cmd(event):

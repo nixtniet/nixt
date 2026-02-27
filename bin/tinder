@@ -2,6 +2,7 @@
 # This file is placed in the Public Domain.
 
 
+import logging
 import os
 import queue
 import shutil
@@ -129,7 +130,8 @@ def scanner(cfg):
     return res
 
 
-def wrap(func):
+def wrap(func, *args):
+    "restore console."
     import termios
     old = None
     try:
@@ -137,9 +139,11 @@ def wrap(func):
     except termios.error:
         pass
     try:
-        Utils.wrapped(func)
-    finally:
+        func(*args)
+    except (KeyboardInterrupt, EOFError):
         pass
+    except Exception as ex:
+        logging.exception(ex)
     if old:
         termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
