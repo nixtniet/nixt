@@ -12,9 +12,10 @@ import time
 
 
 from .command import Commands
-from .clients import Console
+from .handler import Console
 from .message import Message
-from .objects import Dict, Methods, Statics
+from .methods import Dict, Methods
+from .objects import Statics
 from .package import Mods
 from .persist import Disk, Locate, Main, Workdir
 from .threads import Thread

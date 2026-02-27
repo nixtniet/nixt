@@ -9,7 +9,8 @@ import inspect
 
 from .brokers import Broker
 from .message import Message
-from .objects import Methods, Statics
+from .methods import Methods
+from .objects import Statics
 
 
 class Commands(Statics):

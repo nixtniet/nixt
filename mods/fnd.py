@@ -7,7 +7,7 @@
 import time
 
 
-from nixt.objects import Methods
+from nixt.methods import Methods
 from nixt.persist import Locate, Workdir
 from nixt.utility import Time
 

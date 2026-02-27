@@ -11,7 +11,8 @@ import time
 
 from nixt.brokers import Broker
 from nixt.message import Message
-from nixt.objects import Dict, Object
+from nixt.methods import Dict
+from nixt.objects import Object
 from nixt.utility import Repeater, Time
 
 

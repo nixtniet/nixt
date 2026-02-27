@@ -13,26 +13,26 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.objects import Configuration, Object
+from nixt.objects import Config, Object
 from nixt.persist import Locate, Main, Workdir
 from nixt.threads import Thread
 
 
 def configure(cfg):
-    Locate.first(Config)
+    Locate.first(Cfg)
 
 
 def init():
     try:
-        rest = REST((Config.hostname, int(Config.port)), RESTHandler)
+        rest = REST((Cfg.hostname, int(Cfg.port)), RESTHandler)
         rest.start()
-        logging.warning("http://%s:%s", Config.hostname, Config.port)
+        logging.warning("http://%s:%s", Cfg.hostname, Cfg.port)
         return rest
     except OSError as ex:
         logging.error(str(ex))
 
 
-class Config(Configuration):
+class Cfg(Config):
 
     hostname = "localhost"
     port = 10102
@@ -95,7 +95,7 @@ class RESTHandler(BaseHTTPRequestHandler):
             self.write_header("text/html")
             txt = ""
             for fnm in Workdir.kinds():
-                txt += f'<a href="http://{Config.hostname}:{Config.port}/{fnm}">{fnm}</a><br>\n'
+                txt += f'<a href="http://{Cfg.hostname}:{Cfg.port}/{fnm}">{fnm}</a><br>\n'
             self.send(html(txt.strip()))
             return
         if self.path.startswith("/"):
@@ -109,7 +109,7 @@ class RESTHandler(BaseHTTPRequestHandler):
             txt = ""
             for fnn in os.listdir(fnm):
                 filename = self.path  + os.sep + fnn
-                txt += f'<a href="http://{Config.hostname}:{Config.port}/{filename}">{filename}</a><br>\n'
+                txt += f'<a href="http://{Cfg.hostname}:{Cfg.port}/{filename}">{filename}</a><br>\n'
             self.send(txt.strip())
             return
         try:
