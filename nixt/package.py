@@ -9,8 +9,7 @@ import logging
 import os
 
 
-from .objects import Statics
-from .utility import Utils
+from .utility import Statics, Utils
 
 
 class Mods(Statics):

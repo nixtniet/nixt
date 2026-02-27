@@ -4,7 +4,7 @@
 "an object for a string"
 
 
-from .objects import Statics
+from .utility import Statics
 
 
 class Broker(Statics):

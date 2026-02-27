@@ -19,7 +19,7 @@ from nixt.command import Commands
 from nixt.handler import Output
 from nixt.message import Message
 from nixt.methods import Methods
-from nixt.objects import Config, Object
+from nixt.objects import Default, Object
 from nixt.persist import Locate, Main
 from nixt.threads import Thread
 from nixt.utility import Utils
@@ -36,7 +36,7 @@ def init():
     return irc
 
 
-class Cfg(Config):
+class Cfg(Default):
 
     name = Main.name or Utils.pkgname(Commands)
     channel = f"#{name}"

@@ -4,9 +4,6 @@
 "a clean namespace"
 
 
-import types
-
-
 class Object:
 
     def __contains__(self, key):
@@ -28,29 +25,8 @@ class Default(Object):
         return self.__dict__.get(key, "")
 
 
-class Config(Default):
-
-    pass
-
-
-class Static(type):
-
-    def __new__(cls, name, bases, dct):
-        for attr, value in dct.items():
-            if "_" not in attr and isinstance(value, types.FunctionType):
-                dct[attr] = staticmethod(value)
-        return super().__new__(cls, name, bases, dct)
-
-
-class Statics:
-
-    __metaclass__ = Static
-
-
 def __dir__():
     return (
-        'Config',
         'Default',
         'Object',
-        'Statics'
     )

@@ -13,7 +13,6 @@ import threading
 import time
 
 
-from .objects import Statics
 from .threads import Thread
 
 
@@ -45,6 +44,20 @@ class Log:
             handlers=[stream,],
             force=True
         )
+
+
+class Static(type):
+
+    def __new__(cls, name, bases, dct):
+        for attr, value in dct.items():
+            if "_" not in attr and isinstance(value, types.FunctionType):
+                dct[attr] = staticmethod(value)
+        return super().__new__(cls, name, bases, dct)
+
+
+class Statics:
+
+    __metaclass__ = Static
 
 
 class Timy(threading.Timer):
@@ -340,6 +353,7 @@ def __dir__():
         'Log',
         'NoDate',
         'Repeater',
+        'Statics',
         'Time',
         'Timed',
         'Utility'

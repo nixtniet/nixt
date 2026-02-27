@@ -26,7 +26,7 @@ from urllib.parse import quote_plus, urlencode
 
 from nixt.brokers import Broker
 from nixt.methods import Dict, Methods
-from nixt.objects import Config, Default
+from nixt.objects import Default
 from nixt.persist import Disk, Locate, Main
 from nixt.threads import Thread
 from nixt.utility import Repeater, Time, Utils
@@ -42,7 +42,7 @@ def shutdown():
     Run.fetcher.stop()
 
 
-class Cfg(Config):
+class Cfg(Default):
 
     polltime = 300
 

@@ -9,7 +9,8 @@ import os
 import types
 
 
-from .objects import Default, Statics
+from .objects import Default
+from .utility import Statics
 
 
 class Dict(Statics):

@@ -12,15 +12,15 @@ import threading
 
 from .encoder import Json
 from .methods import Dict, Methods
-from .objects import Config, Default, Statics
-from .utility import Time, Utils
+from .objects import Default
+from .utility import Statics, Time, Utils
 
 
-class Main(Config):
+class Main(Default):
 
     debug = False
     level = "info"
-    name = Utils.pkgname(Config)
+    name = Utils.pkgname(Utils)
     version = 1
     wdr = f".{name}"
 

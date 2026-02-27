@@ -8,7 +8,7 @@ import json
 import types
 
 
-from .objects import Statics
+from .utility import Statics
 
 
 class Encoder(json.JSONEncoder):

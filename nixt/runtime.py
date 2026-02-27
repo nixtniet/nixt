@@ -15,11 +15,10 @@ from .command import Commands
 from .handler import Console
 from .message import Message
 from .methods import Dict, Methods
-from .objects import Statics
 from .package import Mods
 from .persist import Disk, Locate, Main, Workdir
 from .threads import Thread
-from .utility import Log, Utils
+from .utility import Log, Statics, Utils
 
 
 from . import modules as MODS
