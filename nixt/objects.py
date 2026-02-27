@@ -24,18 +24,13 @@ class Object:
 
 class Default(Object):
 
-    def __getattr__(cls, key):
-        return cls.__dict__.get(key, "")
+    def __getattr__(self, key):
+        return self.__dict__.get(key, "")
 
 
 class Config(Default):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__()
-        if args:
-           Dict.update(self, args[0])
-        if kwargs:
-           Dict.update(self, kwargs)
+    pass
 
 
 class Static(type):
@@ -47,9 +42,9 @@ class Static(type):
         return super().__new__(cls, name, bases, dct)
 
 
-class Statics(metaclass=Static):
+class Statics:
 
-    pass
+    __metaclass__ = Static
 
 
 def __dir__():

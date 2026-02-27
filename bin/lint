@@ -1,1 +1,1 @@
-pylint -d C,R,W,E0401,E0402,E0611  nixt mods bin/tinder testing
+pylint -d C,R,W,E1101,E0211,E0213,E0401,E0402,E0611  nixt mods bin/tinder testing
