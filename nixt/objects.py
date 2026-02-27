@@ -47,7 +47,7 @@ class Static(type):
         return super().__new__(cls, name, bases, dct)
 
 
-class Statics(Static):
+class Statics(metaclass=Static):
 
     pass
 

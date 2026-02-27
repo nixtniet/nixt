@@ -9,11 +9,11 @@ import unittest
 sys.path.insert(0, ".")
 
 
-from nixt.persist import Disk, Main, Workdir
+from nixt.persist import Disk, Main
 from nixt.objects import Object
 
 
-Workdir.wdr = '.test'
+Main.wdr = '.test'
 
 
 class TestPersist(unittest.TestCase):
