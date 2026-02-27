@@ -16,7 +16,7 @@ sys.path.insert(0, os.getcwd())
 from nixt.command import Commands
 from nixt.handler import Client
 from nixt.message import Message
-from nixt.methods import Methods
+from nixt.objects import fmt, parse 
 from nixt.package import Mods
 from nixt.persist import Main, Workdir
 from nixt.threads import Thread
@@ -147,7 +147,7 @@ def wrap(func):
 def main():
     if "p" not in Main.opts and os.path.exists(Main.wdr):
         shutil.rmtree(Main.wdr)
-    Methods.parse(Main, " ".join(sys.argv[1:]))
+    parse(Main, " ".join(sys.argv[1:]))
     Workdir.setwd(Main.wdr)
     Mods.add("modules", MODS.__path__[0])
     if MODS2:
@@ -179,7 +179,7 @@ def main():
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
     if "v" in Main.opts:
-        print(f"{Methods.fmt(Main, skip='otxt,txt')}")
+        print(f"{fmt(Main, skip='otxt,txt')}")
         print(f"{nrs} events left.")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
 

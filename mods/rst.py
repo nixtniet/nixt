@@ -13,13 +13,13 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.objects import Config, Object
-from nixt.persist import Locate, Main, Workdir
+from nixt.objects import Default, Object
+from nixt.persist import Main, Workdir, first
 from nixt.threads import Thread
 
 
 def configure(cfg):
-    Locate.first(Cfg)
+    first(Cfg)
 
 
 def init():
@@ -32,7 +32,7 @@ def init():
         logging.error(str(ex))
 
 
-class Cfg(Config):
+class Cfg(Default):
 
     hostname = "localhost"
     port = 10102

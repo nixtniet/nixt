@@ -8,7 +8,7 @@ import time
 
 
 from nixt.objects import Object
-from nixt.persist import Disk, Locate
+from nixt.persist import Locate, write
 from nixt.utility import Time
 
 
@@ -31,5 +31,5 @@ def log(event):
         return
     obj = Log()
     obj.txt = event.rest
-    Disk.write(obj)
+    write(obj)
     event.reply("ok")

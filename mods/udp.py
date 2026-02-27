@@ -13,7 +13,7 @@ import time
 
 
 from nixt.brokers import Broker
-from nixt.objects import Config, Object
+from nixt.objects import Object
 from nixt.persist import Main
 from nixt.threads import Thread
 
@@ -25,16 +25,16 @@ def init():
     return udp
 
 
-class Cfg(Config):
+class Cfg:
 
     host = "localhost"
     port = 5500
 
 
-class UDP(Object):
+class UDP:
 
     def __init__(self):
-        Object.__init__(self)
+        Default.__init__(self)
         self.stopped = False
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

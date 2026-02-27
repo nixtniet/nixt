@@ -8,7 +8,7 @@ import time
 
 
 from nixt.objects import Object
-from nixt.persist import Disk, Locate
+from nixt.persist import Locate, write
 from nixt.utility import Time
 
 
@@ -28,7 +28,7 @@ def dne(event):
     for fnm, obj in Locate.find('todo', selector):
         nmr += 1
         obj.__deleted__ = True
-        Disk.write(obj, fnm)
+        write(obj, fnm)
         event.reply("ok")
         break
     if not nmr:
@@ -47,5 +47,5 @@ def tdo(event):
         return
     obj = Todo()
     obj.txt = event.rest
-    Disk.write(obj)
+    write(obj)
     event.reply("ok")

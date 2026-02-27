@@ -9,7 +9,7 @@ import inspect
 
 from .brokers import Broker
 from .message import Message
-from .methods import Methods
+from .objects import parse
 from .utility import Statics
 
 
@@ -37,7 +37,7 @@ class Commands(Statics):
 
     def command(evt):
         "command callback."
-        Methods.parse(evt, evt.text)
+        parse(evt, evt.text)
         func = Commands.get(evt.cmd)
         if func:
             func(evt)

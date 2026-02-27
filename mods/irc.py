@@ -18,8 +18,7 @@ from nixt.brokers import Broker
 from nixt.command import Commands
 from nixt.handler import Output
 from nixt.message import Message
-from nixt.methods import Methods
-from nixt.objects import Default, Object
+from nixt.objects import Default, Object, fmt
 from nixt.persist import Locate, Main
 from nixt.threads import Thread
 from nixt.utility import Utils
@@ -30,7 +29,7 @@ def init():
     irc.start()
     irc.events.joined.wait(60.0)
     if irc.events.joined.is_set():
-        logging.warning("%s", Methods.fmt(irc.cfg, skip=["name", "ignore", "word", "realname", "username", "version"]))
+        logging.warning("%s", fmt(irc.cfg, skip=["name", "ignore", "word", "realname", "username", "version"]))
     else:
         irc.stop()
     return irc
@@ -508,7 +507,7 @@ def cb_error(evt):
     bot = Broker.get(evt.orig)
     bot.state.nrerror += 1
     bot.state.error = evt.text
-    logging.debug(Methods.fmt(evt))
+    logging.debug(fmt(evt))
 
 
 def cb_h903(evt):

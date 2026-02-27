@@ -5,7 +5,7 @@
 
 
 from nixt.brokers import Broker
-from nixt.methods import Methods
+from nixt.objects import fqn
 
 
 def flt(event):
@@ -20,4 +20,4 @@ def flt(event):
         else:
             event.reply("no matching client in fleet.")
         return
-    event.reply(' | '.join([Methods.fqn(o).split(".")[-1] for o in clts]))
+    event.reply(' | '.join([fqn(o).split(".")[-1] for o in clts]))

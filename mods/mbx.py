@@ -9,9 +9,8 @@ import os
 import time
 
 
-from nixt.methods import Dict, Methods
-from nixt.objects import Object
-from nixt.persist import Disk, Locate
+from nixt.objects import Object, fmt, keys, update
+from nixt.persist import Locate, write
 from nixt.utility import MONTH, Time
 
 
@@ -72,7 +71,7 @@ def eml(event):
     args = ["From", "Subject"]
     args.extend(event.args)
     if event.gets:
-        args.extend(Dict.keys(event.gets))
+        args.extend(keys(event.gets))
     for key in event.silent:
         if key in args:
             args.remove(key)
@@ -86,12 +85,12 @@ def eml(event):
         if obj:
             obj = obj[-1]
             tme = getattr(obj, "Date", "")
-            event.reply(f'{event.index} {Methods.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - Time.date(todate(tme)))}')
+            event.reply(f'{event.index} {fmt(obj, args, plain=True)} {Time.elapsed(time.time() - Time.date(todate(tme)))}')
     else:
         for _fn, obj in result:
             nrs += 1
             tme = getattr(obj, "Date", "")
-            event.reply(f'{nrs} {Methods.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - Time.date(todate(tme)))}')
+            event.reply(f'{nrs} {fmt(obj, args, plain=True)} {Time.elapsed(time.time() - Time.date(todate(tme)))}')
     if not result:
         event.reply("no emails found.")
 
@@ -115,13 +114,13 @@ def mbx(event):
     nrs = 0
     for mail in thing:
         obj = Email()
-        Dict.update(obj, dict(mail._headers))
+        update(obj, dict(mail._headers))
         obj.text = ""
         for payload in mail.walk():
             if payload.get_content_type() == 'text/plain':
                 obj.text += payload.get_payload()
         obj.text = obj.text.replace("\\n", "\n")
-        Disk.write(obj)
+        write(obj)
         nrs += 1
     if nrs:
         event.reply("ok %s" % nrs)

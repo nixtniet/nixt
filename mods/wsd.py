@@ -12,7 +12,7 @@ from random import SystemRandom
 
 from nixt.brokers import Broker
 from nixt.message import Message
-from nixt.persist import StateFul
+from nixt.persist import first, ident, write
 from nixt.utility import Repeater
 
 
@@ -34,6 +34,21 @@ def init():
 
 
 "state"
+
+
+class StateFul:
+
+    def __init__(self):
+        super().__init__()
+        self.fnm = ""
+
+    def dump(self):
+        if not self.fnm:
+            self.fnm = first(self) or ident(self)
+        write(self, self.fnm)
+    
+    def load(self):
+        first(self)
 
 
 class State(StateFul):

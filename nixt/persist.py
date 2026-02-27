@@ -4,6 +4,7 @@
 "persistence through storage"
 
 
+import datetime
 import json
 import os
 import pathlib
@@ -11,9 +12,11 @@ import threading
 
 
 from .encoder import Json
-from .methods import Dict, Methods
-from .objects import Default
+from .objects import Default, fqn, keys, search, update
 from .utility import Statics, Time, Utils
+
+
+lock = threading.RLock()
 
 
 class Main(Default):
@@ -40,45 +43,9 @@ class Cache(Statics):
     def sync(path, obj):
         "update cached object."
         try:
-            Dict.update(Cache.paths[path], obj)
+            update(Cache.paths[path], obj)
         except KeyError:
             Cache.add(path, obj)
-
-
-class Disk(Statics):
-
-    lock = threading.RLock()
-
-    def cdir(path):
-        "create directory."
-        pth = pathlib.Path(path)
-        if not os.path.exists(pth.parent):
-            pth.parent.mkdir(parents=True, exist_ok=True)
-
-    def read(obj, path, base="store"):
-        "read object from path."
-        with Disk.lock:
-            pth = os.path.join(Main.wdr, base, path)
-            if not os.path.exists(pth):
-                return
-            with open(pth, "r", encoding="utf-8") as fpt:
-                try:
-                    Dict.update(obj, Json.load(fpt))
-                except json.decoder.JSONDecodeError as ex:
-                    ex.add_note(path)
-                    raise ex
-
-    def write(obj, path="", base="store"):
-        "write object to disk."
-        with Disk.lock:
-            if path == "":
-                path = Methods.ident(obj)
-            pth = os.path.join(Main.wdr, base, path)
-            Disk.cdir(pth)
-            with open(pth, "w", encoding="utf-8") as fpt:
-                Json.dump(obj, fpt, indent=4)
-            Cache.sync(path, obj)
-            return path
 
 
 class Locate(Statics):
@@ -87,7 +54,7 @@ class Locate(Statics):
         "show attributes for kind of objects."
         result = []
         for pth, obj in Locate.find(kind, nritems=1):
-            result.extend(Dict.keys(obj))
+            result.extend(keys(obj))
         return {x for x in result}
 
     def count(kind):
@@ -100,11 +67,11 @@ class Locate(Statics):
             obj = Cache.get(pth)
             if not obj:
                 obj = Default()
-                Disk.read(obj, pth)
+                read(obj, pth)
                 Cache.add(pth, obj)
-            if not removed and Methods.deleted(obj):
+            if not removed and deleted(obj):
                 continue
-            if selector and not Methods.search(obj, selector, matching):
+            if selector and not search(obj, selector, matching):
                 continue
             if nritems and nrs >= nritems:
                 break
@@ -112,18 +79,6 @@ class Locate(Statics):
             yield pth, obj
         else:
             return None, None
-
-    def first(obj, selector={}):
-        result = sorted(
-                        Locate.find(Methods.fqn(obj), selector),
-                        key=lambda x: Time.fntime(x[0])
-                       )
-        res = ""
-        if result:
-            inp = result[0]
-            Dict.update(obj, inp[-1])
-            res = inp[0]
-        return res
 
     def fns(kind):
         "file names by kind of object."
@@ -136,37 +91,9 @@ class Locate(Statics):
                 for fll in os.listdir(ddd):
                     yield Locate.strip(os.path.join(ddd, fll))
 
-    def last(obj, selector={}):
-        "last saved version."
-        result = sorted(
-                        Locate.find(Methods.fqn(obj), selector),
-                        key=lambda x: Time.fntime(x[0])
-                       )
-        res = ""
-        if result:
-            inp = result[-1]
-            Dict.update(obj, inp[-1])
-            res = inp[0]
-        return res
-
     def strip(path):
         "strip filename from path."
         return path.split('store')[-1][1:]
-
-
-class StateFul:
-
-    def __init__(self):
-        super().__init__()
-        self.fnm = ""
-
-    def dump(self):
-        if not self.fnm:
-            self.fnm = Locate.first(self) or Methods.ident(self)
-        Disk.write(self, self.fnm)
-    
-    def load(self):
-        Locate.first(self)
 
 
 class Workdir(Statics):
@@ -222,11 +149,87 @@ class Workdir(Statics):
         return os.path.join(Main.wdr, path)
 
 
+def cdir(path):
+    "create directory."
+    pth = pathlib.Path(path)
+    if not os.path.exists(pth.parent):
+        pth.parent.mkdir(parents=True, exist_ok=True)
+
+
+def deleted(obj):
+    "check whether obj had deleted flag set."
+    return "__deleted__" in dir(obj) and obj.__deleted__
+
+
+def first(obj, selector={}):
+    result = sorted(
+                    Locate.find(fqn(obj), selector),
+                    key=lambda x: Time.fntime(x[0])
+                   )
+    res = ""
+    if result:
+        inp = result[0]
+        update(obj, inp[-1])
+        res = inp[0]
+    return res
+
+
+def ident(obj):
+    "return ident string for object."
+    return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
+
+
+def last(obj, selector={}):
+    "last saved version."
+    result = sorted(
+                    Locate.find(fqn(obj), selector),
+                    key=lambda x: Time.fntime(x[0])
+                   )
+    res = ""
+    if result:
+        inp = result[-1]
+        update(obj, inp[-1])
+        res = inp[0]
+    return res
+
+
+def read(obj, path, base="store"):
+    "read object from path."
+    with lock:
+        pth = os.path.join(Main.wdr, base, path)
+        if not os.path.exists(pth):
+            return
+        with open(pth, "r", encoding="utf-8") as fpt:
+            try:
+                update(obj, Json.load(fpt))
+            except json.decoder.JSONDecodeError as ex:
+                ex.add_note(path)
+                raise ex
+
+def write(obj, path="", base="store"):
+    "write object to disk."
+    with lock:
+        if path == "":
+            path = ident(obj)
+        pth = os.path.join(Main.wdr, base, path)
+        cdir(pth)
+        with open(pth, "w", encoding="utf-8") as fpt:
+            Json.dump(obj, fpt, indent=4)
+        Cache.sync(path, obj)
+        return path
+
+
+
 def __dir__():
     return (
-        'Disk',
         'Locate',
         'Main',
-        'StateFul',
-        'Workdir'
+        'Workdir',
+        'cdir',
+        'deleted',
+        'first',
+        'ident',
+        'last',
+        'read',
+        'write'
     )

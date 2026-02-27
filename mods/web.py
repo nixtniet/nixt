@@ -13,7 +13,7 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.objects import Config, Object
+from nixt.objects import Default, Object
 from nixt.persist import Main
 from nixt.threads import Thread
 from nixt.utility import Utils
@@ -33,7 +33,7 @@ def init():
         logging.warning("%s", str(ex))
 
 
-class Cfg(Config):
+class Cfg(Default):
 
     hostname = "localhost"
     path = ""

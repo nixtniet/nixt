@@ -14,7 +14,7 @@ import time
 from .command import Commands
 from .handler import Console
 from .message import Message
-from .methods import Dict, Methods
+from .objects import edit, fmt, keys, merge, parse, skip, values, update 
 from .package import Mods
 from .persist import Disk, Locate, Main, Workdir
 from .threads import Thread
@@ -74,9 +74,9 @@ class Runtime(Statics):
 
     def boot(args):
         "in the beginning."
-        Methods.parse(Main, args.txt)
-        Dict.update(Main, Main.sets)
-        Dict.merge(Main, vars(args))
+        parse(Main, args.txt)
+        update(Main, Main.sets)
+        merge(Main, vars(args))
         Workdir.setwd(Main.wdr)
         Log.level(Main.level or "info")
         if Main.noignore:
@@ -171,7 +171,7 @@ class Runtime(Statics):
     def shutdown():
         "call shutdown on modules."
         logging.debug("shutdown")
-        for mod in Dict.values(Mods.modules):
+        for mod in values(Mods.modules):
             if "shutdown" in dir(mod):
                 try:
                     mod.shutdown()
@@ -263,18 +263,18 @@ class Cmd(Statics):
         if not cfg:
             event.reply("no configuration found.")
             return
-        fnm = Locate.first(cfg) or Methods.ident(cfg)
+        fnm = Locate.first(cfg) or Disk.ident(cfg)
         if not event.sets:
             event.reply(
-                Methods.fmt(
+                fmt(
                     cfg,
-                    Dict.keys(cfg),
+                    keys(cfg),
                     skip=["word",]
                 )
             )
             return
-        Methods.edit(cfg, event.sets)
-        Disk.write(Methods.skip(cfg), fnm)
+        edit(cfg, event.sets)
+        Disk.write(skip(cfg), fnm)
         event.reply("ok")
 
     def cmd(event):
