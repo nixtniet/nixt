@@ -6,7 +6,6 @@
 
 import logging
 import queue
-import threading
 import _thread
 
 
@@ -68,8 +67,6 @@ class Output(Client):
 
 def __dir__():
     return (
-        'Client',
         'Console',
-        'Main',
         'Output'
     )

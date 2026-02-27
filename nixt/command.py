@@ -9,12 +9,10 @@ import inspect
 
 from .brokers import Broker
 from .message import Message
-from .objects import Configuration, Methods, Static
+from .objects import Methods, Statics
 
 
-class Commands:
-
-    __metaclass__ = Static
+class Commands(Statics):
 
     cmds = {}
     names = {}

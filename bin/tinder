@@ -16,7 +16,7 @@ sys.path.insert(0, os.getcwd())
 from nixt.clients import Client
 from nixt.command import Commands
 from nixt.message import Message
-from nixt.objects import Default, Methods
+from nixt.objects import Methods
 from nixt.package import Mods
 from nixt.persist import Main, Workdir
 from nixt.threads import Thread
@@ -35,17 +35,8 @@ except ModuleNotFoundError:
 events = queue.Queue()
 
 
-'''
 Main.debug = True
 Main.ignore = ""
-Main.level = "info"
-Main.mods = ""
-Main.name = Utils.pkgname(Commands)
-Main.opts = Default()
-Main.txt = " ".join(sys.argv[1:])
-Main.version = 8
-'''
-
 Main.mods = ""
 Main.opts = ""
 Main.wdr = ".test"
