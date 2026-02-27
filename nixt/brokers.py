@@ -4,10 +4,10 @@
 "an object for a string"
 
 
-from .objects import Static
+from .objects import Statics
 
 
-class Broker(metaclass=Static):
+class Broker(Statics):
 
     objects = {}
 

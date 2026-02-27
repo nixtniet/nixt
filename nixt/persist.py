@@ -11,7 +11,7 @@ import threading
 
 
 from .encoder import Json
-from .objects import Configuration, Default, Dict, Methods, Static
+from .objects import Configuration, Default, Dict, Methods, Statics
 from .utility import Time, Utils
 
 
@@ -24,9 +24,7 @@ class Main(Configuration):
     wdr = f".{name}"
 
 
-class Cache:
-
-    __metaclass__ = Static
+class Cache(Statics):
 
     paths = {}
 
@@ -46,9 +44,7 @@ class Cache:
             Cache.add(path, obj)
 
 
-class Disk:
-
-    __metaclass__ = Static
+class Disk(Statics):
 
     lock = threading.RLock()
 
@@ -84,9 +80,7 @@ class Disk:
             return path
 
 
-class Locate:
-
-    __metaclass__ = Static
+class Locate(Statics):
 
     def attrs(kind):
         "show attributes for kind of objects."
@@ -174,9 +168,7 @@ class StateFul:
         Locate.first(self)
 
 
-class Workdir:
-
-    __metaclass__ = Static
+class Workdir(Statics):
 
     def kinds():
         "show kind on objects in cache."

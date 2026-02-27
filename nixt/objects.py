@@ -49,6 +49,11 @@ class Static(type):
         return super().__new__(cls, name, bases, dct)
 
 
+class Statics(Static):
+
+    pass
+
+
 class Dict:
 
     __metaclass__ = Static

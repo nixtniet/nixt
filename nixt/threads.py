@@ -12,7 +12,7 @@ import time
 import _thread
 
 
-from .objects import Static
+from .objects import Statics
 
 
 class Task(threading.Thread):
@@ -61,9 +61,7 @@ class Task(threading.Thread):
             _thread.interrupt_main()
 
 
-class Thread:
-
-    __metaclass__ = Static
+class Thread(Statics):
 
     lock = threading.RLock()
 

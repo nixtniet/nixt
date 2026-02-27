@@ -14,7 +14,7 @@ import time
 from .command import Commands
 from .clients import Console
 from .message import Message
-from .objects import Dict, Methods, Static
+from .objects import Dict, Methods, Statics
 from .package import Mods
 from .persist import Disk, Locate, Main, Workdir
 from .threads import Thread
@@ -59,10 +59,8 @@ class CSL(Line):
         return evt
 
 
-class Runtime:
+class Runtime(Statics):
     
-    __metaclass__ = Static
-
     def banner():
         "hello."
         tme = time.ctime(time.time()).replace("  ", " ")
@@ -200,9 +198,7 @@ class Runtime:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
-class Scripts:
-
-    __metaclass__ = Static
+class Scripts(Statics):
 
     def background(args):
         "background script."
@@ -252,9 +248,7 @@ class Scripts:
         Utils.forever()
 
 
-class Cmd:
-
-    __metaclass__ = Static
+class Cmd(Statics):
 
     def cfg(event):
         if not event.args:

@@ -8,7 +8,7 @@ import json
 import types
 
 
-from .objects import Static
+from .objects import Statics
 
 
 class Encoder(json.JSONEncoder):
@@ -29,9 +29,7 @@ class Encoder(json.JSONEncoder):
                 return repr(o)
 
 
-class Json:
-
-    __metaclass__ = Static
+class Json(Statics):
 
     def dump(*args, **kw):
         "dump object to disk."

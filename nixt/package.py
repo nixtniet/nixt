@@ -9,13 +9,11 @@ import logging
 import os
 
 
-from .objects import Static
+from .objects import Statics
 from .utility import Utils
 
 
-class Mods:
-
-    __metaclass__ = Static
+class Mods(Statics):
 
     dirs = {}
     modules = {}

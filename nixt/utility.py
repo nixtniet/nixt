@@ -13,7 +13,7 @@ import threading
 import time
 
 
-from .objects import Static
+from .objects import Statics
 from .threads import Thread
 
 
@@ -96,9 +96,7 @@ class Repeater(Timed):
         Thread.launch(self.start)
 
 
-class Time:
-
-    __metaclass__ = Static
+class Time(Statics):
 
     def date(daystr):
         "date from string."
@@ -266,9 +264,7 @@ class Time:
         return str(datetime.datetime.today()).split()[0]
 
 
-class Utils:
-
-    __metaclass__ = Static
+class Utils(Statics):
 
     def forever():
         "run forever until ctrl-c."
