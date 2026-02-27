@@ -40,14 +40,23 @@ class Configuration(Default):
            Dict.update(self, kwargs)
 
 
+class Static(type):
+
+    def __new__(cls, name, bases, dct):
+        for attr, value in dct.items():
+            if "_" not in attr and isinstance(value, types.FunctionType):
+                dct[attr] = staticmethod(value)
+        return super().__new__(cls, name, bases, dct)
+
+
 class Dict:
 
-    @staticmethod
+    __metaclass__ = Static
+
     def clear(obj):
         "remove all items from the object."
         obj.__dict__.clear()
 
-    @staticmethod
     def construct(obj, *args, **kwargs):
         "object contructor."
         if args:
@@ -61,24 +70,20 @@ class Dict:
         if kwargs:
             Dict.update(obj, kwargs)
 
-    @staticmethod
     def copy(obj):
         "return shallow copy of the object."
         oobj = type(obj)()
         Dict.update(oobj, obj.__dict__.copy())
         return oobj
 
-    @staticmethod
     def fromkeys(obj, keyz, value=None):
         "create a new object with keys from iterable and values set to value/"
         return obj.__dict__.fromkeys(keyz, value)
 
-    @staticmethod
     def get(obj, key, default=None):
         "return value for key if key is in the object, otherwise return default."
         return obj.__dict__.get(key, default)
 
-    @staticmethod
     def items(obj):
         "object's key,value pairs."
         if isinstance(obj, type):
@@ -89,7 +94,6 @@ class Dict:
             return obj.items()
         return obj.__dict__.items()
 
-    @staticmethod
     def keys(obj):
         "object's keys."
         if isinstance(obj, dict):
@@ -98,24 +102,20 @@ class Dict:
             return obj.keys()
         return obj.__dict__.keys()
 
-    @staticmethod
     def merge(obj, obj2):
         for key, value in Dict.items(obj2):
             if not value and getattr(obj, key, False):
                 continue
             setattr(obj, key, value)
 
-    @staticmethod
     def pop(obj, key, default=None):
         "remove key from object and return it's value. return default or KeyError."
         return obj.__dict__.pop(key, default)
 
-    @staticmethod
     def popitem(obj):
         "remove and return (key, value) pair."
         return obj.__dict__.popitem()
 
-    @staticmethod
     def reduce(obj):
         result = {}
         for key, value in Dict.items(obj):
@@ -123,7 +123,6 @@ class Dict:
                 result[key] = value
         return result
 
-    @staticmethod
     def update(obj, data, empty=True):
         "update object,"
         if isinstance(obj, type):
@@ -147,7 +146,6 @@ class Dict:
         else:
             obj.__dict__.update(data.__dict__)
 
-    @staticmethod
     def values(obj):
         "object's values."
         if isinstance(obj, dict):
@@ -162,12 +160,12 @@ class Dict:
 
 class Methods:
 
-    @staticmethod
+    __metaclass__ = Static
+
     def deleted(obj):
         "check whether obj had deleted flag set."
         return "__deleted__" in dir(obj) and obj.__deleted__
 
-    @staticmethod
     def edit(obj, setter={}, skip=False):
         "update object with dict."
         for key, val in Dict.items(setter):
@@ -175,7 +173,6 @@ class Methods:
                 continue
             Methods.typed(obj, key, val)
 
-    @staticmethod
     def fmt(obj, args=[], skip=[], plain=False, empty=False):
         "format object info printable string."
         if args == []:
@@ -205,7 +202,6 @@ class Methods:
             txt = "{}"
         return txt.strip()
 
-    @staticmethod
     def fqn(obj):
         "full qualified name."
         kin = str(type(obj)).split()[-1][1:-2]
@@ -213,12 +209,10 @@ class Methods:
             kin = f"{obj.__module__}.{obj.__name__}"
         return kin
 
-    @staticmethod
     def ident(obj):
         "return ident string for object."
         return os.path.join(Methods.fqn(obj), *str(datetime.datetime.now()).split())
 
-    @staticmethod
     def parse(obj, text):
         "parse text for command."
         data = {
@@ -271,7 +265,6 @@ class Methods:
         else:
             obj.text = obj.cmd or ""
 
-    @staticmethod
     def search(obj, selector={}, matching=False):
         "check whether object matches search criteria."
         res = False
@@ -289,7 +282,6 @@ class Methods:
             res = True
         return res
 
-    @staticmethod
     def skip(obj, chars="_"):
         "skip keys containing chars."
         res = {}
@@ -303,7 +295,6 @@ class Methods:
             res[key] = value
         return res
 
-    @staticmethod
     def typed(obj, key, val):
         "assign proper types."
         try:

@@ -14,7 +14,7 @@ import time
 from .command import Commands
 from .clients import Console
 from .message import Message
-from .objects import Dict, Methods
+from .objects import Dict, Methods, Static
 from .package import Mods
 from .persist import Disk, Locate, Main, Workdir
 from .threads import Thread
@@ -61,7 +61,8 @@ class CSL(Line):
 
 class Runtime:
     
-    @staticmethod
+    __metaclass__ = Static
+
     def banner():
         "hello."
         tme = time.ctime(time.time()).replace("  ", " ")
@@ -73,7 +74,6 @@ class Runtime:
         ))
         sys.stdout.flush()
 
-    @staticmethod
     def boot(args):
         "in the beginning."
         Methods.parse(Main, args.txt)
@@ -94,7 +94,6 @@ class Runtime:
         if Main.all:
             Main.mods = Mods.list(Main.ignore)
 
-    @staticmethod
     def daemon(verbose=False, nochdir=False):
         "run in the background."
         pid = os.fork()
@@ -116,7 +115,6 @@ class Runtime:
             os.chdir("/")
         os.nice(10)
 
-    @staticmethod
     def getargs():
         "parse commandline arguments."
         parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
@@ -133,7 +131,6 @@ class Runtime:
         parser.add_argument("--wdr", help='set working directory')
         return parser.parse_known_args()
 
-    @staticmethod
     def init(cfg, default=True):
         "scan named modules for commands."
         thrs = []
@@ -148,11 +145,9 @@ class Runtime:
             for name, thr in thrs:
                 thr.join()
 
-    @staticmethod
     def out(txt):
         print(txt.encode('utf-8', 'replace').decode("utf-8"))
 
-    @staticmethod
     def privileges():
         "drop privileges."
         import getpass
@@ -161,7 +156,6 @@ class Runtime:
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
  
-    @staticmethod
     def scanner(cfg, default=True):
         "scan named modules for commands."
         res = []
@@ -176,7 +170,6 @@ class Runtime:
             res.append((name, mod))
         return res
 
-    @staticmethod
     def shutdown():
         "call shutdown on modules."
         logging.debug("shutdown")
@@ -209,7 +202,8 @@ class Runtime:
 
 class Scripts:
 
-    @staticmethod
+    __metaclass__ = Static
+
     def background(args):
         "background script."
         Runtime.daemon(Main.verbose, Main.nochdir)
@@ -221,7 +215,6 @@ class Scripts:
         Runtime.init(Main)
         Utils.forever()
 
-    @staticmethod
     def console(args):
         "console script."
         import readline
@@ -235,7 +228,6 @@ class Scripts:
         csl.start()
         Utils.forever()
 
-    @staticmethod
     def control(args):
         "cli script."
         if len(sys.argv) == 1:
@@ -248,7 +240,6 @@ class Scripts:
         for line in evt.result.values():
             Runtime.out(line)
 
-    @staticmethod
     def service(args):
         "service script."
         Runtime.privileges()
@@ -263,7 +254,8 @@ class Scripts:
 
 class Cmd:
 
-    @staticmethod
+    __metaclass__ = Static
+
     def cfg(event):
         if not event.args:
             event.reply(f"cfg <{Mods.has('Config') or 'modulename'}>")
@@ -291,12 +283,10 @@ class Cmd:
         Disk.write(Methods.skip(cfg), fnm)
         event.reply("ok")
 
-    @staticmethod
     def cmd(event):
         "list available commands."
         event.reply(",".join(sorted(Commands.names or Commands.cmds)))
 
-    @staticmethod
     def mod(event):
         "list available commands."
         mods = Mods.list(Main.ignore)
@@ -305,14 +295,12 @@ class Cmd:
             return
         event.reply(mods)
 
-    @staticmethod
     def srv(event):
         "generate systemd service file."
         import getpass
         name = getpass.getuser()
         event.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
 
-    @staticmethod
     def ver(event):
         "show verson."
         event.reply(f"{Main.name.upper()} {Main.version}")

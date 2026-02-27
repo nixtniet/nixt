@@ -12,6 +12,9 @@ import time
 import _thread
 
 
+from .objects import Static
+
+
 class Task(threading.Thread):
 
     def __init__(self, func, *args, daemon=True, **kwargs):
@@ -60,9 +63,10 @@ class Task(threading.Thread):
 
 class Thread:
 
+    __metaclass__ = Static
+
     lock = threading.RLock()
 
-    @staticmethod
     def launch(func, *args, **kwargs):
         "run function in a thread."
         with Thread.lock:
@@ -73,7 +77,6 @@ class Thread:
             except (KeyboardInterrupt, EOFError):
                 _thread.interrupt_main()
 
-    @staticmethod
     def name(obj):
         "string of function/method."
         if inspect.ismethod(obj):

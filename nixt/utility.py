@@ -13,6 +13,7 @@ import threading
 import time
 
 
+from .objects import Static
 from .threads import Thread
 
 
@@ -97,7 +98,8 @@ class Repeater(Timed):
 
 class Time:
 
-    @staticmethod
+    __metaclass__ = Static
+
     def date(daystr):
         "date from string."
         daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
@@ -110,7 +112,6 @@ class Time:
                 pass
         return res
 
-    @staticmethod
     def day(daystr):
         "day part in a string."
         days = None
@@ -136,7 +137,6 @@ class Time:
             return time.mktime(time.strptime(dte, r"%d %b %Y"))
         raise NoDate(daystr)
 
-    @staticmethod
     def elapsed(seconds, short=True):
         "seconds to string."
         txt = ""
@@ -177,7 +177,6 @@ class Time:
         txt = txt.strip()
         return txt
 
-    @staticmethod
     def extract(daystr):
         "extract date/time from string."
         previous = ""
@@ -195,7 +194,6 @@ class Time:
             line = ""
         return res
 
-    @staticmethod
     def fntime(daystr):
         "time from path."
         datestr = " ".join(daystr.split(os.sep)[-2:])
@@ -209,7 +207,6 @@ class Time:
             timd += float("." + rest)
         return float(timd)
 
-    @staticmethod
     def hour(daystr):
         "hour in string."
         try:
@@ -231,7 +228,6 @@ class Time:
             return 0
         return hmsres
 
-    @staticmethod
     def timed(txt):
         "scan string for date/time."
         try:
@@ -243,7 +239,6 @@ class Time:
             target += hours
         return target
 
-    @staticmethod
     def parsetxt(txt):
         "parse text for date/time."
         seconds = 0
@@ -266,7 +261,6 @@ class Time:
                 target += hours
         return target
 
-    @staticmethod
     def today():
         "start of the day."
         return str(datetime.datetime.today()).split()[0]
@@ -274,7 +268,8 @@ class Time:
 
 class Utils:
 
-    @staticmethod
+    __metaclass__ = Static
+
     def forever():
         "run forever until ctrl-c."
         while True:
@@ -283,7 +278,6 @@ class Utils:
             except (KeyboardInterrupt, EOFError):
                 break
 
-    @staticmethod
     def md5sum(path):
         "return md5 of a file."
         import hashlib
@@ -291,17 +285,14 @@ class Utils:
             txt = file.read().encode("utf-8")
             return hashlib.md5(txt, usedforsecurity=False).hexdigest()
 
-    @staticmethod
     def pkgname(obj):
         "return package name of an object."
         return obj.__module__.split(".")[0]
 
-    @staticmethod
     def pipxdir(name):
         "return examples directory."
         return f"~/.local/share/pipx/venvs/{name}/share/{name}/"
 
-    @staticmethod
     def spl(txt):
         "list from comma seperated string."
         try:
@@ -310,12 +301,10 @@ class Utils:
             result = []
         return [x for x in result if x]
 
-    @staticmethod
     def where(obj):
         "path where object is defined."
         return os.path.dirname(inspect.getfile(obj))
 
-    @staticmethod
     def wrapped(func):
         "wrap function in a try/except, silence ctrl-c/ctrl-d."
         try:

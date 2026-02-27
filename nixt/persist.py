@@ -11,7 +11,7 @@ import threading
 
 
 from .encoder import Json
-from .objects import Configuration, Default, Dict, Methods
+from .objects import Configuration, Default, Dict, Methods, Static
 from .utility import Time, Utils
 
 
@@ -26,19 +26,18 @@ class Main(Configuration):
 
 class Cache:
 
+    __metaclass__ = Static
+
     paths = {}
 
-    @staticmethod
     def add(path, obj):
         "put object into cache."
         Cache.paths[path] = obj
 
-    @staticmethod
     def get(path):
         "get object from cache."
         return Cache.paths.get(path, None)
 
-    @staticmethod
     def sync(path, obj):
         "update cached object."
         try:
@@ -49,20 +48,20 @@ class Cache:
 
 class Disk:
 
+    __metaclass__ = Static
+
     lock = threading.RLock()
 
-    @staticmethod
     def cdir(path):
         "create directory."
         pth = pathlib.Path(path)
         if not os.path.exists(pth.parent):
             pth.parent.mkdir(parents=True, exist_ok=True)
 
-    @staticmethod
     def read(obj, path, base="store"):
         "read object from path."
         with Disk.lock:
-            pth = os.path.join(Workdir.wdr, base, path)
+            pth = os.path.join(Main.wdr, base, path)
             if not os.path.exists(pth):
                 return
             with open(pth, "r", encoding="utf-8") as fpt:
@@ -72,13 +71,12 @@ class Disk:
                     ex.add_note(path)
                     raise ex
 
-    @staticmethod
     def write(obj, path="", base="store"):
         "write object to disk."
         with Disk.lock:
             if path == "":
                 path = Methods.ident(obj)
-            pth = os.path.join(Workdir.wdr, base, path)
+            pth = os.path.join(Main.wdr, base, path)
             Disk.cdir(pth)
             with open(pth, "w", encoding="utf-8") as fpt:
                 Json.dump(obj, fpt, indent=4)
@@ -88,7 +86,8 @@ class Disk:
 
 class Locate:
 
-    @staticmethod
+    __metaclass__ = Static
+
     def attrs(kind):
         "show attributes for kind of objects."
         result = []
@@ -96,11 +95,9 @@ class Locate:
             result.extend(Dict.keys(obj))
         return {x for x in result}
 
-    @staticmethod
     def count(kind):
         return len(list(Locate.find(kind)))
 
-    @staticmethod
     def find(kind, selector={}, removed=False, matching=False, nritems=None):
         "locate objects by matching atributes."
         nrs = 0
@@ -121,7 +118,6 @@ class Locate:
         else:
             return None, None
 
-    @staticmethod
     def first(obj, selector={}):
         result = sorted(
                         Locate.find(Methods.fqn(obj), selector),
@@ -134,10 +130,9 @@ class Locate:
             res = inp[0]
         return res
 
-    @staticmethod
     def fns(kind):
         "file names by kind of object."
-        path = os.path.join(Workdir.wdr, "store", kind)
+        path = os.path.join(Main.wdr, "store", kind)
         for rootdir, dirs, _files in os.walk(path, topdown=True):
             for dname in dirs:
                 if dname.count("-") != 2:
@@ -146,7 +141,6 @@ class Locate:
                 for fll in os.listdir(ddd):
                     yield Locate.strip(os.path.join(ddd, fll))
 
-    @staticmethod
     def last(obj, selector={}):
         "last saved version."
         result = sorted(
@@ -160,7 +154,6 @@ class Locate:
             res = inp[0]
         return res
 
-    @staticmethod
     def strip(path):
         "strip filename from path."
         return path.split('store')[-1][1:]
@@ -183,20 +176,12 @@ class StateFul:
 
 class Workdir:
 
-    wdr = "." + Main.name
+    __metaclass__ = Static
 
-    @staticmethod
-    def setwd(path):
-        "enable writing to disk."
-        Workdir.wdr = path
-        Workdir.skel()
-
-    @staticmethod
     def kinds():
         "show kind on objects in cache."
-        return os.listdir(os.path.join(Workdir.wdr, "store"))
+        return os.listdir(os.path.join(Main.wdr, "store"))
 
-    @staticmethod
     def long(name):
         "expand to fqn."
         if "." in name:
@@ -209,10 +194,9 @@ class Workdir:
                 break
         return res
 
-    @staticmethod
     def pidfile(name):
         "write pidfile."
-        filename = os.path.join(Workdir.wdr, f"{name}.pid")
+        filename = os.path.join(Main.wdr, f"{name}.pid")
         if os.path.exists(filename):
             os.unlink(filename)
         path2 = pathlib.Path(filename)
@@ -220,12 +204,11 @@ class Workdir:
         with open(filename, "w", encoding="utf-8") as fds:
             fds.write(str(os.getpid()))
 
-    @staticmethod
     def skel():
         "create directories."
-        if not Workdir.wdr:
+        if not Main.wdr:
             return
-        path = os.path.abspath(Workdir.wdr)
+        path = os.path.abspath(Main.wdr)
         workpath = os.path.join(path, "store")
         pth = pathlib.Path(workpath)
         pth.mkdir(parents=True, exist_ok=True)
@@ -236,10 +219,14 @@ class Workdir:
         pth = pathlib.Path(filespath)
         pth.mkdir(parents=True, exist_ok=True)
 
-    @staticmethod
+    def setwd(path):
+        "enable writing to disk."
+        Main.wdr = path
+        Workdir.skel()
+
     def workdir(path=""):
         "return workdir."
-        return os.path.join(Workdir.wdr, path)
+        return os.path.join(Main.wdr, path)
 
 
 def __dir__():

@@ -8,6 +8,9 @@ import json
 import types
 
 
+from .objects import Static
+
+
 class Encoder(json.JSONEncoder):
 
     def default(self, o):
@@ -28,24 +31,22 @@ class Encoder(json.JSONEncoder):
 
 class Json:
 
-    @staticmethod
+    __metaclass__ = Static
+
     def dump(*args, **kw):
         "dump object to disk."
         kw["cls"] = Encoder
         return json.dump(*args, **kw)
 
-    @staticmethod
     def dumps(*args, **kw):
         "dump object to string."
         kw["cls"] = Encoder
         return json.dumps(*args, **kw)
 
-    @staticmethod
     def load(s, *args, **kw):
         "load object from disk."
         return json.load(s, *args, **kw)
 
-    @staticmethod
     def loads(s, *args, **kw):
         "load object from string."
         return json.loads(s, *args, **kw)
