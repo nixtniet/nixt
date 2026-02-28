@@ -11,7 +11,7 @@ import sys
 import time
 
 
-from .command import commands, cmnd, command
+from .command import cmds, cmnd, command
 from .handler import Console
 from .message import Message
 from .methods import edit, fmt, merge, parse, skip
@@ -19,16 +19,22 @@ from .objects import keys, values, update
 from .package import mods
 from .persist import Main, first, ident, pidfile, setwd, write
 from .threads import launch
-from .utility import Log, Utils
+from .utility import forever, level
 
 
 from . import modules as MODS
+
+
+"config"
 
 
 Main.default = "irc,mdl,rss,wsd"
 Main.ignore = "man,rst,udp,web"
 Main.version = 455
 Main.wdr = os.path.expanduser(f"~/.{Main.name}")
+
+
+"clients"
 
 
 class Line(Console):
@@ -39,7 +45,7 @@ class Line(Console):
 
     def raw(self, text):
         "write to console."
-        Runtime.out(text)
+        out(text)
 
 
 class CSL(Line):
@@ -60,65 +66,65 @@ class CSL(Line):
         return evt
 
 
-class Runtime:
+'runtime'
+
     
-    @staticmethod
-    def banner():
-        "hello."
-        tme = time.ctime(time.time()).replace("  ", " ")
-        print("%s %s since %s (%s)" % (
-            Main.name.upper(),
-            Main.version,
-            tme,
-            Main.level.upper(),
-        ))
-        sys.stdout.flush()
+def banner():
+    "hello."
+    tme = time.ctime(time.time()).replace("  ", " ")
+    print("%s %s since %s (%s)" % (
+        Main.name.upper(),
+        Main.version,
+        tme,
+        Main.level.upper(),
+    ))
+    sys.stdout.flush()
 
-    @staticmethod
-    def boot(args):
-        "in the beginning."
-        parse(Main, args.txt)
-        update(Main, Main.sets)
-        merge(Main, vars(args))
-        setwd(Main.wdr)
-        Log.level(Main.level or "info")
-        if Main.noignore:
-            Main.ignore = ""
-        if Main.wdr:
-            mods.add("modules", os.path.join(Main.wdr, "mods"))
-        if MODS:
-            mods.add(MODS.__name__, MODS.__path__[0])
-        if Main.local:
-            mods.add('mods', 'mods')
-        if Main.verbose:
-            Runtime.banner()
-        if Main.all:
-            Main.mods = mods.list(Main.ignore)
 
-    @staticmethod
-    def daemon(verbose=False, nochdir=False):
-        "run in the background."
-        pid = os.fork()
-        if pid != 0:
-            os._exit(0)
-        os.setsid()
-        pid2 = os.fork()
-        if pid2 != 0:
-            os._exit(0)
-        if not verbose:
-            with open('/dev/null', 'r', encoding="utf-8") as sis:
-                os.dup2(sis.fileno(), sys.stdin.fileno())
-            with open('/dev/null', 'a+', encoding="utf-8") as sos:
-                os.dup2(sos.fileno(), sys.stdout.fileno())
-            with open('/dev/null', 'a+', encoding="utf-8") as ses:
-                os.dup2(ses.fileno(), sys.stderr.fileno())
-        os.umask(0)
-        if not nochdir:
-            os.chdir("/")
-        os.nice(10)
+def boot(args):
+    "in the beginning."
+    parse(Main, args.txt)
+    update(Main, Main.sets)
+    merge(Main, vars(args))
+    setwd(Main.wdr)
+    level(Main.level or "info")
+    if Main.noignore:
+        Main.ignore = ""
+    if Main.wdr:
+        mods.add("modules", os.path.join(Main.wdr, "mods"))
+    if MODS:
+        mods.add(MODS.__name__, MODS.__path__[0])
+    if Main.local:
+        mods.add('mods', 'mods')
+    if Main.verbose:
+        banner()
+    if Main.all:
+        Main.mods = mods.list(Main.ignore)
 
-    @staticmethod
-    def getargs():
+
+def daemon(verbose=False, nochdir=False):
+    "run in the background."
+    pid = os.fork()
+    if pid != 0:
+        os._exit(0)
+    os.setsid()
+    pid2 = os.fork()
+    if pid2 != 0:
+        os._exit(0)
+    if not verbose:
+        with open('/dev/null', 'r', encoding="utf-8") as sis:
+            os.dup2(sis.fileno(), sys.stdin.fileno())
+        with open('/dev/null', 'a+', encoding="utf-8") as sos:
+            os.dup2(sos.fileno(), sys.stdout.fileno())
+        with open('/dev/null', 'a+', encoding="utf-8") as ses:
+            os.dup2(ses.fileno(), sys.stderr.fileno())
+    os.umask(0)
+    if not nochdir:
+        os.chdir("/")
+    os.nice(10)
+
+
+def getargs():
         "parse commandline arguments."
         parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
         parser.add_argument("-a", "--all", action="store_true", help="load all modules")
@@ -134,189 +140,190 @@ class Runtime:
         parser.add_argument("--wdr", help='set working directory')
         return parser.parse_known_args()
 
-    @staticmethod
-    def init(cfg, default=True):
-        "scan named modules for commands."
-        thrs = []
-        if default:
-           defs = cfg.default
-        else:
-           defs = ""
-        for name, mod in mods.iter(cfg.mods or defs, cfg.ignore):
-            if "init" in dir(mod):
-                thrs.append((name, launch(mod.init)))
-        if cfg.wait:
-            for name, thr in thrs:
-                thr.join()
 
-    @staticmethod
-    def out(txt):
-        print(txt.encode('utf-8', 'replace').decode("utf-8"))
+def init(cfg, default=True):
+    "scan named modules for commands."
+    thrs = []
+    if default:
+        defs = cfg.default
+    else:
+        defs = ""
+    for name, mod in mods.iter(cfg.mods or defs, cfg.ignore):
+        if "init" in dir(mod):
+            thrs.append((name, launch(mod.init)))
+    if cfg.wait:
+        for name, thr in thrs:
+            thr.join()
 
-    @staticmethod
-    def privileges():
-        "drop privileges."
-        import getpass
-        import pwd
-        pwnam2 = pwd.getpwnam(getpass.getuser())
-        os.setgid(pwnam2.pw_gid)
-        os.setuid(pwnam2.pw_uid)
+def out(txt):
+    print(txt.encode('utf-8', 'replace').decode("utf-8"))
+
+
+def privileges():
+    "drop privileges."
+    import getpass
+    import pwd
+    pwnam2 = pwd.getpwnam(getpass.getuser())
+    os.setgid(pwnam2.pw_gid)
+    os.setuid(pwnam2.pw_uid)
  
-    @staticmethod
-    def scanner(cfg, default=True):
-        "scan named modules for commands."
-        res = []
-        if default:
-           defs = cfg.default
-        else:
-           defs = ""
-        for name, mod in mods.iter(cfg.mods or defs or mods.list(), cfg.ignore):
-            commands.scan(mod)
-            if "configure" in dir(mod):
-                mod.configure(cfg)
-            res.append((name, mod))
-        return res
 
-    @staticmethod
-    def shutdown():
-        "call shutdown on modules."
-        logging.debug("shutdown")
-        for mod in values(mods.modules):
-            if "shutdown" in dir(mod):
-                try:
-                    mod.shutdown()
-                except Exception as ex:
-                    logging.exception(ex)
+def scanner(cfg, default=True):
+    "scan named modules for commands."
+    res = []
+    if default:
+       defs = cfg.default
+    else:
+       defs = ""
+    for name, mod in mods.iter(cfg.mods or defs or mods.list(), cfg.ignore):
+        cmds.scan(mod)
+        if "configure" in dir(mod):
+            mod.configure(cfg)
+        res.append((name, mod))
+    return res
 
 
-    @staticmethod
-    def wrap(func, *args):
-        "restore console."
-        import termios
-        old = None
-        try:
-            old = termios.tcgetattr(sys.stdin.fileno())
-        except termios.error:
-            pass
-        try:
-            func(*args)
-        except (KeyboardInterrupt, EOFError):
-            pass
-        except Exception as ex:
-            logging.exception(ex)
-        if old:
-            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+def shutdown():
+    "call shutdown on modules."
+    logging.debug("shutdown")
+    for mod in values(mods.modules):
+        if "shutdown" in dir(mod):
+            try:
+                mod.shutdown()
+            except Exception as ex:
+                logging.exception(ex)
 
 
-class Scripts:
-
-    @staticmethod
-    def background(args):
-        "background script."
-        Runtime.daemon(Main.verbose, Main.nochdir)
-        Runtime.privileges()
-        Runtime.boot(args)
-        pidfile(Main.name)
-        Runtime.scanner(Main)
-        commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        Runtime.init(Main)
-        Utils.forever()
-
-    @staticmethod
-    def console(args):
-        "console script."
-        import readline
-        readline.redisplay()
-        Runtime.boot(args)
-        Runtime.scanner(Main, False)
-        commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        cmnd(Main.txt)
-        Runtime.init(Main, default=False)
-        csl = CSL()
-        csl.start()
-        Utils.forever()
-
-    @staticmethod
-    def control(args):
-        "cli script."
-        if len(sys.argv) == 1:
-            return
-        Runtime.boot(args)
-        Main.mods = mods.list(Main.ignore)
-        Runtime.scanner(Main)
-        commands.add(Cmd.cfg, Cmd.cmd, Cmd.mod, Cmd.srv, Cmd.ver)
-        evt = cmnd(Main.txt)
-        for line in evt.result.values():
-            Runtime.out(line)
-
-    @staticmethod
-    def service(args):
-        "service script."
-        Runtime.privileges()
-        Runtime.banner()
-        Runtime.boot(args)
-        pidfile(Main.name)
-        Runtime.scanner(Main)
-        commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        Runtime.init(Main)
-        Utils.forever()
+def wrap(func, *args):
+    "restore console."
+    import termios
+    old = None
+    try:
+        old = termios.tcgetattr(sys.stdin.fileno())
+    except termios.error:
+        pass
+    try:
+        func(*args)
+    except (KeyboardInterrupt, EOFError):
+        pass
+    except Exception as ex:
+        logging.exception(ex)
+    if old:
+        termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
-class Cmd:
+"scripts"
 
-    @staticmethod
-    def cfg(event):
-        if not event.args:
-            event.reply(f"cfg <{mods.has('Config') or 'modulename'}>")
-            return
-        name = event.args[0]
-        mod = mods.get(name)
-        if not mod:
-            event.reply(f"no {name} module found.")
-            return
-        cfg = getattr(mod, "Config", None)
-        if not cfg:
-            event.reply("no configuration found.")
-            return
-        fnm = first(cfg) or ident(cfg)
-        if not event.sets:
-            event.reply(
-                fmt(
-                    cfg,
-                    keys(cfg),
-                    skip=["word",]
-                )
-            )
-            return
-        edit(cfg, event.sets)
-        write(skip(cfg), fnm)
-        event.reply("ok")
 
-    @staticmethod
-    def cmd(event):
-        "list available commands."
-        event.reply(",".join(sorted(commands.names or commands.cmds)))
+def background(args):
+    "background script."
+    daemon(Main.verbose, Main.nochdir)
+    privileges()
+    boot(args)
+    pidfile(Main.name)
+    scanner(Main)
+    cmds.add(cmd, mod, ver)
+    init(Main)
+    forever()
 
-    @staticmethod
-    def mod(event):
-        "list available commands."
-        modules = mods.list(Main.ignore)
-        if not modules:
-            event.reply("no modules available")
-            return
-        event.reply(mods)
 
-    @staticmethod
-    def srv(event):
-        "generate systemd service file."
-        import getpass
-        name = getpass.getuser()
-        event.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
+def console(args):
+    "console script."
+    import readline
+    readline.redisplay()
+    boot(args)
+    scanner(Main, False)
+    cmds.add(cmd, mod, ver)
+    init(Main, default=False)
+    csl = CSL()
+    csl.start()
+    for txt in cmnd(Main.txt):
+        out(txt)
+    forever()
 
-    @staticmethod
-    def ver(event):
-        "show verson."
-        event.reply(f"{Main.name.upper()} {Main.version}")
+
+def control(args):
+    "cli script."
+    if len(sys.argv) == 1:
+        return
+    boot(args)
+    Main.mods = mods.list(Main.ignore)
+    scanner(Main)
+    cmds.add(cfg, cmd, mod, srv, ver)
+    for line in cmnd(Main.txt):
+        out(line)
+
+
+def service(args):
+    "service script."
+    privileges()
+    banner()
+    boot(args)
+    pidfile(Main.name)
+    scanner(Main)
+    cmds.add(cmd, mod, ver)
+    init(Main)
+    forever()
+
+
+"commands"
+
+
+def cfg(event):
+    if not event.args:
+        event.reply(f"cfg <{mods.has('Config') or 'modulename'}>")
+        return
+    name = event.args[0]
+    mod = mods.get(name)
+    if not mod:
+        event.reply(f"no {name} module found.")
+        return
+    cfg = getattr(mod, "Config", None)
+    if not cfg:
+        event.reply("no configuration found.")
+        return
+    fnm = first(cfg) or ident(cfg)
+    if not event.sets:
+        event.reply(
+            fmt(
+                cfg,
+                keys(cfg),
+                skip=["word",]
+               )
+        )
+        return
+    edit(cfg, event.sets)
+    write(skip(cfg), fnm)
+    event.reply("ok")
+
+
+def cmd(event):
+    "list available commands."
+    event.reply(",".join(sorted(cmds.names or cmds.cmds)))
+
+
+def mod(event):
+    "list available commands."
+    modules = mods.list(Main.ignore)
+    if not modules:
+        event.reply("no modules available")
+        return
+    event.reply(mods)
+
+
+def srv(event):
+    "generate systemd service file."
+    import getpass
+    name = getpass.getuser()
+    eevent.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
+
+
+def ver(event):
+    "show verson."
+    event.reply(f"{Main.name.upper()} {Main.version}")
+
+
+'data'
 
 
 SYSTEMD = """[Unit]
@@ -333,16 +340,19 @@ ExecStart=/home/%s/.local/bin/%s -s
 WantedBy=multi-user.target"""
 
 
+"main"
+
+
 def main():
     "main"
-    args, arguments = Runtime.getargs()
+    args, arguments = getargs()
     args.txt = " ".join(arguments)
     if args.daemon:
-        Scripts.background(args)
+        background(args)
     elif args.console:
-        Runtime.wrap(Scripts.console, args)
+        wrap(console, args)
     elif args.service:
-        Runtime.wrap(Scripts.service, args)
+        wrap(service, args)
     else:
-        Runtime.wrap(Scripts.control, args)
-    Runtime.shutdown()
+        wrap(control, args)
+    shutdown()

@@ -16,11 +16,11 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from nixt.objects import Default, Object
 from nixt.persist import Main
 from nixt.threads import launch
-from nixt.utility import Utils
+from nixt.utility import where
 
 
 def init():
-    Cfg.path = os.path.join(Utils.where(Object), "nucleus")
+    Cfg.path = os.path.join(where(Object), "nucleus")
     if not os.path.exists(os.path.join(Cfg.path, 'index.html')):
         logging.warning("no index.html")
         return

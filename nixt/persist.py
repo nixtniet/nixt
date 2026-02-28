@@ -13,7 +13,7 @@ import threading
 from .encoder import dump, load
 from .methods import deleted, fqn, ident, search
 from .objects import Default, keys, update
-from .utility import Time, Utils
+from .utility import fntime, pkgname
 
 
 lock = threading.RLock()
@@ -26,7 +26,7 @@ class Main(Default):
 
     debug = False
     level = "info"
-    name = Utils.pkgname(Utils)
+    name = pkgname(Default)
     version = 1
     wdr = f".{name}"
 
@@ -119,6 +119,7 @@ def kinds():
     "show kind on objects in cache."
     return os.listdir(os.path.join(Main.wdr, "store"))
 
+
 def long(name):
     "expand to fqn."
     if "." in name:
@@ -130,6 +131,7 @@ def long(name):
             res = names
             break
     return res
+
 
 def pidfile(name):
     "write pidfile."
@@ -179,7 +181,7 @@ def first(obj, selector={}):
     "return first version of an object."
     result = sorted(
                     find(fqn(obj), selector),
-                    key=lambda x: Time.fntime(x[0])
+                    key=lambda x: fntime(x[0])
                    )
     res = ""
     if result:
@@ -193,7 +195,7 @@ def last(obj, selector={}):
     "last saved version."
     result = sorted(
                     find(fqn(obj), selector),
-                    key=lambda x: Time.fntime(x[0])
+                    key=lambda x: fntime(x[0])
                    )
     res = ""
     if result:

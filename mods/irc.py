@@ -22,7 +22,7 @@ from nixt.methods import fmt
 from nixt.objects import Default, Object
 from nixt.persist import Main, first
 from nixt.threads import launch
-from nixt.utility import Utils
+from nixt.utility import pkgname 
 
 
 def init():
@@ -38,7 +38,7 @@ def init():
 
 class Cfg(Default):
 
-    name = Main.name or Utils.pkgname(Object)
+    name = Main.name or pkgname(Object)
     channel = f"#{name}"
     commands = True
     control = "!"

@@ -12,7 +12,7 @@ import time
 from nixt.methods import fmt
 from nixt.objects import Object, keys, update
 from nixt.persist import find, write
-from nixt.utility import MONTH, Time
+from nixt.utility import MONTH, date, elapsed
 
 
 "email"
@@ -79,19 +79,19 @@ def eml(event):
     args = set(args)
     result = sorted(
                     find("email", event.gets),
-                    key=lambda x: Time.date(todate(getattr(x[1], "Date", "")))
+                    key=lambda x: date(todate(getattr(x[1], "Date", "")))
                    )
     if event.index:
         obj = result[event.index]
         if obj:
             obj = obj[-1]
             tme = getattr(obj, "Date", "")
-            event.reply(f'{event.index} {fmt(obj, args, plain=True)} {Time.elapsed(time.time() - Time.date(todate(tme)))}')
+            event.reply(f'{event.index} {fmt(obj, args, plain=True)} {elapsed(time.time() - date(todate(tme)))}')
     else:
         for _fn, obj in result:
             nrs += 1
             tme = getattr(obj, "Date", "")
-            event.reply(f'{nrs} {fmt(obj, args, plain=True)} {Time.elapsed(time.time() - Time.date(todate(tme)))}')
+            event.reply(f'{nrs} {fmt(obj, args, plain=True)} {elapsed(time.time() - date(todate(tme)))}')
     if not result:
         event.reply("no emails found.")
 

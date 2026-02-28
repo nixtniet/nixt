@@ -13,7 +13,7 @@ from nixt.brokers import broker
 from nixt.message import Message
 from nixt.objects import Object, construct, keys
 from nixt.threads import Repeater
-from nixt.utility import  Time
+from nixt.utility import elapsed
 
 
 "init"
@@ -32,7 +32,7 @@ def init():
             name = aliases.get(key)
             repeater = Repeater(sec, cbstats, evt, thrname=name)
             repeater.start()
-            logging.warning("since %s", Time.elapsed(time.time()-STARTTIME))
+            logging.warning("since %s", elapsed(time.time()-STARTTIME))
 
 
 "defines"
@@ -137,7 +137,7 @@ def hourly():
 
 def cbnow(evt):
     delta = time.time() - STARTTIME
-    txt = Time.elapsed(delta) + " "
+    txt = elapsed(delta) + " "
     for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
@@ -160,13 +160,13 @@ def cbstats(evt):
         delta2 = time.time() - getday()
         thisday = int(delta2/needed)
         txt = "%s %s #%s (%s/%s/%s) every %s" % (
-            Time.elapsed(delta),
+            elapsed(delta),
             getalias(nme).upper(),
             nrtimes,
             thisday,
             nrday,
             nryear,
-            Time.elapsed(needed)
+            elapsed(needed)
         )
         for bot in broker.objs("announce"):
             bot.announce(txt)
@@ -177,13 +177,13 @@ def cbstats(evt):
 
 def dis(event):
     delta = time.time() - STARTTIME
-    txt = Time.elapsed(delta) + " "
+    txt = elapsed(delta) + " "
     for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
             continue
         nrtimes = int(delta/needed)
-        pertime = Time.elapsed(needed)
+        pertime = elapsed(needed)
         txt += f"{getalias(nme)} {nrtimes} ({pertime}) | "
     txt += SOURCE
     event.reply(txt)
@@ -199,13 +199,13 @@ def now(event):
         nrday = int(DAY/needed)
         thisday = int(DAY % needed)
         txt = "%s %s #%s (%s/%s/%s) every %s" % (
-            Time.elapsed(delta),
+            elapsed(delta),
             getalias(nme).upper(),
             nrtimes,
             thisday,
             nrday,
             nryear,
-            Time.elapsed(needed)
+            elapsed(needed)
         )
         event.reply(txt)
 

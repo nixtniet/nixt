@@ -9,7 +9,7 @@ import logging
 import os
 
 
-from .utility import Utils
+from .utility import spl
 
 
 class Mods:
@@ -65,9 +65,9 @@ class Mods:
                 if not fnm.endswith(".py"):
                     continue
                 name = fnm[:-3]
-                if name not in Utils.spl(modlist):
+                if name not in spl(modlist):
                     continue
-                if ignore and name in Utils.spl(ignore):
+                if ignore and name in spl(ignore):
                     continue
                 modname = f"{pkgname}.{name}"
                 mod =  self.modules.get(modname, None)
@@ -84,7 +84,7 @@ class Mods:
                 x[:-3] for x in os.listdir(path)
                 if x.endswith(".py") and
                 not x.startswith("__") and
-                x[:-3] not in Utils.spl(ignore)
+                x[:-3] not in spl(ignore)
             ])
         return ",".join(sorted(mods))
 

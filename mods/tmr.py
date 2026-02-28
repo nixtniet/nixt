@@ -14,7 +14,7 @@ from nixt.brokers import broker
 from nixt.objects import Object, items
 from nixt.persist import ident, last, write
 from nixt.threads import Timed
-from nixt.utility import NoDate, Time
+from nixt.utility import NoDate, day, elapsed, extract, hour, today
 
 
 rand = random.SystemRandom()
@@ -73,7 +73,7 @@ def tmr(event):
         for tme, txt in items(Timers.timers):
             lap = float(tme) - time.time()
             if lap > 0:
-                event.reply(f'{nmr} {" ".join(txt)} {Time.elapsed(lap)}')
+                event.reply(f'{nmr} {" ".join(txt)} {elapsed(lap)}')
                 nmr += 1
         if not nmr:
             event.reply("no timers.")
@@ -93,10 +93,10 @@ def tmr(event):
         target = time.time() + seconds
     else:
         try:
-            target = Time.day(event.rest)
+            target = day(event.rest)
         except NoDate:
-            target = Time.extract(Time.today())
-        hours =  Time.hour(event.rest)
+            target = extract(today())
+        hours =  hour(event.rest)
         if hours:
             target += hours
     target += rand.random() 
@@ -110,4 +110,4 @@ def tmr(event):
     bot = broker.get(event.orig)
     timer = Timed(diff, bot.say, event.orig, event.channel, txt)
     timer.start()
-    event.reply("ok " + Time.elapsed(diff))
+    event.reply("ok " + elapsed(diff))

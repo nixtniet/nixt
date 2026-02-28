@@ -29,7 +29,7 @@ from nixt.methods import fmt, fqn
 from nixt.objects import Default, update
 from nixt.persist import Main, count, find, ident, last, write
 from nixt.threads import Repeater, launch
-from nixt.utility import Time, Utils
+from nixt.utility import elapsed, fntime, spl
 
 
 def init():
@@ -227,7 +227,7 @@ class Parser:
         for line in Parser.getitems(txt, toke):
             line = line.strip()
             obj = {}
-            for itm in Utils.spl(items):
+            for itm in spl(items):
                 val = Parser.getitem(line, itm)
                 if val:
                     obj[itm] = Helpers.striphtml(Helpers.unescape(val.strip())).replace("\n", "")
@@ -279,7 +279,7 @@ class OPML:
             if not attrz:
                 continue
             obj = {}
-            for itm in Utils.spl(itemz):
+            for itm in spl(itemz):
                 if itm == "link":
                     itm = "href"
                 obj[itm] = OPML.getvalue(attrz, itm)
@@ -627,7 +627,7 @@ def rss(event):
             if fed.skip:
                 continue
             nrs += 1
-            elp = Time.elapsed(time.time() - Time.fntime(fnm))
+            elp = elapsed(time.time() - fntime(fnm))
             txt = fmt(fed)
             event.reply(f"{nrs} {txt} {elp}")
         if not nrs:
