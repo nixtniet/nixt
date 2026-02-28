@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.command import commands, command
+from nixt.command import cmds, command
 from nixt.handler import Client
 from nixt.message import Message
 from nixt.objects import values
@@ -20,20 +20,20 @@ def cmnd(event):
 class TestCommands(unittest.TestCase):
 
     def test_add(self):
-        commands.add(cmnd)
-        self.assertTrue(commands.has("cmnd"))
+        cmds.add(cmnd)
+        self.assertTrue(cmds.has("cmnd"))
     
     def test_get(self):
-        commands.add(cmnd)
-        self.assertTrue(commands.get("cmnd"))
+        cmds.add(cmnd)
+        self.assertTrue(cmds.get("cmnd"))
 
     def test_has(self):
-        commands.add(cmnd)
-        self.assertTrue(commands.get("cmnd"))
+        cmds.add(cmnd)
+        self.assertTrue(cmds.get("cmnd"))
     
     def test_command(self):
         clt = Client()
-        commands.add(cmnd)
+        cmds.add(cmnd)
         evt = Message()
         evt.text = "cmnd"
         evt.orig = repr(clt)
