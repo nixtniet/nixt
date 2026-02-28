@@ -16,7 +16,7 @@ from .handler import Console
 from .message import Message
 from .objects import edit, fmt, keys, merge, parse, skip, values, update 
 from .package import mods
-from .persist import Main, Workdir, first, ident, write
+from .persist import Main, first, ident, pidfile, setwd, write
 from .threads import launch
 from .utility import Log, Utils
 
@@ -79,7 +79,7 @@ class Runtime:
         parse(Main, args.txt)
         update(Main, Main.sets)
         merge(Main, vars(args))
-        Workdir.setwd(Main.wdr)
+        setwd(Main.wdr)
         Log.level(Main.level or "info")
         if Main.noignore:
             Main.ignore = ""
@@ -215,7 +215,7 @@ class Scripts:
         Runtime.daemon(Main.verbose, Main.nochdir)
         Runtime.privileges()
         Runtime.boot(args)
-        Workdir.pidfile(Main.name)
+        pidfile(Main.name)
         Runtime.scanner(Main)
         commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Runtime.init(Main)
@@ -254,7 +254,7 @@ class Scripts:
         Runtime.privileges()
         Runtime.banner()
         Runtime.boot(args)
-        Workdir.pidfile(Main.name)
+        pidfile(Main.name)
         Runtime.scanner(Main)
         commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Runtime.init(Main)

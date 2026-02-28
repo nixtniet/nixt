@@ -4,18 +4,18 @@
 "show attributes"
 
 
-from nixt.persist import Locate, Workdir
+from nixt.persist import attrs, kinds
 
 
 def atr(event):
     if not event.rest:
-        res = sorted({x.split('.')[-1].lower() for x in Workdir.kinds()})
+        res = sorted({x.split('.')[-1].lower() for x in kinds()})
         if res:
             event.reply(",".join(res))
         else:
             event.reply("no types")
         return
-    itms = Locate.attrs(event.args[0])
+    itms = attrs(event.args[0])
     if not itms:
         event.reply("no attributes")
     else:

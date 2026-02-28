@@ -19,9 +19,9 @@ from nixt.handler import Client
 from nixt.message import Message
 from nixt.objects import fmt, parse 
 from nixt.package import mods
-from nixt.persist import Main, Workdir
+from nixt.persist import Main, setwd
 from nixt.threads import launch
-from nixt.utility import Time, Utils
+from nixt.utility import Time
 
 
 from nixt import modules as MODS
@@ -152,7 +152,7 @@ def main():
     if "p" not in Main.opts and os.path.exists(Main.wdr):
         shutil.rmtree(Main.wdr)
     parse(Main, " ".join(sys.argv[1:]))
-    Workdir.setwd(Main.wdr)
+    setwd(Main.wdr)
     mods.add("modules", MODS.__path__[0])
     if MODS2:
         mods.add("mods", MODS2.__path__[0])

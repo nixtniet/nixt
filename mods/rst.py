@@ -14,7 +14,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from nixt.objects import Default, Object
-from nixt.persist import Main, Workdir, first
+from nixt.persist import Main, first, kinds, workdir
 from nixt.threads import launch
 
 
@@ -94,7 +94,7 @@ class RESTHandler(BaseHTTPRequestHandler):
         if self.path == "/":
             self.write_header("text/html")
             txt = ""
-            for fnm in Workdir.kinds():
+            for fnm in kinds():
                 txt += f'<a href="http://{Cfg.hostname}:{Cfg.port}/{fnm}">{fnm}</a><br>\n'
             self.send(html(txt.strip()))
             return
@@ -102,7 +102,7 @@ class RESTHandler(BaseHTTPRequestHandler):
             fnm = self.path[1:]
         else:
             fnm = self.path
-        fnm = os.path.join(Workdir.workdir("store"), fnm)
+        fnm = os.path.join(workdir("store"), fnm)
         fnm = os.path.abspath(fnm)
         if os.path.isdir(fnm):
             self.write_header("text/html")

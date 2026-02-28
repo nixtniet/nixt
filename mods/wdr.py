@@ -4,8 +4,8 @@
 "working directory"
 
 
-from nixt.persist import Workdir
+from nixt.persist import workdir
 
 
 def wdr(event):
-    event.reply(Workdir.workdir())
+    event.reply(workdir())

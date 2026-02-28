@@ -9,9 +9,7 @@ import inspect
 import logging
 import os
 import re
-import threading
 import time
-import types
 
 
 class NoDate(Exception):

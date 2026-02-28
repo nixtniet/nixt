@@ -10,7 +10,7 @@ import time
 
 
 from nixt.objects import Object, fmt, keys, update
-from nixt.persist import Locate, write
+from nixt.persist import find, write
 from nixt.utility import MONTH, Time
 
 
@@ -77,7 +77,7 @@ def eml(event):
             args.remove(key)
     args = set(args)
     result = sorted(
-                    Locate.find("email", event.gets),
+                    find("email", event.gets),
                     key=lambda x: Time.date(todate(getattr(x[1], "Date", "")))
                    )
     if event.index:

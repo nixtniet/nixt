@@ -8,7 +8,7 @@ import time
 
 
 from nixt.objects import Object
-from nixt.persist import Locate, write
+from nixt.persist import find, write
 from nixt.utility import Time
 
 
@@ -25,7 +25,7 @@ def dne(event):
         return
     selector = {'txt': event.args[0]}
     nmr = 0
-    for fnm, obj in Locate.find('todo', selector):
+    for fnm, obj in find('todo', selector):
         nmr += 1
         obj.__deleted__ = True
         write(obj, fnm)
@@ -38,7 +38,7 @@ def dne(event):
 def tdo(event):
     if not event.rest:
         nmr = 0
-        for fnm, obj in Locate.find('todo', event.gets):
+        for fnm, obj in find('todo', event.gets):
             lap = Time.elapsed(time.time()-Time.fntime(fnm))
             event.reply(f'{nmr} {obj.txt} {lap}')
             nmr += 1

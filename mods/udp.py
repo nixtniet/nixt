@@ -73,7 +73,7 @@ class UDP:
                          )
 
     def start(self):
-        Thread.launch(self.loop)
+        launch(self.loop)
 
 
 def toudp(host, port, txt):
