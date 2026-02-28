@@ -25,7 +25,8 @@ from urllib.parse import quote_plus, urlencode
 
 
 from nixt.brokers import broker
-from nixt.objects import Default, fmt, fqn, update
+from nixt.methods import fmt, fqn
+from nixt.objects import Default, update
 from nixt.persist import Main, count, find, ident, last, write
 from nixt.threads import Repeater, launch
 from nixt.utility import Time, Utils

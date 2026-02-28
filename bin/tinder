@@ -17,7 +17,7 @@ sys.path.insert(0, os.getcwd())
 from nixt.command import commands, command
 from nixt.handler import Client
 from nixt.message import Message
-from nixt.objects import fmt, parse 
+from nixt.methods import fmt, parse 
 from nixt.package import mods
 from nixt.persist import Main, setwd
 from nixt.threads import launch

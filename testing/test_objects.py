@@ -4,7 +4,8 @@
 import unittest
 
 
-from nixt.objects import Object, fmt, items, keys, values, update
+from nixt.methods import fmt
+from nixt.objects import Object, items, keys, values, update
 
 
 import nixt.objects
@@ -20,21 +21,12 @@ attrs1 = [
     'clear',
     'construct',
     'copy',
-    'edit',
-    'fmt',
-    'fqn',
     'fromkeys',
     'get',
     'items',
     'keys',
-    'merge',
-    'parse',
     'pop',
     'popitem',
-    'reduce',
-    'search',
-    'skip',
-    'typed',
     'update',
     'values'
 ]

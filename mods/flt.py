@@ -5,7 +5,7 @@
 
 
 from nixt.brokers import broker
-from nixt.objects import fqn
+from nixt.methods import fqn
 
 
 def flt(event):

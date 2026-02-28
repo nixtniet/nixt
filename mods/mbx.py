@@ -9,7 +9,8 @@ import os
 import time
 
 
-from nixt.objects import Object, fmt, keys, update
+from nixt.methods import fmt
+from nixt.objects import Object, keys, update
 from nixt.persist import find, write
 from nixt.utility import MONTH, Time
 

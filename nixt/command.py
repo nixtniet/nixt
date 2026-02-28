@@ -9,7 +9,7 @@ import inspect
 
 from .brokers import broker
 from .message import Message
-from .objects import parse
+from .methods import parse
 
 
 class Commands:
@@ -69,5 +69,7 @@ def command(evt):
 
 def __dir__():
     return (
+        'cmnd',
         'commands',
+        'command'
     )

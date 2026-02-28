@@ -7,7 +7,7 @@
 import time
 
 
-from nixt.objects import fmt
+from nixt.methods import fmt
 from nixt.persist import find, kinds
 from nixt.utility import Time
 

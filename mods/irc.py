@@ -18,7 +18,8 @@ from nixt.brokers import broker
 from nixt.command import command
 from nixt.handler import Output
 from nixt.message import Message
-from nixt.objects import Default, Object, fmt
+from nixt.methods import fmt
+from nixt.objects import Default, Object
 from nixt.persist import Main, first
 from nixt.threads import launch
 from nixt.utility import Utils

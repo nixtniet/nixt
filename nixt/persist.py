@@ -12,11 +12,15 @@ import threading
 
 
 from .encoder import dump, load
-from .objects import Default, fqn, keys, search, update
+from .methods import deleted, fqn, ident, search
+from .objects import Default, keys, update
 from .utility import Time, Utils
 
 
 lock = threading.RLock()
+
+
+'config'
 
 
 class Main(Default):
@@ -26,6 +30,9 @@ class Main(Default):
     name = Utils.pkgname(Utils)
     version = 1
     wdr = f".{name}"
+
+
+'cache'
 
 
 class Cache:
@@ -169,11 +176,6 @@ def workdir(path=""):
 "methods"
 
 
-def deleted(obj):
-    "check whether obj had deleted flag set."
-    return "__deleted__" in dir(obj) and obj.__deleted__
-
-
 def first(obj, selector={}):
     "return first version of an object."
     result = sorted(
@@ -186,11 +188,6 @@ def first(obj, selector={}):
         update(obj, inp[-1])
         res = inp[0]
     return res
-
-
-def ident(obj):
-    "return ident string for object."
-    return os.path.join(fqn(obj), *str(datetime.datetime.now()).split())
 
 
 def last(obj, selector={}):
@@ -233,15 +230,16 @@ def write(obj, path="", base="store"):
         return path
 
 
+"interface"
+
+
 def __dir__():
     return (
         'Main',
         'attrs',
         'cdir',
-        'deleted',
         'find',
         'first',
-        'ident',
         'kinds',
         'last',
         'long',

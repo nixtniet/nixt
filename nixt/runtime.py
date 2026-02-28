@@ -14,7 +14,8 @@ import time
 from .command import commands, cmnd, command
 from .handler import Console
 from .message import Message
-from .objects import edit, fmt, keys, merge, parse, skip, values, update 
+from .methods import edit, fmt, merge, parse, skip
+from .objects import keys, values, update 
 from .package import mods
 from .persist import Main, first, ident, pidfile, setwd, write
 from .threads import launch
