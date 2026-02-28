@@ -10,7 +10,6 @@ import inspect
 from .brokers import broker
 from .message import Message
 from .methods import parse
-from .objects import values
 
 
 class Commands:

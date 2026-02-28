@@ -315,7 +315,7 @@ def srv(event):
     "generate systemd service file."
     import getpass
     name = getpass.getuser()
-    eevent.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
+    event.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
 
 
 def ver(event):
