@@ -27,8 +27,8 @@ from urllib.parse import quote_plus, urlencode
 from nixt.brokers import Broker
 from nixt.objects import Default, fmt, fqn, update
 from nixt.persist import Locate, Main, ident, last, write
-from nixt.threads import Thread
-from nixt.utility import Repeater, Time, Utils
+from nixt.threads import Repeater, launch
+from nixt.utility import Time, Utils
 
 
 def init():
@@ -150,7 +150,7 @@ class Runner:
         self.queue.put(args)
 
     def start(self):
-        Thread.launch(self.loop)
+        launch(self.loop)
     
     def stop(self):
         self.stopped.set()

@@ -15,12 +15,12 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.command import Commands
-from nixt.handler import Client
+from nixt.clients import Client
 from nixt.message import Message
 from nixt.objects import fmt, parse 
 from nixt.package import Mods
 from nixt.persist import Main, Workdir
-from nixt.threads import Thread
+from nixt.threads import launch
 from nixt.utility import Time, Utils
 
 
@@ -172,7 +172,7 @@ def main():
         payload(examples)
     for _x in range(nrs):
         payload(post)
-    Thread.launch(consume)
+    launch(consume)
     nrevents = events.qsize()
     try:
         events.join()

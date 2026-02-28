@@ -13,7 +13,8 @@ import time
 from nixt.brokers import Broker
 from nixt.objects import Object, items
 from nixt.persist import ident, last, write
-from nixt.utility import NoDate, Time, Timed
+from nixt.threads import Timed
+from nixt.utility import NoDate, Time
 
 
 rand = random.SystemRandom()

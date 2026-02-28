@@ -11,13 +11,13 @@ import sys
 import time
 
 
+from .clients import Console
 from .command import Commands
-from .handler import Console
 from .message import Message
 from .objects import edit, fmt, keys, merge, parse, skip, values, update 
 from .package import Mods
 from .persist import Main, Workdir, first, ident, write
-from .threads import Thread
+from .threads import launch
 from .utility import Log, Statics, Utils
 
 
@@ -138,7 +138,7 @@ class Runtime(Statics):
            defs = ""
         for name, mod in Mods.iter(cfg.mods or defs, cfg.ignore):
             if "init" in dir(mod):
-                thrs.append((name, Thread.launch(mod.init)))
+                thrs.append((name, launch(mod.init)))
         if cfg.wait:
             for name, thr in thrs:
                 thr.join()

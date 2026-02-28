@@ -15,7 +15,7 @@ import time
 from nixt.brokers import Broker
 from nixt.objects import Default
 from nixt.persist import Main
-from nixt.threads import Thread
+from nixt.threads import launch
 
 
 def init():

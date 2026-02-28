@@ -15,12 +15,12 @@ import time
 
 
 from nixt.brokers import Broker
+from nixt.clients import Output
 from nixt.command import Commands
-from nixt.handler import Output
 from nixt.message import Message
 from nixt.objects import Default, Object, fmt
 from nixt.persist import Main, first
-from nixt.threads import Thread
+from nixt.threads import launch
 from nixt.utility import Utils
 
 
@@ -437,7 +437,7 @@ class IRC(Output):
         self.state.keeprunning = False
         self.state.stopkeep = True
         self.stop()
-        Thread.launch(init)
+        launch(init)
 
     def size(self, chan):
         if chan in self.cache:
@@ -472,9 +472,9 @@ class IRC(Output):
         self.events.joined.clear()
         Output.start(self)
         if not self.state.keeprunning:
-           Thread.launch(self.keep)
+            launch(self.keep)
         first(self.cfg)
-        Thread.launch(
+        launch(
             self.doconnect,
             self.cfg.server or "localhost",
             self.cfg.nick,
@@ -561,7 +561,7 @@ def cb_privmsg(evt):
         if evt.text:
             evt.text = evt.text[0].lower() + evt.text[1:]
         if evt.text:
-            Thread.launch(Commands.command, evt)
+            launch(Commands.command, evt)
 
 
 def cb_quit(evt):

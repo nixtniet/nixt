@@ -13,7 +13,7 @@ from random import SystemRandom
 from nixt.brokers import Broker
 from nixt.message import Message
 from nixt.persist import first, ident, write
-from nixt.utility import Repeater
+from nixt.threads import Repeater
 
 
 'defines'

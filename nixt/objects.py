@@ -239,6 +239,7 @@ def skip(obj, chars="_"):
         res[key] = value
     return res
 
+
 def typed(obj, key, val):
     "assign proper types."
     try:

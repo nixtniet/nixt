@@ -15,7 +15,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 from nixt.objects import Default, Object
 from nixt.persist import Main, Workdir, first
-from nixt.threads import Thread
+from nixt.threads import launch
 
 
 def configure(cfg):
@@ -58,7 +58,7 @@ class REST(HTTPServer, Object):
 
     def start(self):
         self._status = "ok"
-        Thread.launch(self.serve_forever)
+        launch(self.serve_forever)
 
     def request(self):
         self._last = time.time()
