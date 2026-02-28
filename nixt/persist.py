@@ -13,7 +13,7 @@ import threading
 
 from .encoder import dump, load
 from .objects import Default, fqn, keys, search, update
-from .utility import Statics, Time, Utils
+from .utility import Time, Utils
 
 
 lock = threading.RLock()
@@ -28,18 +28,21 @@ class Main(Default):
     wdr = f".{name}"
 
 
-class Cache(Statics):
+class Cache:
 
     paths = {}
 
+    @staticmethod
     def add(path, obj):
         "put object into cache."
         Cache.paths[path] = obj
 
+    @staticmethod
     def get(path):
         "get object from cache."
         return Cache.paths.get(path, None)
 
+    @staticmethod
     def sync(path, obj):
         "update cached object."
         try:
@@ -48,8 +51,9 @@ class Cache(Statics):
             Cache.add(path, obj)
 
 
-class Locate(Statics):
+class Locate:
 
+    @staticmethod
     def attrs(kind):
         "show attributes for kind of objects."
         result = []
@@ -57,9 +61,11 @@ class Locate(Statics):
             result.extend(keys(obj))
         return {x for x in result}
 
+    @staticmethod
     def count(kind):
         return len(list(Locate.find(kind)))
 
+    @staticmethod
     def find(kind, selector={}, removed=False, matching=False, nritems=None):
         "locate objects by matching atributes."
         nrs = 0
@@ -80,6 +86,7 @@ class Locate(Statics):
         else:
             return None, None
 
+    @staticmethod
     def fns(kind):
         "file names by kind of object."
         path = os.path.join(Main.wdr, "store", kind)
@@ -92,18 +99,21 @@ class Locate(Statics):
                     yield Workdir.strip(os.path.join(ddd, fll))
 
 
-class Workdir(Statics):
+class Workdir:
 
+    @staticmethod
     def cdir(path):
         "create directory."
         pth = pathlib.Path(path)
         if not os.path.exists(pth.parent):
             pth.parent.mkdir(parents=True, exist_ok=True)
 
+    @staticmethod
     def kinds():
         "show kind on objects in cache."
         return os.listdir(os.path.join(Main.wdr, "store"))
 
+    @staticmethod
     def long(name):
         "expand to fqn."
         if "." in name:
@@ -116,6 +126,7 @@ class Workdir(Statics):
                 break
         return res
 
+    @staticmethod
     def pidfile(name):
         "write pidfile."
         filename = os.path.join(Main.wdr, f"{name}.pid")
@@ -126,6 +137,7 @@ class Workdir(Statics):
         with open(filename, "w", encoding="utf-8") as fds:
             fds.write(str(os.getpid()))
 
+    @staticmethod
     def skel():
         "create directories."
         if not Main.wdr:
@@ -141,15 +153,18 @@ class Workdir(Statics):
         pth = pathlib.Path(filespath)
         pth.mkdir(parents=True, exist_ok=True)
 
+    @staticmethod
     def setwd(path):
         "enable writing to disk."
         Main.wdr = path
         Workdir.skel()
 
+    @staticmethod
     def strip(path):
         "strip filename from path."
         return path.split('store')[-1][1:]
 
+    @staticmethod
     def workdir(path=""):
         "return workdir."
         return os.path.join(Main.wdr, path)
@@ -161,6 +176,7 @@ def deleted(obj):
 
 
 def first(obj, selector={}):
+    "return first version of an object."
     result = sorted(
                     Locate.find(fqn(obj), selector),
                     key=lambda x: Time.fntime(x[0])

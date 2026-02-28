@@ -7,62 +7,67 @@
 import inspect
 
 
-from .brokers import Broker
+from .brokers import broker
 from .message import Message
 from .objects import parse
-from .utility import Statics
 
 
-class Commands(Statics):
+class Commands:
 
-    cmds = {}
-    names = {}
+    def  __init__(self):
+        self.cmds = {}
+        self.names = {}
 
-    def add(*args):
+    def add(self, *args):
         "add functions to commands."
         for func in args:
             name = func.__name__
-            Commands.cmds[name] = func
-            Commands.names[name] = func.__module__.split(".")[-1]
+            self.cmds[name] = func
+            self.names[name] = func.__module__.split(".")[-1]
 
-    def cmd(text):
-        "parse text for command and run it."
-        for txt in text.split(" ! "):
-            evt = Message()
-            evt.text = txt
-            evt.type = "command"
-            Commands.command(evt)
-            evt.wait()
-        return evt
-
-    def command(evt):
-        "command callback."
-        parse(evt, evt.text)
-        func = Commands.get(evt.cmd)
-        if func:
-            func(evt)
-            bot = Broker.get(evt.orig)
-            if bot:
-                bot.display(evt)
-        evt.ready()
-
-    def get(cmd):
+    def get(self, cmd):
         "get function for command."
-        return Commands.cmds.get(cmd, None)
+        return self.cmds.get(cmd, None)
 
-    def has(cmd):
+    def has(self, cmd):
         "whether cmd is registered."
-        return cmd in Commands.cmds
+        return cmd in self.cmds
 
-    def scan(module):
+    def scan(self, module):
         "scan a module for functions with event as argument."
         for key, cmdz in inspect.getmembers(module, inspect.isfunction):
             if 'event' not in inspect.signature(cmdz).parameters:
                continue
-            Commands.add(cmdz)
+            self.add(cmdz)
+
+
+commands = Commands()
+
+
+def cmnd(text):
+    "parse text for command and run it."
+    for txt in text.split(" ! "):
+        evt = Message()
+        evt.text = txt
+        evt.type = "command"
+        command(evt)
+        evt.wait()
+    return evt
+
+
+def command(evt):
+    "command callback."
+    parse(evt, evt.text)
+    func = commands.get(evt.cmd)
+    if func:
+        func(evt)
+        bot = broker.get(evt.orig)
+        if bot:
+            bot.display(evt)
+    evt.ready()
 
 
 def __dir__():
     return (
-        'Commands',
+        'commands',
     )

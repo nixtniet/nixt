@@ -4,12 +4,12 @@
 "show bot in fleet"
 
 
-from nixt.brokers import Broker
+from nixt.brokers import broker
 from nixt.objects import fqn
 
 
 def flt(event):
-    clts = list(Broker.objs("announce"))
+    clts = list(broker.objs("announce"))
     if not clts:
         event.reply("no bots")
         return

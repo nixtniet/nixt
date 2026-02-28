@@ -7,11 +7,11 @@
 import unittest
 
 
-from nixt.package import Mods
+from nixt.package import mods
 
 
 class TestPackage(unittest.TestCase):
 
     def test_add(self):
-        Mods.add("mods", "mods")
-        self.assertTrue("mods" in Mods.dirs)
+        mods.add("mods", "mods")
+        self.assertTrue("mods" in mods.dirs)

@@ -4,44 +4,45 @@
 "an object for a string"
 
 
-from .utility import Statics
+class Broker:
 
+    def __init__(self):
+        self.objects = {}
 
-class Broker(Statics):
-
-    objects = {}
-
-    def add(obj):
+    def add(self, obj):
         "add object to the broker, key is repr(obj)."
-        Broker.objects[repr(obj)] = obj
+        self.objects[repr(obj)] = obj
 
-    def announce(txt):
+    def announce(self, txt):
         "announce text on all objects with an announce method."
-        for obj in Broker.objs("announce"):
+        for obj in self.objs("announce"):
             obj.announce(txt)
 
-    def get(origin):
+    def get(self, origin):
         "object by repr(obj)."
-        return Broker.objects.get(origin)
+        return self.objects.get(origin)
 
-    def objs(attr):
+    def objs(self, attr):
         "objects with a certain attribute."
-        for obj in Broker.objects.values():
+        for obj in self.objects.values():
             if attr in dir(obj):
                 yield obj
 
-    def has(obj):
-        "whether the Broker has object."
-        return repr(obj) in Broker.objects
+    def has(self, obj):
+        "whether the broker has object."
+        return repr(obj) in self.objects
 
-    def like(txt):
+    def like(self, txt):
         "all keys with a substring in their key."
-        for orig in Broker.objects:
+        for orig in self.objects:
             if txt in orig.split()[0]:
                 yield orig
 
 
+broker = Broker()
+
+
 def __dir__():
     return (
-        'Broker',
+        'broker',
     )

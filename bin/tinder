@@ -14,11 +14,11 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands
-from nixt.clients import Client
+from nixt.command import commands, command
+from nixt.handler import Client
 from nixt.message import Message
 from nixt.objects import fmt, parse 
-from nixt.package import Mods
+from nixt.package import mods
 from nixt.persist import Main, Workdir
 from nixt.threads import launch
 from nixt.utility import Time, Utils
@@ -47,7 +47,7 @@ class CLI(Client):
 
     def __init__(self):
         Client.__init__(self)
-        self.register("command", Commands.command)
+        self.register("command", command)
 
     def raw(self, txt):
         if "v" in Main.opts:
@@ -122,8 +122,8 @@ def payload(todo):
 
 def scanner(cfg):
     res = []
-    for name, mod in Mods.iter(Mods.list()):
-        Commands.scan(mod)
+    for name, mod in mods.iter(mods.list()):
+        commands.scan(mod)
         if "configure" in dir(mod):
             mod.configure(cfg)
         res.append((name, mod))
@@ -153,10 +153,10 @@ def main():
         shutil.rmtree(Main.wdr)
     parse(Main, " ".join(sys.argv[1:]))
     Workdir.setwd(Main.wdr)
-    Mods.add("modules", MODS.__path__[0])
+    mods.add("modules", MODS.__path__[0])
     if MODS2:
-        Mods.add("mods", MODS2.__path__[0])
-    Main.mods = Main.mods or Mods.list()
+        mods.add("mods", MODS2.__path__[0])
+    Main.mods = Main.mods or mods.list()
     scanner(Main)
     if "v" in Main.opts:
         banner()

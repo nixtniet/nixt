@@ -4,11 +4,11 @@
 "silence"
 
 
-from nixt.brokers import Broker
+from nixt.brokers import broker
 
 
 def sil(event):
-    bot = Broker.get(event.orig)
+    bot = broker.get(event.orig)
     if not bot:
         event.reply("no bot in fleet.")
         return
@@ -17,7 +17,7 @@ def sil(event):
 
 
 def lou(event):
-    bot = Broker.get(event.orig)
+    bot = broker.get(event.orig)
     if not bot:
         event.reply("no bot in fleet.")
         return

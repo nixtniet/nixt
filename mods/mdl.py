@@ -9,7 +9,7 @@ import logging
 import time
 
 
-from nixt.brokers import Broker
+from nixt.brokers import broker
 from nixt.message import Message
 from nixt.objects import Object, construct, keys
 from nixt.threads import Repeater
@@ -145,7 +145,7 @@ def cbnow(evt):
         nrtimes = int(delta/needed)
         txt += f"{getalias(nme)} {nrtimes} | "
     txt += SOURCE
-    for bot in Broker.objs("announce"):
+    for bot in broker.objs("announce"):
         bot.announce(txt)
 
 
@@ -168,7 +168,7 @@ def cbstats(evt):
             nryear,
             Time.elapsed(needed)
         )
-        for bot in Broker.objs("announce"):
+        for bot in broker.objs("announce"):
             bot.announce(txt)
 
 

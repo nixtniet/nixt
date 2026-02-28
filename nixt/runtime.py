@@ -11,14 +11,14 @@ import sys
 import time
 
 
-from .clients import Console
-from .command import Commands
+from .command import commands, cmnd, command
+from .handler import Console
 from .message import Message
 from .objects import edit, fmt, keys, merge, parse, skip, values, update 
-from .package import Mods
+from .package import mods
 from .persist import Main, Workdir, first, ident, write
 from .threads import launch
-from .utility import Log, Statics, Utils
+from .utility import Log, Utils
 
 
 from . import modules as MODS
@@ -34,7 +34,7 @@ class Line(Console):
 
     def __init__(self):
         super().__init__()
-        self.register("command", Commands.command)
+        self.register("command", command)
 
     def raw(self, text):
         "write to console."
@@ -59,8 +59,9 @@ class CSL(Line):
         return evt
 
 
-class Runtime(Statics):
+class Runtime:
     
+    @staticmethod
     def banner():
         "hello."
         tme = time.ctime(time.time()).replace("  ", " ")
@@ -72,6 +73,7 @@ class Runtime(Statics):
         ))
         sys.stdout.flush()
 
+    @staticmethod
     def boot(args):
         "in the beginning."
         parse(Main, args.txt)
@@ -82,16 +84,17 @@ class Runtime(Statics):
         if Main.noignore:
             Main.ignore = ""
         if Main.wdr:
-            Mods.add("modules", os.path.join(Main.wdr, "mods"))
+            mods.add("modules", os.path.join(Main.wdr, "mods"))
         if MODS:
-            Mods.add(MODS.__name__, MODS.__path__[0])
+            mods.add(MODS.__name__, MODS.__path__[0])
         if Main.local:
-            Mods.add('mods', 'mods')
+            mods.add('mods', 'mods')
         if Main.verbose:
             Runtime.banner()
         if Main.all:
-            Main.mods = Mods.list(Main.ignore)
+            Main.mods = mods.list(Main.ignore)
 
+    @staticmethod
     def daemon(verbose=False, nochdir=False):
         "run in the background."
         pid = os.fork()
@@ -113,6 +116,7 @@ class Runtime(Statics):
             os.chdir("/")
         os.nice(10)
 
+    @staticmethod
     def getargs():
         "parse commandline arguments."
         parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
@@ -129,6 +133,7 @@ class Runtime(Statics):
         parser.add_argument("--wdr", help='set working directory')
         return parser.parse_known_args()
 
+    @staticmethod
     def init(cfg, default=True):
         "scan named modules for commands."
         thrs = []
@@ -136,16 +141,18 @@ class Runtime(Statics):
            defs = cfg.default
         else:
            defs = ""
-        for name, mod in Mods.iter(cfg.mods or defs, cfg.ignore):
+        for name, mod in mods.iter(cfg.mods or defs, cfg.ignore):
             if "init" in dir(mod):
                 thrs.append((name, launch(mod.init)))
         if cfg.wait:
             for name, thr in thrs:
                 thr.join()
 
+    @staticmethod
     def out(txt):
         print(txt.encode('utf-8', 'replace').decode("utf-8"))
 
+    @staticmethod
     def privileges():
         "drop privileges."
         import getpass
@@ -154,6 +161,7 @@ class Runtime(Statics):
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
  
+    @staticmethod
     def scanner(cfg, default=True):
         "scan named modules for commands."
         res = []
@@ -161,17 +169,18 @@ class Runtime(Statics):
            defs = cfg.default
         else:
            defs = ""
-        for name, mod in Mods.iter(cfg.mods or defs or Mods.list(), cfg.ignore):
-            Commands.scan(mod)
+        for name, mod in mods.iter(cfg.mods or defs or mods.list(), cfg.ignore):
+            commands.scan(mod)
             if "configure" in dir(mod):
                 mod.configure(cfg)
             res.append((name, mod))
         return res
 
+    @staticmethod
     def shutdown():
         "call shutdown on modules."
         logging.debug("shutdown")
-        for mod in values(Mods.modules):
+        for mod in values(mods.modules):
             if "shutdown" in dir(mod):
                 try:
                     mod.shutdown()
@@ -198,8 +207,9 @@ class Runtime(Statics):
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
-class Scripts(Statics):
+class Scripts:
 
+    @staticmethod
     def background(args):
         "background script."
         Runtime.daemon(Main.verbose, Main.nochdir)
@@ -207,35 +217,38 @@ class Scripts(Statics):
         Runtime.boot(args)
         Workdir.pidfile(Main.name)
         Runtime.scanner(Main)
-        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
+        commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Runtime.init(Main)
         Utils.forever()
 
+    @staticmethod
     def console(args):
         "console script."
         import readline
         readline.redisplay()
         Runtime.boot(args)
         Runtime.scanner(Main, False)
-        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        Commands.cmd(Main.txt)
+        commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
+        cmnd(Main.txt)
         Runtime.init(Main, default=False)
         csl = CSL()
         csl.start()
         Utils.forever()
 
+    @staticmethod
     def control(args):
         "cli script."
         if len(sys.argv) == 1:
             return
         Runtime.boot(args)
-        Main.mods = Mods.list(Main.ignore)
+        Main.mods = mods.list(Main.ignore)
         Runtime.scanner(Main)
-        Commands.add(Cmd.cfg, Cmd.cmd, Cmd.mod, Cmd.srv, Cmd.ver)
-        evt = Commands.cmd(Main.txt)
+        commands.add(Cmd.cfg, Cmd.cmd, Cmd.mod, Cmd.srv, Cmd.ver)
+        evt = cmnd(Main.txt)
         for line in evt.result.values():
             Runtime.out(line)
 
+    @staticmethod
     def service(args):
         "service script."
         Runtime.privileges()
@@ -243,19 +256,20 @@ class Scripts(Statics):
         Runtime.boot(args)
         Workdir.pidfile(Main.name)
         Runtime.scanner(Main)
-        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
+        commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Runtime.init(Main)
         Utils.forever()
 
 
-class Cmd(Statics):
+class Cmd:
 
+    @staticmethod
     def cfg(event):
         if not event.args:
-            event.reply(f"cfg <{Mods.has('Config') or 'modulename'}>")
+            event.reply(f"cfg <{mods.has('Config') or 'modulename'}>")
             return
         name = event.args[0]
-        mod = Mods.get(name)
+        mod = mods.get(name)
         if not mod:
             event.reply(f"no {name} module found.")
             return
@@ -277,24 +291,28 @@ class Cmd(Statics):
         write(skip(cfg), fnm)
         event.reply("ok")
 
+    @staticmethod
     def cmd(event):
         "list available commands."
-        event.reply(",".join(sorted(Commands.names or Commands.cmds)))
+        event.reply(",".join(sorted(commands.names or commands.cmds)))
 
+    @staticmethod
     def mod(event):
         "list available commands."
-        mods = Mods.list(Main.ignore)
-        if not mods:
+        modules = mods.list(Main.ignore)
+        if not modules:
             event.reply("no modules available")
             return
         event.reply(mods)
 
+    @staticmethod
     def srv(event):
         "generate systemd service file."
         import getpass
         name = getpass.getuser()
         event.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
 
+    @staticmethod
     def ver(event):
         "show verson."
         event.reply(f"{Main.name.upper()} {Main.version}")
