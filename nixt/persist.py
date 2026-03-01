@@ -146,6 +146,7 @@ def pidfile(name):
     with open(filename, "w", encoding="utf-8") as fds:
         fds.write(str(os.getpid()))
 
+
 def skel():
     "create directories."
     if not Main.wdr:

@@ -120,6 +120,7 @@ def launch(func, *args, **kwargs):
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
 
+
 def name(obj):
     "string of function/method."
     if inspect.ismethod(obj):

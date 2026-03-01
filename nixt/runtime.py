@@ -125,20 +125,20 @@ def daemon(verbose=False, nochdir=False):
 
 
 def getargs():
-        "parse commandline arguments."
-        parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
-        parser.add_argument("-a", "--all", action="store_true", help="load all modules")
-        parser.add_argument("-c", "--console", action="store_true", help="start console")
-        parser.add_argument("-d", "--daemon", action="store_true", help="start background daemon")
-        parser.add_argument("-l", "--level", default=Main.level, help='set loglevel')
-        parser.add_argument("-m", "--mods", default="", help='modules to load')
-        parser.add_argument("-n", "--noignore", action="store_true", help="disable ignore")
-        parser.add_argument("-s", "--service", action="store_true", help="start service")
-        parser.add_argument("-v", "--verbose", action='store_true',help='enable verbose')
-        parser.add_argument("-w", "--wait", action='store_true',help='wait for services to start')
-        parser.add_argument("--local", action="store_true", help="use local mods directory")
-        parser.add_argument("--wdr", help='set working directory')
-        return parser.parse_known_args()
+    "parse commandline arguments."
+    parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
+    parser.add_argument("-a", "--all", action="store_true", help="load all modules")
+    parser.add_argument("-c", "--console", action="store_true", help="start console")
+    parser.add_argument("-d", "--daemon", action="store_true", help="start background daemon")
+    parser.add_argument("-l", "--level", default=Main.level, help='set loglevel')
+    parser.add_argument("-m", "--mods", default="", help='modules to load')
+    parser.add_argument("-n", "--noignore", action="store_true", help="disable ignore")
+    parser.add_argument("-s", "--service", action="store_true", help="start service")
+    parser.add_argument("-v", "--verbose", action='store_true',help='enable verbose')
+    parser.add_argument("-w", "--wait", action='store_true',help='wait for services to start')
+    parser.add_argument("--local", action="store_true", help="use local mods directory")
+    parser.add_argument("--wdr", help='set working directory')
+    return parser.parse_known_args()
 
 
 def init(cfg, default=True):
@@ -156,6 +156,7 @@ def init(cfg, default=True):
             thr.join()
 
 def out(txt):
+    "output text to screen."
     print(txt.encode('utf-8', 'replace').decode("utf-8"))
 
 
