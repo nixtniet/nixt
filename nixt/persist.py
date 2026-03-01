@@ -57,13 +57,16 @@ class Cache:
             Cache.add(path, obj)
 
 
+cache = Cache()
+
+
 "locate"
 
 
 def attrs(kind):
     "show attributes for kind of objects."
     result = []
-    for pth, obj in find(kind, nritems=1):
+    for pth, obj in find(kind):
         result.extend(keys(obj))
     return {x for x in result}
 
@@ -76,11 +79,11 @@ def find(kind, selector={}, removed=False, matching=False, nritems=None):
     "locate objects by matching atributes."
     nrs = 0
     for pth in fns(long(kind)):
-        obj = Cache.get(pth)
+        obj = cache.get(pth)
         if not obj:
             obj = Default()
             read(obj, pth)
-            Cache.add(pth, obj)
+            cache.add(pth, obj)
         if not removed and deleted(obj):
             continue
         if selector and not search(obj, selector, matching):
@@ -164,6 +167,7 @@ def setwd(path):
     Main.wdr = path
     skel()
 
+
 def strip(path):
     "strip filename from path."
     return path.split('store')[-1][1:]
@@ -227,7 +231,7 @@ def write(obj, path="", base="store"):
         cdir(pth)
         with open(pth, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)
-        Cache.sync(path, obj)
+        cache.sync(path, obj)
         return path
 
 
@@ -238,6 +242,7 @@ def __dir__():
     return (
         'Main',
         'attrs',
+        'cache',
         'cdir',
         'find',
         'first',
