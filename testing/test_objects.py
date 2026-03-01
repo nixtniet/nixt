@@ -5,7 +5,7 @@ import unittest
 
 
 from nixt.methods import fmt
-from nixt.objects import Object, items, keys, values, update
+from nixt.objects import *
 
 
 import nixt.objects
@@ -70,23 +70,27 @@ attrs2 = [
 
 class TestObject(unittest.TestCase):
 
-    def test_moduleinterface(self):
-        print(dir(TARGET))
-        self.assertTrue(dir(TARGET) == attrs1)
-
-    def test_objectinterface(self):
-        obj = Object()
-        print(dir(obj))
-        self.assertTrue(dir(obj) == attrs2)
             
-    def test_constructor(self):
+    def test_clear(self):
         obj = Object()
-        self.assertTrue(type(obj), Object)
+        obj.a = "b"
+        clear(obj)
+        self.assertTrue("a" not in obj)
 
     def test_class(self):
         obj = Object()
         clz = obj.__class__()
         self.assertTrue("Object" in str(type(clz)))
+
+    def test_constructor(self):
+        obj = Object()
+        self.assertTrue(type(obj), Object)
+
+    def test_copy(self):
+        obj = Object()
+        obj.a = "b"
+        oobj = copy(obj)
+        self.assertEqual(oobj.a, "b")
 
     def test_contains(self):
         obj = Object()
@@ -116,6 +120,11 @@ class TestObject(unittest.TestCase):
         obj.key = "value"
         self.assertEqual(obj.__getattribute__("key"), "value")
 
+    def test_getattr(self):
+        obj = Object()
+        obj.key = "value"
+        self.assertEqual(getattr(obj, "key"), "value")
+
     def test_hash__(self):
         obj = Object()
         hsj = hash(obj)
@@ -124,6 +133,11 @@ class TestObject(unittest.TestCase):
     def test_init(self):
         obj = Object()
         self.assertTrue(type(Object.__init__(obj)), Object)
+
+    def test_interface(self):
+        obj = Object()
+        print(dir(obj))
+        self.assertTrue(dir(obj) == attrs2)
 
     def test_iter(self):
         obj = Object()
@@ -135,10 +149,10 @@ class TestObject(unittest.TestCase):
             ],
         )
 
-    def test_getattr(self):
+    def test_items(self):
         obj = Object()
         obj.key = "value"
-        self.assertEqual(getattr(obj, "key"), "value")
+        self.assertEqual(list(items(obj)), [("key", "value")])
 
     def test_keys(self):
         obj = Object()
@@ -149,10 +163,23 @@ class TestObject(unittest.TestCase):
         obj = Object()
         self.assertEqual(len(obj), 0)
 
-    def test_items(self):
+    def test_modinterface(self):
+        print(dir(TARGET))
+        self.assertTrue(dir(TARGET) == attrs1)
+
+    def test_pop(self):
         obj = Object()
-        obj.key = "value"
-        self.assertEqual(list(items(obj)), [("key", "value")])
+        obj.a = "b"
+        val = pop(obj, "a")
+        self.assertEqual(val, "b")
+        self.assertTrue(not obj)
+
+    def test_popitem(self):
+        obj = Object()
+        obj.a = "b"
+        val = popitem(obj)
+        self.assertEqual(val, ("a", "b"))
+        self.assertTrue(not obj)
 
     def test_register(self):
         obj = Object()
