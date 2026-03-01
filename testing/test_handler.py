@@ -9,6 +9,7 @@ import unittest
 
 from nixt.handler import Client, Handler
 from nixt.message import Message
+from nixt.objects import values
 
 
 buffer = []
@@ -123,5 +124,16 @@ class TestClient(unittest.TestCase):
      
     def test_put(self):
         evt = Message()
-        evt.type = "hello"
+        evt.text = "hello"
+        evt.kind = "hello"
         self.clt.put(evt)
+        evt.wait()
+        self.assertTrue("hello" in values(evt.result))
+
+    def test_raw(self):
+        evt = Message()
+        evt.text = "hello"
+        evt.kind = "hello"
+        self.clt.put(evt)
+        evt.wait()
+        self.assertTrue("hello" in values(evt.result))
