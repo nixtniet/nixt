@@ -38,9 +38,9 @@ def dumps(*args, **kw):
     return json.dumps(*args, **kw)
 
 
-def load(s, *args, **kw):
+def load(*args, **kw):
     "load object from disk."
-    return json.load(s, *args, **kw)
+    return json.load(*args, **kw)
 
 
 def loads(s, *args, **kw):

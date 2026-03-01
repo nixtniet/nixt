@@ -1,17 +1,31 @@
 # This file is placed in the Public Domain.
 
 
+import os
 import unittest
 
 
-from nixt.encoder import dumps, loads
+from nixt.encoder import dump, dumps, load, loads
 from nixt.objects import Object, update
+from nixt.persist import workdir
 
 
 VALIDJSON = '{"test": "bla"}'
 
 
 class TestEncoder(unittest.TestCase):
+
+    def test_dump(self):
+        obj = Object()
+        obj.test = "bla"
+        path = workdir("test")
+        with open(path, "w", encoding="utf-8") as file:
+            dump(obj, file)
+        self.assertTrue(os.path.exists(path))
+        oobj = Object()
+        with open(path, "r", encoding="utf-8") as file:
+            oobj = load(file)
+        self.assertTrue(oobj["test"] == "bla")
 
     def test_dumps(self):
         obj = Object()
@@ -20,6 +34,18 @@ class TestEncoder(unittest.TestCase):
 
 
 class TestDecoder(unittest.TestCase):
+
+    def test_load(self):
+        obj = Object()
+        obj.test = "bla"
+        path = workdir("test2")
+        with open(path, "w", encoding="utf-8") as file:
+            dump(obj, file)
+        self.assertTrue(os.path.exists(path))
+        oobj = Object()
+        with open(path, "r", encoding="utf-8") as file:
+           oobj = load(file)
+        self.assertTrue(oobj["test"] == "bla")
 
     def test_loads(self):
         obj = Object()
