@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.handler import Client, Handler
+from nixt.handler import Client, Console, Handler, Output
 from nixt.message import Message
 from nixt.objects import values
 
@@ -16,6 +16,18 @@ buffer = []
 
 
 class MyClient(Client):
+
+    def raw(self, text):
+        buffer.append(text)
+
+
+class MyConsole(Console):
+
+    def raw(self, text):
+        buffer.append(text)
+
+
+class MyOutput(Output):
 
     def raw(self, text):
         buffer.append(text)
@@ -35,6 +47,7 @@ class TestHandler(unittest.TestCase):
     hdl = Handler()
 
     def setUp(self):
+        buffer = []
         self.hdl.register("hello", hello)
         self.hdl.start()
 
@@ -81,6 +94,7 @@ class TestHandler(unittest.TestCase):
 class TestClient(unittest.TestCase):
 
     def setUp(self):
+        buffer = []
         self.clt = MyClient()
         self.clt.silent = False
         self.clt.register("hello", hello)
@@ -137,3 +151,65 @@ class TestClient(unittest.TestCase):
         self.clt.put(evt)
         evt.wait()
         self.assertTrue("hello" in values(evt.result))
+
+
+class TestConsole(unittest.TestCase):
+
+    def setUp(self):
+        buffer = []
+        self.clt = MyConsole()
+        self.clt.silent = False
+        self.clt.register("hello", hello)
+        self.clt.start()
+
+    def shutDown(self):
+        self.clt.stop()
+
+    def test_loop(self):
+        evt = Message()
+        evt.kind = "hello"
+        self.clt.put(evt)
+        evt.wait()
+        self.assertTrue(evt._ready.is_set())
+
+    def test_poll(self):
+        clt = Console()
+        evt = Message()
+        evt.text = "okdan"
+        clt.iqueue.put(evt)
+        event = clt.poll()
+        self.assertTrue(event is evt)
+
+
+class TestOutput(unittest.TestCase):
+
+    def setUp(self):
+        buffer = []
+        self.clt = MyOutput()
+        self.clt.silent = False
+        self.clt.register("hello", hello)
+        self.clt.start()
+
+    def shutDown(self):
+        self.clt.stop()
+
+    def test_output(self):
+        evt = Message()
+        evt.text = "okdan"
+        self.clt.put(evt)
+        self.clt.oqueue.join()
+        self.assertTrue(True)
+
+    def test_start(self):
+        self.assertTrue(self.clt.running.is_set())
+    
+    def test_stop(self):
+        self.clt.stop()
+        self.assertTrue(not self.clt.running.is_set())
+
+    def test_wait(self):
+        evt = Message()
+        evt.text = "okdan"
+        self.clt.put(evt)
+        self.clt.wait()
+        self.assertTrue(True)
