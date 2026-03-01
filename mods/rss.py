@@ -26,7 +26,7 @@ from urllib.parse import quote_plus, urlencode
 
 from nixt.methods import fmt, fqn
 from nixt.objects import Default, update
-from nixt.persist import Main, count, find, ident, last, write
+from nixt.persist import count, find, ident, last, write
 from nixt.threads import Repeater, launch
 from nixt.utility import elapsed, fntime, spl
 
@@ -41,7 +41,7 @@ def shutdown():
     Run.fetcher.stop()
 
 
-class Cfg(Default):
+class Config(Default):
 
     polltime = 300
 
@@ -67,7 +67,7 @@ class Fetcher:
         State.seenfn = last(State.seen) or ident(State.seen)
         State.modifiedfn = last(State.modified) or ident(State.modified)
         if repeat:
-            repeater = Repeater(Cfg.polltime, self.run)
+            repeater = Repeater(Config.polltime, self.run)
             repeater.start()
 
     def stop(self):
@@ -647,7 +647,7 @@ def rss(event):
 
 
 def syn(event):
-    if Main.debug:
+    if Cfg.debug:
         return
     fetcher = Fetcher()
     fetcher.start(False)

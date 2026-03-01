@@ -4,9 +4,6 @@
 "a clean namespace"
 
 
-import types
-
-
 class Object:
 
     def __contains__(self, key):
@@ -66,11 +63,7 @@ def get(obj, key, default=None):
 
 def items(obj):
     "object's key,value pairs."
-    if isinstance(obj, type):
-        return [(x, getattr(obj, x)) for x in dir(obj) if not x.startswith("_")] 
     if isinstance(obj, dict):
-        return obj.items()
-    if isinstance(obj, types.MappingProxyType):
         return obj.items()
     return obj.__dict__.items()
 
@@ -78,8 +71,6 @@ def items(obj):
 def keys(obj):
     "object's keys."
     if isinstance(obj, dict):
-        return obj.keys()
-    if isinstance(obj, types.MappingProxyType):
         return obj.keys()
     return obj.__dict__.keys()
 
@@ -96,22 +87,8 @@ def popitem(obj):
 
 def update(obj, data, empty=True):
     "update object,"
-    if isinstance(obj, type):
-        if isinstance(data, type):
-            for key in dir(data):
-                if '_' in key:
-                    continue
-                value = getattr(data, key, None)
-                if value:
-                    setattr(obj, key, value)
-        else:
-            for key, value in items(data):
-                setattr(obj, key, value)
-    elif isinstance(obj, dict):
+    if isinstance(obj, dict):
         obj.update(data)
-    elif isinstance(obj.__dict__, types.MappingProxyType):
-        for key, value in data.items():
-            setattr(obj, key, value)
     elif isinstance(data, dict):
         obj.__dict__.update(data)
     else:
@@ -122,11 +99,6 @@ def values(obj):
     "object's values."
     if isinstance(obj, dict):
         return obj.values()
-    elif isinstance(obj.__dict__, types.MappingProxyType):
-        res = []
-        for key in obj.__dict__:
-            res.append(obj[key])
-        return res
     return obj.__dict__.values()
 
 

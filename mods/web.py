@@ -14,26 +14,25 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from nixt.objects import Default, Object
-from nixt.persist import Main
 from nixt.threads import launch
 from nixt.utility import where
 
 
 def init():
-    Cfg.path = os.path.join(where(Object), "nucleus")
+    Config.path = os.path.join(where(Object), "nucleus")
     if not os.path.exists(os.path.join(Cfg.path, 'index.html')):
         logging.warning("no index.html")
         return
     try:
-        server = HTTP((Cfg.hostname, int(Cfg.port)), HTTPHandler)
+        server = HTTP((Config.hostname, int(Config.port)), HTTPHandler)
         server.start()
-        logging.warning("http://%s:%s", Cfg.hostname, Cfg.port)
+        logging.warning("http://%s:%s", Config.hostname, Config.port)
         return server
     except OSError as ex:
         logging.warning("%s", str(ex))
 
 
-class Cfg(Default):
+class Config(Default):
 
     hostname = "localhost"
     path = ""
@@ -100,11 +99,11 @@ class HTTPHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if "favicon" in self.path:
             return
-        if Main.debug:
+        if Cfg.debug:
             return
         if self.path == "/":
             self.path = "index.html"
-        self.path = Cfg.path + os.sep + self.path
+        self.path = Config.path + os.sep + self.path
         if not os.path.exists(self.path):
             self.write_header("text/html")
             self.send_response(404)

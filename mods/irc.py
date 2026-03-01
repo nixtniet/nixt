@@ -18,7 +18,7 @@ from nixt.handler import Output
 from nixt.message import Message
 from nixt.methods import fmt
 from nixt.objects import Default, Object
-from nixt.persist import Main, first
+from nixt.persist import first
 from nixt.threads import launch
 from nixt.utility import pkgname 
 
@@ -35,9 +35,9 @@ def init():
     return irc
 
 
-class Cfg(Default):
+class Config(Default):
 
-    name = Main.name or pkgname(Object)
+    name = Cfg.name or pkgname(Object)
     channel = f"#{name}"
     commands = True
     control = "!"
@@ -97,7 +97,7 @@ class IRC(Output):
         Output.__init__(self)
         self.buffer = []
         self.cache = {}
-        self.cfg = Cfg()
+        self.cfg = Config()
         self.channels = []
         self.events = Object()
         self.events.authed = threading.Event()
@@ -543,7 +543,7 @@ def cb_001(evt):
 def cb_notice(evt):
     bot = broker.retrieve(evt.orig)
     if evt.text.startswith("VERSION"):
-        txt = f"\001VERSION {Cfg.name.upper()} {Cfg.version} - {bot.cfg.username}\001"
+        txt = f"\001VERSION {bot.cfg.name.upper()} {bot.cfg.version} - {bot.cfg.username}\001"
         bot.docommand("NOTICE", evt.channel, txt)
 
 
@@ -606,7 +606,7 @@ def pwd(event):
 
 
 def rlog(txt):
-    for ign in Cfg.ignore:
+    for ign in Config.ignore:
         if ign in str(txt):
             return
     logging.debug(txt)

@@ -14,7 +14,6 @@ import time
 
 from nixt.brokers import broker
 from nixt.objects import Default
-from nixt.persist import Main
 from nixt.threads import launch
 
 
@@ -25,7 +24,7 @@ def init():
     return udp
 
 
-class Cfg:
+class Config:
 
     host = "localhost"
     port = 5500
@@ -45,13 +44,13 @@ class UDP:
 
     def output(self, txt, addr=None):
         if addr:
-            Cfg.addr = addr
+            Config.addr = addr
         for bot in broker.objs("announce"):
             bot.announce(txt.replace("\00", ""))
 
     def loop(self):
         try:
-            self._sock.bind((Cfg.host, Cfg.port))
+            self._sock.bind((Config.host, Config.port))
         except socket.gaierror:
             return
         self.ready.set()
@@ -69,7 +68,7 @@ class UDP:
         self._sock.settimeout(0.01)
         self._sock.sendto(
                           bytes("exit", "utf-8"),
-                          (Cfg.host, Cfg.port)
+                          (Config.host, Config.port)
                          )
 
     def start(self):
@@ -77,7 +76,7 @@ class UDP:
 
 
 def toudp(host, port, txt):
-    if Main.debug:
+    if Config.debug:
         return
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))
@@ -85,7 +84,7 @@ def toudp(host, port, txt):
 
 def udp(event):
     if event.rest:
-        toudp(Cfg.host, Cfg.port, event.rest)
+        toudp(Config.host, Config.port, event.rest)
         return
     if not select.select(
                          [sys.stdin, ],
@@ -114,6 +113,6 @@ def udp(event):
                 stop = True
                 break
             size += len(txt)
-            toudp(Cfg.host, Cfg.port, txt)
+            toudp(Config.host, Config.port, txt)
         if stop:
             break
