@@ -9,7 +9,6 @@ import logging
 import time
 
 
-from nixt.brokers import broker
 from nixt.message import Message
 from nixt.objects import Object, construct, keys
 from nixt.threads import Repeater

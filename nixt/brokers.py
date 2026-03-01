@@ -9,18 +9,10 @@ class Broker:
     def __init__(self):
         self.objects = {}
 
-    def add(self, obj):
-        "add object to the broker, key is repr(obj)."
-        self.objects[repr(obj)] = obj
-
     def announce(self, txt):
         "announce text on all objects with an announce method."
         for obj in self.objs("announce"):
             obj.announce(txt)
-
-    def get(self, origin):
-        "object by repr(obj)."
-        return self.objects.get(origin)
 
     def objs(self, attr):
         "objects with a certain attribute."
@@ -38,8 +30,13 @@ class Broker:
             if txt in orig.split()[0]:
                 yield orig
 
+    def retrieve(self, origin):
+        "object by repr(obj)."
+        return self.objects.get(origin)
 
-broker = Broker()
+    def store(self, obj):
+        "add object to the broker, key is repr(obj)."
+        self.objects[repr(obj)] = obj
 
 
 def __dir__():

@@ -11,12 +11,13 @@ import sys
 import time
 
 
-from .command import cmds, cmnd, command
+from .brokers import Broker
+from .command import Commands
 from .handler import Console
 from .message import Message
 from .methods import edit, fmt, merge, parse, skip
-from .objects import keys, values, update 
-from .package import mods
+from .objects import Object, keys, values, update 
+from .package import Mods
 from .persist import Main, first, ident, pidfile, setwd, write
 from .threads import launch
 from .utility import forever, level
@@ -34,6 +35,12 @@ Main.version = 455
 Main.wdr = os.path.expanduser(f"~/.{Main.name}")
 
 
+env = Object()
+env.broker = broker = Broker()
+env.cmds = cmds = Commands()
+env.mods = mods = Mods()
+
+
 "clients"
 
 
@@ -42,6 +49,7 @@ class Line(Console):
     def __init__(self):
         super().__init__()
         self.register("command", command)
+        broker.store(self)
 
     def raw(self, text):
         "write to console."
@@ -91,15 +99,40 @@ def boot(args):
     if Main.noignore:
         Main.ignore = ""
     if Main.wdr:
-        mods.add("modules", os.path.join(Main.wdr, "mods"))
+        mods.dir("modules", os.path.join(Main.wdr, "mods"))
     if MODS:
-        mods.add(MODS.__name__, MODS.__path__[0])
+        mods.dir(MODS.__name__, MODS.__path__[0])
     if Main.local:
-        mods.add('mods', 'mods')
+        mods.dir('mods', 'mods')
     if Main.verbose:
         banner()
     if Main.all:
         Main.mods = mods.list(Main.ignore)
+
+
+def cmnd(text):
+    "parse text for command and run it."
+    results = {}
+    for txt in text.split(" ! "):
+        evt = Message()
+        evt.text = txt
+        evt.type = "command"
+        command(evt)
+        evt.wait()
+        results.update(evt.result)
+    return results.values()
+
+
+def command(evt):
+    "command callback."
+    parse(evt, evt.text)
+    func = cmds.get(evt.cmd)
+    if func:
+        func(evt)
+        bot = broker.retrieve(evt.orig)
+        if bot:
+            bot.display(evt)
+    evt.ready()
 
 
 def daemon(verbose=False, nochdir=False):
@@ -148,7 +181,7 @@ def init(cfg, default=True):
         defs = cfg.default
     else:
         defs = ""
-    for name, mod in mods.iter(cfg.mods or defs, cfg.ignore):
+    for name, mod in mods.iter(cfg.mods or defs, cfg.ignore, env):
         if "init" in dir(mod):
             thrs.append((name, launch(mod.init)))
     if cfg.wait:
@@ -176,7 +209,7 @@ def scanner(cfg, default=True):
        defs = cfg.default
     else:
        defs = ""
-    for name, mod in mods.iter(cfg.mods or defs or mods.list(), cfg.ignore):
+    for name, mod in mods.iter(cfg.mods or defs or mods.list(), cfg.ignore, env):
         cmds.scan(mod)
         if "configure" in dir(mod):
             mod.configure(cfg)
@@ -237,6 +270,7 @@ def console(args):
     cmds.add(cmd, mod, ver)
     init(Main, default=False)
     csl = CSL()
+    csl.start()
     csl.start()
     for txt in cmnd(Main.txt):
         out(txt)
@@ -309,7 +343,7 @@ def mod(event):
     if not modules:
         event.reply("no modules available")
         return
-    event.reply(mods)
+    event.reply(modules)
 
 
 def srv(event):

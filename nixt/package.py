@@ -4,11 +4,13 @@
 "module management"
 
 
+import importlib
 import importlib.util
 import logging
 import os
 
 
+from .objects import items
 from .utility import spl
 
 
@@ -18,7 +20,7 @@ class Mods:
         self.dirs = {}
         self.modules = {}
 
-    def add(self, name, path):
+    def dir(self, name, path):
         "add modules directory." 
         if os.path.exists(path):
             self.dirs[name] = path
@@ -37,7 +39,7 @@ class Mods:
                 result.append(mod.__name__.split(".")[-1])
         return ",".join(result)
 
-    def importer(self, name, pth=""):
+    def importer(self, name, pth="", env={}):
         "import module by path."
         if pth and os.path.exists(pth):
             spec = importlib.util.spec_from_file_location(name, pth)
@@ -51,10 +53,12 @@ class Mods:
            logging.debug(f"can't load {name} module from spec")
            return None
         self.modules[name] = mod
+        for key, value in items(env):
+            setattr(mod, key, value)
         spec.loader.exec_module(mod)
         return mod
 
-    def iter(self, modlist, ignore=""):
+    def iter(self, mods, ignore="", env={}):
         "loop over modules."
         for pkgname, path in self.dirs.items():
             if not os.path.exists(path):
@@ -65,14 +69,14 @@ class Mods:
                 if not fnm.endswith(".py"):
                     continue
                 name = fnm[:-3]
-                if name not in spl(modlist):
+                if name not in spl(mods):
                     continue
                 if ignore and name in spl(ignore):
                     continue
                 modname = f"{pkgname}.{name}"
                 mod =  self.modules.get(modname, None)
                 if not mod:
-                    mod = self.importer(modname, os.path.join(path, fnm))
+                    mod = self.importer(modname, os.path.join(path, fnm), env)
                 if mod:
                     yield name, mod
 
@@ -90,9 +94,6 @@ class Mods:
 
     def pkg(self, package):
         return self.add(package.__name__, package.__path__[0])
-
-
-mods = Mods()
 
 
 def __dir__():

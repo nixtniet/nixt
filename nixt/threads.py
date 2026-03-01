@@ -39,9 +39,10 @@ class Task(threading.Thread):
             super().join(timeout or None)
             return self.result
         except (KeyboardInterrupt, EOFError) as ex:
+            logging.exception(ex)
             if self.event and self.event.ready:
                 self.event.ready()
-            raise ex
+            _thread.interrupt_main()
 
     def run(self):
         "run function."

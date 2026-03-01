@@ -10,7 +10,6 @@ import logging
 from random import SystemRandom
 
 
-from nixt.brokers import broker
 from nixt.message import Message
 from nixt.persist import first, ident, write
 from nixt.threads import Repeater
@@ -76,7 +75,7 @@ def wsd(event):
         state.seen = []
         txt = "* reset"
     state.dump()
-    for bot in broker.objs("announce"):
+    for bot in kernel.objs("announce"):
         bot.announce(txt.strip()[2:])
 
 

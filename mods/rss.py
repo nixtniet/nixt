@@ -24,7 +24,6 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.brokers import broker
 from nixt.methods import fmt, fqn
 from nixt.objects import Default, update
 from nixt.persist import Main, count, find, ident, last, write

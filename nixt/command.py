@@ -7,11 +7,6 @@
 import inspect
 
 
-from .brokers import broker
-from .message import Message
-from .methods import parse
-
-
 class Commands:
 
     def  __init__(self):
@@ -41,37 +36,8 @@ class Commands:
             self.add(cmdz)
 
 
-cmds = Commands()
-
-
-def cmnd(text):
-    "parse text for command and run it."
-    results = {}
-    for txt in text.split(" ! "):
-        evt = Message()
-        evt.text = txt
-        evt.type = "command"
-        command(evt)
-        evt.wait()
-        results.update(evt.result)
-    return results.values()
-
-
-def command(evt):
-    "command callback."
-    parse(evt, evt.text)
-    func = cmds.get(evt.cmd)
-    if func:
-        func(evt)
-        bot = broker.get(evt.orig)
-        if bot:
-            bot.display(evt)
-    evt.ready()
-
-
 def __dir__():
     return (
         'cmnd',
         'cmds',
-        'command'
     )

@@ -10,7 +10,6 @@ import threading
 import _thread
 
 
-from .brokers import broker
 from .threads import launch
 
 
@@ -66,7 +65,6 @@ class Client(Handler):
         self.olock = threading.RLock()
         self.silent = False
         self.stopped = threading.Event()
-        broker.add(self)
 
     def announce(self, text):
         "announce text to all channels."
@@ -78,6 +76,7 @@ class Client(Handler):
         with self.olock:
             for tme in event.result:
                 self.dosay(event.channel, event.result.get(tme))
+            event.ready()
 
     def dosay(self, channel, text):
         "say called by display."
