@@ -10,18 +10,27 @@ from nixt.encoder import dumps, loads
 from nixt.objects import Object, update
 
 
+result = []
+
+
+def announce(txt):
+    result.append(txt)
+
+
 class TestBroker(unittest.TestCase):
 
     def test_add(self):
-        clt = Client()
-        self.assertTrue(broker.has(clt))
-
-    def test_addobj(self):
         obj = Object()
         broker.add(obj)
         self.assertTrue(broker.has(obj))
-    
-    def test_getobj(self):
+
+    def test_announce(self):
+        clt = Client()
+        clt.announce = announce
+        broker.announce("test")
+        self.assertTrue("test" in result)
+
+    def test_get(self):
         obj = Object()
         broker.add(obj)
         oobj = broker.get(repr(obj))
