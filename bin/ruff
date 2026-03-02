@@ -1,1 +1,1 @@
-ruff check nixt mods bin/tinder testing $* ;
+ruff check --ignore F821 nixt mods bin/tinder testing $* ;

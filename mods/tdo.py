@@ -27,7 +27,7 @@ def dne(event):
     for fnm, obj in db.find('todo', selector):
         nmr += 1
         obj.__deleted__ = True
-        write(obj, fnm)
+        db.write(obj, fnm)
         event.reply("ok")
         break
     if not nmr:

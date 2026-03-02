@@ -7,8 +7,11 @@ import unittest
 
 from nixt.encoder import dump, dumps, load, loads
 from nixt.objects import Object, update
-from nixt.persist import workdir
+from nixt.persist import Persist
 
+
+db = Persist()
+db.setwd(".test")
 
 VALIDJSON = '{"test": "bla"}'
 
@@ -18,7 +21,8 @@ class TestEncoder(unittest.TestCase):
     def test_dump(self):
         obj = Object()
         obj.test = "bla"
-        path = workdir("test")
+        path = db.workdir("test")
+        print(path)
         with open(path, "w", encoding="utf-8") as file:
             dump(obj, file)
         self.assertTrue(os.path.exists(path))
@@ -38,7 +42,7 @@ class TestDecoder(unittest.TestCase):
     def test_load(self):
         obj = Object()
         obj.test = "bla"
-        path = workdir("test2")
+        path = db.workdir("test")
         with open(path, "w", encoding="utf-8") as file:
             dump(obj, file)
         self.assertTrue(os.path.exists(path))

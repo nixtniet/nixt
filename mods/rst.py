@@ -18,7 +18,7 @@ from nixt.threads import launch
 
 
 def configure(cfg):
-    kernel.first(Config)
+    db.first(Config)
 
 
 def init():
@@ -86,7 +86,7 @@ class RESTHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        if kernel.cfg.debug:
+        if Cfg.debug:
             return
         if "favicon" in self.path:
             return

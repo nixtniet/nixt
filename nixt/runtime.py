@@ -1,3 +1,4 @@
+##!/usr/bin/python3 
 # This file is placed in the Public Domain.
 
 
@@ -8,37 +9,54 @@ import argparse
 import logging
 import os
 import sys
+import threading
 import time
 
 
-from .brokers import Broker
-from .command import Commands
-from .handler import Console
-from .message import Message
-from .methods import edit, fmt, merge, parse, skip
-from .objects import Object, keys, values, update 
-from .package import Mods
-from .persist import first, ident, pidfile, setwd, write
-from .threads import launch
-from .utility import forever, level
+#sys.path.insert(0, os.getcwd())
 
 
-from . import modules as MODS
+from nixt.brokers import Broker
+from nixt.command import Commands
+from nixt.handler import Console
+from nixt.message import Message
+from nixt.methods import edit, fmt, merge, parse, skip
+from nixt.objects import Default, Object, keys, values, update 
+from nixt.package import Mods
+from nixt.persist import Persist, ident
+from nixt.threads import launch
+from nixt.utility import forever, level, pkgname
+
+
+from nixt import modules as MODS
 
 
 "config"
 
 
-Main.default = "irc,mdl,rss,wsd"
-Main.ignore = "man,rst,udp,web"
-Main.version = 455
-Main.wdr = os.path.expanduser(f"~/.{Main.name}")
+class Config(Default):
+
+    debug = False
+    default = "irc,mdl,rss,wsd"
+    ignore = "man,rst,udp,web"
+    level = "info"
+    local = True
+    name = pkgname(Default)
+    version = 455
+    wdr = os.path.expanduser(f"~/.{name}")
+
+
+"kernel"
 
 
 env = Object()
 env.broker = broker = Broker()
 env.cmds = cmds = Commands()
+env.locks = locks = Object()
+env.locks.disk = threading.RLock()
 env.mods = mods = Mods()
+env.db = db = Persist()
+env.Cfg = Cfg = Config()
 
 
 "clients"
@@ -54,17 +72,10 @@ class Line(Console):
     def raw(self, text):
         "write to console."
         out(text)
+        sys.stdout.flush()
 
 
 class CSL(Line):
-
-    def callback(self, event):
-        "wait for callback result."
-        if not event.text:
-            event.ready()
-            return
-        super().callback(event)
-        event.wait()
 
     def poll(self):
         "poll for an event."
@@ -73,7 +84,6 @@ class CSL(Line):
         evt.kind = "command"
         return evt
 
-
 'runtime'
 
     
@@ -81,33 +91,31 @@ def banner():
     "hello."
     tme = time.ctime(time.time()).replace("  ", " ")
     print("%s %s since %s (%s)" % (
-        Main.name.upper(),
-        Main.version,
+        Cfg.name.upper(),
+        Cfg.version,
         tme,
-        Main.level.upper(),
+        Cfg.level.upper(),
     ))
     sys.stdout.flush()
 
 
-def boot(args):
+def boot(args, *modlist):
     "in the beginning."
-    parse(Main, args.txt)
-    update(Main, Main.sets)
-    merge(Main, vars(args))
-    setwd(Main.wdr)
-    level(Main.level or "info")
-    if Main.noignore:
-        Main.ignore = ""
-    if Main.wdr:
-        mods.dir("modules", os.path.join(Main.wdr, "mods"))
-    if MODS:
-        mods.dir(MODS.__name__, MODS.__path__[0])
-    if Main.local:
+    parse(Cfg, args.txt)
+    update(Cfg, Cfg.sets)
+    merge(Cfg, vars(args))
+    db.setwd(Cfg.wdr)
+    level(Cfg.level or "info")
+    if Cfg.noignore:
+        Cfg.ignore = ""
+    if Cfg.wdr:
+        mods.dir("modules", os.path.join(Cfg.wdr, "mods"))
+    for mod in modlist:
+        mods.dir(mod.__name__, mod.__path__[0])
+    if Cfg.local:
         mods.dir('mods', 'mods')
-    if Main.verbose:
-        banner()
-    if Main.all:
-        Main.mods = mods.list(Main.ignore)
+    if Cfg.all:
+        Cfg.mods = mods.list(Cfg.ignore)
 
 
 def cmnd(text):
@@ -135,6 +143,9 @@ def command(evt):
     evt.ready()
 
 
+env.command = command
+
+
 def daemon(verbose=False, nochdir=False):
     "run in the background."
     pid = os.fork()
@@ -157,14 +168,29 @@ def daemon(verbose=False, nochdir=False):
     os.nice(10)
 
 
+def init(default=True):
+    "scan named modules for commands."
+    thrs = []
+    if default:
+        defs = Cfg.default
+    else:
+        defs = ""
+    for name, mod in mods.iter(Cfg.mods or defs, Cfg.ignore, env):
+        if "init" in dir(mod):
+            thrs.append((name, launch(mod.init)))
+    if Cfg.wait:
+        for name, thr in thrs:
+            thr.join()
+
+
 def getargs():
     "parse commandline arguments."
-    parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
+    parser = argparse.ArgumentParser(prog=Cfg.name, description=f"{Cfg.name.upper()}")
     parser.add_argument("-a", "--all", action="store_true", help="load all modules")
     parser.add_argument("-c", "--console", action="store_true", help="start console")
     parser.add_argument("-d", "--daemon", action="store_true", help="start background daemon")
-    parser.add_argument("-l", "--level", default=Main.level, help='set loglevel')
-    parser.add_argument("-m", "--mods", default="", help='modules to load')
+    parser.add_argument("-l", "--level", default=Cfg.level, help='set loglevel')
+    parser.add_argument("-m", "--moduless", default="", help='modules to load')
     parser.add_argument("-n", "--noignore", action="store_true", help="disable ignore")
     parser.add_argument("-s", "--service", action="store_true", help="start service")
     parser.add_argument("-v", "--verbose", action='store_true',help='enable verbose')
@@ -173,20 +199,6 @@ def getargs():
     parser.add_argument("--wdr", help='set working directory')
     return parser.parse_known_args()
 
-
-def init(cfg, default=True):
-    "scan named modules for commands."
-    thrs = []
-    if default:
-        defs = cfg.default
-    else:
-        defs = ""
-    for name, mod in mods.iter(cfg.mods or defs, cfg.ignore, env):
-        if "init" in dir(mod):
-            thrs.append((name, launch(mod.init)))
-    if cfg.wait:
-        for name, thr in thrs:
-            thr.join()
 
 def out(txt):
     "output text to screen."
@@ -200,16 +212,16 @@ def privileges():
     pwnam2 = pwd.getpwnam(getpass.getuser())
     os.setgid(pwnam2.pw_gid)
     os.setuid(pwnam2.pw_uid)
- 
 
-def scanner(cfg, default=True):
+
+def scanner(default=True):
     "scan named modules for commands."
     res = []
     if default:
-       defs = cfg.default
+        defs = Cfg.default
     else:
-       defs = ""
-    for name, mod in mods.iter(cfg.mods or defs or mods.list(), cfg.ignore, env):
+        defs = ""
+    for name, mod in mods.iter(Cfg.mods or defs or mods.list(), Cfg.ignore, env):
         cmds.scan(mod)
         if "configure" in dir(mod):
             mod.configure(cfg)
@@ -251,13 +263,13 @@ def wrap(func, *args):
 
 def background(args):
     "background script."
-    daemon(Main.verbose, Main.nochdir)
+    daemon(Cfg.verbose, Cfg.nochdir)
     privileges()
-    boot(args)
-    pidfile(Main.name)
-    scanner(Main)
+    boot(args, MODS)
+    db.pidfile(Cfg.name)
+    scanner()
     cmds.add(cmd, mod, ver)
-    init(Main)
+    init()
     forever()
 
 
@@ -265,14 +277,15 @@ def console(args):
     "console script."
     import readline
     readline.redisplay()
-    boot(args)
-    scanner(Main, False)
+    boot(args, MODS)
+    if Cfg.verbose:
+        banner()
+    scanner(False)
     cmds.add(cmd, mod, ver)
-    init(Main, default=False)
+    init(default=False)
     csl = CSL()
     csl.start()
-    csl.start()
-    for txt in cmnd(Main.txt):
+    for txt in cmnd(Cfg.txt):
         out(txt)
     forever()
 
@@ -281,11 +294,11 @@ def control(args):
     "cli script."
     if len(sys.argv) == 1:
         return
-    boot(args)
-    Main.mods = mods.list(Main.ignore)
-    scanner(Main)
+    boot(args, MODS)
+    Cfg.mods = mods.list(Cfg.ignore)
+    scanner()
     cmds.add(cfg, cmd, mod, srv, ver)
-    for line in cmnd(Main.txt):
+    for line in cmnd(Cfg.txt):
         out(line)
 
 
@@ -293,11 +306,11 @@ def service(args):
     "service script."
     privileges()
     banner()
-    boot(args)
-    pidfile(Main.name)
-    scanner(Main)
+    boot(args, MODS)
+    db.pidfile(Cfg.name)
+    scanner()
     cmds.add(cmd, mod, ver)
-    init(Main)
+    init()
     forever()
 
 
@@ -317,7 +330,7 @@ def cfg(event):
     if not cfg:
         event.reply("no configuration found.")
         return
-    fnm = first(cfg) or ident(cfg)
+    fnm = db.first(cfg) or ident(cfg)
     if not event.sets:
         event.reply(
             fmt(
@@ -328,7 +341,7 @@ def cfg(event):
         )
         return
     edit(cfg, event.sets)
-    write(skip(cfg), fnm)
+    db.write(skip(cfg), fnm)
     event.reply("ok")
 
 
@@ -339,7 +352,7 @@ def cmd(event):
 
 def mod(event):
     "list available commands."
-    modules = mods.list(Main.ignore)
+    modules = mods.list(Cfg.ignore)
     if not modules:
         event.reply("no modules available")
         return
@@ -350,12 +363,12 @@ def srv(event):
     "generate systemd service file."
     import getpass
     name = getpass.getuser()
-    event.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
+    event.reply(SYSTEMD % (Cfg.name.upper(), name, name, name, Cfg.name))
 
 
 def ver(event):
     "show verson."
-    event.reply(f"{Main.name.upper()} {Main.version}")
+    event.reply(f"{Cfg.name.upper()} {Cfg.version}")
 
 
 'data'
@@ -391,3 +404,7 @@ def main():
     else:
         wrap(control, args)
     shutdown()
+
+
+#if __name__ == "__main__":
+#    main()

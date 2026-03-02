@@ -5,7 +5,7 @@ import unittest
 
 
 from nixt.methods import fmt
-from nixt.objects import *
+from nixt.objects import Object, clear, construct, copy, items, keys, pop, popitem, update, values
 
 
 import nixt.objects
@@ -81,6 +81,11 @@ class TestObject(unittest.TestCase):
         obj = Object()
         clz = obj.__class__()
         self.assertTrue("Object" in str(type(clz)))
+
+    def test_construct(self):
+        obj = Object()
+        construct(obj, {"a": "b"})
+        self.assertEqual(obj.a, "b")
 
     def test_constructor(self):
         obj = Object()

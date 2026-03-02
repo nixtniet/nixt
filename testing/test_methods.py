@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.methods import *
+from nixt.methods import deleted, edit,fmt,  fqn, ident, merge, parse, reduce, search, skip, typed
 from nixt.objects import Object
 
 

@@ -47,7 +47,6 @@ class TestHandler(unittest.TestCase):
     hdl = Handler()
 
     def setUp(self):
-        buffer = []
         self.hdl.register("hello", hello)
         self.hdl.start()
 
@@ -94,7 +93,6 @@ class TestHandler(unittest.TestCase):
 class TestClient(unittest.TestCase):
 
     def setUp(self):
-        buffer = []
         self.clt = MyClient()
         self.clt.silent = False
         self.clt.register("hello", hello)
@@ -156,7 +154,6 @@ class TestClient(unittest.TestCase):
 class TestConsole(unittest.TestCase):
 
     def setUp(self):
-        buffer = []
         self.clt = MyConsole()
         self.clt.silent = False
         self.clt.register("hello", hello)
@@ -184,7 +181,6 @@ class TestConsole(unittest.TestCase):
 class TestOutput(unittest.TestCase):
 
     def setUp(self):
-        buffer = []
         self.clt = MyOutput()
         self.clt.silent = False
         self.clt.register("hello", hello)

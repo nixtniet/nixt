@@ -93,7 +93,7 @@ class Mods:
         return ",".join(sorted(mods))
 
     def pkg(self, package):
-        return self.add(package.__name__, package.__path__[0])
+        return self.dir(package.__name__, package.__path__[0])
 
 
 def __dir__():

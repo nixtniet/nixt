@@ -10,3 +10,10 @@ import sys
 
 
 sys.path.insert(0, os.getcwd())
+
+
+from nixt.persist import Persist
+
+
+db = Persist()
+db.setwd(".test")

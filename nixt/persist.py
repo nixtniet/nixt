@@ -13,7 +13,7 @@ import threading
 from .encoder import dump, load
 from .methods import deleted, fqn, ident, search
 from .objects import Default, keys, update
-from .utility import fntime, pkgname
+from .utility import fntime
 
 
 lock = threading.RLock()

@@ -19,7 +19,7 @@ from nixt.utility import where
 
 
 def init():
-    kernel.first(Config)
+    db.first(Config)
     Config.path = os.path.join(where(Object), "nucleus")
     if not os.path.exists(os.path.join(Config.path, 'index.html')):
         logging.warning("no index.html")
@@ -100,7 +100,7 @@ class HTTPHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if "favicon" in self.path:
             return
-        if kernel.cfg.debug:
+        if Cfg.debug:
             return
         if self.path == "/":
             self.path = "index.html"

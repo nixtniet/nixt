@@ -490,12 +490,12 @@ class IRC(Output):
 
 
 def cb_auth(evt):
-    bot = broker.retrieve(self.orig)
+    bot = broker.retrieve(evt.orig)
     bot.docommand(f"AUTHENTICATE {bot.cfg.word or bot.cfg.password}")
 
 
 def cb_cap(evt):
-    bot = broker.retrieve(self.orig)
+    bot = broker.retrieve(evt.orig)
     if (bot.cfg.word or bot.cfg.password) and "ACK" in evt.arguments:
         bot.direct("AUTHENTICATE PLAIN")
     else:

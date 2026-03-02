@@ -143,7 +143,7 @@ def cbnow(evt):
         nrtimes = int(delta/needed)
         txt += f"{getalias(nme)} {nrtimes} | "
     txt += SOURCE
-    kernel.announce(txt)
+    broker.announce(txt)
 
 
 def cbstats(evt):
@@ -165,7 +165,7 @@ def cbstats(evt):
             nryear,
             elapsed(needed)
         )
-        kernel.announce(txt)
+        broker.announce(txt)
 
 
 "commands"
