@@ -8,8 +8,11 @@ import time
 
 
 from nixt.methods import fmt
+from nixt.persist import Persist
 from nixt.utility import elapsed, fntime
 
+
+db = Persist()
 
 def fnd(event):
     if not event.rest:

@@ -7,11 +7,18 @@
 import inspect
 
 
+from .brokers import Broker
+from .message import Message
+from .methods import parse
+
+
+broker = Broker()
+
+
 class Commands:
 
-    def  __init__(self):
-        self.cmds = {}
-        self.names = {}
+    cmds = {}
+    names = {}
 
     def add(self, *args):
         "add functions to commands."
@@ -36,8 +43,21 @@ class Commands:
             self.add(cmdz)
 
 
+def cmnd(text):
+    "parse text for command and run it."
+    results = {}
+    for txt in text.split(" ! "):
+        evt = Message()
+        evt.text = txt
+        evt.type = "command"
+        command(evt)
+        evt.wait()
+        results.update(evt.result)
+    return results.values()
+
+
 def __dir__():
     return (
         'cmnd',
-        'cmds',
+        'command'
     )

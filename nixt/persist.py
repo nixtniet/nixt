@@ -16,16 +16,9 @@ from .objects import Default, keys, update
 from .utility import fntime
 
 
-lock = threading.RLock()
-
-
-'cache'
-
-
 class Cache:
 
-    def __init__(self):
-        self.paths = {}
+    paths = {}
  
     def add(self, path, obj):
         "put object into cache."
@@ -45,10 +38,9 @@ class Cache:
 
 class Persist:
 
-    def __init__(self):
-        self.cache = Cache()
-        self.lock = threading.RLock()
-        self.wdr = ""
+    cache = Cache()
+    lock = threading.RLock()
+    wdr = ""
 
     def attrs(self, kind):
         "show attributes for kind of objects."
@@ -159,7 +151,7 @@ class Persist:
 
     def setwd(self, path):
         "enable writing to disk."
-        self.wdr = path
+        Persist.wdr = path
         self.skel()
 
     def skel(self):
@@ -210,5 +202,6 @@ def __dir__():
     return (
         'Persist',
         'cdir',
+        'db',
         'strip'
     )

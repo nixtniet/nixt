@@ -6,8 +6,7 @@
 
 class Broker:
 
-    def __init__(self):
-        self.objects = {}
+    objects = {}
 
     def announce(self, txt):
         "announce text on all objects with an announce method."
@@ -41,5 +40,5 @@ class Broker:
 
 def __dir__():
     return (
-        'broker',
+        'Broker',
     )

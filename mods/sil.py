@@ -4,6 +4,12 @@
 "silence"
 
 
+from nixt.brokers import Broker
+
+
+broker = Broker()
+
+
 def sil(event):
     bot = broker.retrieve(event.orig)
     if not bot:

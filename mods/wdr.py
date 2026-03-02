@@ -4,5 +4,11 @@
 "working directory"
 
 
+from nixt.persist import Persist
+
+
+db = Persist()
+
+
 def wdr(event):
     event.reply(db.workdir())

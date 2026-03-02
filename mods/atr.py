@@ -4,6 +4,12 @@
 "show attributes"
 
 
+from nixt.persist import Persist
+
+
+db = Persist()
+
+
 def atr(event):
     if not event.rest:
         res = sorted({x.split('.')[-1].lower() for x in db.kinds()})

@@ -35,7 +35,11 @@ except ModuleNotFoundError:
     MODS2 = None
 
 
+broker = Broker()
+cmds = Commands()
+db = Persist()
 events = queue.Queue()
+mods = Mods()
 
 
 class Config(Default):
@@ -47,18 +51,10 @@ class Config(Default):
     local = True
     name = pkgname(Default)
     version = 455
-    wdr = os.path.expanduser(f"~/.{name}")
+    wdr = ".test"
 
 
-env = Object()
-env.broker = broker = Broker()
-env.cmds = cmds = Commands()
-env.locks = locks = Object()
-env.locks.disk = threading.RLock()
-env.mods = mods = Mods()
-env.db = db = Persist()
-env.Cfg = Cfg = Config()
-
+Cfg = Config()
 
 
 class CLI(Client):
@@ -131,9 +127,6 @@ def command(evt):
     evt.ready()
 
 
-env.command = command
-
-
 def consume():
     while True:
         try:
@@ -161,7 +154,7 @@ def scanner(cfg, default=True):
        defs = Cfg.default
     else:
        defs = ""
-    for name, mod in mods.iter(Cfg.mods or defs or mods.list(), Cfg.ignore, env):
+    for name, mod in mods.iter(Cfg.mods or defs or mods.list(), Cfg.ignore, {"Cfg": Cfg}):
         cmds.scan(mod)
         if "configure" in dir(mod):
             mod.configure(cfg)

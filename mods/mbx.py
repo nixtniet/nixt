@@ -11,7 +11,11 @@ import time
 
 from nixt.methods import fmt
 from nixt.objects import Object, keys, update
+from nixt.persist import Persist
 from nixt.utility import MONTH, date, elapsed
+
+
+db = Persist()
 
 
 "email"

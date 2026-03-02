@@ -14,12 +14,18 @@ import threading
 import time
 
 
+from nixt.brokers import Broker
 from nixt.handler import Output
 from nixt.message import Message
 from nixt.methods import fmt
 from nixt.objects import Default, Object
+from nixt.persist import Persist
 from nixt.threads import launch
 from nixt.utility import pkgname 
+
+
+broker = Broker()
+db = Persist()
 
 
 def init():

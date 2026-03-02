@@ -22,7 +22,7 @@ from nixt.handler import Console
 from nixt.message import Message
 from nixt.methods import edit, fmt, merge, parse, skip
 from nixt.objects import Default, Object, keys, values, update 
-from nixt.package import Mods
+from nixt.package import Mods, mods
 from nixt.persist import Persist, ident
 from nixt.threads import launch
 from nixt.utility import forever, level, pkgname
@@ -46,17 +46,10 @@ class Config(Default):
     wdr = os.path.expanduser(f"~/.{name}")
 
 
-"kernel"
-
-
-env = Object()
-env.broker = broker = Broker()
-env.cmds = cmds = Commands()
-env.locks = locks = Object()
-env.locks.disk = threading.RLock()
-env.mods = mods = Mods()
-env.db = db = Persist()
-env.Cfg = Cfg = Config()
+broker = Broker()
+cmds = Commands()
+db = Persist()
+Cfg = Config()
 
 
 "clients"
@@ -143,9 +136,6 @@ def command(evt):
     evt.ready()
 
 
-env.command = command
-
-
 def daemon(verbose=False, nochdir=False):
     "run in the background."
     pid = os.fork()
@@ -175,7 +165,11 @@ def init(default=True):
         defs = Cfg.default
     else:
         defs = ""
-    for name, mod in mods.iter(Cfg.mods or defs, Cfg.ignore, env):
+    for name, mod in mods.iter(
+                               Cfg.mods or defs,
+                               Cfg.ignore,
+                               {"Cfg": Cfg}
+                              ):
         if "init" in dir(mod):
             thrs.append((name, launch(mod.init)))
     if Cfg.wait:
@@ -221,7 +215,11 @@ def scanner(default=True):
         defs = Cfg.default
     else:
         defs = ""
-    for name, mod in mods.iter(Cfg.mods or defs or mods.list(), Cfg.ignore, env):
+    for name, mod in mods.iter(
+                               Cfg.mods or defs or mods.list(),
+                               Cfg.ignore,
+                               {"Cfg": Cfg}
+                              ):
         cmds.scan(mod)
         if "configure" in dir(mod):
             mod.configure(cfg)

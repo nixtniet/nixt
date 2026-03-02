@@ -13,7 +13,11 @@ import time
 
 
 from nixt.objects import Default
+from nixt.persist import Persist
 from nixt.threads import launch
+
+
+db = Persist()
 
 
 def init():

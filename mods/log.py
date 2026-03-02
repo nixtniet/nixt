@@ -8,7 +8,11 @@ import time
 
 
 from nixt.objects import Object
+from nixt.persist import Persist
 from nixt.utility import elapsed, fntime
+
+
+db = Persist()
 
 
 class Log(Object):

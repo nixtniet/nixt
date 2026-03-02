@@ -10,14 +10,18 @@ import logging
 from random import SystemRandom
 
 
+from nixt.brokers import Broker
 from nixt.message import Message
 from nixt.methods import ident
+from nixt.persist import Persist
 from nixt.threads import Repeater
 
 
 'defines'
 
 
+broker = Broker()
+db = Persist()
 rand = SystemRandom()
 
 

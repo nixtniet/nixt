@@ -16,9 +16,8 @@ from .utility import spl
 
 class Mods:
 
-    def __init__(self):
-        self.dirs = {}
-        self.modules = {}
+    dirs = {}
+    modules = {}
 
     def dir(self, name, path):
         "add modules directory." 
@@ -94,6 +93,9 @@ class Mods:
 
     def pkg(self, package):
         return self.dir(package.__name__, package.__path__[0])
+
+
+mods = Mods()
 
 
 def __dir__():

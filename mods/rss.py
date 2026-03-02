@@ -26,8 +26,12 @@ from urllib.parse import quote_plus, urlencode
 
 from nixt.methods import fmt, fqn, ident
 from nixt.objects import Default, update
+from nixt.persist import Persist
 from nixt.threads import Repeater, launch
 from nixt.utility import elapsed, fntime, spl
+
+
+db = Persist()
 
 
 def init():
