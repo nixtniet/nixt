@@ -11,7 +11,7 @@ from random import SystemRandom
 
 
 from nixt.message import Message
-from nixt.persist import first, ident, write
+from nixt.methods import ident
 from nixt.threads import Repeater
 
 
@@ -43,11 +43,11 @@ class StateFul:
 
     def dump(self):
         if not self.fnm:
-            self.fnm = first(self) or ident(self)
-        write(self, self.fnm)
+            self.fnm = db.first(self) or ident(self)
+        db.write(self, self.fnm)
     
     def load(self):
-        first(self)
+        db.first(self)
 
 
 class State(StateFul):
@@ -75,8 +75,7 @@ def wsd(event):
         state.seen = []
         txt = "* reset"
     state.dump()
-    for bot in kernel.objs("announce"):
-        bot.announce(txt.strip()[2:])
+    broker.announce(txt.strip()[2:])
 
 
 

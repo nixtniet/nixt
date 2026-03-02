@@ -11,7 +11,6 @@ import time
 
 from nixt.methods import fmt
 from nixt.objects import Object, keys, update
-from nixt.persist import find, write
 from nixt.utility import MONTH, date, elapsed
 
 
@@ -78,7 +77,7 @@ def eml(event):
             args.remove(key)
     args = set(args)
     result = sorted(
-                    find("email", event.gets),
+                    db.find("email", event.gets),
                     key=lambda x: date(todate(getattr(x[1], "Date", "")))
                    )
     if event.index:
@@ -121,7 +120,7 @@ def mbx(event):
             if payload.get_content_type() == 'text/plain':
                 obj.text += payload.get_payload()
         obj.text = obj.text.replace("\\n", "\n")
-        write(obj)
+        db.write(obj)
         nrs += 1
     if nrs:
         event.reply("ok %s" % nrs)

@@ -18,7 +18,7 @@ from .message import Message
 from .methods import edit, fmt, merge, parse, skip
 from .objects import Object, keys, values, update 
 from .package import Mods
-from .persist import Main, first, ident, pidfile, setwd, write
+from .persist import first, ident, pidfile, setwd, write
 from .threads import launch
 from .utility import forever, level
 

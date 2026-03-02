@@ -5,7 +5,7 @@
 
 
 def sil(event):
-    bot = kernel.retrieve(event.orig)
+    bot = broker.retrieve(event.orig)
     if not bot:
         event.reply("no bot in fleet.")
         return

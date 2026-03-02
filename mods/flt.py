@@ -8,7 +8,7 @@ from nixt.methods import fqn
 
 
 def flt(event):
-    clts = list(kernel.objs("announce"))
+    clts = list(broker.objs("announce"))
     if not clts:
         event.reply("no bots")
         return

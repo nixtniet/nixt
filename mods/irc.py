@@ -18,7 +18,6 @@ from nixt.handler import Output
 from nixt.message import Message
 from nixt.methods import fmt
 from nixt.objects import Default, Object
-from nixt.persist import first
 from nixt.threads import launch
 from nixt.utility import pkgname 
 
@@ -473,7 +472,7 @@ class IRC(Output):
         Output.start(self)
         if not self.state.keeprunning:
             launch(self.keep)
-        first(self.cfg)
+        db.first(self.cfg)
         launch(
             self.doconnect,
             self.cfg.server or "localhost",

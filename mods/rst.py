@@ -14,19 +14,18 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from nixt.objects import Default, Object
-from nixt.persist import first, kinds, workdir
 from nixt.threads import launch
 
 
 def configure(cfg):
-    first(Cfg)
+    kernel.first(Config)
 
 
 def init():
     try:
-        rest = REST((Cfg.hostname, int(Cfg.port)), RESTHandler)
+        rest = REST((Config.hostname, int(Config.port)), RESTHandler)
         rest.start()
-        logging.warning("http://%s:%s", Cfg.hostname, Cfg.port)
+        logging.warning("http://%s:%s", Config.hostname, Config.port)
         return rest
     except OSError as ex:
         logging.error(str(ex))
@@ -87,7 +86,7 @@ class RESTHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        if Cfg.debug:
+        if kernel.cfg.debug:
             return
         if "favicon" in self.path:
             return
@@ -102,7 +101,7 @@ class RESTHandler(BaseHTTPRequestHandler):
             fnm = self.path[1:]
         else:
             fnm = self.path
-        fnm = os.path.join(workdir("store"), fnm)
+        fnm = os.path.join(db.workdir("store"), fnm)
         fnm = os.path.abspath(fnm)
         if os.path.isdir(fnm):
             self.write_header("text/html")

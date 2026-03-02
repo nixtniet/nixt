@@ -14,14 +14,16 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import cmds, command
+from nixt.brokers import Broker
+from nixt.command import Commands
 from nixt.handler import Client
 from nixt.message import Message
 from nixt.methods import fmt, parse 
-from nixt.package import mods
-from nixt.persist import Main, setwd
+from nixt.objects import Default, Object
+from nixt.package import Mods
+from nixt.persist import Persist
 from nixt.threads import launch
-from nixt.utility import elapsed
+from nixt.utility import elapsed, pkgname
 
 
 from nixt import modules as MODS
@@ -36,11 +38,27 @@ except ModuleNotFoundError:
 events = queue.Queue()
 
 
-Main.debug = True
-Main.ignore = ""
-Main.mods = ""
-Main.opts = ""
-Main.wdr = ".test"
+class Config(Default):
+
+    debug = False
+    default = "irc,mdl,rss,wsd"
+    ignore = "man,rst,udp,web"
+    level = "info"
+    local = True
+    name = pkgname(Default)
+    version = 455
+    wdr = os.path.expanduser(f"~/.{name}")
+
+
+env = Object()
+env.broker = broker = Broker()
+env.cmds = cmds = Commands()
+env.locks = locks = Object()
+env.locks.disk = threading.RLock()
+env.mods = mods = Mods()
+env.db = db = Persist()
+env.Cfg = Cfg = Config()
+
 
 
 class CLI(Client):
@@ -48,9 +66,10 @@ class CLI(Client):
     def __init__(self):
         Client.__init__(self)
         self.register("command", command)
+        broker.store(self)
 
     def raw(self, txt):
-        if "v" in Main.opts:
+        if "v" in Cfg.opts:
             print(txt)
 
 
@@ -85,7 +104,7 @@ class ClientPool:
 
 def banner():
     tme = time.ctime(time.time()).replace("  ", " ")
-    print(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level})")
+    print(f"{Cfg.name.upper()} {Cfg.version} since {tme} ({Cfg.level})")
     sys.stdout.flush()
 
 
@@ -98,6 +117,21 @@ def check(text):
             if char in arg:
                 return True
     return False
+
+
+def command(evt):
+    "command callback."
+    parse(evt, evt.text)
+    func = cmds.get(evt.cmd)
+    if func:
+        func(evt)
+        bot = broker.retrieve(evt.orig)
+        if bot:
+            bot.display(evt)
+    evt.ready()
+
+
+env.command = command
 
 
 def consume():
@@ -120,9 +154,14 @@ def payload(todo):
             events.put(evt)
 
 
-def scanner(cfg):
+def scanner(cfg, default=True):
+    "scan named modules for commands."
     res = []
-    for name, mod in mods.iter(mods.list()):
+    if default:
+       defs = Cfg.default
+    else:
+       defs = ""
+    for name, mod in mods.iter(Cfg.mods or defs or mods.list(), Cfg.ignore, env):
         cmds.scan(mod)
         if "configure" in dir(mod):
             mod.configure(cfg)
@@ -149,23 +188,23 @@ def wrap(func, *args):
 
 
 def main():
-    if "p" not in Main.opts and os.path.exists(Main.wdr):
-        shutil.rmtree(Main.wdr)
-    parse(Main, " ".join(sys.argv[1:]))
-    setwd(Main.wdr)
-    mods.add("modules", MODS.__path__[0])
+    if "p" not in Cfg.opts and os.path.exists(Cfg.wdr):
+        shutil.rmtree(Cfg.wdr)
+    parse(Cfg, " ".join(sys.argv[1:]))
+    db.setwd(Cfg.wdr)
+    mods.dir("modules", MODS.__path__[0])
     if MODS2:
-        mods.add("mods", MODS2.__path__[0])
-    Main.mods = Main.mods or mods.list()
-    scanner(Main)
-    if "v" in Main.opts:
+        mods.dir("mods", MODS2.__path__[0])
+    Cfg.mods = Cfg.mods or mods.list()
+    scanner(Cfg)
+    if "v" in Cfg.opts:
         banner()
-    if "z" in Main.opts:
+    if "z" in Cfg.opts:
         ClientPool.init(os.cpu_count(), CLI)
     else:
         ClientPool.init(1, CLI)
     starttime = time.time()
-    nrs = Main.index or 1
+    nrs = Cfg.index or 1
     for _x in range(nrs):
         payload(pre)
     for _x in range(nrs):
@@ -182,8 +221,8 @@ def main():
     lap = elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
-    if "v" in Main.opts:
-        print(f"{fmt(Main, skip='otxt,txt')}")
+    if "v" in Cfg.opts:
+        print(f"{fmt(Cfg, skip='otxt,txt')}")
         print(f"{nrs} events left.")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
 

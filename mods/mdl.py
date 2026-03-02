@@ -1,6 +1,5 @@
 # This file is placed in the Public Domain.
 
-
 "genocide model of the netherlands since 4 march 2019."
 
 
@@ -144,8 +143,7 @@ def cbnow(evt):
         nrtimes = int(delta/needed)
         txt += f"{getalias(nme)} {nrtimes} | "
     txt += SOURCE
-    for bot in broker.objs("announce"):
-        bot.announce(txt)
+    kernel.announce(txt)
 
 
 def cbstats(evt):
@@ -167,8 +165,7 @@ def cbstats(evt):
             nryear,
             elapsed(needed)
         )
-        for bot in broker.objs("announce"):
-            bot.announce(txt)
+        kernel.announce(txt)
 
 
 "commands"

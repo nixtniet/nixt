@@ -12,15 +12,15 @@ import threading
 import time
 
 
-from nixt.brokers import broker
 from nixt.objects import Default
 from nixt.threads import launch
 
 
 def init():
+    db.first(Config)
     udp = UDP()
     udp.start()
-    logging.warning("http://%s:%s", Cfg.host, Cfg.port)
+    logging.warning("http://%s:%s", Config.host, Config.port)
     return udp
 
 
@@ -45,8 +45,7 @@ class UDP:
     def output(self, txt, addr=None):
         if addr:
             Config.addr = addr
-        for bot in broker.objs("announce"):
-            bot.announce(txt.replace("\00", ""))
+        broker.announce(txt.replace("\00", ""))
 
     def loop(self):
         try:

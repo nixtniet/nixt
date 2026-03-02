@@ -24,9 +24,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.methods import fmt, fqn
+from nixt.methods import fmt, fqn, ident
 from nixt.objects import Default, update
-from nixt.persist import count, find, ident, last, write
 from nixt.threads import Repeater, launch
 from nixt.utility import elapsed, fntime, spl
 
@@ -34,7 +33,7 @@ from nixt.utility import elapsed, fntime, spl
 def init():
     RunnerPool.init(1, Runner)
     Run.fetcher.start()
-    logging.warning("%s feeds", count("rss"))
+    logging.warning("%s feeds", db.count("rss"))
 
 
 def shutdown():
@@ -56,7 +55,7 @@ class Fetcher:
 
     def run(self, silent=False):
         nrs = 0
-        for fnm, feed in find(fqn(Rss)):
+        for fnm, feed in db.find(fqn(Rss)):
             if feed.skip:
                 continue
             RunnerPool.put((fnm, feed, silent))
@@ -64,15 +63,15 @@ class Fetcher:
         return nrs
 
     def start(self, repeat=True):
-        State.seenfn = last(State.seen) or ident(State.seen)
-        State.modifiedfn = last(State.modified) or ident(State.modified)
+        State.seenfn = db.last(State.seen) or ident(State.seen)
+        State.modifiedfn = db.last(State.modified) or ident(State.modified)
         if repeat:
             repeater = Repeater(Config.polltime, self.run)
             repeater.start()
 
     def stop(self):
         logging.debug("stopped fetcher")
-        write(State.modified, State.modifiedfn)
+        db.write(State.modified, State.modifiedfn)
         self.stopped.set()
 
 
@@ -129,7 +128,7 @@ class Runner:
                 if uurl in see:
                     continue
                 if self.dosave:
-                    write(fed)
+                    db.write(fed)
                 result.append(fed)
             if urls:
                 setattr(State.seen, feed.rss, urls)
@@ -137,7 +136,7 @@ class Runner:
                 return counter
             if not State.seenfn:
                 State.seenfn = ident(State.seen)
-            write(State.seen, State.seenfn)
+            db.write(State.seen, State.seenfn)
         txt = ""
         feedname = getattr(feed, "name", None)
         if feedname:
@@ -351,7 +350,7 @@ class Helpers:
             logging.debug("%s %s", feed.rss, feed.error)
             if Helpers.doskip(feed.error):
                 feed.skip = True
-                write(feed, fnm)
+                db.write(feed, fnm)
                 logging.error("removed %s %s", feed.rss, ex)
         return result
 
@@ -465,7 +464,7 @@ def atr(event):
     if not event.rest:
         event.reply("atr <stringinurl>")
         return
-    for fnm, obj in find(fqn(Rss), {'rss': event.rest}):
+    for fnm, obj in db.find(fqn(Rss), {'rss': event.rest}):
         request = Helpers.geturl(obj.rss)
         if obj.rss.endswith('atom'):
             res = list(Parser.getitems(str(request.data, 'utf-8', errors='ignore'), 'entry', 1))
@@ -483,17 +482,17 @@ def dpl(event):
         event.reply("dpl <stringinurl> <item1,item2>")
         return
     setter = {"display_list": event.args[1]}
-    for fnm, feed in find(fqn(Rss), {"rss": event.args[0]}):
+    for fnm, feed in db.find(fqn(Rss), {"rss": event.args[0]}):
         if feed:
             update(feed, setter)
-            write(feed, fnm)
+            db.write(feed, fnm)
     event.reply("ok")
 
 
 def err(event):
     nre = 0
     nrs = 0
-    for fnm, obj in find(fqn(Rss), event.gets):
+    for fnm, obj in db.find(fqn(Rss), event.gets):
         if not obj.error:
             continue
         if event.rest and event.rest in obj.error:
@@ -502,7 +501,7 @@ def err(event):
             update(feed, obj)
             feed.__deleted__ = False
             feed.error = ""
-            write(feed, fnm)
+            db.write(feed, fnm)
             continue
         if not event.rest:
             nrs += 1
@@ -517,7 +516,7 @@ def exp(event):
     with Run.importlock:
         event.reply(TEMPLATE)
         nrs = 0
-        for _fn, ooo in find(fqn(Rss)):
+        for _fn, ooo in db.find(fqn(Rss)):
             nrs += 1
             obj = Rss()
             update(obj, ooo)
@@ -550,7 +549,7 @@ def imp(event):
                 continue
             if not url.startswith("http"):
                 continue
-            has = list(find(fqn(Rss), {"rss": url}, matching=True))
+            has = list(db.find(fqn(Rss), {"rss": url}, matching=True))
             if has:
                 State.skipped.append(url)
                 nrskip += 1
@@ -565,7 +564,7 @@ def imp(event):
             else:
                 feed.name = '.'.join(uri.netloc.split('.')[:-1])
             feed.insertid = insertid
-            write(feed)
+            db.write(feed)
             nrs += 1
     if nrskip:
         event.reply(f"skipped {nrskip} urls.")
@@ -578,12 +577,12 @@ def nme(event):
         event.reply("nme <stringinurl> <name>")
         return
     selector = {"rss": event.args[0]}
-    for fnm, fed in find(fqn(Rss), selector):
+    for fnm, fed in db.find(fqn(Rss), selector):
         feed = Rss()
         update(feed, fed)
         if feed:
             feed.name = str(event.args[1])
-            write(feed, fnm)
+            db.write(feed, fnm)
     event.reply("ok")
 
 
@@ -591,14 +590,14 @@ def rem(event):
     if len(event.args) != 1:
         event.reply("rem <stringinurl>")
         return
-    for fnm, fed in find(fqn(Rss)):
+    for fnm, fed in db.find(fqn(Rss)):
         feed = Rss()
         update(feed, fed)
         if event.args[0] not in feed.rss:
             continue
         if feed:
             feed.__deleted__ = True
-            write(feed, fnm)
+            db.write(feed, fnm)
             event.reply("ok")
             break
 
@@ -608,21 +607,21 @@ def res(event):
         event.reply("res <stringinurl>")
         return
     nrs = 0
-    for fnm, fed in find(fqn(Rss), removed=True):
+    for fnm, fed in db.find(fqn(Rss), removed=True):
         feed = Rss()
         update(feed, fed)
         if event.args[0] not in feed.rss:
             continue
         nrs += 1
         feed.__deleted__ = False
-        write(feed, fnm)
+        db.write(feed, fnm)
     event.reply(f"{nrs} feeds restored.")
 
 
 def rss(event):
     if not event.rest:
         nrs = 0
-        for fnm, fed in find(fqn(Rss), event.gets):
+        for fnm, fed in db.find(fqn(Rss), event.gets):
             if fed.skip:
                 continue
             nrs += 1
@@ -636,13 +635,13 @@ def rss(event):
     if "http://" not in url and "https://" not in url:
         event.reply("i need an url")
         return
-    for fnm, result in find(fqn(Rss), {"rss": url}):
+    for fnm, result in db.find(fqn(Rss), {"rss": url}):
         if result:
             event.reply(f"{url} is known")
             return
     feed = Rss()
     feed.rss = event.args[0]
-    fnm = write(feed)
+    fnm = db.write(feed)
     event.reply("ok")
 
 

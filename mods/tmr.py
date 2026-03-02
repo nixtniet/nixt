@@ -10,8 +10,8 @@ import threading
 import time
 
 
+from nixt.methods import ident
 from nixt.objects import Object, items
-from nixt.persist import ident, last, write
 from nixt.threads import Timed
 from nixt.utility import NoDate, day, elapsed, extract, hour, today
 
@@ -20,18 +20,18 @@ rand = random.SystemRandom()
 
 
 def init():
-    Timers.path = last(Timers.timers) or ident(Timers.timers)
+    Timers.path = db.last(Timers.timers) or ident(Timers.timers)
     remove = []
     for tme, args in items(Timers.timers):
         if not args:
             continue
         orig, channel, txt = args
-        for origin in kernel.like(orig):
+        for origin in broker.like(orig):
             if not origin:
                 continue
             diff = float(tme) - time.time()
             if diff > 0:
-                bot = kernel.retrieve(origin)
+                bot = broker.retrieve(origin)
                 timer = Timed(diff, bot.say, channel, txt)
                 timer.start()
             else:
@@ -39,7 +39,7 @@ def init():
     for tme in remove:
         Timers.delete(tme)
     if Timers.timers:
-        write(Timers.timers, Timers.path)
+        db.write(Timers.timers, Timers.path)
     logging.warning("%s timers", len(Timers.timers))
 
 
@@ -105,8 +105,8 @@ def tmr(event):
     diff = target - time.time()
     txt = " ".join(event.args[1:])
     Timers.add(target, event.orig, event.channel, txt)
-    write(Timers.timers, Timers.path or ident(Timers.timers))
-    bot = kernel.retrieve(event.orig)
+    db.write(Timers.timers, Timers.path or ident(Timers.timers))
+    bot = broker.retrieve(event.orig)
     timer = Timed(diff, bot.say, event.orig, event.channel, txt)
     timer.start()
     event.reply("ok " + elapsed(diff))

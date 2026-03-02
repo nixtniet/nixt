@@ -8,13 +8,12 @@ import time
 
 
 from nixt.methods import fmt
-from nixt.persist import find, kinds
 from nixt.utility import elapsed, fntime
 
 
 def fnd(event):
     if not event.rest:
-        res = sorted([x.split('.')[-1].lower() for x in kinds()])
+        res = sorted([x.split('.')[-1].lower() for x in db.kinds()])
         if res:
             event.reply(",".join(res))
         else:
@@ -22,7 +21,7 @@ def fnd(event):
         return
     otype = event.args[0]
     nmr = 0
-    for fnm, obj in sorted(find(otype, event.gets), key=lambda x: fntime(x[0])):
+    for fnm, obj in sorted(db.find(otype, event.gets), key=lambda x: fntime(x[0])):
         event.reply(f"{nmr} {fmt(obj)} {elapsed(time.time()-fntime(fnm))}")
         nmr += 1
     if not nmr:
