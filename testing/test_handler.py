@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# pylint: disable=C0103,C0115,C0116,W0105,W0212
 
 
 "engine"
@@ -7,20 +8,20 @@
 import unittest
 
 
-from nixt.handler import Client, Console, Handler, Message, Output
+from nixt.handler import Client, Console, Event, Handler, Output
 from nixt.objects import values
 
 
 buffer = []
 
 
-class Message(Message):
+class Message(Event):
 
     def __init__(self):
-       super().__init__()
-       self.kind = "hello"
-       self.text = "hello"
-       
+        super().__init__()
+        self.kind = "hello"
+        self.text = "hello"
+
 
 class MyClient(Client):
 
@@ -175,8 +176,6 @@ class TestOutput(unittest.TestCase):
     clt = MyOutput()
 
     def setUp(self):
-        global buffer
-        buffer = []
         self.clt.silent = False
         self.clt.register("hello", hello)
         self.clt.start()

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # This file is placed in the Public Domain.
+# pylint: disable=C0115,C0116,C0413
 
 
 "stress test"
@@ -16,9 +17,9 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.handler import Client, Message
-from nixt.kernels import Cfg, broker, command, db, mods, scanner, wrap
+from nixt.handler import Client, Event
 from nixt.methods import fmt, parse
+from nixt.runtime import Cfg, command, db, mods, scanner, wrap
 from nixt.threads import launch
 from nixt.utility import elapsed
 
@@ -31,7 +32,11 @@ try:
 except ModuleNotFoundError:
     MODS2 = None
 
+
 Cfg.debug = True
+Cfg.wdr = ".test"
+
+
 events = queue.Queue()
 
 
@@ -40,7 +45,6 @@ class CLI(Client):
     def __init__(self):
         Client.__init__(self)
         self.register("command", command)
-        broker.add(self)
 
     def raw(self, text):
         if "v" in Cfg.opts:
@@ -106,7 +110,7 @@ def consume():
 def payload(todo):
     for cmd, example in todo.items():
         for ex in example:
-            evt = Message()
+            evt = Event()
             evt.text = f"{cmd} {ex}"
             evt.kind = "command"
             ClientPool.put(evt)

@@ -1,8 +1,10 @@
 # This file is placed in the Public Domain.
-# pylint: disable=R0904
+# pylint: disable=C0115,C0116,R0801,R0904
 
 
 "object tests"
+
+
 import unittest
 
 

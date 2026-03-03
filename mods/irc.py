@@ -1,5 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=R
+# pylint: disable=C0115,C0116.R
 
 
 "internet relay chat"
@@ -15,8 +15,8 @@ import threading
 import time
 
 
-from nixt.handler import Message, Output
-from nixt.kernels import Cfg, broker, command, db
+from nixt.handler import Event, Output
+from nixt.runtime import Cfg, broker, command, db
 from nixt.methods import fmt
 from nixt.objects import Default, Object
 from nixt.threads import launch
@@ -65,7 +65,7 @@ class Config(Default):
     version = 1
 
 
-class Event(Message):
+class IRCEvent(Event):
 
     def __init__(self):
         super().__init__()
@@ -333,7 +333,7 @@ class IRC(Output):
         rawstr = rawstr.replace("\u0001", "")
         rawstr = rawstr.replace("\001", "")
         rlog(txt)
-        obj = Event()
+        obj = IRCEvent()
         obj.args = []
         obj.rawstr = rawstr
         obj.command = ""
@@ -466,7 +466,7 @@ class IRC(Output):
         return 0
 
     def say(self, channel, text):
-        event = Event()
+        event = IRCEvent()
         event.channel = channel
         event.reply(text)
         self.oput(event)

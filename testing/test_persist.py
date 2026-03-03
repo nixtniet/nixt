@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# pylint: disable=C0115,C0116,R0801
 
 
 "persist tests"
@@ -9,9 +10,9 @@ import shutil
 import unittest
 
 
-from nixt.kernels import db
 from nixt.methods import fqn
 from nixt.objects import Object
+from nixt.runtime import db
 
 
 db.setwd('.test')

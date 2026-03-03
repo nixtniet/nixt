@@ -1,5 +1,1 @@
-#/bin/sh
-
-SKIP="C0103,C0115,C0116,C0413,C0415,R0801,R0903,W0105,W0212,W0718,E0402"
-
-pylint -d $SKIP nixt mods bin/tinder testing
+pylint nixt mods bin/tinder testing

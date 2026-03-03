@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# pylint: disable=C0115,C0116,C0415
 
 
 "commands"
@@ -7,8 +8,8 @@
 import unittest
 
 
-from nixt.handler import Client, Message
-from nixt.kernels import cmds, cmnd, command
+from nixt.booting import cmds, cmnd, command
+from nixt.handler import Client, Event
 from nixt.objects import values
 
 
@@ -42,7 +43,7 @@ class TestCommands(unittest.TestCase):
     def test_command(self):
         clt = Client()
         cmds.add(cmd)
-        evt = Message()
+        evt = Event()
         evt.text = "cmd"
         evt.orig = repr(clt)
         command(evt)

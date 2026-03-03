@@ -1,10 +1,11 @@
 # This file is placed in the Public Domain.
+# pylint: disable=C0116
 
 
 "silence"
 
 
-from nixt.kernels import broker
+from nixt.runtime import broker
 
 
 def sil(event):

@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# pylint: disable=W0105,E0402
 
 
 "functions with an objects as the first argument"

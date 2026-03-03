@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# pylint: disable=C0115,C0116,C0415
 
 
 "package"
@@ -7,7 +8,7 @@
 import unittest
 
 
-from nixt.kernels import mods
+from nixt.booting import mods
 
 
 class TestPackage(unittest.TestCase):

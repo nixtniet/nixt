@@ -1,5 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0209
+# pylint: disable=C0116,C0209,W0105
 
 
 "genocide model of the netherlands since 4 march 2019."
@@ -10,8 +10,8 @@ import logging
 import time
 
 
-from nixt.handler import Message
-from nixt.kernels import broker
+from nixt.handler import Event
+from nixt.runtime import broker
 from nixt.objects import Object, construct, keys
 from nixt.threads import Repeater
 from nixt.utility import elapsed
@@ -26,7 +26,7 @@ def init():
             continue
         val = getattr(oorzaken, key, None)
         if val and int(val) > 10000:
-            evt = Message()
+            evt = Event()
             evt.txt = ""
             evt.rest = key
             sec = seconds(val)
@@ -122,14 +122,14 @@ def iswanted(k, line):
 def daily():
     while 1:
         time.sleep(24*60*60)
-        evt = Message()
+        evt = Event()
         cbnow(evt)
 
 
 def hourly():
     while 1:
         time.sleep(60*60)
-        evt = Message()
+        evt = Event()
         cbnow(evt)
 
 

@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# pylint: disable=C0115,C0116,
 
 
 "runtime tests"
@@ -7,7 +8,7 @@
 import unittest
 
 
-class TestRuntime(unittest.TestCase):
+class TestKernels(unittest.TestCase):
 
     def test_banner(self):
         pass

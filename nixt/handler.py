@@ -1,4 +1,6 @@
 # This file is placed in the Public Domain.
+# pylint: disable=C0115,C0116,W0105,W0613,
+# pylint: disable=W0212,W0718,E0402
 
 
 "callback engine"
@@ -17,7 +19,7 @@ from .threads import launch
 "message"
 
 
-class Message:
+class Event:
 
     def __init__(self):
         self._ready = threading.Event()
@@ -251,7 +253,7 @@ def __dir__():
         'Broker',
         'Client',
         'Console',
+        'Event',
         'Handler',
-        'Message',
         'Output'
     )

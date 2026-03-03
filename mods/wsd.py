@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# pylint: disable=C0115,C0116,W0105
 
 
 "wisdom"
@@ -10,8 +11,8 @@ import logging
 from random import SystemRandom
 
 
-from nixt.handler import Message
-from nixt.kernels import broker, db
+from nixt.handler import Event
+from nixt.runtime import broker, db
 from nixt.methods import ident
 from nixt.threads import Repeater
 
@@ -27,7 +28,7 @@ rand = SystemRandom()
 
 def init():
     state.load()
-    event = Message()
+    event = Event()
     repeater = Repeater(3600,  wsd, event)
     repeater.start()
     logging.warning("%s wise", len(TXTLIST))
