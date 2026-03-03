@@ -11,8 +11,8 @@ import time
 
 
 from nixt.handler import Message
-from nixt.kernels import broker
 from nixt.objects import Object, construct, keys
+from nixt.runtime import broker
 from nixt.threads import Repeater
 from nixt.utility import elapsed
 
@@ -103,7 +103,7 @@ def getnr(nme):
     for k in keys(oorzaken):
         if nme.lower() in k.lower():
             return int(getattr(oorzaken, k))
-    return 0
+    return 1.0
 
 
 def seconds(nrs):
@@ -182,6 +182,8 @@ def dis(event):
     txt = elapsed(delta) + " "
     for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
+        if not needed:
+            continue
         if needed > 60*60:
             continue
         nrtimes = int(delta/needed)
