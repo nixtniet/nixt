@@ -8,10 +8,14 @@ import logging
 import time
 
 
+from nixt.brokers import Broker
 from nixt.message import Message
 from nixt.objects import Object, construct, keys
 from nixt.threads import Repeater
 from nixt.utility import elapsed
+
+
+broker = Broker()
 
 
 "init"

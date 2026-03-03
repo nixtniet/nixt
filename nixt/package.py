@@ -95,10 +95,10 @@ class Mods:
         return self.dir(package.__name__, package.__path__[0])
 
 
-mods = Mods()
+"interface"
 
 
 def __dir__():
     return (
-        'mods',
+        'Mods',
     )

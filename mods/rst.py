@@ -14,7 +14,11 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from nixt.objects import Default, Object
+from nixt.persist import Persist
 from nixt.threads import launch
+
+
+db = Persist()
 
 
 def configure(cfg):
@@ -93,7 +97,7 @@ class RESTHandler(BaseHTTPRequestHandler):
         if self.path == "/":
             self.write_header("text/html")
             txt = ""
-            for fnm in kinds():
+            for fnm in db.kinds():
                 txt += f'<a href="http://{Config.hostname}:{Config.port}/{fnm}">{fnm}</a><br>\n'
             self.send(html(txt.strip()))
             return

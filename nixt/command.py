@@ -7,12 +7,8 @@
 import inspect
 
 
-from .brokers import Broker
 from .message import Message
 from .methods import parse
-
-
-broker = Broker()
 
 
 class Commands:
@@ -43,21 +39,10 @@ class Commands:
             self.add(cmdz)
 
 
-def cmnd(text):
-    "parse text for command and run it."
-    results = {}
-    for txt in text.split(" ! "):
-        evt = Message()
-        evt.text = txt
-        evt.type = "command"
-        command(evt)
-        evt.wait()
-        results.update(evt.result)
-    return results.values()
+"interface"
 
 
 def __dir__():
     return (
-        'cmnd',
-        'command'
+        'Command',
     )

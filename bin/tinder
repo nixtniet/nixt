@@ -44,7 +44,7 @@ mods = Mods()
 
 class Config(Default):
 
-    debug = False
+    debug = True
     default = "irc,mdl,rss,wsd"
     ignore = "man,rst,udp,web"
     level = "info"

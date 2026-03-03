@@ -12,11 +12,13 @@ import threading
 import time
 
 
+from nixt.brokers import Broker
 from nixt.objects import Default
 from nixt.persist import Persist
 from nixt.threads import launch
 
 
+broker = Broker()
 db = Persist()
 
 

@@ -13,6 +13,9 @@ import _thread
 from .threads import launch
 
 
+"handler"
+
+
 class Handler:
 
     def __init__(self):
@@ -55,6 +58,9 @@ class Handler:
         "stop event handler loop."
         self.running.clear()
         self.queue.put(None)
+
+
+"client"
 
 
 class Client(Handler):
@@ -106,6 +112,9 @@ class Client(Handler):
         self.raw(text)
 
 
+"console"
+
+
 class Console(Client):
 
     def loop(self):
@@ -121,6 +130,9 @@ class Console(Client):
     def poll(self):
         "return event."
         return self.iqueue.get()
+
+
+"buffered"
 
 
 class Output(Client):
@@ -156,6 +168,9 @@ class Output(Client):
         except Exception as ex:
             logging.exception(ex)
             _thread.interrupt_main()
+
+
+"interface"
 
 
 def __dir__():

@@ -11,6 +11,9 @@ import os
 from .objects import Default, items
 
 
+"methods"
+
+
 def deleted(obj):
     "check whether obj had deleted flag set."
     return "__deleted__" in dir(obj) and obj.__deleted__
@@ -68,6 +71,7 @@ def ident(obj):
 
 
 def merge(obj, obj2):
+    "merge non empty values."
     for key, value in items(obj2):
         if not value and getattr(obj, key, False):
             continue
@@ -128,6 +132,7 @@ def parse(obj, text):
 
 
 def reduce(obj):
+    "remove empty values."
     result = {}
     for key, value in items(obj):
         if value:
@@ -185,6 +190,9 @@ def typed(obj, key, val):
         setattr(obj, key, False)
     else:
         setattr(obj, key, val)
+
+
+"interface"
 
 
 def __dir__():

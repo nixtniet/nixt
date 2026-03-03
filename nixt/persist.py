@@ -16,6 +16,9 @@ from .objects import Default, keys, update
 from .utility import fntime
 
 
+"cache"
+
+
 class Cache:
 
     paths = {}
@@ -34,6 +37,9 @@ class Cache:
             update(self.paths[path], obj)
         except KeyError:
             self.add(path, obj)
+
+
+"persist"
 
 
 class Persist:
@@ -186,6 +192,9 @@ class Persist:
         return os.path.join(self.wdr, path)
 
 
+"utility"
+
+
 def cdir(path):
     "create directory."
     pth = pathlib.Path(path)
@@ -196,6 +205,9 @@ def cdir(path):
 def strip(path):
     "strip filename from path."
     return path.split('store')[-1][1:]
+
+
+"interface"
 
 
 def __dir__():

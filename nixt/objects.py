@@ -25,6 +25,9 @@ class Default(Object):
         return self.__dict__.get(key, "")
 
 
+"methods"
+
+
 def clear(obj):
     "remove all items from the object."
     obj.__dict__.clear()
@@ -100,6 +103,9 @@ def values(obj):
     if isinstance(obj, dict):
         return obj.values()
     return obj.__dict__.values()
+
+
+"interface"
 
 
 def __dir__():

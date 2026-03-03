@@ -24,6 +24,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
+from nixt.brokers import Broker
 from nixt.methods import fmt, fqn, ident
 from nixt.objects import Default, update
 from nixt.persist import Persist
@@ -31,6 +32,7 @@ from nixt.threads import Repeater, launch
 from nixt.utility import elapsed, fntime, spl
 
 
+broker = Broker()
 db = Persist()
 
 
