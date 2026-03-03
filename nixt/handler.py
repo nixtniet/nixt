@@ -49,6 +49,47 @@ class Message:
             self._thr.join(timeout)
 
 
+"broker"
+
+
+class Broker:
+
+    objects = {}
+
+    def add(self, obj):
+        "add object to the broker, key is repr(obj)."
+        self.objects[repr(obj)] = obj
+
+    def announce(self, txt):
+        "announce text on all objects with an announce method."
+        for obj in self.objs("announce"):
+            obj.announce(txt)
+
+    def get(self, origin):
+        "object by repr(obj)."
+        return self.objects.get(origin)
+
+    def objs(self, attr):
+        "objects with a certain attribute."
+        for obj in self.objects.values():
+            if attr in dir(obj):
+                yield obj
+
+    def has(self, obj):
+        "whether the broker has object."
+        return repr(obj) in self.objects
+
+    def like(self, txt):
+        "all keys with a substring in their key."
+        for orig in self.objects:
+            if txt in orig.split()[0]:
+                yield orig
+
+    @staticmethod
+    def register(obj):
+        Broker.objects[repr(obj)] = obj
+
+
 "handler"
 
 
@@ -107,6 +148,7 @@ class Client(Handler):
         self.olock = threading.RLock()
         self.silent = False
         self.stopped = threading.Event()
+        Broker.register(self)
 
     def announce(self, text):
         "announce text to all channels."
@@ -145,8 +187,7 @@ class Client(Handler):
 
     def say(self, channel, text):
         "say text in channel."
-        if not channel:
-            self.raw(text)
+        self.raw(text)
 
 
 "console"
@@ -164,18 +205,13 @@ class Console(Client):
             self.callback(event)
             event.wait()
 
-    def poll(self):
-        "return event."
-        return self.iqueue.get()
-
-
 "buffered"
 
 
 class Output(Client):
 
     def __init__(self):
-        super().__init__()
+        Client.__init__(self)
         self.oqueue = queue.Queue()
 
     def output(self):
@@ -190,8 +226,8 @@ class Output(Client):
 
     def start(self, daemon=True):
         "start output loop."
-        super().start(daemon=daemon)
         launch(self.output, daemon=daemon)
+        Client.start(self, daemon=daemon)
 
     def stop(self):
         "stop output loop."
@@ -212,6 +248,7 @@ class Output(Client):
 
 def __dir__():
     return (
+        'Broker',
         'Client',
         'Console',
         'Handler',

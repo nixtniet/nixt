@@ -34,7 +34,7 @@ class Line(Console):
     def __init__(self):
         super().__init__()
         self.register("command", command)
-        broker.store(self)
+        broker.add(self)
 
     def raw(self, text):
         "write to console."

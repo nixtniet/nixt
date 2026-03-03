@@ -9,9 +9,8 @@ import os
 import time
 
 
-from .brokers import Broker
 from .command import Commands
-from .handler import Message
+from .handler import Broker, Message
 from .methods import merge, parse
 from .objects import Default, update, values
 from .package import Mods
@@ -117,7 +116,7 @@ def command(evt):
     func = cmds.get(evt.cmd)
     if func:
         func(evt)
-        bot = broker.retrieve(evt.orig)
+        bot = broker.get(evt.orig)
         if bot:
             bot.display(evt)
     evt.ready()

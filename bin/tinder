@@ -40,7 +40,7 @@ class CLI(Client):
     def __init__(self):
         Client.__init__(self)
         self.register("command", command)
-        broker.store(self)
+        broker.add(self)
 
     def raw(self, text):
         if "v" in Cfg.opts:

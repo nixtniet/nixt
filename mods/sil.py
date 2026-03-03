@@ -8,7 +8,7 @@ from nixt.kernels import broker
 
 
 def sil(event):
-    bot = broker.retrieve(event.orig)
+    bot = broker.get(event.orig)
     if not bot:
         event.reply("no bot in fleet.")
         return
@@ -17,7 +17,7 @@ def sil(event):
 
 
 def lou(event):
-    bot = broker.retrieve(event.orig)
+    bot = broker.get(event.orig)
     if not bot:
         event.reply("no bot in fleet.")
         return

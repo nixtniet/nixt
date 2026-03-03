@@ -11,8 +11,8 @@ import time
 
 
 from nixt.handler import Message
+from nixt.kernels import broker
 from nixt.objects import Object, construct, keys
-from nixt.runtime import broker
 from nixt.threads import Repeater
 from nixt.utility import elapsed
 

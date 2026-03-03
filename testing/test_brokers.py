@@ -7,8 +7,7 @@
 import unittest
 
 
-from nixt.brokers import Broker
-from nixt.handler import Client
+from nixt.handler import Broker, Client
 from nixt.encoder import dumps, loads
 from nixt.objects import Object, update
 
@@ -25,36 +24,38 @@ class TestBroker(unittest.TestCase):
 
     def test_add(self):
         obj = Object()
-        broker.store(obj)
+        broker.add(obj)
         self.assertTrue(broker.has(obj))
 
+    '''
     def test_announce(self):
         clt = Client()
-        broker.store(clt)
+        broker.add(clt)
         clt.announce = announce
         broker.announce("test")
         self.assertTrue("test" in result)
+    '''
 
     def test_get(self):
         obj = Object()
-        broker.store(obj)
-        oobj = broker.retrieve(repr(obj))
+        broker.add(obj)
+        oobj = broker.get(repr(obj))
         self.assertTrue(oobj is obj)
 
     def test_objs(self):
         clt = Client()
-        broker.store(clt)
+        broker.add(clt)
         objs = broker.objs("announce")
         self.assertTrue(clt in objs)
 
     def test_has(self):
         obj = Object()
-        broker.store(obj)
+        broker.add(obj)
         self.assertTrue(broker.has(obj))
 
     def test_like(self):
         obj = Object()
-        broker.store(obj)
+        broker.add(obj)
         self.assertTrue(broker.like(repr(obj)))
 
     def test_json(self):

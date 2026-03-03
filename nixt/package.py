@@ -57,7 +57,7 @@ class Mods:
 
     def iter(self, mods, ignore=""):
         "loop over modules."
-        for name, path in self.dirs.items():
+        for pkgname, path in self.dirs.items():
             if not os.path.exists(path):
                 continue
             for fnm in os.listdir(path):
@@ -70,7 +70,7 @@ class Mods:
                     continue
                 if ignore and name in spl(ignore):
                     continue
-                modname = f"{name}.{name}"
+                modname = f"{pkgname}.{name}"
                 mod =  self.modules.get(modname, None)
                 if not mod:
                     mod = self.importer(

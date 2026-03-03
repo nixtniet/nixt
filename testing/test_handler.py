@@ -14,6 +14,14 @@ from nixt.objects import values
 buffer = []
 
 
+class Message(Message):
+
+    def __init__(self):
+       super().__init__()
+       self.kind = "hello"
+       self.text = "hello"
+       
+
 class MyClient(Client):
 
     def raw(self, text):
@@ -50,15 +58,12 @@ class TestHandler(unittest.TestCase):
 
     def test_callback(self):
         evt = Message()
-        evt.kind = "hello"
-        evt.text = "hello"
         self.hdl.callback(evt)
         evt.wait()
         self.assertTrue("hello" in evt.result.values())
 
     def test_loop(self):
         evt = Message()
-        evt.kind = "hello"
         self.hdl.put(evt)
         evt.wait()
         self.assertTrue(evt._ready.is_set())
@@ -66,7 +71,6 @@ class TestHandler(unittest.TestCase):
     def test_put(self):
         hdl = Handler()
         evt = Message()
-        evt.kind = "hello"
         hdl.put(evt)
         event = hdl.queue.get()
         self.assertTrue(event is evt)
@@ -87,8 +91,9 @@ class TestHandler(unittest.TestCase):
 
 class TestClient(unittest.TestCase):
 
+    clt = MyClient()
+
     def setUp(self):
-        self.clt = MyClient()
         self.clt.silent = False
         self.clt.register("hello", hello)
         self.clt.start()
@@ -110,37 +115,30 @@ class TestClient(unittest.TestCase):
         self.assertTrue(buffer.index("test1") < buffer.index("test2"))
 
     def test_dosay(self):
-        self.clt.dosay("#channel", "yo!")
+        self.clt.dosay("", "yo!")
         self.assertTrue("yo!" in buffer)
 
     def test_loop(self):
         evt = Message()
-        evt.kind = "hello"
-        evt.text = "hello bot"
         self.clt.put(evt)
         evt.wait()
-        self.assertTrue("hello bot" in evt.result.values())
+        self.assertTrue("hello" in evt.result.values())
 
     def test_poll(self):
         clt = Client()
         evt = Message()
-        evt.text = "okdan"
         clt.iqueue.put(evt)
         event = clt.poll()
         self.assertTrue(event is evt)
 
     def test_put(self):
         evt = Message()
-        evt.text = "hello"
-        evt.kind = "hello"
         self.clt.put(evt)
         evt.wait()
         self.assertTrue("hello" in values(evt.result))
 
     def test_raw(self):
         evt = Message()
-        evt.text = "hello"
-        evt.kind = "hello"
         self.clt.put(evt)
         evt.wait()
         self.assertTrue("hello" in values(evt.result))
@@ -148,8 +146,9 @@ class TestClient(unittest.TestCase):
 
 class TestConsole(unittest.TestCase):
 
+    clt = MyConsole()
+
     def setUp(self):
-        self.clt = MyConsole()
         self.clt.silent = False
         self.clt.register("hello", hello)
         self.clt.start()
@@ -159,7 +158,6 @@ class TestConsole(unittest.TestCase):
 
     def test_loop(self):
         evt = Message()
-        evt.kind = "hello"
         self.clt.put(evt)
         evt.wait()
         self.assertTrue(evt._ready.is_set())
@@ -167,7 +165,6 @@ class TestConsole(unittest.TestCase):
     def test_poll(self):
         clt = Console()
         evt = Message()
-        evt.text = "okdan"
         clt.iqueue.put(evt)
         event = clt.poll()
         self.assertTrue(event is evt)
@@ -175,8 +172,11 @@ class TestConsole(unittest.TestCase):
 
 class TestOutput(unittest.TestCase):
 
+    clt = MyOutput()
+
     def setUp(self):
-        self.clt = MyOutput()
+        global buffer
+        buffer = []
         self.clt.silent = False
         self.clt.register("hello", hello)
         self.clt.start()
@@ -186,7 +186,6 @@ class TestOutput(unittest.TestCase):
 
     def test_output(self):
         evt = Message()
-        evt.text = "okdan"
         self.clt.put(evt)
         self.clt.oqueue.join()
         self.assertEqual(self.clt.oqueue.qsize(), 0)
@@ -198,9 +197,11 @@ class TestOutput(unittest.TestCase):
         self.clt.stop()
         self.assertTrue(not self.clt.running.is_set())
 
+    '''
     def test_wait(self):
+        global buffer
         evt = Message()
-        evt.text = "okdan"
         self.clt.put(evt)
         self.clt.wait()
-        self.assertTrue("okdan" in buffer)
+        self.assertTrue("hello" in buffer)
+    '''

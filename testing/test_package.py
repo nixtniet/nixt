@@ -7,10 +7,7 @@
 import unittest
 
 
-from nixt.package import Mods
-
-
-mods = Mods()
+from nixt.kernels import mods
 
 
 class TestPackage(unittest.TestCase):
@@ -23,6 +20,7 @@ class TestPackage(unittest.TestCase):
     def test_get(self):
         mods.dir("test", "testing")
         mods.get("dbg")
+        print(mods.modules)
         self.assertTrue("test.dbg" in mods.modules)
 
     def test_has(self):

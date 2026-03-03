@@ -32,7 +32,7 @@ def init():
                 continue
             diff = float(tme) - time.time()
             if diff > 0:
-                bot = broker.retrieve(origin)
+                bot = broker.get(origin)
                 timer = Timed(diff, bot.say, channel, txt)
                 timer.start()
             else:
@@ -104,7 +104,7 @@ def tmr(event):
     txt = " ".join(event.args[1:])
     Timers.add(target, event.orig, event.channel, txt)
     db.write(Timers.timers, Timers.path or ident(Timers.timers))
-    bot = broker.retrieve(event.orig)
+    bot = broker.get(event.orig)
     timer = Timed(diff, bot.say, event.orig, event.channel, txt)
     timer.start()
     event.reply("ok " + elapsed(diff))
