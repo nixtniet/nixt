@@ -1,11 +1,13 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116,R0903,W0105
+# pylint: disable=R0903
 
 
 "a clean namespace"
 
 
 class Object:
+
+    """Object"""
 
     def __contains__(self, key):
         return key in dir(self)
@@ -22,11 +24,10 @@ class Object:
 
 class Default(Object):
 
+    """Default"""
+
     def __getattr__(self, key):
         return self.__dict__.get(key, "")
-
-
-"methods"
 
 
 def clear(obj):
@@ -104,9 +105,6 @@ def values(obj):
     if isinstance(obj, dict):
         return obj.values()
     return obj.__dict__.values()
-
-
-"interface"
 
 
 def __dir__():

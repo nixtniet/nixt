@@ -1,5 +1,4 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0116
 
 
 "show uptime"
@@ -15,4 +14,5 @@ STARTTIME = time.time()
 
 
 def upt(event):
+    "show uptime."
     event.reply(elapsed(time.time()-STARTTIME))

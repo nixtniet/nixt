@@ -1,5 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116,R0903,W0201
+# pylint: disable=R0903,W0201
 
 
 "rich site syndicate"
@@ -33,21 +33,27 @@ from nixt.utility import elapsed, fntime, spl
 
 
 def init():
+    "initialize the rss fetcher."
     RunnerPool.init(1, Runner)
     Run.fetcher.start()
     logging.warning("%s feeds", db.count("rss"))
 
 
 def shutdown():
+    "shutdown the rss fetcher."
     Run.fetcher.stop()
 
 
 class Config(Default):
 
+    """Config"""
+
     polltime = 300
 
 
 class Fetcher:
+
+    """Fetcher"""
 
     def __init__(self):
         self.dosave = False
@@ -56,6 +62,7 @@ class Fetcher:
         self.todo = queue.Queue()
 
     def run(self, silent=False):
+        "do a fetch run on all feeds."
         nrs = 0
         for fnm, feed in db.find(fqn(Rss)):
             if feed.skip:
@@ -65,6 +72,7 @@ class Fetcher:
         return nrs
 
     def start(self, repeat=True):
+        "start rss fetcher."
         State.seenfn = db.last(State.seen) or ident(State.seen)
         State.modifiedfn = db.last(State.modified) or ident(State.modified)
         if repeat:
@@ -72,12 +80,15 @@ class Fetcher:
             repeater.start()
 
     def stop(self):
+        "stop rss fetcher."
         logging.debug("stopped fetcher")
         db.write(State.modified, State.modifiedfn)
         self.stopped.set()
 
 
 class Runner:
+
+    """Runner"""
 
     def __init__(self):
         self.dosave = False
@@ -87,6 +98,7 @@ class Runner:
         self.todo = queue.Queue()
 
     def display(self, obj):
+        "create a displayable string."
         displaylist = ""
         result = ""
         try:
@@ -104,11 +116,13 @@ class Runner:
         return result[:-2].rstrip()
 
     def loop(self):
+        "run fetch jobs from queue."
         while True:
             job = self.queue.get()
             self.fetch(*job)
 
     def fetch(self, fnm, feed, silent=False):
+        "single feed fetch."
         with Run.fetchlock:
             result = []
             see = getattr(State.seen, feed.rss, [])
@@ -148,16 +162,21 @@ class Runner:
         return counter
 
     def put(self, args):
+        "put fetch job onto queue."
         self.queue.put(args)
 
     def start(self):
+        "start fetcher loop."
         launch(self.loop)
 
     def stop(self):
+        "stop fether loop."
         self.stopped.set()
 
 
 class RunnerPool:
+
+    """RunnerPool"""
 
     runners = []
     lock = threading.RLock()
@@ -166,10 +185,12 @@ class RunnerPool:
 
     @staticmethod
     def add(client):
+        "ad a fetcher to the pool."
         RunnerPool.runners.append(client)
 
     @staticmethod
     def init(nrcpu, cls):
+        "start fetcher pool."
         RunnerPool.nrcpu = nrcpu
         for _x in range(RunnerPool.nrcpu):
             clt = cls()
@@ -178,6 +199,7 @@ class RunnerPool:
 
     @staticmethod
     def put(*args):
+        "put fetcher job to runner."
         if not RunnerPool.runners:
             RunnerPool.init(RunnerPool.nrcpu, Runner)
         with RunnerPool.lock:
@@ -190,8 +212,11 @@ class RunnerPool:
 
 class Parser:
 
+    """Parser"""
+
     @staticmethod
     def getitem(line, item):
+        "return an item matching in a line of text."
         lne = ""
         index1 = line.find(f"<{item}>")
         if index1 == -1:
@@ -204,6 +229,7 @@ class Parser:
 
     @staticmethod
     def getitems(text, token, nrs=None):
+        "get items per token."
         index = 0
         end = len(text)
         stop = False
@@ -224,6 +250,7 @@ class Parser:
 
     @staticmethod
     def parse(txt, toke="item", items="title,link"):
+        "parse items in text."
         for line in Parser.getitems(txt, toke):
             line = line.strip()
             obj = {}
@@ -236,12 +263,16 @@ class Parser:
 
 class OPML:
 
+    """OPML"""
+
     @staticmethod
     def getnames(line):
+        "return names of variables in a line."
         return [x.split('="')[0] for x in line.split()]
 
     @staticmethod
     def getvalue(line, attr):
+        "get value of an attribute."
         lne = ""
         index1 = line.find(f'{attr}="')
         if index1 == -1:
@@ -256,6 +287,7 @@ class OPML:
 
     @staticmethod
     def getattrs(line, token):
+        "get attributes per token."
         index = 0
         result = []
         stop = False
@@ -273,6 +305,7 @@ class OPML:
 
     @staticmethod
     def parse(txt, toke="outline", itemz=None):
+        "parse items in text."
         if itemz is None:
             itemz = ",".join(OPML.getnames(txt))
         for attrz in OPML.getattrs(txt, toke):
@@ -287,6 +320,8 @@ class OPML:
 
 
 class Helpers:
+
+    """Helpers"""
 
     skip = [
         '403',
@@ -316,6 +351,7 @@ class Helpers:
 
     @staticmethod
     def doskip(error):
+        "check whether to skip an error for logging."
         for skip in Helpers.skip:
             if skip in error:
                 return True
@@ -420,6 +456,7 @@ class Helpers:
 
     @staticmethod
     def unquote(url):
+        "unquote an url."
         return urllib.parse.unquote(url, errors='ignore')
 
     @staticmethod
@@ -430,15 +467,17 @@ class Helpers:
 
 class Feed(Default):
 
-    pass
+    """Feed"""
 
 
 class Modified:
 
-    pass
+    """Modified"""
 
 
 class Rss(Default):
+
+    """Rss"""
 
     def __init__(self):
         super().__init__()
@@ -450,10 +489,12 @@ class Rss(Default):
 
 class Urls:
 
-    pass
+    """Urls"""
 
 
 class Run:
+
+    """Run"""
 
     fetcher = Fetcher()
     fetchlock = _thread.allocate_lock()
@@ -461,6 +502,8 @@ class Run:
 
 
 class State:
+
+    """State"""
 
     configfn = ""
     modified = Modified()
@@ -471,6 +514,7 @@ class State:
 
 
 def atr(event):
+    "show attributes in a feed."
     if not event.rest:
         event.reply("atr <stringinurl>")
         return
@@ -488,6 +532,7 @@ def atr(event):
 
 
 def dpl(event):
+    "set items to display."
     if len(event.args) < 2:
         event.reply("dpl <stringinurl> <item1,item2>")
         return
@@ -500,6 +545,7 @@ def dpl(event):
 
 
 def err(event):
+    "show feeds that errored."
     nre = 0
     nrs = 0
     for fnm, obj in db.find(fqn(Rss), event.gets):
@@ -523,6 +569,7 @@ def err(event):
 
 
 def exp(event):
+    "export opml."
     with Run.importlock:
         event.reply(TEMPLATE)
         nrs = 0
@@ -539,6 +586,7 @@ def exp(event):
 
 
 def imp(event):
+    "import opml."
     if not event.args:
         event.reply("imp <filename>")
         return
@@ -583,6 +631,7 @@ def imp(event):
 
 
 def nme(event):
+    "set feed name."
     if len(event.args) != 2:
         event.reply("nme <stringinurl> <name>")
         return
@@ -597,6 +646,7 @@ def nme(event):
 
 
 def rem(event):
+    "remove feed."
     if len(event.args) != 1:
         event.reply("rem <stringinurl>")
         return
@@ -613,6 +663,7 @@ def rem(event):
 
 
 def res(event):
+    "restore feed."
     if len(event.args) != 1:
         event.reply("res <stringinurl>")
         return
@@ -629,6 +680,7 @@ def res(event):
 
 
 def rss(event):
+    "add a feed."
     if not event.rest:
         nrs = 0
         for fnm, fed in db.find(fqn(Rss), event.gets):
@@ -656,6 +708,7 @@ def rss(event):
 
 
 def syn(event):
+    "sunchronize all feeds."
     if Cfg.debug:
         return
     fetcher = Fetcher()

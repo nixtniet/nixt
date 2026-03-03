@@ -1,5 +1,4 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116,W0105,E0402
 
 
 "module management"
@@ -11,10 +10,12 @@ import logging
 import os
 
 
-from .utility import spl
+from nixt.utility import spl
 
 
 class Mods:
+
+    """Mods"""
 
     dirs = {}
     modules = {}
@@ -94,10 +95,8 @@ class Mods:
         return ",".join(sorted(mods))
 
     def pkg(self, package):
+        "add directories from package."
         return self.dir(package.__name__, package.__path__[0])
-
-
-"interface"
 
 
 def __dir__():

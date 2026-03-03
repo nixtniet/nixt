@@ -1,5 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,R0903
+# pylint: disable=R0903
 
 
 "logging"
@@ -10,12 +10,16 @@ import logging
 
 class Format(logging.Formatter):
 
+    """Format"""
+
     def format(self, record):
         record.module = record.module.upper()
         return logging.Formatter.format(self, record)
 
 
 class Log:
+
+    """Log"""
 
     datefmt = "%H:%M:%S"
     format = "%(module).3s %(message)s"
@@ -36,5 +40,6 @@ def level(loglevel):
 
 def __dir__():
     return (
-        'level',
+        'Log',
+        'level'
     )

@@ -1,5 +1,6 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116.R
+# pylint: disable=R0902,R0903,R0904,R0912
+# pylint: disable=R0915
 
 
 "internet relay chat"
@@ -24,6 +25,7 @@ from nixt.utility import pkgname
 
 
 def init():
+    "initialize irc."
     irc = IRC()
     irc.start()
     irc.events.joined.wait(60.0)
@@ -47,6 +49,8 @@ def init():
 
 class Config(Default):
 
+    """Config"""
+
     name = Cfg.name or pkgname(Object)
     channel = f"#{name}"
     commands = True
@@ -56,7 +60,7 @@ class Config(Default):
     word = ""
     port = 6667
     realname = name
-    sasl = True if port == 6697 else False
+    sasl = port == 6697
     server = "localhost"
     servermodes = ""
     sleep = 60
@@ -66,6 +70,8 @@ class Config(Default):
 
 
 class IRCEvent(Event):
+
+    """IRCEvent."""
 
     def __init__(self):
         super().__init__()
@@ -82,11 +88,14 @@ class IRCEvent(Event):
         self.text = ""
 
     def dosay(self, txt):
+        "send text to channel from external source."
         bot = broker.get(self.orig)
         bot.dosay(self.channel, txt)
 
 
 class TextWrap(textwrap.TextWrapper):
+
+    """TextWrap"""
 
     def __init__(self):
         super().__init__()
@@ -102,6 +111,8 @@ wrapper = TextWrap()
 
 
 class IRC(Output):
+
+    """IRC"""
 
     def __init__(self):
         Output.__init__(self)
@@ -143,10 +154,12 @@ class IRC(Output):
         self.register("366", cb_ready)
 
     def announce(self, text):
+        "announce text on channel."
         for channel in self.channels:
             self.say(channel, text)
 
     def connect(self, server, port=6667):
+        "connect to irc server."
         self.state.nrconnect += 1
         self.events.connected.clear()
         self.events.joined.clear()
@@ -181,17 +194,20 @@ class IRC(Output):
         return False
 
     def direct(self, txt):
+        "sleep 2 seconds for writing on socket."
         with self.lock:
             time.sleep(2.0)
             self.raw(txt)
 
     def disconnect(self):
+        "disconnect from irc server."
         try:
             self.sock.shutdown(2)
         except (ssl.SSLError, OSError, BrokenPipeError) as _ex:
             pass
 
     def display(self, event):
+        "display result with a 5 second delay."
         for key in sorted(event.result):
             txt = event.result.get(key)
             if not txt:
@@ -212,6 +228,7 @@ class IRC(Output):
                 self.say(event.channel, f"use !mre to show more (+{length})")
 
     def docommand(self, cmd, *args):
+        "basic commands send to server."
         with self.lock:
             if not args:
                 self.raw(cmd)
@@ -228,6 +245,7 @@ class IRC(Output):
             self.state.last = time.time()
 
     def doconnect(self, server, nck, port=6667):
+        "connect loop."
         while 1:
             try:
                 if self.connect(server, port):
@@ -251,12 +269,14 @@ class IRC(Output):
             time.sleep(self.cfg.sleep)
 
     def dosay(self, channel, text):
+        "write to channel from external source."
         self.events.joined.wait()
         txt = str(text).replace("\n", "")
         txt = txt.replace("  ", " ")
         self.docommand("PRIVMSG", channel, txt)
 
     def event(self, txt):
+        "construct event from text."
         evt = self.parsing(txt)
         cmd = evt.command
         if cmd == "PING":
@@ -284,12 +304,14 @@ class IRC(Output):
         return evt
 
     def extend(self, channel, txtlist):
+        "extend output buffer with a list of strings."
         if channel not in self.cache:
             self.cache[channel] = []
         chanlist = self.cache.get(channel)
         chanlist.extend(txtlist)
 
     def gettxt(self, channel):
+        "return text from buffer."
         txt = None
         try:
             che = self.cache.get(channel, None)
@@ -300,10 +322,12 @@ class IRC(Output):
         return txt
 
     def joinall(self):
+        "join all channels."
         for channel in self.channels:
             self.docommand("JOIN", channel)
 
     def keep(self):
+        "keep alive loop."
         while True:
             if self.state.stopkeep:
                 self.state.stopkeep = False
@@ -318,17 +342,20 @@ class IRC(Output):
                 self.restart()
 
     def logon(self, server, nck):
+        "perform logon sequence."
         self.events.connected.wait()
         self.events.authed.wait()
         self.direct(f"NICK {nck}")
         self.direct(f"USER {nck} {server} {server} {nck}")
 
     def oput(self, event):
+        "put event on output queue."
         if event.channel and event.channel not in self.cache:
             self.cache[event.channel] = []
         self.oqueue.put_nowait(event)
 
     def parsing(self, txt):
+        "parse incoming text."
         rawstr = str(txt)
         rawstr = rawstr.replace("\u0001", "")
         rawstr = rawstr.replace("\001", "")
@@ -390,6 +417,7 @@ class IRC(Output):
         return obj
 
     def poll(self):
+        "poll socket for incoming data."
         self.events.connected.wait()
         if not self.buffer:
             try:
@@ -418,6 +446,7 @@ class IRC(Output):
         return self.event(txt)
 
     def raw(self, text):
+        "send raw string on the socket."
         text = text.rstrip()
         rlog(text)
         text = text[:500]
@@ -445,6 +474,7 @@ class IRC(Output):
         self.state.nrsend += 1
 
     def reconnect(self):
+        "reconnect to irc server."
         logging.debug("reconnecting %s:%s", self.cfg.server, self.cfg.port)
         self.disconnect()
         self.events.connected.clear()
@@ -452,6 +482,7 @@ class IRC(Output):
         self.doconnect(self.cfg.server, self.cfg.nick, int(self.cfg.port))
 
     def restart(self):
+        "restart client."
         logging.debug("restart")
         self.events.joined.set()
         self.state.pongcheck = False
@@ -461,17 +492,20 @@ class IRC(Output):
         launch(init)
 
     def size(self, chan):
+        "show size of channel cache."
         if chan in self.cache:
             return len(self.cache.get(chan, []))
         return 0
 
     def say(self, channel, text):
+        "send event to output queue." 
         event = IRCEvent()
         event.channel = channel
         event.reply(text)
         self.oput(event)
 
     def some(self):
+        "partial poll of the socket."
         self.events.connected.wait()
         if not self.sock:
             return
@@ -486,6 +520,7 @@ class IRC(Output):
         self.state.lastline = splitted[-1]
 
     def start(self, daemon=True):
+        "start irc client."
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
         self.events.ready.clear()
@@ -504,20 +539,24 @@ class IRC(Output):
         )
 
     def stop(self):
+        "stop irc client."
         logging.warning("stopping")
         self.state.stopkeep = True
         Output.stop(self)
 
     def wait(self):
+        "wait for irc client to finish."
         self.events.ready.wait()
 
 
 def cb_auth(evt):
+    "authorisation."
     bot = broker.get(evt.orig)
     bot.docommand(f"AUTHENTICATE {bot.cfg.word or bot.cfg.password}")
 
 
 def cb_cap(evt):
+    "capabilities." 
     bot = broker.get(evt.orig)
     if (bot.cfg.word or bot.cfg.password) and "ACK" in evt.arguments:
         bot.direct("AUTHENTICATE PLAIN")
@@ -526,6 +565,7 @@ def cb_cap(evt):
 
 
 def cb_error(evt):
+    "errors."
     bot = broker.get(evt.orig)
     bot.state.nrerror += 1
     bot.state.error = evt.text
@@ -533,36 +573,41 @@ def cb_error(evt):
 
 
 def cb_h903(evt):
+    "end capabilities."
     bot = broker.get(evt.orig)
     bot.direct("CAP END")
     bot.events.authed.set()
 
 
 def cb_h904(evt):
+    "end capabilities."
     bot = broker.get(evt.orig)
     bot.direct("CAP END")
     bot.events.authed.set()
 
 
 def cb_kill(evt):
-    pass
+    "kill."
 
 
 def cb_log(evt):
-    pass
+    "log."
 
 
 def cb_ready(evt):
+    "ready."
     bot = broker.get(evt.orig)
     bot.events.ready.set()
 
 
 def cb_001(evt):
+    "greetings."
     bot = broker.get(evt.orig)
     bot.events.logon.set()
 
 
 def cb_notice(evt):
+    "notice."
     bot = broker.get(evt.orig)
     if evt.text.startswith("VERSION"):
         txt = f"\001VERSION {bot.cfg.name.upper()} {bot.cfg.version} - {bot.cfg.username}\001"
@@ -570,6 +615,7 @@ def cb_notice(evt):
 
 
 def cb_privmsg(evt):
+    "privmsg."
     bot = broker.get(evt.orig)
     if not bot.cfg.commands:
         return
@@ -587,6 +633,7 @@ def cb_privmsg(evt):
 
 
 def cb_quit(evt):
+    "quit."
     bot = broker.get(evt.orig)
     logging.debug("quit from %s", bot.cfg.server)
     bot.state.nrerror += 1
@@ -596,6 +643,7 @@ def cb_quit(evt):
 
 
 def mre(event):
+    "show next 3 lines from cache."
     if not event.channel:
         event.reply("channel is not set.")
         return
@@ -615,6 +663,7 @@ def mre(event):
 
 
 def pwd(event):
+    "create password from nixkserv nick/password combo."
     if len(event.args) != 2:
         event.reply("pwd <nick> <password>")
         return
@@ -628,6 +677,7 @@ def pwd(event):
 
 
 def rlog(txt):
+    "log with ignore."
     for ign in Config.ignore:
         if ign in str(txt):
             return

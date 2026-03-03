@@ -1,5 +1,4 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116,W0105
 
 
 "wisdom"
@@ -17,16 +16,11 @@ from nixt.methods import ident
 from nixt.threads import Repeater
 
 
-"defines"
-
-
 rand = SystemRandom()
 
 
-"init"
-
-
 def init():
+    "initialize wisdom."
     state.load()
     event = Event()
     repeater = Repeater(3600,  wsd, event)
@@ -34,25 +28,28 @@ def init():
     logging.warning("%s wise", len(TXTLIST))
 
 
-"state"
-
-
 class StateFul:
+
+    """StaeFul"""
 
     def __init__(self):
         super().__init__()
         self.fnm = ""
 
     def dump(self):
+        "dump state to disk."
         if not self.fnm:
             self.fnm = db.first(self) or ident(self)
         db.write(self, self.fnm)
 
     def load(self):
+        "load state from disk."
         db.first(self)
 
 
 class State(StateFul):
+
+    """State"""
 
     def __init__(self):
         StateFul.__init__(self)
@@ -62,10 +59,8 @@ class State(StateFul):
 state = State()
 
 
-"commands"
-
-
 def wsd(event):
+    "show a piece of wisdom."
     txt = ""
     for _nrs in range(len(TXTLIST)):
         txt = rand.choice(TXTLIST)

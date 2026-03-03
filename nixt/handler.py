@@ -1,6 +1,4 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116,W0105,W0613,
-# pylint: disable=W0212,W0718,E0402
 
 
 "callback engine"
@@ -13,17 +11,16 @@ import time
 import _thread
 
 
-from .threads import launch
-
-
-"message"
+from nixt.threads import exceptions, launch
 
 
 class Event:
 
+    """Event"""
+
     def __init__(self):
-        self._ready = threading.Event()
-        self._thr = None
+        self.isready = threading.Event()
+        self.thr = None
         self.result = {}
         self.args = []
         self.index = 0
@@ -38,7 +35,7 @@ class Event:
 
     def ready(self):
         "flag message as ready."
-        self._ready.set()
+        self.isready.set()
 
     def reply(self, text):
         "add text to result."
@@ -46,15 +43,14 @@ class Event:
 
     def wait(self, timeout=0.0):
         "wait for completion."
-        self._ready.wait(timeout or None)
-        if self._thr:
-            self._thr.join(timeout)
-
-
-"broker"
+        self.isready.wait(timeout or None)
+        if self.thr:
+            self.thr.join(timeout)
 
 
 class Broker:
+
+    """Broker"""
 
     objects = {}
 
@@ -89,13 +85,13 @@ class Broker:
 
     @staticmethod
     def register(obj):
+        "register an object with a static method."
         Broker.objects[repr(obj)] = obj
 
 
-"handler"
-
-
 class Handler:
+
+    """Handler"""
 
     def __init__(self):
         self.cbs = {}
@@ -109,7 +105,7 @@ class Handler:
             event.ready()
             return
         name = event.text and event.text.split()[0]
-        event._thr = launch(func, event, name=name)
+        event.thr = launch(func, event, name=name)
 
     def loop(self):
         "event loop."
@@ -139,14 +135,14 @@ class Handler:
         self.queue.put(None)
 
 
-"client"
-
-
 class Client(Handler):
+
+    """Client"""
 
     def __init__(self):
         Handler.__init__(self)
         self.iqueue = queue.Queue()
+        self.last = {}
         self.olock = threading.RLock()
         self.silent = False
         self.stopped = threading.Event()
@@ -189,13 +185,14 @@ class Client(Handler):
 
     def say(self, channel, text):
         "say text in channel."
+        if channel:
+            self.last[channel] = time.time()
         self.raw(text)
 
 
-"console"
-
-
 class Console(Client):
+
+    """Console"""
 
     def loop(self):
         "input loop."
@@ -207,10 +204,10 @@ class Console(Client):
             self.callback(event)
             event.wait()
 
-"buffered"
-
 
 class Output(Client):
+
+    """Output"""
 
     def __init__(self):
         Client.__init__(self)
@@ -240,12 +237,9 @@ class Output(Client):
         "wait for output to finish."
         try:
             self.oqueue.join()
-        except Exception as ex:
+        except exceptions as ex:
             logging.exception(ex)
             _thread.interrupt_main()
-
-
-"interface"
 
 
 def __dir__():

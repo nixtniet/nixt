@@ -1,5 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0103,C0115,C0116,R0903
+# pylint: disable=C0103,R0903
 
 
 "rest server"
@@ -23,10 +23,12 @@ URL = '<a href="http://%s:%s/%s">%s</a><br>\n'
 
 
 def configure():
+    "configure rest server."
     db.first(Config)
 
 
 def init():
+    "initialize rest server."
     rest = None
     try:
         rest = REST((Config.hostname, int(Config.port)), RESTHandler)
@@ -36,13 +38,18 @@ def init():
         logging.error(str(ex))
     return rest
 
+
 class Config(Default):
+
+    """Config"""
 
     hostname = "localhost"
     port = 10102
 
 
 class REST(HTTPServer, Object):
+
+    """REST"""
 
     allow_reuse_address = True
     daemon_thread = True
@@ -56,18 +63,22 @@ class REST(HTTPServer, Object):
         self._status = "start"
 
     def exit(self):
+        "exit rest server."
         self._status = ""
         time.sleep(0.2)
         self.shutdown()
 
     def start(self):
+        "start rest server."
         self._status = "ok"
         launch(self.serve_forever)
 
     def request(self):
+        "set time of request."
         self._last = time.time()
 
     def error(self, _request, _addr):
+        "log error."
         exctype, excvalue, _trb = sys.exc_info()
         exc = exctype(excvalue)
         logging.exception(exc)
@@ -75,22 +86,28 @@ class REST(HTTPServer, Object):
 
 class RESTHandler(BaseHTTPRequestHandler):
 
+    """RESTHandler"""
+
     def setup(self):
+        "setup a rest handler."
         BaseHTTPRequestHandler.setup(self)
         self._ip = self.client_address[0]
         self._size = 0
 
     def send(self, txt):
+        "send raw txt."
         self.wfile.write(bytes(txt, "utf-8"))
         self.wfile.flush()
 
     def write_header(self, htype='text/plain'):
+        "write 200 header."
         self.send_response(200)
         self.send_header('Content-type', f'{htype}; charset=utf-8 ')
         self.send_header('Server', "1")
         self.end_headers()
 
     def do_GET(self):
+        "perform a get operation."
         if Cfg.debug:
             return
         if "favicon" in self.path:
@@ -128,8 +145,10 @@ class RESTHandler(BaseHTTPRequestHandler):
             self.end_headers()
 
     def log(self, code):
-        pass
+        "log error code."
+
 
 
 def html(txt):
+    "wrap html boiler around text."
     return f"<!doctype html><html>{txt}</html>"

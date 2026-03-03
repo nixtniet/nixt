@@ -1,15 +1,12 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0116
 
 
 "working directory"
 
 
-from nixt.persist import Persist
-
-
-db = Persist()
+from nixt.runtime import db
 
 
 def wdr(event):
+    "show working directory."
     event.reply(db.workdir())

@@ -1,17 +1,14 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0116
 
 
 "show attributes"
 
 
-from nixt.persist import Persist
-
-
-db = Persist()
+from nixt.runtime import db
 
 
 def atr(event):
+    "show atributes of a type."
     if not event.rest:
         res = sorted({x.split('.')[-1].lower() for x in db.kinds()})
         if res:

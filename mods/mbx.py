@@ -1,6 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116,C0209,C0301
-# pylint: disable=R0903,W0105,W0212
+# pylint: disable=C0209,C0301,R0903,W0212
 
 
 "mailbox"
@@ -17,20 +16,17 @@ from nixt.objects import Object, keys, update
 from nixt.utility import MONTH, elapsed, match
 
 
-"email"
-
-
 class Email(Object):
+
+    """Email"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.text = ""
 
 
-"utility"
-
-
 def todate(date):
+    "extract published date/time "
     date = date.replace("_", ":")
     res = date.split()
     ddd = ""
@@ -66,10 +62,8 @@ def todate(date):
     return ddd
 
 
-"commands"
-
-
 def eml(event):
+    "show emails."
     nrs = -1
     args = ["From", "Subject"]
     args.extend(event.args)
@@ -99,6 +93,7 @@ def eml(event):
 
 
 def mbx(event):
+    "import from mailbox."
     if not event.args:
         event.reply("mbx <path>")
         return

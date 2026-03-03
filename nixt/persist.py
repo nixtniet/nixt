@@ -1,5 +1,4 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116,W0105,E0402
 
 
 "persistence through storage"
@@ -11,16 +10,15 @@ import pathlib
 import threading
 
 
-from .encoder import dump, load
-from .methods import deleted, fqn, ident, search
-from .objects import Default, keys, update
-from .utility import fntime
-
-
-"cache"
+from nixt.encoder import dump, load
+from nixt.methods import deleted, fqn, ident, search
+from nixt.objects import Default, keys, update
+from nixt.utility import fntime
 
 
 class Cache:
+
+    """Cache"""
 
     paths = {}
 
@@ -40,10 +38,9 @@ class Cache:
             self.add(path, obj)
 
 
-"persist"
-
-
 class Persist:
+
+    """Persist"""
 
     cache = Cache()
     lock = threading.RLock()
@@ -193,9 +190,6 @@ class Persist:
         return os.path.join(self.wdr, path)
 
 
-"utility"
-
-
 def cdir(path):
     "create directory."
     pth = pathlib.Path(path)
@@ -206,9 +200,6 @@ def cdir(path):
 def strip(path):
     "strip filename from path."
     return path.split('store')[-1][1:]
-
-
-"interface"
 
 
 def __dir__():

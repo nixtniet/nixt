@@ -1,5 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116,C0415,W0105
+# pylint: disable=C0415
 
 
 "usefulness"
@@ -12,16 +12,9 @@ import re
 import time
 
 
-"exceptions"
-
-
 class NoDate(Exception):
 
-    pass
-
-
-"time"
-
+    """NoDate"""
 
 
 def day(daystr):
@@ -198,9 +191,6 @@ def today():
     return str(datetime.datetime.today()).split()[0]
 
 
-"utilities"
-
-
 def md5sum(path):
     "return md5 of a file."
     import hashlib
@@ -233,9 +223,6 @@ def where(obj):
     return os.path.dirname(inspect.getfile(obj))
 
 
-"data"
-
-
 MONTH = {
     'Jan': 1,
     'Feb': 2,
@@ -260,9 +247,6 @@ TIMES = [
     "%d-%m",
     "%m-%d"
 ]
-
-
-"interface"
 
 
 def __dir__():

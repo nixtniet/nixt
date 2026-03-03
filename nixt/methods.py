@@ -1,5 +1,4 @@
 # This file is placed in the Public Domain.
-# pylint: disable=W0105,E0402
 
 
 "functions with an objects as the first argument"
@@ -9,10 +8,7 @@ import datetime
 import os
 
 
-from .objects import Default, items
-
-
-"methods"
+from nixt.objects import Default, items
 
 
 def deleted(obj):
@@ -195,9 +191,6 @@ def typed(obj, key, val):
         setattr(obj, key, False)
     else:
         setattr(obj, key, val)
-
-
-"interface"
 
 
 def __dir__():

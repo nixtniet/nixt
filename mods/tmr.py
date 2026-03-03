@@ -1,5 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116,R0903
+# pylint: disable=R0903
 
 
 "timers"
@@ -22,6 +22,7 @@ rand = random.SystemRandom()
 
 
 def init():
+    "initialisze timers."
     Timers.path = db.last(Timers.timers) or ident(Timers.timers)
     remove = []
     for tme, args in items(Timers.timers):
@@ -47,27 +48,32 @@ def init():
 
 class Timer(Object):
 
-    pass
+    """Timer"""
 
 
 class Timers(Object):
+
+    """Timers"""
 
     path = ""
     timers = Timer()
     lock = threading.RLock()
 
     @staticmethod
-    def add(tme, orig, channel,  txt):
+    def add(tme, orig, channel, txt):
+        "add a timer."
         with Timers.lock:
             setattr(Timers.timers, str(tme), (orig, channel, txt))
 
     @staticmethod
     def delete(tme):
+        "delete a timer."
         with Timers.lock:
             delattr(Timers.timers, str(tme))
 
 
 def tmr(event):
+    "timer command."
     if not event.rest:
         nmr = 0
         for tme, txt in items(Timers.timers):

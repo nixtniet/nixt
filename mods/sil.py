@@ -1,5 +1,4 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0116
 
 
 "silence"
@@ -9,6 +8,7 @@ from nixt.runtime import broker
 
 
 def sil(event):
+    "put bot in silent mode."
     bot = broker.get(event.orig)
     if not bot:
         event.reply("no bot in fleet.")
@@ -18,6 +18,7 @@ def sil(event):
 
 
 def lou(event):
+    "put bot in loud mode."
     bot = broker.get(event.orig)
     if not bot:
         event.reply("no bot in fleet.")

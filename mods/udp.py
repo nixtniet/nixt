@@ -1,5 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116,R0903
+# pylint: disable=R0903
 
 
 "udp to irc relay"
@@ -18,6 +18,7 @@ from nixt.threads import launch
 
 
 def init():
+    "initialize udp to irc relay."
     db.first(Config)
     server = UDP()
     server.start()
@@ -27,11 +28,15 @@ def init():
 
 class Config:
 
+    """Config"""
+
     host = "localhost"
     port = 5500
 
 
 class UDP:
+
+    """UDP"""
 
     def __init__(self):
         self.stopped = False
@@ -43,11 +48,13 @@ class UDP:
         self.ready = threading.Event()
 
     def output(self, txt, addr=None):
+        "output to channels."
         if addr:
             Config.addr = addr
         broker.announce(txt.replace("\00", ""))
 
     def loop(self):
+        "loop on the udp socket."
         try:
             self._sock.bind((Config.host, Config.port))
         except socket.gaierror:
@@ -63,6 +70,7 @@ class UDP:
             self.output(data, addr)
 
     def exit(self):
+        "exit udp to irc relay."
         self.stopped = True
         self._sock.settimeout(0.01)
         self._sock.sendto(
@@ -71,10 +79,12 @@ class UDP:
                          )
 
     def start(self):
+        "start udp to irc relay."
         launch(self.loop)
 
 
 def toudp(host, port, txt):
+    "send text to server."
     if Cfg.debug:
         return
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -82,6 +92,7 @@ def toudp(host, port, txt):
 
 
 def udp(event):
+    "command to send udp text to udp/irc relay."
     if event.rest:
         toudp(Config.host, Config.port, event.rest)
         return

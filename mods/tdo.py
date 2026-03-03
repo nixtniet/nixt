@@ -1,5 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116,R0903
+# pylint: disable=,R0903
 
 
 "todo"
@@ -10,14 +10,13 @@ import time
 
 
 from nixt.objects import Object
-from nixt.persist import Persist
+from nixt.runtime import db
 from nixt.utility import elapsed, fntime
 
 
-db = Persist()
-
-
 class Todo(Object):
+
+    """Todo"""
 
     def __init__(self):
         Object.__init__(self)
@@ -25,6 +24,7 @@ class Todo(Object):
 
 
 def dne(event):
+    "flag todo as done."
     if not event.args:
         event.reply("dne <txt>")
         return
@@ -41,6 +41,7 @@ def dne(event):
 
 
 def tdo(event):
+    "tdo <txt>."
     if not event.rest:
         nmr = 0
         for fnm, obj in db.find('todo', event.gets):

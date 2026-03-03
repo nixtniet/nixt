@@ -1,10 +1,10 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116,W0718
 
 
 "make it non-blocking"
 
 
+import builtins
 import inspect
 import logging
 import queue
@@ -13,10 +13,13 @@ import time
 import _thread
 
 
+exceptions = [getattr(builtins, x) for x in dir(builtins) if "Error" in str(x)]
 lock = threading.RLock()
 
 
 class Task(threading.Thread):
+
+    """Task"""
 
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
@@ -57,7 +60,7 @@ class Task(threading.Thread):
             if self.event:
                 self.event.ready()
             _thread.interrupt_main()
-        except Exception as ex:
+        except exceptions as ex:
             if self.event:
                 self.event.ready()
             logging.exception(ex)
@@ -65,6 +68,8 @@ class Task(threading.Thread):
 
 
 class Timy(threading.Timer):
+
+    """Timy"""
 
     def __init__(self, sleep, func, *args, **kwargs):
         super().__init__(sleep, func)
@@ -77,6 +82,8 @@ class Timy(threading.Timer):
 
 
 class Timed:
+
+    """Timed"""
 
     def __init__(self, sleep, func, *args, thrname="", **kwargs):
         self.args = args
@@ -106,6 +113,8 @@ class Timed:
 
 
 class Repeater(Timed):
+
+    """Repeater"""
 
     def run(self):
         "run function and launch timer for next run."

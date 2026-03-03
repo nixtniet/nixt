@@ -1,5 +1,4 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0116
 
 
 "locate objects"
@@ -9,13 +8,12 @@ import time
 
 
 from nixt.methods import fmt
-from nixt.persist import Persist
+from nixt.runtime import db
 from nixt.utility import elapsed, fntime
 
 
-db = Persist()
-
 def fnd(event):
+    "locate objects."
     if not event.rest:
         res = sorted([x.split('.')[-1].lower() for x in db.kinds()])
         if res:

@@ -1,6 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0103,C0115,C0116,C0209
-# pylint: disable=R0903,R1710,W0201,W0613
+# pylint: disable=C0103,R0903
 
 
 "web server"
@@ -22,10 +21,11 @@ from nixt.utility import where
 
 
 def init():
+    "initialze web server."
     Config.path = os.path.join(where(Object), "nucleus")
     if not os.path.exists(os.path.join(Config.path, 'index.html')):
         logging.warning("no index.html")
-        return
+        return None
     try:
         server = HTTP((Config.hostname, int(Config.port)), HTTPHandler)
         server.start()
@@ -33,9 +33,11 @@ def init():
         return server
     except OSError as ex:
         logging.warning("%s", str(ex))
-
+    return None
 
 class Config:
+
+    """Config"""
 
     debug = False
     hostname = "localhost"
@@ -44,6 +46,8 @@ class Config:
 
 
 class HTTP(HTTPServer, Object):
+
+    """HTTP"""
 
     daemon_thread = True
     allow_reuse_address = True
@@ -57,18 +61,22 @@ class HTTP(HTTPServer, Object):
         self._status = "start"
 
     def exit(self):
+        "stop web server."
         time.sleep(0.2)
         self._status = ""
         self.shutdown()
 
     def start(self):
+        "starts web server."
         launch(self.serve_forever)
         self._status = "ok"
 
     def request(self):
+        "record time of last request."
         self._last = time.time()
 
     def error(self, _request, _addr):
+        "log error."
         exctype, excvalue, _trb = sys.exc_info()
         exc = exctype(excvalue)
         logging.exception(exc)
@@ -76,46 +84,55 @@ class HTTP(HTTPServer, Object):
 
 class HTTPHandler(BaseHTTPRequestHandler):
 
+    """HTTPHandler"""
+
     def setup(self):
+        "setup reqeust handler."
         BaseHTTPRequestHandler.setup(self)
         self._size = 0
         self._ip = self.client_address[0]
 
     def raw(self, data):
+        "send raw data on the socket."
         self.wfile.write(data)
 
     def send(self, txt):
+        "send text over the socket."
         self.wfile.write(bytes(txt, encoding="utf-8"))
         self.wfile.flush()
 
     def write_header(self, htype='text/plain', size=None):
+        "write header."
         self.send_response(200)
-        #self.send_header('Content-type', '%s; charset=%s ' % (htype, "utf-8"))
-        self.send_header('Content-type', '%s;')
+        self.send_header('Content-type', f'{htype}; charset="utf-8"')
+        #self.send_header('Content-type', '%s;')
         if size is not None:
             self.send_header('Content-length', size)
         self.send_header('Server', "1")
         self.end_headers()
 
     def log(self, code):
-        pass
+        "log eror code."
 
     def do_GET(self):
+        "perform a get operation."
         if "favicon" in self.path:
             return
         if Cfg.debug:
             return
         if self.path == "/":
-            self.path = "index.html"
-        self.path = Config.path + os.sep + self.path
-        if not os.path.exists(self.path):
+            path = "index.html"
+        else:
+            path = self.path
+        path = Config.path + os.sep + path
+        if not os.path.exists(path):
             self.write_header("text/html")
             self.send_response(404)
             self.end_headers()
             return
-        if "_images" in self.path:
+        if "_images" in path:
             try:
-                with open(self.path, "rb") as file:
+                with open(path, "rb") as file:
                     img = file.read()
                     file.close()
                 ext = self.path[-3]
@@ -126,7 +143,7 @@ class HTTPHandler(BaseHTTPRequestHandler):
                 self.end_headers()
             return
         try:
-            with open(self.path, "r", encoding="utf-8", errors="ignore") as file:
+            with open(path, "r", encoding="utf-8", errors="ignore") as file:
                 txt = file.read()
                 file.close()
             self.write_header("text/html")
@@ -137,8 +154,9 @@ class HTTPHandler(BaseHTTPRequestHandler):
 
 
 def html2(txt):
-    return """<!doctype html>
+    "wrap text in html." 
+    return f"""<!doctype html>
 <html>
-   %s
+   {txt}
 </html>
-""" % txt
+"""

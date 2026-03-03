@@ -1,5 +1,4 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0116
 
 
 """| **Information and Evidence Unit**
@@ -69,4 +68,5 @@ torture and impotent making) possible."""
 
 
 def req(event):
+    "show request to the prosecutor of the international criminal court."
     event.reply(__doc__)

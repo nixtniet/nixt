@@ -1,7 +1,6 @@
 ##!/usr/bin/python3
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116,C0209,C0415,W0105
-
+# pylint: disable=C0415
 
 "main program"
 
@@ -26,10 +25,9 @@ from nixt.persist import ident
 from nixt import modules as MODS
 
 
-"clients"
-
-
 class Line(Console):
+
+    """Command Line Interfacce"""
 
     def __init__(self):
         super().__init__()
@@ -43,6 +41,8 @@ class Line(Console):
 
 class CSL(Line):
 
+    """COnsole"""
+
     def poll(self):
         "poll for an event."
         evt = Event()
@@ -51,18 +51,10 @@ class CSL(Line):
         return evt
 
 
-"utility"
-
-
 def banner():
     "hello."
     tme = time.ctime(time.time()).replace("  ", " ")
-    print("%s %s since %s (%s)" % (
-        Cfg.name.upper(),
-        Cfg.version,
-        tme,
-        Cfg.level.upper(),
-    ))
+    print(f"{Cfg.name.upper()} {Cfg.version} {tme} {Cfg.level.upper()}")
     sys.stdout.flush()
 
 
@@ -86,9 +78,6 @@ def getargs():
 def out(txt):
     "output text to screen."
     print(txt.encode('utf-8', 'replace').decode("utf-8"))
-
-
-"scripts"
 
 
 def background(args):
@@ -144,10 +133,8 @@ def service(args):
     forever()
 
 
-"commands"
-
-
 def cfg(event):
+    "configure."
     if not event.args:
         event.reply(f"cfg <{mods.has('Config') or 'modulename'}>")
         return
@@ -201,9 +188,6 @@ def ver(event):
     event.reply(f"{Cfg.name.upper()} {Cfg.version}")
 
 
-'data'
-
-
 SYSTEMD = """[Unit]
 Description=%s
 After=multi-user.target
@@ -216,9 +200,6 @@ ExecStart=/home/%s/.local/bin/%s -s
 
 [Install]
 WantedBy=multi-user.target"""
-
-
-"main"
 
 
 def main():

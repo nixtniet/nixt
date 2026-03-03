@@ -1,6 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116,C0415,R0903
-# pylint: disable=W0105,W0718,E0402
+# pylint: disable=C0415,R0903
 
 
 "runtimw"
@@ -11,18 +10,15 @@ import os
 import time
 
 
-from .command import Commands
-from .handler import Broker, Event
-from .loggers import level
-from .methods import merge, parse
-from .objects import Default, update, values
-from .package import Mods
-from .persist import Persist
-from .threads import launch
-from .utility import pkgname
-
-
-"defines"
+from nixt.command import Commands
+from nixt.handler import Broker, Event
+from nixt.loggers import level
+from nixt.methods import merge, parse
+from nixt.objects import Default, update, values
+from nixt.package import Mods
+from nixt.persist import Persist
+from nixt.threads import exceptions, launch
+from nixt.utility import pkgname
 
 
 broker = Broker()
@@ -31,10 +27,9 @@ db = Persist()
 mods = Mods()
 
 
-"config"
-
-
 class Config(Default):
+
+    """Config"""
 
     debug = False
     default = "irc,mdl,rss,wsd"
@@ -48,9 +43,6 @@ class Config(Default):
 
 
 Cfg = Config()
-
-
-"utilities"
 
 
 def boot(args, *modlist):
@@ -181,7 +173,7 @@ def shutdown():
         if "shutdown" in dir(mod):
             try:
                 mod.shutdown()
-            except Exception as ex:
+            except exceptions as ex:
                 logging.exception(ex)
 
 
@@ -198,13 +190,10 @@ def wrap(func, *args):
         func(*args)
     except (KeyboardInterrupt, EOFError):
         pass
-    except Exception as ex:
+    except exceptions as ex:
         logging.exception(ex)
     if old:
         termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
-
-
-"interface"
 
 
 def __dir__():

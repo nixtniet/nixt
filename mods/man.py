@@ -1,5 +1,4 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0116
 
 
 """**NAME**
@@ -226,6 +225,7 @@ opml
 
 
 def man(event):
+    "create manual page."
     if not event.rest:
         event.reply("man <name> <description>")
         return

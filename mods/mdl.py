@@ -1,5 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0116,C0209,W0105
+# pylint: disable=C0209
 
 
 "genocide model of the netherlands since 4 march 2019."
@@ -17,10 +17,8 @@ from nixt.threads import Repeater
 from nixt.utility import elapsed
 
 
-"init"
-
-
 def init():
+    "initialize genocide model."
     for key in keys(oorzaken):
         if "Psych" not in key:
             continue
@@ -34,9 +32,6 @@ def init():
             repeater = Repeater(sec, cbstats, evt, thrname=name)
             repeater.start()
             logging.warning("since %s", elapsed(time.time()-STARTTIME))
-
-
-"defines"
 
 
 DAY = 24*60*60
@@ -81,10 +76,8 @@ jaar["Wfz"] = 23820
 jaar["totaal"] = 168678
 
 
-"utilities"
-
-
 def getalias(txt):
+    "return matching alias."
     result = ""
     for key, value in aliases.items():
         if txt.lower() in key.lower():
@@ -94,12 +87,14 @@ def getalias(txt):
 
 
 def getday():
+    "get timestamp of today midnite."
     day = datetime.datetime.now()
     day = day.replace(hour=0, minute=0, second=0, microsecond=0)
     return day.timestamp()
 
 
 def getnr(nme):
+    "return yearly number."
     for k in keys(oorzaken):
         if nme.lower() in k.lower():
             return int(getattr(oorzaken, k))
@@ -107,12 +102,14 @@ def getnr(nme):
 
 
 def seconds(nrs):
+    "convert number of seconds per number/year."
     if not nrs:
         return nrs
     return 60*60*24*365 / float(nrs)
 
 
 def iswanted(k, line):
+    "see if word in line are in k."
     for word in line:
         if word in k:
             return True
@@ -120,6 +117,7 @@ def iswanted(k, line):
 
 
 def daily():
+    "daily reminder."
     while 1:
         time.sleep(24*60*60)
         evt = Event()
@@ -127,16 +125,15 @@ def daily():
 
 
 def hourly():
+    "hourly reminder."
     while 1:
         time.sleep(60*60)
         evt = Event()
         cbnow(evt)
 
 
-"callbacks"
-
-
 def cbnow(evt):
+    "show current status."
     name = evt.rest
     delta = time.time() - STARTTIME
     txt = elapsed(delta) + " "
@@ -153,6 +150,7 @@ def cbnow(evt):
 
 
 def cbstats(evt):
+    "show current stats."
     nme = evt.rest or "Psych"
     needed = seconds(getnr(nme))
     if needed:
@@ -174,10 +172,8 @@ def cbstats(evt):
         broker.announce(txt)
 
 
-"commands"
-
-
 def dis(event):
+    "show disease mortality."
     delta = time.time() - STARTTIME
     txt = elapsed(delta) + " "
     for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
@@ -194,6 +190,7 @@ def dis(event):
 
 
 def now(event):
+    "show current statistics."
     nme = event.rest or "Psych"
     needed = seconds(getnr(nme))
     if needed:
@@ -212,9 +209,6 @@ def now(event):
             elapsed(needed)
         )
         event.reply(txt)
-
-
-"data"
 
 
 oor = """"Totaal onderliggende doodsoorzaken (aantal)";
@@ -413,15 +407,13 @@ aantal = """
          """.split(";")
 
 
-"boot"
-
-
 oorzaak = Object()
 construct(oorzaak, zip([x.strip() for x in oor], [int(x.strip()) for x in aantal]))
 oorzaken = Object()
 
 
 def boot():
+    "construct model data."
     _nr = -1
     for key in keys(oorzaak):
         _nr += 1

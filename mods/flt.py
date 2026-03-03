@@ -1,5 +1,4 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0116
 
 
 "show bot in fleet"
@@ -10,6 +9,7 @@ from nixt.methods import fqn
 
 
 def flt(event):
+    "show list of bots."
     clts = list(broker.objs("announce"))
     if not clts:
         event.reply("no bots")

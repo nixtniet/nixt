@@ -1,5 +1,4 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116,W0105
 
 
 "encoder/decoder"
@@ -10,6 +9,8 @@ import types
 
 
 class Encoder(json.JSONEncoder):
+
+    """Encoder"""
 
     def default(self, o):
         if isinstance(o, dict):
@@ -25,9 +26,6 @@ class Encoder(json.JSONEncoder):
                 return vars(o)
             except TypeError:
                 return repr(o)
-
-
-"json"
 
 
 def dump(*args, **kw):
@@ -50,9 +48,6 @@ def load(*args, **kw):
 def loads(s, *args, **kw):
     "load object from string."
     return json.loads(s, *args, **kw)
-
-
-"interface"
 
 
 def __dir__():

@@ -1,5 +1,4 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116
 
 
 "write your own commands"
@@ -9,6 +8,8 @@ import inspect
 
 
 class Commands:
+
+    """Commands"""
 
     cmds = {}
     names = {}

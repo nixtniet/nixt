@@ -1,5 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0115,C0116,R0903
+# pylint: disable=R0903
 
 
 "log text"
@@ -9,14 +9,13 @@ import time
 
 
 from nixt.objects import Object
-from nixt.persist import Persist
+from nixt.runtime import db
 from nixt.utility import elapsed, fntime
 
 
-db = Persist()
-
-
 class Log(Object):
+
+    """Log"""
 
     def __init__(self):
         super().__init__()
@@ -24,6 +23,7 @@ class Log(Object):
 
 
 def log(event):
+    "log <txt>."
     if not event.rest:
         nmr = 0
         for fnm, obj in db.find('log', event.gets):
