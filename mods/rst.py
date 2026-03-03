@@ -13,27 +13,27 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
+from nixt.kernels import Cfg, db
 from nixt.objects import Default, Object
-from nixt.persist import Persist
 from nixt.threads import launch
 
 
-db = Persist()
+URL = '<a href="http://%s:%s}/%s">%s</a><br>\n'
 
 
-def configure(cfg):
+def configure():
     db.first(Config)
 
 
 def init():
+    rest = None
     try:
         rest = REST((Config.hostname, int(Config.port)), RESTHandler)
         rest.start()
         logging.warning("http://%s:%s", Config.hostname, Config.port)
-        return rest
     except OSError as ex:
         logging.error(str(ex))
-
+    return rest
 
 class Config(Default):
 
@@ -85,7 +85,7 @@ class RESTHandler(BaseHTTPRequestHandler):
 
     def write_header(self, htype='text/plain'):
         self.send_response(200)
-        self.send_header('Content-type', '%s; charset=%s ' % (htype, "utf-8"))
+        self.send_header('Content-type', f'{htype}; charset=utf-8 ')
         self.send_header('Server', "1")
         self.end_headers()
 
@@ -98,7 +98,7 @@ class RESTHandler(BaseHTTPRequestHandler):
             self.write_header("text/html")
             txt = ""
             for fnm in db.kinds():
-                txt += f'<a href="http://{Config.hostname}:{Config.port}/{fnm}">{fnm}</a><br>\n'
+                txt += URL % (Config.hostname, Config.port, fnm, fnm)
             self.send(html(txt.strip()))
             return
         if self.path.startswith("/"):
@@ -112,7 +112,7 @@ class RESTHandler(BaseHTTPRequestHandler):
             txt = ""
             for fnn in os.listdir(fnm):
                 filename = self.path  + os.sep + fnn
-                txt += f'<a href="http://{Config.hostname}:{Config.port}/{filename}">{filename}</a><br>\n'
+                txt += URL % (Config.hostname, Config.port, filename, filename)
             self.send(txt.strip())
             return
         try:
@@ -131,8 +131,4 @@ class RESTHandler(BaseHTTPRequestHandler):
 
 
 def html(txt):
-    return """<!doctype html>
-<html>
-   %s
-</html>
-""" % txt
+    return f"<!doctype html><html>{txt}</html>"

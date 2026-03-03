@@ -7,10 +7,46 @@
 import logging
 import queue
 import threading
+import time
 import _thread
 
 
 from .threads import launch
+
+
+"message"
+
+
+class Message:
+
+    def __init__(self):
+        self._ready = threading.Event()
+        self._thr = None
+        self.result = {}
+        self.args = []
+        self.index = 0
+        self.kind = "event"
+        self.orig = ""
+
+    def __getattr__(self, key):
+        return self.__dict__.get(key, "")
+
+    def __str__(self):
+        return str(self.__dict__)
+
+    def ready(self):
+        "flag message as ready."
+        self._ready.set()
+
+    def reply(self, text):
+        "add text to result."
+        self.result[time.time()] = text
+
+    def wait(self, timeout=0.0):
+        "wait for completion."
+        self._ready.wait(timeout or None)
+        if self._thr:
+            self._thr.join(timeout)
 
 
 "handler"
@@ -22,7 +58,7 @@ class Handler:
         self.cbs = {}
         self.queue = queue.Queue()
         self.running = threading.Event()
-        
+
     def callback(self, event):
         "run callback function with event."
         func = self.cbs.get(event.kind, None)
@@ -40,7 +76,7 @@ class Handler:
                 break
             event.orig = repr(self)
             self.callback(event)
-        
+
     def put(self, event):
         "put event on queue."
         self.queue.put(event)
@@ -109,7 +145,8 @@ class Client(Handler):
 
     def say(self, channel, text):
         "say text in channel."
-        self.raw(text)
+        if not channel:
+            self.raw(text)
 
 
 "console"
@@ -151,10 +188,10 @@ class Output(Client):
             self.display(event)
             self.oqueue.task_done()
 
-    def start(self):
+    def start(self, daemon=True):
         "start output loop."
-        super().start()
-        launch(self.output)
+        super().start(daemon=daemon)
+        launch(self.output, daemon=daemon)
 
     def stop(self):
         "stop output loop."
@@ -178,5 +215,6 @@ def __dir__():
         'Client',
         'Console',
         'Handler',
+        'Message',
         'Output'
     )

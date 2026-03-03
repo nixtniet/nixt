@@ -38,9 +38,6 @@ class Broker:
         self.objects[repr(obj)] = obj
 
 
-"interface"
-
-
 def __dir__():
     return (
         'Broker',

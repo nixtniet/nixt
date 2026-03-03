@@ -22,7 +22,7 @@ from .utility import fntime
 class Cache:
 
     paths = {}
- 
+
     def add(self, path, obj):
         "put object into cache."
         self.paths[path] = obj
@@ -51,17 +51,18 @@ class Persist:
     def attrs(self, kind):
         "show attributes for kind of objects."
         result = []
-        for pth, obj in self.find(kind):
+        for _pth, obj in self.find(kind):
             result.extend(keys(obj))
-        return {x for x in result}
+        return set(result)
 
     def count(self, kind):
         "count number of object of a certain kind."
         return len(list(self.find(kind)))
 
-    def find(self, kind, selector={}, removed=False, matching=False, nritems=None):
+    def find(self, kind, selector=None, removed=False, matching=False):
         "locate objects by matching atributes."
-        nrs = 0
+        if selector is None:
+            selector = {}
         for pth in self.fns(self.long(kind)):
             obj = self.cache.get(pth)
             if not obj:
@@ -72,15 +73,12 @@ class Persist:
                 continue
             if selector and not search(obj, selector, matching):
                 continue
-            if nritems and nrs >= nritems:
-                break
-            nrs += 1
             yield pth, obj
-        else:
-            return None, None
 
-    def first(self, obj, selector={}):
+    def first(self, obj, selector=None):
         "return first version of an object."
+        if selector is None:
+            selector = {}
         result = sorted(
                         self.find(fqn(obj), selector),
                         key=lambda x: fntime(x[0])
@@ -107,8 +105,10 @@ class Persist:
         "show kind on objects in cache."
         return os.listdir(os.path.join(self.wdr, "store"))
 
-    def last(self, obj, selector={}):
+    def last(self, obj, selector=None):
         "last saved version."
+        if selector is None:
+            selector = {}
         result = sorted(
                         self.find(fqn(obj), selector),
                         key=lambda x: fntime(x[0])

@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# pylint: disable=C0209,C0301
 
 
 "mailbox"
@@ -9,13 +10,10 @@ import os
 import time
 
 
+from nixt.kernels import db
 from nixt.methods import fmt
 from nixt.objects import Object, keys, update
-from nixt.persist import Persist
-from nixt.utility import MONTH, date, elapsed
-
-
-db = Persist()
+from nixt.utility import MONTH, elapsed, match
 
 
 "email"
@@ -82,19 +80,19 @@ def eml(event):
     args = set(args)
     result = sorted(
                     db.find("email", event.gets),
-                    key=lambda x: date(todate(getattr(x[1], "Date", "")))
+                    key=lambda x: match(todate(getattr(x[1], "Date", "")))
                    )
     if event.index:
         obj = result[event.index]
         if obj:
             obj = obj[-1]
             tme = getattr(obj, "Date", "")
-            event.reply(f'{event.index} {fmt(obj, args, plain=True)} {elapsed(time.time() - date(todate(tme)))}')
+            event.reply(f'{event.index} {fmt(obj, args, plain=True)} {elapsed(time.time() - match(todate(tme)))}')
     else:
         for _fn, obj in result:
             nrs += 1
             tme = getattr(obj, "Date", "")
-            event.reply(f'{nrs} {fmt(obj, args, plain=True)} {elapsed(time.time() - date(todate(tme)))}')
+            event.reply(f'{nrs} {fmt(obj, args, plain=True)} {elapsed(time.time() - match(todate(tme)))}')
     if not result:
         event.reply("no emails found.")
 

@@ -7,10 +7,6 @@
 import inspect
 
 
-from .message import Message
-from .methods import parse
-
-
 class Commands:
 
     cmds = {}
@@ -33,13 +29,10 @@ class Commands:
 
     def scan(self, module):
         "scan a module for functions with event as argument."
-        for key, cmdz in inspect.getmembers(module, inspect.isfunction):
+        for _key, cmdz in inspect.getmembers(module, inspect.isfunction):
             if 'event' not in inspect.signature(cmdz).parameters:
-               continue
+                continue
             self.add(cmdz)
-
-
-"interface"
 
 
 def __dir__():

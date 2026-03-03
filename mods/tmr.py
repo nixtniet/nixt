@@ -10,16 +10,13 @@ import threading
 import time
 
 
-from nixt.brokers import Broker
+from nixt.kernels import broker, db
 from nixt.methods import ident
 from nixt.objects import Object, items
-from nixt.persist import Persist
 from nixt.threads import Timed
 from nixt.utility import NoDate, day, elapsed, extract, hour, today
 
 
-broker = Broker()
-db = Persist()
 rand = random.SystemRandom()
 
 
@@ -57,7 +54,7 @@ class Timers(Object):
     path = ""
     timers = Timer()
     lock = threading.RLock()
-    
+
     @staticmethod
     def add(tme, orig, channel,  txt):
         with Timers.lock:
@@ -70,7 +67,6 @@ class Timers(Object):
 
 
 def tmr(event):
-    result = ""
     if not event.rest:
         nmr = 0
         for tme, txt in items(Timers.timers):
@@ -78,9 +74,7 @@ def tmr(event):
             if lap > 0:
                 event.reply(f'{nmr} {" ".join(txt)} {elapsed(lap)}')
                 nmr += 1
-        if not nmr:
-            event.reply("no timers.")
-        return result
+        return
     seconds = 0
     line = ""
     for word in event.args:
@@ -89,7 +83,7 @@ def tmr(event):
                 seconds = int(word[1:])
             except (ValueError, IndexError):
                 event.reply(f"{seconds} is not an integer")
-                return result
+                return
         else:
             line += word + " "
     if seconds:
@@ -102,10 +96,10 @@ def tmr(event):
         hours =  hour(event.rest)
         if hours:
             target += hours
-    target += rand.random() 
+    target += rand.random()
     if not target or time.time() > target:
         event.reply("already passed given time.")
-        return result
+        return
     diff = target - time.time()
     txt = " ".join(event.args[1:])
     Timers.add(target, event.orig, event.channel, txt)

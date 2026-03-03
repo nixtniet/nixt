@@ -7,8 +7,9 @@
 import unittest
 
 
-from nixt.methods import deleted, edit,fmt,  fqn, ident, merge, parse, reduce, search, skip, typed
-from nixt.objects import Object
+from nixt.methods import deleted, edit, fmt, fqn, ident, merge
+from nixt.methods import parse, reduce, search, skipkey, typed
+from nixt.objects import Default, Object
 
 
 class TestMethods(unittest.TestCase):
@@ -44,7 +45,7 @@ class TestMethods(unittest.TestCase):
         self.assertEqual(obj.a, "b")
 
     def test_parse(self):
-        obj = Object()
+        obj = Default()
         parse(obj, "cmd")
         self.assertEqual(obj.cmd, "cmd")
 
@@ -60,11 +61,11 @@ class TestMethods(unittest.TestCase):
         obj.a = "b"
         self.assertTrue(search(obj, {"a": "b"}))
 
-    def test_skip(self):
+    def test_skipkey(self):
         obj = Object()
         obj.a = "b"
         obj.b = "c"
-        dct = skip(obj, "b")
+        dct = skipkey(obj, "b")
         self.assertTrue("b" not in dct)
 
     def test_typed(self):

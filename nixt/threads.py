@@ -43,6 +43,7 @@ class Task(threading.Thread):
             if self.event and self.event.ready:
                 self.event.ready()
             _thread.interrupt_main()
+        return None
 
     def run(self):
         "run function."
@@ -120,6 +121,7 @@ def launch(func, *args, **kwargs):
             return task
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
+        return None
 
 
 def name(obj):

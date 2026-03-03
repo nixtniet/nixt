@@ -10,18 +10,15 @@ import logging
 from random import SystemRandom
 
 
-from nixt.brokers import Broker
-from nixt.message import Message
+from nixt.handler import Message
+from nixt.kernels import broker, db
 from nixt.methods import ident
-from nixt.persist import Persist
 from nixt.threads import Repeater
 
 
-'defines'
+"defines"
 
 
-broker = Broker()
-db = Persist()
 rand = SystemRandom()
 
 
@@ -49,14 +46,16 @@ class StateFul:
         if not self.fnm:
             self.fnm = db.first(self) or ident(self)
         db.write(self, self.fnm)
-    
+
     def load(self):
         db.first(self)
 
 
 class State(StateFul):
 
-    pass
+    def __init__(self):
+        StateFul.__init__(self)
+        self.seen = []
 
 
 state = State()
@@ -67,11 +66,11 @@ state = State()
 
 def wsd(event):
     txt = ""
-    if 'seen' not in dir(state):
-        state.seen = []
-    for nrs in range(len(TXTLIST)):
+    for _nrs in range(len(TXTLIST)):
         txt = rand.choice(TXTLIST)
         if txt in state.seen:
+            continue
+        if event.args and event.args[0] not in txt:
             continue
         state.seen.append(txt)
         break

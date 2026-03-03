@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"encoder/decoder tests"
+
+
 import os
 import unittest
 
@@ -48,7 +51,7 @@ class TestDecoder(unittest.TestCase):
         self.assertTrue(os.path.exists(path))
         oobj = Object()
         with open(path, "r", encoding="utf-8") as file:
-           oobj = load(file)
+            oobj = load(file)
         self.assertTrue(oobj["test"] == "bla")
 
     def test_loads(self):

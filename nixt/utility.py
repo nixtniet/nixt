@@ -6,13 +6,12 @@
 
 import datetime
 import inspect
-import logging
 import os
 import re
 import time
 
 
-"classes"
+"exceptions"
 
 
 class NoDate(Exception):
@@ -20,33 +19,8 @@ class NoDate(Exception):
     pass
 
 
-class Format(logging.Formatter):
-
-    def format(self, record):
-        record.module = record.module.upper()
-        return logging.Formatter.format(self, record)
-
-
-class Log:
-
-    datefmt = "%H:%M:%S"
-    format = "%(module).3s %(message)s"
-
-
 "time"
 
-
-def date(daystr):
-    "date from string."
-    daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
-    res = time.time()
-    for fmat in TIMES:
-        try:
-            res = time.mktime(time.strptime(daystr, fmat))
-            break
-        except ValueError:
-            pass
-    return res
 
 
 def day(daystr):
@@ -126,7 +100,7 @@ def extract(daystr):
         line = previous + " " + word
         previous = word
         try:
-            res = date(line.strip())
+            res = match(line.strip())
             break
         except ValueError:
             res = None
@@ -170,16 +144,17 @@ def hour(daystr):
     return hmsres
 
 
-def timed(txt):
-    "scan string for date/time."
-    try:
-        target = day(txt)
-    except NoDate:
-        target = extract(today())
-    hours = hour(txt)
-    if hours:
-        target += hours
-    return target
+def match(daystr):
+    "date from string."
+    daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
+    res = time.time()
+    for fmat in TIMES:
+        try:
+            res = time.mktime(time.strptime(daystr, fmat))
+            break
+        except ValueError:
+            pass
+    return res
 
 
 def parsetxt(txt):
@@ -205,33 +180,24 @@ def parsetxt(txt):
     return target
 
 
+def timed(txt):
+    "scan string for date/time."
+    try:
+        target = day(txt)
+    except NoDate:
+        target = extract(today())
+    hours = hour(txt)
+    if hours:
+        target += hours
+    return target
+
+
 def today():
     "start of the day."
     return str(datetime.datetime.today()).split()[0]
 
 
 "utilities"
-
-
-def forever():
-    "run forever until ctrl-c."
-    while True:
-        try:
-            time.sleep(0.1)
-        except (KeyboardInterrupt, EOFError):
-            break
-
-
-def level(loglevel):
-    "set log level."
-    formatter = Format(Log.format, Log.datefmt)
-    stream = logging.StreamHandler()
-    stream.setFormatter(formatter)
-    logging.basicConfig(
-        level=loglevel.upper(),
-        handlers=[stream,],
-        force=True
-    )
 
 
 def md5sum(path):
@@ -302,14 +268,12 @@ def __dir__():
     return (
         'NoDate',
         'Timer',
-        'date',
         'day',
         'elapsed',
         'extract',
         'fntime',
-        'forevver',
         'hour',
-        'level',
+        'march',
         'md5sum',
         'parsetxt',
         'pkgname',

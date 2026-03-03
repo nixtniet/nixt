@@ -1,4 +1,6 @@
 # This file is placed in the Public Domain.
+# pylint: disable=C0209
+
 
 "genocide model of the netherlands since 4 march 2019."
 
@@ -8,14 +10,11 @@ import logging
 import time
 
 
-from nixt.brokers import Broker
-from nixt.message import Message
+from nixt.handler import Message
+from nixt.kernels import broker
 from nixt.objects import Object, construct, keys
 from nixt.threads import Repeater
 from nixt.utility import elapsed
-
-
-broker = Broker()
 
 
 "init"
@@ -138,9 +137,12 @@ def hourly():
 
 
 def cbnow(evt):
+    name = evt.rest
     delta = time.time() - STARTTIME
     txt = elapsed(delta) + " "
     for nme in sorted(keys(oorzaken), key=lambda x: seconds(getnr(x))):
+        if name and name not in nme:
+            continue
         needed = seconds(getnr(nme))
         if needed > 60*60:
             continue

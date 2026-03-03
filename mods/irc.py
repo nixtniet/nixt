@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# pylint: disable=R
 
 
 "internet relay chat"
@@ -14,18 +15,12 @@ import threading
 import time
 
 
-from nixt.brokers import Broker
-from nixt.handler import Output
-from nixt.message import Message
+from nixt.handler import Message, Output
+from nixt.kernels import Cfg, broker, command, db
 from nixt.methods import fmt
 from nixt.objects import Default, Object
-from nixt.persist import Persist
 from nixt.threads import launch
-from nixt.utility import pkgname 
-
-
-broker = Broker()
-db = Persist()
+from nixt.utility import pkgname
 
 
 def init():
@@ -34,7 +29,18 @@ def init():
     broker.store(irc)
     irc.events.joined.wait(60.0)
     if irc.events.joined.is_set():
-        logging.warning("%s", fmt(irc.cfg, skip=["name", "ignore", "word", "realname", "username", "version"]))
+        logging.warning(
+                        "%s",
+                        fmt(irc.cfg, skip=[
+                                           "name",
+                                           "ignore",
+                                           "word",
+                                           "realname",
+                                           "username",
+                                           "version"
+                                          ]
+                           )
+                       )
     else:
         irc.stop()
     return irc
@@ -46,12 +52,12 @@ class Config(Default):
     channel = f"#{name}"
     commands = True
     control = "!"
-    ignore = ["PING", "PONG", "PRIVMSG"] 
+    ignore = ["PING", "PONG", "PRIVMSG"]
     nick = name
     word = ""
     port = 6667
     realname = name
-    sasl = (port == 6697 and True) or False
+    sasl = True if port == 6697 else False
     server = "localhost"
     servermodes = ""
     sleep = 60
@@ -166,7 +172,12 @@ class IRC(Output):
             self.sock.setblocking(True)
             self.sock.settimeout(180.0)
             self.events.connected.set()
-            logging.debug("connected %s:%s channel %s", self.cfg.server, self.cfg.port, self.cfg.channel)
+            logging.debug(
+                          "connected %s:%s channel %s",
+                          self.cfg.server,
+                          self.cfg.port,
+                          self.cfg.channel
+                         )
             return True
         return False
 
@@ -221,14 +232,20 @@ class IRC(Output):
         while 1:
             try:
                 if self.connect(server, port):
-                    self.logon(self.cfg.server, self.cfg.nick)
+                    self.logon(self.cfg.server, nck)
                     self.events.joined.wait(45.0)
                     if not self.events.joined.is_set():
                         self.disconnect()
                         self.events.joined.set()
                         continue
                     break
-            except (socket.error, socket.timeout, ssl.SSLError, OSError, ConnectionResetError) as ex:
+            except (
+                    socket.error,
+                    socket.timeout,
+                    ssl.SSLError,
+                    OSError,
+                    ConnectionResetError
+                   ) as ex:
                 self.events.joined.set()
                 self.state.error = str(ex)
                 logging.debug("%s", str(type(ex)) + " " + str(ex))
@@ -469,25 +486,26 @@ class IRC(Output):
             self.buffer.append(line)
         self.state.lastline = splitted[-1]
 
-    def start(self):
+    def start(self, daemon=True):
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
         self.events.ready.clear()
         self.events.connected.clear()
         self.events.joined.clear()
-        Output.start(self)
+        Output.start(self, daemon=daemon)
         if not self.state.keeprunning:
-            launch(self.keep)
+            launch(self.keep, dameon=daemon)
         db.first(self.cfg)
         launch(
             self.doconnect,
             self.cfg.server or "localhost",
             self.cfg.nick,
             int(self.cfg.port) or 6667,
+            daemon=daemon
         )
 
     def stop(self):
-        logging.warn("stopping")
+        logging.warning("stopping")
         self.state.stopkeep = True
         Output.stop(self)
 
@@ -582,7 +600,7 @@ def mre(event):
     if not event.channel:
         event.reply("channel is not set.")
         return
-    bot = broker.retrieve(evt.orig)
+    bot = broker.retrieve(event.orig)
     if "cache" not in dir(bot):
         event.reply("bot is missing cache")
         return

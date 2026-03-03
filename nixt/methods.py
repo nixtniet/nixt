@@ -19,25 +19,27 @@ def deleted(obj):
     return "__deleted__" in dir(obj) and obj.__deleted__
 
 
-def edit(obj, setter={}, skip=False):
+def edit(obj, setter=None, skip=False):
     "update object with dict."
+    if setter is None:
+        setter = {}
     for key, val in items(setter):
         if skip and val == "":
             continue
         typed(obj, key, val)
 
 
-def fmt(obj, args=[], skip=[], plain=False, empty=False):
+def fmt(obj, args=None, skip=None, plain=False, empty=False):
     "format object info printable string."
+    if args is None:
+        args = []
+    if skip is None:
+        skip = []
     if args == []:
-        args = list(obj.__dict__.keys())
-    if args == []:
-        args = [x for x in dir(obj) if not x.startswith("_")]
+        args = list(obj.__dict__.keys()) or [x for x in dir(obj) if not x.startswith("_")]
     txt = ""
     for key in args:
-        if key.startswith("__"):
-            continue
-        if key in skip:
+        if key.startswith("__") or key in skip:
             continue
         value = getattr(obj, key, None)
         if value is None:
@@ -140,8 +142,10 @@ def reduce(obj):
     return result
 
 
-def search(obj, selector={}, matching=False):
+def search(obj, selector=None, matching=False):
     "check whether object matches search criteria."
+    if selector is None:
+        selector = {}
     res = False
     for key, value in items(selector):
         val = getattr(obj, key, None)
@@ -149,24 +153,24 @@ def search(obj, selector={}, matching=False):
             res = False
             break
         if matching and value != val:
-           res = False
-           break
+            res = False
+            break
         if str(value).lower() not in str(val).lower():
-           res = False
-           break
+            res = False
+            break
         res = True
     return res
 
 
-def skip(obj, chars="_"):
+def skipkey(obj, chars="_"):
     "skip keys containing chars."
     res = {}
     for key, value in items(obj):
-        next = False
+        donext = False
         for char in chars:
             if char in key:
-                next = True
-        if next:
+                donext = True
+        if donext:
             continue
         res[key] = value
     return res
@@ -183,7 +187,7 @@ def typed(obj, key, val):
         setattr(obj, key, float(val))
         return
     except ValueError:
-       pass
+        pass
     if val in ["True", "true", True]:
         setattr(obj, key, True)
     elif val in ["False", "false", False]:

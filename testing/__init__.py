@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+#
 # ruff: noqa: F403,F405
 
 
@@ -12,8 +13,7 @@ import sys
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.persist import Persist
+from nixt.kernels import db
 
 
-db = Persist()
 db.setwd(".test")

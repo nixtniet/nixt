@@ -1,6 +1,8 @@
 # This file is placed in the Public Domain.
+# pylint: disable=R0904
 
 
+"object tests"
 import unittest
 
 
@@ -70,7 +72,6 @@ attrs2 = [
 
 class TestObject(unittest.TestCase):
 
-            
     def test_clear(self):
         obj = Object()
         obj.a = "b"
@@ -118,12 +119,12 @@ class TestObject(unittest.TestCase):
 
     def test_format(self):
         obj = Object()
-        self.assertEqual(obj.__format__(""), "{}")
+        self.assertEqual(format(obj, ""), "{}")
 
     def test_getattribute(self):
         obj = Object()
         obj.key = "value"
-        self.assertEqual(obj.__getattribute__("key"), "value")
+        self.assertEqual(getattr(obj, "key"), "value")
 
     def test_getattr(self):
         obj = Object()
@@ -147,12 +148,7 @@ class TestObject(unittest.TestCase):
     def test_iter(self):
         obj = Object()
         obj.key = "value"
-        self.assertTrue(
-            list(obj.__iter__()),
-            [
-                "key",
-            ],
-        )
+        self.assertTrue(list(iter(obj)), ["key"])
 
     def test_items(self):
         obj = Object()
@@ -192,11 +188,14 @@ class TestObject(unittest.TestCase):
         self.assertEqual(obj.key, "value")
 
     def test_repr(self):
-        self.assertTrue(update(Object(), {"key": "value"}).__repr__(), {"key": "value"})
+        self.assertTrue(
+                        repr(update(Object(),{"key": "value"})),
+                        {"key": "value"}
+                       )
 
     def test_setattr(self):
         obj = Object()
-        obj.__setattr__("key", "value")
+        setattr(obj, "key", "value")
         self.assertTrue(obj.key, "value")
 
     def test_str(self):

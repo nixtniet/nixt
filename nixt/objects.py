@@ -6,6 +6,9 @@
 
 class Object:
 
+    def __init__(self):
+        self.__deleted__ = False
+
     def __contains__(self, key):
         return key in dir(self)
 
@@ -88,7 +91,7 @@ def popitem(obj):
     return obj.__dict__.popitem()
 
 
-def update(obj, data, empty=True):
+def update(obj, data):
     "update object,"
     if isinstance(obj, dict):
         obj.update(data)

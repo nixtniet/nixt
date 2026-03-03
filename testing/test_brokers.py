@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"broker tests"
+
+
 import unittest
 
 
@@ -59,7 +62,7 @@ class TestBroker(unittest.TestCase):
         s = dumps(broker)
         o = loads(s)
         self.assertEqual(o["a"], "b")
-        
+
     def test_update(self):
         o = {}
         o["a"] = "b"

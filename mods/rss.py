@@ -24,16 +24,11 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.brokers import Broker
+from nixt.kernels import Cfg, broker, db
 from nixt.methods import fmt, fqn, ident
 from nixt.objects import Default, update
-from nixt.persist import Persist
 from nixt.threads import Repeater, launch
 from nixt.utility import elapsed, fntime, spl
-
-
-broker = Broker()
-db = Persist()
 
 
 def init():
@@ -110,7 +105,7 @@ class Runner:
     def loop(self):
         while True:
             job = self.queue.get()
-            self.fetch(*job)                                    
+            self.fetch(*job)
 
     def fetch(self, fnm, feed, silent=False):
         with Run.fetchlock:
@@ -156,7 +151,7 @@ class Runner:
 
     def start(self):
         launch(self.loop)
-    
+
     def stop(self):
         self.stopped.set()
 
@@ -320,8 +315,8 @@ class Helpers:
 
     @staticmethod
     def doskip(error):
-        for err in Helpers.skip:
-            if err in error:
+        for skip in Helpers.skip:
+            if skip in error:
                 return True
         return False
 
@@ -332,13 +327,21 @@ class Helpers:
         try:
             response = Helpers.geturl(feed.rss)
             if not response.data:
-               return result
+                return result
             if "link" not in items:
                 items += ",link"
             if feed.rss.endswith("atom"):
-                yield from Parser.parse(str(response.data, "utf-8", errors='ignore'), "entry", items) or []
+                yield from Parser.parse(
+                                        str(response.data, "utf-8", errors='ignore'),
+                                        "entry",
+                                        items
+                                       ) or []
             else:
-                yield from Parser.parse(str(response.data, "utf-8", errors='ignore'), "item", items) or []
+                yield from Parser.parse(
+                                        str(response.data, "utf-8", errors='ignore'),
+                                        "item",
+                                        items
+                                       ) or []
         except TimeoutError:
             return result
         except (
@@ -389,7 +392,7 @@ class Helpers:
         since = getattr(State.modified, url, "")
         if since:
             req.add_header('If-Modified-Since', since)
-        logging.debug(f"fetching {url} {req.headers}")
+        logging.debug("fetching %s %s", url, req.headers)
         with urllib.request.urlopen(req, timeout=5.0) as response:  # nosec
             modi = response.headers.get('Last-Modified', "")
             if modi:
@@ -470,16 +473,16 @@ def atr(event):
     if not event.rest:
         event.reply("atr <stringinurl>")
         return
-    for fnm, obj in db.find(fqn(Rss), {'rss': event.rest}):
+    for _fnm, obj in db.find(fqn(Rss), {'rss': event.rest}):
         request = Helpers.geturl(obj.rss)
         if obj.rss.endswith('atom'):
-            res = list(Parser.getitems(str(request.data, 'utf-8', errors='ignore'), 'entry', 1))
+            item = list(Parser.getitems(str(request.data, 'utf-8', errors='ignore'), 'entry', 1))
         else:
-            res = list(Parser.getitems(str(request.data, 'utf-8', errors='ignore'), 'item', 1))
+            item = list(Parser.getitems(str(request.data, 'utf-8', errors='ignore'), 'item', 1))
         result = []
-        for x in re.findall('<.*?>', res[0]):
-           if x[1] == '/' and len(x) > 4:
-              result.append(x[2:-1])
+        for x in re.findall('<.*?>', item[0]):
+            if x[1] == '/' and len(x) > 4:
+                result.append(x[2:-1])
         event.reply(','.join(result))
 
 
@@ -516,7 +519,7 @@ def err(event):
         event.reply("no feed errors.")
     else:
         event.reply(f'{nre} feeds reset.')
-    
+
 
 def exp(event):
     with Run.importlock:

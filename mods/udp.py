@@ -12,22 +12,16 @@ import threading
 import time
 
 
-from nixt.brokers import Broker
-from nixt.objects import Default
-from nixt.persist import Persist
+from nixt.kernels import Cfg, broker, db
 from nixt.threads import launch
-
-
-broker = Broker()
-db = Persist()
 
 
 def init():
     db.first(Config)
-    udp = UDP()
-    udp.start()
+    server = UDP()
+    server.start()
     logging.warning("http://%s:%s", Config.host, Config.port)
-    return udp
+    return server
 
 
 class Config:
@@ -39,7 +33,6 @@ class Config:
 class UDP:
 
     def __init__(self):
-        Default.__init__(self)
         self.stopped = False
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -81,7 +74,7 @@ class UDP:
 
 
 def toudp(host, port, txt):
-    if Config.debug:
+    if Cfg.debug:
         return
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))

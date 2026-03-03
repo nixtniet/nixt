@@ -10,7 +10,6 @@ import logging
 import os
 
 
-from .objects import items
 from .utility import spl
 
 
@@ -29,6 +28,7 @@ class Mods:
         result = list(self.iter(modname))
         if result:
             return result[0][-1]
+        return None
 
     def has(self, attr):
         "return list of modules containing an attribute."
@@ -38,28 +38,26 @@ class Mods:
                 result.append(mod.__name__.split(".")[-1])
         return ",".join(result)
 
-    def importer(self, name, pth="", env={}):
+    def importer(self, name, pth=""):
         "import module by path."
         if pth and os.path.exists(pth):
             spec = importlib.util.spec_from_file_location(name, pth)
         else:
             spec = importlib.util.find_spec(name)
         if not spec or not spec.loader:
-            logging.debug(f"missing spec or loader for {name}")
+            logging.debug("missing spec or loader for %s", name)
             return None
         mod = importlib.util.module_from_spec(spec)
         if not mod:
-           logging.debug(f"can't load {name} module from spec")
-           return None
+            logging.debug("can't load %s module from spec", name)
+            return None
         self.modules[name] = mod
-        for key, value in items(env):
-            setattr(mod, key, value)
         spec.loader.exec_module(mod)
         return mod
 
-    def iter(self, mods, ignore="", env={}):
+    def iter(self, mods, ignore=""):
         "loop over modules."
-        for pkgname, path in self.dirs.items():
+        for name, path in self.dirs.items():
             if not os.path.exists(path):
                 continue
             for fnm in os.listdir(path):
@@ -72,17 +70,20 @@ class Mods:
                     continue
                 if ignore and name in spl(ignore):
                     continue
-                modname = f"{pkgname}.{name}"
+                modname = f"{name}.{name}"
                 mod =  self.modules.get(modname, None)
                 if not mod:
-                    mod = self.importer(modname, os.path.join(path, fnm), env)
+                    mod = self.importer(
+                                        modname,
+                                        os.path.join(path, fnm)
+                                       )
                 if mod:
                     yield name, mod
 
     def list(self, ignore=""):
         "comma seperated list of available modules."
         mods = []
-        for pkgname, path in self.dirs.items():
+        for _name, path in self.dirs.items():
             mods.extend([
                 x[:-3] for x in os.listdir(path)
                 if x.endswith(".py") and

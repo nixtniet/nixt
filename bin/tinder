@@ -2,7 +2,9 @@
 # This file is placed in the Public Domain.
 
 
-import logging
+"stress test"
+
+
 import os
 import queue
 import shutil
@@ -14,16 +16,11 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.brokers import Broker
-from nixt.command import Commands
-from nixt.handler import Client
-from nixt.message import Message
-from nixt.methods import fmt, parse 
-from nixt.objects import Default, Object
-from nixt.package import Mods
-from nixt.persist import Persist
+from nixt.handler import Client, Message
+from nixt.kernels import Cfg, broker, command, db, mods, scanner, wrap
+from nixt.methods import fmt, parse
 from nixt.threads import launch
-from nixt.utility import elapsed, pkgname
+from nixt.utility import elapsed
 
 
 from nixt import modules as MODS
@@ -35,26 +32,7 @@ except ModuleNotFoundError:
     MODS2 = None
 
 
-broker = Broker()
-cmds = Commands()
-db = Persist()
 events = queue.Queue()
-mods = Mods()
-
-
-class Config(Default):
-
-    debug = True
-    default = "irc,mdl,rss,wsd"
-    ignore = "man,rst,udp,web"
-    level = "info"
-    local = True
-    name = pkgname(Default)
-    version = 455
-    wdr = ".test"
-
-
-Cfg = Config()
 
 
 class CLI(Client):
@@ -64,9 +42,9 @@ class CLI(Client):
         self.register("command", command)
         broker.store(self)
 
-    def raw(self, txt):
+    def raw(self, text):
         if "v" in Cfg.opts:
-            print(txt)
+            print(text)
 
 
 class ClientPool:
@@ -115,18 +93,6 @@ def check(text):
     return False
 
 
-def command(evt):
-    "command callback."
-    parse(evt, evt.text)
-    func = cmds.get(evt.cmd)
-    if func:
-        func(evt)
-        bot = broker.retrieve(evt.orig)
-        if bot:
-            bot.display(evt)
-    evt.ready()
-
-
 def consume():
     while True:
         try:
@@ -145,39 +111,6 @@ def payload(todo):
             evt.kind = "command"
             ClientPool.put(evt)
             events.put(evt)
-
-
-def scanner(cfg, default=True):
-    "scan named modules for commands."
-    res = []
-    if default:
-       defs = Cfg.default
-    else:
-       defs = ""
-    for name, mod in mods.iter(Cfg.mods or defs or mods.list(), Cfg.ignore, {"Cfg": Cfg}):
-        cmds.scan(mod)
-        if "configure" in dir(mod):
-            mod.configure(cfg)
-        res.append((name, mod))
-    return res
-
-
-def wrap(func, *args):
-    "restore console."
-    import termios
-    old = None
-    try:
-        old = termios.tcgetattr(sys.stdin.fileno())
-    except termios.error:
-        pass
-    try:
-        func(*args)
-    except (KeyboardInterrupt, EOFError):
-        pass
-    except Exception as ex:
-        logging.exception(ex)
-    if old:
-        termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
 def main():

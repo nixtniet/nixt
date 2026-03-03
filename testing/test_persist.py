@@ -1,21 +1,19 @@
 # This file is placed in the Public Domain.
 
 
+"persist tests"
+
+
 import os
 import shutil
-import sys
 import unittest
 
 
-sys.path.insert(0, ".")
-
-
+from nixt.kernels import db
 from nixt.methods import fqn
-from nixt.persist import Persist
 from nixt.objects import Object
 
 
-db = Persist()
 db.setwd('.test')
 
 
@@ -25,7 +23,7 @@ class TestCache(unittest.TestCase):
         obj = Object()
         db.cache.add("test", obj)
         self.assertTrue("test" in db.cache.paths)
-    
+
     def test_get(self):
         obj = Object()
         db.cache.add("test", obj)
@@ -35,8 +33,8 @@ class TestCache(unittest.TestCase):
     def test_sync(self):
         obj = Object()
         db.cache.add("test", obj)
-        db.cache.sync("test", {"a": "b"})     
-        self.assertEqual(getattr(db.cache.get("test"), "a"), "b") 
+        db.cache.sync("test", {"a": "b"})
+        self.assertEqual(getattr(db.cache.get("test"), "a"), "b")
 
 
 class TestLocate(unittest.TestCase):
@@ -76,7 +74,7 @@ class TestWorkdir(unittest.TestCase):
 
     def long(self):
         pass
-    
+
     def pidfile(self):
         pass
 
@@ -108,4 +106,6 @@ class TestPersist(unittest.TestCase):
         obj = Object()
         opath = db.write(obj)
         self.assertTrue(os.path.exists(os.path.join(db.wdr, "store", opath)))
- 
+
+    def test_nop(self):
+        pass
