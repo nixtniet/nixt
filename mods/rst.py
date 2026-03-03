@@ -19,7 +19,7 @@ from nixt.objects import Default, Object
 from nixt.threads import launch
 
 
-URL = '<a href="http://%s:%s}/%s">%s</a><br>\n'
+URL = '<a href="http://%s:%s/%s">%s</a><br>\n'
 
 
 def configure():
