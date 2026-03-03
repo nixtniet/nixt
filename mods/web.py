@@ -1,4 +1,9 @@
 # This file is placed in the Public Domain.
+# pylint: disable=C0103,C0115,C0116,C0209
+# pylint: disable=R0903,R1710,W0201,W0613
+
+
+"web server"
 
 
 import logging
