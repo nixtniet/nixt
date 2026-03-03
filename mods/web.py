@@ -1,8 +1,4 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0103,C0115,C0116,R0903,W0105
-
-
-"web server"
 
 
 import logging
@@ -14,30 +10,29 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.runtime import Cfg, db
-from nixt.objects import Default, Object
+from nixt.runtime import Cfg
+from nixt.objects import Object
 from nixt.threads import launch
 from nixt.utility import where
 
 
 def init():
-    db.first(Config)
     Config.path = os.path.join(where(Object), "nucleus")
-    server = None
     if not os.path.exists(os.path.join(Config.path, 'index.html')):
         logging.warning("no index.html")
-        return server
+        return
     try:
         server = HTTP((Config.hostname, int(Config.port)), HTTPHandler)
         server.start()
         logging.warning("http://%s:%s", Config.hostname, Config.port)
+        return server
     except OSError as ex:
         logging.warning("%s", str(ex))
-    return server
 
 
-class Config(Default):
+class Config:
 
+    debug = False
     hostname = "localhost"
     path = ""
     port = 8000
@@ -76,10 +71,6 @@ class HTTP(HTTPServer, Object):
 
 class HTTPHandler(BaseHTTPRequestHandler):
 
-    def __init__(self, *args):
-        BaseHTTPRequestHandler.__init__(self, *args)
-        self.path = ""
-
     def setup(self):
         BaseHTTPRequestHandler.setup(self)
         self._size = 0
@@ -94,8 +85,8 @@ class HTTPHandler(BaseHTTPRequestHandler):
 
     def write_header(self, htype='text/plain', size=None):
         self.send_response(200)
-        self.send_header('Content-type', f'{htype}; charset=utf-8')
-        #self.send_header('Content-type', '%s;')
+        #self.send_header('Content-type', '%s; charset=%s ' % (htype, "utf-8"))
+        self.send_header('Content-type', '%s;')
         if size is not None:
             self.send_header('Content-length', size)
         self.send_header('Server', "1")
@@ -141,4 +132,8 @@ class HTTPHandler(BaseHTTPRequestHandler):
 
 
 def html2(txt):
-    return f"<!doctype html><html>{txt}</html>"
+    return """<!doctype html>
+<html>
+   %s
+</html>
+""" % txt
