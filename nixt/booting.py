@@ -14,13 +14,14 @@ import time
 #sys.path.insert(0, os.getcwd())
 
 
-from nixt.runtime import Cfg, boot, cmds, cmnd, command, db, daemon
-from nixt.runtime import forever, init, mods, privileges, scanner, shutdown
-from nixt.runtime import wrap
-from nixt.handler import Console, Event
+from nixt.clients import Console
+from nixt.handler import Event
 from nixt.methods import edit, fmt, skipkey
 from nixt.objects import keys
 from nixt.persist import ident
+from nixt.runtime import Cfg, boot, cmds, cmnd, command, db, daemon
+from nixt.runtime import forever, init, mods, privileges, scanner
+from nixt.runtime import shutdown, wrap
 
 
 from nixt import modules as MODS

@@ -63,7 +63,7 @@ class Client(Handler):
     def __init__(self):
         Handler.__init__(self)
         self.iqueue = queue.Queue()
-        self.last = {}
+        #self.last = {}
         self.olock = threading.RLock()
         self.silent = False
         self.stopped = threading.Event()
@@ -79,7 +79,6 @@ class Client(Handler):
         with self.olock:
             for tme in event.result:
                 self.dosay(event.channel, event.result.get(tme))
-            event.ready()
 
     def dosay(self, channel, text):
         "say called by display."
@@ -106,8 +105,8 @@ class Client(Handler):
 
     def say(self, channel, text):
         "say text in channel."
-        if channel:
-            self.last[channel] = time.time()
+        #if channel:
+        #    self.last[channel] = time.time()
         self.raw(text)
 
 

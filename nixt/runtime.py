@@ -10,14 +10,14 @@ import os
 import time
 
 
+from nixt.clients import Broker
 from nixt.command import Commands
-from nixt.handler import Broker, Event
-from nixt.loggers import level
+from nixt.handler import Event
 from nixt.methods import merge, parse
 from nixt.objects import Default, update, values
 from nixt.package import Mods
 from nixt.persist import Persist
-from nixt.threads import exceptions, launch
+from nixt.threads import exceptions, launch, level
 from nixt.utility import pkgname
 
 
@@ -208,6 +208,7 @@ def __dir__():
         'daemon'
         'db',
         'init',
+        'level',
         'mods',
         'privileges',
         'scanner',

@@ -17,9 +17,9 @@ exceptions = [getattr(builtins, x) for x in dir(builtins) if "Error" in str(x)]
 lock = threading.RLock()
 
 
-class Task(threading.Thread):
+class Thread(threading.Thread):
 
-    """Task"""
+    """Thread"""
 
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
@@ -122,16 +122,45 @@ class Repeater(Timed):
         launch(self.start)
 
 
+class Format(logging.Formatter):
+
+    """Format"""
+
+    def format(self, record):
+        record.module = record.module.upper()
+        return logging.Formatter.format(self, record)
+
+
+class Log:
+
+    """Log"""
+
+    datefmt = "%H:%M:%S"
+    format = "%(module).3s %(message)s"
+
+
 def launch(func, *args, **kwargs):
     "run function in a thread."
     with lock:
         try:
-            task = Task(func, *args, **kwargs)
+            task = Thread(func, *args, **kwargs)
             task.start()
             return task
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
         return None
+
+
+def level(loglevel):
+    "set log level."
+    formatter = Format(Log.format, Log.datefmt)
+    stream = logging.StreamHandler()
+    stream.setFormatter(formatter)
+    logging.basicConfig(
+        level=loglevel.upper(),
+        handlers=[stream,],
+        force=True
+    )
 
 
 def name(obj):
@@ -145,8 +174,10 @@ def name(obj):
 
 def __dir__():
     return (
+        'Log',
         'Repeater',
         'Timed',
         'launch',
+        'level',
         'name'
     )

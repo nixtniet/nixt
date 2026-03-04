@@ -16,7 +16,8 @@ import threading
 import time
 
 
-from nixt.handler import Event, Output
+from nixt.clients import Output
+from nixt.handler import Event
 from nixt.runtime import Cfg, broker, command, db
 from nixt.methods import fmt
 from nixt.objects import Default, Object

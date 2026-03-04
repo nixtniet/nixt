@@ -11,9 +11,9 @@ import threading
 import time
 
 
-from nixt.runtime import broker, db
 from nixt.methods import ident
 from nixt.objects import Object, items
+from nixt.runtime import broker, db
 from nixt.threads import Timed
 from nixt.utility import NoDate, day, elapsed, extract, hour, today
 
@@ -21,9 +21,12 @@ from nixt.utility import NoDate, day, elapsed, extract, hour, today
 rand = random.SystemRandom()
 
 
+def configure():
+    Timers.path = db.first(Timers.timers) or ident(Timers.timers)
+
+
 def init():
     "initialisze timers."
-    Timers.path = db.last(Timers.timers) or ident(Timers.timers)
     remove = []
     for tme, args in items(Timers.timers):
         if not args:
@@ -112,6 +115,6 @@ def tmr(event):
     Timers.add(target, event.orig, event.channel, txt)
     db.write(Timers.timers, Timers.path or ident(Timers.timers))
     bot = broker.get(event.orig)
-    timer = Timed(diff, bot.say, event.orig, event.channel, txt)
+    timer = Timed(diff, bot.say, event.channel, txt)
     timer.start()
     event.reply("ok " + elapsed(diff))

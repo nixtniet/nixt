@@ -17,7 +17,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.handler import Client, Event
+from nixt.clients import Client
+from nixt.handler import Event
 from nixt.methods import fmt, parse
 from nixt.runtime import Cfg, command, db, mods, scanner, wrap
 from nixt.threads import launch
@@ -38,6 +39,7 @@ Cfg.wdr = ".test"
 
 
 events = queue.Queue()
+last = None
 
 
 class CLI(Client):
@@ -98,9 +100,11 @@ def check(text):
 
 
 def consume():
+    global last
     while True:
         try:
             event = events.get()
+            last = event
             event.wait()
             events.task_done()
         except (KeyboardInterrupt, EOFError):
@@ -118,6 +122,7 @@ def payload(todo):
 
 
 def main():
+    global last
     if "p" not in Cfg.opts and os.path.exists(Cfg.wdr):
         shutil.rmtree(Cfg.wdr)
     parse(Cfg, " ".join(sys.argv[1:]))
@@ -153,7 +158,10 @@ def main():
     nrs = events.qsize()
     if "v" in Cfg.opts:
         print(f"{fmt(Cfg, skip='otxt,txt')}")
-        print(f"{nrs} events left.")
+        if nrs:
+            print(f"{nrs} events left.")
+            print(last)
+            print(events.get(block=False))
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
 
 
