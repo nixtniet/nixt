@@ -4,8 +4,8 @@
 import unittest
 
 
-from bigtalk.encoder import Json
-from bigtalk.objects import Dict, Object
+from nixt.encoder import Json
+from nixt.objects import Dict, Object
 
 
 VALIDJSON = '{"test": "bla"}'

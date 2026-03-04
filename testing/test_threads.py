@@ -7,7 +7,7 @@
 import unittest
 
 
-from bigtalk.threads import Task
+from nixt.threads import Task
 
 
 def func():

@@ -4,18 +4,17 @@
 import unittest
 
 
-from bigtalk.objects import Dict, Methods, Object
+from nixt.objects import Dict, Methods, Object
 
 
-import bigtalk.objects
+import nixt.objects
 
 
-TARGET = bigtalk.objects
+TARGET = nixt.objects
 VALIDJSON = '{"test": "bla"}'
 
 
 attrs1 = [
-    'Configuration',
     'Default',
     'Dict',
     'Methods',

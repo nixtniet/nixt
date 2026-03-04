@@ -9,8 +9,8 @@ import unittest
 sys.path.insert(0, ".")
 
 
-from bigtalk.persist import Disk, Workdir
-from bigtalk.objects import Object
+from nixt.persist import Disk, Workdir
+from nixt.objects import Object
 
 
 Workdir.wdr = '.test'

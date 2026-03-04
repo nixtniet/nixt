@@ -6,7 +6,7 @@
 
 import unittest
 
-import bigtalk.utility as TARGET
+import nixt.utility as TARGET
 
 
 class TestUtilities(unittest.TestCase):

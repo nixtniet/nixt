@@ -7,7 +7,7 @@
 import unittest
 
 
-from bigtalk.message import Message
+from nixt.handler import Message
 
 
 class TestMessage(unittest.TestCase):

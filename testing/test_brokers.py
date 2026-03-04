@@ -4,10 +4,9 @@
 import unittest
 
 
-from bigtalk.brokers import Broker
-from bigtalk.clients import Client
-from bigtalk.encoder import Json
-from bigtalk.objects import Dict, Object
+from nixt.encoder import Json
+from nixt.handler import Broker, Client
+from nixt.objects import Dict, Object
 
 
 class TestBroker(unittest.TestCase):

@@ -7,8 +7,7 @@
 import unittest
 
 
-from bigtalk.clients import Client
-from bigtalk.message import Message
+from nixt.handler import Client, Message
 
 
 buffer = []

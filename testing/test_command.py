@@ -7,10 +7,9 @@
 import unittest
 
 
-from bigtalk.clients import Client
-from bigtalk.command import Commands
-from bigtalk.objects import Dict
-from bigtalk.message import Message
+from nixt.handler import Client, Message
+from nixt.command import Commands
+from nixt.objects import Dict
 
 
 def cmnd(event):
