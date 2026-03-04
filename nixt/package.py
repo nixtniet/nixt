@@ -9,28 +9,26 @@ import logging
 import os
 
 
+from .defines import StaticMethod
 from .utility import Utils
 
 
-class Mods:
+class Mods(StaticMethod):
 
     dirs = {}
     modules = {}
 
-    @staticmethod
     def add(name, path):
         "add modules directory." 
         if os.path.exists(path):
             Mods.dirs[name] = path
 
-    @staticmethod
     def get(modname):
         "return module."
         result = list(Mods.iter(modname))
         if result:
             return result[0][-1]
 
-    @staticmethod
     def has(attr):
         "return list of modules containing an attribute."
         result = []
@@ -39,7 +37,6 @@ class Mods:
                 result.append(mod.__name__.split(".")[-1])
         return ",".join(result)
 
-    @staticmethod
     def iter(modlist, ignore=""):
         "loop over modules."
         for pkgname, path in Mods.dirs.items():
@@ -62,7 +59,6 @@ class Mods:
                 if mod:
                     yield name, mod
 
-    @staticmethod
     def list(ignore=""):
         "comma seperated list of available modules."
         mods = []
@@ -75,7 +71,6 @@ class Mods:
             ])
         return ",".join(sorted(mods))
 
-    @staticmethod
     def importer(name, pth=""):
         "import module by path."
         if pth and os.path.exists(pth):
@@ -93,7 +88,6 @@ class Mods:
         spec.loader.exec_module(mod)
         return mod
 
-    @staticmethod
     def pkg(package):
         return Mods.add(package.__name__, package.__path__[0])
 

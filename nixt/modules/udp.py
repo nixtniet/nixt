@@ -12,9 +12,9 @@ import threading
 import time
 
 
-from nixt.brokers import Broker
-from nixt.objects import Configuration, Object
-from nixt.persist import Main
+from nixt.configs import Configuration, Main
+from nixt.handler import Broker
+from nixt.objects import Object
 from nixt.threads import Thread
 
 

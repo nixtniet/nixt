@@ -24,8 +24,9 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.brokers import Broker
-from nixt.objects import Configuration, Default, Dict, Methods
+from nixt.configs import Configuration
+from nixt.objects import Default, Dict, Methods
+from nixt.handler import Broker
 from nixt.persist import Disk, Locate, Main
 from nixt.threads import Thread
 from nixt.utility import Repeater, Time, Utils

@@ -10,7 +10,7 @@ import threading
 import time
 
 
-from nixt.brokers import Broker
+from nixt.handler import Broker
 from nixt.objects import Dict, Methods, Object
 from nixt.persist import Disk, Locate
 from nixt.utility import NoDate, Time, Timed

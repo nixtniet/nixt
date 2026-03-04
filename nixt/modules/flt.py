@@ -4,7 +4,7 @@
 "show bot in fleet"
 
 
-from nixt.brokers import Broker
+from nixt.handler import Broker
 from nixt.objects import Methods
 
 

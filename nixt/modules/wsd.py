@@ -10,8 +10,7 @@ import logging
 from random import SystemRandom
 
 
-from nixt.brokers import Broker
-from nixt.message import Message
+from nixt.handler import Broker, Message
 from nixt.persist import StateFul
 from nixt.utility import Repeater
 
