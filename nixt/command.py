@@ -7,34 +7,64 @@
 import inspect
 
 
-class Commands:
+from .brokers import Broker
+from .message import Message
+from .objects import Configuration, Methods
 
-    """Commands"""
+
+class Commands:
 
     cmds = {}
     names = {}
 
-    def add(self, *args):
+    @staticmethod
+    def add(*args):
         "add functions to commands."
         for func in args:
             name = func.__name__
-            self.cmds[name] = func
-            self.names[name] = func.__module__.split(".")[-1]
+            Commands.cmds[name] = func
+            Commands.names[name] = func.__module__.split(".")[-1]
 
-    def get(self, cmd):
+    @staticmethod
+    def cmd(text):
+        "parse text for command and run it."
+        for txt in text.split(" ! "):
+            evt = Message()
+            evt.text = txt
+            evt.type = "command"
+            Commands.command(evt)
+            evt.wait()
+        return evt
+
+    @staticmethod
+    def command(evt):
+        "command callback."
+        Methods.parse(evt, evt.text)
+        func = Commands.get(evt.cmd)
+        if func:
+            func(evt)
+            bot = Broker.get(evt.orig)
+            if bot:
+                bot.display(evt)
+        evt.ready()
+
+    @staticmethod
+    def get(cmd):
         "get function for command."
-        return self.cmds.get(cmd, None)
+        return Commands.cmds.get(cmd, None)
 
-    def has(self, cmd):
+    @staticmethod
+    def has(cmd):
         "whether cmd is registered."
-        return cmd in self.cmds
+        return cmd in Commands.cmds
 
-    def scan(self, module):
+    @staticmethod
+    def scan(module):
         "scan a module for functions with event as argument."
-        for _key, cmdz in inspect.getmembers(module, inspect.isfunction):
+        for key, cmdz in inspect.getmembers(module, inspect.isfunction):
             if 'event' not in inspect.signature(cmdz).parameters:
-                continue
-            self.add(cmdz)
+               continue
+            Commands.add(cmdz)
 
 
 def __dir__():

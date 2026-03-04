@@ -1,73 +1,31 @@
 # This file is placed in the Public Domain.
 
 
-"clients"
+"userland callback engines"
 
 
 import logging
 import queue
 import threading
-import time
 import _thread
 
 
-from nixt.handler import Handler
-from nixt.threads import exceptions, launch
-
-
-class Broker:
-
-    """Broker"""
-
-    objects = {}
-
-    def add(self, obj):
-        "add object to the broker, key is repr(obj)."
-        self.objects[repr(obj)] = obj
-
-    def announce(self, txt):
-        "announce text on all objects with an announce method."
-        for obj in self.objs("announce"):
-            obj.announce(txt)
-
-    def get(self, origin):
-        "object by repr(obj)."
-        return self.objects.get(origin)
-
-    def objs(self, attr):
-        "objects with a certain attribute."
-        for obj in self.objects.values():
-            if attr in dir(obj):
-                yield obj
-
-    def has(self, obj):
-        "whether the broker has object."
-        return repr(obj) in self.objects
-
-    def like(self, txt):
-        "all keys with a substring in their key."
-        for orig in self.objects:
-            if txt in orig.split()[0]:
-                yield orig
-
-    @staticmethod
-    def register(obj):
-        "register an object with a static method."
-        Broker.objects[repr(obj)] = obj
+from .brokers import Broker
+from .handler import Handler
+from .objects import Configuration
+from .threads import Thread
+from .utility import Utils
 
 
 class Client(Handler):
 
-    """Client"""
-
     def __init__(self):
         Handler.__init__(self)
         self.iqueue = queue.Queue()
-        #self.last = {}
         self.olock = threading.RLock()
         self.silent = False
         self.stopped = threading.Event()
-        Broker.register(self)
+        Broker.add(self)
 
     def announce(self, text):
         "announce text to all channels."
@@ -105,14 +63,10 @@ class Client(Handler):
 
     def say(self, channel, text):
         "say text in channel."
-        #if channel:
-        #    self.last[channel] = time.time()
         self.raw(text)
 
 
 class Console(Client):
-
-    """Console"""
 
     def loop(self):
         "input loop."
@@ -124,13 +78,15 @@ class Console(Client):
             self.callback(event)
             event.wait()
 
+    def poll(self):
+        "return event."
+        return self.iqueue.get()
+
 
 class Output(Client):
 
-    """Output"""
-
     def __init__(self):
-        Client.__init__(self)
+        super().__init__()
         self.oqueue = queue.Queue()
 
     def output(self):
@@ -143,10 +99,10 @@ class Output(Client):
             self.display(event)
             self.oqueue.task_done()
 
-    def start(self, daemon=True):
+    def start(self):
         "start output loop."
-        launch(self.output, daemon=daemon)
-        Client.start(self, daemon=daemon)
+        super().start()
+        Thread.launch(self.output)
 
     def stop(self):
         "stop output loop."
@@ -157,15 +113,15 @@ class Output(Client):
         "wait for output to finish."
         try:
             self.oqueue.join()
-        except exceptions as ex:
+        except Exception as ex:
             logging.exception(ex)
             _thread.interrupt_main()
 
 
 def __dir__():
     return (
-        'Broker',
         'Client',
         'Console',
+        'Main',
         'Output'
     )

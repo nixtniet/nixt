@@ -1,1 +1,1 @@
-python3 -c 'import nixt.booting ; nixt.booting.main()'  --local $* ;
+python3 -m nixt.runtime $* ;

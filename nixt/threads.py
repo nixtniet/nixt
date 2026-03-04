@@ -4,7 +4,6 @@
 "make it non-blocking"
 
 
-import builtins
 import inspect
 import logging
 import queue
@@ -13,18 +12,12 @@ import time
 import _thread
 
 
-exceptions = [getattr(builtins, x) for x in dir(builtins) if "Error" in str(x)]
-lock = threading.RLock()
-
-
-class Thread(threading.Thread):
-
-    """Thread"""
+class Task(threading.Thread):
 
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
         self.event = None
-        self.name = kwargs.get("name", name(func))
+        self.name = kwargs.get("name", Thread.name(func))
         self.queue = queue.Queue()
         self.result = None
         self.starttime = time.time()
@@ -43,11 +36,9 @@ class Thread(threading.Thread):
             super().join(timeout or None)
             return self.result
         except (KeyboardInterrupt, EOFError) as ex:
-            logging.exception(ex)
             if self.event and self.event.ready:
                 self.event.ready()
-            _thread.interrupt_main()
-        return None
+            raise ex
 
     def run(self):
         "run function."
@@ -60,124 +51,39 @@ class Thread(threading.Thread):
             if self.event:
                 self.event.ready()
             _thread.interrupt_main()
-        except exceptions as ex:
+        except Exception as ex:
             if self.event:
                 self.event.ready()
             logging.exception(ex)
             _thread.interrupt_main()
 
 
-class Timy(threading.Timer):
+class Thread:
 
-    """Timy"""
+    lock = threading.RLock()
 
-    def __init__(self, sleep, func, *args, **kwargs):
-        super().__init__(sleep, func)
-        self.name = kwargs.get("name", name(func))
-        self.sleep = sleep
-        self.state = {}
-        self.state["latest"] = time.time()
-        self.state["starttime"] = time.time()
-        self.starttime = time.time()
+    @staticmethod
+    def launch(func, *args, **kwargs):
+        "run function in a thread."
+        with Thread.lock:
+            try:
+                task = Task(func, *args, **kwargs)
+                task.start()
+                return task
+            except (KeyboardInterrupt, EOFError):
+                _thread.interrupt_main()
 
-
-class Timed:
-
-    """Timed"""
-
-    def __init__(self, sleep, func, *args, thrname="", **kwargs):
-        self.args = args
-        self.func = func
-        self.kwargs = kwargs
-        self.sleep = sleep
-        self.name = thrname or kwargs.get("name", name(func))
-        self.target = time.time() + self.sleep
-        self.timer = None
-
-    def run(self):
-        "run timed function."
-        self.timer.latest = time.time()
-        self.func(*self.args)
-
-    def start(self):
-        "start timer."
-        self.kwargs["name"] = self.name
-        timer = Timy(self.sleep, self.run, *self.args, **self.kwargs)
-        timer.start()
-        self.timer = timer
-
-    def stop(self):
-        "stop timer."
-        if self.timer:
-            self.timer.cancel()
-
-
-class Repeater(Timed):
-
-    """Repeater"""
-
-    def run(self):
-        "run function and launch timer for next run."
-        launch(super().run)
-        launch(self.start)
-
-
-class Format(logging.Formatter):
-
-    """Format"""
-
-    def format(self, record):
-        record.module = record.module.upper()
-        return logging.Formatter.format(self, record)
-
-
-class Log:
-
-    """Log"""
-
-    datefmt = "%H:%M:%S"
-    format = "%(module).3s %(message)s"
-
-
-def launch(func, *args, **kwargs):
-    "run function in a thread."
-    with lock:
-        try:
-            task = Thread(func, *args, **kwargs)
-            task.start()
-            return task
-        except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
-        return None
-
-
-def level(loglevel):
-    "set log level."
-    formatter = Format(Log.format, Log.datefmt)
-    stream = logging.StreamHandler()
-    stream.setFormatter(formatter)
-    logging.basicConfig(
-        level=loglevel.upper(),
-        handlers=[stream,],
-        force=True
-    )
-
-
-def name(obj):
-    "string of function/method."
-    if inspect.ismethod(obj):
-        return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
-    if inspect.isfunction(obj):
-        return repr(obj).split()[1]
-    return repr(obj)
+    @staticmethod
+    def name(obj):
+        "string of function/method."
+        if inspect.ismethod(obj):
+            return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
+        if inspect.isfunction(obj):
+            return repr(obj).split()[1]
+        return repr(obj)
 
 
 def __dir__():
     return (
-        'Log',
-        'Repeater',
-        'Timed',
-        'launch',
-        'level',
-        'name'
+        'Thread',
     )

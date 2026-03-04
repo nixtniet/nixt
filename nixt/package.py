@@ -4,62 +4,45 @@
 "module management"
 
 
-import importlib
 import importlib.util
 import logging
 import os
 
 
-from nixt.utility import spl
+from .utility import Utils
 
 
 class Mods:
 
-    """Mods"""
-
     dirs = {}
     modules = {}
 
-    def dir(self, name, path):
+    @staticmethod
+    def add(name, path):
         "add modules directory." 
         if os.path.exists(path):
-            self.dirs[name] = path
+            Mods.dirs[name] = path
 
-    def get(self, modname):
+    @staticmethod
+    def get(modname):
         "return module."
-        result = list(self.iter(modname))
+        result = list(Mods.iter(modname))
         if result:
             return result[0][-1]
-        return None
 
-    def has(self, attr):
+    @staticmethod
+    def has(attr):
         "return list of modules containing an attribute."
         result = []
-        for mod in self.modules.values():
+        for mod in Mods.modules.values():
             if getattr(mod, attr, False):
                 result.append(mod.__name__.split(".")[-1])
         return ",".join(result)
 
-    def importer(self, name, pth=""):
-        "import module by path."
-        if pth and os.path.exists(pth):
-            spec = importlib.util.spec_from_file_location(name, pth)
-        else:
-            spec = importlib.util.find_spec(name)
-        if not spec or not spec.loader:
-            logging.debug("missing spec or loader for %s", name)
-            return None
-        mod = importlib.util.module_from_spec(spec)
-        if not mod:
-            logging.debug("can't load %s module from spec", name)
-            return None
-        self.modules[name] = mod
-        spec.loader.exec_module(mod)
-        return mod
-
-    def iter(self, mods, ignore=""):
+    @staticmethod
+    def iter(modlist, ignore=""):
         "loop over modules."
-        for pkgname, path in self.dirs.items():
+        for pkgname, path in Mods.dirs.items():
             if not os.path.exists(path):
                 continue
             for fnm in os.listdir(path):
@@ -68,35 +51,51 @@ class Mods:
                 if not fnm.endswith(".py"):
                     continue
                 name = fnm[:-3]
-                if name not in spl(mods):
+                if name not in Utils.spl(modlist):
                     continue
-                if ignore and name in spl(ignore):
+                if ignore and name in Utils.spl(ignore):
                     continue
                 modname = f"{pkgname}.{name}"
-                mod =  self.modules.get(modname, None)
+                mod =  Mods.modules.get(modname, None)
                 if not mod:
-                    mod = self.importer(
-                                        modname,
-                                        os.path.join(path, fnm)
-                                       )
+                    mod = Mods.importer(modname, os.path.join(path, fnm))
                 if mod:
                     yield name, mod
 
-    def list(self, ignore=""):
+    @staticmethod
+    def list(ignore=""):
         "comma seperated list of available modules."
         mods = []
-        for _name, path in self.dirs.items():
+        for pkgname, path in Mods.dirs.items():
             mods.extend([
                 x[:-3] for x in os.listdir(path)
                 if x.endswith(".py") and
                 not x.startswith("__") and
-                x[:-3] not in spl(ignore)
+                x[:-3] not in Utils.spl(ignore)
             ])
         return ",".join(sorted(mods))
 
-    def pkg(self, package):
-        "add directories from package."
-        return self.dir(package.__name__, package.__path__[0])
+    @staticmethod
+    def importer(name, pth=""):
+        "import module by path."
+        if pth and os.path.exists(pth):
+            spec = importlib.util.spec_from_file_location(name, pth)
+        else:
+            spec = importlib.util.find_spec(name)
+        if not spec or not spec.loader:
+            logging.debug(f"missing spec or loader for {name}")
+            return None
+        mod = importlib.util.module_from_spec(spec)
+        if not mod:
+            logging.debug(f"can't load {name} module from spec")
+            return None
+        Mods.modules[name] = mod
+        spec.loader.exec_module(mod)
+        return mod
+
+    @staticmethod
+    def pkg(package):
+        return Mods.add(package.__name__, package.__path__[0])
 
 
 def __dir__():
