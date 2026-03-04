@@ -14,7 +14,7 @@ from .configs import Main
 from .defines import StaticMethod
 from .encoder import Json
 from .objects import Default, Dict, Methods
-from .utility import Time, Utils
+from .utility import Time
 
 
 class Cache(StaticMethod):

@@ -12,7 +12,6 @@ import time
 
 from .defines import StaticMethod
 from .threads import Thread
-from .utility import Utils
 
 
 class Message:

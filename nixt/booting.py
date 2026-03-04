@@ -4,22 +4,19 @@
 "main program"
 
 
-import argparse
-import logging
 import os
 import sys
-import time
 
 
 from .command import Commands
+from .configs import Main
 from .defines import StaticMethod
 from .handler import Console, Message
 from .objects import Dict, Methods
 from .package import Mods
-from .persist import Disk, Locate, Main, Workdir
-from .runtime import Main, Runtime
-from .threads import Thread
-from .utility import Log, Utils
+from .persist import Disk, Locate, Workdir
+from .runtime import Runtime
+from .utility import Utils
 
 
 from . import modules as MODS

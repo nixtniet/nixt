@@ -10,7 +10,7 @@ class Static(type):
     def __new__(cls, *args, **kwargs):
         for key in dir(cls):
             value = getattr(cls, key, None)
-            if type(value) == types.MethodType:
+            if type(value) is types.MethodType:
                 setattr(cls, key, staticmethod(value))
 
 
