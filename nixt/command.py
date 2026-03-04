@@ -39,5 +39,5 @@ class Commands:
 
 def __dir__():
     return (
-        'Command',
+        'Commands',
     )

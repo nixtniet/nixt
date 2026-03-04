@@ -117,7 +117,7 @@ class TestObject(unittest.TestCase):
 
     def test_doc(self):
         obj = Object()
-        self.assertEqual(obj.__doc__, None)
+        self.assertEqual(obj.__doc__, "Object")
 
     def test_format(self):
         obj = Object()

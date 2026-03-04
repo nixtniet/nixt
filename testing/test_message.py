@@ -16,7 +16,7 @@ class TestMessage(unittest.TestCase):
     def test_ready(self):
         msg = Event()
         msg.ready()
-        self.assertTrue(msg._ready.is_set())
+        self.assertTrue(msg.isready.is_set())
 
     def test_reply(self):
         msg = Event()
@@ -27,4 +27,4 @@ class TestMessage(unittest.TestCase):
         msg = Event()
         msg.ready()
         msg.wait()
-        self.assertTrue(msg._ready.is_set())
+        self.assertTrue(msg.isready.is_set())

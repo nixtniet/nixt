@@ -1,8 +1,9 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0103,C0115,C0116,W0105,W0212
+# pylint: disable=C0103,C0115,C0116,W0105
+# pylint: disable=W0212
 
 
-"engine"
+"handler tests"
 
 
 import unittest
@@ -67,7 +68,7 @@ class TestHandler(unittest.TestCase):
         evt = Message()
         self.hdl.put(evt)
         evt.wait()
-        self.assertTrue(evt._ready.is_set())
+        self.assertTrue(evt.isready.is_set())
 
     def test_put(self):
         hdl = Handler()
@@ -161,7 +162,7 @@ class TestConsole(unittest.TestCase):
         evt = Message()
         self.clt.put(evt)
         evt.wait()
-        self.assertTrue(evt._ready.is_set())
+        self.assertTrue(evt.isready.is_set())
 
     def test_poll(self):
         clt = Console()

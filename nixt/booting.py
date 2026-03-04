@@ -2,6 +2,7 @@
 # This file is placed in the Public Domain.
 # pylint: disable=C0415
 
+
 "main program"
 
 
@@ -41,7 +42,7 @@ class Line(Console):
 
 class CSL(Line):
 
-    """COnsole"""
+    """Console"""
 
     def poll(self):
         "poll for an event."

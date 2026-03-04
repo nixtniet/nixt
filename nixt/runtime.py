@@ -2,7 +2,7 @@
 # pylint: disable=C0415,R0903
 
 
-"runtimw"
+"runtime"
 
 
 import logging
@@ -199,6 +199,7 @@ def wrap(func, *args):
 def __dir__():
     return (
         'Cfg',
+        'Config',
         'boot',
         'broker',
         'cmds',
