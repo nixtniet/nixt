@@ -4,14 +4,16 @@
 "definitions"
 
 
+import types
+
 
 class Static(type):
 
-    def __new__(cls, *args, **kwargs):
-        for key in dir(cls):
-            value = getattr(cls, key, None)
-            if type(value) is types.MethodType:
-                setattr(cls, key, staticmethod(value))
+    def __new__(mcs, *args, **kwargs):
+        for key in dir(mcs):
+            value = getattr(mcs, key, None)
+            if isinstance(value, types.MethodType):
+                setattr(mcs, key, staticmethod(value))
 
 
 class StaticMethod:

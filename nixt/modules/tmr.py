@@ -53,7 +53,7 @@ class Timers(Object):
     path = ""
     timers = Timer()
     lock = threading.RLock()
-    
+
     @staticmethod
     def add(tme, orig, channel,  txt):
         with Timers.lock:
@@ -98,7 +98,7 @@ def tmr(event):
         hours =  Time.hour(event.rest)
         if hours:
             target += hours
-    target += rand.random() 
+    target += rand.random()
     if not target or time.time() > target:
         event.reply("already passed given time.")
         return result

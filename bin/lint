@@ -1,1 +1,10 @@
-pylint nixt mods bin/tinder testing
+#!/usr/bin/sh
+
+
+export SKIPC="C0103,C0115,C0116,C0209,C0301,C0412,C0413,C0415"
+export SKIPR="R0902,R0903,R0904,R0912,R0915,R1710"
+export SKIPW="W0102,W0201,W0212,W0612,W0613,W0718"
+export SKIPE="E0211,E0213,E0402,E0611"
+
+
+pylint -d "$SKIPC" -d "$SKIPR" -d "$SKIPW" -d "$SKIPE" nixt mods bin/tinder testing

@@ -106,7 +106,7 @@ class Runner:
     def loop(self):
         while True:
             job = self.queue.get()
-            self.fetch(*job)                                    
+            self.fetch(*job)
 
     def fetch(self, fnm, feed, silent=False):
         with Run.fetchlock:
@@ -152,7 +152,7 @@ class Runner:
 
     def start(self):
         Thread.launch(self.loop)
-    
+
     def stop(self):
         self.stopped.set()
 
@@ -328,7 +328,7 @@ class Helpers:
         try:
             response = Helpers.geturl(feed.rss)
             if not response.data:
-               return result
+                return result
             if "link" not in items:
                 items += ",link"
             if feed.rss.endswith("atom"):
@@ -385,7 +385,7 @@ class Helpers:
         since = getattr(State.modified, url, "")
         if since:
             req.add_header('If-Modified-Since', since)
-        logging.debug(f"fetching {url} {req.headers}")
+        logging.debug("fetching %s %s", url, req.headers)
         with urllib.request.urlopen(req, timeout=5.0) as response:  # nosec
             modi = response.headers.get('Last-Modified', "")
             if modi:
@@ -466,17 +466,17 @@ def atr(event):
     if not event.rest:
         event.reply("atr <stringinurl>")
         return
-    for fnm, obj in Locate.find(Methods.fqn(Rss), {'rss': event.rest}):
+    for _fnm, obj in Locate.find(Methods.fqn(Rss), {'rss': event.rest}):
         request = Helpers.geturl(obj.rss)
         if obj.rss.endswith('atom'):
-            res = list(Parser.getitems(str(request.data, 'utf-8', errors='ignore'), 'entry', 1))
+            result = list(Parser.getitems(str(request.data, 'utf-8', errors='ignore'), 'entry', 1))
         else:
-            res = list(Parser.getitems(str(request.data, 'utf-8', errors='ignore'), 'item', 1))
-        result = []
-        for x in re.findall('<.*?>', res[0]):
-           if x[1] == '/' and len(x) > 4:
-              result.append(x[2:-1])
-        event.reply(','.join(result))
+            result = list(Parser.getitems(str(request.data, 'utf-8', errors='ignore'), 'item', 1))
+        resulting = []
+        for x in re.findall('<.*?>', result[0]):
+            if x[1] == '/' and len(x) > 4:
+                resulting.append(x[2:-1])
+        event.reply(','.join(resulting))
 
 
 def dpl(event):
@@ -512,7 +512,7 @@ def err(event):
         event.reply("no feed errors.")
     else:
         event.reply(f'{nre} feeds reset.')
-    
+
 
 def exp(event):
     with Run.importlock:

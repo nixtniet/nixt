@@ -40,12 +40,12 @@ class Config(Configuration):
     channel = f"#{name}"
     commands = True
     control = "!"
-    ignore = ["PING", "PONG", "PRIVMSG"] 
+    ignore = ["PING", "PONG", "PRIVMSG"]
     nick = name
     word = ""
     port = 6667
     realname = name
-    sasl = (port == 6697 and True) or False
+    sasl = port == 6697
     server = "localhost"
     servermodes = ""
     sleep = 60
@@ -471,7 +471,7 @@ class IRC(Output):
         self.events.joined.clear()
         Output.start(self)
         if not self.state.keeprunning:
-           Thread.launch(self.keep)
+            Thread.launch(self.keep)
         Locate.first(self.cfg)
         Thread.launch(
             self.doconnect,
@@ -481,7 +481,7 @@ class IRC(Output):
         )
 
     def stop(self):
-        logging.warn("stopping")
+        logging.warning("stopping")
         self.state.stopkeep = True
         Output.stop(self)
 

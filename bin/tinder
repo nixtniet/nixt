@@ -2,6 +2,9 @@
 # This file is placed in the Public Domain.
 
 
+"stress test"
+
+
 import os
 import queue
 import shutil
@@ -19,6 +22,7 @@ from nixt.handler import Client, Message
 from nixt.objects import Default, Methods
 from nixt.package import Mods
 from nixt.persist import Workdir
+from nixt.runtime import Runtime
 from nixt.threads import Thread
 from nixt.utility import Time, Utils
 
@@ -52,9 +56,9 @@ class CLI(Client):
         Client.__init__(self)
         self.register("command", Commands.command)
 
-    def raw(self, txt):
+    def raw(self, text):
         if "v" in Main.opts:
-            print(txt)
+            print(text)
 
 
 class ClientPool:
@@ -85,11 +89,6 @@ class ClientPool:
             clt.put(*args)
             ClientPool.nrlast += 1
 
-
-def banner():
-    tme = time.ctime(time.time()).replace("  ", " ")
-    print(f"{Main.name.upper()} {Main.version} since {tme} ({Main.level})")
-    sys.stdout.flush()
 
 
 def check(text):
@@ -123,31 +122,6 @@ def payload(todo):
             events.put(evt)
 
 
-def scanner(cfg):
-    res = []
-    for name, mod in Mods.iter(Mods.list()):
-        Commands.scan(mod)
-        if "configure" in dir(mod):
-            mod.configure(cfg)
-        res.append((name, mod))
-    return res
-
-
-def wrap(func):
-    import termios
-    old = None
-    try:
-        old = termios.tcgetattr(sys.stdin.fileno())
-    except termios.error:
-        pass
-    try:
-        Utils.wrapped(func)
-    finally:
-        pass
-    if old:
-        termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
-
-
 def main():
     if "p" not in Main.opts and os.path.exists(Main.wdr):
         shutil.rmtree(Main.wdr)
@@ -157,9 +131,9 @@ def main():
     if MODS2:
         Mods.add("mods", MODS2.__path__[0])
     Main.mods = Main.mods or Mods.list()
-    scanner(Main)
+    Runtime.scanner(Main)
     if "v" in Main.opts:
-        banner()
+        Runtime.banner()
     if "z" in Main.opts:
         ClientPool.init(os.cpu_count(), CLI)
     else:
@@ -237,4 +211,4 @@ post = {
 
 
 if __name__ == "__main__":
-    wrap(main)
+    Runtime.wrap(main)

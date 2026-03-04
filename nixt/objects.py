@@ -69,7 +69,7 @@ class Dict(StaticMethod):
     def items(obj):
         "object's key,value pairs."
         if isinstance(obj, type):
-            return [(x, getattr(obj, x)) for x in dir(obj) if not x.startswith("_")] 
+            return [(x, getattr(obj, x)) for x in dir(obj) if not x.startswith("_")]
         if isinstance(obj, dict):
             return obj.items()
         if isinstance(obj, types.MappingProxyType):
@@ -132,7 +132,7 @@ class Dict(StaticMethod):
         "object's values."
         if isinstance(obj, dict):
             return obj.values()
-        elif isinstance(obj.__dict__, types.MappingProxyType):
+        if isinstance(obj.__dict__, types.MappingProxyType):
             res = []
             for key in obj.__dict__:
                 res.append(obj[key])
@@ -254,11 +254,11 @@ class Methods(StaticMethod):
                 res = False
                 break
             if matching and value != val:
-               res = False
-               break
+                res = False
+                break
             if str(value).lower() not in str(val).lower():
-               res = False
-               break
+                res = False
+                break
             res = True
         return res
 
@@ -266,11 +266,11 @@ class Methods(StaticMethod):
         "skip keys containing chars."
         res = {}
         for key, value in Dict.items(obj):
-            next = False
+            donext = False
             for char in chars:
                 if char in key:
-                    next = True
-            if next:
+                    donext = True
+            if donext:
                 continue
             res[key] = value
         return res
@@ -286,7 +286,7 @@ class Methods(StaticMethod):
             setattr(obj, key, float(val))
             return
         except ValueError:
-           pass
+            pass
         if val in ["True", "true", True]:
             setattr(obj, key, True)
         elif val in ["False", "false", False]:

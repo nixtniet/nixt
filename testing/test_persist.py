@@ -1,6 +1,9 @@
 # This file is placed in the Public Domain.
 
 
+"persist tests"
+
+
 import os
 import sys
 import unittest

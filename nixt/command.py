@@ -62,7 +62,7 @@ class Commands:
         "scan a module for functions with event as argument."
         for key, cmdz in inspect.getmembers(module, inspect.isfunction):
             if 'event' not in inspect.signature(cmdz).parameters:
-               continue
+                continue
             Commands.add(cmdz)
 
 

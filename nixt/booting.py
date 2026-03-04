@@ -4,6 +4,7 @@
 "main program"
 
 
+import argparse
 import os
 import sys
 
@@ -15,7 +16,7 @@ from .handler import Console, Message
 from .objects import Dict, Methods
 from .package import Mods
 from .persist import Disk, Locate, Workdir
-from .runtime import Runtime
+from .runtime import SYSTEMD, Runtime
 from .utility import Utils
 
 
@@ -154,23 +155,26 @@ class Cmd(StaticMethod):
         event.reply(f"{Main.name.upper()} {Main.version}")
 
 
-SYSTEMD = """[Unit]
-Description=%s
-After=multi-user.target
-
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
+def getargs():
+    "parse commandline arguments."
+    parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
+    parser.add_argument("-a", "--all", action="store_true", help="load all modules")
+    parser.add_argument("-c", "--console", action="store_true", help="start console")
+    parser.add_argument("-d", "--daemon", action="store_true", help="start background daemon")
+    parser.add_argument("-l", "--level", default=Main.level, help='set loglevel')
+    parser.add_argument("-m", "--mods", default="", help='modules to load')
+    parser.add_argument("-n", "--noignore", action="store_true", help="disable ignore")
+    parser.add_argument("-s", "--service", action="store_true", help="start service")
+    parser.add_argument("-v", "--verbose", action='store_true',help='enable verbose')
+    parser.add_argument("-w", "--wait", action='store_true',help='wait for services to start')
+    parser.add_argument("--local", action="store_true", help="use local mods directory")
+    parser.add_argument("--wdr", help='set working directory')
+    return parser.parse_known_args()
 
 
 def main():
     "main"
-    args, arguments = Runtime.getargs()
+    args, arguments = getargs()
     args.txt = " ".join(arguments)
     if args.daemon:
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)

@@ -19,10 +19,10 @@ from nixt.threads import Thread
 
 
 def init():
-    udp = UDP()
-    udp.start()
+    relay = UDP()
+    relay.start()
     logging.warning("http://%s:%s", Config.host, Config.port)
-    return udp
+    return relay
 
 
 class Config(Configuration):

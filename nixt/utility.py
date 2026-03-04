@@ -283,7 +283,7 @@ class Utils(StaticMethod):
 
     def pkgname(obj):
         "return package name of an object."
-        return obj.__module__.split(".")[0]
+        return obj.__module__.split(".", maxsplit=1)[0]
 
     def pipxdir(name):
         "return examples directory."
@@ -304,7 +304,7 @@ class Utils(StaticMethod):
     def wrapped(func):
         "wrap function in a try/except, silence ctrl-c/ctrl-d."
         try:
-           func()
+            func()
         except (KeyboardInterrupt, EOFError):
             pass
 

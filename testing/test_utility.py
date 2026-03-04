@@ -6,11 +6,11 @@
 
 import unittest
 
-import nixt.utility as TARGET
+
+from nixt.utility import Utils
 
 
 class TestUtilities(unittest.TestCase):
 
-    def test_interface(self):
-        print(dir(TARGET))
-        self.assertTrue(True)
+    def test_pkgname(self):
+        self.assertEqual(Utils.pkgname(Utils), "nixt")

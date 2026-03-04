@@ -25,7 +25,7 @@ class TestCommands(unittest.TestCase):
     def test_add(self):
         Commands.add(cmnd)
         self.assertTrue(Commands.has("cmnd"))
-    
+
     def test_get(self):
         Commands.add(cmnd)
         self.assertTrue(Commands.get("cmnd"))
@@ -33,7 +33,7 @@ class TestCommands(unittest.TestCase):
     def test_has(self):
         Commands.add(cmnd)
         self.assertTrue(Commands.get("cmnd"))
-    
+
     def test_command(self):
         clt = Client()
         Commands.add(cmnd)

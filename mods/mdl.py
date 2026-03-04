@@ -14,9 +14,6 @@ from nixt.objects import Dict, Object
 from nixt.utility import Repeater, Time
 
 
-"init"
-
-
 def init():
     for key in Dict.keys(oorzaken):
         if "Psych" not in key:
@@ -31,9 +28,6 @@ def init():
             repeater = Repeater(sec, cbstats, evt, thrname=name)
             repeater.start()
             logging.warning("since %s", Time.elapsed(time.time()-STARTTIME))
-
-
-"defines"
 
 
 DAY = 24*60*60
@@ -76,9 +70,6 @@ jaar["Pvp"] = 20088
 jaar["Wzd"] = 25000
 jaar["Wfz"] = 23820
 jaar["totaal"] = 168678
-
-
-"utilities"
 
 
 def getalias(txt):
@@ -130,9 +121,6 @@ def hourly():
         cbnow(evt)
 
 
-"callbacks"
-
-
 def cbnow(evt):
     delta = time.time() - STARTTIME
     txt = Time.elapsed(delta) + " "
@@ -170,9 +158,6 @@ def cbstats(evt):
             bot.announce(txt)
 
 
-"commands"
-
-
 def dis(event):
     delta = time.time() - STARTTIME
     txt = Time.elapsed(delta) + " "
@@ -206,9 +191,6 @@ def now(event):
             Time.elapsed(needed)
         )
         event.reply(txt)
-
-
-"data"
 
 
 oor = """"Totaal onderliggende doodsoorzaken (aantal)";
@@ -405,9 +387,6 @@ aantal = """
           17495;
           2678
          """.split(";")
-
-
-"boot"
 
 
 oorzaak = Object()

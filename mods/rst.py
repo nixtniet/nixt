@@ -19,7 +19,7 @@ from nixt.persist import Locate, Workdir
 from nixt.threads import Thread
 
 
-def configure(cfg):
+def configure():
     Locate.first(Config)
 
 

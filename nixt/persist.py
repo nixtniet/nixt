@@ -80,7 +80,7 @@ class Locate(StaticMethod):
         result = []
         for pth, obj in Locate.find(kind, nritems=1):
             result.extend(Dict.keys(obj))
-        return {x for x in result}
+        return set(result)
 
     def count(kind):
         return len(list(Locate.find(kind)))
@@ -156,7 +156,7 @@ class StateFul:
         if not self.fnm:
             self.fnm = Locate.first(self) or Methods.ident(self)
         Disk.write(self, self.fnm)
-    
+
     def load(self):
         Locate.first(self)
 

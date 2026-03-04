@@ -8,6 +8,7 @@ import logging
 import queue
 import threading
 import time
+import _thread
 
 
 from .defines import StaticMethod
@@ -51,7 +52,7 @@ class Handler:
         self.cbs = {}
         self.queue = queue.Queue()
         self.running = threading.Event()
-        
+
     def callback(self, event):
         "run callback function with event."
         func = self.cbs.get(event.kind, None)
@@ -69,7 +70,7 @@ class Handler:
                 break
             event.orig = repr(self)
             self.callback(event)
-        
+
     def put(self, event):
         "put event on queue."
         self.queue.put(event)
@@ -78,10 +79,10 @@ class Handler:
         "register callback."
         self.cbs[kind] = callback
 
-    def start(self, daemon=True):
+    def start(self):
         "start event handler loop."
         self.running.set()
-        Thread.launch(self.loop, daemon=daemon)
+        Thread.launch(self.loop)
 
     def stop(self):
         "stop event handler loop."

@@ -15,13 +15,7 @@ from nixt.persist import StateFul
 from nixt.utility import Repeater
 
 
-'defines'
-
-
 rand = SystemRandom()
-
-
-"init"
 
 
 def init():
@@ -32,18 +26,12 @@ def init():
     logging.warning("%s wise", len(TXTLIST))
 
 
-"state"
-
-
 class State(StateFul):
 
     pass
 
 
 state = State()
-
-
-"commands"
 
 
 def wsd(event):

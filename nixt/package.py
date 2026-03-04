@@ -78,11 +78,11 @@ class Mods(StaticMethod):
         else:
             spec = importlib.util.find_spec(name)
         if not spec or not spec.loader:
-            logging.debug(f"missing spec or loader for {name}")
+            logging.debug("missing spec or loader for %s", name)
             return None
         mod = importlib.util.module_from_spec(spec)
         if not mod:
-            logging.debug(f"can't load {name} module from spec")
+            logging.debug("can't load %s module from spec", name)
             return None
         Mods.modules[name] = mod
         spec.loader.exec_module(mod)

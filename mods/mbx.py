@@ -14,17 +14,11 @@ from nixt.persist import Disk, Locate
 from nixt.utility import MONTH, Time
 
 
-"email"
-
-
 class Email(Object):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.text = ""
-
-
-"utility"
 
 
 def todate(date):
@@ -61,9 +55,6 @@ def todate(date):
                         except (IndexError, KeyError):
                             ddd = ""
     return ddd
-
-
-"commands"
 
 
 def eml(event):
