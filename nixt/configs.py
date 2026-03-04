@@ -21,6 +21,8 @@ class Configuration(Default):
 class Main(Configuration):
 
     debug = False
+    default = "irc,mdl,rss,wsd"
+    ignore = "man,rst,udp,web"
     level = "info"
     name = Utils.pkgname(Configuration)
     version = 1
