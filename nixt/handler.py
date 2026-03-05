@@ -4,11 +4,9 @@
 "callback engine"
 
 
-import logging
 import queue
 import threading
 import time
-import _thread
 
 
 from .threads import Thread
