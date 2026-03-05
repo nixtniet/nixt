@@ -24,12 +24,12 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
+from nixt.clients import Broker
 from nixt.configs import Configuration
 from nixt.objects import Default, Object, Methods
-from nixt.handler import Broker
 from nixt.persist import Disk, Locate, Main
-from nixt.threads import Repeater, Thread
-from nixt.utility import Time, Utils
+from nixt.threads import Thread
+from nixt.utility import Repeater, Time, Utils
 
 
 def init():

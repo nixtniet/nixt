@@ -9,9 +9,10 @@ import os
 import sys
 
 
+from .clients import Console
 from .command import Commands
 from .configs import Main
-from .handler import Console, Message
+from .handler import Message
 from .objects import Object, Methods
 from .package import Mods
 from .persist import Disk, Locate, Workdir
@@ -107,7 +108,7 @@ class Scripts:
         Utils.forever()
 
 
-class Cmd(StaticMethod):
+class Cmd:
 
     @staticmethod
     def cfg(event):
@@ -158,6 +159,7 @@ class Cmd(StaticMethod):
         name = getpass.getuser()
         event.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
 
+    @staticmethod
     def ver(event):
         "show verson."
         event.reply(f"{Main.name.upper()} {Main.version}")

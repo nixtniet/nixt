@@ -12,8 +12,8 @@ import threading
 import time
 
 
+from nixt.clients import Broker
 from nixt.configs import Configuration, Main
-from nixt.handler import Broker
 from nixt.objects import Data
 from nixt.threads import Thread
 

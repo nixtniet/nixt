@@ -14,9 +14,10 @@ import threading
 import time
 
 
+from nixt.clients import Broker, Output
 from nixt.command import Commands
 from nixt.configs import Configuration
-from nixt.handler import Broker, Message, Output
+from nixt.handler import Message
 from nixt.objects import Data, Methods
 from nixt.persist import Locate, Main
 from nixt.threads import Thread

@@ -6,6 +6,7 @@
 
 import inspect
 import logging
+import os
 import queue
 import threading
 import time
@@ -58,54 +59,71 @@ class Task(threading.Thread):
             _thread.interrupt_main()
 
 
-class Timy(threading.Timer):
+class Worker(threading.Thread):
 
-    def __init__(self, sleep, func, *args, **kwargs):
-        super().__init__(sleep, func)
-        self.name = kwargs.get("name", Thread.name(func))
-        self.sleep = sleep
-        self.state = {}
-        self.state["latest"] = time.time()
-        self.state["starttime"] = time.time()
+    nr = 0
+
+    def __init__(self, *args, daemon=True, **kwargs):
+        super().__init__(None, self.run, *args, daemon=True, **kwargs)
+        self.event = None
+        self.name = kwargs.get("name", "Worker({Worker.nr})")
+        self.queue = queue.Queue()
+        self.result = None
         self.starttime = time.time()
-
-
-class Timed:
-
-    def __init__(self, sleep, func, *args, thrname="", **kwargs):
-        self.args = args
-        self.func = func
-        self.kwargs = kwargs
-        self.sleep = sleep
-        self.name = thrname or kwargs.get("name", Thread.name(func))
-        self.target = time.time() + self.sleep
-        self.timer = None
+        self.stopped = threading.Event()
+        Worker.nr += 1
+ 
+    def put(self, func, args):
+        "put function on queue."
+        self.queue.put((func, args))
 
     def run(self):
-        "run timed function."
-        self.timer.latest = time.time()
-        self.func(*self.args)
+        "run function."
+        while 1:
+            func, args = self.queue.get()
+            if args and hasattr(args[0], "ready"):
+                self.event = args[0]
+            try:
+                self.result = func(*args)
+            except (KeyboardInterrupt, EOFError):
+                if self.event:
+                    self.event.ready()
+                _thread.interrupt_main()
+            except Exception as ex:
+                if self.event:
+                    self.event.ready()
+                logging.exception(ex)
+                _thread.interrupt_main()
+            
 
-    def start(self):
-        "start timer."
-        self.kwargs["name"] = self.name
-        timer = Timy(self.sleep, self.run, *self.args, **self.kwargs)
-        timer.start()
-        self.timer = timer
+class Pool:
 
-    def stop(self):
-        "stop timer."
-        if self.timer:
-            self.timer.cancel()
+    workers = []
+    lock = threading.RLock()
+    nrcpu = os.cpu_count()
+    nrlast = 1
 
+    @staticmethod
+    def add(worker):
+        Pool.workers.append(worker)
 
-class Repeater(Timed):
+    @staticmethod
+    def init(nrcpu=None):
+        Pool.nrcpu = nrcpu or Pool.nrcpu
+        for _x in range(Pool.nrcpu):
+            clt = Worker()
+            clt.start()
+            Pool.add(clt)
 
-    def run(self):
-        "run function and launch timer for next run."
-        Thread.launch(super().run)
-        Thread.launch(self.start)
-
+    @staticmethod
+    def put(func, args):
+        if not Pool.workers:
+            Pool.init()
+        if Pool.nrlast >= Pool.nrcpu-1:
+            Pool.nrlast = 0
+        clt = Pool.workers[Pool.nrlast]
+        clt.put(func, args)
+        Pool.nrlast += 1
 
 
 class Thread:
@@ -132,6 +150,10 @@ class Thread:
             return repr(obj).split()[1]
         return repr(obj)
 
+    @staticmethod
+    def work(func, *args, **kwargs):
+        "run function in a thread."
+        Pool.put(func, args)
 
 def __dir__():
     return (

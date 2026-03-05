@@ -10,11 +10,10 @@ import threading
 import time
 
 
-from nixt.handler import Broker
+from nixt.clients import Broker
 from nixt.objects import Object, Methods, Data
 from nixt.persist import Disk, Locate
-from nixt.threads import Timed
-from nixt.utility import NoDate, Time
+from nixt.utility import NoDate, Time, Timed
 
 
 rand = random.SystemRandom()

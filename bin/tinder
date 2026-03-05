@@ -16,9 +16,10 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
+from nixt.clients import Client
 from nixt.command import Commands
 from nixt.configs import Main
-from nixt.handler import Client, Message
+from nixt.handler import Message
 from nixt.objects import Default, Methods
 from nixt.package import Mods
 from nixt.persist import Workdir

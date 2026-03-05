@@ -7,7 +7,8 @@
 import inspect
 
 
-from .handler import Broker, Message
+from .clients import Broker
+from .handler import Message
 from .objects import Methods
 
 

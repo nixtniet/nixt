@@ -9,10 +9,10 @@ import logging
 import time
 
 
-from nixt.handler import Broker, Message
+from nixt.clients import Broker
+from nixt.handler import Message
 from nixt.objects import Object, Data
-from nixt.threads import Repeater
-from nixt.utility import Time
+from nixt.utility import Repeater, Time
 
 
 def init():

@@ -10,9 +10,10 @@ import logging
 from random import SystemRandom
 
 
-from nixt.handler import Broker, Message
+from nixt.clients import Broker
+from nixt.handler import Message
 from nixt.persist import StateFul
-from nixt.threads import Repeater
+from nixt.utility import Repeater
 
 
 rand = SystemRandom()
