@@ -12,7 +12,7 @@ from random import SystemRandom
 
 from nixt.handler import Broker, Message
 from nixt.persist import StateFul
-from nixt.utility import Repeater
+from nixt.threads import Repeater
 
 
 rand = SystemRandom()

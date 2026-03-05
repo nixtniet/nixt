@@ -11,42 +11,46 @@ import threading
 
 
 from .configs import Main
-from .defines import StaticMethod
 from .encoder import Json
-from .objects import Default, Dict, Methods
+from .objects import Default, Object, Methods
 from .utility import Time
 
 
-class Cache(StaticMethod):
+class Cache:
 
     paths = {}
 
+    @staticmethod
     def add(path, obj):
         "put object into cache."
         Cache.paths[path] = obj
 
+    @staticmethod
     def get(path):
         "get object from cache."
         return Cache.paths.get(path, None)
 
+    @staticmethod
     def sync(path, obj):
         "update cached object."
         try:
-            Dict.update(Cache.paths[path], obj)
+            Object.update(Cache.paths[path], obj)
         except KeyError:
             Cache.add(path, obj)
 
 
-class Disk(StaticMethod):
+class Disk:
 
     lock = threading.RLock()
 
+    @staticmethod
     def cdir(path):
         "create directory."
         pth = pathlib.Path(path)
         if not os.path.exists(pth.parent):
             pth.parent.mkdir(parents=True, exist_ok=True)
 
+    @staticmethod
     def read(obj, path, base="store"):
         "read object from path."
         with Disk.lock:
@@ -55,11 +59,12 @@ class Disk(StaticMethod):
                 return
             with open(pth, "r", encoding="utf-8") as fpt:
                 try:
-                    Dict.update(obj, Json.load(fpt))
+                    Object.update(obj, Json.load(fpt))
                 except json.decoder.JSONDecodeError as ex:
                     ex.add_note(path)
                     raise ex
 
+    @staticmethod
     def write(obj, path="", base="store"):
         "write object to disk."
         with Disk.lock:
@@ -73,18 +78,21 @@ class Disk(StaticMethod):
             return path
 
 
-class Locate(StaticMethod):
+class Locate:
 
+    @staticmethod
     def attrs(kind):
         "show attributes for kind of objects."
         result = []
         for pth, obj in Locate.find(kind, nritems=1):
-            result.extend(Dict.keys(obj))
+            result.extend(Object.keys(obj))
         return set(result)
 
+    @staticmethod
     def count(kind):
         return len(list(Locate.find(kind)))
 
+    @staticmethod
     def find(kind, selector={}, removed=False, matching=False, nritems=None):
         "locate objects by matching atributes."
         nrs = 0
@@ -105,6 +113,7 @@ class Locate(StaticMethod):
         else:
             return None, None
 
+    @staticmethod
     def first(obj, selector={}):
         result = sorted(
                         Locate.find(Methods.fqn(obj), selector),
@@ -113,10 +122,11 @@ class Locate(StaticMethod):
         res = ""
         if result:
             inp = result[0]
-            Dict.update(obj, inp[-1])
+            Object.update(obj, inp[-1])
             res = inp[0]
         return res
 
+    @staticmethod
     def fns(kind):
         "file names by kind of object."
         path = os.path.join(Workdir.wdr, "store", kind)
@@ -128,6 +138,7 @@ class Locate(StaticMethod):
                 for fll in os.listdir(ddd):
                     yield Locate.strip(os.path.join(ddd, fll))
 
+    @staticmethod
     def last(obj, selector={}):
         "last saved version."
         result = sorted(
@@ -137,43 +148,32 @@ class Locate(StaticMethod):
         res = ""
         if result:
             inp = result[-1]
-            Dict.update(obj, inp[-1])
+            Object.update(obj, inp[-1])
             res = inp[0]
         return res
 
+    @staticmethod
     def strip(path):
         "strip filename from path."
         return path.split('store')[-1][1:]
 
 
-class StateFul:
-
-    def __init__(self):
-        super().__init__()
-        self.fnm = ""
-
-    def dump(self):
-        if not self.fnm:
-            self.fnm = Locate.first(self) or Methods.ident(self)
-        Disk.write(self, self.fnm)
-
-    def load(self):
-        Locate.first(self)
-
-
-class Workdir(StaticMethod):
+class Workdir:
 
     wdr = "." + Main.name
 
+    @staticmethod
     def setwd(path):
         "enable writing to disk."
         Workdir.wdr = path
         Workdir.skel()
 
+    @staticmethod
     def kinds():
         "show kind on objects in cache."
         return os.listdir(os.path.join(Workdir.wdr, "store"))
 
+    @staticmethod
     def long(name):
         "expand to fqn."
         if "." in name:
@@ -186,6 +186,7 @@ class Workdir(StaticMethod):
                 break
         return res
 
+    @staticmethod
     def pidfile(name):
         "write pidfile."
         filename = os.path.join(Workdir.wdr, f"{name}.pid")
@@ -196,6 +197,7 @@ class Workdir(StaticMethod):
         with open(filename, "w", encoding="utf-8") as fds:
             fds.write(str(os.getpid()))
 
+    @staticmethod
     def skel():
         "create directories."
         if not Workdir.wdr:
@@ -211,10 +213,25 @@ class Workdir(StaticMethod):
         pth = pathlib.Path(filespath)
         pth.mkdir(parents=True, exist_ok=True)
 
+    @staticmethod
     def workdir(path=""):
         "return workdir."
         return os.path.join(Workdir.wdr, path)
 
+
+class StateFul:
+
+    def __init__(self):
+        super().__init__()
+        self.fnm = ""
+
+    def dump(self):
+        if not self.fnm:
+            self.fnm = Locate.first(self) or Methods.ident(self)
+        Disk.write(self, self.fnm)
+
+    def load(self):
+        Locate.first(self)
 
 def __dir__():
     return (

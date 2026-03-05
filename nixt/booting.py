@@ -11,9 +11,8 @@ import sys
 
 from .command import Commands
 from .configs import Main
-from .defines import StaticMethod
 from .handler import Console, Message
-from .objects import Dict, Methods
+from .objects import Object, Methods
 from .package import Mods
 from .persist import Disk, Locate, Workdir
 from .runtime import SYSTEMD, Runtime
@@ -25,7 +24,8 @@ from . import modules as MODS
 
 Main.default = "irc,mdl,rss,wsd"
 Main.ignore = "man,rst,udp,web"
-Main.version = 8
+Main.local = True
+Main.version = 455
 Main.wdr = os.path.expanduser(f"~/.{Main.name}")
 
 
@@ -58,8 +58,9 @@ class CSL(Line):
         return evt
 
 
-class Scripts(StaticMethod):
+class Scripts:
 
+    @staticmethod
     def background(args):
         "background script."
         Runtime.daemon(Main.verbose, Main.nochdir)
@@ -70,6 +71,7 @@ class Scripts(StaticMethod):
         Runtime.init(Main)
         Utils.forever()
 
+    @staticmethod
     def console(args):
         "console script."
         import readline
@@ -81,6 +83,7 @@ class Scripts(StaticMethod):
         csl.start()
         Utils.forever()
 
+    @staticmethod
     def control(args):
         "cli script."
         if len(sys.argv) == 1:
@@ -92,6 +95,7 @@ class Scripts(StaticMethod):
         for line in evt.result.values():
             Runtime.out(line)
 
+    @staticmethod
     def service(args):
         "service script."
         Runtime.privileges()
@@ -105,6 +109,7 @@ class Scripts(StaticMethod):
 
 class Cmd(StaticMethod):
 
+    @staticmethod
     def cfg(event):
         if not event.args:
             event.reply(f"cfg <{Mods.has('Config') or 'modulename'}>")
@@ -123,7 +128,7 @@ class Cmd(StaticMethod):
             event.reply(
                 Methods.fmt(
                     cfg,
-                    Dict.keys(cfg),
+                    Object.keys(cfg),
                     skip=["word",]
                 )
             )
@@ -132,10 +137,12 @@ class Cmd(StaticMethod):
         Disk.write(Methods.skip(cfg), fnm)
         event.reply("ok")
 
+    @staticmethod
     def cmd(event):
         "list available commands."
         event.reply(",".join(sorted(Commands.names or Commands.cmds)))
 
+    @staticmethod
     def mod(event):
         "list available commands."
         mods = Mods.list(Main.ignore)
@@ -144,6 +151,7 @@ class Cmd(StaticMethod):
             return
         event.reply(mods)
 
+    @staticmethod
     def srv(event):
         "generate systemd service file."
         import getpass

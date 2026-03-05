@@ -12,16 +12,16 @@ import time
 
 from .command import Commands
 from .configs import Main
-from .defines import StaticMethod
-from .objects import Dict, Methods
+from .objects import Object, Methods
 from .package import Mods
 from .persist import Workdir
 from .threads import Thread
 from .utility import Log
 
 
-class Runtime(StaticMethod):
+class Runtime:
 
+    @staticmethod
     def banner():
         "hello."
         tme = time.ctime(time.time()).replace("  ", " ")
@@ -34,11 +34,12 @@ class Runtime(StaticMethod):
         sys.stdout.flush()
         return Main.version
 
+    @staticmethod
     def boot(args, *pkgs):
         "in the beginning."
         Methods.parse(Main, args.txt)
-        Dict.update(Main, Main.sets)
-        Dict.merge(Main, vars(args))
+        Object.update(Main, Main.sets)
+        Object.merge(Main, vars(args))
         Workdir.setwd(Main.wdr)
         Log.level(Main.level or "info")
         if Main.noignore:
@@ -54,6 +55,7 @@ class Runtime(StaticMethod):
         if Main.all:
             Main.mods = Mods.list(Main.ignore)
 
+    @staticmethod
     def daemon(verbose=False, nochdir=False):
         "run in the background."
         pid = os.fork()
@@ -75,6 +77,7 @@ class Runtime(StaticMethod):
             os.chdir("/")
         os.nice(10)
 
+    @staticmethod
     def init(cfg, default=True):
         "scan named modules for commands."
         thrs = []
@@ -89,9 +92,11 @@ class Runtime(StaticMethod):
             for name, thr in thrs:
                 thr.join()
 
+    @staticmethod
     def out(txt):
         print(txt.encode('utf-8', 'replace').decode("utf-8"))
 
+    @staticmethod
     def privileges():
         "drop privileges."
         import getpass
@@ -100,6 +105,7 @@ class Runtime(StaticMethod):
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
 
+    @staticmethod
     def scanner(cfg, default=True):
         "scan named modules for commands."
         res = []
@@ -114,16 +120,18 @@ class Runtime(StaticMethod):
             res.append((name, mod))
         return res
 
+    @staticmethod
     def shutdown():
         "call shutdown on modules."
         logging.debug("shutdown")
-        for mod in Dict.values(Mods.modules):
+        for mod in Object.values(Mods.modules):
             if "shutdown" in dir(mod):
                 try:
                     mod.shutdown()
                 except Exception as ex:
                     logging.exception(ex)
 
+    @staticmethod
     def wrap(func, *args):
         "restore console."
         import termios

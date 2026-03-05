@@ -28,7 +28,7 @@ client/server connection, deferred exception handling to not crash
 on an error, etc.
 
 ``%s`` contains python3 code to program objects in a functional way.
-it provides an "clean namespace" Object class that only has dunder
+it provides an "clean namespace" Data class that only has dunder
 methods, so the namespace is not cluttered with method names. This
 makes storing and reading to/from json possible.
 

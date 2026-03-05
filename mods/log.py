@@ -7,12 +7,12 @@
 import time
 
 
-from nixt.objects import Object
+from nixt.objects import Data
 from nixt.persist import Disk, Locate
 from nixt.utility import Time
 
 
-class Log(Object):
+class Log(Data):
 
     def __init__(self):
         super().__init__()

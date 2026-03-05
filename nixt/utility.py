@@ -13,7 +13,6 @@ import threading
 import time
 
 
-from .defines import StaticMethod
 from .threads import Thread
 
 
@@ -47,69 +46,22 @@ class Log:
         )
 
 
-class Timy(threading.Timer):
+class Time:
 
-    def __init__(self, sleep, func, *args, **kwargs):
-        super().__init__(sleep, func)
-        self.name = kwargs.get("name", Thread.name(func))
-        self.sleep = sleep
-        self.state = {}
-        self.state["latest"] = time.time()
-        self.state["starttime"] = time.time()
-        self.starttime = time.time()
-
-
-class Timed:
-
-    def __init__(self, sleep, func, *args, thrname="", **kwargs):
-        self.args = args
-        self.func = func
-        self.kwargs = kwargs
-        self.sleep = sleep
-        self.name = thrname or kwargs.get("name", Thread.name(func))
-        self.target = time.time() + self.sleep
-        self.timer = None
-
-    def run(self):
-        "run timed function."
-        self.timer.latest = time.time()
-        self.func(*self.args)
-
-    def start(self):
-        "start timer."
-        self.kwargs["name"] = self.name
-        timer = Timy(self.sleep, self.run, *self.args, **self.kwargs)
-        timer.start()
-        self.timer = timer
-
-    def stop(self):
-        "stop timer."
-        if self.timer:
-            self.timer.cancel()
-
-
-class Repeater(Timed):
-
-    def run(self):
-        "run function and launch timer for next run."
-        Thread.launch(super().run)
-        Thread.launch(self.start)
-
-
-class Time(StaticMethod):
-
+    @staticmethod
     def date(daystr):
         "date from string."
-        daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
+        daystring = daystr.encode('utf-8', 'replace').decode("utf-8")
         res = time.time()
         for fmat in TIMES:
             try:
-                res = time.mktime(time.strptime(daystr, fmat))
+                res = time.mktime(time.strptime(daystring, fmat))
                 break
             except ValueError:
                 pass
         return res
 
+    @staticmethod
     def day(daystr):
         "day part in a string."
         days = None
@@ -135,6 +87,7 @@ class Time(StaticMethod):
             return time.mktime(time.strptime(dte, r"%d %b %Y"))
         raise NoDate(daystr)
 
+    @staticmethod
     def elapsed(seconds, short=True):
         "seconds to string."
         txt = ""
@@ -175,13 +128,14 @@ class Time(StaticMethod):
         txt = txt.strip()
         return txt
 
+    @staticmethod
     def extract(daystr):
         "extract date/time from string."
         previous = ""
         line = ""
-        daystr = str(daystr)
+        daystring = str(daystr)
         res = None
-        for word in daystr.split():
+        for word in daystring.split():
             line = previous + " " + word
             previous = word
             try:
@@ -192,6 +146,7 @@ class Time(StaticMethod):
             line = ""
         return res
 
+    @staticmethod
     def fntime(daystr):
         "time from path."
         datestr = " ".join(daystr.split(os.sep)[-2:])
@@ -205,6 +160,7 @@ class Time(StaticMethod):
             timd += float("." + rest)
         return float(timd)
 
+    @staticmethod
     def hour(daystr):
         "hour in string."
         try:
@@ -226,6 +182,7 @@ class Time(StaticMethod):
             return 0
         return hmsres
 
+    @staticmethod
     def timed(txt):
         "scan string for date/time."
         try:
@@ -237,12 +194,13 @@ class Time(StaticMethod):
             target += hours
         return target
 
+    @staticmethod
     def parsetxt(txt):
         "parse text for date/time."
         seconds = 0
         target = 0
-        txt = str(txt)
-        for word in txt.split():
+        text = str(txt)
+        for word in text.split():
             if word.startswith("+"):
                 seconds = int(word[1:])
                 return time.time() + seconds
@@ -259,13 +217,15 @@ class Time(StaticMethod):
                 target += hours
         return target
 
+    @staticmethod
     def today():
         "start of the day."
         return str(datetime.datetime.today()).split()[0]
 
 
-class Utils(StaticMethod):
+class Utils:
 
+    @staticmethod
     def forever():
         "run forever until ctrl-c."
         while True:
@@ -274,6 +234,7 @@ class Utils(StaticMethod):
             except (KeyboardInterrupt, EOFError):
                 break
 
+    @staticmethod
     def md5sum(path):
         "return md5 of a file."
         import hashlib
@@ -281,14 +242,17 @@ class Utils(StaticMethod):
             txt = file.read().encode("utf-8")
             return hashlib.md5(txt, usedforsecurity=False).hexdigest()
 
+    @staticmethod
     def pkgname(obj):
         "return package name of an object."
         return obj.__module__.split(".", maxsplit=1)[0]
 
+    @staticmethod
     def pipxdir(name):
         "return examples directory."
         return f"~/.local/share/pipx/venvs/{name}/share/{name}/"
 
+    @staticmethod
     def spl(txt):
         "list from comma seperated string."
         try:
@@ -297,10 +261,12 @@ class Utils(StaticMethod):
             result = []
         return [x for x in result if x]
 
+    @staticmethod
     def where(obj):
         "path where object is defined."
         return os.path.dirname(inspect.getfile(obj))
 
+    @staticmethod
     def wrapped(func):
         "wrap function in a try/except, silence ctrl-c/ctrl-d."
         try:
@@ -339,8 +305,6 @@ def __dir__():
     return (
         'Log',
         'NoDate',
-        'Repeater',
         'Time',
-        'Timed',
-        'Utility'
+        'Utils'
     )

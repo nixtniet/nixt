@@ -10,12 +10,13 @@ import time
 
 
 from nixt.handler import Broker, Message
-from nixt.objects import Dict, Object
-from nixt.utility import Repeater, Time
+from nixt.objects import Object, Data
+from nixt.threads import Repeater
+from nixt.utility import Time
 
 
 def init():
-    for key in Dict.keys(oorzaken):
+    for key in Object.keys(oorzaken):
         if "Psych" not in key:
             continue
         val = getattr(oorzaken, key, None)
@@ -57,7 +58,7 @@ aliases["Zwangerschap"] = "pregnancy"
 aliases["Suicide"] = "suicide"
 
 
-demo = Object()
+demo = Data()
 demo.gehandicapten = 2000000
 demo.ggz = 800000
 demo.population = 17440000
@@ -88,7 +89,7 @@ def getday():
 
 
 def getnr(nme):
-    for k in Dict.keys(oorzaken):
+    for k in Object.keys(oorzaken):
         if nme.lower() in k.lower():
             return int(getattr(oorzaken, k))
     return 0
@@ -124,7 +125,7 @@ def hourly():
 def cbnow(evt):
     delta = time.time() - STARTTIME
     txt = Time.elapsed(delta) + " "
-    for nme in sorted(Dict.keys(oorzaken), key=lambda x: seconds(getnr(x))):
+    for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
             continue
@@ -161,7 +162,7 @@ def cbstats(evt):
 def dis(event):
     delta = time.time() - STARTTIME
     txt = Time.elapsed(delta) + " "
-    for nme in sorted(Dict.keys(oorzaken), key=lambda x: seconds(getnr(x))):
+    for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
             continue
@@ -389,14 +390,14 @@ aantal = """
          """.split(";")
 
 
-oorzaak = Object()
-Dict.construct(oorzaak, zip([x.strip() for x in oor], [int(x.strip()) for x in aantal]))
-oorzaken = Object()
+oorzaak = Data()
+Object.construct(oorzaak, zip([x.strip() for x in oor], [int(x.strip()) for x in aantal]))
+oorzaken = Data()
 
 
 def boot():
     _nr = -1
-    for key in Dict.keys(oorzaak):
+    for key in Object.keys(oorzaak):
         _nr += 1
         if _nr == 0:
             continue

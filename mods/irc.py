@@ -17,7 +17,7 @@ import time
 from nixt.command import Commands
 from nixt.configs import Configuration
 from nixt.handler import Broker, Message, Output
-from nixt.objects import Object, Methods
+from nixt.objects import Data, Methods
 from nixt.persist import Locate, Main
 from nixt.threads import Thread
 from nixt.utility import Utils
@@ -98,7 +98,7 @@ class IRC(Output):
         self.cache = {}
         self.cfg = Config()
         self.channels = []
-        self.events = Object()
+        self.events = Data()
         self.events.authed = threading.Event()
         self.events.connected = threading.Event()
         self.events.joined = threading.Event()
@@ -107,7 +107,7 @@ class IRC(Output):
         self.lock = threading.RLock()
         self.silent = False
         self.sock = None
-        self.state = Object()
+        self.state = Data()
         self.state.error = ""
         self.state.keeprunning = False
         self.state.last = time.time()

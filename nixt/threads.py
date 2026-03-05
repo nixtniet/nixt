@@ -12,9 +12,6 @@ import time
 import _thread
 
 
-from .defines import StaticMethod
-
-
 class Task(threading.Thread):
 
     def __init__(self, func, *args, daemon=True, **kwargs):
@@ -61,10 +58,61 @@ class Task(threading.Thread):
             _thread.interrupt_main()
 
 
-class Thread(StaticMethod):
+class Timy(threading.Timer):
+
+    def __init__(self, sleep, func, *args, **kwargs):
+        super().__init__(sleep, func)
+        self.name = kwargs.get("name", Thread.name(func))
+        self.sleep = sleep
+        self.state = {}
+        self.state["latest"] = time.time()
+        self.state["starttime"] = time.time()
+        self.starttime = time.time()
+
+
+class Timed:
+
+    def __init__(self, sleep, func, *args, thrname="", **kwargs):
+        self.args = args
+        self.func = func
+        self.kwargs = kwargs
+        self.sleep = sleep
+        self.name = thrname or kwargs.get("name", Thread.name(func))
+        self.target = time.time() + self.sleep
+        self.timer = None
+
+    def run(self):
+        "run timed function."
+        self.timer.latest = time.time()
+        self.func(*self.args)
+
+    def start(self):
+        "start timer."
+        self.kwargs["name"] = self.name
+        timer = Timy(self.sleep, self.run, *self.args, **self.kwargs)
+        timer.start()
+        self.timer = timer
+
+    def stop(self):
+        "stop timer."
+        if self.timer:
+            self.timer.cancel()
+
+
+class Repeater(Timed):
+
+    def run(self):
+        "run function and launch timer for next run."
+        Thread.launch(super().run)
+        Thread.launch(self.start)
+
+
+
+class Thread:
 
     lock = threading.RLock()
 
+    @staticmethod
     def launch(func, *args, **kwargs):
         "run function in a thread."
         with Thread.lock:
@@ -75,6 +123,7 @@ class Thread(StaticMethod):
             except (KeyboardInterrupt, EOFError):
                 _thread.interrupt_main()
 
+    @staticmethod
     def name(obj):
         "string of function/method."
         if inspect.ismethod(obj):
@@ -86,5 +135,7 @@ class Thread(StaticMethod):
 
 def __dir__():
     return (
+        'Repeater',
         'Thread',
+        'Timed'
     )

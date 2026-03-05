@@ -7,15 +7,15 @@
 import time
 
 
-from nixt.objects import Object
+from nixt.objects import Data
 from nixt.persist import Disk, Locate
 from nixt.utility import Time
 
 
-class Todo(Object):
+class Todo(Data):
 
     def __init__(self):
-        Object.__init__(self)
+        Data.__init__(self)
         self.txt = ''
 
 
