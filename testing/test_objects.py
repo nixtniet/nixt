@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.objects import Dict, Methods, Object
+from nixt.objects import Object, Methods, Data
 
 
 import nixt.objects
@@ -18,10 +18,10 @@ VALIDJSON = '{"test": "bla"}'
 
 
 attrs1 = [
+    'Data',
     'Default',
-    'Dict',
     'Methods',
-    'Object'
+    'Object',
 ]
 
 
@@ -61,122 +61,122 @@ attrs2 = [
 ]
 
 
-class TestObject(unittest.TestCase):
+class TestData(unittest.TestCase):
 
     def test_moduleinterface(self):
         print(dir(TARGET))
         self.assertTrue(dir(TARGET) == attrs1)
 
     def test_objectinterface(self):
-        obj = Object()
+        obj = Data()
         print(dir(obj))
         self.assertTrue(dir(obj) == attrs2)
 
     def test_constructor(self):
-        obj = Object()
-        self.assertTrue(type(obj), Object)
+        obj = Data()
+        self.assertTrue(type(obj), Data)
 
     def test_class(self):
-        obj = Object()
+        obj = Data()
         clz = obj.__class__()
-        self.assertTrue("Object" in str(type(clz)))
+        self.assertTrue("Data" in str(type(clz)))
 
     def test_contains(self):
-        obj = Object()
+        obj = Data()
         obj.key = "value"
         self.assertTrue("key" in obj)
 
     def test_delattr(self):
-        obj = Object()
+        obj = Data()
         obj.key = "value"
         del obj.key
         self.assertTrue("key" not in obj)
 
     def test_dict(self):
-        obj = Object()
+        obj = Data()
         self.assertEqual(obj.__dict__, {})
 
     def test_doc(self):
-        obj = Object()
+        obj = Data()
         self.assertEqual(obj.__doc__, None)
 
     def test_format(self):
-        obj = Object()
+        obj = Data()
         self.assertEqual(format(obj, ""), "{}")
 
     def test_getattribute(self):
-        obj = Object()
+        obj = Data()
         obj.key = "value"
         self.assertEqual(getattr(obj, "key", None), "value")
 
     def test_hash__(self):
-        obj = Object()
+        obj = Data()
         hsj = hash(obj)
         self.assertTrue(isinstance(hsj, int))
 
     def test_init(self):
-        obj = Object()
-        self.assertTrue(type(Object.__init__(obj)), Object)
+        obj = Data()
+        self.assertTrue(type(Data.__init__(obj)), Object)
 
     def test_iter(self):
-        obj = Object()
+        obj = Data()
         obj.key = "value"
         self.assertTrue(list(iter(obj)), ["key",])
 
     def test_getattr(self):
-        obj = Object()
+        obj = Data()
         obj.key = "value"
         self.assertEqual(getattr(obj, "key"), "value")
 
     def test_keys(self):
-        obj = Object()
+        obj = Data()
         obj.key = "value"
-        self.assertEqual(list(Dict.keys(obj)), ["key"])
+        self.assertEqual(list(Object.keys(obj)), ["key"])
 
     def test_len(self):
-        obj = Object()
+        obj = Data()
         self.assertEqual(len(obj), 0)
 
     def test_items(self):
-        obj = Object()
+        obj = Data()
         obj.key = "value"
-        self.assertEqual(list(Dict.items(obj)), [("key", "value")])
+        self.assertEqual(list(Object.items(obj)), [("key", "value")])
 
     def test_register(self):
-        obj = Object()
+        obj = Data()
         setattr(obj, "key", "value")
         self.assertEqual(obj.key, "value")
 
     def test_repr(self):
-        self.assertTrue(repr(Dict.update(Object(), {"key": "value"})), {"key": "value"})
+        self.assertTrue(repr(Object.update(Data(), {"key": "value"})), {"key": "value"})
 
     def test_setattr(self):
-        obj = Object()
+        obj = Data()
         setattr(obj, "key", "value")
         self.assertTrue(obj.key, "value")
 
     def test_str(self):
-        obj = Object()
+        obj = Data()
         self.assertEqual(str(obj), "{}")
 
     def test_update(self):
-        obj = Object()
+        obj = Data()
         obj.key = "value"
-        oobj = Object()
-        Dict.update(oobj, obj)
+        oobj = Data()
+        Object.update(oobj, obj)
         self.assertTrue(oobj.key, "value")
 
     def test_values(self):
-        obj = Object()
+        obj = Data()
         obj.key = "value"
-        self.assertEqual(list(Dict.values(obj)), ["value"])
+        self.assertEqual(list(Object.values(obj)), ["value"])
 
 
 class TestComposite(unittest.TestCase):
 
     def testcomposite(self):
-        obj = Object()
-        obj.obj = Object()
+        obj = Data()
+        obj.obj = Data()
         obj.obj.a = "test"
         self.assertEqual(obj.obj.a, "test")
 
@@ -184,6 +184,6 @@ class TestComposite(unittest.TestCase):
 class TestMethods(unittest.TestCase):
 
     def testformat(self):
-        o = Object()
+        o = Data()
         o.a = "b"
         self.assertEqual(Methods.fmt(o), 'a="b"')

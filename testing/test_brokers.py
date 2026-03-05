@@ -9,7 +9,7 @@ import unittest
 
 from nixt.encoder import Json
 from nixt.handler import Broker, Client
-from nixt.objects import Dict, Object
+from nixt.objects import Object, Data
 
 
 class TestBroker(unittest.TestCase):
@@ -19,12 +19,12 @@ class TestBroker(unittest.TestCase):
         self.assertTrue(Broker.has(clt))
 
     def test_addobj(self):
-        obj = Object()
+        obj = Data()
         Broker.add(obj)
         self.assertTrue(Broker.has(obj))
 
     def test_getobj(self):
-        obj = Object()
+        obj = Data()
         Broker.add(obj)
         oobj = Broker.get(repr(obj))
         self.assertTrue(oobj is obj)
@@ -35,12 +35,12 @@ class TestBroker(unittest.TestCase):
         self.assertTrue(clt in objs)
 
     def test_has(self):
-        obj = Object()
+        obj = Data()
         Broker.add(obj)
         self.assertTrue(Broker.has(obj))
 
     def test_like(self):
-        obj = Object()
+        obj = Data()
         Broker.add(obj)
         self.assertTrue(Broker.like(repr(obj)))
 
@@ -53,5 +53,5 @@ class TestBroker(unittest.TestCase):
     def test_update(self):
         o = {}
         o["a"] = "b"
-        Dict.update(Broker, o)
+        Object.update(Broker, o)
         self.assertEqual(Broker.a, "b")
