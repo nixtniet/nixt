@@ -6,7 +6,10 @@
 
 **SYNOPSIS**
 
-| ``nixt`` [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]
+| ``nixt [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]``
+|
+| ``NIXT <cmd> [key=val] [key==val]``
+| ``NIXT -cvaw [mods=mod1,mod2]``
 |
 
 **DESCRIPTION**
@@ -21,11 +24,11 @@ it provides an "clean namespace" Object class that only has dunder
 methods, so the namespace is not cluttered with method names. This
 makes storing and reading to/from json possible.
 
-``NIXT`` is a python3 IRC bot, it can connect to IRC, fetch and
+``nixt`` is a python3 IRC bot, it can connect to IRC, fetch and
 display RSS feeds, take todo notes, keep a shopping list and log
 text. You can run it under systemd for 24/7 presence in a IRC channel.
 
-``NIXT`` is Public Domain.
+``nixt`` is Public Domain.
 
 
 **INSTALL**
@@ -57,14 +60,13 @@ use ``nixt`` to control the program, default it does nothing
 
 the -h options will show you arguments and options
 
-| ``$ nixt -h``
+| ``$ NIXT -h``
 |
-| usage: ``nixt`` [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]
+| usage: ``nixt [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]``
 |
-| NIXT
+| nixt
 |
 | options:
-|
 |
 | ``-h,--help          show this help message and exit``
 | ``-a,--all           load all modules``
@@ -82,8 +84,6 @@ the -h options will show you arguments and options
 |
 | examples:
 |
-| ``nixt <cmd> [key=val] [key==val]``
-| ``nixt -cvaw [init=mod1,mod2]``
 |
 
 see list of commands
