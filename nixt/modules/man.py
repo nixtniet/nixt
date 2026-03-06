@@ -227,13 +227,13 @@ opml
 |
 | ``~/.%s``
 | ``~/.local/bin/%s``
-| ``~/.local/pipx/venvs/%s/*``
+| ``~/.local/share/pipx/venvs/%s/*``
 |
 
 **AUTHOR**
 
 |
-| ``Bart Thate`` <``bthate@dds.nl``>
+| ``%s`` <``%s``>
 |
 
 **COPYRIGHT**
@@ -245,18 +245,22 @@ opml
 
 
 def man(event):
-    if not event.rest:
-        event.reply("man <name> <description>")
+    args = event.args
+    try:
+        name, email, author  = args[0], args[1], " ".join(args[2:])
+    except ValueError:
+        event.reply("man <name> <email> <author>")
         return
-    name, descr = event.args[0], " ".join(event.args[1:])
     event.reply(__doc__ % (
         name,
-        descr,
+        name.upper(),
         name,
         name,
-        descr,
+        name.upper(),
         *(name,) * 2,
         *(name.upper(),) * 4,
         *(name,) * 32,
+        author,
+        email,
         name.upper()
-        ))
+    ))
