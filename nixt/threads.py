@@ -69,14 +69,14 @@ class Worker(threading.Thread):
     def __init__(self, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, *args, daemon=True, **kwargs)
         self.event = None
-        self.name = kwargs.get("name", "Worker({Worker.nr})")
+        self.name = kwargs.get("name", f"Worker({Worker.nr})")
         self.queue = queue.Queue()
         self.result = None
         self.starttime = time.time()
         self.status = "init"
         self.stopped = threading.Event()
         Worker.nr += 1
- 
+
     def put(self, func, args):
         "put function on queue."
         self.queue.put((func, args))
@@ -100,7 +100,7 @@ class Worker(threading.Thread):
                     self.event.ready()
                 logging.exception(ex)
                 _thread.interrupt_main()
-            
+
 
 class Pool:
 

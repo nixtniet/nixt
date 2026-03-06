@@ -11,17 +11,17 @@ import sys
 import time
 
 
-from .command import Commands
-from .configs import Main
-from .handler import Console, Event
-from .objects import Dict, Methods
-from .package import Mods
-from .persist import Disk, Locate, Workdir
-from .threads import Thread
-from .utility import Log, Utils
+from nixt.command import Commands
+from nixt.configs import Main
+from nixt.handler import Console, Event
+from nixt.objects import Dict, Methods
+from nixt.package import Mods
+from nixt.persist import Disk, Locate, Workdir
+from nixt.threads import Pool, Thread
+from nixt.utility import Log, Utils
 
 
-from . import modules as MODS
+from nixt import modules as MODS
 
 
 Main.default = "irc,mdl,rss,wsd"
@@ -39,7 +39,7 @@ class Line(Console):
 
     def raw(self, text):
         "write to console."
-        Run.out(text)
+        Runtime.out(text)
 
 
 class CSL(Line):
@@ -96,8 +96,8 @@ class Runtime:
         if Main.all:
             Main.mods = Mods.list(Main.ignore)
         if Main.threaded:
-            Thread.pool.init(os.cpu_count())
-            logging.info(f"{Thread.pool.nrcpu} workers")
+            Pool.init(os.cpu_count())
+            logging.info("%s workers", Pool.nrcpu)
 
     @staticmethod
     def daemon(verbose=False, nochdir=False):
@@ -120,6 +120,24 @@ class Runtime:
         if not nochdir:
             os.chdir("/")
         os.nice(10)
+
+    @staticmethod
+    def getargs():
+        "parse commandline arguments."
+        parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
+        parser.add_argument("-a", "--all", action="store_true", help="load all modules")
+        parser.add_argument("-c", "--console", action="store_true", help="start console")
+        parser.add_argument("-d", "--daemon", action="store_true", help="start background daemon")
+        parser.add_argument("-l", "--level", default=Main.level, help='set loglevel')
+        parser.add_argument("-m", "--mods", default="", help='modules to load')
+        parser.add_argument("-n", "--noignore", action="store_true", help="disable ignore")
+        parser.add_argument("-s", "--service", action="store_true", help="start service")
+        parser.add_argument("-t", "--threaded", action='store_true',help='enable multiple workers')
+        parser.add_argument("-v", "--verbose", action='store_true',help='enable verbose')
+        parser.add_argument("-w", "--wait", action='store_true',help='wait for services to start')
+        parser.add_argument("--local", action="store_true", help="use local mods directory")
+        parser.add_argument("--wdr", help='set working directory')
+        return parser.parse_known_args()
 
     @staticmethod
     def init(cfg, default=True):
@@ -175,6 +193,24 @@ class Runtime:
                 except Exception as ex:
                     logging.exception(ex)
 
+    @staticmethod
+    def wrap(func, *args):
+        "restore console."
+        import termios
+        old = None
+        try:
+            old = termios.tcgetattr(sys.stdin.fileno())
+        except termios.error:
+            pass
+        try:
+            func(*args)
+        except (KeyboardInterrupt, EOFError):
+            pass
+        except Exception as ex:
+            logging.exception(ex)
+        if old:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+
 
 class Scripts:
 
@@ -218,7 +254,7 @@ class Scripts:
         "service script."
         Runtime.privileges()
         Runtime.banner()
-        Runtime.boot(args. MODS)
+        Runtime.boot(args, MODS)
         Workdir.pidfile(Main.name)
         Runtime.scanner(Main)
         Runtime.init(Main)
@@ -282,66 +318,23 @@ class Cmd:
         event.reply(f"{Main.name.upper()} {Main.version}")
 
 
-class Run:
-
-    @staticmethod
-    def getargs():
-        "parse commandline arguments."
-        parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
-        parser.add_argument("-a", "--all", action="store_true", help="load all modules")
-        parser.add_argument("-c", "--console", action="store_true", help="start console")
-        parser.add_argument("-d", "--daemon", action="store_true", help="start background daemon")
-        parser.add_argument("-l", "--level", default=Main.level, help='set loglevel')
-        parser.add_argument("-m", "--mods", default="", help='modules to load')
-        parser.add_argument("-n", "--noignore", action="store_true", help="disable ignore")
-        parser.add_argument("-s", "--service", action="store_true", help="start service")
-        parser.add_argument("-t", "--threaded", action='store_true',help='enable multiple workers')
-        parser.add_argument("-v", "--verbose", action='store_true',help='enable verbose')
-        parser.add_argument("-w", "--wait", action='store_true',help='wait for services to start')
-        parser.add_argument("--local", action="store_true", help="use local mods directory")
-        parser.add_argument("--wdr", help='set working directory')
-        return parser.parse_known_args()
-
-    @staticmethod
-    def main():
-        "main"
-        args, arguments = Run.getargs()
-        args.txt = " ".join(arguments)
-        if args.daemon:
-            Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-            Scripts.background(args)
-        elif args.console:
-            Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-            Run.wrap(Scripts.console, args)
-        elif args.service:
-            Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-            Run.wrap(Scripts.service, args)
-        else:
-            Commands.add(Cmd.cfg, Cmd.cmd, Cmd.mod, Cmd.srv, Cmd.ver)
-            Run.wrap(Scripts.control, args)
-        Runtime.shutdown()
-
-    @staticmethod
-    def out(txt):
-        print(txt.encode('utf-8', 'replace').decode("utf-8"))
-
-    @staticmethod
-    def wrap(func, *args):
-        "restore console."
-        import termios
-        old = None
-        try:
-            old = termios.tcgetattr(sys.stdin.fileno())
-        except termios.error:
-            pass
-        try:
-            func(*args)
-        except (KeyboardInterrupt, EOFError):
-            pass
-        except Exception as ex:
-            logging.exception(ex)
-        if old:
-            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+def main():
+    "main"
+    args, arguments = Runtime.getargs()
+    args.txt = " ".join(arguments)
+    if args.daemon:
+        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
+        Scripts.background(args)
+    elif args.console:
+        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
+        Runtime.wrap(Scripts.console, args)
+    elif args.service:
+        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
+        Runtime.wrap(Scripts.service, args)
+    else:
+        Commands.add(Cmd.cfg, Cmd.cmd, Cmd.mod, Cmd.srv, Cmd.ver)
+        Runtime.wrap(Scripts.control, args)
+    Runtime.shutdown()
 
 
 SYSTEMD = """[Unit]
@@ -359,4 +352,4 @@ WantedBy=multi-user.target"""
 
 
 if __name__ == "__main__":
-    Run.main()
+    main()

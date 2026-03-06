@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.handler import Client, Message
+from nixt.handler import Client, Event
 from nixt.command import Commands
 from nixt.objects import Dict
 
@@ -37,7 +37,7 @@ class TestCommands(unittest.TestCase):
     def test_command(self):
         clt = Client()
         Commands.add(cmnd)
-        evt = Message()
+        evt = Event()
         evt.text = "cmnd"
         evt.orig = repr(clt)
         Commands.command(evt)

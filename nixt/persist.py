@@ -12,7 +12,7 @@ import threading
 
 from .configs import Main
 from .encoder import Json
-from .objects import Default, Dict, Methods
+from .objects import Data, Dict, Methods
 from .utility import Time
 
 
@@ -99,7 +99,7 @@ class Locate:
         for pth in Locate.fns(Workdir.long(kind)):
             obj = Cache.get(pth)
             if not obj:
-                obj = Default()
+                obj = Data()
                 Disk.read(obj, pth)
                 Cache.add(pth, obj)
             if not removed and Methods.deleted(obj):
@@ -219,7 +219,7 @@ class Workdir:
         return os.path.join(Workdir.wdr, path)
 
 
-class Stated:
+class State:
 
     def __init__(self):
         super().__init__()
@@ -238,6 +238,6 @@ def __dir__():
         'Disk',
         'Locate',
         'Main',
-        'Stated',
+        'State',
         'Workdir'
     )

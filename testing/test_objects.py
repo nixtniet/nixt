@@ -18,10 +18,10 @@ VALIDJSON = '{"test": "bla"}'
 
 
 attrs1 = [
-    'Object',
-    'Default',
-    'Methods',
+    'Data',
     'Dict',
+    'Methods',
+    'Object',
 ]
 
 

@@ -4,11 +4,11 @@
 "configurations"
 
 
-from .objects import Default, Dict
+from .objects import Data, Dict
 from .utility import Utils
 
 
-class Configuration(Default):
+class Configuration(Data):
 
     def __init__(self, *args, **kwargs):
         super().__init__()

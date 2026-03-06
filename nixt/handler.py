@@ -4,13 +4,15 @@
 "callback engine"
 
 
+import logging
 import queue
 import threading
 import time
+import _thread
 
 
 from .brokers import Broker
-from .threads import Pool, Thread
+from .threads import Thread
 
 
 class Event:
@@ -40,8 +42,6 @@ class Event:
     def wait(self, timeout=0.0):
         "wait for completion."
         self._ready.wait(timeout or None)
-        #if self._thr:
-        #    self._thr.join(timeout)
 
 
 class Handler:
@@ -58,7 +58,7 @@ class Handler:
             event.ready()
             return
         name = event.text and event.text.split()[0]
-        event._thr = Thread.work(func, event, name=name)
+        Thread.work(func, event, name=name)
 
     def loop(self):
         "event loop."

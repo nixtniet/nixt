@@ -27,14 +27,14 @@ from urllib.parse import quote_plus, urlencode
 from nixt.brokers import Broker
 from nixt.clocker import Repeater
 from nixt.configs import Configuration
-from nixt.objects import Default, Dict, Methods
+from nixt.objects import Data, Dict, Methods
 from nixt.persist import Disk, Locate, Main
 from nixt.threads import Thread
 from nixt.utility import Time, Utils
 
 
 def init():
-    RunnerPool.init(1, Runner)
+    RunnerPool.init(3, Runner)
     Run.fetcher.start()
     logging.warning("%s feeds", Locate.count("rss"))
 
@@ -354,7 +354,7 @@ class Helpers:
             if Helpers.doskip(feed.error):
                 feed.skip = True
                 Disk.write(feed, fnm)
-                logging.error("removed %s %s", feed.rss, ex)
+                logging.debug("removed %s %s", feed.rss, ex)
         return result
 
     @staticmethod
@@ -421,7 +421,7 @@ class Helpers:
         return "Mozilla/5.0 (X11; Linux x86_64) " + txt
 
 
-class Feed(Default):
+class Feed(Data):
 
     pass
 
@@ -431,7 +431,7 @@ class Modified:
     pass
 
 
-class Rss(Default):
+class Rss(Data):
 
     def __init__(self):
         super().__init__()

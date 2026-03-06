@@ -24,7 +24,7 @@ class Object:
         return str(self.__dict__)
 
 
-class Default(Object):
+class Data(Object):
 
     def __getattr__(self, key):
         return self.__dict__.get(key, "")
@@ -214,14 +214,14 @@ class Methods:
         data = {
             "args": [],
             "cmd": "",
-            "gets": Default(),
+            "gets": Data(),
             "index": None,
             "init": "",
             "opts": "",
             "otxt": text,
             "rest": "",
-            "silent": Default(),
-            "sets": Default(),
+            "silent": Data(),
+            "sets": Data(),
             "text": text
         }
         for k, v in data.items():
@@ -316,7 +316,7 @@ class Methods:
 
 def __dir__():
     return (
-        'Default',
+        'Data',
         'Dict',
         'Methods',
         'Object'

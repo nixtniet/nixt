@@ -19,7 +19,7 @@ sys.path.insert(0, os.getcwd())
 from nixt.command import Commands
 from nixt.configs import Main
 from nixt.handler import Client, Event
-from nixt.objects import Default, Methods
+from nixt.objects import Data, Methods
 from nixt.package import Mods
 from nixt.persist import Workdir
 from nixt.runtime import Runtime, Run
@@ -44,7 +44,7 @@ Main.ignore = ""
 Main.level = "info"
 Main.mods = ""
 Main.name = Utils.pkgname(Commands)
-Main.opts = Default()
+Main.opts = Data()
 Main.txt = " ".join(sys.argv[1:])
 Main.version = 8
 Main.wdr = ".test"
