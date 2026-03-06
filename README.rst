@@ -58,13 +58,9 @@ use ``nixt`` to control the program, default it does nothing
 | ``$``
 |
 
-the -h options will show you arguments and options
+the -h option will show you possible options
 
-| ``$ nixt -h``
-|
-| usage: ``nixt [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]``
-|
-| NIXT
+| ``$ NIXT -h``
 |
 | options:
 |

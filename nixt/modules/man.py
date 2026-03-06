@@ -61,13 +61,9 @@ use ``%s`` to control the program, default it does nothing
 | ``$``
 |
 
-the -h options will show you arguments and options
+the -h option will show you possible options
 
 | ``$ %s -h``
-|
-| usage: ``%s [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]``
-|
-| %s
 |
 | options:
 |
@@ -242,7 +238,7 @@ def man(event):
         name.upper(),
         *(name,) * 3,
         *(name.upper(),) * 4,
-        *(name,) * 10,
+        *(name,) * 8,
         *(name.upper(),) * 1,
         *(name,) * 24,
         author,
