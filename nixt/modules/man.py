@@ -9,7 +9,10 @@
 
 **SYNOPSIS**
 
-| ``%s`` [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]
+| ``%s [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]``
+|
+| ``%s <cmd> [key=val] [key==val]``
+| ``%s -cvaw [mods=mod1,mod2]``
 |
 
 **DESCRIPTION**
@@ -62,12 +65,11 @@ the -h options will show you arguments and options
 
 | ``$ %s -h``
 |
-| usage: ``%s`` [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]
+| usage: ``%s [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]``
 |
 | %s
 |
 | options:
-|
 |
 | ``-h,--help          show this help message and exit``
 | ``-a,--all           load all modules``
@@ -85,8 +87,6 @@ the -h options will show you arguments and options
 |
 | examples:
 |
-| ``%s <cmd> [key=val] [key==val]``
-| ``%s -cvaw [init=mod1,mod2]``
 |
 
 see list of commands
