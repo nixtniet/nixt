@@ -34,7 +34,7 @@ from nixt.utility import Time, Utils
 
 
 def init():
-    RunnerPool.init(3, Runner)
+    Runners.init(3, Runner)
     Run.fetcher.start()
     logging.warning("%s feeds", Locate.count("rss"))
 
@@ -46,6 +46,31 @@ def shutdown():
 class Config(Configuration):
 
     polltime = 300
+
+
+class Feed(Data):
+
+    pass
+
+
+class Modified(Data):
+
+    pass
+
+
+class Rss(Data):
+
+    def __init__(self):
+        super().__init__()
+        self.display_list = "title,link,author"
+        self.insertid = None
+        self.name = ""
+        self.rss = ""
+
+
+class Urls(Data):
+
+    pass
 
 
 class Fetcher:
@@ -61,7 +86,7 @@ class Fetcher:
         for fnm, feed in Locate.find(Methods.fqn(Rss)):
             if feed.skip:
                 continue
-            RunnerPool.put((fnm, feed, silent))
+            Runners.put((fnm, feed, silent))
             nrs += 1
         return nrs
 
@@ -158,35 +183,35 @@ class Runner:
         self.stopped.set()
 
 
-class RunnerPool:
+class Runners:
 
     runners = []
     lock = threading.RLock()
     nrcpu = 1
-    nrlast = 0
+    last = 0
 
     @staticmethod
     def add(client):
-        RunnerPool.runners.append(client)
+        Runners.runners.append(client)
 
     @staticmethod
     def init(nrcpu, cls):
-        RunnerPool.nrcpu = nrcpu
-        for _x in range(RunnerPool.nrcpu):
+        Runners.nrcpu = nrcpu
+        for _x in range(Runners.nrcpu):
             clt = cls()
             clt.start()
-            RunnerPool.add(clt)
+            Runners.add(clt)
 
     @staticmethod
     def put(*args):
-        if not RunnerPool.runners:
-            RunnerPool.init(RunnerPool.nrcpu, Runner)
-        with RunnerPool.lock:
-            if RunnerPool.nrlast >= RunnerPool.nrcpu-1:
-                RunnerPool.nrlast = 0
-            clt = RunnerPool.runners[RunnerPool.nrlast]
+        if not Runners.runners:
+            Runners.init(Runners.nrcpu, Runner)
+        with Runners.lock:
+            if Runners.last >= Runners.nrcpu-1:
+                Runners.last = 0
+            clt = Runners.runners[Runners.last]
             clt.put(*args)
-            RunnerPool.nrlast += 1
+            Runners.last += 1
 
 
 class Parser:
@@ -419,31 +444,6 @@ class Helpers:
     def useragent(txt):
         "produce useragent string."
         return "Mozilla/5.0 (X11; Linux x86_64) " + txt
-
-
-class Feed(Data):
-
-    pass
-
-
-class Modified:
-
-    pass
-
-
-class Rss(Data):
-
-    def __init__(self):
-        super().__init__()
-        self.display_list = "title,link,author"
-        self.insertid = None
-        self.name = ""
-        self.rss = ""
-
-
-class Urls:
-
-    pass
 
 
 class Run:
