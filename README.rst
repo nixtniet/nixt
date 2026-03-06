@@ -60,7 +60,7 @@ use ``nixt`` to control the program, default it does nothing
 
 the -h option will show you possible options
 
-| ``$ NIXT -h``
+| ``$ nixt -h``
 |
 | options:
 |
