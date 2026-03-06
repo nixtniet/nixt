@@ -22,6 +22,7 @@ class Task(threading.Thread):
         self.queue = queue.Queue()
         self.result = None
         self.starttime = time.time()
+        self.status = "init"
         self.stopped = threading.Event()
         self.queue.put((func, args))
 
@@ -47,7 +48,9 @@ class Task(threading.Thread):
         if args and hasattr(args[0], "ready"):
             self.event = args[0]
         try:
+            self.status = "run"
             self.result = func(*args)
+            self.status = "idle"
         except (KeyboardInterrupt, EOFError):
             if self.event:
                 self.event.ready()
@@ -70,6 +73,7 @@ class Worker(threading.Thread):
         self.queue = queue.Queue()
         self.result = None
         self.starttime = time.time()
+        self.status = "init"
         self.stopped = threading.Event()
         Worker.nr += 1
  

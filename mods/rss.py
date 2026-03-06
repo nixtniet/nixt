@@ -595,7 +595,7 @@ def rem(event):
         return
     for fnm, fed in Locate.find(Methods.fqn(Rss)):
         feed = Rss()
-        DIct.update(feed, fed)
+        Dict.update(feed, fed)
         if event.args[0] not in feed.rss:
             continue
         if feed:

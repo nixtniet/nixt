@@ -18,7 +18,7 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.command import Commands
 from nixt.configs import Main
-from nixt.handler import Client, Event, Handler
+from nixt.handler import Client, Event
 from nixt.objects import Default, Methods
 from nixt.package import Mods
 from nixt.persist import Workdir
@@ -59,7 +59,36 @@ class CLI(Client):
     def raw(self, text):
         if "v" in Main.opts:
             print(text)
-            sys.stdout.flush()
+
+
+class ClientPool:
+
+    clients = []
+    lock = threading.RLock()
+    nrcpu = 1
+    nrlast = 0
+
+    @staticmethod
+    def add(client):
+        ClientPool.clients.append(client)
+
+    @staticmethod
+    def init(nrcpu, cls):
+        ClientPool.nrcpu = nrcpu
+        for _x in range(ClientPool.nrcpu):
+            clt = cls()
+            clt.start()
+            ClientPool.add(clt)
+
+    @staticmethod
+    def put(*args):
+        with ClientPool.lock:
+            if ClientPool.nrlast >= ClientPool.nrcpu-1:
+                ClientPool.nrlast = 0
+            clt = ClientPool.clients[ClientPool.nrlast]
+            clt.put(*args)
+            ClientPool.nrlast += 1
+
 
 
 def check(text):
@@ -89,7 +118,7 @@ def payload(todo):
             evt = Event()
             evt.text = f"{cmd} {ex}"
             evt.kind = "command"
-            Thread.work(Commands.command, evt)
+            ClientPool.put(evt)
             events.put(evt)
 
 
@@ -105,10 +134,10 @@ def main():
     Runtime.scanner(Main)
     if "v" in Main.opts:
         Runtime.banner()
-    if "t" in Main.opts:
-        Thread.pool.init(os.cpu_count())
+    if "z" in Main.opts:
+        ClientPool.init(os.cpu_count(), CLI)
     else:
-        Thread.pool.init(1)
+        ClientPool.init(1, CLI)
     starttime = time.time()
     nrs = Main.index or 1
     for _x in range(nrs):
@@ -121,8 +150,6 @@ def main():
     nrevents = events.qsize()
     try:
         events.join()
-        Handler.pool.stop()
-        Handler.pool.join()
     except (KeyboardInterrupt, EOFError):
         pass
     endtime = time.time()
