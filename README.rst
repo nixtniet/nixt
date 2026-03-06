@@ -8,7 +8,7 @@
 
 | ``nixt [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]``
 |
-| ``NIXT <cmd> [key=val] [key==val]``
+| ``nixt <cmd> [key=val] [key==val]``
 | ``NIXT -cvaw [mods=mod1,mod2]``
 |
 
@@ -24,7 +24,7 @@ it provides an "clean namespace" Object class that only has dunder
 methods, so the namespace is not cluttered with method names. This
 makes storing and reading to/from json possible.
 
-``nixt`` is a python3 IRC bot, it can connect to IRC, fetch and
+``NIXT`` is a python3 IRC bot, it can connect to IRC, fetch and
 display RSS feeds, take todo notes, keep a shopping list and log
 text. You can run it under systemd for 24/7 presence in a IRC channel.
 
