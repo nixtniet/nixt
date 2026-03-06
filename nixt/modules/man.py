@@ -19,6 +19,8 @@
 | %s
 |
 | options:
+|
+|   #################  #################################
 |   -h, --help         show this help message and exit
 |   -a, --all          load all modules
 |   -c, --console      start console
