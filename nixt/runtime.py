@@ -24,9 +24,9 @@ from nixt.utility import Log, Utils
 from nixt import modules as MODS
 
 
-Main.default = "irc,mdl,rss,wsd"
-Main.ignore = "man,rst,udp,web"
-Main.local = True
+Main.default = "irc,rss,thr"
+Main.ignore = ""
+Main.local = False
 Main.version = 455
 Main.wdr = os.path.expanduser(f"~/.{Main.name}")
 
@@ -88,7 +88,7 @@ class Runtime:
         if Main.wdr:
             Mods.add("modules", os.path.join(Main.wdr, "mods"))
         for pkg in pkgs:
-            Mods.add(pkg.__name__, pkg.__path__[0])
+            Mods.pkg(pkg)
         if Main.local:
             Mods.add('mods', 'mods')
         if Main.verbose:
@@ -221,6 +221,7 @@ class Scripts:
         Runtime.privileges()
         Runtime.boot(args, MODS)
         Workdir.pidfile(Main.name)
+        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Runtime.scanner(Main)
         Runtime.init(Main)
         Utils.forever()
@@ -231,6 +232,7 @@ class Scripts:
         import readline
         readline.redisplay()
         Runtime.boot(args, MODS)
+        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Runtime.scanner(Main, False)
         Runtime.init(Main, default=False)
         csl = CSL()
@@ -244,6 +246,7 @@ class Scripts:
             return
         Runtime.boot(args,MODS)
         Main.mods = Mods.list(Main.ignore)
+        Commands.add(Cmd.cfg, Cmd.cmd, Cmd.mod, Cmd.srv, Cmd.ver)
         Runtime.scanner(Main)
         evt = Commands.cmd(Main.txt)
         for line in evt.result.values():
@@ -256,6 +259,7 @@ class Scripts:
         Runtime.banner()
         Runtime.boot(args, MODS)
         Workdir.pidfile(Main.name)
+        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Runtime.scanner(Main)
         Runtime.init(Main)
         Utils.forever()
@@ -323,16 +327,12 @@ def main():
     args, arguments = Runtime.getargs()
     args.txt = " ".join(arguments)
     if args.daemon:
-        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Scripts.background(args)
     elif args.console:
-        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Runtime.wrap(Scripts.console, args)
     elif args.service:
-        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Runtime.wrap(Scripts.service, args)
     else:
-        Commands.add(Cmd.cfg, Cmd.cmd, Cmd.mod, Cmd.srv, Cmd.ver)
         Runtime.wrap(Scripts.control, args)
     Runtime.shutdown()
 

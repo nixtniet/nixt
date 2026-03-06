@@ -230,7 +230,7 @@ def man(event):
     args = event.args
     try:
         name, email, author  = args[0], args[1], " ".join(args[2:])
-    except ValueError:
+    except (ValueError, IndexError):
         event.reply("man <name> <email> <author>")
         return
     event.reply(__doc__ % (

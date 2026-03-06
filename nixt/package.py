@@ -51,6 +51,8 @@ class Mods:
                 if not fnm.endswith(".py"):
                     continue
                 name = fnm[:-3]
+                if not name:
+                    continue
                 if name not in Utils.spl(modlist):
                     continue
                 if ignore and name in Utils.spl(ignore):
@@ -58,7 +60,10 @@ class Mods:
                 modname = f"{pkgname}.{name}"
                 mod =  Mods.modules.get(modname, None)
                 if not mod:
-                    mod = Mods.importer(modname, os.path.join(path, fnm))
+                    try:
+                        mod = Mods.importer(modname, os.path.join(path, fnm))
+                    except ModuleNotFoundError:
+                        continue
                 if mod:
                     yield name, mod
 

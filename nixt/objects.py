@@ -181,7 +181,7 @@ class Methods:
             value = getattr(obj, key, None)
             if value is None:
                 continue
-            if not empty and not value:
+            if not empty and value == "":
                 continue
             if plain:
                 txt += f"{value} "
