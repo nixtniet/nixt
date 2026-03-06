@@ -9,35 +9,8 @@
 
 **SYNOPSIS**
 
-| ``$ %s -h``
-|
-| usage: ``%s`` [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]
-|
-| %s
-|
-| options:
-|
+| ``%s`` [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]
 
-``-h,--help          show this help message and exit``
-``-a,--all           load all modules``
-``-c,--console       start console``
-``-d,--daemon        start background daemon``
-``-l,--level LEVEL   set loglevel``
-``-m,--mods MODS     modules to load``
-``-n,--noignore      disable ignore```
-``-s,--service       start service``
-``-t,--threaded      enable multiple workers``
-``-v,--verbose       enable verbose``
-``-w,--wait          wait for services to start``
-``--local            use local mods directory``
-``--wdr <WDR>        set working directory``
-
-|
-| examples:
-|
-| ``%s <cmd> [key=val] [key==val]``
-| ``%s -cvaw [init=mod1,mod2]``
-|
 
 **DESCRIPTION**
 
@@ -85,6 +58,37 @@ use ``%s`` to control the program, default it does nothing
 |
 | ``$ %s``
 | ``$``
+|
+
+the -h options will show you arguments and options
+
+| ``$ %s -h``
+|
+| usage: ``%s`` [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]
+|
+| %s
+|
+| options:
+|
+|
+| ``-h,--help          show this help message and exit``
+| ``-a,--all           load all modules``
+| ``-c,--console       start console``
+| ``-d,--daemon        start background daemon``
+| ``-l,--level LEVEL   set loglevel``
+| ``-m,--mods MODS     modules to load``
+| ``-n,--noignore      disable ignore```
+| ``-s,--service       start service``
+| ``-t,--threaded      enable multiple workers``
+| ``-v,--verbose       enable verbose``
+| ``-w,--wait          wait for services to start``
+| ``--local            use local mods directory``
+| ``--wdr <WDR>        set working directory``
+|
+| examples:
+|
+| ``%s <cmd> [key=val] [key==val]``
+| ``%s -cvaw [init=mod1,mod2]``
 |
 
 see list of commands
@@ -254,11 +258,10 @@ def man(event):
         name,
         name.upper(),
         name,
-        name,
-        name.upper(),
-        *(name,) * 2,
         *(name.upper(),) * 4,
-        *(name,) * 32,
+        *(name,) * 10,
+        *(name.upper(),) * 1,
+        *(name,) * 26,
         author,
         email,
         name.upper()
