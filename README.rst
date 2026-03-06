@@ -62,9 +62,9 @@ the -h options will show you arguments and options
 
 | ``$ nixt -h``
 |
-| usage: ``NIXT [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]``
+| usage: ``nixt [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]``
 |
-| nixt
+| NIXT
 |
 | options:
 |
