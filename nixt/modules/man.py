@@ -10,7 +10,7 @@
 **SYNOPSIS**
 
 | ``%s`` [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]
-
+|
 
 **DESCRIPTION**
 
@@ -36,7 +36,6 @@ text. You can run it under systemd for 24/7 presence in a IRC channel.
 
 installation is done with pipx
 
-|
 | ``$ pipx install %s``
 | ``$ pipx ensurepath``
 |
@@ -55,7 +54,6 @@ installation is done with pipx
 
 use ``%s`` to control the program, default it does nothing
 
-|
 | ``$ %s``
 | ``$``
 |
@@ -93,7 +91,6 @@ the -h options will show you arguments and options
 
 see list of commands
 
-|
 | ``$ %s cmd``
 | ``cfg,cmd,dne,dpl,err,exp,imp,log,mod,mre,nme,``
 | ``pwd,rem,req,res,rss,srv,syn,tdo,thr,upt``
@@ -101,19 +98,16 @@ see list of commands
 
 start console
 
-|
 | ``$ %s -c``
 |
 
 start console and run irc and rss clients
 
-|
 | ``$ %s -c init=irc,rss``
 |
 
 list available modules
 
-|
 | ``$ %s mod``
 | ``err,flt,fnd,irc,llm,log,mbx,mdl,mod,req,rss,``
 | ``rst,slg,tdo,thr,tmr,udp,upt``
@@ -121,14 +115,12 @@ list available modules
 
 start daemon
 
-|
 | ``$ %s -d``
 | ``$``
 |
 
 start service
 
-|
 | ``$ %s -s``
 | ``<runs until ctrl-c>``
 |
@@ -139,7 +131,6 @@ start service
 
 here is a list of available commands
 
-|
 | ``cfg`` - irc configuration
 | ``cmd`` - commands
 | ``dpl`` - sets display items
@@ -164,7 +155,6 @@ here is a list of available commands
 
 irc
 
-|
 | ``$ %s cfg server=<server>``
 | ``$ %s cfg channel=<channel>``
 | ``$ %s cfg nick=<nick>``
@@ -172,14 +162,12 @@ irc
 
 sasl
 
-|
 | ``$ %s pwd <nsnick> <nspass>``
 | ``$ %s cfg password=<frompwd>``
 |
 
 rss
 
-|
 | ``$ %s rss <url>``
 | ``$ %s dpl <url> <item1,item2>``
 | ``$ %s rem <url>``
@@ -188,7 +176,6 @@ rss
 
 opml
 
-|
 | ``$ %s exp``
 | ``$ %s imp <filename>``
 |
@@ -196,7 +183,6 @@ opml
 
 **PROGRAMMING**
 
-|
 | %s has it's user modules in the ~/.%s/mods directory so for a
 | hello world command you would  edit a file in ~/.%s/mods/hello.py
 | and add the following
