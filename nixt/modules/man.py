@@ -85,9 +85,6 @@ the -h options will show you arguments and options
 | ``--local            use local mods directory``
 | ``--wdr <WDR>        set working directory``
 |
-| examples:
-|
-|
 
 see list of commands
 
