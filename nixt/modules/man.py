@@ -243,9 +243,9 @@ def man(event):
     event.reply(__doc__ % (
         name,
         name.upper(),
-        *(name,) * 2,
+        *(name,) * 3,
         *(name.upper(),) * 4,
-        *(name,) * 9,
+        *(name,) * 8,
         *(name.upper(),) * 1,
         *(name,) * 26,
         author,

@@ -9,7 +9,7 @@
 | ``nixt [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]``
 |
 | ``nixt <cmd> [key=val] [key==val]``
-| ``NIXT -cvaw [mods=mod1,mod2]``
+| ``nixt -cvaw [mods=mod1,mod2]``
 |
 
 **DESCRIPTION**
@@ -28,7 +28,7 @@ makes storing and reading to/from json possible.
 display RSS feeds, take todo notes, keep a shopping list and log
 text. You can run it under systemd for 24/7 presence in a IRC channel.
 
-``nixt`` is Public Domain.
+``NIXT`` is Public Domain.
 
 
 **INSTALL**
