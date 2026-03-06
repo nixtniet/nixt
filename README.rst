@@ -13,25 +13,28 @@
 | NIXT
 |
 | options:
+|
 
-  |   ``-h,--help          show this help message and exit``
-  |   ``-a,--all           load all modules``
-  |   ``-c,--console       start console``
-  |   ``-d,--daemon        start background daemon``
-  |   ``-l,--level LEVEL   set loglevel``
-  |   ``-m,--mods MODS     modules to load``
-  |   ``-n,--noignore      disable ignore```
-  |   ``-s,--service       start service``
-  |   ``-t,--threaded      enable multiple workers``
-  |   ``-v,--verbose       enable verbose``
-  |   ``-w,--wait          wait for services to start``
-  |   ``--local            use local mods directory``
-  |   ``--wdr <WDR>        set working directory``
-  |
-  | examples:
-  |
-  | ``nixt <cmd> [key=val] [key==val]``
-  | ``nixt -cvaw [init=mod1,mod2]``
+``-h,--help          show this help message and exit``
+``-a,--all           load all modules``
+``-c,--console       start console``
+``-d,--daemon        start background daemon``
+``-l,--level LEVEL   set loglevel``
+``-m,--mods MODS     modules to load``
+``-n,--noignore      disable ignore```
+``-s,--service       start service``
+``-t,--threaded      enable multiple workers``
+``-v,--verbose       enable verbose``
+``-w,--wait          wait for services to start``
+``--local            use local mods directory``
+``--wdr <WDR>        set working directory``
+
+|
+| examples:
+|
+| ``nixt <cmd> [key=val] [key==val]``
+| ``nixt -cvaw [init=mod1,mod2]``
+|
 
 **DESCRIPTION**
 
