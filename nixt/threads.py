@@ -8,77 +8,28 @@ import inspect
 import logging
 import os
 import queue
-import random
 import threading
 import time
 import _thread
 
 
-class Pool:
+class Task(threading.Thread):
 
-    def __init__(self):
-        self.lock = threading.RLock()
-        self.last = 0
-        self.later = queue.Queue()
-        self.nrcpu = 2
-        self.workers = []
-
-    def add(self, worker):
-        "add worker."
-        self.workers.append(worker)
-
-    def init(self, nr=0):
-        "initialisse worker pool."
-        with self.lock:
-            self.nrcpu = nr or self.nrcpu
-            for _x in range(self.nrcpu):
-                self.new()
-
-    def new(self):
-        "create new worker."
-        wrk = Worker()
-        wrk.start()
-        self.add(wrk)
-        return wrk
-
-    def put(self, func, *args):
-        if self.last >= self.nrcpu-1:
-            self.last = 0
-        self.workers[self.last].put(func, *args)
-        self.last += 1
-
-    def work(self, func, *args, **kwargs):
-        "run function in a thread."
-        if not self.workers:
-            self.init()
-        self.put(func, *args)
-
-
-class Worker(threading.Thread):
-
-    nr = 0
-
-    def __init__(self, *args, daemon=True, **kwargs):
-        super().__init__(None, self.run, *args, daemon=True)
+    def __init__(self, func, *args, daemon=True, **kwargs):
+        super().__init__(None, self.run, None, (), daemon=daemon)
         self.event = None
-        self.name = kwargs.get("name", f"Worker{Worker.nr}")
-        self.once = kwargs.get("once", False)
+        self.name = kwargs.get("name", Thread.name(func))
         self.queue = queue.Queue()
         self.result = None
         self.starttime = time.time()
-        self.status = "ready"
         self.stopped = threading.Event()
-        Worker.nr += 1
+        self.queue.put((func, args))
 
     def __iter__(self):
         return self
 
     def __next__(self):
         yield from dir(self)
- 
-    def put(self, func, *args):
-        "put function on queue."
-        self.queue.put((func, args))
 
     def join(self, timeout=0.0):
         "join thread and return result."
@@ -92,49 +43,103 @@ class Worker(threading.Thread):
 
     def run(self):
         "run function."
-        bork = exit = False
+        func, args = self.queue.get()
+        if args and hasattr(args[0], "ready"):
+            self.event = args[0]
+        try:
+            self.result = func(*args)
+        except (KeyboardInterrupt, EOFError):
+            if self.event:
+                self.event.ready()
+            _thread.interrupt_main()
+        except Exception as ex:
+            if self.event:
+                self.event.ready()
+            logging.exception(ex)
+            _thread.interrupt_main()
+
+
+class Worker(threading.Thread):
+
+    nr = 0
+
+    def __init__(self, *args, daemon=True, **kwargs):
+        super().__init__(None, self.run, *args, daemon=True, **kwargs)
+        self.event = None
+        self.name = kwargs.get("name", "Worker({Worker.nr})")
+        self.queue = queue.Queue()
+        self.result = None
+        self.starttime = time.time()
+        self.stopped = threading.Event()
+        Worker.nr += 1
+ 
+    def put(self, func, args):
+        "put function on queue."
+        self.queue.put((func, args))
+
+    def run(self):
+        "run function."
         while 1:
-            exit = False             
             func, args = self.queue.get()
-            self.name = Thread.name(func)
             if args and hasattr(args[0], "ready"):
                 self.event = args[0]
             try:
-                self.starttime = time.time()
                 self.status = "run"
                 self.result = func(*args)
                 self.status = "idle"
-                if self.once:
-                    exit = True
-                    break
             except (KeyboardInterrupt, EOFError):
-                exit = True
-            except Exception as ex:
-                logging.exception(ex)
-                bork = True
-            if exit or bork:
                 if self.event:
                     self.event.ready()
-                break
-        if bork:
-            _thread.interupt_main() 
+                _thread.interrupt_main()
+            except Exception as ex:
+                if self.event:
+                    self.event.ready()
+                logging.exception(ex)
+                _thread.interrupt_main()
+            
+
+class Pool:
+
+    workers = []
+    lock = threading.RLock()
+    nrcpu = os.cpu_count()
+    nrlast = 1
+
+    @staticmethod
+    def add(worker):
+        Pool.workers.append(worker)
+
+    @staticmethod
+    def init(nrcpu=None):
+        Pool.nrcpu = nrcpu or Pool.nrcpu
+        for _x in range(Pool.nrcpu):
+            clt = Worker()
+            clt.start()
+            Pool.add(clt)
+
+    @staticmethod
+    def put(func, args):
+        if not Pool.workers:
+            Pool.init()
+        if Pool.nrlast >= Pool.nrcpu-1:
+            Pool.nrlast = 0
+        clt = Pool.workers[Pool.nrlast]
+        clt.put(func, args)
+        Pool.nrlast += 1
 
 
 class Thread:
 
     lock = threading.RLock()
-    pool = Pool()
-    
+
     @staticmethod
     def launch(func, *args, **kwargs):
         "run function in a thread."
         with Thread.lock:
             try:
-                kwargs["once"] = True
-                wrk = Worker(*args, **kwargs)
-                wrk.start()
-                wrk.put(func, *args)
-                return wrk
+                task = Task(func, *args, **kwargs)
+                task.start()
+                return task
             except (KeyboardInterrupt, EOFError):
                 _thread.interrupt_main()
 
@@ -149,14 +154,12 @@ class Thread:
 
     @staticmethod
     def work(func, *args, **kwargs):
-        "push work to the workers."
-        Thread.pool.put(func, *args, **kwargs)
-
+        "run function in a thread."
+        Pool.put(func, args)
 
 def __dir__():
     return (
-        'Pool',
-        'Task',
+        'Repeater',
         'Thread',
-        'Worker'
+        'Timed'
     )

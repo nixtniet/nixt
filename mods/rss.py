@@ -29,11 +29,12 @@ from nixt.clocker import Repeater
 from nixt.configs import Configuration
 from nixt.objects import Default, Dict, Methods
 from nixt.persist import Disk, Locate, Main
-from nixt.threads import Pool, Thread
+from nixt.threads import Thread
 from nixt.utility import Time, Utils
 
 
 def init():
+    RunnerPool.init(1, Runner)
     Run.fetcher.start()
     logging.warning("%s feeds", Locate.count("rss"))
 
@@ -47,38 +48,42 @@ class Config(Configuration):
     polltime = 300
 
 
-class Rss(Default):
+class Fetcher:
 
     def __init__(self):
-        super().__init__()
-        self.display_list = "title,link,author"
-        self.insertid = None
-        self.name = ""
-        self.rss = ""
+        self.dosave = False
+        self.runner = Runner()
+        self.stopped = threading.Event()
+        self.todo = queue.Queue()
+
+    def run(self, silent=False):
+        nrs = 0
+        for fnm, feed in Locate.find(Methods.fqn(Rss)):
+            if feed.skip:
+                continue
+            RunnerPool.put((fnm, feed, silent))
+            nrs += 1
+        return nrs
+
+    def start(self, repeat=True):
+        State.seenfn = Locate.last(State.seen) or Methods.ident(State.seen)
+        State.modifiedfn = Locate.last(State.modified) or Methods.ident(State.modified)
+        if repeat:
+            repeater = Repeater(Config.polltime, self.run)
+            repeater.start()
+
+    def stop(self):
+        logging.debug("stopped fetcher")
+        Disk.write(State.modified, State.modifiedfn)
+        self.stopped.set()
 
 
-class Feed(Default):
-
-    pass
-
-
-class Modified:
-
-    pass
-
-
-class Urls:
-
-    pass
-
-
-class Fetcher:
+class Runner:
 
     def __init__(self):
         self.dosave = False
         self.fetchlock = threading.RLock()
         self.queue = queue.Queue()
-        self.pool = Pool()
         self.stopped = threading.Event()
         self.todo = queue.Queue()
 
@@ -98,6 +103,11 @@ class Fetcher:
             result += Helpers.unescape(Helpers.striphtml(data.replace("\n", " ").rstrip()))
             result += " - "
         return result[:-2].rstrip()
+
+    def loop(self):
+        while True:
+            job = self.queue.get()
+            self.fetch(*job)
 
     def fetch(self, fnm, feed, silent=False):
         with Run.fetchlock:
@@ -138,27 +148,45 @@ class Fetcher:
             Broker.announce(txt + self.display(obj))
         return counter
 
-    def run(self, silent=False):
-        nrs = 0
-        for fnm, feed in Locate.find(Methods.fqn(Rss)):
-            if feed.skip:
-                continue
-            self.pool.put(self.fetch, fnm, feed, silent)
-            nrs += 1
-        return nrs
+    def put(self, args):
+        self.queue.put(args)
 
-    def start(self, repeat=True):
-        #self.pool.init(os.cpu_count())
-        State.seenfn = Locate.last(State.seen) or Methods.ident(State.seen)
-        State.modifiedfn = Locate.last(State.modified) or Methods.ident(State.modified)
-        if repeat:
-            repeater = Repeater(Config.polltime, self.run)
-            repeater.start()
+    def start(self):
+        Thread.launch(self.loop)
 
     def stop(self):
-        logging.debug("stopped fetcher")
-        Disk.write(State.modified, State.modifiedfn)
         self.stopped.set()
+
+
+class RunnerPool:
+
+    runners = []
+    lock = threading.RLock()
+    nrcpu = 1
+    nrlast = 0
+
+    @staticmethod
+    def add(client):
+        RunnerPool.runners.append(client)
+
+    @staticmethod
+    def init(nrcpu, cls):
+        RunnerPool.nrcpu = nrcpu
+        for _x in range(RunnerPool.nrcpu):
+            clt = cls()
+            clt.start()
+            RunnerPool.add(clt)
+
+    @staticmethod
+    def put(*args):
+        if not RunnerPool.runners:
+            RunnerPool.init(RunnerPool.nrcpu, Runner)
+        with RunnerPool.lock:
+            if RunnerPool.nrlast >= RunnerPool.nrcpu-1:
+                RunnerPool.nrlast = 0
+            clt = RunnerPool.runners[RunnerPool.nrlast]
+            clt.put(*args)
+            RunnerPool.nrlast += 1
 
 
 class Parser:
@@ -393,6 +421,31 @@ class Helpers:
         return "Mozilla/5.0 (X11; Linux x86_64) " + txt
 
 
+class Feed(Default):
+
+    pass
+
+
+class Modified:
+
+    pass
+
+
+class Rss(Default):
+
+    def __init__(self):
+        super().__init__()
+        self.display_list = "title,link,author"
+        self.insertid = None
+        self.name = ""
+        self.rss = ""
+
+
+class Urls:
+
+    pass
+
+
 class Run:
 
     fetcher = Fetcher()
@@ -542,7 +595,7 @@ def rem(event):
         return
     for fnm, fed in Locate.find(Methods.fqn(Rss)):
         feed = Rss()
-        Dict.update(feed, fed)
+        DIct.update(feed, fed)
         if event.args[0] not in feed.rss:
             continue
         if feed:

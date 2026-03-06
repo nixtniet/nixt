@@ -219,7 +219,7 @@ class Workdir:
         return os.path.join(Workdir.wdr, path)
 
 
-class StateFul:
+class Stated:
 
     def __init__(self):
         super().__init__()
@@ -238,6 +238,6 @@ def __dir__():
         'Disk',
         'Locate',
         'Main',
-        'StateFul',
+        'Stated',
         'Workdir'
     )

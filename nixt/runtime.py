@@ -95,9 +95,9 @@ class Runtime:
             Runtime.banner()
         if Main.all:
             Main.mods = Mods.list(Main.ignore)
-        #if Main.threaded:
-        #    Thread.pool.init(os.cpu_count())
-        #    logging.info(f"{Thread.pool.nrcpu} workers")
+        if Main.threaded:
+            Thread.pool.init(os.cpu_count())
+            logging.info(f"{Thread.pool.nrcpu} workers")
 
     @staticmethod
     def daemon(verbose=False, nochdir=False):

@@ -13,7 +13,7 @@ from random import SystemRandom
 from nixt.brokers import Broker
 from nixt.clocker import Repeater
 from nixt.handler import Event
-from nixt.persist import StateFul
+from nixt.persist import Stated
 
 
 rand = SystemRandom()
@@ -27,7 +27,7 @@ def init():
     logging.warning("%s wise", len(TXTLIST))
 
 
-class State(StateFul):
+class State(Stated):
 
     pass
 

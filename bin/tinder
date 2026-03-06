@@ -18,7 +18,7 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.command import Commands
 from nixt.configs import Main
-from nixt.handler import Client, Event
+from nixt.handler import Client, Event, Handler
 from nixt.objects import Default, Methods
 from nixt.package import Mods
 from nixt.persist import Workdir
@@ -59,36 +59,7 @@ class CLI(Client):
     def raw(self, text):
         if "v" in Main.opts:
             print(text)
-
-
-class Clients:
-
-    clients = []
-    lock = threading.RLock()
-    nrcpu = 1
-    nrlast = 0
-
-    @staticmethod
-    def add(client):
-        Clients.clients.append(client)
-
-    @staticmethod
-    def init(nrcpu, cls):
-        Clients.nrcpu = nrcpu
-        for _x in range(Clients.nrcpu):
-            clt = cls()
-            clt.start()
-            Clients.add(clt)
-
-    @staticmethod
-    def put(*args):
-        with Clients.lock:
-            if Clients.nrlast >= Clients.nrcpu-1:
-                Clients.nrlast = 0
-            clt = Clients.clients[Clients.nrlast]
-            clt.put(*args)
-            Clients.nrlast += 1
-
+            sys.stdout.flush()
 
 
 def check(text):
@@ -118,7 +89,7 @@ def payload(todo):
             evt = Event()
             evt.text = f"{cmd} {ex}"
             evt.kind = "command"
-            Clients.put(evt)
+            Thread.work(Commands.command, evt)
             events.put(evt)
 
 
@@ -134,10 +105,10 @@ def main():
     Runtime.scanner(Main)
     if "v" in Main.opts:
         Runtime.banner()
-    if "z" in Main.opts:
-        Clients.init(os.cpu_count(), CLI)
+    if "t" in Main.opts:
+        Thread.pool.init(os.cpu_count())
     else:
-        Clients.init(1, CLI)
+        Thread.pool.init(1)
     starttime = time.time()
     nrs = Main.index or 1
     for _x in range(nrs):
@@ -150,6 +121,8 @@ def main():
     nrevents = events.qsize()
     try:
         events.join()
+        Handler.pool.stop()
+        Handler.pool.join()
     except (KeyboardInterrupt, EOFError):
         pass
     endtime = time.time()

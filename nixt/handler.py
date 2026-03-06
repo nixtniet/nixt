@@ -48,7 +48,6 @@ class Handler:
 
     def __init__(self):
         self.cbs = {}
-        self.pool = Pool()
         self.queue = queue.Queue()
         self.running = threading.Event()
 
@@ -59,7 +58,7 @@ class Handler:
             event.ready()
             return
         name = event.text and event.text.split()[0]
-        event._thr = self.pool.work(func, event, name=name)
+        event._thr = Thread.work(func, event, name=name)
 
     def loop(self):
         "event loop."
