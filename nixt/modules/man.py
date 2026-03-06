@@ -245,9 +245,9 @@ def man(event):
         name.upper(),
         *(name,) * 3,
         *(name.upper(),) * 4,
-        *(name,) * 8,
+        *(name,) * 9,
         *(name.upper(),) * 1,
-        *(name,) * 26,
+        *(name,) * 25,
         author,
         email,
         name.upper()

@@ -60,9 +60,9 @@ use ``nixt`` to control the program, default it does nothing
 
 the -h options will show you arguments and options
 
-| ``$ NIXT -h``
+| ``$ nixt -h``
 |
-| usage: ``nixt [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]``
+| usage: ``NIXT [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]``
 |
 | nixt
 |
