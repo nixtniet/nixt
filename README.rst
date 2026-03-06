@@ -1,44 +1,39 @@
 **NAME**
 
-
-|
 | ``nixt`` - NIXT
 |
 
 
 **SYNOPSIS**
 
-|
 | ``$ nixt -h``
 |
-| usage: nixt [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]
+| usage: ``nixt`` [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]
 |
 | NIXT
 |
-
 | options:
-|   ``-h,--help          show this help message and exit``
-|   ``-a,--all           load all modules``
-|   ``-c,--console       start console``
-|   ``-d,--daemon        start background daemon``
-|   ``-l,--level LEVEL   set loglevel``
-|   ``-m,--mods MODS     modules to load``
-|   ``-n,--noignore      disable ignore```
-|   ``-s,--service       start service``
-|   ``-t,--threaded      enable multiple workers``
-|   ``-v,--verbose       enable verbose``
-|   ``-w,--wait          wait for services to start``
-|   ``--local            use local mods directory``
-|   ``--wdr <WDR>        set working directory``
 
-| examples:
-|
-| ``nixt <cmd> [key=val] [key==val]``
-| ``nixt -cvaw [init=mod1,mod2]``
-|
+  |   ``-h,--help          show this help message and exit``
+  |   ``-a,--all           load all modules``
+  |   ``-c,--console       start console``
+  |   ``-d,--daemon        start background daemon``
+  |   ``-l,--level LEVEL   set loglevel``
+  |   ``-m,--mods MODS     modules to load``
+  |   ``-n,--noignore      disable ignore```
+  |   ``-s,--service       start service``
+  |   ``-t,--threaded      enable multiple workers``
+  |   ``-v,--verbose       enable verbose``
+  |   ``-w,--wait          wait for services to start``
+  |   ``--local            use local mods directory``
+  |   ``--wdr <WDR>        set working directory``
+  |
+  | examples:
+  |
+  | ``nixt <cmd> [key=val] [key==val]``
+  | ``nixt -cvaw [init=mod1,mod2]``
 
 **DESCRIPTION**
-
 
 ``NIXT`` has all you need to program a unix cli program, such as disk
 perisistence for configuration files, event handler to handle the

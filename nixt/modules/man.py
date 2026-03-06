@@ -3,45 +3,40 @@
 
 """**NAME**
 
-
-|
 | ``%s`` - %s
 |
 
 
 **SYNOPSIS**
 
-|
 | ``$ %s -h``
 |
-| usage: %s [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]
+| usage: ``%s`` [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]
 |
 | %s
 |
-
 | options:
-|   ``-h,--help          show this help message and exit``
-|   ``-a,--all           load all modules``
-|   ``-c,--console       start console``
-|   ``-d,--daemon        start background daemon``
-|   ``-l,--level LEVEL   set loglevel``
-|   ``-m,--mods MODS     modules to load``
-|   ``-n,--noignore      disable ignore```
-|   ``-s,--service       start service``
-|   ``-t,--threaded      enable multiple workers``
-|   ``-v,--verbose       enable verbose``
-|   ``-w,--wait          wait for services to start``
-|   ``--local            use local mods directory``
-|   ``--wdr <WDR>        set working directory``
 
-| examples:
-|
-| ``%s <cmd> [key=val] [key==val]``
-| ``%s -cvaw [init=mod1,mod2]``
-|
+  |   ``-h,--help          show this help message and exit``
+  |   ``-a,--all           load all modules``
+  |   ``-c,--console       start console``
+  |   ``-d,--daemon        start background daemon``
+  |   ``-l,--level LEVEL   set loglevel``
+  |   ``-m,--mods MODS     modules to load``
+  |   ``-n,--noignore      disable ignore```
+  |   ``-s,--service       start service``
+  |   ``-t,--threaded      enable multiple workers``
+  |   ``-v,--verbose       enable verbose``
+  |   ``-w,--wait          wait for services to start``
+  |   ``--local            use local mods directory``
+  |   ``--wdr <WDR>        set working directory``
+  |
+  | examples:
+  |
+  | ``%s <cmd> [key=val] [key==val]``
+  | ``%s -cvaw [init=mod1,mod2]``
 
 **DESCRIPTION**
-
 
 ``%s`` has all you need to program a unix cli program, such as disk
 perisistence for configuration files, event handler to handle the
