@@ -5,7 +5,6 @@
 "stress test"
 
 
-import logging
 import os
 import queue
 import shutil
@@ -19,7 +18,7 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.command import Commands
 from nixt.configs import Main
-from nixt.handler import Client, Event, Output
+from nixt.handler import Client, Event
 from nixt.objects import Data, Methods
 from nixt.package import Mods
 from nixt.persist import Workdir

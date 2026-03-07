@@ -27,8 +27,9 @@ from urllib.parse import quote_plus, urlencode
 from nixt.brokers import Broker
 from nixt.clocker import Repeater
 from nixt.configs import Configuration
-from nixt.objects import Data, Dict, Methods
-from nixt.persist import Disk, Locate, Main
+from nixt.encoder import NdJson, Json
+from nixt.objects import Data, Dict, Methods, Object
+from nixt.persist import Disk, Locate, Main, Workdir
 from nixt.threads import Thread
 from nixt.utility import Time, Utils
 
@@ -107,6 +108,8 @@ class Runner:
 
     def __init__(self):
         self.dosave = False
+        self.log = NdJson()
+        self.log.configure(os.path.join(Workdir.workdir("files"), "rss"))
         self.fetchlock = threading.RLock()
         self.queue = queue.Queue()
         self.stopped = threading.Event()
@@ -131,8 +134,7 @@ class Runner:
 
     def loop(self):
         while True:
-            job = self.queue.get()
-            self.fetch(*job)
+            self.fetch(*self.queue.get())
 
     def fetch(self, fnm, feed, silent=False):
         with Run.fetchlock:
@@ -143,40 +145,27 @@ class Runner:
             for obj in Helpers.getfeed(fnm, feed, feed.display_list):
                 if obj is None:
                     continue
-                counter += 1
-                fed = Feed()
-                Dict.update(fed, obj)
-                Dict.update(fed, feed)
-                url = urllib.parse.urlparse(fed.link)
-                if url.path and not url.path == "/":
-                    uurl = f"{url.scheme}://{url.netloc}/{url.path}"
-                else:
-                    uurl = fed.link
-                urls.append(uurl)
-                if uurl in see:
-                    continue
-                if self.dosave:
-                    Disk.write(fed)
-                result.append(fed)
-            if urls:
-                setattr(State.seen, feed.rss, urls)
-            if silent:
-                return counter
-            if not State.seenfn:
-                State.seenfn = Methods.ident(State.seen)
-            Disk.write(State.seen, State.seenfn)
-        txt = ""
-        feedname = getattr(feed, "name", None)
-        if feedname:
-            txt = f"[{feedname}] "
-        for obj in result:
-            Broker.announce(txt + self.display(obj))
-        return counter
+                self.log.append(obj)
+
+    def watch(self):
+        while True:
+            time.sleep(30)
+            if not self.log.watch():
+                continue
+            for txt in self.log.diff():
+                obj = Json.loads(txt)
+                txt2 = ""
+                feedname = obj.get"name", None)
+                if feedname:
+                    txt2 = f"[{feedname}] "
+                Broker.announce(txt2 + self.display(obj))
 
     def put(self, args):
         self.queue.put(args)
 
     def start(self):
+        self.log.configure(os.path.join(Workdir.workdir("files"), "rss"))
+        Thread.launch(self.watch)
         Thread.launch(self.loop)
 
     def stop(self):
@@ -283,6 +272,7 @@ class OPML:
     @staticmethod
     def getattrs(line, token):
         index = 0
+        result = []
         stop = False
         while not stop:
             index1 = line.find(f"<{token} ", index)
@@ -292,8 +282,9 @@ class OPML:
             index2 = line.find("/>", index1)
             if index2 == -1:
                 return result
-            yield line[index1:index2]
+            result.append(line[index1:index2])
             index = index2
+        return result
 
     @staticmethod
     def parse(txt, toke="outline", itemz=None):

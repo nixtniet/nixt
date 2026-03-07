@@ -9,7 +9,6 @@ import logging
 import os
 import sys
 import time
-import _thread
 
 
 from nixt.command import Commands
@@ -19,7 +18,7 @@ from nixt.objects import Dict, Methods
 from nixt.package import Mods
 from nixt.persist import Disk, Locate, Workdir
 from nixt.threads import Thread
-from nixt.utility import Log, Utils
+from nixt.utility import Log
 
 
 from nixt import modules as MODS

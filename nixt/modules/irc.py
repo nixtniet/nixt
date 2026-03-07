@@ -134,7 +134,7 @@ class IRC(Output):
 
     def announce(self, text):
         for channel in self.channels:
-            self.dosay(channel, text)
+            self.say(channel, text)
 
     def connect(self, server, port=6667):
         self.state.nrconnect += 1
@@ -274,6 +274,7 @@ class IRC(Output):
             che = self.cache.get(channel, None)
             if che:
                 txt = che.pop(0)
+                del che
         except (KeyError, IndexError):
             pass
         return txt

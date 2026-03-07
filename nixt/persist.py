@@ -16,6 +16,21 @@ from .objects import Data, Dict, Methods
 from .utility import Time
 
 
+class State:
+
+    def __init__(self):
+        super().__init__()
+        self.fnm = ""
+
+    def dump(self):
+        if not self.fnm:
+            self.fnm = Locate.first(self) or Methods.ident(self)
+        Disk.write(self, self.fnm)
+
+    def load(self):
+        Locate.first(self)
+
+
 class Cache:
 
     paths = {}
@@ -33,11 +48,10 @@ class Cache:
     @staticmethod
     def sync(path, obj):
         "update cached object."
-        Cache.add(path, obj)
-        #try:
-        #    Dict.update(Cache.paths[path], obj)
-        #except KeyError:
-        #    Cache.add(path, obj)
+        try:
+            Dict.update(Cache.paths[path], obj)
+        except KeyError:
+            Cache.add(path, obj)
 
 
 class Disk:
@@ -218,21 +232,6 @@ class Workdir:
     def workdir(path=""):
         "return workdir."
         return os.path.join(Workdir.wdr, path)
-
-
-class State:
-
-    def __init__(self):
-        super().__init__()
-        self.fnm = ""
-
-    def dump(self):
-        if not self.fnm:
-            self.fnm = Locate.first(self) or Methods.ident(self)
-        Disk.write(self, self.fnm)
-
-    def load(self):
-        Locate.first(self)
 
 
 def __dir__():
