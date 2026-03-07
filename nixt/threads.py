@@ -22,7 +22,6 @@ class Task(threading.Thread):
         self.queue = queue.Queue()
         self.result = None
         self.starttime = time.time()
-        self.status = "init"
         self.stopped = threading.Event()
         self.queue.put((func, args))
 
@@ -48,88 +47,15 @@ class Task(threading.Thread):
         if args and hasattr(args[0], "ready"):
             self.event = args[0]
         try:
-            self.status = "run"
             self.result = func(*args)
-            self.status = "idle"
+            return self.result
         except (KeyboardInterrupt, EOFError):
-            if self.event:
-                self.event.ready()
-            _thread.interrupt_main()
+            pass
         except Exception as ex:
-            if self.event:
-                self.event.ready()
             logging.exception(ex)
-            _thread.interrupt_main()
-
-
-class Worker(threading.Thread):
-
-    nr = 0
-
-    def __init__(self, *args, daemon=True, **kwargs):
-        super().__init__(None, self.run, *args, daemon=True, **kwargs)
-        self.event = None
-        self.name = kwargs.get("name", f"Worker({Worker.nr})")
-        self.queue = queue.Queue()
-        self.result = None
-        self.starttime = time.time()
-        self.status = "init"
-        self.stopped = threading.Event()
-        Worker.nr += 1
-
-    def put(self, func, args):
-        "put function on queue."
-        self.queue.put((func, args))
-
-    def run(self):
-        "run function."
-        while 1:
-            func, args = self.queue.get()
-            if args and hasattr(args[0], "ready"):
-                self.event = args[0]
-            try:
-                self.status = "run"
-                self.result = func(*args)
-                self.status = "idle"
-            except (KeyboardInterrupt, EOFError):
-                if self.event:
-                    self.event.ready()
-                _thread.interrupt_main()
-            except Exception as ex:
-                if self.event:
-                    self.event.ready()
-                logging.exception(ex)
-                _thread.interrupt_main()
-
-
-class Pool:
-
-    workers = []
-    lock = threading.RLock()
-    nrcpu = os.cpu_count()
-    nrlast = 1
-
-    @staticmethod
-    def add(worker):
-        Pool.workers.append(worker)
-
-    @staticmethod
-    def init(nrcpu=None):
-        Pool.nrcpu = nrcpu or Pool.nrcpu
-        for _x in range(Pool.nrcpu):
-            clt = Worker()
-            clt.start()
-            Pool.add(clt)
-
-    @staticmethod
-    def put(func, args):
-        if not Pool.workers:
-            Pool.init()
-        if Pool.nrlast >= Pool.nrcpu-1:
-            Pool.nrlast = 0
-        clt = Pool.workers[Pool.nrlast]
-        clt.put(func, args)
-        Pool.nrlast += 1
+        if self.event:
+            self.event.ready()
+        _thread.interrupt_main()
 
 
 class Thread:
@@ -156,10 +82,6 @@ class Thread:
             return repr(obj).split()[1]
         return repr(obj)
 
-    @staticmethod
-    def work(func, *args, **kwargs):
-        "run function in a thread."
-        Pool.put(func, args)
 
 def __dir__():
     return (

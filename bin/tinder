@@ -5,6 +5,7 @@
 "stress test"
 
 
+import logging
 import os
 import queue
 import shutil
@@ -18,13 +19,13 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.command import Commands
 from nixt.configs import Main
-from nixt.handler import Client, Event
+from nixt.handler import Client, Event, Output
 from nixt.objects import Data, Methods
 from nixt.package import Mods
 from nixt.persist import Workdir
-from nixt.runtime import Runtime, Run
+from nixt.runtime import Runtime
 from nixt.threads import Thread
-from nixt.utility import Time, Utils
+from nixt.utility import Log, Time, Utils
 
 
 from nixt import modules as MODS
@@ -45,7 +46,6 @@ Main.level = "info"
 Main.mods = ""
 Main.name = Utils.pkgname(Commands)
 Main.opts = Data()
-Main.txt = " ".join(sys.argv[1:])
 Main.version = 8
 Main.wdr = ".test"
 
@@ -61,45 +61,33 @@ class CLI(Client):
             print(text)
 
 
-class ClientPool:
+class Clients:
 
     clients = []
     lock = threading.RLock()
     nrcpu = 1
-    nrlast = 0
+    last = 0
 
     @staticmethod
     def add(client):
-        ClientPool.clients.append(client)
+        Clients.clients.append(client)
 
     @staticmethod
     def init(nrcpu, cls):
-        ClientPool.nrcpu = nrcpu
-        for _x in range(ClientPool.nrcpu):
+        Clients.nrcpu = nrcpu
+        for _x in range(Clients.nrcpu):
             clt = cls()
             clt.start()
-            ClientPool.add(clt)
+            Clients.add(clt)
 
     @staticmethod
     def put(*args):
-        with ClientPool.lock:
-            if ClientPool.nrlast >= ClientPool.nrcpu-1:
-                ClientPool.nrlast = 0
-            clt = ClientPool.clients[ClientPool.nrlast]
+        with Clients.lock:
+            if Clients.last >= Clients.nrcpu-1:
+                Clients.last = 0
+            clt = Clients.clients[Clients.last]
             clt.put(*args)
-            ClientPool.nrlast += 1
-
-
-
-def check(text):
-    args = sys.argv[1:]
-    for arg in args:
-        if not arg.startswith("-"):
-            continue
-        for char in text:
-            if char in arg:
-                return True
-    return False
+            Clients.last += 1
 
 
 def consume():
@@ -114,11 +102,14 @@ def consume():
 
 def payload(todo):
     for cmd, example in todo.items():
+        if Main.cmd:
+            if cmd not in Utils.spl(Main.cmd):
+                continue
         for ex in example:
             evt = Event()
             evt.text = f"{cmd} {ex}"
             evt.kind = "command"
-            ClientPool.put(evt)
+            Clients.put(evt)
             events.put(evt)
 
 
@@ -127,6 +118,7 @@ def main():
         shutil.rmtree(Main.wdr)
     Methods.parse(Main, " ".join(sys.argv[1:]))
     Workdir.setwd(Main.wdr)
+    Log.level(Main.level)
     Mods.add("modules", MODS.__path__[0])
     if MODS2:
         Mods.add("mods", MODS2.__path__[0])
@@ -135,9 +127,9 @@ def main():
     if "v" in Main.opts:
         Runtime.banner()
     if "z" in Main.opts:
-        ClientPool.init(os.cpu_count(), CLI)
+        Clients.init(os.cpu_count(), CLI)
     else:
-        ClientPool.init(1, CLI)
+        Clients.init(1, CLI)
     starttime = time.time()
     nrs = Main.index or 1
     for _x in range(nrs):
@@ -156,6 +148,7 @@ def main():
     lap = Time.elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
+    Runtime.shutdown()
     if "v" in Main.opts:
         print(f"{Methods.fmt(Main, skip='otxt,txt')}")
         print(f"{nrs} events left.")
@@ -211,4 +204,4 @@ post = {
 
 
 if __name__ == "__main__":
-    Run.wrap(main)
+    Runtime.wrap(main)

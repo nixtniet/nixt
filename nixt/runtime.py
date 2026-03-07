@@ -9,6 +9,7 @@ import logging
 import os
 import sys
 import time
+import _thread
 
 
 from nixt.command import Commands
@@ -17,7 +18,7 @@ from nixt.handler import Console, Event
 from nixt.objects import Dict, Methods
 from nixt.package import Mods
 from nixt.persist import Disk, Locate, Workdir
-from nixt.threads import Pool, Thread
+from nixt.threads import Thread
 from nixt.utility import Log, Utils
 
 
@@ -95,9 +96,6 @@ class Runtime:
             Runtime.banner()
         if Main.all:
             Main.mods = Mods.list(Main.ignore)
-        if Main.threaded:
-            Pool.init(os.cpu_count())
-            logging.info("%s workers", Pool.nrcpu)
 
     @staticmethod
     def daemon(verbose=False, nochdir=False):
@@ -120,6 +118,15 @@ class Runtime:
         if not nochdir:
             os.chdir("/")
         os.nice(10)
+
+    @staticmethod
+    def forever():
+        "run forever until ctrl-c."
+        while True:
+            try:
+                time.sleep(0.1)
+            except (KeyboardInterrupt, EOFError):
+                break
 
     @staticmethod
     def getargs():
@@ -185,7 +192,6 @@ class Runtime:
     @staticmethod
     def shutdown():
         "call shutdown on modules."
-        logging.debug("shutdown")
         for mod in Dict.values(Mods.modules):
             if "shutdown" in dir(mod):
                 try:
@@ -224,7 +230,7 @@ class Scripts:
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Runtime.scanner(Main)
         Runtime.init(Main)
-        Utils.forever()
+        Runtime.forever()
 
     @staticmethod
     def console(args):
@@ -237,7 +243,7 @@ class Scripts:
         Runtime.init(Main, default=False)
         csl = CSL()
         csl.start()
-        Utils.forever()
+        Runtime.forever()
 
     @staticmethod
     def control(args):
@@ -262,7 +268,7 @@ class Scripts:
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Runtime.scanner(Main)
         Runtime.init(Main)
-        Utils.forever()
+        Runtime.forever()
 
 
 class Cmd:

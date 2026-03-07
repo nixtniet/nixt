@@ -153,6 +153,10 @@ class Dict:
 class Methods:
 
     @staticmethod
+    def cls(obj):
+        return Methods.fqn(obj).split(".")[-1]
+
+    @staticmethod
     def deleted(obj):
         "check whether obj had deleted flag set."
         return "__deleted__" in dir(obj) and obj.__deleted__
@@ -190,7 +194,7 @@ class Methods:
             elif isinstance(value, str):
                 txt += f'{key}="{value}" '
             else:
-                txt += f"{key}={Methods.fqn(value)}({value}) "
+                txt += f"{key}={Methods.cls(value)}({Methods.fmt(value)}) "
         if txt == "":
             txt = "{}"
         return txt.strip()

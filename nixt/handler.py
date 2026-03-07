@@ -42,6 +42,8 @@ class Event:
     def wait(self, timeout=0.0):
         "wait for completion."
         self._ready.wait(timeout or None)
+        if self._thr:
+            self._thr.join(timeout or None)
 
 
 class Handler:
@@ -58,7 +60,7 @@ class Handler:
             event.ready()
             return
         name = event.text and event.text.split()[0]
-        Thread.work(func, event, name=name)
+        event._thr = Thread.launch(func, event, name=name)
 
     def loop(self):
         "event loop."
