@@ -283,7 +283,6 @@ class OPML:
     @staticmethod
     def getattrs(line, token):
         index = 0
-        result = []
         stop = False
         while not stop:
             index1 = line.find(f"<{token} ", index)
@@ -293,9 +292,8 @@ class OPML:
             index2 = line.find("/>", index1)
             if index2 == -1:
                 return result
-            result.append(line[index1:index2])
+            yield line[index1:index2]
             index = index2
-        return result
 
     @staticmethod
     def parse(txt, toke="outline", itemz=None):

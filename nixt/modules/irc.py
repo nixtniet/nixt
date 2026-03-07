@@ -134,7 +134,7 @@ class IRC(Output):
 
     def announce(self, text):
         for channel in self.channels:
-            self.say(channel, text)
+            self.dosay(channel, text)
 
     def connect(self, server, port=6667):
         self.state.nrconnect += 1

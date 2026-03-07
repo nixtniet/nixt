@@ -33,10 +33,11 @@ class Cache:
     @staticmethod
     def sync(path, obj):
         "update cached object."
-        try:
-            Dict.update(Cache.paths[path], obj)
-        except KeyError:
-            Cache.add(path, obj)
+        Cache.add(path, obj)
+        #try:
+        #    Dict.update(Cache.paths[path], obj)
+        #except KeyError:
+        #    Cache.add(path, obj)
 
 
 class Disk:
@@ -232,6 +233,7 @@ class State:
 
     def load(self):
         Locate.first(self)
+
 
 def __dir__():
     return (
