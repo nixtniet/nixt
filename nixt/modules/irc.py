@@ -172,7 +172,7 @@ class IRC(Output):
     def disconnect(self):
         try:
             self.sock.shutdown(2)
-        except (ssl.SSLError, OSError, BrokenPipeError) as _ex:
+        except (ssl.SSLError, OSError, BrokenPipeError):
             pass
 
     def display(self, event):
@@ -554,7 +554,7 @@ def cb_privmsg(evt):
         if evt.text[0] in ["!",]:
             evt.text = evt.text[1:]
         elif evt.text.startswith(f"{bot.cfg.nick}:"):
-            evt.text = evt.text[len(bot.cfg.nick) + 1 :]
+            evt.text = evt.text[len(bot.cfg.nick) + 1:]
         else:
             return
         if evt.text:

@@ -259,9 +259,9 @@ class Methods:
             args.append(spli)
         if args:
             obj.args = args
-            obj.text  = obj.cmd or ""
+            obj.text = obj.cmd or ""
             obj.rest = " ".join(obj.args)
-            obj.text  = obj.cmd + " " + obj.rest
+            obj.text = obj.cmd + " " + obj.rest
         else:
             obj.text = obj.cmd or ""
 

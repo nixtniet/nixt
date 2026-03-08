@@ -358,7 +358,7 @@ class Helpers:
 
     @staticmethod
     def gettinyurl(url):
-        "query tinyurl for a link." 
+        "query tinyurl for a link."
         postarray = [
             ("submit", "submit"),
             ("url", url),

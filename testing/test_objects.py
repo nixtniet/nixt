@@ -17,7 +17,6 @@ TARGET = nixt.objects
 VALIDJSON = '{"test": "bla"}'
 
 
-
 class TestObject(unittest.TestCase):
 
     def test_constructor(self):
@@ -96,7 +95,10 @@ class TestObject(unittest.TestCase):
         self.assertEqual(obj.key, "value")
 
     def test_repr(self):
-        self.assertTrue(repr(Dict.update(Object(), {"key": "value"})), {"key": "value"})
+        self.assertTrue(
+                        repr(Dict.update(Object(), {"key": "value"})),
+                        {"key": "value"}
+                       )
 
     def test_setattr(self):
         obj = Object()

@@ -53,7 +53,6 @@ def wsd(event):
         bot.announce(txt.strip()[2:])
 
 
-
 TXT = """| wijsheid, wijs !
 
 | OVERDRACHT

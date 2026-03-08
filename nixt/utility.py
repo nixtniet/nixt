@@ -64,23 +64,23 @@ class Time:
         nsec = float(seconds)
         if nsec < 1:
             return f"{nsec:.2f}s"
-        yea     = 365 * 24 * 60 * 60
-        week    = 7 * 24 * 60 * 60
-        nday    = 24 * 60 * 60
-        hou    = 60 * 60
-        minute  = 60
-        yeas    = int(nsec / yea)
-        nsec   -= yeas * yea
-        weeks   = int(nsec / week)
-        nsec   -= weeks * week
-        nrdays  = int(nsec / nday)
-        nsec   -= nrdays * nday
-        hours   = int(nsec / hou)
-        nsec   -= hours * hou
+        yea = 365 * 24 * 60 * 60
+        week = 7 * 24 * 60 * 60
+        nday = 24 * 60 * 60
+        hou = 60 * 60
+        minute = 60
+        yeas = int(nsec / yea)
+        nsec -= yeas * yea
+        weeks = int(nsec / week)
+        nsec -= weeks * week
+        nrdays = int(nsec / nday)
+        nsec -= nrdays * nday
+        hours = int(nsec / hou)
+        nsec -= hours * hou
         minutes = int(nsec / minute)
-        nsec   -= minutes * minute
-        sec     = int(nsec / 1)
-        nsec   -= nsec - sec
+        nsec -= minutes * minute
+        sec = int(nsec / 1)
+        nsec -= nsec - sec
         if yeas:
             txt += f"{yeas}y"
         if weeks:
@@ -136,7 +136,7 @@ class Time:
         try:
             hmsre = re.search(r'(\d+):(\d+):(\d+)', str(daystr))
             hours = 60 * 60 * (int(hmsre.group(1)))
-            hoursmin = hours  + int(hmsre.group(2)) * 60
+            hoursmin = hours + int(hmsre.group(2)) * 60
             hmsres = hoursmin + int(hmsre.group(3))
         except AttributeError:
             pass

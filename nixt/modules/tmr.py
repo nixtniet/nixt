@@ -96,7 +96,7 @@ def tmr(event):
             target = Time.day(event.rest)
         except NoDate:
             target = Time.extract(Time.today())
-        hours =  Time.hour(event.rest)
+        hours = Time.hour(event.rest)
         if hours:
             target += hours
     target += rand.random()

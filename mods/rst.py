@@ -109,7 +109,7 @@ class RESTHandler(BaseHTTPRequestHandler):
             self.write_header("text/html")
             txt = ""
             for fnn in os.listdir(fnm):
-                filename = self.path  + os.sep + fnn
+                filename = self.path + os.sep + fnn
                 txt += f'<a href="http://{Config.hostname}:{Config.port}/{filename}">{filename}</a><br>\n'
             self.send(txt.strip())
             return

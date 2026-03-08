@@ -138,9 +138,9 @@ class Runtime:
         parser.add_argument("-m", "--mods", default="", help='modules to load')
         parser.add_argument("-n", "--noignore", action="store_true", help="disable ignore")
         parser.add_argument("-s", "--service", action="store_true", help="start service")
-        parser.add_argument("-t", "--threaded", action='store_true',help='enable multiple workers')
-        parser.add_argument("-v", "--verbose", action='store_true',help='enable verbose')
-        parser.add_argument("-w", "--wait", action='store_true',help='wait for services to start')
+        parser.add_argument("-t", "--threaded", action='store_true', help='enable multiple workers')
+        parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose')
+        parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start')
         parser.add_argument("--local", action="store_true", help="use local mods directory")
         parser.add_argument("--wdr", help='set working directory')
         return parser.parse_known_args()
@@ -249,7 +249,7 @@ class Scripts:
         "cli script."
         if len(sys.argv) == 1:
             return
-        Runtime.boot(args,MODS)
+        Runtime.boot(args, MODS)
         Main.mods = Mods.list(Main.ignore)
         Commands.add(Cmd.cfg, Cmd.cmd, Cmd.mod, Cmd.srv, Cmd.ver)
         Runtime.scanner(Main)
