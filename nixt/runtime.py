@@ -14,11 +14,11 @@ import time
 from nixt.command import Commands
 from nixt.configs import Main
 from nixt.handler import Console, Event
+from nixt.loggers import Log
 from nixt.objects import Dict, Methods
 from nixt.package import Mods
 from nixt.persist import Disk, Locate, Workdir
 from nixt.threads import Thread
-from nixt.utility import Log
 
 
 from nixt import modules as MODS
