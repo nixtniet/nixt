@@ -4,7 +4,8 @@
 "persistence through storage"
 
 
-import json
+import json.decoder
+import logging
 import os
 import pathlib
 import threading
@@ -76,7 +77,7 @@ class Disk:
                 try:
                     Dict.update(obj, Json.load(fpt))
                 except json.decoder.JSONDecodeError as ex:
-                    ex.add_note(path)
+                    logging.error(f"failed read at {pth}")
                     raise ex
 
     @staticmethod
