@@ -7,7 +7,6 @@
 import datetime
 import inspect
 import os
-import re
 import time
 
 
@@ -22,40 +21,14 @@ class Time:
     def date(daystr):
         "date from string."
         daystring = daystr.encode('utf-8', 'replace').decode("utf-8")
-        res = time.time()
+        if "-" not in daystring:
+            date = datetime.date.fromtimestamp(time.time())
+            daystring = f"{date.year}-{date.month}-{date.day}" + " " + daystring
         for fmat in TIMES:
             try:
-                res = time.mktime(time.strptime(daystring, fmat))
-                break
+                return time.mktime(time.strptime(daystring, fmat))
             except ValueError:
                 pass
-        return res
-
-    @staticmethod
-    def day(daystr):
-        "day part in a string."
-        days = None
-        month = None
-        yea = None
-        try:
-            ymdre = re.search(r'(\d+)-(\d+)-(\d+)', daystr)
-            if ymdre:
-                (days, month, yea) = ymdre.groups()
-        except ValueError:
-            try:
-                ymre = re.search(r'(\d+)-(\d+)', daystr)
-                if ymre:
-                    (days, month) = ymre.groups()
-                    yea = time.strftime("%Y", time.localtime())
-            except Exception as ex:
-                raise NoDate(daystr) from ex
-        if days:
-            days = int(days)
-            month = int(month)
-            yea = int(yea)
-            dte = f"{days} {MONTH[month]} {yea}"
-            return time.mktime(time.strptime(dte, r"%d %b %Y"))
-        raise NoDate(daystr)
 
     @staticmethod
     def elapsed(seconds, short=True):
@@ -131,63 +104,6 @@ class Time:
         return float(timd)
 
     @staticmethod
-    def hour(daystr):
-        "hour in string."
-        try:
-            hmsre = re.search(r'(\d+):(\d+):(\d+)', str(daystr))
-            hours = 60 * 60 * (int(hmsre.group(1)))
-            hoursmin = hours + int(hmsre.group(2)) * 60
-            hmsres = hoursmin + int(hmsre.group(3))
-        except AttributeError:
-            pass
-        except ValueError:
-            pass
-        try:
-            hmre = re.search(r'(\d+):(\d+)', str(daystr))
-            hours = 60 * 60 * (int(hmre.group(1)))
-            hmsres = hours + int(hmre.group(2)) * 60
-        except AttributeError:
-            return 0
-        except ValueError:
-            return 0
-        return hmsres
-
-    @staticmethod
-    def timed(txt):
-        "scan string for date/time."
-        try:
-            target = Time.day(txt)
-        except NoDate:
-            target = Time.extract(Time.today())
-        hours = Time.hour(txt)
-        if hours:
-            target += hours
-        return target
-
-    @staticmethod
-    def parsetxt(txt):
-        "parse text for date/time."
-        seconds = 0
-        target = 0
-        text = str(txt)
-        for word in text.split():
-            if word.startswith("+"):
-                seconds = int(word[1:])
-                return time.time() + seconds
-            if word.startswith("-"):
-                seconds = int(word[1:])
-                return time.time() - seconds
-        if not target:
-            try:
-                target = Time.day(txt)
-            except NoDate:
-                target = Time.extract(Time.today())
-            hours = Time.hour(txt)
-            if hours:
-                target += hours
-        return target
-
-    @staticmethod
     def today():
         "start of the day."
         return str(datetime.datetime.today()).split()[0]
@@ -253,7 +169,8 @@ MONTH = {
 
 
 TIMES = [
-    "%Y-%M-%D %H:%M:%S",
+    "%Y-%m-%d %H:%M:%S",
+    "%Y-%m-%d %H:%M",
     "%Y-%m-%d %H:%M:%S",
     "%Y-%m-%d",
     "%d-%m-%Y",

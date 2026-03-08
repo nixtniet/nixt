@@ -44,7 +44,6 @@ class Event:
         self._ready.wait(timeout or None)
         if self._thr:
             self._thr.join(timeout or None)
-        del self
 
 
 class Handler:

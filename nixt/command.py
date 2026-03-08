@@ -8,7 +8,6 @@ import inspect
 
 
 from .brokers import Broker
-from .handler import Event
 from .objects import Methods
 
 
@@ -24,17 +23,6 @@ class Commands:
             name = func.__name__
             Commands.cmds[name] = func
             Commands.names[name] = func.__module__.split(".")[-1]
-
-    @staticmethod
-    def cmd(text):
-        "parse text for command and run it."
-        for txt in text.split(" ! "):
-            evt = Event()
-            evt.text = txt
-            evt.type = "command"
-            Commands.command(evt)
-            evt.wait()
-        return evt
 
     @staticmethod
     def command(evt):

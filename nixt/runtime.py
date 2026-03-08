@@ -98,6 +98,20 @@ class Runtime:
             Main.mods = Mods.list(Main.ignore)
 
     @staticmethod
+    def cmd(text):
+        "parse text for command and run it."
+        cli = Line()
+        cli.start()
+        for txt in text.split(" ! "):
+            evt = Event()
+            evt.orig = repr(cli)
+            evt.text = txt
+            evt.kind = "command"
+            Commands.command(evt)
+            evt.wait()
+        return evt
+
+    @staticmethod
     def daemon(verbose=False, nochdir=False):
         "run in the background."
         pid = os.fork()
@@ -252,11 +266,9 @@ class Scripts:
             return
         Runtime.boot(args, MODS)
         Main.mods = Mods.list(Main.ignore)
-        Commands.add(Cmd.cfg, Cmd.cmd, Cmd.mod, Cmd.srv, Cmd.ver)
+        Commands.add(Cmd.cfg, Cmd.cmd, Cmd.mod, Cmd.pwd, Cmd.srv, Cmd.ver)
         Runtime.scanner(Main)
-        evt = Commands.cmd(Main.txt)
-        for line in evt.result.values():
-            Runtime.out(line)
+        Runtime.cmd(Main.txt)
 
     @staticmethod
     def service(args):
@@ -353,7 +365,7 @@ def main():
         Runtime.wrap(Scripts.service, args)
     else:
         Runtime.wrap(Scripts.control, args)
-    Runtime.shutdown()
+    #Runtime.shutdown()
 
 
 SYSTEMD = """[Unit]

@@ -13,8 +13,8 @@ import time
 from nixt.brokers import Broker
 from nixt.objects import Dict, Methods, Object
 from nixt.persist import Disk, Locate
-from nixt.threads import Timed
-from nixt.utility import NoDate, Time
+from nixt.threads import Thread, Timed
+from nixt.utility import Time
 
 
 rand = random.SystemRandom()
@@ -92,13 +92,10 @@ def tmr(event):
     if seconds:
         target = time.time() + seconds
     else:
-        try:
-            target = Time.day(event.rest)
-        except NoDate:
-            target = Time.extract(Time.today())
-        hours = Time.hour(event.rest)
-        if hours:
-            target += hours
+        target = Time.date(event.args[0])
+    if not target:
+        event.reply("can't determine time")
+        return
     target += rand.random()
     if not target or time.time() > target:
         event.reply("already passed given time.")
@@ -108,6 +105,6 @@ def tmr(event):
     Timers.add(target, event.orig, event.channel, txt)
     Disk.write(Timers.timers, Timers.path or Methods.ident(Timers.timers))
     bot = Broker.get(event.orig)
-    timer = Timed(diff, bot.say, event.orig, event.channel, txt)
-    timer.start()
+    timer = Timed(diff, bot.say, event.channel, txt)
+    Thread.launch(timer.start).join()
     event.reply("ok " + Time.elapsed(diff))
