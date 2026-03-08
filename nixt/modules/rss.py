@@ -7,7 +7,6 @@
 import html
 import html.parser
 import http.client
-import json.decoder
 import logging
 import os
 import queue
@@ -25,18 +24,16 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.brokers import Broker
 from nixt.configs import Configuration
-from nixt.encoder import NdJson, Json
-from nixt.loggers import NDJson
-from nixt.objects import Data, Dict, Methods, Object
-from nixt.persist import Disk, Locate, Main, Workdir
+from nixt.handler import Broker
+from nixt.objects import Data, Dict, Object, Methods
+from nixt.persist import Disk, Locate, Main
 from nixt.threads import Repeater, Thread
 from nixt.utility import Time, Utils
 
 
 def init():
-    Runners.init(1, Runner)
+    RunnerPool.init(1, Runner)
     Run.fetcher.start()
     logging.warning("%s feeds", Locate.count("rss"))
 
@@ -48,31 +45,6 @@ def shutdown():
 class Config(Configuration):
 
     polltime = 300
-
-
-class Feed(Data):
-
-    pass
-
-
-class Modified(Data):
-
-    pass
-
-
-class Rss(Data):
-
-    def __init__(self):
-        super().__init__()
-        self.display_list = "title,link,author"
-        self.insertid = None
-        self.name = ""
-        self.rss = ""
-
-
-class Urls(Data):
-
-    pass
 
 
 class Fetcher:
@@ -88,7 +60,7 @@ class Fetcher:
         for fnm, feed in Locate.find(Methods.fqn(Rss)):
             if feed.skip:
                 continue
-            Runners.put((fnm, feed, silent))
+            RunnerPool.put((fnm, feed, silent))
             nrs += 1
         return nrs
 
@@ -109,27 +81,32 @@ class Runner:
 
     def __init__(self):
         self.dosave = False
-        self.log = NDJson()
-        self.log.configure(os.path.join(Workdir.workdir("files"), "rss"))
         self.fetchlock = threading.RLock()
         self.queue = queue.Queue()
         self.stopped = threading.Event()
         self.todo = queue.Queue()
 
-    def tostr(self, data):
+    def display(self, obj):
         displaylist = ""
-        result = f"[{data.get('name', 'noname')}]" + " "
-        for key in Utils.spl(data.get("display_list", "title,link")):
-            dat = data.get(key, None)
-            if dat is None:
+        result = ""
+        try:
+            displaylist = obj.display_list or "title,link"
+        except AttributeError:
+            displaylist = "title,link,author"
+        for key in displaylist.split(","):
+            if not key:
                 continue
-            result += Helpers.unescape(Helpers.striphtml(dat.replace("\n", " ").rstrip()))
+            data = getattr(obj, key, None)
+            if not data:
+                continue
+            result += Helpers.unescape(Helpers.striphtml(data.replace("\n", " ").rstrip()))
             result += " - "
-        return result[:-2].strip()
+        return result[:-2].rstrip()
 
     def loop(self):
         while True:
-            self.fetch(*self.queue.get())
+            job = self.queue.get()
+            self.fetch(*job)
 
     def fetch(self, fnm, feed, silent=False):
         with Run.fetchlock:
@@ -140,61 +117,75 @@ class Runner:
             for obj in Helpers.getfeed(fnm, feed, feed.display_list):
                 if obj is None:
                     continue
-                self.log.append(obj)
-
-    def watch(self):
-        while True:
-            time.sleep(60)
-            if not self.log.watch():
-                continue
-            for txt in self.log.diff():
-                try:
-                    data = Json.loads(txt)
-                except json.decoder.JSONDecodeError:
+                counter += 1
+                fed = Feed()
+                Dict.update(fed, obj)
+                Dict.update(fed, feed)
+                url = urllib.parse.urlparse(fed.link)
+                if url.path and not url.path == "/":
+                    uurl = f"{url.scheme}://{url.netloc}/{url.path}"
+                else:
+                    uurl = fed.link
+                urls.append(uurl)
+                if uurl in see:
                     continue
-                Broker.announce(self.tostr(data))
+                if self.dosave:
+                    Disk.write(fed)
+                result.append(fed)
+            if urls:
+                setattr(State.seen, feed.rss, urls)
+            if silent:
+                return counter
+            if not State.seenfn:
+                State.seenfn = Methods.ident(State.seen)
+            Disk.write(State.seen, State.seenfn)
+        txt = ""
+        feedname = getattr(feed, "name", None)
+        if feedname:
+            txt = f"[{feedname}] "
+        for obj in result:
+            Broker.announce(txt + self.display(obj))
+        return counter
 
     def put(self, args):
         self.queue.put(args)
 
     def start(self):
-        self.log.configure(os.path.join(Workdir.workdir("files"), "rss"))
-        Thread.launch(self.watch)
         Thread.launch(self.loop)
 
     def stop(self):
         self.stopped.set()
 
 
-class Runners:
+class RunnerPool:
 
     runners = []
     lock = threading.RLock()
     nrcpu = 1
-    last = 0
+    nrlast = 0
 
     @staticmethod
     def add(client):
-        Runners.runners.append(client)
+        RunnerPool.runners.append(client)
 
     @staticmethod
     def init(nrcpu, cls):
-        Runners.nrcpu = nrcpu
-        for _x in range(Runners.nrcpu):
+        RunnerPool.nrcpu = nrcpu
+        for _x in range(RunnerPool.nrcpu):
             clt = cls()
             clt.start()
-            Runners.add(clt)
+            RunnerPool.add(clt)
 
     @staticmethod
     def put(*args):
-        if not Runners.runners:
-            Runners.init(Runners.nrcpu, Runner)
-        with Runners.lock:
-            if Runners.last >= Runners.nrcpu-1:
-                Runners.last = 0
-            clt = Runners.runners[Runners.last]
+        if not RunnerPool.runners:
+            RunnerPool.init(RunnerPool.nrcpu, Runner)
+        with RunnerPool.lock:
+            if RunnerPool.nrlast >= RunnerPool.nrcpu-1:
+                RunnerPool.nrlast = 0
+            clt = RunnerPool.runners[RunnerPool.nrlast]
             clt.put(*args)
-            Runners.last += 1
+            RunnerPool.nrlast += 1
 
 
 class Parser:
@@ -311,7 +302,7 @@ class Helpers:
     @staticmethod
     def attrs(obj, txt):
         "parse attribute into an object."
-        Dict.update(obj, *list(OPML.parse(txt)))
+        DIct.update(obj, *list(OPML.parse(txt)))
 
     @staticmethod
     def cdata(line):
@@ -362,7 +353,7 @@ class Helpers:
             if Helpers.doskip(feed.error):
                 feed.skip = True
                 Disk.write(feed, fnm)
-                logging.debug("removed %s %s", feed.rss, ex)
+                logging.error("removed %s %s", feed.rss, ex)
         return result
 
     @staticmethod
@@ -429,6 +420,31 @@ class Helpers:
         return "Mozilla/5.0 (X11; Linux x86_64) " + txt
 
 
+class Feed(Data):
+
+    pass
+
+
+class Modified:
+
+    pass
+
+
+class Rss(Data):
+
+    def __init__(self):
+        super().__init__()
+        self.display_list = "title,link,author"
+        self.insertid = None
+        self.name = ""
+        self.rss = ""
+
+
+class Urls:
+
+    pass
+
+
 class Run:
 
     fetcher = Fetcher()
@@ -470,7 +486,7 @@ def dpl(event):
     setter = {"display_list": event.args[1]}
     for fnm, feed in Locate.find(Methods.fqn(Rss), {"rss": event.args[0]}):
         if feed:
-            Dict.update(feed, setter)
+            DIct.update(feed, setter)
             Disk.write(feed, fnm)
     event.reply("ok")
 
@@ -484,7 +500,7 @@ def err(event):
         if event.rest and event.rest in obj.error:
             nre += 1
             feed = Rss()
-            Dict.update(feed, obj)
+            DIct.update(feed, obj)
             feed.__deleted__ = False
             feed.error = ""
             Disk.write(feed, fnm)
@@ -505,7 +521,7 @@ def exp(event):
         for _fn, ooo in Locate.find(Methods.fqn(Rss)):
             nrs += 1
             obj = Rss()
-            Dict.update(obj, ooo)
+            DIct.update(obj, ooo)
             name = f"url{nrs}"
             txt = f'<outline name="{name}" display_list="{obj.display_list}" xmlUrl="{obj.rss}"/>'
             event.reply(" " * 12 + txt)
@@ -565,7 +581,7 @@ def nme(event):
     selector = {"rss": event.args[0]}
     for fnm, fed in Locate.find(Methods.fqn(Rss), selector):
         feed = Rss()
-        Dict.update(feed, fed)
+        DIct.update(feed, fed)
         if feed:
             feed.name = str(event.args[1])
             Disk.write(feed, fnm)
@@ -595,7 +611,7 @@ def res(event):
     nrs = 0
     for fnm, fed in Locate.find(Methods.fqn(Rss), removed=True):
         feed = Rss()
-        Dict.update(feed, fed)
+        DIct.update(feed, fed)
         if event.args[0] not in feed.rss:
             continue
         nrs += 1

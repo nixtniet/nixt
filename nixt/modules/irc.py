@@ -14,11 +14,10 @@ import threading
 import time
 
 
-from nixt.brokers import Broker
 from nixt.command import Commands
 from nixt.configs import Configuration
-from nixt.handler import Event, Output
-from nixt.objects import Object, Methods
+from nixt.handler import Broker, Event, Output
+from nixt.objects import Data, Methods
 from nixt.persist import Locate, Main
 from nixt.threads import Thread
 from nixt.utility import Utils
@@ -33,13 +32,6 @@ def init():
     else:
         irc.stop()
     return irc
-
-
-def rlog(txt):
-    for ign in Config.ignore:
-        if ign in str(txt):
-            return
-    logging.debug(txt)
 
 
 class Config(Configuration):
@@ -103,9 +95,10 @@ class IRC(Output):
     def __init__(self):
         Output.__init__(self)
         self.buffer = []
+        self.cache = {}
         self.cfg = Config()
         self.channels = []
-        self.events = Object()
+        self.events = Data()
         self.events.authed = threading.Event()
         self.events.connected = threading.Event()
         self.events.joined = threading.Event()
@@ -114,7 +107,7 @@ class IRC(Output):
         self.lock = threading.RLock()
         self.silent = False
         self.sock = None
-        self.state = Object()
+        self.state = Data()
         self.state.error = ""
         self.state.keeprunning = False
         self.state.last = time.time()
@@ -132,6 +125,7 @@ class IRC(Output):
         self.register("AUTHENTICATE", cb_auth)
         self.register("CAP", cb_cap)
         self.register("ERROR", cb_error)
+        self.register("LOG", cb_log)
         self.register("NOTICE", cb_notice)
         self.register("PRIVMSG", cb_privmsg)
         self.register("QUIT", cb_quit)
@@ -183,8 +177,23 @@ class IRC(Output):
 
     def display(self, event):
         for key in sorted(event.result):
-            for txt in wrapper.wrap(event.result.get(key)):
-                self.dosay(event.channel, txt)
+            txt = event.result.get(key)
+            if not txt:
+                continue
+            textlist = []
+            txtlist = wrapper.wrap(txt)
+            if len(txtlist) > 3:
+                self.extend(event.channel, txtlist[3:])
+                textlist = txtlist[:3]
+            else:
+                textlist = txtlist
+            _nr = -1
+            for text in textlist:
+                _nr += 1
+                self.dosay(event.channel, text)
+            if len(txtlist) > 3:
+                length = len(txtlist) - 3
+                self.say(event.channel, f"use !mre to show more (+{length})")
 
     def docommand(self, cmd, *args):
         with self.lock:
@@ -221,7 +230,9 @@ class IRC(Output):
 
     def dosay(self, channel, text):
         self.events.joined.wait()
-        self.docommand("PRIVMSG", channel, text.replace("\n", "").replace("  ", " "))
+        txt = str(text).replace("\n", "")
+        txt = txt.replace("  ", " ")
+        self.docommand("PRIVMSG", channel, txt)
 
     def event(self, txt):
         evt = self.parsing(txt)
@@ -250,6 +261,22 @@ class IRC(Output):
             self.docommand("NICK", nck)
         return evt
 
+    def extend(self, channel, txtlist):
+        if channel not in self.cache:
+            self.cache[channel] = []
+        chanlist = self.cache.get(channel)
+        chanlist.extend(txtlist)
+
+    def gettxt(self, channel):
+        txt = None
+        try:
+            che = self.cache.get(channel, None)
+            if che:
+                txt = che.pop(0)
+        except (KeyError, IndexError):
+            pass
+        return txt
+
     def joinall(self):
         for channel in self.channels:
             self.docommand("JOIN", channel)
@@ -275,6 +302,8 @@ class IRC(Output):
         self.direct(f"USER {nck} {server} {server} {nck}")
 
     def oput(self, event):
+        if event.channel and event.channel not in self.cache:
+            self.cache[event.channel] = []
         self.oqueue.put_nowait(event)
 
     def parsing(self, txt):
@@ -409,6 +438,11 @@ class IRC(Output):
         self.stop()
         Thread.launch(init)
 
+    def size(self, chan):
+        if chan in self.cache:
+            return len(self.cache.get(chan, []))
+        return 0
+
     def say(self, channel, text):
         event = IEvent()
         event.channel = channel
@@ -487,6 +521,14 @@ def cb_h904(evt):
     bot.events.authed.set()
 
 
+def cb_kill(evt):
+    pass
+
+
+def cb_log(evt):
+    pass
+
+
 def cb_ready(evt):
     bot = Broker.get(evt.orig)
     bot.events.ready.set()
@@ -528,3 +570,42 @@ def cb_quit(evt):
     bot.state.error = evt.text
     if evt.orig and evt.orig in bot.zelf:
         bot.stop()
+
+
+def mre(event):
+    if not event.channel:
+        event.reply("channel is not set.")
+        return
+    bot = Broker.get(event.orig)
+    if "cache" not in dir(bot):
+        event.reply("bot is missing cache")
+        return
+    if event.channel not in bot.cache:
+        event.reply(f"no output in {event.channel} cache.")
+        return
+    for _x in range(3):
+        txt = bot.gettxt(event.channel)
+        event.reply(txt)
+    size = bot.size(event.channel)
+    if size != 0:
+        event.reply(f"{size} more in cache")
+
+
+def pwd(event):
+    if len(event.args) != 2:
+        event.reply("pwd <nick> <password>")
+        return
+    arg1 = event.args[0]
+    arg2 = event.args[1]
+    txt = f"\x00{arg1}\x00{arg2}"
+    enc = txt.encode("ascii")
+    base = base64.b64encode(enc)
+    dcd = base.decode("ascii")
+    event.reply(dcd)
+
+
+def rlog(txt):
+    for ign in Config.ignore:
+        if ign in str(txt):
+            return
+    logging.debug(txt)
