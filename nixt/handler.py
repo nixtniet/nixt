@@ -25,14 +25,6 @@ class Event:
         self.index = 0
         self.kind = "event"
 
-    def __del__(self):
-        for value in self.result.values():
-            del value
-        del self.result
-        for value in self.args:
-            del value
-        del self.args
-
     def __getattr__(self, key):
         return self.__dict__.get(key, "")
 

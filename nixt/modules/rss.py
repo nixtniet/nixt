@@ -26,7 +26,7 @@ from urllib.parse import quote_plus, urlencode
 
 from nixt.configs import Configuration
 from nixt.handler import Broker
-from nixt.objects import Data, Dict, Object, Methods
+from nixt.objects import Data, Dict, Methods
 from nixt.persist import Disk, Locate, Main
 from nixt.threads import Repeater, Thread
 from nixt.utility import Time, Utils
@@ -302,7 +302,7 @@ class Helpers:
     @staticmethod
     def attrs(obj, txt):
         "parse attribute into an object."
-        DIct.update(obj, *list(OPML.parse(txt)))
+        Dict.update(obj, *list(OPML.parse(txt)))
 
     @staticmethod
     def cdata(line):
@@ -486,7 +486,7 @@ def dpl(event):
     setter = {"display_list": event.args[1]}
     for fnm, feed in Locate.find(Methods.fqn(Rss), {"rss": event.args[0]}):
         if feed:
-            DIct.update(feed, setter)
+            Dict.update(feed, setter)
             Disk.write(feed, fnm)
     event.reply("ok")
 
@@ -500,7 +500,7 @@ def err(event):
         if event.rest and event.rest in obj.error:
             nre += 1
             feed = Rss()
-            DIct.update(feed, obj)
+            Dict.update(feed, obj)
             feed.__deleted__ = False
             feed.error = ""
             Disk.write(feed, fnm)
@@ -521,7 +521,7 @@ def exp(event):
         for _fn, ooo in Locate.find(Methods.fqn(Rss)):
             nrs += 1
             obj = Rss()
-            DIct.update(obj, ooo)
+            Dict.update(obj, ooo)
             name = f"url{nrs}"
             txt = f'<outline name="{name}" display_list="{obj.display_list}" xmlUrl="{obj.rss}"/>'
             event.reply(" " * 12 + txt)
@@ -581,7 +581,7 @@ def nme(event):
     selector = {"rss": event.args[0]}
     for fnm, fed in Locate.find(Methods.fqn(Rss), selector):
         feed = Rss()
-        DIct.update(feed, fed)
+        Dict.update(feed, fed)
         if feed:
             feed.name = str(event.args[1])
             Disk.write(feed, fnm)
@@ -611,7 +611,7 @@ def res(event):
     nrs = 0
     for fnm, fed in Locate.find(Methods.fqn(Rss), removed=True):
         feed = Rss()
-        DIct.update(feed, fed)
+        Dict.update(feed, fed)
         if event.args[0] not in feed.rss:
             continue
         nrs += 1

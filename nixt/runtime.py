@@ -251,7 +251,7 @@ class Scripts:
             return
         Runtime.boot(args,MODS)
         Main.mods = Mods.list(Main.ignore)
-        Commands.add(Cmd.cfg, Cmd.cmd, Cmd.mod, Cmd.pwd, Cmd.srv, Cmd.ver)
+        Commands.add(Cmd.cfg, Cmd.cmd, Cmd.mod, Cmd.srv, Cmd.ver)
         Runtime.scanner(Main)
         evt = Commands.cmd(Main.txt)
         for line in evt.result.values():
@@ -313,19 +313,6 @@ class Cmd:
             event.reply("no modules available")
             return
         event.reply(mods)
-
-    @staticmethod
-    def pwd(event):
-        if len(event.args) != 2:
-            event.reply("pwd <nick> <password>")
-            return
-        arg1 = event.args[0]
-        arg2 = event.args[1]
-        txt = f"\x00{arg1}\x00{arg2}"
-        enc = txt.encode("ascii")
-        base = base64.b64encode(enc)
-        dcd = base.decode("ascii")
-        event.reply(dcd)
 
     @staticmethod
     def srv(event):

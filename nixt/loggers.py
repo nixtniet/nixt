@@ -54,7 +54,7 @@ class NDJson:
         self.fpa.write(Json.dumps(obj))
         self.fpa.write("\n")
         self.fpa.flush()
-   
+
     def configure(self, path):
         self.path = path
         self.fpa = open(self.path, "a",  encoding="utf-8")
@@ -75,3 +75,9 @@ class NDJson:
             return True
         return False
 
+
+def __dir__():
+    return (
+        'Log',
+        'NDJson'
+    )
