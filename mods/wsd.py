@@ -11,9 +11,9 @@ from random import SystemRandom
 
 
 from nixt.brokers import Broker
-from nixt.clocker import Repeater
 from nixt.handler import Event
 from nixt.persist import State
+from nixt.threads import Repeater
 
 
 rand = SystemRandom()

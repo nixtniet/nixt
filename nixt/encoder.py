@@ -64,9 +64,11 @@ class NdJson:
         self.path = ""
 
     def append(self, obj):
+        self.fpr.seek(0)
         txt = Json.dumps(obj)
-        if txt in self.fpr.readlines():
-            return
+        for text in self.fpr.readlines():
+            if text.find(txt) != -1:
+                return
         self.fpa.write(Json.dumps(obj))
         self.fpa.write("\n")
         self.fpa.flush()
@@ -74,7 +76,7 @@ class NdJson:
     def configure(self, path):
         self.path = path
         self.fpa = open(self.path, "a",  encoding="utf-8")
-        self.fpr= open(self.path, "r", encoding="utf-8")
+        self.fpr = open(self.path, "r", encoding="utf-8")
 
     def diff(self):
         if self.index is None:

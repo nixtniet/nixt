@@ -10,9 +10,9 @@ import time
 
 
 from nixt.brokers import Broker
-from nixt.clocker import Repeater
 from nixt.handler import Event
 from nixt.objects import Dict, Object
+from nixt.threads import Repeater
 from nixt.utility import Time
 
 

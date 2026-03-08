@@ -7,6 +7,7 @@
 import html
 import html.parser
 import http.client
+import json.decoder
 import logging
 import os
 import queue
@@ -25,17 +26,17 @@ from urllib.parse import quote_plus, urlencode
 
 
 from nixt.brokers import Broker
-from nixt.clocker import Repeater
 from nixt.configs import Configuration
 from nixt.encoder import NdJson, Json
+from nixt.loggers import NDJson
 from nixt.objects import Data, Dict, Methods, Object
 from nixt.persist import Disk, Locate, Main, Workdir
-from nixt.threads import Thread
+from nixt.threads import Repeater, Thread
 from nixt.utility import Time, Utils
 
 
 def init():
-    Runners.init(3, Runner)
+    Runners.init(1, Runner)
     Run.fetcher.start()
     logging.warning("%s feeds", Locate.count("rss"))
 
@@ -108,29 +109,23 @@ class Runner:
 
     def __init__(self):
         self.dosave = False
-        self.log = NdJson()
+        self.log = NDJson()
         self.log.configure(os.path.join(Workdir.workdir("files"), "rss"))
         self.fetchlock = threading.RLock()
         self.queue = queue.Queue()
         self.stopped = threading.Event()
         self.todo = queue.Queue()
 
-    def display(self, obj):
+    def tostr(self, data):
         displaylist = ""
-        result = ""
-        try:
-            displaylist = obj.display_list or "title,link"
-        except AttributeError:
-            displaylist = "title,link,author"
-        for key in displaylist.split(","):
-            if not key:
+        result = f"[{data.get('name', 'noname')}]" + " "
+        for key in Utils.spl(data.get("display_list", "title,link")):
+            dat = data.get(key, None)
+            if dat is None:
                 continue
-            data = getattr(obj, key, None)
-            if not data:
-                continue
-            result += Helpers.unescape(Helpers.striphtml(data.replace("\n", " ").rstrip()))
+            result += Helpers.unescape(Helpers.striphtml(dat.replace("\n", " ").rstrip()))
             result += " - "
-        return result[:-2].rstrip()
+        return result[:-2].strip()
 
     def loop(self):
         while True:
@@ -149,16 +144,15 @@ class Runner:
 
     def watch(self):
         while True:
-            time.sleep(30)
+            time.sleep(60)
             if not self.log.watch():
                 continue
             for txt in self.log.diff():
-                obj = Json.loads(txt)
-                txt2 = ""
-                feedname = obj.get"name", None)
-                if feedname:
-                    txt2 = f"[{feedname}] "
-                Broker.announce(txt2 + self.display(obj))
+                try:
+                    data = Json.loads(txt)
+                except json.decoder.JSONDecodeError:
+                    continue
+                Broker.announce(self.tostr(data))
 
     def put(self, args):
         self.queue.put(args)
