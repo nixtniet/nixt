@@ -647,6 +647,9 @@ def rss(event):
     event.reply("ok")
 
 
+rss.flood = True
+
+
 def syn(event):
     if Main.debug:
         return
