@@ -4,7 +4,6 @@
 "internet relay chat"
 
 
-import base64
 import logging
 import os
 import socket
