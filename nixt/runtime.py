@@ -365,7 +365,7 @@ def main():
         Runtime.wrap(Scripts.service, args)
     else:
         Runtime.wrap(Scripts.control, args)
-    #Runtime.shutdown()
+    Runtime.shutdown()
 
 
 SYSTEMD = """[Unit]
