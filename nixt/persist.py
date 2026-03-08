@@ -77,7 +77,7 @@ class Disk:
                 try:
                     Dict.update(obj, Json.load(fpt))
                 except json.decoder.JSONDecodeError as ex:
-                    logging.error(f"failed read at {pth}")
+                    logging.error("failed read at %s", pth)
                     raise ex
 
     @staticmethod
