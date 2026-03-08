@@ -13,7 +13,7 @@ import time
 
 
 from nixt.command import Commands
-from nixt.configs import Main
+from nixt.defines import Main
 from nixt.handler import Console, Event
 from nixt.loggers import Log
 from nixt.objects import Dict, Methods
@@ -26,8 +26,6 @@ from nixt import modules as MODS
 
 
 Main.default = "irc,rss,thr"
-Main.ignore = ""
-Main.local = False
 Main.version = 455
 Main.wdr = os.path.expanduser(f"~/.{Main.name}")
 

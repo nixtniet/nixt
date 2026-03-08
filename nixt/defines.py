@@ -18,14 +18,22 @@ class Configuration(Data):
             Dict.update(self, kwargs)
 
 
-class Main(Configuration):
+class MainConfig(type):
 
-    debug = False
-    default = ""
-    ignore = ""
-    level = "info"
+    @classmethod
+    def __getattr__(cls, key):
+        if key not in dir(cls):
+            return ""
+        return cls.__getattribute__(key)
+
+    @classmethod
+    def __str__(cls):
+        return str(Methods.skip(cls.__dict__))
+
+
+class Main(metaclass=MainConfig):
+
     name = Utils.pkgname(Configuration)
-    version = 1
     wdr = f".{name}"
 
 

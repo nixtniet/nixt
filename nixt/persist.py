@@ -11,7 +11,7 @@ import pathlib
 import threading
 
 
-from .configs import Main
+from .defines import Main
 from .encoder import Json
 from .objects import Data, Dict, Methods
 from .utility import Time
@@ -181,6 +181,8 @@ class Workdir:
     @staticmethod
     def setwd(path):
         "enable writing to disk."
+        if not path:
+            return
         Workdir.wdr = path
         Workdir.skel()
 
