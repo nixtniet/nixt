@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.configs import Main
+from nixt.defines import Main
 from nixt.runtime import Runtime
 
 

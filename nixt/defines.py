@@ -20,13 +20,13 @@ class Configuration(Data):
 
 class MainConfig(type):
 
-    def __getattr__(self, key):
-        if key not in dir(self):
+    def __getattr__(cls, key):
+        if key not in dir(cls):
             return ""
-        return self.__getattribute__(key)
+        return cls.__getattribute__(key)
 
-    def __str__(self):
-        return str(Methods.skip(self.__dict__))
+    def __str__(cls):
+        return str(Methods.skip(cls.__dict__))
 
 
 class Main(metaclass=MainConfig):
