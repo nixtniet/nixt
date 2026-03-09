@@ -4,7 +4,7 @@
 "configurations"
 
 
-from .objects import Data, Dict
+from .objects import Data, Dict, Methods
 from .utility import Utils
 
 
@@ -20,15 +20,13 @@ class Configuration(Data):
 
 class MainConfig(type):
 
-    @classmethod
-    def __getattr__(cls, key):
-        if key not in dir(cls):
+    def __getattr__(self, key):
+        if key not in dir(self):
             return ""
-        return cls.__getattribute__(key)
+        return self.__getattribute__(key)
 
-    @classmethod
-    def __str__(cls):
-        return str(Methods.skip(cls.__dict__))
+    def __str__(self):
+        return str(Methods.skip(self.__dict__))
 
 
 class Main(metaclass=MainConfig):
