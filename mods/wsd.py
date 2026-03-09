@@ -12,7 +12,8 @@ from random import SystemRandom
 
 from nixt.brokers import Broker
 from nixt.handler import Event
-from nixt.persist import State
+from nixt.objects import Methods
+from nixt.persist import Locate
 from nixt.threads import Repeater
 
 
@@ -27,12 +28,22 @@ def init():
     logging.warning("%s wise", len(TXTLIST))
 
 
-class Stated(State):
+class State:
 
-    pass
+    def __init__(self):
+        super().__init__()
+        self.fnm = ""
+
+    def dump(self):
+        if not self.fnm:
+            self.fnm = Locate.first(self) or Methods.ident(self)
+        Disk.write(self, self.fnm)
+
+    def load(self):
+        Locate.first(self)
 
 
-state = Stated()
+state = State()
 
 
 def wsd(event):

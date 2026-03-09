@@ -17,21 +17,6 @@ from .objects import Data, Dict, Methods
 from .utility import Time
 
 
-class State:
-
-    def __init__(self):
-        super().__init__()
-        self.fnm = ""
-
-    def dump(self):
-        if not self.fnm:
-            self.fnm = Locate.first(self) or Methods.ident(self)
-        Disk.write(self, self.fnm)
-
-    def load(self):
-        Locate.first(self)
-
-
 class Cache:
 
     paths = {}
@@ -242,6 +227,5 @@ def __dir__():
         'Disk',
         'Locate',
         'Main',
-        'State',
         'Workdir'
     )

@@ -37,5 +37,6 @@ class Main(metaclass=MainConfig):
 
 def __dir__():
     return (
-        'Main',
+        'Configuration',
+        'Main'
     )

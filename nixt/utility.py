@@ -152,6 +152,20 @@ class Utils:
             pass
 
 
+SYSTEMD = """[Unit]
+Description=%s
+After=multi-user.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
+
+
 TIMES = [
     "%Y-%m-%d %H:%M:%S",
     "%Y-%m-%d %H:%M",
@@ -165,6 +179,7 @@ TIMES = [
 
 def __dir__():
     return (
+        'SYSTEMD',
         'Log',
         'NoDate',
         'Time',

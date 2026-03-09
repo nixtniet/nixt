@@ -20,12 +20,14 @@ from nixt.objects import Dict, Methods
 from nixt.package import Mods
 from nixt.persist import Disk, Locate, Workdir
 from nixt.threads import Thread
+from nixt.utility import SYSTEMD
 
 
 from nixt import modules as MODS
 
 
 Main.default = "irc,rss,thr"
+Main.level = "info"
 Main.version = 455
 Main.wdr = os.path.expanduser(f"~/.{Main.name}")
 
@@ -79,7 +81,7 @@ class Runtime:
         "in the beginning."
         Methods.parse(Main, args.txt)
         Dict.update(Main, Main.sets)
-        Dict.merge(Main, vars(args))
+        Methods.merge(Main, vars(args))
         Workdir.setwd(Main.wdr)
         Log.level(Main.level or "info")
         if Main.noignore:
@@ -364,20 +366,6 @@ def main():
     else:
         Runtime.wrap(Scripts.control, args)
     Runtime.shutdown()
-
-
-SYSTEMD = """[Unit]
-Description=%s
-After=multi-user.target
-
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
 
 
 if __name__ == "__main__":

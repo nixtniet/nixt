@@ -89,13 +89,6 @@ class Dict:
         return obj.__dict__.keys()
 
     @staticmethod
-    def merge(obj, obj2):
-        for key, value in Dict.items(obj2):
-            if not value and getattr(obj, key, False):
-                continue
-            setattr(obj, key, value)
-
-    @staticmethod
     def pop(obj, key, default=None):
         "remove key from object and return it's value. return default or KeyError."
         return obj.__dict__.pop(key, default)
@@ -104,14 +97,6 @@ class Dict:
     def popitem(obj):
         "remove and return (key, value) pair."
         return obj.__dict__.popitem()
-
-    @staticmethod
-    def reduce(obj):
-        result = {}
-        for key, value in Dict.items(obj):
-            if value:
-                result[key] = value
-        return result
 
     @staticmethod
     def update(obj, data, empty=True):
@@ -154,6 +139,7 @@ class Methods:
 
     @staticmethod
     def cls(obj):
+        "return class name of an object."
         return Methods.fqn(obj).split(".")[-1]
 
     @staticmethod
@@ -213,6 +199,13 @@ class Methods:
         return os.path.join(Methods.fqn(obj), *str(datetime.datetime.now()).split())
 
     @staticmethod
+    def merge(obj, obj2):
+        for key, value in Dict.items(obj2):
+            if not value and getattr(obj, key, False):
+                continue
+            setattr(obj, key, value)
+
+    @staticmethod
     def parse(obj, text):
         "parse text for command."
         data = {
@@ -264,6 +257,14 @@ class Methods:
             obj.text = obj.cmd + " " + obj.rest
         else:
             obj.text = obj.cmd or ""
+
+    @staticmethod
+    def reduce(obj):
+        result = {}
+        for key, value in Dict.items(obj):
+            if value:
+                result[key] = value
+        return result
 
     @staticmethod
     def search(obj, selector={}, matching=False):
