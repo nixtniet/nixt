@@ -38,7 +38,7 @@ class Config(Configuration):
 
 
 def init():
-    RunnerPool.init(1, Runner)
+    Runners.init(1, Runner)
     Run.fetcher.start()
     logging.warning("%s feeds", Locate.count("rss"))
 
@@ -95,7 +95,7 @@ class Fetcher:
         for fnm, feed in Locate.find(Methods.fqn(Rss)):
             if feed.skip:
                 continue
-            RunnerPool.put((fnm, feed, silent))
+            Runners.put((fnm, feed, silent))
             nrs += 1
         return nrs
 
@@ -207,7 +207,7 @@ class Runners:
     @staticmethod
     def init(nrcpu, cls):
         Runners.nrcpu = nrcpu
-        for _x in range(Runnes.nrcpu):
+        for _x in range(Runners.nrcpu):
             clt = cls()
             clt.start()
             Runners.add(clt)
