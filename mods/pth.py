@@ -12,5 +12,5 @@ d = os.path.dirname
 
 def pth(event):
     path = d(d(__file__))
-    path = os.path.join(path, "nucleus", "index.html")
+    path = os.path.join(path, "network", "index.html")
     event.reply(f"file://{path}")

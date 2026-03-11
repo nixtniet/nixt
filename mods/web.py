@@ -21,7 +21,7 @@ from nixt.utility import Utils
 
 
 def init():
-    Config.path = os.path.join(Utils.where(Object), "nucleus")
+    Config.path = os.path.join(Utils.where(Object), "network")
     if not os.path.exists(os.path.join(Config.path, 'index.html')):
         logging.warning("no index.html")
         return

@@ -37,10 +37,6 @@ classifiers = [
 packages = [
     'nixt',
     'nixt.modules',
-    'nixt.nucleus'
+    'nixt.network'
 ]
-include-package-data = true
-
-
-[tool.setuptools.package-data]
-"mods"         = ["*.py"]
+include-package-data = false
