@@ -64,6 +64,8 @@ class CSL(Line):
 
 class Runtime:
 
+    inits = []
+
     @staticmethod
     def banner():
         "hello."
@@ -172,6 +174,7 @@ class Runtime:
         for name, mod in Mods.iter(cfg.mods or defs, cfg.ignore):
             if "init" in dir(mod):
                 thrs.append((name, Thread.launch(mod.init)))
+                Runtime.inits.append(name)
         if cfg.wait:
             for name, thr in thrs:
                 thr.join()
@@ -207,7 +210,8 @@ class Runtime:
     @staticmethod
     def shutdown():
         "call shutdown on modules."
-        for mod in Dict.values(Mods.modules):
+        for name in Runtime.inits:
+            mod = Mods.get(name)
             if "shutdown" in dir(mod):
                 try:
                     mod.shutdown()
