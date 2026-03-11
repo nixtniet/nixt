@@ -99,7 +99,7 @@ class Locate:
         nrs = 0
         for pth in Locate.fns(Workdir.long(kind)):
             obj = Cache.get(pth)
-            if not obj:
+            if obj is None:
                 obj = Data()
                 Disk.read(obj, pth)
                 Cache.add(pth, obj)

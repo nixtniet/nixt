@@ -47,6 +47,41 @@ class Config(Configuration):
     polltime = 300
 
 
+class Feed(Data):
+
+    pass
+
+
+class Modified:
+
+    pass
+
+
+class Urls:
+
+    pass
+
+
+class Rss(Data):
+
+    def __init__(self):
+        super().__init__()
+        self.display_list = "title,link,author"
+        self.insertid = None
+        self.name = ""
+        self.rss = ""
+
+
+class State:
+
+    configfn = ""
+    modified = Modified()
+    modifiedfn = ""
+    seenfn = ""
+    seen = Urls()
+    skipped = []
+
+
 class Fetcher:
 
     def __init__(self):
@@ -420,46 +455,11 @@ class Helpers:
         return "Mozilla/5.0 (X11; Linux x86_64) " + txt
 
 
-class Feed(Data):
-
-    pass
-
-
-class Modified:
-
-    pass
-
-
-class Rss(Data):
-
-    def __init__(self):
-        super().__init__()
-        self.display_list = "title,link,author"
-        self.insertid = None
-        self.name = ""
-        self.rss = ""
-
-
-class Urls:
-
-    pass
-
-
 class Run:
 
     fetcher = Fetcher()
     fetchlock = _thread.allocate_lock()
     importlock = _thread.allocate_lock()
-
-
-class State:
-
-    configfn = ""
-    modified = Modified()
-    modifiedfn = ""
-    seenfn = ""
-    seen = Urls()
-    skipped = []
 
 
 def atr(event):
@@ -645,9 +645,6 @@ def rss(event):
     feed.rss = event.args[0]
     fnm = Disk.write(feed)
     event.reply("ok")
-
-
-rss.flood = True
 
 
 def syn(event):

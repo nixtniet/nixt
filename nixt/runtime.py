@@ -27,6 +27,7 @@ from nixt import modules as MODS
 
 
 Main.default = "irc,rss,thr"
+Main.ignore = "udp"
 Main.level = "info"
 Main.version = 455
 Main.wdr = os.path.expanduser(f"~/.{Main.name}")
