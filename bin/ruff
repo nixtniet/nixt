@@ -1,1 +1,26 @@
-ruff check --ignore F821 nixt mods bin/tinder testing $* ;
+#!/usr/bin/env python3
+
+
+import os
+
+
+SKIP = ["All",]
+
+
+def doskip(line):
+    for x in SKIP:
+        if x in line:
+            return True
+    return False     
+
+
+def popen(txt):
+    for line in os.popen(txt).readlines():
+        line = line.strip()
+        if not line or doskip(line):
+            continue
+        print(line.rstrip())
+        sys.stdout.flush()
+
+
+popen("ruff check nixt mods bin/tinder testing")
