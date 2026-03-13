@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"genocide model of the netherlands since 4 march 2019."
+"nixt model of the netherlands since 4 march 2019."
 
 
 import datetime

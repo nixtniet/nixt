@@ -115,9 +115,23 @@ class Utils:
     def md5sum(path):
         "return md5 of a file."
         import hashlib
+        if not os.path.exists(path):
+            return ""
         with open(path, "r", encoding="utf-8") as file:
             txt = file.read().encode("utf-8")
             return hashlib.md5(txt).hexdigest()
+
+    @staticmethod
+    def md5s(path):
+        import hashlib
+        sums = hashlib.md5()
+        for fnm in os.listdir(path):
+            if fnm.startswith("_"):
+                continue
+            pth = os.path.join(path, fnm)
+            with open(pth, "rb") as file:
+                sums.update(file.read())
+        return sums.hexdigest()
 
     @staticmethod
     def pkgname(obj):

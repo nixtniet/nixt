@@ -125,6 +125,8 @@ class Dict:
     @staticmethod
     def values(obj):
         "object's values."
+        if isinstance(obj, type):
+            return [getattr(obj, x) for x in dir(obj) if not x.startswith("_")]
         if isinstance(obj, dict):
             return obj.values()
         if isinstance(obj.__dict__, types.MappingProxyType):

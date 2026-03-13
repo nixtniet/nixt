@@ -123,6 +123,7 @@ class Client(Handler):
                 break
             event.orig = repr(self)
             self.callback(event)
+            time.sleep(0.001)
 
     def poll(self):
         "return event."
@@ -150,6 +151,7 @@ class Console(Client):
             event.orig = repr(self)
             self.callback(event)
             event.wait()
+            time.sleep(0.001)
 
     def poll(self):
         "return event."
@@ -171,6 +173,7 @@ class Output(Client):
                 break
             self.display(event)
             self.oqueue.task_done()
+            time.sleep(0.001)
 
     def start(self):
         "start output loop."

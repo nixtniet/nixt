@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"show path to genocide docs"
+"show path to nixt docs"
 
 
 import os

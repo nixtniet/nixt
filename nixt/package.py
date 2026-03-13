@@ -15,6 +15,7 @@ from .utility import Utils
 class Mods:
 
     dirs = {}
+    md5s = {}
     modules = {}
 
     @staticmethod
@@ -22,6 +23,10 @@ class Mods:
         "add modules directory."
         if os.path.exists(path):
             Mods.dirs[name] = path
+
+    @staticmethod
+    def all():
+        Mods.iter(Mods.list())
 
     @staticmethod
     def get(modname):
@@ -42,20 +47,12 @@ class Mods:
     @staticmethod
     def iter(modlist, ignore=""):
         "loop over modules."
-        for pkgname, path in Mods.dirs.items():
-            if not os.path.exists(path):
+        for name in Utils.spl(modlist):
+            if ignore and name in Utils.spl(ignore):
                 continue
-            for fnm in os.listdir(path):
-                if fnm.startswith("__"):
-                    continue
-                if not fnm.endswith(".py"):
-                    continue
-                name = fnm[:-3]
-                if not name:
-                    continue
-                if name not in Utils.spl(modlist):
-                    continue
-                if ignore and name in Utils.spl(ignore):
+            for pkgname, path in Mods.dirs.items():
+                fnm = os.path.join(path, name + ".py")
+                if not os.path.exists(fnm):
                     continue
                 modname = f"{pkgname}.{name}"
                 mod = Mods.modules.get(modname, None)
@@ -90,17 +87,36 @@ class Mods:
         if not spec or not spec.loader:
             logging.debug("missing spec or loader for %s", name)
             return None
+        md5 = Mods.md5s.get(name)
+        md5sum = Utils.md5sum(spec.loader.path)
+        if md5 and md5sum != md5:
+            logging.error("md5 mismatch %s", spec.loader.path)
+        else:
+            Mods.md5s[name] = md5sum
         mod = importlib.util.module_from_spec(spec)
         if not mod:
-            logging.debug("can't load %s module from spec", name)
+            logging.debug("can't load %s module", name)
             return None
         Mods.modules[name] = mod
         spec.loader.exec_module(mod)
         return mod
 
     @staticmethod
+    def path(name):
+        for pkgname, path in Mods.dirs.items():
+            pth = os.path.join(path, name + ".py")
+            if os.path.exists(pth):
+                return pth
+
+    @staticmethod
     def pkg(package):
         return Mods.add(package.__name__, package.__path__[0])
+
+    @staticmethod
+    def sums():
+        mod = Mods.get("tbl")
+        if mod:
+            Mods.md5s = getattr(mod, "MD5", {})
 
 
 def __dir__():

@@ -169,7 +169,7 @@ class Workdir:
     def setwd(path):
         "enable writing to disk."
         if not path:
-            Dick.cdir(path)
+            Disk.cdir(path)
         Workdir.wdr = path
         Workdir.skel()
 

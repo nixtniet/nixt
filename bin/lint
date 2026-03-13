@@ -2,6 +2,7 @@
 
 
 import os
+import sys
 
 
 SKIP = ["--", "Your"]
@@ -24,4 +25,4 @@ def popen(txt):
 
 
 
-popen("pylint nixt mods bin/tinder testing")
+popen("pylint nixt bin/tinder testing")

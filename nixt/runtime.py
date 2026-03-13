@@ -18,9 +18,9 @@ from nixt.handler import Console, Event
 from nixt.loggers import Log
 from nixt.objects import Dict, Methods
 from nixt.package import Mods
-from nixt.persist import Disk, Locate, Workdir
+from nixt.persist import Disk, Json, Locate, Workdir
 from nixt.threads import Thread
-from nixt.utility import SYSTEMD
+from nixt.utility import SYSTEMD, Utils
 
 
 from nixt import modules as MODS
@@ -74,7 +74,7 @@ class Runtime:
             Main.name.upper(),
             Main.version,
             tme,
-            Main.level.upper(),
+            Utils.md5sum(Mods.path("tbl") or "")[:7],
         ))
         sys.stdout.flush()
         return Main.version
@@ -95,10 +95,14 @@ class Runtime:
             Mods.pkg(pkg)
         if Main.local:
             Mods.add('mods', 'mods')
+        Commands.table()
+        Mods.sums()
         if Main.verbose:
             Runtime.banner()
         if Main.all:
             Main.mods = Mods.list(Main.ignore)
+        if not Commands.names:
+            Runtime.scanner(Main)
 
     @staticmethod
     def cmd(text):
@@ -247,7 +251,6 @@ class Scripts:
         Runtime.boot(args, MODS)
         Workdir.pidfile(Main.name)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        Runtime.scanner(Main)
         Runtime.init(Main)
         Runtime.forever()
 
@@ -258,7 +261,6 @@ class Scripts:
         readline.redisplay()
         Runtime.boot(args, MODS)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        Runtime.scanner(Main, False)
         Runtime.init(Main, default=False)
         csl = CSL()
         csl.start()
@@ -271,8 +273,7 @@ class Scripts:
             return
         Runtime.boot(args, MODS)
         Main.mods = Mods.list(Main.ignore)
-        Commands.add(Cmd.cfg, Cmd.cmd, Cmd.mod, Cmd.pwd, Cmd.srv, Cmd.ver)
-        Runtime.scanner(Main)
+        Commands.add(*Dict.values(Cmd))
         Runtime.cmd(Main.txt)
 
     @staticmethod
@@ -283,7 +284,6 @@ class Scripts:
         Runtime.boot(args, MODS)
         Workdir.pidfile(Main.name)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        Runtime.scanner(Main)
         Runtime.init(Main)
         Runtime.forever()
 
@@ -321,7 +321,14 @@ class Cmd:
     @staticmethod
     def cmd(event):
         "list available commands."
-        event.reply(",".join(sorted(Commands.names or Commands.cmds)))
+        event.reply(",".join(sorted(Commands.names.keys() or Commands.cmds.keys())))
+
+    @staticmethod
+    def tbl(event):
+        Mods.all()
+        event.reply("# This file is placed in the Pubic Domain.\n\n")
+        event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4)}\n\n")
+        event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4)}")
 
     @staticmethod
     def mod(event):
