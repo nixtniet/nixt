@@ -29,6 +29,7 @@ from nixt import modules as MODS
 Main.default = "irc,rss,thr"
 Main.ignore = "udp"
 Main.level = "info"
+Main.local = True
 Main.version = 455
 Main.wdr = os.path.expanduser(f"~/.{Main.name}")
 
@@ -70,10 +71,11 @@ class Runtime:
     def banner():
         "hello."
         tme = time.ctime(time.time()).replace("  ", " ")
-        print("%s %s since %s (%s)" % (
+        print("%s %s since %s %s (%s)" % (
             Main.name.upper(),
             Main.version,
             tme,
+            Main.level.upper(),
             Utils.md5sum(Mods.path("tbl") or "")[:7],
         ))
         sys.stdout.flush()
@@ -209,6 +211,7 @@ class Runtime:
             if "configure" in dir(mod):
                 mod.configure()
             res.append((name, mod))
+        
         return res
 
     @staticmethod
@@ -271,6 +274,7 @@ class Scripts:
         "cli script."
         if len(sys.argv) == 1:
             return
+        Main.all = True
         Runtime.boot(args, MODS)
         Main.mods = Mods.list(Main.ignore)
         Commands.add(*Dict.values(Cmd))

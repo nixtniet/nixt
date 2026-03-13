@@ -57,10 +57,7 @@ class Mods:
                 modname = f"{pkgname}.{name}"
                 mod = Mods.modules.get(modname, None)
                 if not mod:
-                    pth = os.path.join(path, fnm)
-                    if not os.path.exists(pth):
-                        continue
-                    mod = Mods.importer(modname, pth)
+                    mod = Mods.importer(modname, fnm)
                 if mod:
                     yield name, mod
 
