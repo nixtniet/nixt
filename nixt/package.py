@@ -87,7 +87,7 @@ class Mods:
         md5 = Mods.md5s.get(name)
         md5sum = Utils.md5sum(spec.loader.path)
         if md5 and md5sum != md5:
-            logging.error("md5 mismatch %s", spec.loader.path)
+            logging.error("mismatch %s", spec.loader.path)
         else:
             Mods.md5s[name] = md5sum
         mod = importlib.util.module_from_spec(spec)
@@ -112,8 +112,12 @@ class Mods:
     @staticmethod
     def sums():
         mod = Mods.get("tbl")
-        if mod:
-            Mods.md5s = getattr(mod, "MD5", {})
+        if not mod:
+            return
+        md5s = getattr(mod, "MD5", {})
+        if not md5s:
+            return
+        Mods.md5s.update(md5s)
 
 
 def __dir__():

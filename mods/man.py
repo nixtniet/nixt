@@ -148,15 +148,15 @@ here is a list of available commands
 
 irc
 
-| ``$ %s cfg server=<server>``
-| ``$ %s cfg channel=<channel>``
-| ``$ %s cfg nick=<nick>``
+| ``$ %s cfg irc server=<server>``
+| ``$ %s cfg irc hannel=<channel>``
+| ``$ %s cfg irc nick=<nick>``
 |
 
 sasl
 
 | ``$ %s pwd <nsnick> <nspass>``
-| ``$ %s cfg password=<frompwd>``
+| ``$ %s cfg irc password=<frompwd>``
 |
 
 rss

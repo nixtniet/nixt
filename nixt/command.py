@@ -38,9 +38,10 @@ class Commands:
             name = Commands.names.get(evt.cmd)
             if name:
                 logging.debug("load %s", name)
-                mod = getattr(Mods.get(name))
-                Commands.scan(mod)
-                func = Commands.get(evt.cmd)
+                mod = Mods.get(name)
+                if mod:
+                    Commands.scan(mod)
+                    func = Commands.get(evt.cmd)
         if func:
             func(evt)
             bot = Broker.get(evt.orig)
@@ -69,8 +70,6 @@ class Commands:
     @staticmethod
     def table():
         mod = Mods.get("tbl")
-        if not mod:
-            return
         names = getattr(mod, "NAMES", None)
         if names:
             Commands.names.update(names)

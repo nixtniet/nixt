@@ -46,8 +46,7 @@ class UDP(Object):
     def output(self, txt, addr=None):
         if addr:
             Config.addr = addr
-        for bot in Broker.objs("announce"):
-            bot.announce(txt.replace("\00", ""))
+        Broker.announce(txt.replace("\00", ""))
 
     def loop(self):
         try:
