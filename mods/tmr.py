@@ -67,7 +67,6 @@ class Timers(Object):
 
 
 def tmr(event):
-    result = ""
     if not event.rest:
         nmr = 0
         for tme, txt in Dict.items(Timers.timers):
@@ -77,29 +76,15 @@ def tmr(event):
                 nmr += 1
         if not nmr:
             event.reply("no timers.")
-        return result
-    seconds = 0
-    line = ""
-    for word in event.args:
-        if word.startswith("+"):
-            try:
-                seconds = int(word[1:])
-            except (ValueError, IndexError):
-                event.reply(f"{seconds} is not an integer")
-                return result
-        else:
-            line += word + " "
-    if seconds:
-        target = time.time() + seconds
-    else:
-        target = Time.date(event.args[0])
+        return
+    target = Time.extract(event.rest)
     if not target:
         event.reply("can't determine time")
         return
     target += rand.random()
     if not target or time.time() > target:
         event.reply("already passed given time.")
-        return result
+        return
     diff = target - time.time()
     txt = " ".join(event.args[1:])
     Timers.add(target, event.orig, event.channel, txt)

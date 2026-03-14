@@ -20,13 +20,14 @@ class Time:
     @staticmethod
     def date(daystr):
         "date from string."
-        daystring = daystr.encode('utf-8', 'replace').decode("utf-8")
-        if "-" not in daystring:
+        daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
+        if "-" not in daystr:
             date = datetime.date.fromtimestamp(time.time())
-            daystring = f"{date.year}-{date.month}-{date.day}" + " " + daystring
+            daystr = f"{date.year}-{date.month}-{date.day}" + " " + daystr
+        print(daystr)
         for fmat in TIMES:
             try:
-                return time.mktime(time.strptime(daystring, fmat))
+                return time.mktime(time.strptime(daystr, fmat))
             except ValueError:
                 pass
 
@@ -74,19 +75,19 @@ class Time:
     @staticmethod
     def extract(daystr):
         "extract date/time from string."
-        previous = ""
-        line = ""
-        daystring = str(daystr)
+        dayst = str(daystr)
         res = None
-        for word in daystring.split():
-            line = previous + " " + word
-            previous = word
+        for word in daystr.split():
+            if word.startswith("+"):
+                try:
+                    return int(word[1:]) + time.time()
+                except (ValueError, IndexError):
+                    continue
             try:
-                res = Time.date(line.strip())
+                res = Time.date(word.strip())
                 break
             except ValueError:
                 res = None
-            line = ""
         return res
 
     @staticmethod

@@ -39,7 +39,7 @@ NAMES = {
 
 MD5 = {
     "mods.tbl": "d41d8cd98f00b204e9800998ecf8427e",
-    "mods.fie": "47f1eba691823c6d0c4284e9dc8338b4",
+    "mods.fie": "8764d7a9613a9018ec273ce8f3f800e6",
     "mods.flt": "2ff87dac41c4f1afa50a6f0014e9e35c",
     "mods.fnd": "a7442773cf6e5c9387486c42f9e34f23",
     "mods.irc": "49b7b8ba122f4af2112fe3e7d60fb2c7",
