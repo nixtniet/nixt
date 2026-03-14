@@ -283,8 +283,8 @@ class Scripts:
     def service(args):
         "service script."
         Runtime.privileges()
-        Runtime.banner()
         Runtime.boot(args, MODS)
+        Runtime.banner()
         Workdir.pidfile(Main.name)
         Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
         Runtime.init(Main)
