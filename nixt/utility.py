@@ -24,7 +24,6 @@ class Time:
         if "-" not in daystr:
             date = datetime.date.fromtimestamp(time.time())
             daystr = f"{date.year}-{date.month}-{date.day}" + " " + daystr
-        print(daystr)
         for fmat in TIMES:
             try:
                 return time.mktime(time.strptime(daystr, fmat))

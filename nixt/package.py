@@ -47,8 +47,11 @@ class Mods:
     @staticmethod
     def iter(modlist, ignore=""):
         "loop over modules."
+        has = []
         for name in Utils.spl(modlist):
             if ignore and name in Utils.spl(ignore):
+                continue
+            if name in has:
                 continue
             for pkgname, path in Mods.dirs.items():
                 fnm = os.path.join(path, name + ".py")
@@ -59,7 +62,9 @@ class Mods:
                 if not mod:
                     mod = Mods.importer(modname, fnm)
                 if mod:
+                    has.append(name)
                     yield name, mod
+                    break
 
     @staticmethod
     def list(ignore=""):
@@ -72,7 +77,7 @@ class Mods:
                 not x.startswith("__") and
                 x[:-3] not in Utils.spl(ignore)
             ])
-        return ",".join(sorted(mods))
+        return ",".join(sorted(set(mods)))
 
     @staticmethod
     def importer(name, pth=""):

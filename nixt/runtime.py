@@ -8,7 +8,6 @@ import argparse
 import base64
 import logging
 import os
-import sys
 import time
 
 
@@ -70,6 +69,7 @@ class Runtime:
     @staticmethod
     def banner():
         "hello."
+        import sys
         tme = time.ctime(time.time()).replace("  ", " ")
         print("%s %s since %s %s (%s)" % (
             Main.name.upper(),
@@ -91,10 +91,11 @@ class Runtime:
         Log.level(Main.level or "info")
         if Main.noignore:
             Main.ignore = ""
+        if pkgs:
+            for pkg in pkgs:
+                Mods.pkg(pkg)
         if Main.wdr:
             Mods.add("modules", os.path.join(Main.wdr, "mods"))
-        for pkg in pkgs:
-            Mods.pkg(pkg)
         if Main.local:
             Mods.add('mods', 'mods')
         Commands.table()
@@ -123,6 +124,7 @@ class Runtime:
     @staticmethod
     def daemon(verbose=False, nochdir=False):
         "run in the background."
+        import sys
         pid = os.fork()
         if pid != 0:
             os._exit(0)
@@ -227,6 +229,7 @@ class Runtime:
     @staticmethod
     def wrap(func, *args):
         "restore console."
+        import sys
         import termios
         old = None
         try:
@@ -271,6 +274,7 @@ class Scripts:
     @staticmethod
     def control(args):
         "cli script."
+        import sys
         if len(sys.argv) == 1:
             return
         Main.all = True
@@ -357,6 +361,7 @@ class Cmd:
 
     @staticmethod
     def tbl(event):
+        Mods.md5s = {}
         for name, mod in Mods.all():
             Commands.scan(mod)
         event.reply("# This file is placed in the Pubic Domain.\n\n")
