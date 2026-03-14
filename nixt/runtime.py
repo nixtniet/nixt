@@ -211,7 +211,6 @@ class Runtime:
             if "configure" in dir(mod):
                 mod.configure()
             res.append((name, mod))
-        
         return res
 
     @staticmethod
@@ -328,13 +327,6 @@ class Cmd:
         event.reply(",".join(sorted(Commands.names.keys() or Commands.cmds.keys())))
 
     @staticmethod
-    def tbl(event):
-        Mods.all()
-        event.reply("# This file is placed in the Pubic Domain.\n\n")
-        event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4)}\n\n")
-        event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4)}")
-
-    @staticmethod
     def mod(event):
         "list available commands."
         mods = Mods.list(Main.ignore)
@@ -362,6 +354,14 @@ class Cmd:
         import getpass
         name = getpass.getuser()
         event.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
+
+    @staticmethod
+    def tbl(event):
+        for name, mod in Mods.all():
+            Commands.scan(mod)
+        event.reply("# This file is placed in the Pubic Domain.\n\n")
+        event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4)}\n\n")
+        event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4)}")
 
     @staticmethod
     def ver(event):

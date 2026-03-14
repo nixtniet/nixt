@@ -44,7 +44,7 @@ class Config(Configuration):
 
     name = Main.name or Utils.pkgname(Commands)
     channel = f"#{name}"
-    commands = True
+    commands = False
     control = "!"
     ignore = ["PING", "PONG", "PRIVMSG"]
     nick = name

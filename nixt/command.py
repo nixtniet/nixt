@@ -37,8 +37,10 @@ class Commands:
         if not func:
             name = Commands.names.get(evt.cmd)
             if name:
-                logging.info("ondemand %s", name)
-                func = getattr(Mods.get(name), evt.cmd)
+                logging.debug("load %s", name)
+                mod = getattr(Mods.get(name))
+                Commands.scan(mod)
+                func = Commands.get(evt.cmd)
         if func:
             func(evt)
             bot = Broker.get(evt.orig)

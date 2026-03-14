@@ -26,7 +26,7 @@ class Mods:
 
     @staticmethod
     def all():
-        Mods.iter(Mods.list())
+        return Mods.iter(Mods.list())
 
     @staticmethod
     def get(modname):
