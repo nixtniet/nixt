@@ -119,12 +119,12 @@ class Utils:
             return ""
         with open(path, "r", encoding="utf-8") as file:
             txt = file.read().encode("utf-8")
-            return hashlib.md5(txt, usedforsecurity=False).hexdigest() # pylint: disable=E1123
+            return hashlib.md5(txt, usedforsecurity=False).hexdigest()  # pylint: disable=E1123
 
     @staticmethod
     def md5s(path):
         import hashlib
-        sums = hashlib.md5(usedforsecurity=False) # pylint: disable=E1123
+        sums = hashlib.md5(usedforsecurity=False)  # pylint: disable=E1123
         for fnm in os.listdir(path):
             if fnm.startswith("_"):
                 continue

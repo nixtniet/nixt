@@ -37,7 +37,7 @@ class Task(threading.Thread):
         try:
             super().join(timeout or None)
             return self.result
-        except (KeyboardInterrupt, EOFError) as ex:
+        except (KeyboardInterrupt, EOFError):
             if self.event and self.event.ready:
                 self.event.ready()
             _thread.interrupt_main()
