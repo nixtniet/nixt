@@ -4,6 +4,9 @@
 "configurations"
 
 
+version = 453
+
+
 from .objects import Data, Dict, Methods
 from .utility import Utils
 
@@ -37,6 +40,7 @@ class Main(metaclass=MainConfig):
 
 def __dir__():
     return (
+        '__version__',
         'Configuration',
         'Main'
     )

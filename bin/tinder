@@ -17,7 +17,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.command import Commands
-from nixt.defines import Main
+from nixt.defines import Main, version
 from nixt.handler import Client, Event
 from nixt.loggers import Log
 from nixt.objects import Data, Methods
@@ -46,7 +46,7 @@ Main.level = "info"
 Main.mods = ""
 Main.name = Utils.pkgname(Commands)
 Main.opts = Data()
-Main.version = 8
+Main.version = version
 Main.wdr = ".test"
 
 
