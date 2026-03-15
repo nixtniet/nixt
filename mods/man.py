@@ -73,7 +73,8 @@ the -h option will show you possible options
 | ``-d,--daemon        start background daemon``
 | ``-l,--level LEVEL   set loglevel``
 | ``-m,--mods MODS     modules to load``
-| ``-n,--noignore      disable ignore```
+| ``-n,--noignore      disable ignore``
+| ``-r, --read         read modules on start``
 | ``-s,--service       start service``
 | ``-t,--threaded      enable multiple workers``
 | ``-v,--verbose       enable verbose``
