@@ -365,6 +365,7 @@ class Cmd:
         for name, mod in Mods.all():
             Commands.scan(mod)
         event.reply("# This file is placed in the Pubic Domain.\n\n")
+        event.reply('"tables"\n\n')
         event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4)}\n\n")
         event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4)}")
 

@@ -1,6 +1,9 @@
 # This file is placed in the Pubic Domain.
 
 
+"tables"
+
+
 NAMES = {
     "fie": "fie",
     "flt": "flt",
