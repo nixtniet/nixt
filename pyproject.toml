@@ -43,4 +43,4 @@ include-package-data = false
 
 
 [tool.setuptools.dynamic]
-version = {attr = "nixt.defines.version"}
+version = {attr = "nixt.defines.__version__"}

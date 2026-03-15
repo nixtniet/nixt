@@ -74,7 +74,7 @@ class Time:
     @staticmethod
     def extract(daystr):
         "extract date/time from string."
-        dayst = str(daystr)
+        daystr = str(daystr)
         res = None
         for word in daystr.split():
             if word.startswith("+"):

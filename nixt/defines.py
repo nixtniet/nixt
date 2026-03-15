@@ -4,11 +4,13 @@
 "configurations"
 
 
-version = 453
 
 
 from .objects import Data, Dict, Methods
 from .utility import Utils
+
+
+__version__ = 453
 
 
 class Configuration(Data):
