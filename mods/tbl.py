@@ -41,26 +41,5 @@ NAMES = {
 
 
 MD5 = {
-    "modules.fie": "8764d7a9613a9018ec273ce8f3f800e6",
-    "modules.flt": "2ff87dac41c4f1afa50a6f0014e9e35c",
-    "modules.fnd": "a7442773cf6e5c9387486c42f9e34f23",
-    "modules.irc": "49b7b8ba122f4af2112fe3e7d60fb2c7",
-    "modules.log": "9939174052e70c618eeb833c05a08b4f",
-    "modules.man": "5d2d5d375028c82831c024114e605f1b",
-    "modules.mbx": "302172749a1c34eaf96410eb8d8a09e3",
-    "modules.mdl": "ac569bad2f3358975edd221d81aabf60",
-    "modules.pth": "0757fe9e50b98c6e3a131693ad252288",
-    "modules.req": "bc1984d2e9de0310dc1b468f25c7ab8c",
-    "modules.rss": "11dff8744ec6ead019f50247e464a40f",
-    "modules.rst": "baea77897e6ccdb1137db0019b161913",
-    "modules.sil": "fcceb6f048dd756ae9e2bad8c9793ad8",
-    "modules.slg": "0196cecb8ff67e032bd389a0b1860353",
-    "modules.tdo": "9223232a5a50ae732803898641b57ddc",
-    "modules.thr": "942bc0354e26935adc97065feb50e9da",
-    "modules.tmr": "24d454341bacfb3a3cf6d21703b3d789",
-    "modules.udp": "ce48fc590c291a7eb3ae546d75bb70d3",
-    "modules.upt": "1af6772bff48f035752869e45799ca40",
-    "modules.wdr": "9bc2f166297b19a5fb964b500f5d91af",
-    "modules.web": "f77dfb972af0d1ef3442f56b60c4ba2a",
-    "modules.wsd": "1ddb0329e6cfbaf6349a1720e2d25a0c"
+    "mods.udp": "ce48fc590c291a7eb3ae546d75bb70d3"
 }

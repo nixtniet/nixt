@@ -40,7 +40,7 @@ class Task(threading.Thread):
         except (KeyboardInterrupt, EOFError) as ex:
             if self.event and self.event.ready:
                 self.event.ready()
-            raise ex
+            _thread.interrupt_main()
 
     def run(self):
         "run function."

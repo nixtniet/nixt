@@ -91,15 +91,18 @@ class Runtime:
         Log.level(Main.level or "info")
         if Main.noignore:
             Main.ignore = ""
+        if Main.local:
+            Mods.add('mods', 'mods')
         if pkgs:
             for pkg in pkgs:
                 Mods.pkg(pkg)
         if Main.wdr:
             Mods.add("modules", os.path.join(Main.wdr, "mods"))
-        if Main.local:
-            Mods.add('mods', 'mods')
-        Commands.table()
-        Mods.sums()
+        if Main.read:
+            Runtime.scanner(Main)
+        else:
+            Commands.table()
+            Mods.sums()
         if Main.verbose:
             Runtime.banner()
         if Main.all:
@@ -163,6 +166,7 @@ class Runtime:
         parser.add_argument("-l", "--level", default=Main.level, help='set loglevel')
         parser.add_argument("-m", "--mods", default="", help='modules to load')
         parser.add_argument("-n", "--noignore", action="store_true", help="disable ignore")
+        parser.add_argument("-r", "--read", action="store_true", help="read modules on start")
         parser.add_argument("-s", "--service", action="store_true", help="start service")
         parser.add_argument("-t", "--threaded", action='store_true', help='enable multiple workers')
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose')
