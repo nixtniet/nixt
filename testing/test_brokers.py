@@ -4,15 +4,30 @@
 "broker tests"
 
 
+import types
 import unittest
 
 
+from nixt.brokers import Broker
 from nixt.encoder import Json
-from nixt.handler import Broker, Client
+from nixt.handler import Client
 from nixt.objects import Dict, Object
 
 
 class TestBroker(unittest.TestCase):
+
+    def test_ismethod(self):
+        self.assertEqual(type(Broker.add), types.MethodType)
+
+    def test_asinstance(self):
+        broker = Broker()
+        self.assertTrue(isinstance(broker, Broker))
+
+    def test_functioninginstance(self):
+        broker = Broker()
+        obj = Object()
+        broker.add(obj)
+        self.assertTrue(Broker.has(obj))
 
     def test_add(self):
         clt = Client()

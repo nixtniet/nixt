@@ -18,30 +18,30 @@ class Commands:
     cmds = {}
     names = {}
 
-    @staticmethod
-    def add(*args):
+    @classmethod
+    def add(cls, *args):
         "add functions to commands."
         for func in args:
             name = func.__name__
-            Commands.cmds[name] = func
+            cls.cmds[name] = func
             modname = func.__module__.split(".")[-1]
             if "__" in modname:
                 continue
-            Commands.names[name] = modname
+            cls.names[name] = modname
 
-    @staticmethod
-    def command(evt):
+    @classmethod
+    def command(cls, evt):
         "command callback."
         Methods.parse(evt, evt.text)
-        func = Commands.get(evt.cmd)
+        func = cls.get(evt.cmd)
         if not func:
-            name = Commands.names.get(evt.cmd)
+            name = cls.names.get(evt.cmd)
             if name:
                 logging.debug("load %s", name)
                 mod = Mods.get(name)
                 if mod:
-                    Commands.scan(mod)
-                    func = Commands.get(evt.cmd)
+                    cls.scan(mod)
+                    func = cls.get(evt.cmd)
         if func:
             func(evt)
             bot = Broker.get(evt.orig)
@@ -49,30 +49,30 @@ class Commands:
                 bot.display(evt)
         evt.ready()
 
-    @staticmethod
-    def get(cmd):
+    @classmethod
+    def get(cls, cmd):
         "get function for command."
-        return Commands.cmds.get(cmd, None)
+        return cls.cmds.get(cmd, None)
 
-    @staticmethod
-    def has(cmd):
+    @classmethod
+    def has(cls, cmd):
         "whether cmd is registered."
-        return cmd in Commands.cmds
+        return cmd in cls.cmds
 
-    @staticmethod
-    def scan(module):
+    @classmethod
+    def scan(cls, module):
         "scan a module for functions with event as argument."
         for key, cmdz in inspect.getmembers(module, inspect.isfunction):
             if 'event' not in inspect.signature(cmdz).parameters:
                 continue
-            Commands.add(cmdz)
+            cls.add(cmdz)
 
-    @staticmethod
-    def table():
-        mod = Mods.get("tbl")
+    @classmethod
+    def table(cls):
+        mod = cls.get("tbl")
         names = getattr(mod, "NAMES", None)
         if names:
-            Commands.names.update(names)
+            cls.names.update(names)
 
 
 def __dir__():

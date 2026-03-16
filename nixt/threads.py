@@ -118,10 +118,10 @@ class Thread:
 
     lock = threading.RLock()
 
-    @staticmethod
-    def launch(func, *args, **kwargs):
+    @classmethod
+    def launch(cls, func, *args, **kwargs):
         "run function in a thread."
-        with Thread.lock:
+        with cls.lock:
             try:
                 task = Task(func, *args, **kwargs)
                 task.start()
@@ -129,8 +129,8 @@ class Thread:
             except (KeyboardInterrupt, EOFError):
                 _thread.interrupt_main()
 
-    @staticmethod
-    def name(obj):
+    @classmethod
+    def name(cls, obj):
         "string of function/method."
         if inspect.ismethod(obj):
             return f"{obj.__self__.__class__.__name__}.{obj.__name__}"

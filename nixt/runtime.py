@@ -66,8 +66,8 @@ class Runtime:
 
     inits = []
 
-    @staticmethod
-    def banner():
+    @classmethod
+    def banner(cls):
         "hello."
         import sys
         tme = time.ctime(time.time()).replace("  ", " ")
@@ -81,8 +81,8 @@ class Runtime:
         sys.stdout.flush()
         return Main.version
 
-    @staticmethod
-    def boot(args, *pkgs):
+    @classmethod
+    def boot(cls, args, *pkgs):
         "in the beginning."
         Methods.parse(Main, args.txt)
         Dict.update(Main, Main.sets)
@@ -99,19 +99,19 @@ class Runtime:
         if Main.wdr:
             Mods.add("modules", os.path.join(Main.wdr, "mods"))
         if Main.read:
-            Runtime.scanner(Main)
+            cls.scanner(Main)
         else:
             Commands.table()
             Mods.sums()
         if Main.verbose:
-            Runtime.banner()
+            cls.banner()
         if Main.all:
             Main.mods = Mods.list(Main.ignore)
         if not Commands.names:
-            Runtime.scanner(Main)
+            cls.scanner(Main)
 
-    @staticmethod
-    def cmd(text):
+    @classmethod
+    def cmd(cls, text):
         "parse text for command and run it."
         cli = Line()
         cli.start()
@@ -124,8 +124,8 @@ class Runtime:
             evt.wait()
         return evt
 
-    @staticmethod
-    def daemon(verbose=False, nochdir=False):
+    @classmethod
+    def daemon(cls, verbose=False, nochdir=False):
         "run in the background."
         import sys
         pid = os.fork()
@@ -147,8 +147,8 @@ class Runtime:
             os.chdir("/")
         os.nice(10)
 
-    @staticmethod
-    def forever():
+    @classmethod
+    def forever(cls):
         "run forever until ctrl-c."
         while True:
             try:
@@ -156,8 +156,8 @@ class Runtime:
             except (KeyboardInterrupt, EOFError):
                 break
 
-    @staticmethod
-    def getargs():
+    @classmethod
+    def getargs(cls):
         "parse commandline arguments."
         parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
         parser.add_argument("-a", "--all", action="store_true", help="load all modules")
@@ -175,8 +175,8 @@ class Runtime:
         parser.add_argument("--wdr", help='set working directory')
         return parser.parse_known_args()
 
-    @staticmethod
-    def init(cfg, default=True):
+    @classmethod
+    def init(cls, cfg, default=True):
         "scan named modules for commands."
         thrs = []
         if default:
@@ -186,17 +186,17 @@ class Runtime:
         for name, mod in Mods.iter(cfg.mods or defs, cfg.ignore):
             if "init" in dir(mod):
                 thrs.append((name, Thread.launch(mod.init)))
-                Runtime.inits.append(name)
+                cls.inits.append(name)
         if cfg.wait:
             for name, thr in thrs:
                 thr.join()
 
-    @staticmethod
-    def out(txt):
+    @classmethod
+    def out(cls, txt):
         print(txt.encode('utf-8', 'replace').decode("utf-8"))
 
-    @staticmethod
-    def privileges():
+    @classmethod
+    def privileges(cls):
         "drop privileges."
         import getpass
         import pwd
@@ -204,8 +204,8 @@ class Runtime:
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
 
-    @staticmethod
-    def scanner(cfg, default=True):
+    @classmethod
+    def scanner(cls, cfg, default=True):
         "scan named modules for commands."
         res = []
         if default:
@@ -219,10 +219,10 @@ class Runtime:
             res.append((name, mod))
         return res
 
-    @staticmethod
-    def shutdown():
+    @classmethod
+    def shutdown(cls):
         "call shutdown on modules."
-        for name in Runtime.inits:
+        for name in cls.inits:
             mod = Mods.get(name)
             if "shutdown" in dir(mod):
                 try:
@@ -230,8 +230,8 @@ class Runtime:
                 except Exception as ex:
                     logging.exception(ex)
 
-    @staticmethod
-    def wrap(func, *args):
+    @classmethod
+    def wrap(cls, func, *args):
         "restore console."
         import sys
         import termios

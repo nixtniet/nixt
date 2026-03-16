@@ -17,8 +17,8 @@ class NoDate(Exception):
 
 class Time:
 
-    @staticmethod
-    def date(daystr):
+    @classmethod
+    def date(cls, daystr):
         "date from string."
         daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
         if "-" not in daystr:
@@ -30,8 +30,8 @@ class Time:
             except ValueError:
                 pass
 
-    @staticmethod
-    def elapsed(seconds, short=True):
+    @classmethod
+    def elapsed(cls, seconds, short=True):
         "seconds to string."
         txt = ""
         nsec = float(seconds)
@@ -71,8 +71,8 @@ class Time:
         txt = txt.strip()
         return txt
 
-    @staticmethod
-    def extract(daystr):
+    @classmethod
+    def extract(cls, daystr):
         "extract date/time from string."
         daystr = str(daystr)
         res = None
@@ -83,14 +83,14 @@ class Time:
                 except (ValueError, IndexError):
                     continue
             try:
-                res = Time.date(word.strip())
+                res = cls.date(word.strip())
                 break
             except ValueError:
                 res = None
         return res
 
-    @staticmethod
-    def fntime(daystr):
+    @classmethod
+    def fntime(cls, daystr):
         "time from path."
         datestr = " ".join(daystr.split(os.sep)[-2:])
         datestr = datestr.replace("_", " ")
@@ -103,8 +103,8 @@ class Time:
             timd += float("." + rest)
         return float(timd)
 
-    @staticmethod
-    def today():
+    @classmethod
+    def today(cls):
         "start of the day."
         return str(datetime.datetime.today()).split()[0]
 
