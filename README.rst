@@ -219,6 +219,6 @@ opml
 **COPYRIGHT**
 
 |
-| ``NIXT`` is Public Domain.
+| ``NIXT`` is Public Domain..
 |
 
