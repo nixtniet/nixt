@@ -12,7 +12,7 @@ import time
 
 
 from nixt.command import Commands
-from nixt.defines import Main, __version__
+from nixt.defines import Main
 from nixt.handler import Console, Event
 from nixt.loggers import Log
 from nixt.objects import Dict, Methods
@@ -29,7 +29,7 @@ Main.default = "irc,rss,thr"
 Main.ignore = "udp"
 Main.level = "info"
 Main.local = True
-Main.version = __version__
+Main.version = 453
 Main.wdr = os.path.expanduser(f"~/.{Main.name}")
 
 

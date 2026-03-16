@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 
 [project]
-dynamic = ["version"]
+version = 453
 name = "nixt"
 authors = [
     {name = "Nixt Niet", email = "nixtniet@gmail.com" },
@@ -40,7 +40,3 @@ packages = [
     'nixt.network'
 ]
 include-package-data = false
-
-
-[tool.setuptools.dynamic]
-version = {attr = "nixt.defines.__version__"}
