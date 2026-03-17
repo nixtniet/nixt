@@ -250,55 +250,6 @@ class Runtime:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
-class Scripts:
-
-    @staticmethod
-    def background(args):
-        "background script."
-        Runtime.daemon(Main.verbose, Main.nochdir)
-        Runtime.privileges()
-        Runtime.boot(args, MODS)
-        Workdir.pidfile(Main.name)
-        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        Runtime.init(Main)
-        Runtime.forever()
-
-    @staticmethod
-    def console(args):
-        "console script."
-        import readline
-        readline.redisplay()
-        Runtime.boot(args, MODS)
-        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        Runtime.init(Main, default=False)
-        csl = CSL()
-        csl.start()
-        Runtime.forever()
-
-    @staticmethod
-    def control(args):
-        "cli script."
-        import sys
-        if len(sys.argv) == 1:
-            return
-        Main.all = True
-        Runtime.boot(args, MODS)
-        Main.mods = Mods.list(Main.ignore)
-        Commands.add(*Dict.values(Cmd))
-        Runtime.cmd(Main.txt)
-
-    @staticmethod
-    def service(args):
-        "service script."
-        Runtime.privileges()
-        Runtime.boot(args, MODS)
-        Runtime.banner()
-        Workdir.pidfile(Main.name)
-        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
-        Runtime.init(Main)
-        Runtime.forever()
-
-
 class Cmd:
 
     @staticmethod
@@ -377,6 +328,55 @@ class Cmd:
     def ver(event):
         "show verson."
         event.reply(f"{Main.name.upper()} {Main.version}")
+
+
+class Scripts:
+
+    @staticmethod
+    def background(args):
+        "background script."
+        Runtime.daemon(Main.verbose, Main.nochdir)
+        Runtime.privileges()
+        Runtime.boot(args, MODS)
+        Workdir.pidfile(Main.name)
+        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
+        Runtime.init(Main)
+        Runtime.forever()
+
+    @staticmethod
+    def console(args):
+        "console script."
+        import readline
+        readline.redisplay()
+        Runtime.boot(args, MODS)
+        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
+        Runtime.init(Main, default=False)
+        csl = CSL()
+        csl.start()
+        Runtime.forever()
+
+    @staticmethod
+    def control(args):
+        "cli script."
+        import sys
+        if len(sys.argv) == 1:
+            return
+        Main.all = True
+        Runtime.boot(args, MODS)
+        Main.mods = Mods.list(Main.ignore)
+        Commands.add(*Dict.values(Cmd))
+        Runtime.cmd(Main.txt)
+
+    @staticmethod
+    def service(args):
+        "service script."
+        Runtime.privileges()
+        Runtime.boot(args, MODS)
+        Runtime.banner()
+        Workdir.pidfile(Main.name)
+        Commands.add(Cmd.cmd, Cmd.mod, Cmd.ver)
+        Runtime.init(Main)
+        Runtime.forever()
 
 
 def main():

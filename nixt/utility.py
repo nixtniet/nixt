@@ -21,9 +21,6 @@ class Time:
     def date(cls, daystr):
         "date from string."
         daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
-        if "-" not in daystr:
-            date = datetime.date.fromtimestamp(time.time())
-            daystr = f"{date.year}-{date.month}-{date.day}" + " " + daystr
         for fmat in TIMES:
             try:
                 return time.mktime(time.strptime(daystr, fmat))
@@ -82,11 +79,13 @@ class Time:
                     return int(word[1:]) + time.time()
                 except (ValueError, IndexError):
                     continue
-            try:
+            res = cls.date(word.strip())
+            if not res:
+                date = datetime.date.fromtimestamp(time.time())
+                word = f"{date.year}-{date.month}-{date.day}" + " " + word
                 res = cls.date(word.strip())
+            if res:
                 break
-            except ValueError:
-                res = None
         return res
 
     @classmethod
@@ -181,6 +180,10 @@ WantedBy=multi-user.target"""
 
 
 TIMES = [
+    "%a, %d %b %Y %H:%M:%S %z",
+    "%a, %d %b %Y %H:%M:%S",
+    "%a, %d %b %Y %T %z",
+    "%a, %d %b %Y %T",
     "%Y-%m-%d %H:%M:%S",
     "%Y-%m-%d %H:%M",
     "%Y-%m-%d %H:%M:%S",

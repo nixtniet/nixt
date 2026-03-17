@@ -57,6 +57,15 @@ def todate(date):
     return ddd
 
 
+def timed(datestr):
+    if not datestr:
+        return time.time()
+    tme = Time.date(datestr)
+    if not tme:
+        tme = time.time()
+    return tme
+
+
 def eml(event):
     nrs = -1
     args = ["From", "Subject"]
@@ -67,21 +76,21 @@ def eml(event):
         if key in args:
             args.remove(key)
     args = set(args)
-    result = sorted(
+    result = reversed(sorted(
                     Locate.find("email", event.gets),
-                    key=lambda x: Time.date(todate(getattr(x[1], "Date", "")))
-                   )
+                    key=lambda x: timed(x[1].Date)
+                   ))
     if event.index:
         obj = result[event.index]
         if obj:
             obj = obj[-1]
             tme = getattr(obj, "Date", "")
-            event.reply(f'{event.index} {Methods.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - Time.date(todate(tme)))}')
+            event.reply(f'{event.index} {Methods.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - timed(tme))}')
     else:
         for _fn, obj in result:
             nrs += 1
             tme = getattr(obj, "Date", "")
-            event.reply(f'{nrs} {Methods.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - Time.date(todate(tme)))}')
+            event.reply(f'{nrs} {Methods.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - timed(tme))}')
     if not result:
         event.reply("no emails found.")
 
