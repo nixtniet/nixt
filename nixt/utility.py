@@ -17,8 +17,8 @@ class NoDate(Exception):
 
 class Time:
 
-    @classmethod
-    def date(cls, daystr):
+    @staticmethod
+    def date(daystr):
         "date from string."
         daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
         for fmat in TIMES:
@@ -27,8 +27,8 @@ class Time:
             except ValueError:
                 pass
 
-    @classmethod
-    def elapsed(cls, seconds, short=True):
+    @staticmethod
+    def elapsed(seconds, short=True):
         "seconds to string."
         txt = ""
         nsec = float(seconds)
@@ -68,8 +68,8 @@ class Time:
         txt = txt.strip()
         return txt
 
-    @classmethod
-    def extract(cls, daystr):
+    @staticmethod
+    def extract(daystr):
         "extract date/time from string."
         daystr = str(daystr)
         res = None
@@ -79,17 +79,17 @@ class Time:
                     return int(word[1:]) + time.time()
                 except (ValueError, IndexError):
                     continue
-            res = cls.date(word.strip())
+            res = Time.date(word.strip())
             if not res:
                 date = datetime.date.fromtimestamp(time.time())
                 word = f"{date.year}-{date.month}-{date.day}" + " " + word
-                res = cls.date(word.strip())
+                res = Time.date(word.strip())
             if res:
                 break
         return res
 
-    @classmethod
-    def fntime(cls, daystr):
+    @staticmethod
+    def fntime(daystr):
         "time from path."
         datestr = " ".join(daystr.split(os.sep)[-2:])
         datestr = datestr.replace("_", " ")
@@ -102,8 +102,8 @@ class Time:
             timd += float("." + rest)
         return float(timd)
 
-    @classmethod
-    def today(cls):
+    @staticmethod
+    def today():
         "start of the day."
         return str(datetime.datetime.today()).split()[0]
 

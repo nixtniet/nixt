@@ -11,21 +11,21 @@ import os
 import time
 
 
-from nixt.command import Commands
-from nixt.defines import Main
-from nixt.handler import Console, Event
-from nixt.loggers import Log
-from nixt.objects import Dict, Methods
-from nixt.package import Mods
-from nixt.persist import Disk, Json, Locate, Workdir
-from nixt.threads import Thread
-from nixt.utility import SYSTEMD, Utils
+from bigtalk.command import Commands
+from bigtalk.defines import Main
+from bigtalk.handler import Console, Event
+from bigtalk.loggers import Log
+from bigtalk.objects import Dict, Methods
+from bigtalk.package import Mods
+from bigtalk.persist import Disk, Json, Locate, Workdir
+from bigtalk.threads import Thread
+from bigtalk.utility import SYSTEMD, Utils
 
 
-from nixt import modules as MODS
+from bigtalk import modules as MODS
 
 
-Main.default = "irc,rss,thr"
+Main.default = "mdl,irc,rss"
 Main.ignore = "udp"
 Main.level = "info"
 Main.local = True
@@ -66,8 +66,8 @@ class Runtime:
 
     inits = []
 
-    @classmethod
-    def banner(cls):
+    @staticmethod
+    def banner():
         "hello."
         import sys
         tme = time.ctime(time.time()).replace("  ", " ")
@@ -81,8 +81,8 @@ class Runtime:
         sys.stdout.flush()
         return Main.version
 
-    @classmethod
-    def boot(cls, args, *pkgs):
+    @staticmethod
+    def boot(args, *pkgs):
         "in the beginning."
         Methods.parse(Main, args.txt)
         Dict.update(Main, Main.sets)
@@ -99,19 +99,19 @@ class Runtime:
         if Main.wdr:
             Mods.add("modules", os.path.join(Main.wdr, "mods"))
         if Main.read:
-            cls.scanner(Main)
+            Runtime.scanner(Main)
         else:
             Commands.table()
             Mods.sums()
         if Main.verbose:
-            cls.banner()
+            Runtime.banner()
         if Main.all:
             Main.mods = Mods.list(Main.ignore)
         if not Commands.names:
-            cls.scanner(Main)
+            Runtime.scanner(Main)
 
-    @classmethod
-    def cmd(cls, text):
+    @staticmethod
+    def cmd(text):
         "parse text for command and run it."
         cli = Line()
         cli.start()
@@ -124,8 +124,8 @@ class Runtime:
             evt.wait()
         return evt
 
-    @classmethod
-    def daemon(cls, verbose=False, nochdir=False):
+    @staticmethod
+    def daemon(verbose=False, nochdir=False):
         "run in the background."
         import sys
         pid = os.fork()
@@ -147,8 +147,8 @@ class Runtime:
             os.chdir("/")
         os.nice(10)
 
-    @classmethod
-    def forever(cls):
+    @staticmethod
+    def forever():
         "run forever until ctrl-c."
         while True:
             try:
@@ -156,8 +156,8 @@ class Runtime:
             except (KeyboardInterrupt, EOFError):
                 break
 
-    @classmethod
-    def getargs(cls):
+    @staticmethod
+    def getargs():
         "parse commandline arguments."
         parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
         parser.add_argument("-a", "--all", action="store_true", help="load all modules")
@@ -175,8 +175,8 @@ class Runtime:
         parser.add_argument("--wdr", help='set working directory')
         return parser.parse_known_args()
 
-    @classmethod
-    def init(cls, cfg, default=True):
+    @staticmethod
+    def init(cfg, default=True):
         "scan named modules for commands."
         thrs = []
         if default:
@@ -186,17 +186,17 @@ class Runtime:
         for name, mod in Mods.iter(cfg.mods or defs, cfg.ignore):
             if "init" in dir(mod):
                 thrs.append((name, Thread.launch(mod.init)))
-                cls.inits.append(name)
+                Runtime.inits.append(name)
         if cfg.wait:
             for name, thr in thrs:
                 thr.join()
 
-    @classmethod
-    def out(cls, txt):
+    @staticmethod
+    def out(txt):
         print(txt.encode('utf-8', 'replace').decode("utf-8"))
 
-    @classmethod
-    def privileges(cls):
+    @staticmethod
+    def privileges():
         "drop privileges."
         import getpass
         import pwd
@@ -204,8 +204,8 @@ class Runtime:
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
 
-    @classmethod
-    def scanner(cls, cfg, default=True):
+    @staticmethod
+    def scanner(cfg, default=True):
         "scan named modules for commands."
         res = []
         if default:
@@ -219,10 +219,10 @@ class Runtime:
             res.append((name, mod))
         return res
 
-    @classmethod
-    def shutdown(cls):
+    @staticmethod
+    def shutdown():
         "call shutdown on modules."
-        for name in cls.inits:
+        for name in Runtime.inits:
             mod = Mods.get(name)
             if "shutdown" in dir(mod):
                 try:
@@ -230,8 +230,8 @@ class Runtime:
                 except Exception as ex:
                     logging.exception(ex)
 
-    @classmethod
-    def wrap(cls, func, *args):
+    @staticmethod
+    def wrap(func, *args):
         "restore console."
         import sys
         import termios
