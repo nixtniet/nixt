@@ -6,7 +6,9 @@
 
 
 import os
+import readline
 import sys
+import time
 
 
 sys.path.insert(0, os.getcwd())
@@ -15,8 +17,15 @@ sys.path.insert(0, os.getcwd())
 from nixt.command import Commands
 from nixt.defines import Main
 from nixt.handler import Console, Event
+from nixt.objects import Dict, Methods
 from nixt.package import Mods
 from nixt.runtime import Runtime
+from nixt.utility import Log, Utils
+
+
+Main.level = "info"
+Main.name = "nixt"
+Main.version = "453"
 
 
 class Line(Console):
@@ -25,41 +34,92 @@ class Line(Console):
         super().__init__()
         self.register("command", Commands.command)
 
+    @staticmethod
+    def cmd(text):
+        "parse text for command and run it."
+        cli = Line()
+        cli.start()
+        for txt in text.split(" ! "):
+            evt = Event()
+            evt.orig = repr(cli)
+            evt.text = txt
+            evt.kind = "command"
+            Commands.command(evt)
+            evt.wait()
+        return evt
+
     def raw(self, text):
         "write to console."
         print(text.encode('utf-8', 'replace').decode("utf-8"))
 
 
-def docmd(text):
-    "parse text for command and run it."
-    cli = Line()
-    cli.start()
-    for txt in text.split(" ! "):
+class CSL(Line):
+
+    @staticmethod
+    def banner():
+        "hello."
+        import sys
+        tme = time.ctime(time.time()).replace("  ", " ")
+        print("%s %s since %s %s (%s)" % (
+            Main.name.upper(),
+            Main.version,
+            tme,
+            Main.level.upper(),
+            Utils.md5sum(Mods.path("tbl") or "")[:7],
+        ))
+        sys.stdout.flush()
+        return Main.version
+
+    def callback(self, event):
+        "wait for callback result."
+        if not event.text:
+            event.ready()
+            return
+        super().callback(event)
+        event.wait()
+
+    @staticmethod
+    def console():
+        CSL.banner()
+        csl = CSL()
+        csl.start()
+        Runtime.init(Main)
+        Runtime.forever()
+
+    def poll(self):
+        "poll for an event."
         evt = Event()
-        evt.orig = repr(cli)
-        evt.text = txt
+        evt.text = input("> ")
         evt.kind = "command"
-        Commands.command(evt)
-        evt.wait()
-    return evt
+        return evt
 
 
-def cmd(event):
-    "list available commands."
-    event.reply(",".join(sorted(Commands.names.keys() or Commands.cmds.keys())))
+class Cmd:
 
+    def cmd(event):
+        "list available commands."
+        event.reply(",".join(sorted(Commands.names.keys() or Commands.cmds.keys())))
 
-def ver(event):
-    "show verson."
-    event.reply(f"{Main.name.upper()} {Main.version}")
+    def ver(event):
+        "show verson."
+        event.reply(f"{Main.name.upper()} {Main.version}")
 
 
 def main():
     "main"
+    Methods.parse(Main, " ".join(sys.argv[1:]))
+    Dict.update(Main, Main.sets)
+    Log.level(Main.level or "info")
     Mods.add("mods", "mods")
+    if "a" in Main.opts:
+        Main.mods = Mods.list(Main.ignore)
     Runtime.scanner(Main)
-    Commands.add(cmd, ver)
-    docmd(" ".join(sys.argv[1:]))
+    Commands.add(Cmd.cmd, Cmd.ver)
+    if "c" in Main.opts:
+        Runtime.wrap(CSL.console)
+    else:
+        Line.cmd(" ".join(sys.argv[1:]))
+    Runtime.shutdown()
 
 
 if __name__ == "__main__":

@@ -99,6 +99,7 @@ class Locate:
     def find(cls, kind, selector={}, removed=False, matching=False, nritems=None):
         "locate objects by matching atributes."
         nrs = 0
+        Workdir.skel()
         for pth in Locate.fns(Workdir.long(kind)):
             obj = Cache.get(pth)
             if obj is None:
@@ -168,8 +169,7 @@ class Workdir:
     @classmethod
     def setwd(cls, path):
         "enable writing to disk."
-        if not path:
-            Disk.cdir(path)
+        Disk.cdir(path)
         cls.wdr = path
         cls.skel()
 
@@ -206,6 +206,9 @@ class Workdir:
     def skel(cls):
         "create directories."
         if not cls.wdr:
+            return
+        if not os.path.exists(cls.wdr):
+            Disk.cdir(cls.wdr)
             return
         path = os.path.abspath(Workdir.wdr)
         workpath = os.path.join(path, "store")

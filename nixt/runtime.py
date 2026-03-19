@@ -7,6 +7,7 @@
 import os
 import logging
 import time
+import _thread
 
 
 from nixt.command import Commands
@@ -48,7 +49,7 @@ class Runtime:
             try:
                 time.sleep(0.1)
             except (KeyboardInterrupt, EOFError):
-                break
+                _thread.interrupt_main()
 
     @staticmethod
     def init(cfg, default=True):
