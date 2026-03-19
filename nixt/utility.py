@@ -191,20 +191,6 @@ class Log:
         )
 
 
-SYSTEMD = """[Unit]
-Description=%s
-After=multi-user.target
-
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
-
-
 TIMES = [
     "%a, %d %b %Y %H:%M:%S %z",
     "%a, %d %b %Y %H:%M:%S",

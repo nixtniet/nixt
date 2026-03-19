@@ -209,7 +209,6 @@ class Workdir:
             return
         if not os.path.exists(cls.wdr):
             Disk.cdir(cls.wdr)
-            return
         path = os.path.abspath(Workdir.wdr)
         workpath = os.path.join(path, "store")
         pth = pathlib.Path(workpath)

@@ -6,13 +6,18 @@
 
 import os
 import logging
+import sys
 import time
 import _thread
 
 
-from nixt.command import Commands
-from nixt.package import Mods
-from nixt.threads import Thread
+from .command import Commands
+from .defines import Main
+from .objects import Dict, Methods
+from .package import Mods
+from .persist import Workdir
+from .threads import Thread
+from .utility import Log
 
 
 class Runtime:
@@ -20,9 +25,34 @@ class Runtime:
     inits = []
 
     @staticmethod
+    def boot(txt, *pkgs):
+        "in the beginning."
+        Methods.parse(Main, txt)
+        Methods.merge(Main, Main.sets)
+        Workdir.setwd(Main.wdr)
+        Log.level(Main.level or "info")
+        if Main.noignore:
+            Main.ignore = ""
+        if Main.local:
+            Mods.add('mods', 'mods')
+        if pkgs:
+            for pkg in pkgs:
+                Mods.pkg(pkg)
+        if Main.wdr:
+            Mods.add("modules", os.path.join(Main.wdr, "mods"))
+        if Main.read:
+            Runtime.scanner(Main)
+        else:
+            Commands.table()
+            Mods.sums()
+        if Main.all:
+            Main.mods = Mods.list(Main.ignore)
+        if not Commands.names:
+            Runtime.scanner(Main)
+
+    @staticmethod
     def daemon(verbose=False, nochdir=False):
         "run in the background."
-        import sys
         pid = os.fork()
         if pid != 0:
             os._exit(0)
@@ -77,7 +107,7 @@ class Runtime:
         os.setuid(pwnam2.pw_uid)
 
     @staticmethod
-    def scanner(cfg, default=True):
+    def scanner(cfg, default=False):
         "scan named modules for commands."
         res = []
         if default:
@@ -105,7 +135,6 @@ class Runtime:
     @staticmethod
     def wrap(func, *args):
         "restore console."
-        import sys
         import termios
         old = None
         try:
@@ -120,6 +149,7 @@ class Runtime:
             logging.exception(ex)
         if old:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+
 
 
 def __dir__():

@@ -93,8 +93,7 @@ class Mods:
         md5sum = Utils.md5sum(spec.loader.path)
         if md5 and md5sum != md5:
             logging.error("mismatch %s", spec.loader.path)
-        else:
-            cls.md5s[name] = md5sum
+        cls.md5s[name] = md5sum
         mod = importlib.util.module_from_spec(spec)
         if not mod:
             logging.debug("can't load %s module", name)

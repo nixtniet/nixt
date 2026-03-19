@@ -5,8 +5,8 @@
 "main program"
 
 
+import argparse
 import os
-import readline
 import sys
 import time
 
@@ -19,8 +19,15 @@ from nixt.defines import Main
 from nixt.handler import Console, Event
 from nixt.objects import Dict, Methods
 from nixt.package import Mods
+from nixt.persist import Workdir
 from nixt.runtime import Runtime
 from nixt.utility import Log, Utils
+
+
+from nixt import modules as MODS
+
+
+TXT = " ".join(sys.argv[1:])
 
 
 Main.level = "info"
@@ -34,26 +41,30 @@ class Line(Console):
         super().__init__()
         self.register("command", Commands.command)
 
-    @staticmethod
-    def cmd(text):
-        "parse text for command and run it."
-        cli = Line()
-        cli.start()
-        for txt in text.split(" ! "):
-            evt = Event()
-            evt.orig = repr(cli)
-            evt.text = txt
-            evt.kind = "command"
-            Commands.command(evt)
-            evt.wait()
-        return evt
-
     def raw(self, text):
         "write to console."
         print(text.encode('utf-8', 'replace').decode("utf-8"))
 
 
 class CSL(Line):
+
+    def callback(self, event):
+        "wait for callback result."
+        if not event.text:
+            event.ready()
+            return
+        super().callback(event)
+        event.wait()
+
+    def poll(self):
+        "poll for an event."
+        evt = Event()
+        evt.text = input("> ")
+        evt.kind = "command"
+        return evt
+
+
+class Run:
 
     @staticmethod
     def banner():
@@ -69,58 +80,112 @@ class CSL(Line):
         sys.stdout.flush()
         return Main.version
 
-    def callback(self, event):
-        "wait for callback result."
-        if not event.text:
-            event.ready()
-            return
-        super().callback(event)
-        event.wait()
+    @staticmethod
+    def check(opts):
+        for arg in sys.argv[1:]:
+            if not arg.startswith("-"):
+                continue
+            for opt in opts:
+                if opt in arg:
+                    return True
+        return False
 
     @staticmethod
-    def console():
-        readline.redisplay()
-        CSL.banner()
-        csl = CSL()
-        csl.start()
-        Runtime.init(Main)
-        Runtime.forever()
-
-    def poll(self):
-        "poll for an event."
-        evt = Event()
-        evt.text = input("> ")
-        evt.kind = "command"
+    def cmd(text):
+        "parse text for command and run it."
+        cli = Line()
+        cli.start()
+        for txt in text.split(" ! "):
+            evt = Event()
+            evt.orig = repr(cli)
+            evt.text = txt
+            evt.kind = "command"
+            Commands.command(evt)
+            evt.wait()
         return evt
 
 
-class Cmd:
+class Scripts:
 
     @staticmethod
-    def cmd(event):
-        "list available commands."
-        event.reply(",".join(sorted(Commands.names.keys() or Commands.cmds.keys())))
+    def background():
+        "background script."
+        Runtime.daemon(Main.verbose, Main.nochdir)
+        Runtime.privileges()
+        Runtime.boot(TXT, MODS)
+        Workdir.pidfile(Main.name)
+        Runtime.init(Main)
+        Runtime.forever()
 
     @staticmethod
-    def ver(event):
-        "show verson."
-        event.reply(f"{Main.name.upper()} {Main.version}")
+    def console():
+        "console script."
+        import readline
+        readline.redisplay()
+        Runtime.boot(TXT, MODS)
+        if Main.verbose:
+            Run.banner()
+        Runtime.init(Main, default=False)
+        csl = CSL()
+        csl.start()
+        Runtime.forever()
+
+    @staticmethod
+    def control():
+        "cli script."
+        if len(sys.argv) == 1:
+            return
+        Main.all = True
+        Runtime.boot(TXT, MODS)
+        Main.mods = Mods.list(Main.ignore)
+        Run.cmd(TXT)
+
+    @staticmethod
+    def service():
+        "service script."
+        Runtime.privileges()
+        Runtime.boot(TXT, MODS)
+        Run.banner()
+        Workdir.pidfile(Main.name)
+        Runtime.init(Main)
+        Runtime.forever()
+
+
+class Arguments:
+
+    @staticmethod
+    def getargs():
+        "parse commandline arguments."
+        parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
+        parser.add_argument("-a", "--all", action="store_true", help="load all modules")
+        parser.add_argument("-c", "--console", action="store_true", help="start console")
+        parser.add_argument("-d", "--daemon", action="store_true", help="start background daemon")
+        parser.add_argument("-l", "--level", default=Main.level, help='set loglevel')
+        parser.add_argument("-m", "--mods", default="", help='modules to load')
+        parser.add_argument("-n", "--noignore", action="store_true", help="disable ignore")
+        parser.add_argument("-r", "--read", action="store_true", help="read modules on start")
+        parser.add_argument("-s", "--service", action="store_true", help="start service")
+        parser.add_argument("-t", "--threaded", action='store_true', help='enable multiple workers')
+        parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose')
+        parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start')
+        parser.add_argument("--local", action="store_true", help="use local mods directory")
+        parser.add_argument("--wdr", help='set working directory')
+        return parser.parse_known_args()
 
 
 def main():
     "main"
-    Methods.parse(Main, " ".join(sys.argv[1:]))
-    Dict.update(Main, Main.sets)
-    Log.level(Main.level or "info")
-    Mods.add("mods", "mods")
-    if "a" in Main.opts:
-        Main.mods = Mods.list(Main.ignore)
-    Runtime.scanner(Main)
-    Commands.add(Cmd.cmd, Cmd.ver)
-    if "c" in Main.opts:
-        Runtime.wrap(CSL.console)
+    args, arguments = Arguments.getargs()
+    TXT = " ".join(arguments)
+    Methods.merge(Main, vars(args))
+    if Main.daemon:
+        Scripts.background()
+    elif Main.console:
+        Runtime.wrap(Scripts.console)
+    elif Main.service:
+        Runtime.wrap(Scripts.service)
     else:
-        Line.cmd(" ".join(sys.argv[1:]))
+        Runtime.wrap(Scripts.control)
     Runtime.shutdown()
 
 
