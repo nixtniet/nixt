@@ -29,7 +29,7 @@ from nixt.utility import SYSTEMD, Log, Utils
 from nixt import modules as MODS
 
 
-Main.default = "mdl,irc,rss"
+Main.default = "mdl,irc,rss,thr"
 Main.ignore = "udp"
 Main.level = "info"
 Main.local = True
