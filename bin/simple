@@ -58,7 +58,6 @@ class CSL(Line):
     @staticmethod
     def banner():
         "hello."
-        import sys
         tme = time.ctime(time.time()).replace("  ", " ")
         print("%s %s since %s %s (%s)" % (
             Main.name.upper(),
@@ -80,6 +79,7 @@ class CSL(Line):
 
     @staticmethod
     def console():
+        readline.redisplay()
         CSL.banner()
         csl = CSL()
         csl.start()
@@ -96,10 +96,12 @@ class CSL(Line):
 
 class Cmd:
 
+    @staticmethod
     def cmd(event):
         "list available commands."
         event.reply(",".join(sorted(Commands.names.keys() or Commands.cmds.keys())))
 
+    @staticmethod
     def ver(event):
         "show verson."
         event.reply(f"{Main.name.upper()} {Main.version}")
