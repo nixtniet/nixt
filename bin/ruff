@@ -24,4 +24,4 @@ def popen(txt):
         sys.stdout.flush()
 
 
-popen("ruff check nixt bin/nixt bin/simple bin/tinder testing")
+popen("ruff check nixt bin/tinder testing")

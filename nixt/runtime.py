@@ -13,7 +13,7 @@ import _thread
 
 from .command import Commands
 from .defines import Main
-from .objects import Dict, Methods
+from .objects import Methods
 from .package import Mods
 from .persist import Workdir
 from .threads import Thread
@@ -25,10 +25,11 @@ class Runtime:
     inits = []
 
     @staticmethod
-    def boot(txt, *pkgs):
+    def boot(args, *pkgs):
         "in the beginning."
-        Methods.parse(Main, txt)
+        Methods.parse(Main, args.txt)
         Methods.merge(Main, Main.sets)
+        Methods.merge(Main, vars(args))
         Workdir.setwd(Main.wdr)
         Log.level(Main.level or "info")
         if Main.noignore:
@@ -149,7 +150,6 @@ class Runtime:
             logging.exception(ex)
         if old:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
-
 
 
 def __dir__():

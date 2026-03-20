@@ -13,23 +13,20 @@ import time
 from .command import Commands
 from .defines import Main
 from .handler import Console, Event
-from .objects import Dict, Methods
 from .package import Mods
 from .persist import Workdir
 from .runtime import Runtime
-from .utility import Log, Utils
+from .utility import Utils
 
 
 from . import modules as MODS
-
-
-TXT = " ".join(sys.argv[1:])
 
 
 Main.level = "info"
 Main.local = True
 Main.name = "nixt"
 Main.version = "453"
+Main.wdr = os.path.expanduser(f"~/.{Main.name}")
 
 
 class Line(Console):
@@ -78,16 +75,6 @@ class Run:
         return Main.version
 
     @staticmethod
-    def check(opts):
-        for arg in sys.argv[1:]:
-            if not arg.startswith("-"):
-                continue
-            for opt in opts:
-                if opt in arg:
-                    return True
-        return False
-
-    @staticmethod
     def cmd(text):
         "parse text for command and run it."
         cli = Line()
@@ -105,21 +92,21 @@ class Run:
 class Scripts:
 
     @staticmethod
-    def background():
+    def background(args):
         "background script."
         Runtime.daemon(Main.verbose, Main.nochdir)
         Runtime.privileges()
-        Runtime.boot(TXT, MODS)
+        Runtime.boot(args, MODS)
         Workdir.pidfile(Main.name)
         Runtime.init(Main)
         Runtime.forever()
 
     @staticmethod
-    def console():
+    def console(args):
         "console script."
         import readline
         readline.redisplay()
-        Runtime.boot(TXT, MODS)
+        Runtime.boot(args, MODS)
         if Main.verbose:
             Run.banner()
         Runtime.init(Main, default=False)
@@ -128,20 +115,20 @@ class Scripts:
         Runtime.forever()
 
     @staticmethod
-    def control():
+    def control(args):
         "cli script."
         if len(sys.argv) == 1:
             return
         Main.all = True
-        Runtime.boot(TXT, MODS)
+        Runtime.boot(args, MODS)
         Main.mods = Mods.list(Main.ignore)
-        Run.cmd(TXT)
+        Run.cmd(args.txt)
 
     @staticmethod
-    def service():
+    def service(args):
         "service script."
         Runtime.privileges()
-        Runtime.boot(TXT, MODS)
+        Runtime.boot(args, MODS)
         Run.banner()
         Workdir.pidfile(Main.name)
         Runtime.init(Main)
@@ -173,16 +160,15 @@ class Arguments:
 def main():
     "main"
     args, arguments = Arguments.getargs()
-    TXT = " ".join(arguments)
-    Methods.merge(Main, vars(args))
-    if Main.daemon:
-        Scripts.background()
-    elif Main.console:
-        Runtime.wrap(Scripts.console)
-    elif Main.service:
-        Runtime.wrap(Scripts.service)
+    args.txt = " ".join(arguments)
+    if args.daemon:
+        Scripts.background(args)
+    elif args.console:
+        Runtime.wrap(Scripts.console, args)
+    elif args.service:
+        Runtime.wrap(Scripts.service, args)
     else:
-        Runtime.wrap(Scripts.control)
+        Runtime.wrap(Scripts.control, args)
     Runtime.shutdown()
 
 
