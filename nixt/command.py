@@ -36,12 +36,13 @@ class Commands:
         func = cls.get(evt.cmd)
         if not func:
             name = cls.names.get(evt.cmd)
+            mod = None
             if name:
                 logging.debug("load %s", name)
                 mod = Mods.get(name)
-                if mod:
-                    cls.scan(mod)
-                    func = cls.get(evt.cmd)
+            if mod:
+                cls.scan(mod)
+                func = cls.get(evt.cmd)
         if func:
             func(evt)
             bot = Broker.get(evt.orig)
