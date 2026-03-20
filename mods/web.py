@@ -21,7 +21,8 @@ from nixt.utility import Utils
 
 
 def init():
-    if not os.path.exists(os.path.join(Config.path, 'index.html')):
+    path = Utils.pkgname(Object)
+    if not os.path.exists(os.path.join(path, "network", 'index.html')):
         logging.warning("no index.html")
         return
     try:
