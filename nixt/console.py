@@ -23,8 +23,6 @@ from . import modules as MODS
 
 
 Main.level = "info"
-Main.local = True
-Main.name = "nixt"
 Main.version = "453"
 Main.wdr = os.path.expanduser(f"~/.{Main.name}")
 

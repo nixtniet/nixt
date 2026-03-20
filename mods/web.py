@@ -21,7 +21,6 @@ from nixt.utility import Utils
 
 
 def init():
-    Config.path = os.path.join(Utils.where(Object), "network")
     if not os.path.exists(os.path.join(Config.path, 'index.html')):
         logging.warning("no index.html")
         return
@@ -76,6 +75,7 @@ class HTTPHandler(BaseHTTPRequestHandler):
 
     def setup(self):
         BaseHTTPRequestHandler.setup(self)
+        self._path = os.path.join(Utils.where(Object), "network")
         self._size = 0
         self._ip = self.client_address[0]
 
@@ -104,7 +104,7 @@ class HTTPHandler(BaseHTTPRequestHandler):
             return
         if self.path == "/":
             self.path = "index.html"
-        path = Config.path + os.sep + self.path
+        path = self._path + os.sep + self.path
         ext = path[-3]
         if not os.path.exists(path):
             self.write_header("text/html")
