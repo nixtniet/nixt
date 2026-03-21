@@ -26,8 +26,9 @@ def mod(event):
 
 def tbl(event):
     "create table."
-    for name, mod in Mods.all():
-        Commands.scan(mod)
+    Mods.md5s = {}
+    for name, module in Mods.all(True):
+        Commands.scan(module)
     event.reply("# This file is placed in the Pubic Domain.\n\n")
     event.reply('"tables"\n\n')
     event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4)}\n\n")

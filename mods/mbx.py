@@ -40,10 +40,10 @@ def eml(event):
         if key in args:
             args.remove(key)
     args = set(args)
-    result = reversed(sorted(
+    result = sorted(
                     Locate.find("email", event.gets),
                     key=lambda x: timed(x[1].Date)
-                   ))
+                   )
     if event.index:
         obj = result[event.index]
         if obj:

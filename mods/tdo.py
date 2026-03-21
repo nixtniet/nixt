@@ -34,6 +34,7 @@ def dne(event):
     if not nmr:
         event.reply("nothing todo")
 
+
 def tdo(event):
     if not event.rest:
         nmr = 0

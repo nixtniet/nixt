@@ -25,8 +25,8 @@ class Mods:
             cls.dirs[name] = path
 
     @classmethod
-    def all(cls):
-        return cls.iter(cls.list())
+    def all(cls, force=False):
+        return cls.iter(cls.list(), force=force)
 
     @classmethod
     def get(cls, modname):
@@ -45,7 +45,7 @@ class Mods:
         return ",".join(result)
 
     @classmethod
-    def iter(cls, modlist, ignore=""):
+    def iter(cls, modlist, ignore="", force=False):
         "loop over modules."
         has = []
         for name in Utils.spl(modlist):
@@ -59,7 +59,7 @@ class Mods:
                     continue
                 modname = f"{pkgname}.{name}"
                 mod = cls.modules.get(modname, None)
-                if not mod:
+                if force or not mod:
                     mod = cls.importer(modname, fnm)
                 if mod:
                     has.append(name)

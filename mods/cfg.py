@@ -18,20 +18,20 @@ def cfg(event):
     if not mod:
         event.reply(f"no {name} module found.")
         return
-    cfg = getattr(mod, "Config", None)
-    if not cfg:
+    config = getattr(mod, "Config", None)
+    if not config:
         event.reply("no configuration found.")
         return
-    fnm = Locate.first(cfg) or Methods.ident(cfg)
+    fnm = Locate.first(config) or Methods.ident(config)
     if not event.sets:
         event.reply(
             Methods.fmt(
-                cfg,
-                Dict.keys(cfg),
+                config,
+                Dict.keys(config),
                 skip=["word",]
             )
         )
         return
-    Methods.edit(cfg, event.sets)
-    Disk.write(Methods.skip(cfg), fnm)
+    Methods.edit(config, event.sets)
+    Disk.write(Methods.skip(config), fnm)
     event.reply("ok")
