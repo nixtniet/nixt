@@ -48,7 +48,7 @@ NAMES = {
 
 
 MD5 = {
-    "mods.adm": "3615a40dcd5a72dd028c0a6ad00f7447",
+    "mods.adm": "98d791a4b8728258a6f97fe34b066e6b",
     "mods.cfg": "cc0ec8574842ea20dca67eafecdfa672",
     "mods.fie": "8764d7a9613a9018ec273ce8f3f800e6",
     "mods.flt": "68b06f967b47b2567c8eccb7113a72f0",
@@ -56,7 +56,7 @@ MD5 = {
     "mods.irc": "49b7b8ba122f4af2112fe3e7d60fb2c7",
     "mods.log": "9939174052e70c618eeb833c05a08b4f",
     "mods.man": "b748396cfcf563b0f06df1546c930fce",
-    "mods.mbx": "6c3874c84d2cb2f2f9b3490ce1ab977d",
+    "mods.mbx": "aac8108fc90a4c0d15f9dcbe3d6b92c6",
     "mods.mdl": "ac569bad2f3358975edd221d81aabf60",
     "mods.pth": "211bf9ef6898555135249123b584fe6c",
     "mods.pwd": "c308a6405f500bbcdde84334fc377bb8",
@@ -67,7 +67,7 @@ MD5 = {
     "mods.slg": "0196cecb8ff67e032bd389a0b1860353",
     "mods.srv": "74c8485e1b2a80e06f0930001f6ba043",
     "mods.tbl": "d41d8cd98f00b204e9800998ecf8427e",
-    "mods.tdo": "e6ca1f76fc134b033a2c10c172abf166",
+    "mods.tdo": "9223232a5a50ae732803898641b57ddc",
     "mods.thr": "942bc0354e26935adc97065feb50e9da",
     "mods.tmr": "24d454341bacfb3a3cf6d21703b3d789",
     "mods.udp": "ce48fc590c291a7eb3ae546d75bb70d3",
