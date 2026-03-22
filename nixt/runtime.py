@@ -12,44 +12,13 @@ import _thread
 
 
 from .command import Commands
-from .defines import Main
-from .objects import Methods
 from .package import Mods
-from .persist import Workdir
 from .threads import Thread
-from .utility import Log
 
 
 class Runtime:
 
     inits = []
-
-    @staticmethod
-    def boot(args, *pkgs):
-        "in the beginning."
-        Methods.parse(Main, args.txt)
-        Methods.merge(Main, Main.sets)
-        Methods.merge(Main, vars(args))
-        Workdir.setwd(Main.wdr)
-        Log.level(Main.level or "info")
-        if Main.noignore:
-            Main.ignore = ""
-        if Main.user:
-            Mods.add('mods', 'mods')
-        if pkgs:
-            for pkg in pkgs:
-                Mods.pkg(pkg)
-        if Main.wdr:
-            Mods.add("modules", os.path.join(Main.wdr, "mods"))
-        if Main.read:
-            Runtime.scanner(Main)
-        else:
-            Commands.table()
-            Mods.sums()
-        if Main.all:
-            Main.mods = Mods.list(Main.ignore)
-        if not Commands.names:
-            Runtime.scanner(Main)
 
     @staticmethod
     def daemon(verbose=False, nochdir=False):
