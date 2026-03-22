@@ -34,7 +34,7 @@ class Runtime:
         Log.level(Main.level or "info")
         if Main.noignore:
             Main.ignore = ""
-        if Main.local:
+        if Main.user:
             Mods.add('mods', 'mods')
         if pkgs:
             for pkg in pkgs:

@@ -142,6 +142,7 @@ class Thread:
 def __dir__():
     return (
         'Repeater',
+        'Task',
         'Thread',
         'Timed'
     )

@@ -13,10 +13,11 @@ import time
 from .command import Commands
 from .defines import Main
 from .handler import Console, Event
+from .objects import Methods
 from .package import Mods
 from .persist import Workdir
 from .runtime import Runtime
-from .utility import Utils
+from .utility import Log, Utils
 
 
 from . import modules as MODS
@@ -34,8 +35,9 @@ class Arguments:
         "parse commandline arguments."
         parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
         parser.add_argument("-a", "--all", action="store_true", help="load all modules")
+        parser.add_argument("-b", "--background", action="store_true", help="start background daemon")
         parser.add_argument("-c", "--console", action="store_true", help="start console")
-        parser.add_argument("-d", "--daemon", action="store_true", help="start background daemon")
+        parser.add_argument("-d", "--wdr", default="", help='set working directory')
         parser.add_argument("-l", "--level", default=Main.level, help='set loglevel')
         parser.add_argument("-m", "--mods", default="", help='modules to load')
         parser.add_argument("-n", "--noignore", action="store_true", help="disable ignore")
@@ -44,8 +46,7 @@ class Arguments:
         parser.add_argument("-t", "--threaded", action='store_true', help='enable multiple workers')
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose')
         parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start')
-        parser.add_argument("--local", action="store_true", help="use local mods directory")
-        parser.add_argument("--wdr", help='set working directory')
+        parser.add_argument("-u", "--user", action="store_true", help="use local mods directory")
         return parser.parse_known_args()
 
 
@@ -95,6 +96,33 @@ class Run:
         return Main.version
 
     @staticmethod
+    def boot(args, *pkgs):
+        "in the beginning."
+        Methods.parse(Main, args.txt)
+        Methods.merge(Main, Main.sets)
+        Methods.merge(Main, vars(args))
+        Workdir.setwd(Main.wdr)
+        Log.level(Main.level or "info")
+        if Main.noignore:
+            Main.ignore = ""
+        if Main.user:
+            Mods.add('mods', 'mods')
+        if pkgs:
+            for pkg in pkgs:
+                Mods.pkg(pkg)
+        if Main.wdr:
+            Mods.add("modules", os.path.join(Main.wdr, "mods"))
+        if Main.read:
+            Runtime.scanner(Main)
+        else:
+            Commands.table()
+            Mods.sums()
+        if Main.all:
+            Main.mods = Mods.list(Main.ignore)
+        if not Commands.names:
+            Runtime.scanner(Main)
+
+    @staticmethod
     def cmd(text):
         "parse text for command and run it."
         cli = Line()
@@ -116,7 +144,7 @@ class Scripts:
         "background script."
         Runtime.daemon(Main.verbose, Main.nochdir)
         Runtime.privileges()
-        Runtime.boot(args, MODS)
+        Run.boot(args, MODS)
         Workdir.pidfile(Main.name)
         Runtime.init(Main)
         Runtime.forever()
@@ -126,7 +154,7 @@ class Scripts:
         "console script."
         import readline
         readline.redisplay()
-        Runtime.boot(args, MODS)
+        Run.boot(args, MODS)
         if Main.verbose:
             Run.banner()
         Runtime.init(Main, default=False)
@@ -140,7 +168,7 @@ class Scripts:
         if len(sys.argv) == 1:
             return
         Main.all = True
-        Runtime.boot(args, MODS)
+        Run.boot(args, MODS)
         Main.mods = Mods.list(Main.ignore)
         Run.cmd(args.txt)
 
@@ -148,7 +176,7 @@ class Scripts:
     def service(args):
         "service script."
         Runtime.privileges()
-        Runtime.boot(args, MODS)
+        Run.boot(args, MODS)
         Run.banner()
         Workdir.pidfile(Main.name)
         Runtime.init(Main)
@@ -159,7 +187,7 @@ def main():
     "main"
     args, arguments = Arguments.getargs()
     args.txt = " ".join(arguments)
-    if args.daemon:
+    if args.background:
         Scripts.background(args)
     elif args.console:
         Runtime.wrap(Scripts.console, args)
