@@ -17,12 +17,12 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.command import Commands
-from nixt.defines import Main
 from nixt.handler import Client, Event
-from nixt.objects import Data, Methods
+from nixt.methods import Methods
+from nixt.objects import Data
 from nixt.package import Mods
 from nixt.persist import Workdir
-from nixt.runtime import Runtime
+from nixt.runtime import Main, Runtime
 from nixt.threads import Thread
 from nixt.utility import Log, Time, Utils
 

@@ -4,7 +4,7 @@
 "systemd service file"
 
 
-from nixt.defines import Main
+from nixt.runtime import Main
 
 
 def srv(event):

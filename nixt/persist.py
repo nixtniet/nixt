@@ -10,10 +10,10 @@ import os
 import pathlib
 import threading
 
-
-from .defines import Main
 from .encoder import Json
-from .objects import Data, Dict, Methods
+from .methods import Methods
+from .objects import Data, Dict
+from .runtime import Main
 from .utility import Time
 
 

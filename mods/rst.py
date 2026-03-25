@@ -13,9 +13,9 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.defines import Configuration, Main
 from nixt.objects import Object
 from nixt.persist import Locate, Workdir
+from nixt.runtime import Configuration, Main
 from nixt.threads import Thread
 
 

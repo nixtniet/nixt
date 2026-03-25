@@ -4,7 +4,8 @@
 "configuration"
 
 
-from nixt.objects import Dict, Methods
+from nixt.methods import Methods
+from nixt.objects import Dict
 from nixt.package import Mods
 from nixt.persist import Disk, Locate
 

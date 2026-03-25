@@ -9,7 +9,7 @@ import logging
 
 
 from .brokers import Broker
-from .objects import Methods
+from .methods import Methods
 from .package import Mods
 
 

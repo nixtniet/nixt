@@ -11,7 +11,8 @@ import time
 
 
 from nixt.brokers import Broker
-from nixt.objects import Dict, Methods, Object
+from nixt.methods import Methods
+from nixt.objects import Dict, Object
 from nixt.persist import Disk, Locate
 from nixt.threads import Thread, Timed
 from nixt.utility import Time

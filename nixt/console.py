@@ -11,12 +11,11 @@ import time
 
 
 from .command import Commands
-from .defines import Main
 from .handler import Console, Event
-from .objects import Methods
+from .methods import Methods
 from .package import Mods
 from .persist import Workdir
-from .runtime import Runtime
+from .runtime import Main, Runtime
 from .utility import Log, Utils
 
 

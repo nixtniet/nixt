@@ -5,9 +5,9 @@
 
 
 from nixt.command import Commands
-from nixt.defines import Main
 from nixt.encoder import Json
 from nixt.package import Mods
+from nixt.runtime import Main
 
 
 def cmd(event):

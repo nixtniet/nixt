@@ -13,9 +13,9 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.defines import Configuration
 from nixt.objects import Object
 from nixt.persist import Main
+from nixt.runtime import Configuration
 from nixt.threads import Thread
 from nixt.utility import Utils
 
