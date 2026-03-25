@@ -4,8 +4,6 @@
 "a clean namespace"
 
 
-import datetime
-import os
 import types
 
 
@@ -135,7 +133,6 @@ class Dict:
                 res.append(obj[key])
             return res
         return obj.__dict__.values()
-
 
 
 def __dir__():

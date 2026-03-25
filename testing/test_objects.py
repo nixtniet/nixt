@@ -7,7 +7,8 @@
 import unittest
 
 
-from nixt.objects import Dict, Methods, Object
+from nixt.methods import Methods
+from nixt.objects import Dict, Object
 
 
 import nixt.objects
