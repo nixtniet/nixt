@@ -13,7 +13,6 @@ import _thread
 
 from .command import Commands
 from .methods import Methods
-from .objects import Data, Dict
 from .package import Mods
 from .threads import Thread
 from .utility import Utils
