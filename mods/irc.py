@@ -16,9 +16,9 @@ import time
 from nixt.command import Commands
 from nixt.handler import Broker, Event, Output
 from nixt.methods import Methods
-from nixt.objects import Data
+from nixt.objects import Configuration, Data
 from nixt.persist import Locate
-from nixt.runtime import Configuration, Main
+from nixt.runtime import Main
 from nixt.threads import Thread
 from nixt.utility import Utils
 

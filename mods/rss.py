@@ -26,9 +26,9 @@ from urllib.parse import quote_plus, urlencode
 
 from nixt.handler import Broker
 from nixt.methods import Methods
-from nixt.objects import Data, Dict
+from nixt.objects import Configuration, Data, Dict
 from nixt.persist import Disk, Locate
-from nixt.runtime import Configuration, Main
+from nixt.runtime import Main
 from nixt.threads import Repeater, Thread
 from nixt.utility import Time, Utils
 

@@ -28,6 +28,16 @@ class Data(Object):
         return self.__dict__.get(key, "")
 
 
+class Configuration(Data):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        if args:
+            Dict.update(self, args[0])
+        if kwargs:
+            Dict.update(self, kwargs)
+
+
 class Dict:
 
     @staticmethod
@@ -137,6 +147,7 @@ class Dict:
 
 def __dir__():
     return (
+        'Configuration',
         'Data',
         'Dict',
         'Object'

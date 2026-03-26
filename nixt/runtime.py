@@ -19,16 +19,6 @@ from .threads import Thread
 from .utility import Utils
 
 
-class Configuration(Data):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__()
-        if args:
-            Dict.update(self, args[0])
-        if kwargs:
-            Dict.update(self, kwargs)
-
-
 class MainConfig(type):
 
     def __getattr__(cls, key):
@@ -42,7 +32,7 @@ class MainConfig(type):
 
 class Main(metaclass=MainConfig):
 
-    name = Utils.pkgname(Configuration)
+    name = Utils.pkgname(MainConfig)
     wdr = f".{name}"
 
 
@@ -153,7 +143,6 @@ class Runtime:
 
 def __dir__():
     return (
-        'Configuration',
         "Runtime",
         'Main'
     )
