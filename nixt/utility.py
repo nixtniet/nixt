@@ -208,7 +208,6 @@ TIMES = [
 
 def __dir__():
     return (
-        'SYSTEMD',
         'Log',
         'NoDate',
         'Time',

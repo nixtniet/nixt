@@ -35,9 +35,8 @@ class Arguments:
         "parse commandline arguments."
         parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
         parser.add_argument("-a", "--all", action="store_true", help="load all modules")
-        parser.add_argument("-b", "--background", action="store_true", help="start background daemon")
         parser.add_argument("-c", "--console", action="store_true", help="start console")
-        parser.add_argument("-d", "--wdr", default="", help='set working directory')
+        parser.add_argument("-d", "--daemon", action="store_true", help="start background daemon")
         parser.add_argument("-i", "--ignore", default="", help='modules to ignore')
         parser.add_argument("-l", "--level", default=Main.level, help='set loglevel')
         parser.add_argument("-m", "--mods", default="", help='modules to load')
@@ -47,6 +46,7 @@ class Arguments:
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose')
         parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start')
         parser.add_argument("-u", "--user", action="store_true", help="use local mods directory")
+        parser.add_argument("-wdr", "--wdr", default="", help='set working directory')
         return parser.parse_known_args()
 
 
@@ -187,7 +187,7 @@ def main():
     "main"
     args, arguments = Arguments.getargs()
     args.txt = " ".join(arguments)
-    if args.background:
+    if args.daemon:
         Scripts.background(args)
     elif args.console:
         Runtime.wrap(Scripts.console, args)

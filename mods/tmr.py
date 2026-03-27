@@ -49,7 +49,7 @@ class Timer(Data):
     pass
 
 
-class Timers(Object):
+class Timers(Data):
 
     path = ""
     timers = Timer()
