@@ -4,8 +4,7 @@
 "configuration"
 
 
-from nixt.methods import Methods
-from nixt.objects import Dict
+from nixt.objects import Methods, Object
 from nixt.package import Mods
 from nixt.persist import Disk, Locate
 
@@ -28,7 +27,7 @@ def cfg(event):
         event.reply(
             Methods.fmt(
                 config,
-                Dict.keys(config),
+                Object.keys(config),
                 skip=["word",]
             )
         )

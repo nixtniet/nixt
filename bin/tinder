@@ -18,8 +18,7 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.command import Commands
 from nixt.handler import Client, Event
-from nixt.methods import Methods
-from nixt.objects import Data
+from nixt.objects import Data, Methods
 from nixt.package import Mods
 from nixt.persist import Workdir
 from nixt.runtime import Main, Runtime

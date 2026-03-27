@@ -10,10 +10,10 @@ import os
 import pathlib
 import threading
 
+
+from .configs import Main
 from .encoder import Json
-from .methods import Methods
-from .objects import Data, Dict
-from .runtime import Main
+from .objects import Data, Methods, Object
 from .utility import Time
 
 
@@ -35,7 +35,7 @@ class Cache:
     def sync(cls, path, obj):
         "update cached object."
         try:
-            Dict.update(cls.paths[path], obj)
+            Object.update(cls.paths[path], obj)
         except KeyError:
             cls.add(path, obj)
 
@@ -62,7 +62,7 @@ class Disk:
                 return
             with open(pth, "r", encoding="utf-8") as fpt:
                 try:
-                    Dict.update(obj, Json.load(fpt))
+                    Object.update(obj, Json.load(fpt))
                 except json.decoder.JSONDecodeError as ex:
                     logging.error("failed read at %s", pth)
                     raise ex
@@ -88,7 +88,7 @@ class Locate:
         "show attributes for kind of objects."
         result = []
         for pth, obj in Locate.find(kind, nritems=1):
-            result.extend(Dict.keys(obj))
+            result.extend(Object.keys(obj))
         return set(result)
 
     @classmethod
@@ -126,7 +126,7 @@ class Locate:
         res = ""
         if result:
             inp = result[0]
-            Dict.update(obj, inp[-1])
+            Object.update(obj, inp[-1])
             res = inp[0]
         return res
 
@@ -152,7 +152,7 @@ class Locate:
         res = ""
         if result:
             inp = result[-1]
-            Dict.update(obj, inp[-1])
+            Object.update(obj, inp[-1])
             res = inp[0]
         return res
 

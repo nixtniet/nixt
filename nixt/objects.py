@@ -1,13 +1,15 @@
 # This file is placed in the Public Domain.
 
 
-"a clean namespace"
+"a function with the object as the first argument"
 
 
+import datetime
+import os
 import types
 
 
-class Object:
+class Base:
 
     def __contains__(self, key):
         return key in dir(self)
@@ -22,23 +24,13 @@ class Object:
         return str(self.__dict__)
 
 
-class Data(Object):
+class Data(Base):
 
     def __getattr__(self, key):
         return self.__dict__.get(key, "")
 
 
-class Configuration(Data):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__()
-        if args:
-            Dict.update(self, args[0])
-        if kwargs:
-            Dict.update(self, kwargs)
-
-
-class Dict:
+class Object:
 
     @staticmethod
     def clear(obj):
@@ -51,19 +43,19 @@ class Dict:
         if args:
             val = args[0]
             if isinstance(val, zip):
-                Dict.update(obj, dict(val))
+                Object.update(obj, dict(val))
             elif isinstance(val, dict):
-                Dict.update(obj, val)
+                Object.update(obj, val)
             else:
-                Dict.update(obj, vars(val))
+                Object.update(obj, vars(val))
         if kwargs:
-            Dict.update(obj, kwargs)
+            Object.update(obj, kwargs)
 
     @staticmethod
     def copy(obj):
         "return shallow copy of the object."
         oobj = type(obj)()
-        Dict.update(oobj, obj.__dict__.copy())
+        Object.update(oobj, obj.__dict__.copy())
         return oobj
 
     @staticmethod
@@ -118,7 +110,7 @@ class Dict:
                     if value:
                         setattr(obj, key, value)
             else:
-                for key, value in Dict.items(data):
+                for key, value in Object.items(data):
                     setattr(obj, key, value)
         elif isinstance(obj, dict):
             obj.update(data)
@@ -145,10 +137,192 @@ class Dict:
         return obj.__dict__.values()
 
 
+class Methods:
+
+    @staticmethod
+    def cls(obj):
+        "return class name of an object."
+        return Methods.fqn(obj).split(".")[-1]
+
+    @staticmethod
+    def deleted(obj):
+        "check whether obj had deleted flag set."
+        return "__deleted__" in dir(obj) and obj.__deleted__
+
+    @staticmethod
+    def edit(obj, setter={}, skip=False):
+        "update object with dict."
+        for key, val in Object.items(setter):
+            if skip and val == "":
+                continue
+            Methods.typed(obj, key, val)
+
+    @staticmethod
+    def fmt(obj, args=[], skip=[], plain=False, empty=False):
+        "format object info printable string."
+        if args == []:
+            args = list(obj.__dict__.keys())
+        if args == []:
+            args = [x for x in dir(obj) if not x.startswith("_")]
+        txt = ""
+        for key in args:
+            if key.startswith("__"):
+                continue
+            if key in skip:
+                continue
+            value = getattr(obj, key, None)
+            if value is None:
+                continue
+            if not empty and value == "":
+                continue
+            if plain:
+                txt += f"{value} "
+            elif isinstance(value, (int, float, dict, bool, list)):
+                txt += f"{key}={value} "
+            elif isinstance(value, str):
+                txt += f'{key}="{value}" '
+            else:
+                txt += f"{key}={Methods.cls(value)}({Methods.fmt(value)}) "
+        if txt == "":
+            txt = "{}"
+        return txt.strip()
+
+    @staticmethod
+    def fqn(obj):
+        "full qualified name."
+        kin = str(type(obj)).split()[-1][1:-2]
+        if kin == "type":
+            kin = f"{obj.__module__}.{obj.__name__}"
+        return kin
+
+    @staticmethod
+    def ident(obj):
+        "return ident string for object."
+        return os.path.join(Methods.fqn(obj), *str(datetime.datetime.now()).split())
+
+    @staticmethod
+    def merge(obj, obj2):
+        for key, value in Object.items(obj2):
+            if not value and getattr(obj, key, False):
+                continue
+            setattr(obj, key, value)
+
+    @staticmethod
+    def parse(obj, text):
+        "parse text for command."
+        data = {
+            "args": [],
+            "cmd": "",
+            "gets": Data(),
+            "index": None,
+            "init": "",
+            "opts": "",
+            "otxt": text,
+            "rest": "",
+            "silent": Data(),
+            "sets": Data(),
+            "text": text
+        }
+        for k, v in data.items():
+            setattr(obj, k, getattr(obj, k, v) or v)
+        args = []
+        nr = -1
+        for spli in text.split():
+            if spli.startswith("-"):
+                try:
+                    obj.index = int(spli[1:])
+                except ValueError:
+                    obj.opts += spli[1:]
+                continue
+            if "-=" in spli:
+                key, value = spli.split("-=", maxsplit=1)
+                Methods.typed(obj.silent, key, value)
+                Methods.typed(obj.gets, key, value)
+                continue
+            if "==" in spli:
+                key, value = spli.split("==", maxsplit=1)
+                Methods.typed(obj.gets, key, value)
+                continue
+            if "=" in spli:
+                key, value = spli.split("=", maxsplit=1)
+                Methods.typed(obj.sets, key, value)
+                continue
+            nr += 1
+            if nr == 0:
+                obj.cmd = spli
+                continue
+            args.append(spli)
+        if args:
+            obj.args = args
+            obj.text = obj.cmd or ""
+            obj.rest = " ".join(obj.args)
+            obj.text = obj.cmd + " " + obj.rest
+        else:
+            obj.text = obj.cmd or ""
+
+    @staticmethod
+    def reduce(obj):
+        result = {}
+        for key, value in Object.items(obj):
+            if value:
+                result[key] = value
+        return result
+
+    @staticmethod
+    def search(obj, selector={}, matching=False):
+        "check whether object matches search criteria."
+        res = False
+        for key, value in Object.items(selector):
+            val = getattr(obj, key, None)
+            if not val:
+                res = False
+                break
+            if matching and value != val:
+                res = False
+                break
+            if str(value).lower() not in str(val).lower():
+                res = False
+                break
+            res = True
+        return res
+
+    @staticmethod
+    def skip(obj, chars="_"):
+        "skip keys containing chars."
+        res = {}
+        for key, value in Object.items(obj):
+            donext = False
+            for char in chars:
+                if char in key:
+                    donext = True
+            if donext:
+                continue
+            res[key] = value
+        return res
+
+    @staticmethod
+    def typed(obj, key, val):
+        "assign proper types."
+        try:
+            setattr(obj, key, int(val))
+            return
+        except ValueError:
+            pass
+        try:
+            setattr(obj, key, float(val))
+            return
+        except ValueError:
+            pass
+        if val in ["True", "true", True]:
+            setattr(obj, key, True)
+        elif val in ["False", "false", False]:
+            setattr(obj, key, False)
+        else:
+            setattr(obj, key, val)
+
+
 def __dir__():
     return (
-        'Configuration',
-        'Data',
-        'Dict',
-        'Object'
+        'Object',
+        'Methods'
     )

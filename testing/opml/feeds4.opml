@@ -67,7 +67,7 @@
 	<outline type="rss" text="Daily Dave" title="Daily Dave" xmlUrl="http://seclists.org/rss/dailydave.rss" htmlUrl="http://seclists.org/#dailydave"/>
 	<outline type="rss" text="Tech Anarchy" title="Tech Anarchy" xmlUrl="https://techanarchy.net/feed/" htmlUrl="https://techanarchy.net"/>
 	<outline type="rss" text="Palo Alto Networks Blog" title="Palo Alto Networks Blog" xmlUrl="http://researchcenter.paloaltonetworks.com/feed/" htmlUrl="http://researchcenter.paloaltonetworks.com"/>
-	<outline type="rss" text="Objective-See's Blog" title="Dictive-See's Blog" xmlUrl="https://objective-see.com/rss.xml" htmlUrl="https://www.objective-see.com"/>
+	<outline type="rss" text="Objective-See's Blog" title="Objective-See's Blog" xmlUrl="https://objective-see.com/rss.xml" htmlUrl="https://www.objective-see.com"/>
 	<outline type="rss" text="This is Security :: by Stormshield" title="This is Security :: by Stormshield" xmlUrl="http://thisissecurity.net/feed/" htmlUrl="http://thisissecurity.net"/>
 	<outline type="rss" text="Techblog - Netflix" title="Techblog - Netflix" xmlUrl="https://www.blogger.com/feeds/725338818844296080/posts/default" htmlUrl="http://techblog.netflix.com/"/>
 	<outline type="rss" text="Johannes Bader's Blog" title="Johannes Bader's Blog" xmlUrl="https://johannesbader.ch/feed.xml" htmlUrl="https://johannesbader.ch"/>

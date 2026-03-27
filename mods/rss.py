@@ -24,9 +24,9 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
+from nixt.configs import Configuration
 from nixt.handler import Broker
-from nixt.methods import Methods
-from nixt.objects import Configuration, Data, Dict
+from nixt.objects import Data, Methods, Object
 from nixt.persist import Disk, Locate
 from nixt.runtime import Main
 from nixt.threads import Repeater, Thread
@@ -156,8 +156,8 @@ class Runner:
                     continue
                 counter += 1
                 fed = Feed()
-                Dict.update(fed, obj)
-                Dict.update(fed, feed)
+                Object.update(fed, obj)
+                Object.update(fed, feed)
                 url = urllib.parse.urlparse(fed.link)
                 if url.path and not url.path == "/":
                     uurl = f"{url.scheme}://{url.netloc}/{url.path}"
@@ -339,7 +339,7 @@ class Helpers:
     @staticmethod
     def attrs(obj, txt):
         "parse attribute into an object."
-        Dict.update(obj, *list(OPML.parse(txt)))
+        Object.update(obj, *list(OPML.parse(txt)))
 
     @staticmethod
     def cdata(line):
@@ -488,7 +488,7 @@ def dpl(event):
     setter = {"display_list": event.args[1]}
     for fnm, feed in Locate.find(Methods.fqn(Rss), {"rss": event.args[0]}):
         if feed:
-            Dict.update(feed, setter)
+            Object.update(feed, setter)
             Disk.write(feed, fnm)
     event.reply("ok")
 
@@ -502,7 +502,7 @@ def err(event):
         if event.rest and event.rest in obj.error:
             nre += 1
             feed = Rss()
-            Dict.update(feed, obj)
+            Object.update(feed, obj)
             feed.__deleted__ = False
             feed.error = ""
             Disk.write(feed, fnm)
@@ -523,7 +523,7 @@ def exp(event):
         for _fn, ooo in Locate.find(Methods.fqn(Rss)):
             nrs += 1
             obj = Rss()
-            Dict.update(obj, ooo)
+            Object.update(obj, ooo)
             name = f"url{nrs}"
             txt = f'<outline name="{name}" display_list="{obj.display_list}" xmlUrl="{obj.rss}"/>'
             event.reply(" " * 12 + txt)
@@ -561,7 +561,7 @@ def imp(event):
             feed = Rss()
             feed.rss = obj["xmlUrl"]
             del obj["xmlUrl"]
-            Dict.update(feed, obj)
+            Object.update(feed, obj)
             uri = urllib.parse.urlparse(feed.rss)
             if uri.netloc.count(".") >= 2:
                 feed.name = ".".join(uri.netloc.split('.')[1:-1])
@@ -583,7 +583,7 @@ def nme(event):
     selector = {"rss": event.args[0]}
     for fnm, fed in Locate.find(Methods.fqn(Rss), selector):
         feed = Rss()
-        Dict.update(feed, fed)
+        Object.update(feed, fed)
         if feed:
             feed.name = str(event.args[1])
             Disk.write(feed, fnm)
@@ -596,7 +596,7 @@ def rem(event):
         return
     for fnm, fed in Locate.find(Methods.fqn(Rss)):
         feed = Rss()
-        Dict.update(feed, fed)
+        Object.update(feed, fed)
         if event.args[0] not in feed.rss:
             continue
         if feed:
@@ -613,7 +613,7 @@ def res(event):
     nrs = 0
     for fnm, fed in Locate.find(Methods.fqn(Rss), removed=True):
         feed = Rss()
-        Dict.update(feed, fed)
+        Object.update(feed, fed)
         if event.args[0] not in feed.rss:
             continue
         nrs += 1

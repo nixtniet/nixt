@@ -12,7 +12,7 @@ from random import SystemRandom
 
 from nixt.brokers import Broker
 from nixt.handler import Event
-from nixt.methods import Methods
+from nixt.objects import Methods
 from nixt.persist import Disk, Locate
 from nixt.threads import Repeater
 

@@ -11,8 +11,7 @@ import time
 
 
 from nixt.brokers import Broker
-from nixt.methods import Methods
-from nixt.objects import Dict, Object
+from nixt.objects import Data, Object, Methods
 from nixt.persist import Disk, Locate
 from nixt.threads import Thread, Timed
 from nixt.utility import Time
@@ -24,7 +23,7 @@ rand = random.SystemRandom()
 def init():
     Timers.path = Locate.last(Timers.timers) or Methods.ident(Timers.timers)
     remove = []
-    for tme, args in Dict.items(Timers.timers):
+    for tme, args in Object.items(Timers.timers):
         if not args:
             continue
         orig, channel, txt = args
@@ -45,7 +44,7 @@ def init():
     logging.warning("%s timers", len(Timers.timers))
 
 
-class Timer(Object):
+class Timer(Data):
 
     pass
 
@@ -70,7 +69,7 @@ class Timers(Object):
 def tmr(event):
     if not event.rest:
         nmr = 0
-        for tme, txt in Dict.items(Timers.timers):
+        for tme, txt in Object.items(Timers.timers):
             lap = float(tme) - time.time()
             if lap > 0:
                 event.reply(f'{nmr} {" ".join(txt)} {Time.elapsed(lap)}')
