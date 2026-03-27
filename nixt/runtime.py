@@ -12,7 +12,7 @@ import time
 
 from .command import Commands
 from .configs import Main
-from .daemons import Runtime
+from .kernels import Kernel
 from .handler import Console, Event
 from .objects import Methods
 from .package import Mods
@@ -23,9 +23,9 @@ from .utility import Log, Utils
 from . import modules as MODS
 
 
-Main.level = "info"
-Main.version = "453"
-Main.wdr = os.path.expanduser(f"~/.{Main.name}")
+Kernel.cfg.level = "info"
+Kernel.cfg.version = "453"
+Kernel.cfg.wdr = os.path.expanduser(f"~/.{Main.name}")
 
 
 class Arguments:
@@ -33,12 +33,12 @@ class Arguments:
     @staticmethod
     def getargs():
         "parse commandline arguments."
-        parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
+        parser = argparse.ArgumentParser(prog=Kernel.cfg.name, description=f"{Kernel.cfg.name.upper()}")
         parser.add_argument("-a", "--all", action="store_true", help="load all modules")
         parser.add_argument("-c", "--console", action="store_true", help="start console")
         parser.add_argument("-d", "--daemon", action="store_true", help="start background daemon")
         parser.add_argument("-i", "--ignore", default="", help='modules to ignore')
-        parser.add_argument("-l", "--level", default=Main.level, help='set loglevel')
+        parser.add_argument("-l", "--level", default=Kernel.cfg.level, help='set loglevel')
         parser.add_argument("-m", "--mods", default="", help='modules to load')
         parser.add_argument("-n", "--noignore", action="store_true", help="disable ignore")
         parser.add_argument("-r", "--read", action="store_true", help="read modules on start")
@@ -82,47 +82,6 @@ class CSL(Line):
 class Run:
 
     @staticmethod
-    def banner():
-        "hello."
-        tme = time.ctime(time.time()).replace("  ", " ")
-        print("%s %s since %s %s (%s)" % (
-            Main.name.upper(),
-            Main.version,
-            tme,
-            Main.level.upper(),
-            Utils.md5sum(Mods.path("tbl") or "")[:7],
-        ))
-        sys.stdout.flush()
-        return Main.version
-
-    @staticmethod
-    def boot(args, *pkgs):
-        "in the beginning."
-        Methods.parse(Main, args.txt)
-        Methods.merge(Main, Main.sets)
-        Methods.merge(Main, vars(args))
-        Workdir.setwd(Main.wdr)
-        Log.level(Main.level or "info")
-        if Main.noignore:
-            Main.ignore = ""
-        if Main.user:
-            Mods.add('mods', 'mods')
-        if pkgs:
-            for pkg in pkgs:
-                Mods.pkg(pkg)
-        if Main.wdr:
-            Mods.add("modules", os.path.join(Main.wdr, "mods"))
-        if Main.read:
-            Runtime.scanner(Main)
-        else:
-            Commands.table()
-            Mods.sums()
-        if Main.all:
-            Main.mods = Mods.list(Main.ignore)
-        if not Commands.names:
-            Runtime.scanner(Main)
-
-    @staticmethod
     def cmd(text):
         "parse text for command and run it."
         cli = Line()
@@ -142,45 +101,45 @@ class Scripts:
     @staticmethod
     def background(args):
         "background script."
-        Runtime.daemon(Main.verbose, Main.nochdir)
-        Runtime.privileges()
-        Run.boot(args, MODS)
+        Kernel.daemon(Main.verbose, Main.nochdir)
+        Kernel.privileges()
+        Kernel.boot(args, MODS)
         Workdir.pidfile(Main.name)
-        Runtime.init(Main)
-        Runtime.forever()
+        Kernel.init()
+        Kernel.forever()
 
     @staticmethod
     def console(args):
         "console script."
         import readline
         readline.redisplay()
-        Run.boot(args, MODS)
-        if Main.verbose:
-            Run.banner()
-        Runtime.init(Main, default=False)
+        Kernel.boot(args, MODS)
+        if Kernel.cfg.verbose:
+            Kernel.banner()
+        Kernel.init(default=False)
         csl = CSL()
         csl.start()
-        Runtime.forever()
+        Kernel.forever()
 
     @staticmethod
     def control(args):
         "cli script."
         if len(sys.argv) == 1:
             return
-        Main.all = True
-        Run.boot(args, MODS)
-        Main.mods = Mods.list(Main.ignore)
+        Kernel.cfg.all = True
+        Kernel.boot(args, MODS)
+        Kernel.cfg.mods = Mods.list(Kernel.cfg.ignore)
         Run.cmd(args.txt)
 
     @staticmethod
     def service(args):
         "service script."
-        Runtime.privileges()
-        Run.boot(args, MODS)
-        Run.banner()
+        Kernel.privileges()
+        Kernel.boot(args, MODS)
+        Kernel.banner()
         Workdir.pidfile(Main.name)
-        Runtime.init(Main)
-        Runtime.forever()
+        Kernel.init()
+        Kernel.forever()
 
 
 def main():
@@ -190,12 +149,12 @@ def main():
     if args.daemon:
         Scripts.background(args)
     elif args.console:
-        Runtime.wrap(Scripts.console, args)
+        Kernel.wrap(Scripts.console, args)
     elif args.service:
-        Runtime.wrap(Scripts.service, args)
+        Kernel.wrap(Scripts.service, args)
     else:
-        Runtime.wrap(Scripts.control, args)
-    Runtime.shutdown()
+        Kernel.wrap(Scripts.control, args)
+    Kernel.shutdown()
 
 
 if __name__ == "__main__":

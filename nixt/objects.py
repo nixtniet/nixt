@@ -289,15 +289,17 @@ class Methods:
     @staticmethod
     def skip(obj, chars="_"):
         "skip keys containing chars."
-        res = {}
+        res = Data()
         for key, value in Object.items(obj):
+            if isinstance(value, types.MethodType):
+                continue
             donext = False
             for char in chars:
                 if char in key:
                     donext = True
             if donext:
                 continue
-            res[key] = value
+            setattr(res, key, value)
         return res
 
     @staticmethod

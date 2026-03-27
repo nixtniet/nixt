@@ -4,7 +4,7 @@
 "configuration"
 
 
-from .objects import Data, Object
+from .objects import Data, Methods, Object
 from .utility import Utils
 
 
@@ -26,7 +26,7 @@ class MainConfig(type):
         return cls.__getattribute__(key)
 
     def __str__(cls):
-        return str(Object.skip(cls.__dict__))
+        return str(Methods.skip(cls.__dict__))
 
 
 class Main(metaclass=MainConfig):

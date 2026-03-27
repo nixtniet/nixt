@@ -8,9 +8,14 @@ import json
 import types
 
 
+from .objects import Methods
+
+
 class Encoder(json.JSONEncoder):
 
     def default(self, o):
+        if isinstance(o, type):
+            return Methods.skip(o)
         if isinstance(o, dict):
             return o.items()
         if isinstance(o, list):

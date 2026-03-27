@@ -68,7 +68,7 @@ class Disk:
                     raise ex
 
     @classmethod
-    def write(cls, obj, path="", base="store"):
+    def write(cls, obj, path="", base="store", skip=False):
         "write object to disk."
         with cls.lock:
             if path == "":
