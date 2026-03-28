@@ -13,8 +13,7 @@ import time
 
 
 from nixt.brokers import Broker
-from nixt.configs import Configuration
-from nixt.objects import Data
+from nixt.objects import Configuration, Data
 from nixt.runtime import Main
 from nixt.threads import Thread
 

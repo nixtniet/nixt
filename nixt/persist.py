@@ -192,17 +192,6 @@ class Workdir:
         return res
 
     @classmethod
-    def pidfile(cls, name):
-        "write pidfile."
-        filename = os.path.join(cls.wdr, f"{name}.pid")
-        if os.path.exists(filename):
-            os.unlink(filename)
-        path2 = pathlib.Path(filename)
-        path2.parent.mkdir(parents=True, exist_ok=True)
-        with open(filename, "w", encoding="utf-8") as fds:
-            fds.write(str(os.getpid()))
-
-    @classmethod
     def skel(cls):
         "create directories."
         if not cls.wdr:

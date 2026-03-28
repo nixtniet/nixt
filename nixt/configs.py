@@ -4,18 +4,8 @@
 "configuration"
 
 
-from .objects import Data, Methods, Object
+from .objects import Methods
 from .utility import Utils
-
-
-class Configuration(Data):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__()
-        if args:
-            Object.update(self, args[0])
-        if kwargs:
-            Object.update(self, kwargs)
 
 
 class MainConfig(type):
@@ -37,7 +27,6 @@ class Main(metaclass=MainConfig):
 
 def __dir__():
     return (
-        'Config',
         'MainConfig',
         'Main'
     )

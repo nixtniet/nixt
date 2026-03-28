@@ -4,20 +4,15 @@
 "main program"
 
 
-import argparse
 import os
 import sys
-import time
 
 
 from .command import Commands
 from .configs import Main
 from .kernels import Kernel
 from .handler import Console, Event
-from .objects import Methods
 from .package import Mods
-from .persist import Workdir
-from .utility import Log, Utils
 
 
 from . import modules as MODS
@@ -26,7 +21,8 @@ from . import modules as MODS
 TXT = " ".join(sys.argv[1:])
 
 
-Main.level = "warning"
+Main.default = "irc,mdl,rss,wsd"
+Main.level = "info"
 Main.version = "453"
 Main.wdr = os.path.expanduser(f"~/.{Main.name}")
 
@@ -94,8 +90,9 @@ class Scripts:
         "background script."
         Kernel.daemon(Main.verbose, Main.nochdir)
         Kernel.privileges()
+        Kernel.load()
         Kernel.boot(TXT, MODS)
-        Workdir.pidfile(Main.name)
+        Kernel.pidfile(Main.name)
         Kernel.init()
         Kernel.forever()
 
@@ -124,8 +121,10 @@ class Scripts:
     def service():
         "service script."
         Kernel.privileges()
+        Kernel.load()
         Kernel.boot(TXT, MODS)
-        Workdir.pidfile(Main.name)
+        Kernel.pidfile(Main.name)
+        Kernel.banner()
         Kernel.init()
         Kernel.forever()
 

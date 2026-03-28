@@ -30,6 +30,16 @@ class Data(Base):
         return self.__dict__.get(key, "")
 
 
+class Configuration(Data):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        if args:
+            Object.update(self, args[0])
+        if kwargs:
+            Object.update(self, kwargs)
+
+
 class Object:
 
     @staticmethod
@@ -333,6 +343,9 @@ class Methods:
 
 def __dir__():
     return (
+        'Base',
+        'Configuration',
+        'Data',
         'Object',
         'Methods'
     )
