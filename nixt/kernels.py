@@ -42,12 +42,14 @@ class Kernel:
         "in the beginning."
         parsed = Data()
         Methods.parse(parsed, txt)
+        print(parsed)
         if "v" in parsed.opts:
             cls.banner()
         Kernel.load()
-        #Methods.merge(Main, parsed)
-        Methods.merge(Main, parsed.sets)
+        Methods.notset(Main, parsed)
+        Methods.notset(Main, parsed.sets)
         Workdir.setwd(Main.wdr)
+        print(Main)
         Log.size(len(Main.name))
         Log.level(Main.level or "info")
         if Main.noignore:
@@ -66,7 +68,7 @@ class Kernel:
             Mods.sums()
             level = LEVELS.get(Main.level, logging.INFO)
             txt = Utils.md5sum(Mods.path("tbl") or "")[:7]
-            Log.log(Main.level, txt, {"name": "md5"})
+            cls.log("info", txt, {"name": "md5"})
         if Main.all:
             Main.mods = Mods.list(Main.ignore)
         if not Commands.names:
@@ -124,6 +126,24 @@ class Kernel:
         parsed = Data()
         Disk.read(parsed, "kernel", "config")
         Methods.merge(Main, parsed)
+
+    @staticmethod
+    def log(level, txt, extra={}):
+        level = LEVELS.get(level, logging.INFO)
+        current = LEVELS.get(Main.level, logging.NOTSET)
+        if level < current:
+            return
+        data = {
+            "args": {},
+            "levelno": level,
+            'lno': 0,
+            "module": "md5",
+            "msg": txt
+        }
+        data.update(extra)
+        record = logging.makeLogRecord(data)
+        logger = logging.getLogger("__main__")
+        logger.callHandlers(record)
 
     @classmethod
     def privileges(cls):
@@ -187,5 +207,4 @@ class Kernel:
 def __dir__():
     return (
         "Kernel",
-        'Main'
     )

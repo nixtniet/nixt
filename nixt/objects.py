@@ -208,6 +208,14 @@ class Methods:
             setattr(obj, key, value)
 
     @staticmethod
+    def notset(obj, obj2):
+        for key, value in Object.items(obj2):
+            if getattr(obj, key, False):
+                continue
+            if value:
+                setattr(obj, key, value)
+
+    @staticmethod
     def parse(obj, text):
         "parse text for command."
         data = {
