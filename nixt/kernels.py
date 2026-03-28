@@ -17,54 +17,58 @@ from .objects import Data, Methods
 from .package import Mods
 from .persist import Disk, Workdir
 from .threads import Thread
-from .utility import Log, Utils
+from .utility import LEVELS, Log, Utils
 
 
 class Kernel:
 
-    cfg = Main
     inits = []
 
     @classmethod
     def banner(cls):
         "hello."
         tme = time.ctime(time.time()).replace("  ", " ")
-        print("%s %s since %s %s (%s)" % (
-            cls.cfg.name.upper(),
-            cls.cfg.version,
+        print("%s %s since %s (%s)" % (
+            Main.name.upper(),
+            Main.version,
             tme,
-            cls.cfg.level.upper(),
-            Utils.md5sum(Mods.path("tbl") or "")[:7],
+            Main.level.upper() or "INFO"
         ))
         sys.stdout.flush()
-        return cls.cfg.version
-
+        return Main.version
 
     @classmethod
-    def boot(cls, args, *pkgs):
+    def boot(cls, txt, *pkgs):
         "in the beginning."
-        Methods.parse(cls.cfg, args.txt)
-        Methods.merge(cls.cfg, cls.cfg.sets)
-        Methods.merge(cls.cfg, vars(args))
+        parsed = Data()
+        Methods.parse(parsed, txt)
+        if "v" in parsed.opts:
+            cls.banner()
         Kernel.load()
-        Workdir.setwd(cls.cfg.wdr)
-        Log.level(cls.cfg.level or "info")
-        if cls.cfg.noignore:
-            cls.cfg.ignore = ""
-        if cls.cfg.user:
+        #Methods.merge(Main, parsed)
+        Methods.merge(Main, parsed.sets)
+        Workdir.setwd(Main.wdr)
+        Log.size(len(Main.name))
+        Log.level(Main.level or "info")
+        if Main.noignore:
+            Main.ignore = ""
+        if Main.user:
             Mods.add('mods', 'mods')
         if pkgs:
             for pkg in pkgs:
                 Mods.pkg(pkg)
-        if cls.cfg.wdr:
-            Mods.add("modules", os.path.join(cls.cfg.wdr, "mods"))
-        if cls.cfg.read:
+        if Main.wdr:
+            Mods.add("modules", os.path.join(Main.wdr, "mods"))
+        if Main.read:
             cls.scanner()
         else:
             Commands.table()
             Mods.sums()
-        if cls.cfg.all:
-            cls.cfg.mods = Mods.list(cls.cfg.ignore)
+            level = LEVELS.get(Main.level, logging.INFO)
+            txt = Utils.md5sum(Mods.path("tbl") or "")[:7]
+            Log.log(Main.level, txt, {"name": "md5"})
+        if Main.all:
+            Main.mods = Mods.list(Main.ignore)
         if not Commands.names:
             cls.scanner()
 
@@ -104,14 +108,14 @@ class Kernel:
         "scan named modules for commands."
         thrs = []
         if default:
-            defs = cls.cfg.default
+            defs = Main.default
         else:
             defs = ""
-        for name, mod in Mods.iter(cls.cfg.mods or defs, cls.cfg.ignore):
+        for name, mod in Mods.iter(Main.mods or defs, Main.ignore):
             if "init" in dir(mod):
                 thrs.append((name, Thread.launch(mod.init)))
                 cls.inits.append(name)
-        if cls.cfg.wait:
+        if Main.wait:
             for name, thr in thrs:
                 thr.join()
 
@@ -119,7 +123,7 @@ class Kernel:
     def load(cls):
         parsed = Data()
         Disk.read(parsed, "kernel", "config")
-        Methods.merge(cls.cfg, parsed)
+        Methods.merge(Main, parsed)
 
     @classmethod
     def privileges(cls):
@@ -132,17 +136,17 @@ class Kernel:
 
     @classmethod
     def save(cls):
-        Disk.write(cls.cfg, "kernel", "config")
+        Disk.write(Main, "kernel", "config")
 
     @classmethod
     def scanner(cls, default=False):
         "scan named modules for commands."
         res = []
         if default:
-            defs = cls.cfg.default
+            defs = Main.default
         else:
             defs = ""
-        for name, mod in Mods.iter(cls.cfg.mods or defs or Mods.list(), cls.cfg.ignore):
+        for name, mod in Mods.iter(Main.mods or defs or Mods.list(), Main.ignore):
             Commands.scan(mod)
             if "configure" in dir(mod):
                 mod.configure()

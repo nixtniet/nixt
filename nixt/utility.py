@@ -112,6 +112,16 @@ class Time:
 class Utils:
 
     @staticmethod
+    def check(opts, txt):
+        for word in txt.split():
+            if not word.startswith("-"):
+                continue
+            for char in opts:
+                if char in word:
+                    return True
+        return False
+
+    @staticmethod
     def md5sum(path):
         "return md5 of a file."
         import hashlib
@@ -176,7 +186,30 @@ class Format(logging.Formatter):
 class Log:
 
     datefmt = "%H:%M:%S"
-    format = "%(module).3s %(message)s"
+    format = "%(module)-3s %(message)s"
+
+    @staticmethod
+    def log(level, txt, extra={}):
+        level = LEVELS.get(level, logging.INFO)
+        data = {
+            "args": {},
+            "levelno": level,
+            'lno': 0,
+            "module": "md5",
+            "msg": txt
+        }
+        data.update(extra)
+        record = logging.makeLogRecord(data)
+        logger = logging.getLogger("__main__")
+        logger.callHandlers(record)
+
+    @staticmethod
+    def size(nr):
+        index = Log.format.find("-")+1
+        newformat = Log.format[:index]
+        newformat += str(nr)
+        newformat += Log.format[index+1:]
+        Log.format = newformat
 
     @staticmethod
     def level(loglevel):
@@ -189,6 +222,17 @@ class Log:
             handlers=[stream,],
             force=True
         )
+
+
+LEVELS = {
+    "debug": logging.DEBUG,
+    "info": logging.INFO,
+    "warning": logging.WARNING,
+    "error": logging.ERROR,
+    "critical": logging.CRITICAL,
+    "fatal": logging.FATAL
+    
+}
 
 
 TIMES = [
@@ -208,6 +252,8 @@ TIMES = [
 
 def __dir__():
     return (
+        'LEVELS',
+        'TIMES',
         'Log',
         'NoDate',
         'Time',
