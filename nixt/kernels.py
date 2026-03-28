@@ -42,10 +42,14 @@ class Kernel:
     @classmethod
     def boot(cls, txt, *pkgs):
         "in the beginning."
-        parsed = Data()
-        Methods.parse(parsed, txt)
-        Methods.merge(Main, parsed)
-        Methods.merge(Main, parsed.sets)
+        if Main.boot:
+            cls.load()
+        else:
+            parsed = Data()
+            Methods.parse(parsed, txt)
+            Methods.merge(Main, parsed)
+            Methods.merge(Main, parsed.sets)
+        print(Main)
         Workdir.setwd(Main.wdr)
         Log.size(len(Main.name))
         Log.level(Main.level or "info")
@@ -57,7 +61,7 @@ class Kernel:
         if Main.wdr: Mods.add("modules", os.path.join(Main.wdr, "mods"))
         if Main.read: cls.scanner()
         else: Commands.table() ; Mods.sums()
-        if "v" in parsed.opts: cls.banner()
+        if Main.verbose: cls.banner()
         if Main.all: Main.mods = Mods.list(Main.ignore)
         if not Commands.names: cls.scanner()
 
@@ -104,9 +108,8 @@ class Kernel:
 
     @classmethod
     def load(cls):
-        parsed = Data()
-        Disk.read(parsed, "kernel", "config")
-        Methods.merge(Main, parsed)
+        logging.info("loading kernel")
+        Disk.read(Main, "kernel", "config")
 
     @classmethod
     def pidfile(cls, name):
@@ -131,6 +134,7 @@ class Kernel:
     @classmethod
     def save(cls):
         "save kernel to disk."
+        logging.info("saving kenrel")
         Disk.write(Main, "kernel", "config")
 
     @classmethod

@@ -21,8 +21,8 @@ from . import modules as MODS
 TXT = " ".join(sys.argv[1:])
 
 
-Main.default = "irc,mdl,rss,wsd"
-Main.level = "info"
+#Main.default = "irc,mdl,rss,wsd"
+#Main.level = "info"
 Main.version = "453"
 Main.wdr = os.path.expanduser(f"~/.{Main.name}")
 
@@ -135,6 +135,7 @@ check = Run.check
 def main():
     "main"
     if check('a'): Main.all = True
+    if check('b'): Main.boot = True
     if check('n'): Main.noignore = True
     if check('r'): Main.read = True
     if check("u"): Main.user = True

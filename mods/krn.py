@@ -1,13 +1,20 @@
-# This file is placed in the Public DOmain.
+# This file is placed in the Public Domain.
 
 
-"kernel"
+"configuration"
 
 
-from nixt.kernels import Kernel
-from nixt.objects import Methods
+from nixt.configs import Main
+from nixt.objects import Data, Methods, Object
+from nixt.package import Mods
+from nixt.persist import Disk, Locate
 
 
 def krn(event):
-    "dump kernel to disk."
-    event.reply(Methods.fmt(Kernel))
+    if not event.sets:
+        event.reply(Methods.fmt(Main, skip="gets,sets,silent"))
+        return
+    print(event)
+    Methods.edit(Main, event.sets)
+    Disk.write(Main, "kernel", "config")
+    event.reply("ok")

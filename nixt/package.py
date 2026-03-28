@@ -4,7 +4,7 @@
 "module management"
 
 
-import importlib.util
+import importlib.util as imp
 import logging
 import os
 
@@ -83,9 +83,9 @@ class Mods:
     def importer(cls, name, pth=""):
         "import module by path."
         if pth and os.path.exists(pth):
-            spec = importlib.util.spec_from_file_location(name, pth)
+            spec = imp.spec_from_file_location(name, pth)
         else:
-            spec = importlib.util.find_spec(name)
+            spec = imp.find_spec(name)
         if not spec or not spec.loader:
             logging.debug("missing spec or loader for %s", name)
             return None
@@ -94,7 +94,7 @@ class Mods:
         if md5 and md5sum != md5:
             logging.error("mismatch %s", spec.loader.path)
         cls.md5s[name] = md5sum
-        mod = importlib.util.module_from_spec(spec)
+        mod = imp.module_from_spec(spec)
         if not mod:
             logging.debug("can't load %s module", name)
             return None
