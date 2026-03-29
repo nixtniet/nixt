@@ -468,6 +468,7 @@ disable=raw-checker-failed,
         too-many-locals,
         too-many-arguments,
         too-many-positional-arguments,
+        too-many-return-statements,
         multiple-statements
 
 

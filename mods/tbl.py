@@ -55,7 +55,7 @@ MD5 = {
     "mods.flt": "68b06f967b47b2567c8eccb7113a72f0",
     "mods.fnd": "a7442773cf6e5c9387486c42f9e34f23",
     "mods.irc": "182e9c35630d91fe304764d59754f3ec",
-    "mods.krn": "a2f49577be8003bbf24d5b40f67e0a56",
+    "mods.krn": "4e61c12b05c44987bc8ae8b839f4e340",
     "mods.log": "85f4fe5cbe317e16e07835da8a966ce3",
     "mods.man": "b748396cfcf563b0f06df1546c930fce",
     "mods.mbx": "2cfe738ca916258fab04c10093e6aa77",

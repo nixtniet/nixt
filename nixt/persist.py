@@ -57,7 +57,7 @@ class Disk:
     def read(cls, obj, path, base="store"):
         "read object from path."
         with cls.lock:
-            pth = os.path.join(Workdir.wdr, base, path)
+            pth = os.path.join(Main.wdr, base, path)
             if not os.path.exists(pth):
                 return
             with open(pth, "r", encoding="utf-8") as fpt:
@@ -73,7 +73,7 @@ class Disk:
         with cls.lock:
             if path == "":
                 path = Methods.ident(obj)
-            pth = os.path.join(Workdir.wdr, base, path)
+            pth = os.path.join(Main.wdr, base, path)
             Disk.cdir(pth)
             with open(pth, "w", encoding="utf-8") as fpt:
                 Json.dump(obj, fpt, indent=4)
@@ -133,7 +133,7 @@ class Locate:
     @classmethod
     def fns(cls, kind):
         "file names by kind of object."
-        path = os.path.join(Workdir.wdr, "store", kind)
+        path = os.path.join(Main.wdr, "store", kind)
         for rootdir, dirs, _files in os.walk(path, topdown=True):
             for dname in dirs:
                 if dname.count("-") != 2:
@@ -164,19 +164,10 @@ class Locate:
 
 class Workdir:
 
-    wdr = "." + Main.name
-
-    @classmethod
-    def setwd(cls, path):
-        "enable writing to disk."
-        Disk.cdir(path)
-        cls.wdr = path
-        cls.skel()
-
     @classmethod
     def kinds(cls):
         "show kind on objects in cache."
-        return os.listdir(os.path.join(cls.wdr, "store"))
+        return os.listdir(os.path.join(Main.wdr, "store"))
 
     @classmethod
     def long(cls, name):
@@ -194,11 +185,11 @@ class Workdir:
     @classmethod
     def skel(cls):
         "create directories."
-        if not cls.wdr:
+        if not Main.wdr:
             return
-        if not os.path.exists(cls.wdr):
-            Disk.cdir(cls.wdr)
-        path = os.path.abspath(Workdir.wdr)
+        if not os.path.exists(Main.wdr):
+            Disk.cdir(Main.wdr)
+        path = os.path.abspath(Main.wdr)
         workpath = os.path.join(path, "store")
         pth = pathlib.Path(workpath)
         pth.mkdir(parents=True, exist_ok=True)
@@ -212,7 +203,7 @@ class Workdir:
     @classmethod
     def workdir(cls, path=""):
         "return workdir."
-        return os.path.join(cls.wdr, path)
+        return os.path.join(Main.wdr, path)
 
 
 def __dir__():

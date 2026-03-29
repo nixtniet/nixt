@@ -21,8 +21,7 @@ from . import modules as MODS
 TXT = " ".join(sys.argv[1:])
 
 
-#Main.default = "irc,mdl,rss,wsd"
-#Main.level = "info"
+Main.default = "irc,mdl,rss,wsd"
 Main.version = "453"
 Main.wdr = os.path.expanduser(f"~/.{Main.name}")
 
@@ -90,7 +89,7 @@ class Scripts:
         "background script."
         Kernel.daemon(Main.verbose, Main.nochdir)
         Kernel.privileges()
-        Kernel.load()
+        Main.boot = True
         Kernel.boot(TXT, MODS)
         Kernel.pidfile(Main.name)
         Kernel.init()
@@ -101,6 +100,7 @@ class Scripts:
         "console script."
         import readline
         readline.redisplay()
+        Main.user = True
         Kernel.boot(TXT, MODS)
         Kernel.init(default=False)
         csl = CSL()
@@ -113,6 +113,7 @@ class Scripts:
         if len(sys.argv) == 1:
             return
         Main.all = True
+        Main.user = True
         Kernel.boot(TXT, MODS)
         Main.mods = Mods.list(Main.ignore)
         Run.cmd(TXT)
@@ -121,7 +122,7 @@ class Scripts:
     def service():
         "service script."
         Kernel.privileges()
-        Kernel.load()
+        Main.boot = True
         Kernel.boot(TXT, MODS)
         Kernel.pidfile(Main.name)
         Kernel.banner()

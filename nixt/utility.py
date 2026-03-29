@@ -112,16 +112,6 @@ class Time:
 class Utils:
 
     @staticmethod
-    def check(opts, txt):
-        for word in txt.split():
-            if not word.startswith("-"):
-                continue
-            for char in opts:
-                if char in word:
-                    return True
-        return False
-
-    @staticmethod
     def md5sum(path):
         "return md5 of a file."
         import hashlib

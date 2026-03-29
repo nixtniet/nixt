@@ -5,16 +5,16 @@
 
 
 from nixt.configs import Main
-from nixt.objects import Data, Methods, Object
-from nixt.package import Mods
-from nixt.persist import Disk, Locate
+from nixt.objects import Data, Methods
+from nixt.persist import Disk
 
 
 def krn(event):
+    cfg = Data()
+    Disk.read(cfg, "kernel", "config")
     if not event.sets:
-        event.reply(Methods.fmt(Main, skip="gets,sets,silent"))
+        event.reply(Methods.fmt(cfg, skip="gets,sets,silent"))
         return
-    print(event)
-    Methods.edit(Main, event.sets)
-    Disk.write(Main, "kernel", "config")
+    Methods.edit(cfg, event.sets)
+    Disk.write(cfg, "kernel", "config")
     event.reply("ok")

@@ -49,8 +49,7 @@ class Kernel:
             Methods.parse(parsed, txt)
             Methods.merge(Main, parsed)
             Methods.merge(Main, parsed.sets)
-        print(Main)
-        Workdir.setwd(Main.wdr)
+        Workdir.skel()
         Log.size(len(Main.name))
         Log.level(Main.level or "info")
         if Main.noignore: Main.ignore = ""
@@ -114,7 +113,7 @@ class Kernel:
     @classmethod
     def pidfile(cls, name):
         "write pidfile."
-        filename = os.path.join(cls.wdr, f"{name}.pid")
+        filename = os.path.join(Main.wdr, f"{name}.pid")
         if os.path.exists(filename):
             os.unlink(filename)
         path2 = pathlib.Path(filename)
