@@ -323,22 +323,19 @@ class Methods:
     @staticmethod
     def typed(obj, key, val):
         "assign proper types."
-        try:
-            setattr(obj, key, int(val))
-            return
-        except ValueError:
-            pass
-        try:
-            setattr(obj, key, float(val))
-            return
-        except ValueError:
-            pass
         if val in ["True", "true", True]:
-            setattr(obj, key, True)
-        elif val in ["False", "false", False]:
-            setattr(obj, key, False)
-        else:
-            setattr(obj, key, val)
+            return setattr(obj, key, True)
+        if val in ["False", "false", False]:
+            return setattr(obj, key, False)
+        try:
+            return setattr(obj, key, int(val))
+        except ValueError:
+            pass
+        try:
+            return setattr(obj, key, float(val))
+        except ValueError:
+            pass
+        setattr(obj, key, val)
 
 
 def __dir__():

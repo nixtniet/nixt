@@ -12,7 +12,6 @@ import os
 import queue
 import re
 import threading
-import time
 import urllib
 import urllib.parse
 import urllib.request
@@ -26,15 +25,14 @@ from urllib.parse import quote_plus, urlencode
 
 from nixt.handler import Broker
 from nixt.objects import Configuration, Data, Methods, Object
-from nixt.persist import Disk, Locate
+from nixt.persist import Cfg, Disk, Locate
 from nixt.runtime import Main
 from nixt.threads import Repeater, Thread
-from nixt.utility import Time, Utils
+from nixt.utility import Utils
 
 
-class Config(Configuration):
-
-    polltime = 300
+def configure():
+    Cfg.load(Config)
 
 
 def init():
@@ -45,6 +43,11 @@ def init():
 
 def shutdown():
     Run.fetcher.stop()
+
+
+class Config(Configuration):
+
+    polltime = 300
 
 
 class Feed(Data):
@@ -515,6 +518,9 @@ def err(event):
         event.reply(f'{nre} feeds reset.')
 
 
+err.skip = "irc"
+
+
 def exp(event):
     with Run.importlock:
         event.reply(TEMPLATE)
@@ -529,6 +535,9 @@ def exp(event):
         event.reply(" " * 8 + "</outline>")
         event.reply("    <body>")
         event.reply("</opml>")
+
+
+exp.skip = "irc"
 
 
 def imp(event):
@@ -573,6 +582,9 @@ def imp(event):
         event.reply(f"skipped {nrskip} urls.")
     if nrs:
         event.reply(f"added {nrs} urls.")
+
+
+imp.skip = "irc"
 
 
 def nme(event):
@@ -623,16 +635,7 @@ def res(event):
 
 def rss(event):
     if not event.rest:
-        nrs = 0
-        for fnm, fed in Locate.find(Methods.fqn(Rss), event.gets):
-            if fed.skip:
-                continue
-            nrs += 1
-            elp = Time.elapsed(time.time() - Time.fntime(fnm))
-            txt = Methods.fmt(fed)
-            event.reply(f"{nrs} {txt} {elp}")
-        if not nrs:
-            event.reply("no feed found.")
+        event.reply("rss <url>")
         return
     url = event.args[0]
     if "http://" not in url and "https://" not in url:
@@ -644,7 +647,7 @@ def rss(event):
             return
     feed = Rss()
     feed.rss = event.args[0]
-    fnm = Disk.write(feed)
+    Disk.write(feed)
     event.reply("ok")
 
 
@@ -655,6 +658,9 @@ def syn(event):
     fetcher.start(False)
     nrs = fetcher.run(True)
     event.reply(f"{nrs} feeds synced")
+
+
+syn.skip = "irc"
 
 
 TEMPLATE = """<opml version="1.0">

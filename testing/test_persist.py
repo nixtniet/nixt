@@ -12,11 +12,12 @@ import unittest
 sys.path.insert(0, ".")
 
 
+from nixt.configs import Main
 from nixt.objects import Data
-from nixt.persist import Disk, Workdir
+from nixt.persist import Disk
 
 
-Workdir.wdr = '.test'
+Main.wdr = '.test'
 
 
 class TestPersist(unittest.TestCase):
@@ -25,7 +26,7 @@ class TestPersist(unittest.TestCase):
         obj = Data()
         opath = Disk.write(obj)
         self.assertTrue(os.path.exists(os.path.join(
-                                                    Workdir.wdr,
+                                                    Main.wdr,
                                                     "store",
                                                     opath
                                                    )))

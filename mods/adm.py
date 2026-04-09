@@ -1,4 +1,4 @@
-# This file is placed in the Public Domain.
+#  This file is placed in the Public Domain.
 
 
 "administrator"
@@ -8,11 +8,17 @@ from nixt.command import Commands
 from nixt.encoder import Json
 from nixt.package import Mods
 from nixt.runtime import Main
+from nixt.persist import Workdir
+
+
+def configure():
+    tbl.skip = "irc"
+    wdr.skip = "irc"
 
 
 def cmd(event):
     "list available commands."
-    event.reply(",".join(sorted(Commands.names.keys() or Commands.cmds.keys())))
+    event.reply(",".join(sorted(Commands.commands(event.orig))))
 
 
 def mod(event):
@@ -38,3 +44,8 @@ def tbl(event):
 def ver(event):
     "show verson."
     event.reply(f"{Main.name.upper()} {Main.version}")
+
+
+def wdr(event):
+    "show working directory."
+    event.reply(Workdir.workdir())

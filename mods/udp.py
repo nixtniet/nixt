@@ -14,8 +14,13 @@ import time
 
 from nixt.brokers import Broker
 from nixt.objects import Configuration, Data
+from nixt.persist import Cfg
 from nixt.runtime import Main
 from nixt.threads import Thread
+
+
+def configure():
+    Cfg.load(Config)
 
 
 def init():
@@ -116,3 +121,6 @@ def udp(event):
             toudp(Config.host, Config.port, txt)
         if stop:
             break
+
+
+udp.skip = "irc"

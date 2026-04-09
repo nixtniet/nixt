@@ -27,3 +27,6 @@ def fnd(event):
         nmr += 1
     if not nmr:
         event.reply("no result")
+
+
+fnd.skip = "irc"

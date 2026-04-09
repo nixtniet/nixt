@@ -244,3 +244,6 @@ def man(event):
         email,
         name.upper()
     ))
+
+
+man.skip = "irc"

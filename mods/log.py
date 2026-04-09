@@ -4,12 +4,8 @@
 "log text"
 
 
-import time
-
-
 from nixt.objects import Data
-from nixt.persist import Disk, Locate
-from nixt.utility import Time
+from nixt.persist import Disk
 
 
 class Log(Data):
@@ -21,13 +17,7 @@ class Log(Data):
 
 def log(event):
     if not event.rest:
-        nmr = 0
-        for fnm, obj in Locate.find('log', event.gets):
-            lap = Time.elapsed(time.time() - Time.fntime(fnm))
-            event.reply(f'{nmr} {obj.txt} {lap}')
-            nmr += 1
-        if not nmr:
-            event.reply('no log')
+        event.reply("log <txt>")
         return
     obj = Log()
     obj.txt = event.rest

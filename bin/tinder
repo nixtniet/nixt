@@ -16,9 +16,9 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
+from nixt.booting import Boot
 from nixt.command import Commands
 from nixt.handler import Client, Event
-from nixt.kernels import Kernel
 from nixt.objects import Data, Methods
 from nixt.package import Mods
 from nixt.persist import Workdir
@@ -116,13 +116,13 @@ def main():
     if "p" not in Main.opts and os.path.exists(Main.wdr):
         shutil.rmtree(Main.wdr)
     Methods.parse(Main, " ".join(sys.argv[1:]))
-    Workdir.setwd(Main.wdr)
+    Workdir.skel()
     Log.level(Main.level)
     Mods.add("modules", MODS.__path__[0])
     if MODS2:
         Mods.add("mods", MODS2.__path__[0])
     Main.mods = Main.mods or Mods.list()
-    Kernel.scanner(Main)
+    Boot.scanner(Main)
     if "z" in Main.opts:
         Clients.init(os.cpu_count(), CLI)
     else:
@@ -145,7 +145,7 @@ def main():
     lap = Time.elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
-    Kernel.shutdown()
+    Boot.shutdown()
     if "v" in Main.opts:
         print(f"{Methods.fmt(Main, skip='otxt,txt')}")
         print(f"{nrs} events left.")
@@ -202,4 +202,4 @@ post = {
 
 
 if __name__ == "__main__":
-    Kernel.wrap(main)
+    Boot.wrap(main)

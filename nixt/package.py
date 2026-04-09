@@ -87,12 +87,12 @@ class Mods:
         else:
             spec = imp.find_spec(name)
         if not spec or not spec.loader:
-            logging.debug("missing spec or loader for %s", name)
+            logging.debug("%s is missing spec or loader", name)
             return None
         md5 = cls.md5s.get(name)
         md5sum = Utils.md5sum(spec.loader.path)
         if md5 and md5sum != md5:
-            logging.error("mismatch %s", spec.loader.path)
+            logging.info("mismatch %s", spec.loader.path)
         cls.md5s[name] = md5sum
         mod = imp.module_from_spec(spec)
         if not mod:

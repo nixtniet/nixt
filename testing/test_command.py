@@ -24,13 +24,9 @@ class TestCommands(unittest.TestCase):
 
     def test_add(self):
         Commands.add(cmnd)
-        self.assertTrue(Commands.has("cmnd"))
+        self.assertTrue("cmnd" in Commands.cmds)
 
     def test_get(self):
-        Commands.add(cmnd)
-        self.assertTrue(Commands.get("cmnd"))
-
-    def test_has(self):
         Commands.add(cmnd)
         self.assertTrue(Commands.get("cmnd"))
 

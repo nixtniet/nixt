@@ -16,10 +16,15 @@ import time
 from nixt.command import Commands
 from nixt.handler import Broker, Event, Output
 from nixt.objects import Configuration, Data, Methods
-from nixt.persist import Locate
+from nixt.persist import Cfg
 from nixt.runtime import Main
 from nixt.threads import Thread
 from nixt.utility import Utils
+
+
+def configure():
+    for name, bot in Broker.like("IRC"):
+        Cfg.load(bot.cfg)
 
 
 def init():
@@ -44,7 +49,7 @@ class Config(Configuration):
 
     name = Main.name or Utils.pkgname(Commands)
     channel = f"#{name}"
-    commands = False
+    commands = True
     control = "!"
     ignore = ["PING", "PONG", "PRIVMSG"]
     nick = name
@@ -183,7 +188,7 @@ class IRC(Output):
 
     def display(self, event):
         if len(event.result) > 3:
-            self.say(event.channel, "command would flood, use cli or console")
+            self.say(event.channel, "command would flood")
             return
         for key in sorted(event.result):
             txt = event.result.get(key)
@@ -323,11 +328,11 @@ class IRC(Output):
             obj.nick, obj.origin = obj.origin.split("!")
         except ValueError:
             obj.nick = ""
-        target = ""
+        todo = ""
         if obj.arguments:
-            target = obj.arguments[0]
-        if target.startswith("#"):
-            obj.channel = target
+            todo = obj.arguments[0]
+        if todo.startswith("#"):
+            obj.channel = todo
         else:
             obj.channel = obj.nick
         if not obj.text:
@@ -436,6 +441,7 @@ class IRC(Output):
         self.state.lastline = splitted[-1]
 
     def start(self):
+        Cfg.load(self.cfg)
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
         self.events.ready.clear()
@@ -444,7 +450,6 @@ class IRC(Output):
         Output.start(self)
         if not self.state.keeprunning:
             Thread.launch(self.keep)
-        Locate.first(self.cfg)
         Thread.launch(
             self.doconnect,
             self.cfg.server or "localhost",
@@ -523,7 +528,7 @@ def cb_privmsg(evt):
     if not bot.cfg.commands:
         return
     if evt.text:
-        if evt.text[0] in ["!",]:
+        if evt.text[0] == bot.cfg.control:
             evt.text = evt.text[1:]
         elif evt.text.startswith(f"{bot.cfg.nick}:"):
             evt.text = evt.text[len(bot.cfg.nick) + 1:]

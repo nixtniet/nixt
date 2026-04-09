@@ -14,6 +14,9 @@ def srv(event):
     event.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
 
 
+srv.skip = "irc"
+
+
 SYSTEMD = """[Unit]
 Description=%s
 After=multi-user.target

@@ -133,7 +133,7 @@ class Thread:
     def name(cls, obj):
         "string of function/method."
         if inspect.ismethod(obj):
-            return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
+            return f"{obj.__func__.__qualname__}"
         if inspect.isfunction(obj):
             return repr(obj).split()[1]
         return repr(obj)

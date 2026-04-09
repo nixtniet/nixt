@@ -5,12 +5,12 @@
 
 
 import inspect
-import logging
 
 
 from .brokers import Broker
 from .objects import Methods
 from .package import Mods
+from .utility import Utils
 
 
 class Commands:
@@ -22,12 +22,10 @@ class Commands:
     def add(cls, *args):
         "add functions to commands."
         for func in args:
-            name = func.__name__
-            cls.cmds[name] = func
+            cls.cmds[func.__name__] = func
             modname = func.__module__.split(".")[-1]
-            if "__" in modname:
-                continue
-            cls.names[name] = modname
+            if "__" in modname: continue
+            cls.names[func.__name__] = modname
 
     @classmethod
     def command(cls, evt):
@@ -37,18 +35,24 @@ class Commands:
         if not func:
             name = cls.names.get(evt.cmd)
             mod = None
-            if name:
-                logging.debug("load %s", name)
-                mod = Mods.get(name)
+            if name: mod = Mods.get(name)
             if mod:
                 cls.scan(mod)
                 func = cls.get(evt.cmd)
         if func:
-            func(evt)
-            bot = Broker.get(evt.orig)
-            if bot:
-                bot.display(evt)
+            if not cls.skip(func, evt.orig):
+                func(evt)
+                bot = Broker.get(evt.orig)
+                if bot: bot.display(evt)
         evt.ready()
+
+    @classmethod
+    def commands(cls, orig):
+        res = []
+        for func in cls.cmds.values():
+            if cls.skip(func, orig): continue
+            res.append(func.__name__)
+        return res
 
     @classmethod
     def get(cls, cmd):
@@ -56,24 +60,24 @@ class Commands:
         return cls.cmds.get(cmd, None)
 
     @classmethod
-    def has(cls, cmd):
-        "whether cmd is registered."
-        return cmd in cls.cmds
-
-    @classmethod
     def scan(cls, module):
         "scan a module for functions with event as argument."
         for key, cmdz in inspect.getmembers(module, inspect.isfunction):
-            if 'event' not in inspect.signature(cmdz).parameters:
-                continue
-            cls.add(cmdz)
+            if 'event' in inspect.signature(cmdz).parameters:
+                cls.add(cmdz)
+
+    @classmethod
+    def skip(cls, func, orig):
+        if "skip" in dir(func):
+            for skp in Utils.spl(func.skip):
+                if skp.lower() in orig.lower(): return True
+        return False
 
     @classmethod
     def table(cls):
         mod = cls.get("tbl")
         names = getattr(mod, "NAMES", None)
-        if names:
-            cls.names.update(names)
+        if names: cls.names.update(names)
 
 
 def __dir__():
