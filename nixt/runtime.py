@@ -10,7 +10,7 @@ import sys
 import time
 
 
-from .command import Commands, Event, Mods
+from .command import Commands, Event, Main, Mods
 from .handler import Handler
 from .objects import Data, Methods, Object
 from .utility import Utils
@@ -27,33 +27,6 @@ class Line(Handler):
     def raw(self, text):
         "write to console."
         print(text.encode('utf-8', 'replace').decode("utf-8"))
-
-
-class CSL(Line):
-
-    def poll(self):
-        "poll for an event."
-        evt = Event()
-        evt.client = self
-        evt.text = input("> ")
-        return evt
-
-
-class MainConfig(type):
-
-    def __getattr__(cls, key):
-        if key not in dir(cls):
-            return ""
-        return cls.__getattribute__(key)
-
-    def __str__(cls):
-        return str(Methods.skip(cls.__dict__))
-
-
-class Main(metaclass=MainConfig):
-
-    name = Utils.pkgname(MainConfig)
-    wdr = f".{name}"
 
 
 class Run:
@@ -114,16 +87,12 @@ class Run:
 
 
 def main():
+    Main.wdr = os.path.expanduser(f"~/.{Main.name}")
     Mods.add("mods")
     Mods.pkg(MODS)
+    Methods.parse(Main, TXT)
     Commands.scanner()
-    if Run.check("c"):
-        Run.banner()
-        csl = CSL()
-        csl.start()
-        csl.forever()
-        return
-    Run.cmd(" ".join(sys.argv[1:]))
+    Run.cmd(TXT)
 
 
 if __name__ == "__main__":

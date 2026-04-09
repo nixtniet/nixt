@@ -33,6 +33,9 @@ except ModuleNotFoundError:
     MODS2 = None
 
 
+Main.wdr = ".test"
+
+
 events = queue.Queue()
 
 
