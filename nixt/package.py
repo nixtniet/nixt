@@ -19,8 +19,12 @@ class Mods:
     modules = {}
 
     @classmethod
-    def add(cls, name, path):
+    def add(cls, path, name=None):
         "add modules directory."
+        if os.sep not in path:
+            name = path
+        elif name is None:
+            name = path.split(os.sep)[-2]
         if os.path.exists(path):
             cls.dirs[name] = path
 
@@ -111,7 +115,7 @@ class Mods:
 
     @classmethod
     def pkg(cls, package):
-        return cls.add(package.__name__, package.__path__[0])
+        return cls.add(package.__path__[0], package.__name__)
 
     @classmethod
     def sums(cls):

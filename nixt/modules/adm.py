@@ -4,11 +4,10 @@
 "administrator"
 
 
+from nixt.caching import Workdir
 from nixt.command import Commands
-from nixt.encoder import Json
+from nixt.objects import Json, Main
 from nixt.package import Mods
-from nixt.runtime import Main
-from nixt.persist import Workdir
 
 
 def configure():

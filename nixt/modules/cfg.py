@@ -4,9 +4,9 @@
 "configuration"
 
 
+from nixt.caching import Cfg
 from nixt.objects import Data, Methods, Object
 from nixt.package import Mods
-from nixt.persist import Cfg
 
 
 def cfg(event):

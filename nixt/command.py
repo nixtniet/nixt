@@ -5,12 +5,42 @@
 
 
 import inspect
+import threading
+import time
 
 
-from .brokers import Broker
-from .objects import Methods
+from .objects import Data, Methods
 from .package import Mods
 from .utility import Utils
+
+
+class Event(Data):
+
+    def __init__(self):
+        Data.__init__(self)
+        self._ready = threading.Event()
+        self._thr = None
+        self.result = {}
+        self.args = []
+        self.index = 0
+        self.kind = "event"
+
+    def ok(self, txt=""):
+        self.reply(f"ok {txt}".strip())
+
+    def ready(self):
+        "flag message as ready."
+        self._ready.set()
+
+    def reply(self, text):
+        "add text to result."
+        self.result[time.time()] = text
+
+    def wait(self, timeout=0.0):
+        "wait for completion."
+        self._ready.wait(timeout or None)
+        if self._thr:
+            self._thr.join(timeout or None)
 
 
 class Commands:
@@ -32,18 +62,10 @@ class Commands:
         "command callback."
         Methods.parse(evt, evt.text)
         func = cls.get(evt.cmd)
-        if not func:
-            name = cls.names.get(evt.cmd)
-            mod = None
-            if name: mod = Mods.get(name)
-            if mod:
-                cls.scan(mod)
-                func = cls.get(evt.cmd)
         if func:
-            if not cls.skip(func, evt.orig):
-                func(evt)
-                bot = Broker.get(evt.orig)
-                if bot: bot.display(evt)
+            func(evt)
+            if evt.client:
+                evt.client.display(evt)
         evt.ready()
 
     @classmethod
@@ -67,17 +89,19 @@ class Commands:
                 cls.add(cmdz)
 
     @classmethod
+    def scanner(cls):
+        "scan named modules for commands."
+        for name, mod in Mods.iter(Mods.list()):
+            cls.scan(mod)
+            if "configure" in dir(mod):
+                mod.configure()
+
+    @classmethod
     def skip(cls, func, orig):
         if "skip" in dir(func):
             for skp in Utils.spl(func.skip):
                 if skp.lower() in orig.lower(): return True
         return False
-
-    @classmethod
-    def table(cls):
-        mod = cls.get("tbl")
-        names = getattr(mod, "NAMES", None)
-        if names: cls.names.update(names)
 
 
 def __dir__():
