@@ -7,7 +7,8 @@
 import unittest
 
 
-from nixt.handler import Event, Client, Handler
+from nixt.command import Event
+from nixt.handler import Client, Handler
 
 
 buffer = []
@@ -53,6 +54,14 @@ class TestHandler(unittest.TestCase):
         self.hdl.put(evt)
         evt.wait()
         self.assertTrue(evt._ready.is_set())
+
+    def test_loop2(self):
+        evt = Event()
+        evt.kind = "hello"
+        evt.text = "hello bot"
+        self.hdl.put(evt)
+        evt.wait()
+        self.assertTrue("hello bot" in evt.result.values())
 
     def test_put(self):
         hdl = Handler()
@@ -103,14 +112,6 @@ class TestClient(unittest.TestCase):
     def test_dosay(self):
         self.clt.dosay("#channel", "yo!")
         self.assertTrue("yo!" in buffer)
-
-    def test_loop(self):
-        evt = Event()
-        evt.kind = "hello"
-        evt.text = "hello bot"
-        self.clt.put(evt)
-        evt.wait()
-        self.assertTrue("hello bot" in evt.result.values())
 
     def test_poll(self):
         clt = Client()

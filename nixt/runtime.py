@@ -11,7 +11,7 @@ import time
 
 
 from .command import Commands, Event, Main, Mods
-from .handler import Handler
+from .handler import Client
 from .objects import Data, Methods, Object
 from .utility import Utils
 
@@ -22,7 +22,7 @@ from . import modules as MODS
 TXT = " ".join(sys.argv[1:])
 
 
-class Line(Handler):
+class Line(Client):
 
     def raw(self, text):
         "write to console."

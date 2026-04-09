@@ -4,11 +4,12 @@
 "commands"
 
 
+import os
 import unittest
 
 
-from nixt.handler import Client, Event
-from nixt.command import Commands
+from nixt.command import Commands, Event, Mods
+from nixt.handler import Handler, Task
 from nixt.objects import Object
 
 
@@ -31,10 +32,31 @@ class TestCommands(unittest.TestCase):
         self.assertTrue(Commands.get("cmnd"))
 
     def test_command(self):
-        clt = Client()
+        clt = Handler()
         Commands.add(cmnd)
         evt = Event()
         evt.text = "cmnd"
         evt.orig = repr(clt)
         Commands.command(evt)
         self.assertTrue("yo!" in Object.values(evt.result))
+
+
+class TestPackage(unittest.TestCase):
+
+    def test_add(self):
+        if os.path.exists("mods"):
+            Mods.add("mods", "mods")
+            self.assertTrue("mods" in Mods.dirs)
+
+
+def func():
+    return "ok"
+
+
+class TestThread(unittest.TestCase):
+
+    def test_construct(self):
+        task = Task(func)
+        task.start()
+        result = task.join()
+        self.assertEqual(result, "ok")
