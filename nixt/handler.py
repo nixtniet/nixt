@@ -5,10 +5,11 @@
 
 
 import inspect
+import logging
 import queue
 import threading
 import time
-
+import _thread
 
 from .command import Commands
 
@@ -182,7 +183,6 @@ class Thread:
         if inspect.isfunction(obj):
             return repr(obj).split()[1]
         return repr(obj)
-
 
 
 def __dir__():

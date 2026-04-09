@@ -12,7 +12,7 @@ import time
 
 from .command import Commands, Event, Main, Mods
 from .handler import Client
-from .objects import Data, Methods, Object
+from .objects import Methods
 from .utility import Utils
 
 

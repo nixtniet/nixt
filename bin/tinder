@@ -18,8 +18,8 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.caching import Workdir
 from nixt.command import Commands, Event, Main, Mods
-from nixt.handler import Handler
-from nixt.objects import Data, Methods, Object
+from nixt.handler import Client
+from nixt.objects import Data, Methods
 from nixt.runtime import Run
 from nixt.utility import Log, Time, Utils
 
@@ -39,7 +39,7 @@ Main.wdr = ".test"
 events = queue.Queue()
 
 
-class CLI(Handler):
+class CLI(Client):
 
     def raw(self, text):
         if "v" in Main.opts:

@@ -55,7 +55,8 @@ class Commands:
         for func in args:
             cls.cmds[func.__name__] = func
             modname = func.__module__.split(".")[-1]
-            if "__" in modname: continue
+            if "__" in modname:
+                continue
             cls.names[func.__name__] = modname
 
     @classmethod
@@ -94,14 +95,13 @@ class Commands:
         "scan named modules for commands."
         for name, mod in Mods.iter(Mods.list()):
             cls.scan(mod)
-            if "configure" in dir(mod):
-                mod.configure()
 
     @classmethod
     def skip(cls, func, orig):
         if "skip" in dir(func):
             for skp in Utils.spl(func.skip):
-                if skp.lower() in orig.lower(): return True
+                if skp.lower() in orig.lower():
+                    return True
         return False
 
 
@@ -209,16 +209,6 @@ class Mods:
     @classmethod
     def pkg(cls, package):
         return cls.add(package.__path__[0], package.__name__)
-
-    @classmethod
-    def sums(cls):
-        mod = cls.get("tbl")
-        if not mod:
-            return
-        md5s = getattr(mod, "MD5", {})
-        if not md5s:
-            return
-        cls.md5s.update(md5s)
 
 
 class MainConfig(type):

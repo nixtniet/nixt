@@ -10,9 +10,6 @@ import os
 import types
 
 
-from .utility import Utils
-
-
 class Base:
 
     def __contains__(self, key):

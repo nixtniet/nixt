@@ -5,7 +5,7 @@
 
 
 from nixt.caching import Cfg
-from nixt.command import Main, Mods
+from nixt.command import Mods
 from nixt.objects import Data, Methods, Object
 
 
@@ -43,15 +43,3 @@ def cfg(event):
     if mod and "configure" in dir(mod):
         mod.configure()
     event.ok()
-
-
-cfg.skip = "irc"
-
-
-def krn(event):
-    txt = "cfg main " + event.rest
-    Methods.parse(event, txt)
-    cfg(event)
-
-
-krn.skip = "irc"
