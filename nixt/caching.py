@@ -11,7 +11,8 @@ import pathlib
 import threading
 
 
-from .objects import Data, Json, Main, Methods, Object
+from .command import Main
+from .objects import Data, Json, Methods, Object
 from .utility import Time, Utils
 
 
@@ -176,7 +177,9 @@ class Workdir:
     @classmethod
     def kinds(cls):
         "show kind on objects in cache."
-        return os.listdir(os.path.join(Main.wdr, "store"))
+        path = os.path.join(Main.wdr, "store")
+        if os.path.exists(path):
+            return os.listdir(path)
 
     @classmethod
     def long(cls, name):

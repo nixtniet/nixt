@@ -41,7 +41,6 @@ class CSL(Line):
         evt = Event()
         evt.client = self
         evt.text = input("> ")
-        evt.kind = "command"
         return evt
 
 
@@ -80,9 +79,7 @@ class Run:
             evt.client = cli
             evt.orig = repr(cli)
             evt.text = txt
-            evt.kind = "command"
             Commands.command(evt)
-            #evt.wait()
         return evt
 
     @classmethod
@@ -107,6 +104,7 @@ class Run:
 def main():
     Mods.add("mods")
     Mods.pkg(MODS)
+    Workdir.skel()
     Commands.scanner()
     if Run.check("c"):
         Run.banner()

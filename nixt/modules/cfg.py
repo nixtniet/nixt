@@ -5,8 +5,8 @@
 
 
 from nixt.caching import Cfg
+from nixt.command import Main, Mods
 from nixt.objects import Data, Methods, Object
-from nixt.package import Mods
 
 
 def cfg(event):

@@ -44,23 +44,6 @@ class Configuration(Data):
             Object.update(self, kwargs)
 
 
-class MainConfig(type):
-
-    def __getattr__(cls, key):
-        if key not in dir(cls):
-            return ""
-        return cls.__getattribute__(key)
-
-    def __str__(cls):
-        return str(Methods.skip(cls.__dict__))
-
-
-class Main(metaclass=MainConfig):
-
-    name = Utils.pkgname(MainConfig)
-    wdr = f".{name}"
-
-
 class Object:
 
     @staticmethod

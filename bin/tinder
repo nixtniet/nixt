@@ -16,14 +16,11 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.booting import Boot
-from nixt.command import Commands
-from nixt.handler import Client, Event
-from nixt.objects import Data, Methods
-from nixt.package import Mods
-from nixt.persist import Workdir
-from nixt.runtime import Main
-from nixt.threads import Thread
+from nixt.caching import Workdir
+from nixt.command import Commands, Event, Main, Mods
+from nixt.handler import Handler
+from nixt.objects import Data, Methods, Object
+from nixt.runtime import Run
 from nixt.utility import Log, Time, Utils
 
 
@@ -39,21 +36,7 @@ except ModuleNotFoundError:
 events = queue.Queue()
 
 
-Main.debug = True
-Main.ignore = ""
-Main.level = "info"
-Main.mods = ""
-Main.name = Utils.pkgname(Commands)
-Main.opts = Data()
-Main.version = 453
-Main.wdr = ".test"
-
-
-class CLI(Client):
-
-    def __init__(self):
-        Client.__init__(self)
-        self.register("command", Commands.command)
+class CLI(Handler):
 
     def raw(self, text):
         if "v" in Main.opts:
@@ -100,33 +83,32 @@ def consume():
 
 
 def payload(todo):
+    cli = CLI()
     for cmd, example in todo.items():
         if Main.cmd:
             if cmd not in Utils.spl(Main.cmd):
                 continue
         for ex in example:
             evt = Event()
+            evt.client = cli
             evt.text = f"{cmd} {ex}"
-            evt.kind = "command"
-            Clients.put(evt)
+            Commands.command(evt)
             events.put(evt)
 
 
 def main():
     if "p" not in Main.opts and os.path.exists(Main.wdr):
         shutil.rmtree(Main.wdr)
-    Methods.parse(Main, " ".join(sys.argv[1:]))
+    parsed = Data()
+    Methods.parse(parsed, " ".join(sys.argv[1:]))
+    Methods.merge(Main, parsed)
     Workdir.skel()
     Log.level(Main.level)
     Mods.add("modules", MODS.__path__[0])
     if MODS2:
         Mods.add("mods", MODS2.__path__[0])
     Main.mods = Main.mods or Mods.list()
-    Boot.scanner(Main)
-    if "z" in Main.opts:
-        Clients.init(os.cpu_count(), CLI)
-    else:
-        Clients.init(1, CLI)
+    Commands.scanner()
     starttime = time.time()
     nrs = Main.index or 1
     for _x in range(nrs):
@@ -135,17 +117,11 @@ def main():
         payload(examples)
     for _x in range(nrs):
         payload(post)
-    Thread.launch(consume)
     nrevents = events.qsize()
-    try:
-        events.join()
-    except (KeyboardInterrupt, EOFError):
-        pass
     endtime = time.time()
     lap = Time.elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
-    Boot.shutdown()
     if "v" in Main.opts:
         print(f"{Methods.fmt(Main, skip='otxt,txt')}")
         print(f"{nrs} events left.")
@@ -202,4 +178,4 @@ post = {
 
 
 if __name__ == "__main__":
-    Boot.wrap(main)
+    Run.wrap(main)

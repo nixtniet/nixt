@@ -5,9 +5,8 @@
 
 
 from nixt.caching import Workdir
-from nixt.command import Commands
-from nixt.objects import Json, Main
-from nixt.package import Mods
+from nixt.command import Commands, Main, Mods
+from nixt.objects import Json
 
 
 def configure():
