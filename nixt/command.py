@@ -106,6 +106,12 @@ class Commands:
                     return True
         return False
 
+    @classmethod
+    def table(cls):
+        mod = cls.get("tbl")
+        names = getattr(mod, "NAMES", None)
+        if names: cls.names.update(names)
+
 
 class Mods:
 
@@ -215,6 +221,16 @@ class Mods:
         "register packages their directories."
         for package in packages:
             cls.add(package.__path__[0], package.__name__)
+
+    @classmethod
+    def sums(cls):
+        mod = cls.get("tbl")
+        if not mod:
+            return
+        md5s = getattr(mod, "MD5", {})
+        if not md5s:
+            return
+        cls.md5s.update(md5s)
 
 
 class MainConfig(type):

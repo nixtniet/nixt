@@ -1,55 +1,51 @@
 # This file is placed in the Public Domain.
 
 
-"handler"
+"callback engine"
 
 
+import logging
 import queue
 import threading
+import time
+import _thread
 
 
-from .command import Commands
 from .utility import Thread
 
 
-class Broker:
+class Event:
 
-    objects = {}
+    def __init__(self):
+        self._ready = threading.Event()
+        self._thr = None
+        self.result = {}
+        self.args = []
+        self.index = 0
+        self.kind = "event"
 
-    @classmethod
-    def add(cls, obj):
-        "add object to the broker, key is repr(obj)."
-        cls.objects[repr(obj)] = obj
+    def __getattr__(self, key):
+        return self.__dict__.get(key, "")
 
-    @classmethod
-    def announce(cls, txt):
-        "announce text on all objects with an announce method."
-        for obj in cls.objs("announce"):
-            obj.announce(txt)
+    def __str__(self):
+        return str(self.__dict__)
 
-    @classmethod
-    def get(cls, origin):
-        "object by repr(obj)."
-        return cls.objects.get(origin)
+    def ok(self, txt=""):
+        self.reply(f"ok {txt}".strip())
 
-    @classmethod
-    def has(cls, obj):
-        "whether the Broker has object."
-        return repr(obj) in cls.objects
+    def ready(self):
+        "flag message as ready."
+        self._ready.set()
 
-    @classmethod
-    def like(cls, txt):
-        "all keys with a substring in their key."
-        for orig in cls.objects:
-            if txt in orig.split()[0]:
-                yield orig, cls.get(orig)
+    def reply(self, text):
+        "add text to result."
+        self.result[time.time()] = text
 
-    @classmethod
-    def objs(cls, attr):
-        "objects with a certain attribute."
-        for obj in cls.objects.values():
-            if attr in dir(obj):
-                yield obj
+    def wait(self, timeout=0.0):
+        "wait for completion."
+        self._ready.wait(timeout or None)
+        if self._thr:
+            self._thr.join(timeout or None)
 
 
 class Handler:
@@ -128,7 +124,8 @@ class Client(Handler):
             if not event or self.stopped.is_set():
                 break
             event.orig = repr(self)
-            Commands.command(event)
+            self.callback(event)
+            time.sleep(0.001)
 
     def poll(self):
         "return event."
@@ -144,14 +141,107 @@ class Client(Handler):
         "say text in channel."
         self.raw(text)
 
+
+class Console(Client):
+
+    def loop(self):
+        "input loop."
+        while True:
+            event = self.poll()
+            if not event or self.stopped.is_set():
+                break
+            event.orig = repr(self)
+            self.callback(event)
+            event.wait()
+            time.sleep(0.001)
+
+    def poll(self):
+        "return event."
+        return self.iqueue.get()
+
+
+class Output(Client):
+
+    def __init__(self):
+        super().__init__()
+        self.oqueue = queue.Queue()
+
+    def output(self):
+        "output loop."
+        while True:
+            event = self.oqueue.get()
+            if event is None:
+                self.oqueue.task_done()
+                break
+            self.display(event)
+            self.oqueue.task_done()
+            time.sleep(0.001)
+
     def start(self):
-        "start handler."
-        Thread.launch(self.loop)
+        "start output loop."
+        super().start()
+        Thread.launch(self.output)
+
+    def stop(self):
+        "stop output loop."
+        super().stop()
+        self.oqueue.put(None)
+
+    def wait(self):
+        "wait for output to finish."
+        try:
+            self.oqueue.join()
+        except Exception as ex:
+            logging.exception(ex)
+            _thread.interrupt_main()
+
+
+class Broker:
+
+    objects = {}
+
+    @classmethod
+    def add(cls, obj):
+        "add object to the broker, key is repr(obj)."
+        cls.objects[repr(obj)] = obj
+
+    @classmethod
+    def announce(cls, txt):
+        "announce text on all objects with an announce method."
+        for obj in cls.objs("announce"):
+            obj.announce(txt)
+
+    @classmethod
+    def get(cls, origin):
+        "object by repr(obj)."
+        return cls.objects.get(origin)
+
+    @classmethod
+    def has(cls, obj):
+        "whether the Broker has object."
+        return repr(obj) in cls.objects
+
+    @classmethod
+    def like(cls, txt):
+        "all keys with a substring in their key."
+        for orig in cls.objects:
+            if txt in orig.split()[0]:
+                yield orig, cls.get(orig)
+
+    @classmethod
+    def objs(cls, attr):
+        "objects with a certain attribute."
+        for obj in cls.objects.values():
+            if attr in dir(obj):
+                yield obj
 
 
 def __dir__():
     return (
-        'Nroker',
+        'Broker',
+        'Client',
+        'Console',
+        'Event',
         'Handler',
-        "Thread"
+        'Output'
     )
