@@ -11,6 +11,7 @@ import time
 import _thread
 
 
+from .command import Commands
 from .objects import Data
 from .utility import Thread
 
@@ -162,6 +163,35 @@ class Console(Client):
         return self.iqueue.get()
 
 
+class Line(Console):
+
+    def __init__(self):
+        super().__init__()
+        self.register("command", Commands.command)
+
+    def raw(self, text):
+        "write to console."
+        print(text.encode('utf-8', 'replace').decode("utf-8"))
+
+
+class CSL(Line):
+
+    def callback(self, event):
+        "wait for callback result."
+        if not event.text:
+            event.ready()
+            return
+        super().callback(event)
+        event.wait()
+
+    def poll(self):
+        "poll for an event."
+        evt = Event()
+        evt.text = input("> ")
+        evt.kind = "command"
+        return evt
+
+
 class Output(Client):
 
     def __init__(self):
@@ -244,6 +274,8 @@ def __dir__():
         'Client',
         'Console',
         'Event',
+        'Line',
         'Handler',
-        'Output'
+        'Output',
+        'CSL'
     )

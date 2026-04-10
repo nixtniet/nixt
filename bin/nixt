@@ -172,6 +172,23 @@ def main():
     Boot.shutdown()
 
 
+def main():
+    "main"
+    Main.default = Default.default
+    Main.version = Default.version
+    Main.wdr = os.path.expanduser(f"~/.{Main.name}")
+    if check('a'): Main.all = True
+    if check('b'): Main.boot = True
+    if check('h'): print(HELP % (Main.name, Main.name))
+    if check('n'): Main.noignore = True
+    if check('r'): Main.read = True
+    if check("u"): Main.user = True
+    if check("v"): Main.verbose = True
+    if check("w"): Main.wait = True
+    Boot.wrap(Scripts.control)
+    Boot.shutdown()
+
+
 HELP = """%s [-c|d|h|s] [-a] [-b] [-n] [-r] [-u] [-v] [-w] [key=value] [key==value]
 
 options:

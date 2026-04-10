@@ -13,9 +13,22 @@ import _thread
 
 
 from .command import Commands, Main, Mods
+from .handler import CSL, Event, Line
 from .objects import Data, Methods
 from .persist import Disk, Workdir
-from .utility import Log, Thread
+from .utility import Log, Thread, Utils
+
+
+from . import modules as MODS
+
+
+TXT = " ".join(sys.argv[1:])
+
+
+class Default:
+
+    default = ""
+    version = 453
 
 
 class Boot:
@@ -168,7 +181,98 @@ class Boot:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
+class Run:
+
+    @classmethod
+    def banner(cls):
+        "hello."
+        tme = time.ctime(time.time()).replace("  ", " ")
+        print("%s %s since %s %s (%s)" % (
+            Main.name.upper(),
+            Main.version,
+            tme,
+            Main.level.upper() or "INFO",
+            Utils.md5sum(Mods.path("tbl") or "")[:7]
+        ))
+        sys.stdout.flush()
+        return Main.version
+
+    @staticmethod
+    def check(opts):
+        for word in TXT.split():
+            if not word.startswith("-"):
+                continue
+            for char in opts:
+                if char in word:
+                    return True
+        return False
+
+    @staticmethod
+    def cmd(text):
+        "parse text for command and run it."
+        cli = Line()
+        cli.start()
+        for txt in text.split(" ! "):
+            evt = Event()
+            evt.orig = repr(cli)
+            evt.text = txt
+            evt.kind = "command"
+            Commands.command(evt)
+            evt.wait()
+        return evt
+
+
+class Scripts:
+
+    @staticmethod
+    def background():
+        "background script."
+        Boot.daemon(Main.verbose, Main.nochdir)
+        Boot.privileges()
+        Boot.boot(TXT, MODS, read=True)
+        Boot.pidfile(Main.name)
+        Boot.scan()
+        Boot.init()
+        Boot.forever()
+
+    @staticmethod
+    def console():
+        "console script."
+        import readline
+        readline.redisplay()
+        Boot.boot(TXT, MODS)
+        if Main.verbose:
+            Run.banner()
+        Boot.scan()
+        Boot.init(default=False)
+        csl = CSL()
+        csl.start()
+        Boot.forever()
+
+    @staticmethod
+    def control():
+        "cli script."
+        if len(sys.argv) == 1:
+            return
+        Boot.boot(TXT, MODS, doall=True)
+        Boot.scan()
+        Run.cmd(TXT)
+
+    @staticmethod
+    def service():
+        "service script."
+        Boot.privileges()
+        Boot.boot(TXT, MODS, read=True)
+        Boot.scan()
+        Run.banner()
+        Boot.pidfile(Main.name)
+        Boot.init()
+        Boot.forever()
+
+
 def __dir__():
     return (
         "Boot",
+        'Run',
+        'Scripts'
     )
