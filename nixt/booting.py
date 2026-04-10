@@ -270,6 +270,12 @@ class Scripts:
         Boot.forever()
 
 
+def main():
+    Boot.wrap(Scripts.control)
+    Boot.shutdown()
+
+
+
 def __dir__():
     return (
         "Boot",

@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+# This file is placed in the Public Domain.
+
+
+"main program"
+
+
+import os
+import sys
+import time
+
+
+sys.path.insert(0, os.getcwd())
+
+
+from nixt.booting import Boot, Default, Run, Scripts
+from nixt.command import Main
+
+
+check = Run.check
+
+
+def main():
+    "main"
+    Main.default = Default.default
+    Main.version = Default.version
+    Main.wdr = os.path.expanduser(f"~/.{Main.name}")
+    if check('a'): Main.all = True
+    if check('b'): Main.boot = True
+    if check('h'): print(HELP % (Main.name, Main.name))
+    if check('n'): Main.noignore = True
+    if check('r'): Main.read = True
+    if check("u"): Main.user = True
+    if check("v"): Main.verbose = True
+    if check("w"): Main.wait = True
+    if check("d"): Scripts.background()
+    elif check("c"): Boot.wrap(Scripts.console)
+    elif check("s"): Boot.wrap(Scripts.service)
+    else: Boot.wrap(Scripts.control)
+    Boot.shutdown()
+
+
+HELP = """%s [-c|d|h|s] [-a] [-b] [-n] [-r] [-u] [-v] [-w] [key=value] [key==value]
+
+options:
+
+-h       show this help message and exit
+-a       load all modules
+-b       read config on boot
+-c       start console
+-d       start background daemon
+-n       disable ignore
+-r       read modules on start
+-s       start service
+-u       use local mods directory
+-v       enable verbose
+-w       wait for services to start
+
+keys:
+
+default,ignore,init,level,mods,name,version,wdr
+
+example:
+
+%s -cvw level=debug mods=irc,rss"""
+
+
+if __name__ == "__main__":
+    main()

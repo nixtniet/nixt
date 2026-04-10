@@ -8,9 +8,6 @@ from nixt.booting import Boot, Scripts
 from nixt.utility import Thread
 
 
-def csl(event):
+def init():
     Thread.launch(Boot.wrap, Scripts.console)
     Boot.forever()
-
-
-csl.skip = "csl,irc"
