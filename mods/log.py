@@ -4,8 +4,8 @@
 "log text"
 
 
-from nixt.caching import Disk
 from nixt.objects import Data
+from nixt.persist import Disk
 
 
 class Log(Data):

@@ -16,35 +16,6 @@ from .objects import Data, Methods
 from .utility import Utils
 
 
-class Event(Data):
-
-    def __init__(self):
-        Data.__init__(self)
-        self._ready = threading.Event()
-        self._thr = None
-        self.result = {}
-        self.args = []
-        self.index = 0
-
-    def ok(self, txt=""):
-        "reply with ok."
-        self.reply(f"ok {txt}".strip())
-
-    def ready(self):
-        "flag message as ready."
-        self._ready.set()
-
-    def reply(self, text):
-        "add text to result."
-        self.result[time.time()] = text
-
-    def wait(self, timeout=0.0):
-        "wait for completion."
-        self._ready.wait(timeout or None)
-        if self._thr:
-            self._thr.join(timeout or None)
-
-
 class Commands:
 
     cmds = {}
@@ -67,8 +38,7 @@ class Commands:
         func = cls.get(evt.cmd)
         if func:
             func(evt)
-            if evt.client:
-                evt.client.display(evt)
+            evt.display()
         evt.ready()
 
     @classmethod
@@ -128,6 +98,7 @@ class Mods:
             name = path.split(os.sep)[-2]
         if os.path.exists(path):
             cls.dirs[name] = path
+        print(cls.dirs)
 
     @classmethod
     def all(cls, force=False):

@@ -11,24 +11,26 @@ import time
 import _thread
 
 
+from .objects import Data
 from .utility import Thread
 
 
-class Event:
+class Event(Data):
 
     def __init__(self):
+        Data.__init__(self)
         self._ready = threading.Event()
         self._thr = None
         self.result = {}
         self.args = []
         self.index = 0
+        self.orig = ""
         self.kind = "event"
 
-    def __getattr__(self, key):
-        return self.__dict__.get(key, "")
-
-    def __str__(self):
-        return str(self.__dict__)
+    def display(self):
+        bot = Broker.get(self.orig)
+        if bot:
+            bot.display(self)
 
     def ok(self, txt=""):
         self.reply(f"ok {txt}".strip())

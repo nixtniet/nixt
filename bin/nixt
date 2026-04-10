@@ -22,10 +22,12 @@ from nixt.utility import Utils
 from nixt import modules as MODS
 
 
+TXT  = " ".join(sys.argv[1:])
+
+
 class Default:
 
     default = "irc,mdl,rss,wsd"
-    txt = " ".join(sys.argv[1:])
     version = 453
 
 
@@ -76,7 +78,7 @@ class Run:
 
     @staticmethod
     def check(opts):
-        for word in Default.txt.split():
+        for word in TXT.split():
             if not word.startswith("-"):
                 continue
             for char in opts:
@@ -106,7 +108,7 @@ class Scripts:
         "background script."
         Boot.daemon(Main.verbose, Main.nochdir)
         Boot.privileges()
-        Boot.boot(Default.txt, MODS, read=True)
+        Boot.boot(TXT, MODS, read=True)
         Boot.pidfile(Main.name)
         Boot.scan()
         Boot.init()
@@ -117,7 +119,7 @@ class Scripts:
         "console script."
         import readline
         readline.redisplay()
-        Boot.boot(Default.txt, MODS)
+        Boot.boot(TXT, MODS)
         if Main.verbose:
             Run.banner()
         Boot.scan()
@@ -131,15 +133,15 @@ class Scripts:
         "cli script."
         if len(sys.argv) == 1:
             return
-        Boot.boot(Default.txt, MODS, doall=True)
+        Boot.boot(TXT, MODS, doall=True)
         Boot.scan()
-        Run.cmd(Default.txt)
+        Run.cmd(TXT)
 
     @staticmethod
     def service():
         "service script."
         Boot.privileges()
-        Boot.boot(Default.txt, MODS, read=True)
+        Boot.boot(TXT, MODS, read=True)
         Boot.scan()
         Run.banner()
         Boot.pidfile(Main.name)

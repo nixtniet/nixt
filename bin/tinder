@@ -16,10 +16,10 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.caching import Workdir
-from nixt.command import Commands, Event, Main, Mods
-from nixt.handler import Client, Thread
+from nixt.command import Commands, Main, Mods
+from nixt.handler import Client, Event, Thread
 from nixt.objects import Data, Methods
+from nixt.persist import Workdir
 from nixt.utility import Log, Time, Utils
 
 
