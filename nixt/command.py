@@ -27,6 +27,7 @@ class Event(Data):
         self.index = 0
 
     def ok(self, txt=""):
+        "reply with ok."
         self.reply(f"ok {txt}".strip())
 
     def ready(self):
@@ -72,6 +73,7 @@ class Commands:
 
     @classmethod
     def commands(cls, orig):
+        "list cpmmands available."
         res = []
         for func in cls.cmds.values():
             if cls.skip(func, orig): continue
@@ -123,6 +125,7 @@ class Mods:
 
     @classmethod
     def all(cls, force=False):
+        "return all modules."
         return cls.iter(cls.list(), force=force)
 
     @classmethod
@@ -201,6 +204,7 @@ class Mods:
 
     @classmethod
     def path(cls, name):
+        "return existing paths."
         for pkgname, path in cls.dirs.items():
             pth = os.path.join(path, name + ".py")
             if os.path.exists(pth):
@@ -208,6 +212,7 @@ class Mods:
 
     @classmethod
     def pkg(cls, *packages):
+        "register packages their directories."
         for package in packages:
             cls.add(package.__path__[0], package.__name__)
 

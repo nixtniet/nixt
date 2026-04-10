@@ -213,6 +213,7 @@ class Methods:
 
     @staticmethod
     def merge(obj, obj2):
+        "skip emoty values."
         for key, value in Object.items(obj2):
             if not value and getattr(obj, key, False):
                 continue
@@ -220,6 +221,7 @@ class Methods:
 
     @staticmethod
     def notset(obj, obj2):
+        "only set if not set."
         for key, value in Object.items(obj2):
             if getattr(obj, key, False):
                 continue
@@ -281,6 +283,7 @@ class Methods:
 
     @staticmethod
     def reduce(obj):
+        "return dict with values setted attributes."
         result = {}
         for key, value in Object.items(obj):
             if value:

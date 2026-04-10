@@ -103,6 +103,7 @@ class Locate:
 
     @classmethod
     def count(cls, kind):
+        "count kinds of objects."
         return len(list(Locate.find(kind)))
 
     @classmethod
@@ -129,6 +130,7 @@ class Locate:
 
     @classmethod
     def first(cls, obj, selector={}):
+        "return first object of a kind."
         result = sorted(
                         Locate.find(Methods.fqn(obj), selector),
                         key=lambda x: Time.fntime(x[0])
