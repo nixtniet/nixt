@@ -18,9 +18,8 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.caching import Workdir
 from nixt.command import Commands, Event, Main, Mods
-from nixt.handler import Client
+from nixt.handler import Client, Thread
 from nixt.objects import Data, Methods
-from nixt.runtime import Run
 from nixt.utility import Log, Time, Utils
 
 
@@ -107,9 +106,7 @@ def main():
     Methods.merge(Main, parsed)
     Workdir.skel()
     Log.level(Main.level)
-    Mods.add("modules", MODS.__path__[0])
-    if MODS2:
-        Mods.add("mods", MODS2.__path__[0])
+    Mods.pkg(MODS, MODS2)
     Main.mods = Main.mods or Mods.list()
     Commands.scanner()
     starttime = time.time()
@@ -121,6 +118,11 @@ def main():
     for _x in range(nrs):
         payload(post)
     nrevents = events.qsize()
+    Thread.launch(consume)
+    try:
+        events.join()
+    except (KeyboardInterrupt, EOFError):
+        pass
     endtime = time.time()
     lap = Time.elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
@@ -132,16 +134,16 @@ def main():
 
 
 examples = {
-    "atr": [""],
     "cmd": [""],
     "dis": [""],
     "dne": ["", "bla"],
     "dpl": ["hnrss title,url", ""],
     "eml": ["", "root@localhost"],
+    "fie": ["", "log", "todo"],
     "flt": ["", "0"],
     "fnd": ["", "log", "rss", "config", "todo"],
     "lou": [""],
-    "man": ["", "nixt genocideniet@gmail.com Nixt Niet"],
+    "man": ["", "nixt nixtniet@gmail.com Nixt Niet"],
     "mbx": [""],
     "mod": [""],
     "mre": [""],
@@ -167,7 +169,7 @@ pre = {
         "",
         "testing/opml/feeds.opml",
     ],
-    "log": ["", "log add"],
+    "log": ["", "log test"],
     "rss": ["", "http://hnrss.org/newest"],
     "tdo": ["", "test"]
 }

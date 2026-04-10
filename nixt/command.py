@@ -207,8 +207,9 @@ class Mods:
                 return pth
 
     @classmethod
-    def pkg(cls, package):
-        return cls.add(package.__path__[0], package.__name__)
+    def pkg(cls, *packages):
+        for package in packages:
+            cls.add(package.__path__[0], package.__name__)
 
 
 class MainConfig(type):

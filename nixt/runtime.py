@@ -4,17 +4,14 @@
 "main"
 
 
-import logging
 import os
 import sys
-import time
 
 
 from .caching import Workdir
 from .command import Commands, Event, Main, Mods
 from .handler import Client
 from .objects import Methods
-from .utility import Utils
 
 
 from . import modules as MODS
