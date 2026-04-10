@@ -181,4 +181,4 @@ post = {
 
 
 if __name__ == "__main__":
-    Run.wrap(main)
+    main()
