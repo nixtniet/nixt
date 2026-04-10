@@ -74,8 +74,7 @@ class Disk:
                 try:
                     Object.update(obj, Json.load(fpt))
                 except json.decoder.JSONDecodeError as ex:
-                    logging.error("failed read at %s", pth)
-                    raise ex
+                    logging.error("failed read at %s: %s", pth, str(ex))
 
     @classmethod
     def write(cls, obj, path="", base="store", skip=False):

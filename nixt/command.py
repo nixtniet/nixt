@@ -34,10 +34,19 @@ class Commands:
         "command callback."
         Methods.parse(evt, evt.text)
         func = cls.get(evt.cmd)
+        if not func:
+            name = cls.names.get(evt.cmd)
+            mod = None
+            if name: mod = Mods.get(name)
+            if mod:
+                cls.scan(mod)
+                func = cls.get(evt.cmd)
         if func:
-            func(evt)
-            evt.display()
+            if not cls.skip(func, evt.orig):
+                func(evt)
+                evt.display()
         evt.ready()
+
 
     @classmethod
     def commands(cls, orig):

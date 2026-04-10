@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"command line interface"
+"run as service"
 
 
 from nixt.booting import Boot, Scripts
@@ -9,3 +9,6 @@ from nixt.booting import Boot, Scripts
 
 def ser(event):
     Boot.wrap(Scripts.service)
+
+
+ser.skip = "csl,irc"
