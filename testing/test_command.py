@@ -9,8 +9,9 @@ import unittest
 
 
 from nixt.command import Commands, Event, Mods
-from nixt.handler import Handler, Task
+from nixt.handler import Handler
 from nixt.objects import Object
+from nixt.utility import Task
 
 
 def cmnd(event):

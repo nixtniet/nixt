@@ -4,15 +4,52 @@
 "handler"
 
 
-import inspect
-import logging
 import queue
 import threading
-import time
-import _thread
 
 
 from .command import Commands
+from .utility import Thread
+
+
+class Broker:
+
+    objects = {}
+
+    @classmethod
+    def add(cls, obj):
+        "add object to the broker, key is repr(obj)."
+        cls.objects[repr(obj)] = obj
+
+    @classmethod
+    def announce(cls, txt):
+        "announce text on all objects with an announce method."
+        for obj in cls.objs("announce"):
+            obj.announce(txt)
+
+    @classmethod
+    def get(cls, origin):
+        "object by repr(obj)."
+        return cls.objects.get(origin)
+
+    @classmethod
+    def has(cls, obj):
+        "whether the Broker has object."
+        return repr(obj) in cls.objects
+
+    @classmethod
+    def like(cls, txt):
+        "all keys with a substring in their key."
+        for orig in cls.objects:
+            if txt in orig.split()[0]:
+                yield orig, cls.get(orig)
+
+    @classmethod
+    def objs(cls, attr):
+        "objects with a certain attribute."
+        for obj in cls.objects.values():
+            if attr in dir(obj):
+                yield obj
 
 
 class Handler:
@@ -67,6 +104,7 @@ class Client(Handler):
         self.olock = threading.RLock()
         self.silent = True
         self.stopped = threading.Event()
+        Broker.add(self)
 
     def announce(self, text):
         "announce text to all channels."
@@ -111,83 +149,9 @@ class Client(Handler):
         Thread.launch(self.loop)
 
 
-class Task(threading.Thread):
-
-    last = time.time()
-
-    def __init__(self, func, *args, daemon=True, **kwargs):
-        super().__init__(None, self.run, None, (), daemon=daemon)
-        self.event = None
-        self.name = kwargs.get("name", Thread.name(func))
-        self.queue = queue.Queue()
-        self.result = None
-        self.starttime = time.time()
-        self.stopped = threading.Event()
-        self.queue.put((func, args))
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        yield from dir(self)
-
-    def join(self, timeout=0.0):
-        "join thread and return result."
-        try:
-            super().join(timeout or None)
-            return self.result
-        except (KeyboardInterrupt, EOFError):
-            if self.event and self.event.ready:
-                self.event.ready()
-            _thread.interrupt_main()
-
-    def run(self):
-        "run function."
-        if time.time() - Task.last < 0.01:
-            time.sleep(0.01)
-        Task.last = time.time()
-        func, args = self.queue.get()
-        if args and hasattr(args[0], "ready"):
-            self.event = args[0]
-        try:
-            self.result = func(*args)
-            return self.result
-        except (KeyboardInterrupt, EOFError):
-            pass
-        except Exception as ex:
-            logging.exception(ex)
-        if self.event:
-            self.event.ready()
-        _thread.interrupt_main()
-
-
-class Thread:
-
-    lock = threading.RLock()
-
-    @classmethod
-    def launch(cls, func, *args, **kwargs):
-        "run function in a thread."
-        with cls.lock:
-            try:
-                task = Task(func, *args, **kwargs)
-                task.start()
-                return task
-            except (KeyboardInterrupt, EOFError):
-                _thread.interrupt_main()
-
-    @classmethod
-    def name(cls, obj):
-        "string of function/method."
-        if inspect.ismethod(obj):
-            return f"{obj.__func__.__qualname__}"
-        if inspect.isfunction(obj):
-            return repr(obj).split()[1]
-        return repr(obj)
-
-
 def __dir__():
     return (
-        "Handler",
+        'Nroker',
+        'Handler',
         "Thread"
     )
