@@ -8,11 +8,9 @@ import importlib.util as imp
 import inspect
 import logging
 import os
-import threading
-import time
 
 
-from .objects import Data, Methods
+from .objects import Methods
 from .utility import Utils
 
 
@@ -98,7 +96,6 @@ class Mods:
             name = path.split(os.sep)[-2]
         if os.path.exists(path):
             cls.dirs[name] = path
-        print(cls.dirs)
 
     @classmethod
     def all(cls, force=False):

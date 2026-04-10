@@ -12,9 +12,9 @@ import unittest
 sys.path.insert(0, ".")
 
 
-from nixt.caching import Disk
 from nixt.command import Main
 from nixt.objects import Data
+from nixt.persist import Disk
 
 
 Main.wdr = '.test'

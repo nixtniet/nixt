@@ -8,8 +8,8 @@ import os
 import unittest
 
 
-from nixt.command import Commands, Event, Mods
-from nixt.handler import Handler
+from nixt.command import Commands, Mods
+from nixt.handler import Event, Handler
 from nixt.objects import Object
 from nixt.utility import Task
 

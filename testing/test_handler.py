@@ -7,8 +7,7 @@
 import unittest
 
 
-from nixt.command import Event
-from nixt.handler import Client, Handler
+from nixt.handler import Client, Event, Handler
 
 
 buffer = []
