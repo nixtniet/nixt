@@ -22,7 +22,7 @@ check = Run.check
 
 def main():
     "main"
-    Main.default = Default.default
+    Main.default = "irc,rss"
     Main.version = Default.version
     Main.wdr = os.path.expanduser(f"~/.{Main.name}")
     if check('a'): Main.all = True
