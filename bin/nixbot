@@ -14,7 +14,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.booting import Boot, Run, Scripts
-from nixt.command import Main
+from nixt.configs import Main
 
 
 check = Run.check
