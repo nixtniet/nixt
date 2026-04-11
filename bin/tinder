@@ -16,11 +16,16 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.command import Commands, Main, Mods
-from nixt.handler import Client, Event, Thread
+from nixt.clients import Line
+from nixt.command import Commands
+from nixt.configs import Main
+from nixt.handler import Event
+from nixt.loggers import Log
 from nixt.objects import Data, Methods
+from nixt.package import Mods
 from nixt.persist import Workdir
-from nixt.utility import Log, Time, Utils
+from nixt.threads import Thread
+from nixt.utility import Time, Utils
 
 
 from nixt import modules as MODS
@@ -38,7 +43,7 @@ Main.wdr = ".test"
 events = queue.Queue()
 
 
-class CLI(Client):
+class CLI(Line):
 
     def raw(self, text):
         if "v" in Main.opts:
@@ -92,7 +97,7 @@ def payload(todo):
                 continue
         for ex in example:
             evt = Event()
-            evt.client = cli
+            evt.orig = repr(cli)
             evt.text = f"{cmd} {ex}"
             Commands.command(evt)
             events.put(evt)

@@ -12,11 +12,16 @@ import time
 import _thread
 
 
-from .command import Commands, Main, Mods
-from .handler import CSL, Event, Line
+from .clients import CSL, Line
+from .command import Commands
+from .configs import Main
+from .handler import Event
+from .loggers import Log
 from .objects import Data, Methods
+from .package import Mods
 from .persist import Disk, Workdir
-from .utility import Log, Thread, Utils
+from .threads import Thread
+from .utility import Utils
 
 
 from . import modules as MODS
@@ -25,15 +30,10 @@ from . import modules as MODS
 TXT = " ".join(sys.argv[1:])
 
 
-class Default:
-
-    default = ""
-    version = 453
-
-
 class Boot:
 
     inits = []
+    md5s = {}
 
     @classmethod
     def boot(cls, txt, *pkgs, read=False, doall=False):
@@ -58,6 +58,17 @@ class Boot:
             Mods.pkg(pkg)
         if Main.all or doall:
             Main.mods = Mods.list(Main.ignore)
+
+    @classmethod
+    def core(cls):
+        "calculate core md5."
+        path = os.path.dirname(__spec__.loader.path)
+        for fnm in os.listdir(path):
+            if not fnm.endswith(".py"):
+                continue
+            name = fnm[:-3]
+            mpath = os.path.join(path, fnm)
+            cls.md5s[name] = Utils.md5sum(mpath)
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):
@@ -91,14 +102,10 @@ class Boot:
                 _thread.interrupt_main()
 
     @classmethod
-    def init(cls, default=True):
+    def init(cls):
         "scan named modules for commands."
         thrs = []
-        if default:
-            defs = Main.default
-        else:
-            defs = ""
-        for name, mod in Mods.iter(Main.mods or defs, Main.ignore):
+        for name, mod in Mods.iter(Main.ignore):
             if "init" in dir(mod):
                 thrs.append((name, Thread.launch(mod.init)))
                 cls.inits.append(name)
@@ -137,14 +144,10 @@ class Boot:
             cls.scanner()
 
     @classmethod
-    def scanner(cls, default=False):
+    def scanner(cls):
         "scan named modules for commands."
         res = []
-        if default:
-            defs = Main.default
-        else:
-            defs = ""
-        for name, mod in Mods.iter(Main.mods or defs or Mods.list(), Main.ignore):
+        for name, mod in Mods.iter(Main.ignore):
             Commands.scan(mod)
             if "configure" in dir(mod):
                 mod.configure()
@@ -187,15 +190,13 @@ class Run:
     def banner(cls):
         "hello."
         tme = time.ctime(time.time()).replace("  ", " ")
-        print("%s %s since %s %s (%s)" % (
+        print("%s since %s %s (%s)" % (
             Main.name.upper(),
-            Main.version,
             tme,
             Main.level.upper() or "INFO",
-            Utils.md5sum(Mods.path("tbl") or "")[:7]
+            Utils.md5sum(Mods.path("tbl") or "")[:7],
         ))
         sys.stdout.flush()
-        return Main.version
 
     @staticmethod
     def check(opts):
@@ -227,6 +228,7 @@ class Scripts:
     @staticmethod
     def background():
         "background script."
+        Boot.core()
         Boot.daemon(Main.verbose, Main.nochdir)
         Boot.privileges()
         Boot.boot(TXT, MODS, read=True)
@@ -241,10 +243,11 @@ class Scripts:
         import readline
         readline.redisplay()
         Boot.boot(TXT, MODS)
+        Boot.core()
         if Main.verbose:
             Run.banner()
         Boot.scan()
-        Boot.init(default=False)
+        Boot.init()
         csl = CSL()
         csl.start()
         Boot.forever()
@@ -255,12 +258,14 @@ class Scripts:
         if len(sys.argv) == 1:
             return
         Boot.boot(TXT, MODS, doall=True)
+        Boot.core()
         Boot.scan()
         Run.cmd(TXT)
 
     @staticmethod
     def service():
         "service script."
+        Boot.core()
         Boot.privileges()
         Boot.boot(TXT, MODS, read=True)
         Boot.scan()
@@ -273,7 +278,6 @@ class Scripts:
 def main():
     Boot.wrap(Scripts.control)
     Boot.shutdown()
-
 
 
 def __dir__():

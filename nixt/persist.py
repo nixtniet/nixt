@@ -11,7 +11,7 @@ import pathlib
 import threading
 
 
-from .command import Main
+from .configs import Main
 from .objects import Data, Json, Methods, Object
 from .utility import Time, Utils
 
@@ -75,6 +75,7 @@ class Disk:
                     Object.update(obj, Json.load(fpt))
                 except json.decoder.JSONDecodeError as ex:
                     logging.error("failed read at %s: %s", pth, str(ex))
+                    raise
 
     @classmethod
     def write(cls, obj, path="", base="store", skip=False):

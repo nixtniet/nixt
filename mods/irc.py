@@ -13,11 +13,14 @@ import threading
 import time
 
 
-from nixt.command import Commands, Main
-from nixt.handler import Broker, Event, Output
+from nixt.clients import Output
+from nixt.command import Commands
+from nixt.configs import Main
+from nixt.handler import Broker, Event
 from nixt.objects import Configuration, Data, Methods
 from nixt.persist import Cfg
-from nixt.utility import Thread, Utils
+from nixt.threads import Thread
+from nixt.utility import Utils
 
 
 def configure():

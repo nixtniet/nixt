@@ -13,7 +13,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.booting import Boot, Default, Run, Scripts
+from nixt.booting import Boot, Run, Scripts
 from nixt.command import Main
 
 
@@ -22,8 +22,7 @@ check = Run.check
 
 def main():
     "main"
-    Main.default = "irc,rss"
-    Main.version = Default.version
+    Main.name = sys.argv[0].split(os.sep)[-1].lower()
     Main.wdr = os.path.expanduser(f"~/.{Main.name}")
     if check('a'): Main.all = True
     if check('b'): Main.boot = True

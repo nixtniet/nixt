@@ -4,8 +4,11 @@
 "administrator"
 
 
-from nixt.command import Commands, Main, Mods
+from nixt.booting import Boot
+from nixt.command import Commands
+from nixt.configs import Main
 from nixt.objects import Json
+from nixt.package import Mods
 from nixt.persist import Workdir
 
 
@@ -30,6 +33,7 @@ def tbl(event):
         Commands.scan(module)
     event.reply("# This file is placed in the Pubic Domain.\n\n")
     event.reply('"tables"\n\n')
+    event.reply(f"CORE = {Json.dumps(Boot.md5s, indent=4)}\n\n")
     event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4)}\n\n")
     event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4)}")
 

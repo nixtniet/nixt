@@ -12,7 +12,7 @@ import unittest
 sys.path.insert(0, ".")
 
 
-from nixt.command import Main
+from nixt.configs import Main
 from nixt.objects import Data
 from nixt.persist import Disk
 

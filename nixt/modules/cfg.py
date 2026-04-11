@@ -4,17 +4,17 @@
 "configuration"
 
 
-from nixt.command import Mods
 from nixt.objects import Data, Methods, Object
+from nixt.package import Mods
 from nixt.persist import Cfg
 
 
 def cfg(event):
     if not event.args:
-        mods = f"cfg <{Mods.has('Config') + ',main'}>"
-        if mods.startswith(","):
-            mods = mods[1:]
-        event.reply(mods)
+        mods = f"<{Mods.has('Config') + ',main'}>"
+        if mods.startswith("<,"):
+            mods = "<" + mods[2:]
+        event.reply("cfg " + mods)
         return
     name = event.args[0]
     config = Data()

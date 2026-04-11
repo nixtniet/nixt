@@ -8,10 +8,11 @@ import os
 import unittest
 
 
-from nixt.command import Commands, Mods
+from nixt.command import Commands
 from nixt.handler import Event, Handler
 from nixt.objects import Object
-from nixt.utility import Task
+from nixt.package import Mods
+from nixt.threads import Task
 
 
 def cmnd(event):

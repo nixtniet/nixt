@@ -7,7 +7,8 @@
 import unittest
 
 
-from nixt.handler import Client, Event, Handler
+from nixt.clients import Client
+from nixt.handler import Event, Handler
 
 
 buffer = []
@@ -130,7 +131,7 @@ class TestMessage(unittest.TestCase):
 
     def test_ready(self):
         msg = Event()
-        msg.ready()
+        msg.ready()  # pylint: disable=E1102
         self.assertTrue(msg._ready.is_set())
 
     def test_reply(self):
@@ -140,6 +141,6 @@ class TestMessage(unittest.TestCase):
 
     def test_wait(self):
         msg = Event()
-        msg.ready()
+        msg.ready()  # pylint: disable=E1102
         msg.wait()
         self.assertTrue(msg._ready.is_set())
