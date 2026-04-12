@@ -10,6 +10,7 @@ from nixt.configs import Main
 from nixt.encoder import Json
 from nixt.package import Mods
 from nixt.persist import Workdir
+from nixt.utility import Utils
 
 
 def cmd(event):
@@ -38,11 +39,18 @@ def tbl(event):
     event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4)}")
 
 
+tbl.skip = "irc"
+
+
 def ver(event):
     "show verson."
-    event.reply(f"{Main.name.upper()} {Main.version}")
+    version = Utils.md5sum(Mods.path("tbl") or "")[:7]
+    event.reply(f"{Main.name.upper()} {version}")
 
 
 def wdr(event):
     "show working directory."
     event.reply(Workdir.workdir())
+
+
+wdr.skip = "irc"

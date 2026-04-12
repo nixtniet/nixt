@@ -4,6 +4,7 @@
 "runtime"
 
 
+import os
 import sys
 import time
 
@@ -105,9 +106,7 @@ class Scripts:
         Boot.forever()
 
 
-def check(opts):
-    "check runtime options"
-    return Boot.check(opts)
+check = Boot.check
 
 
 def line(name=""):
@@ -119,15 +118,19 @@ def line(name=""):
 def main(name=""):
     "main"
     Main.name = name or Main.name
-    if check('a'): Main.all = True
-    if check('b'): Main.boot = True
-    if check('n'): Main.noignore = True
-    if check('r'): Main.read = True
-    if check("u"): Main.user = True
-    if check("v"): Main.verbose = True
-    if check("w"): Main.wait = True
-    if check("d"): Scripts.background()
-    elif check("c"): Boot.wrap(Scripts.console)
-    elif check("s"): Boot.wrap(Scripts.service)
+    txt = " ".join(sys.argv[1:])
+    if check('a', txt): Main.all = True
+    if check('b', txt): Main.boot = True
+    if check('n', txt): Main.noignore = True
+    if check('r', txt): Main.read = True
+    if check("u", txt): Main.user = True
+    if check("v", txt): Main.verbose = True
+    if check("w", txt): Main.wait = True
+    if Main.user: Mods.add('mods', 'mods')
+    if Main.wdr: Mods.add("modules", os.path.join(Main.wdr, "mods"))
+    if Main.all: Main.mods = Mods.list(Main.ignore)
+    if check("d", txt): Scripts.background()
+    elif check("c", txt): Boot.wrap(Scripts.console)
+    elif check("s", txt): Boot.wrap(Scripts.service)
     else: Boot.wrap(Scripts.control)
     Boot.shutdown()

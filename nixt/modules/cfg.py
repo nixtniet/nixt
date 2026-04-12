@@ -43,3 +43,6 @@ def cfg(event):
     if mod and "configure" in dir(mod):
         mod.configure()
     event.ok()
+
+
+cfg.skip = "irc"
