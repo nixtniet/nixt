@@ -84,7 +84,7 @@ class Scripts:
         if Main.verbose: Run.banner()
         Boot.scan()
         Boot.init()
-        csl = Console()
+        csl = CSL()
         csl.start()
         Boot.forever()
 
@@ -121,22 +121,22 @@ def check(opts):
     return Boot.check(opts)
 
 
-def line():
+def line(name=""):
     "command line interface."
     from nixt import modules as MODS
-    TXT = " ".join(sys.argv[1:])
-    Boot.core(TXT, MODS)
+    txt = " ".join(sys.argv[1:])
+    Boot.core(name, txt, MODS)
     Main.name = sys.argv[0].split(os.sep)[-1].lower()
     Main.wdr = os.path.expanduser(f"~/.{Main.name}")
     Scripts.control()
 
 
-def main():
+def main(name=""):
     "main"
     from nixt import modules as MODS
-    TXT = " ".join(sys.argv[1:])
-    Boot.core(TXT, MODS)
-    Main.name = Utils.pkgname(Boot)
+    txt = " ".join(sys.argv[1:])
+    Boot.core(name, txt, MODS)
+    Main.name = Main.name or Utils.pkgname(Boot)
     Main.wdr = os.path.expanduser(f"~/.{Main.name}")
     if check('a'): Main.all = True
     if check('b'): Main.boot = True

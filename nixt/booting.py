@@ -29,7 +29,7 @@ class Boot:
     txt = ""
 
     @classmethod
-    def boot(cls, read=False, doall=False):
+    def boot(cls, name="", read=False, doall=False):
         "in the beginning."
         if Main.boot or read:
             Disk.read(Main, "main", "config")
@@ -63,8 +63,9 @@ class Boot:
         return False
 
     @classmethod
-    def core(cls, txt, *pkgs):
+    def core(cls, name, txt, *pkgs):
         "calculate core md5."
+        Main.name = name or Main.name
         Boot.txt = txt
         Boot.pkgs = pkgs
         path = os.path.dirname(__spec__.loader.path)
