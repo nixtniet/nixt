@@ -1,1 +1,43 @@
-python3 -c "from nixt.booting import main ; main()" $* ;
+#!/usr/bin/env python3
+# This file is placed in the Public Domain.
+
+
+"nixt niet"
+
+
+import os
+import sys
+
+
+sys.path.insert(0, os.getcwd())
+
+
+from nixt.booting import Boot, Scripts
+from nixt.command import Commands
+from nixt.handler import Console
+
+
+from nixt import modules as MODS
+
+
+TXT = " ".join(sys.argv[1:])
+
+
+class Line(Console):
+
+    def __init__(self):
+        super().__init__()
+        self.register("command", Commands.command)
+
+    def raw(self, text):
+        "write to console."
+        print(text.encode('utf-8', 'replace').decode("utf-8"))
+
+
+def main():
+    line = Line()
+    Scripts.control(line, TXT, MODS)
+
+
+if __name__ == "__main__":
+    Boot.wrap(main)

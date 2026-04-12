@@ -7,7 +7,7 @@
 from nixt.booting import Boot
 from nixt.command import Commands
 from nixt.configs import Main
-from nixt.objects import Json
+from nixt.encoder import Json
 from nixt.package import Mods
 from nixt.persist import Workdir
 

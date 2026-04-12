@@ -28,7 +28,5 @@ class Main(metaclass=MainConfig):
 
 def __dir__():
     return (
-        'Commands',
         'Main',
-        'Mods'
     )

@@ -12,7 +12,8 @@ import threading
 
 
 from .configs import Main
-from .objects import Data, Json, Methods, Object
+from .encoder import Json
+from .objects import Data, Methods, Object
 from .utility import Time, Utils
 
 
