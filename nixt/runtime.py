@@ -4,7 +4,6 @@
 "runtime"
 
 
-import os
 import sys
 import time
 
@@ -19,24 +18,12 @@ from .utility import Utils
 
 class Line(Console):
 
-    def __init__(self):
-        super().__init__()
-        self.register("command", Commands.command)
-
     def raw(self, text):
         "write to console."
         print(text.encode('utf-8', 'replace').decode("utf-8"))
 
 
 class CSL(Line):
-
-    def callback(self, event):
-        "wait for callback result."
-        if not event.text:
-            event.ready()
-            return
-        super().callback(event)
-        event.wait()
 
     def poll(self):
         "poll for an event."
@@ -81,7 +68,8 @@ class Scripts:
         import readline
         readline.redisplay()
         Boot.boot()
-        if Main.verbose: Run.banner()
+        if Main.verbose:
+            Run.banner()
         Boot.scan()
         Boot.init()
         csl = CSL()
@@ -91,7 +79,8 @@ class Scripts:
     @staticmethod
     def control():
         "cli script."
-        if len(sys.argv) == 1: return
+        if len(sys.argv) == 1:
+            return
         Boot.boot(doall=True)
         Boot.scan()
         cli = Line()
@@ -123,21 +112,13 @@ def check(opts):
 
 def line(name=""):
     "command line interface."
-    from nixt import modules as MODS
-    txt = " ".join(sys.argv[1:])
-    Boot.core(name, txt, MODS)
-    Main.name = sys.argv[0].split(os.sep)[-1].lower()
-    Main.wdr = os.path.expanduser(f"~/.{Main.name}")
+    Main.name = name or Main.name
     Scripts.control()
 
 
 def main(name=""):
     "main"
-    from nixt import modules as MODS
-    txt = " ".join(sys.argv[1:])
-    Boot.core(name, txt, MODS)
-    Main.name = Main.name or Utils.pkgname(Boot)
-    Main.wdr = os.path.expanduser(f"~/.{Main.name}")
+    Main.name = name or Main.name
     if check('a'): Main.all = True
     if check('b'): Main.boot = True
     if check('n'): Main.noignore = True

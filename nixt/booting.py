@@ -25,30 +25,25 @@ class Boot:
 
     inits = []
     md5s = {}
-    pkgs = []
-    txt = ""
+    txt = " ".join(sys.argv[1:])
 
     @classmethod
     def boot(cls, name="", read=False, doall=False):
         "in the beginning."
+        Main.name = name or Main.name or Utils.pkgname(Boot)
+        Main.wdr = os.path.expanduser(f"~/.{Main.name}")
+        cls.core()
         if Main.boot or read:
             Disk.read(Main, "main", "config")
         else:
-            parsed = Data()
-            Methods.parse(parsed, cls.txt)
-            Methods.merge(Main, parsed)
-            Methods.merge(Main, parsed.sets)
+            Methods.parse(Main, cls.txt)
         Workdir.skel()
         Log.size(len(Main.name))
         Log.level(Main.level or "info")
-        if Main.noignore:
-            Main.ignore = ""
         if Main.user:
             Mods.add('mods', 'mods')
         if Main.wdr:
             Mods.add("modules", os.path.join(Main.wdr, "mods"))
-        for pkg in cls.pkgs:
-            Mods.pkg(pkg)
         if Main.all or doall:
             Main.mods = Mods.list(Main.ignore)
 
@@ -63,11 +58,8 @@ class Boot:
         return False
 
     @classmethod
-    def core(cls, name, txt, *pkgs):
+    def core(cls):
         "calculate core md5."
-        Main.name = name or Main.name
-        Boot.txt = txt
-        Boot.pkgs = pkgs
         path = os.path.dirname(__spec__.loader.path)
         for fnm in os.listdir(path):
             if not fnm.endswith(".py"):

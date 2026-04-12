@@ -12,6 +12,7 @@ import _thread
 
 
 from .brokers import Broker
+from .command import Commands
 from .objects import Data
 from .threads import Thread
 
@@ -147,12 +148,19 @@ class Client(Handler):
 
 class Console(Client):
 
+    def __init__(self):
+        super().__init__()
+        self.register("command", Commands.command)
+
     def loop(self):
         "input loop."
         while True:
             event = self.poll()
             if not event or self.stopped.is_set():
                 break
+            if not event.text:
+                event.ready()
+                continue
             event.orig = repr(self)
             self.callback(event)
             event.wait()

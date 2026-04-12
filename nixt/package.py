@@ -12,9 +12,13 @@ import os
 from .utility import Utils
 
 
+d = os.path.dirname
+j = os.path.join
+
+
 class Mods:
 
-    dirs = {}
+    dirs = {"modules": j(d(__spec__.loader.path), "modules")}
     md5s = {}
     modules = {}
 

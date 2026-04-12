@@ -279,6 +279,7 @@ class Methods:
             obj.text = obj.cmd + " " + obj.rest
         else:
             obj.text = obj.cmd or ""
+        Methods.notset(obj, obj.sets)
 
     @staticmethod
     def reduce(obj):
@@ -326,6 +327,8 @@ class Methods:
     @staticmethod
     def typed(obj, key, val):
         "assign proper types."
+        if not val:
+            return
         if val in ["True", "true", True]:
             return setattr(obj, key, True)
         if val in ["False", "false", False]:
