@@ -25,4 +25,4 @@ def popen(txt):
 
 
 
-popen("pylint nixt mods bin/nixt bin/nixbot bin/tinder testing")
+popen("pylint nixt mods bin/tinder testing")

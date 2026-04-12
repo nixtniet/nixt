@@ -5,6 +5,10 @@
 
 
 import json
+import types
+
+
+from .objects import Methods
 
 
 class Encoder(json.JSONEncoder):
@@ -25,6 +29,7 @@ class Encoder(json.JSONEncoder):
                 return vars(o)
             except TypeError:
                 return repr(o)
+
 
 class Json:
 

@@ -161,11 +161,13 @@ class Utils:
 
 class Format(logging.Formatter):
 
+    disable = False
     size = 3
 
     def format(self, record):
-        record.module = record.module.upper()
-        record.module = record.module[:Format.size]
+        if not Format.disable:
+            record.module = record.module.upper()
+            record.module = record.module[:Format.size]
         return logging.Formatter.format(self, record)
 
 

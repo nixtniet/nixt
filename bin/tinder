@@ -16,10 +16,9 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.clients import Console
 from nixt.command import Commands
 from nixt.configs import Main
-from nixt.handler import Event
+from nixt.handler import Console, Event
 from nixt.objects import Data, Methods
 from nixt.package import Mods
 from nixt.persist import Workdir

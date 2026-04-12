@@ -14,7 +14,6 @@ import _thread
 
 from .command import Commands
 from .configs import Main
-from .handler import Event
 from .objects import Data, Methods
 from .package import Mods
 from .persist import Disk, Workdir
@@ -26,27 +25,17 @@ class Boot:
 
     inits = []
     md5s = {}
+    pkgs = []
+    txt = ""
 
     @classmethod
-    def banner(cls):
-        "hello."
-        tme = time.ctime(time.time()).replace("  ", " ")
-        print("%s since %s %s (%s)" % (
-            Main.name.upper(),
-            tme,
-            Main.level.upper() or "INFO",
-            Utils.md5sum(Mods.path("tbl") or "")[:7],
-        ))
-        sys.stdout.flush()
-
-    @classmethod
-    def boot(cls, txt, *pkgs, read=False, doall=False):
+    def boot(cls, read=False, doall=False):
         "in the beginning."
         if Main.boot or read:
             Disk.read(Main, "main", "config")
         else:
             parsed = Data()
-            Methods.parse(parsed, txt)
+            Methods.parse(parsed, cls.txt)
             Methods.merge(Main, parsed)
             Methods.merge(Main, parsed.sets)
         Workdir.skel()
@@ -58,14 +47,14 @@ class Boot:
             Mods.add('mods', 'mods')
         if Main.wdr:
             Mods.add("modules", os.path.join(Main.wdr, "mods"))
-        for pkg in pkgs:
+        for pkg in cls.pkgs:
             Mods.pkg(pkg)
         if Main.all or doall:
             Main.mods = Mods.list(Main.ignore)
 
     @classmethod
-    def check(cls, opts, txt):
-        for word in txt.split():
+    def check(cls, opts):
+        for word in cls.txt.split():
             if not word.startswith("-"):
                 continue
             for char in opts:
@@ -74,8 +63,10 @@ class Boot:
         return False
 
     @classmethod
-    def core(cls):
+    def core(cls, txt, *pkgs):
         "calculate core md5."
+        Boot.txt = txt
+        Boot.pkgs = pkgs
         path = os.path.dirname(__spec__.loader.path)
         for fnm in os.listdir(path):
             if not fnm.endswith(".py"):
@@ -198,66 +189,7 @@ class Boot:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
-class Scripts:
-
-    @staticmethod
-    def background(txt, *mods):
-        "background script."
-        Boot.core()
-        Boot.daemon(Main.verbose, Main.nochdir)
-        Boot.privileges()
-        Boot.boot(txt, *mods, read=True)
-        Boot.pidfile(Main.name)
-        Boot.scan()
-        Boot.init()
-        Boot.forever()
-
-    @staticmethod
-    def console(csl, txt, *mods):
-        "console script."
-        import readline
-        readline.redisplay()
-        Boot.core()
-        Boot.boot(txt, *mods)
-        if Main.verbose:
-            Boot.banner()
-        Boot.scan()
-        Boot.init()
-        csl.start()
-        Boot.forever()
-
-    @staticmethod
-    def control(line, txt, *mods):
-        "cli script."
-        if len(sys.argv) == 1:
-            return
-        Boot.core()
-        Boot.boot(txt, *mods, doall=True)
-        Boot.scan()
-        for text in txt.split(" ! "):
-            evt = Event()
-            evt.orig = repr(line)
-            evt.text = text
-            evt.kind = "command"
-            Commands.command(evt)
-            evt.wait()
-        return evt
-
-    @staticmethod
-    def service(txt, *mods):
-        "service script."
-        Boot.core()
-        Boot.privileges()
-        Boot.boot(txt, *mods, read=True)
-        Boot.scan()
-        Boot.banner()
-        Boot.pidfile(Main.name)
-        Boot.init()
-        Boot.forever()
-
-
 def __dir__():
     return (
         "Boot",
-        'Scripts'
     )
