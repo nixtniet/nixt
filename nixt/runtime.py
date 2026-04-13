@@ -5,6 +5,7 @@
 
 
 import argparse
+import os
 import sys
 import time
 
@@ -68,12 +69,13 @@ class Run:
     @classmethod
     def banner(cls):
         "hello."
+        path = os.path.join(Main.wdr, "files", 'table')
         tme = time.ctime(time.time()).replace("  ", " ")
         print("%s since %s %s (%s)" % (
             Main.name.upper(),
             tme,
             Main.level.upper() or "INFO",
-            Utils.md5sum(Mods.path("tbl") or "")[:7],
+            Utils.md5sum(path)[:7],
         ))
         sys.stdout.flush()
 

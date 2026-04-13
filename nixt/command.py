@@ -7,8 +7,9 @@
 import inspect
 
 
-from .objects import Methods
+from .objects import Data, Methods
 from .package import Mods
+from .persist import Disk
 from .utility import Utils
 
 
@@ -84,10 +85,11 @@ class Commands:
 
     @classmethod
     def table(cls):
-        mod = cls.get("tbl")
-        names = getattr(mod, "NAMES", None)
-        if names:
-            cls.names.update(names)
+        data = Data()
+        Disk.read(data, "names", "tables")
+        print(data)
+        print(type(cls.names))
+        cls.names.update(data)
 
 
 def __dir__():

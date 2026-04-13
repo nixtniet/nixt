@@ -27,30 +27,7 @@ def mod(event):
     event.reply(mods)
 
 
-def tbl(event):
-    "create table."
-    Mods.md5s = {}
-    for name, module in Mods.all(True):
-        Commands.scan(module)
-    event.reply("# This file is placed in the Pubic Domain.\n\n")
-    event.reply('"tables"\n\n')
-    event.reply(f"CORE = {Json.dumps(Boot.md5s, indent=4)}\n\n")
-    event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4)}\n\n")
-    event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4)}")
-
-
-tbl.skip = "irc"
-
-
 def ver(event):
     "show verson."
     version = Utils.md5sum(Mods.path("tbl") or "")[:7]
     event.reply(f"{Main.name.upper()} {version}")
-
-
-def wdr(event):
-    "show working directory."
-    event.reply(Workdir.workdir())
-
-
-wdr.skip = "irc"

@@ -65,7 +65,7 @@ class Disk:
             pth.parent.mkdir(parents=True, exist_ok=True)
 
     @classmethod
-    def read(cls, obj, path, base="store"):
+    def read(cls, obj, path, base="store", error=False):
         "read object from path."
         with cls.lock:
             pth = os.path.join(Main.wdr, base, path)
@@ -76,8 +76,9 @@ class Disk:
                     Object.update(obj, Json.load(fpt))
                 except json.decoder.JSONDecodeError as ex:
                     logging.error("failed read at %s: %s", pth, str(ex))
-                    raise
-
+                    if error:
+                        raise
+                    
     @classmethod
     def write(cls, obj, path="", base="store", skip=False):
         "write object to disk."
@@ -216,7 +217,7 @@ class Workdir:
         if not os.path.exists(Main.wdr):
             Disk.cdir(Main.wdr)
         path = os.path.abspath(Main.wdr)
-        for wpth in ["config", "files", "logs", "mods", "store"]:
+        for wpth in ["config", "files", "logs", "mods", "store", "tables"]:
             pth = pathlib.Path(os.path.join(path, wpth))
             pth.mkdir(parents=True, exist_ok=True)
 
