@@ -26,18 +26,6 @@ class Boot:
     path = os.path.dirname(__spec__.loader.path)
 
     @classmethod
-    def banner(cls):
-        "hello."
-        tme = time.ctime(time.time()).replace("  ", " ")
-        print("%s since %s %s (%s)" % (
-            Main.name.upper(),
-            tme,
-            Main.level.upper() or "INFO",
-            Utils.md5sum(Mods.path("tbl") or "")[:7],
-        ))
-        sys.stdout.flush()
-
-    @classmethod
     def configure(cls, name=""):
         "in the beginning."
         Main.name = name or Main.name or Utils.pkgname(Boot)
@@ -159,5 +147,5 @@ class Boot:
 
 def __dir__():
     return (
-        "Run",
+        "Boot",
     )

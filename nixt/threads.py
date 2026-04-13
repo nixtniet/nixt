@@ -62,6 +62,31 @@ class Task(threading.Thread):
         _thread.interrupt_main()
 
 
+class Thread:
+
+    lock = threading.RLock()
+
+    @classmethod
+    def launch(cls, func, *args, **kwargs):
+        "run function in a thread."
+        with cls.lock:
+            try:
+                task = Task(func, *args, **kwargs)
+                task.start()
+                return task
+            except (KeyboardInterrupt, EOFError):
+                _thread.interrupt_main()
+
+    @classmethod
+    def name(cls, obj):
+        "string of function/method."
+        if inspect.ismethod(obj):
+            return f"{obj.__func__.__qualname__}"
+        if inspect.isfunction(obj):
+            return repr(obj).split()[1]
+        return repr(obj)
+
+
 class Timy(threading.Timer):
 
     def __init__(self, sleep, func, *args, **kwargs):
@@ -112,31 +137,6 @@ class Repeater(Timed):
         "run function and launch timer for next run."
         Thread.launch(super().run)
         Thread.launch(self.start)
-
-
-class Thread:
-
-    lock = threading.RLock()
-
-    @classmethod
-    def launch(cls, func, *args, **kwargs):
-        "run function in a thread."
-        with cls.lock:
-            try:
-                task = Task(func, *args, **kwargs)
-                task.start()
-                return task
-            except (KeyboardInterrupt, EOFError):
-                _thread.interrupt_main()
-
-    @classmethod
-    def name(cls, obj):
-        "string of function/method."
-        if inspect.ismethod(obj):
-            return f"{obj.__func__.__qualname__}"
-        if inspect.isfunction(obj):
-            return repr(obj).split()[1]
-        return repr(obj)
 
 
 def __dir__():

@@ -6,6 +6,7 @@
 
 import argparse
 import sys
+import time
 
 
 from .booting import Boot
@@ -13,24 +14,8 @@ from .command import Commands
 from .configs import Main
 from .handler import Console, Event
 from .objects import Methods
-
-
-class Line(Console):
-
-    def raw(self, text):
-        "write to console."
-        print(text.encode('utf-8', 'replace').decode("utf-8"))
-
-
-class CSL(Line):
-
-    def poll(self):
-        "poll for an event."
-        evt = Event()
-        evt.orig = repr(self)
-        evt.text = input("> ")
-        evt.kind = "command"
-        return evt
+from .package import Mods
+from .utility import Utils
 
 
 class Arguments:
@@ -60,55 +45,37 @@ class Arguments:
         Methods.merge(Main, cls.args)
 
 
-class Scripts:
+class Line(Console):
 
-    @staticmethod
-    def background():
-        "background script."
-        Boot.daemon(Main.verbose, Main.nochdir)
-        Boot.privileges()
-        Boot.pidfile(Main.name)
-        Boot.configure()
-        Boot.scan()
-        Boot.init()
-        Boot.forever()
+    def raw(self, text):
+        "write to console."
+        print(text.encode('utf-8', 'replace').decode("utf-8"))
 
-    @staticmethod
-    def console():
-        "console script."
-        import readline
-        readline.redisplay()
-        Boot.configure()
-        if Main.verbose:
-            Boot.banner()
-        Boot.scan()
-        Boot.init()
-        csl = CSL()
-        csl.start()
-        Boot.forever()
 
-    @staticmethod
-    def control():
-        "cli script."
-        if len(sys.argv) == 1:
-            return
-        Boot.configure()
-        Boot.scan()
-        Run.cmd(Arguments.txt)
+class CSL(Line):
 
-    @staticmethod
-    def service():
-        "service script."
-        Boot.privileges()
-        Boot.configure()
-        Boot.banner()
-        Boot.scan(Main.ignore)
-        Boot.pidfile(Main.name)
-        Boot.init(Main.ignore, Main.wait)
-        Boot.forever()
+    def poll(self):
+        "poll for an event."
+        evt = Event()
+        evt.orig = repr(self)
+        evt.text = input("> ")
+        evt.kind = "command"
+        return evt
 
 
 class Run:
+
+    @classmethod
+    def banner(cls):
+        "hello."
+        tme = time.ctime(time.time()).replace("  ", " ")
+        print("%s since %s %s (%s)" % (
+            Main.name.upper(),
+            tme,
+            Main.level.upper() or "INFO",
+            Utils.md5sum(Mods.path("tbl") or "")[:7],
+        ))
+        sys.stdout.flush()
 
     @classmethod
     def cmd(cls, text):
@@ -144,3 +111,61 @@ class Run:
         else:
             Boot.wrap(Scripts.control)
         Boot.shutdown()
+
+
+class Scripts:
+
+    @staticmethod
+    def background():
+        "background script."
+        Boot.daemon(Main.verbose, Main.nochdir)
+        Boot.privileges()
+        Boot.pidfile(Main.name)
+        Boot.configure()
+        Boot.scan()
+        Boot.init()
+        Boot.forever()
+
+    @staticmethod
+    def console():
+        "console script."
+        import readline
+        readline.redisplay()
+        Boot.configure()
+        if Main.verbose:
+            Run.banner()
+        Boot.scan()
+        Boot.init()
+        csl = CSL()
+        csl.start()
+        Boot.forever()
+
+    @staticmethod
+    def control():
+        "cli script."
+        if len(sys.argv) == 1:
+            return
+        Boot.configure()
+        Boot.scan()
+        Run.cmd(Arguments.txt)
+
+    @staticmethod
+    def service():
+        "service script."
+        Boot.privileges()
+        Boot.configure()
+        Run.banner()
+        Boot.scan(Main.ignore)
+        Boot.pidfile(Main.name)
+        Boot.init(Main.ignore, Main.wait)
+        Boot.forever()
+
+
+def __dir__():
+    return (
+        'Arguments',
+        'Line',
+        'CSL',
+        'Run',
+        'Scripts'
+    )

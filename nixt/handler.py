@@ -212,6 +212,6 @@ def __dir__():
         'Client',
         'Console',
         'Event',
-        'Handler'
-        'Output',
+        'Handler',
+        'Output'
     )
