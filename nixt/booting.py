@@ -6,7 +6,6 @@
 
 import logging
 import os
-import pathlib
 import sys
 import time
 import _thread
@@ -14,7 +13,6 @@ import _thread
 
 from .command import Commands
 from .configs import Main
-from .objects import Data, Methods
 from .package import Mods
 from .persist import Disk, Workdir
 from .threads import Thread
@@ -25,45 +23,47 @@ class Boot:
 
     inits = []
     md5s = {}
+    path = os.path.dirname(__spec__.loader.path)
 
     @classmethod
-    def boot(cls, name="", read=False, doall=False):
+    def banner(cls):
+        "hello."
+        tme = time.ctime(time.time()).replace("  ", " ")
+        print("%s since %s %s (%s)" % (
+            Main.name.upper(),
+            tme,
+            Main.level.upper() or "INFO",
+            Utils.md5sum(Mods.path("tbl") or "")[:7],
+        ))
+        sys.stdout.flush()
+
+    @classmethod
+    def configure(cls, name=""):
         "in the beginning."
         Main.name = name or Main.name or Utils.pkgname(Boot)
-        Main.wdr = os.path.expanduser(f"~/.{Main.name}")
-        cls.core()
-        if Main.boot or read: Disk.read(Main, "main", "config")
-        else: Methods.parse(Main, " ".join(sys.argv[1:]))
+        if Main.read:
+            Disk.read(Main, "main", "config")
+        Main.wdr = Main.wdr or os.path.expanduser(f"~/.{Main.name}")
+        cls.md5s.update(Utils.md5dir(cls.path))
         Workdir.skel()
         Log.size(len(Main.name))
         Log.level(Main.level or "info")
-
-    @classmethod
-    def check(cls, opts, txt):
-        for word in txt.split():
-            if not word.startswith("-"): continue
-            for char in opts:
-                if char in word: return True
-        return False
-
-    @classmethod
-    def core(cls):
-        "calculate core md5."
-        path = os.path.dirname(__spec__.loader.path)
-        for fnm in os.listdir(path):
-            if not fnm.endswith(".py"): continue
-            name = fnm[:-3]
-            mpath = os.path.join(path, fnm)
-            cls.md5s[name] = Utils.md5sum(mpath)
+        Mods.add("modules", os.path.join(Main.wdr, "mods"))
+        if Main.user:
+            Mods.add('mods', 'mods')
+        if Main.all:
+            Main.mods = Mods.list(Main.ignore)
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):
         "run in the background."
         pid = os.fork()
-        if pid != 0: os._exit(0)
+        if pid != 0:
+            os._exit(0)
         os.setsid()
         pid2 = os.fork()
-        if pid2 != 0: os._exit(0)
+        if pid2 != 0:
+            os._exit(0)
         if not verbose:
             with open('/dev/null', 'r', encoding="utf-8") as sis:
                 os.dup2(sis.fileno(), sys.stdin.fileno())
@@ -72,7 +72,8 @@ class Boot:
             with open('/dev/null', 'a+', encoding="utf-8") as ses:
                 os.dup2(ses.fileno(), sys.stderr.fileno())
         os.umask(0)
-        if not nochdir: os.chdir("/")
+        if not nochdir:
+            os.chdir("/")
         os.nice(10)
 
     @classmethod
@@ -97,16 +98,6 @@ class Boot:
                 thr.join()
 
     @classmethod
-    def pidfile(cls, name):
-        "write pidfile."
-        filename = os.path.join(Main.wdr, f"{name}.pid")
-        if os.path.exists(filename): os.unlink(filename)
-        path2 = pathlib.Path(filename)
-        path2.parent.mkdir(parents=True, exist_ok=True)
-        with open(filename, "w", encoding="utf-8") as fds:
-            fds.write(str(os.getpid()))
-
-    @classmethod
     def privileges(cls):
         "drop privileges."
         import getpass
@@ -117,19 +108,22 @@ class Boot:
 
     @classmethod
     def scan(cls):
-        if Main.read: cls.scanner()
+        if Main.read:
+            cls.scanner()
         else:
             Commands.table()
             Mods.sums()
-        if not Commands.names: cls.scanner()
+        if not Commands.names:
+            cls.scanner()
 
     @classmethod
-    def scanner(cls):
+    def scanner(cls, ignore=""):
         "scan named modules for commands."
         res = []
         for name, mod in Mods.iter(Main.ignore):
             Commands.scan(mod)
-            if "configure" in dir(mod): mod.configure()
+            if "configure" in dir(mod):
+                mod.configure()
             res.append((name, mod))
         return res
 
@@ -165,5 +159,5 @@ class Boot:
 
 def __dir__():
     return (
-        "Boot",
+        "Run",
     )

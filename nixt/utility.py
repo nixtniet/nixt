@@ -112,6 +112,17 @@ class Time:
 class Utils:
 
     @staticmethod
+    def md5dir(path):
+        md5s = {}
+        for fnm in os.listdir(path):
+            if not fnm.endswith(".py"):
+                continue
+            name = fnm[:-3]
+            mpath = os.path.join(path, fnm)
+            md5s[name] = Utils.md5sum(mpath)
+        return md5s
+
+    @staticmethod
     def md5sum(path):
         "return md5 of a file."
         import hashlib

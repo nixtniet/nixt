@@ -177,15 +177,15 @@ class Locate:
 
 class Workdir:
 
-    @classmethod
-    def kinds(cls):
+    @staticmethod
+    def kinds():
         "show kind on objects in cache."
         path = os.path.join(Main.wdr, "store")
         if os.path.exists(path):
             return os.listdir(path)
 
-    @classmethod
-    def long(cls, name):
+    @staticmethod
+    def long(name):
         "expand to fqn."
         if "." in name:
             return name
@@ -197,8 +197,19 @@ class Workdir:
                 break
         return res
 
-    @classmethod
-    def skel(cls):
+    @staticmethod
+    def pidfile(name):
+        "write pidfile."
+        filename = os.path.join(Main.wdr, f"{name}.pid")
+        if os.path.exists(filename):
+            os.unlink(filename)
+        path2 = pathlib.Path(filename)
+        path2.parent.mkdir(parents=True, exist_ok=True)
+        with open(filename, "w", encoding="utf-8") as fds:
+            fds.write(str(os.getpid()))
+
+    @staticmethod
+    def skel():
         "create directories."
         if not Main.wdr:
             return
@@ -209,8 +220,8 @@ class Workdir:
             pth = pathlib.Path(os.path.join(path, wpth))
             pth.mkdir(parents=True, exist_ok=True)
 
-    @classmethod
-    def workdir(cls, path=""):
+    @staticmethod
+    def workdir(path=""):
         "return workdir."
         return os.path.join(Main.wdr, path)
 
