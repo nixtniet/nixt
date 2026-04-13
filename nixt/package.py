@@ -9,7 +9,7 @@ import logging
 import os
 
 
-from .objects import Data
+from .objects import Base, Data
 from .persist import Disk
 from .utility import Utils
 
@@ -129,9 +129,13 @@ class Mods:
 
     @classmethod
     def sums(cls):
-        data = Data()
-        Disk.read(data, "modules", "tables")
-        cls.md5s.update(data)
+        mod = cls.get("tbl")
+        if not mod:
+            return
+        md5s = getattr(mod, "MD5", {})
+        if not md5s:
+            return
+        cls.md5s.update(md5s)
 
 
 def __dir__():

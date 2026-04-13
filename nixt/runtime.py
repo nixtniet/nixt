@@ -13,6 +13,7 @@ import time
 from .booting import Boot
 from .command import Commands
 from .configs import Main
+from .encoder import Json
 from .handler import Console, Event
 from .objects import Methods
 from .package import Mods
@@ -40,6 +41,7 @@ class Arguments:
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose')
         parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start')
         parser.add_argument("-u", "--user", action="store_true", help="use local mods directory")
+        parser.add_argument("-x", "--admin", action="store_true", help="enable admin mode")
         parser.add_argument("--wdr", help='set working directory')
         cls.args, arguments = parser.parse_known_args()
         cls.txt = " ".join(arguments)
@@ -69,13 +71,12 @@ class Run:
     @classmethod
     def banner(cls):
         "hello."
-        path = os.path.join(Main.wdr, "files", 'table')
         tme = time.ctime(time.time()).replace("  ", " ")
         print("%s since %s %s (%s)" % (
             Main.name.upper(),
             tme,
             Main.level.upper() or "INFO",
-            Utils.md5sum(path)[:7],
+            Utils.md5sum(Mods.path("tbl"))[:7],
         ))
         sys.stdout.flush()
 
@@ -149,6 +150,8 @@ class Scripts:
             return
         Boot.configure()
         Boot.scan()
+        if Main.admin:
+            Commands.add(Cmd.tbl, Cmd.srv)
         Run.cmd(Arguments.txt)
 
     @staticmethod
@@ -161,6 +164,45 @@ class Scripts:
         Boot.pidfile(Main.name)
         Boot.init(Main.ignore, Main.wait)
         Boot.forever()
+
+
+class Cmd:
+
+    def srv(event):
+        "generate systemd service file."
+        import getpass
+        name = getpass.getuser()
+        event.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
+
+    srv.skip = "irc"
+
+    def tbl(event):
+        "create table."
+        Mods.md5s = {}
+        for name, module in Mods.all(True):
+            Commands.scan(module)
+        event.reply("# This file is placed in the Pubic Domain.\n\n")
+        event.reply('"tables"\n\n')
+        event.reply(f"CORE = {Json.dumps(Boot.md5s, indent=4)}\n\n")
+        event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4)}\n\n")
+        event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4)}")
+
+    tbl.skip = "irc,csl"
+
+
+
+SYSTEMD = """[Unit]
+Description=%s
+After=multi-user.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
 
 
 def __dir__():

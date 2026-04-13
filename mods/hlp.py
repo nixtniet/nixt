@@ -8,7 +8,7 @@ from nixt.configs import Main
 
 
 def hlp(event):
-    event.replY(HELP % (Main.name, Main.name))
+    event.reply(HELP % (Main.name, Main.name))
 
 
 hlp.skip = "irc"

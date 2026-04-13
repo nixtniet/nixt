@@ -6,6 +6,7 @@
 
 import logging
 import os
+import pathlib
 import sys
 import time
 import _thread
@@ -84,6 +85,18 @@ class Boot:
         if Main.wait:
             for name, thr in thrs:
                 thr.join()
+
+    @staticmethod
+    def pidfile(name):
+        "write pidfile."
+        filename = os.path.join(Main.wdr, f"{name}.pid")
+        if os.path.exists(filename):
+            os.unlink(filename)
+        path2 = pathlib.Path(filename)
+        path2.parent.mkdir(parents=True, exist_ok=True)
+        with open(filename, "w", encoding="utf-8") as fds:
+            fds.write(str(os.getpid()))
+
 
     @classmethod
     def privileges(cls):

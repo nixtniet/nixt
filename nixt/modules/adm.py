@@ -4,6 +4,9 @@
 "administrator"
 
 
+import os
+
+
 from nixt.booting import Boot
 from nixt.command import Commands
 from nixt.configs import Main
@@ -29,5 +32,4 @@ def mod(event):
 
 def ver(event):
     "show verson."
-    version = Utils.md5sum(Mods.path("tbl") or "")[:7]
-    event.reply(f"{Main.name.upper()} {version}")
+    event.reply(f"{Main.name.upper()} {Utils.md5sum(Mods.path('tbl'))[:7]}")

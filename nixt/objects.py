@@ -27,7 +27,10 @@ class Base:
 class Data(Base):
 
     def __getattr__(self, key):
-        return self.__dict__.get(key, "")
+        try:
+            return self.__getattribute__(key)
+        except AttributeError:
+            return self.__dict__.get(key, "")
 
 
 class Configuration(Data):
