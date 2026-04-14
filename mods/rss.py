@@ -38,7 +38,11 @@ def configure():
 def init():
     Runners.init(1, Runner)
     Run.fetcher.start()
-    logging.warning("%s feeds", Locate.count("rss"))
+    nrs = Locate.count("rss")
+    txt = f"{nrs} feeds"
+    if nrs == 1:
+        txt = txt[:-1]
+    logging.info(txt)
 
 
 def shutdown():

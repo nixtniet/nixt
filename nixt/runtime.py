@@ -28,7 +28,7 @@ class Arguments:
         parser.add_argument("-a", "--all", action="store_true", help="load all modules")
         parser.add_argument("-c", "--console", action="store_true", help="start console")
         parser.add_argument("-d", "--background", action="store_true", help="start background daemon")
-        parser.add_argument("-i", "--ignore", default=Main.level, help='modules to ignore')
+        parser.add_argument("-i", "--ignore", default="", help='modules to ignore')
         parser.add_argument("-l", "--level", default=Main.level, help='set loglevel')
         parser.add_argument("-m", "--mods", default="", help='modules to load')
         parser.add_argument("-n", "--nochdir", action="store_true", help="disable chroot")
@@ -61,44 +61,6 @@ class CSL(Line):
         evt.text = input("> ")
         evt.kind = "command"
         return evt
-
-
-class Run:
-
-    @classmethod
-    def cmd(cls, text):
-        cli = Line()
-        for txt in Arguments.txt.split(" ! "):
-            evt = Event()
-            evt.kind = "command"
-            evt.orig = repr(cli)
-            evt.text = txt
-            Commands.command(evt)
-            evt.wait()
-        return evt
-
-    @classmethod
-    def line(cls, name=""):
-        "command line interface."
-        Main.name = name or Main.name
-        Arguments.getargs()
-        Scripts.control()
-
-    @classmethod
-    def main(cls, name=""):
-        "main"
-        Main.name = name or Main.name
-        Arguments.getargs()
-        Main.wdr = ""
-        if Main.background:
-            Scripts.background()
-        elif Main.console:
-            Boot.wrap(Scripts.console)
-        elif Main.service:
-            Boot.wrap(Scripts.service)
-        else:
-            Boot.wrap(Scripts.control)
-        Boot.shutdown()
 
 
 class Scripts:
@@ -175,6 +137,44 @@ class Cmd:
         event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4)}")
 
     tbl.skip = "irc,csl"
+
+
+class Run:
+
+    @classmethod
+    def cmd(cls, text):
+        cli = Line()
+        for txt in Arguments.txt.split(" ! "):
+            evt = Event()
+            evt.kind = "command"
+            evt.orig = repr(cli)
+            evt.text = txt
+            Commands.command(evt)
+            evt.wait()
+        return evt
+
+    @classmethod
+    def line(cls, name=""):
+        "command line interface."
+        Main.name = name or Main.name
+        Arguments.getargs()
+        Scripts.control()
+
+    @classmethod
+    def main(cls, name=""):
+        "main"
+        Main.name = name or Main.name
+        Arguments.getargs()
+        Main.wdr = ""
+        if Main.background:
+            Scripts.background()
+        elif Main.console:
+            Boot.wrap(Scripts.console)
+        elif Main.service:
+            Boot.wrap(Scripts.service)
+        else:
+            Boot.wrap(Scripts.control)
+        Boot.shutdown()
 
 
 SYSTEMD = """[Unit]
