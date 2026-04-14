@@ -26,4 +26,4 @@ def mod(event):
 
 def ver(event):
     "show verson."
-    event.reply(f"{Main.name.upper()} \033[1m{Utils.md5sum(Mods.path('tbl'))[:7]}\033[0m")
+    event.reply(f"{Main.name.upper()} {Utils.md5sum(Mods.path('tbl'))[:7]}")

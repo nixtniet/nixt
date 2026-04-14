@@ -17,7 +17,7 @@ from .configs import Main
 from .package import Mods
 from .persist import Disk, Workdir
 from .threads import Thread
-from .utility import COLORS, Log, Utils
+from .utility import Log, Utils
 
 
 class Boot:
@@ -30,7 +30,7 @@ class Boot:
     def banner(cls):
         "hello."
         tme = time.ctime(time.time()).replace("  ", " ")
-        print(f"%s since %s %s ({COLORS.bold}%s{COLORS.end})" % (
+        print(f"%s since %s %s (%s)" % (
             Main.name.upper(),
             tme,
             Main.level.upper() or "INFO",

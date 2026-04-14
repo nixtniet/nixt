@@ -213,12 +213,6 @@ class Log:
         )
 
 
-COLORS = Data({
-    "bold": "\033[1m",
-    "end": "\033[0m"
-})
-
-
 LEVELS = Data({
     "notset": logging.NOTSET,
     "debug": logging.DEBUG,
