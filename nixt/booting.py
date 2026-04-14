@@ -30,7 +30,7 @@ class Boot:
     def banner(cls):
         "hello."
         tme = time.ctime(time.time()).replace("  ", " ")
-        print(f"%s since %s %s (%s)" % (
+        print("%s since %s %s (%s)" % (
             Main.name.upper(),
             tme,
             Main.level.upper() or "INFO",

@@ -19,7 +19,7 @@ sys.path.insert(0, os.getcwd())
 from nixt.command import Commands
 from nixt.configs import Main
 from nixt.handler import Console, Event
-from nixt.objects import Data, Methods
+from nixt.objects import Data, Methods, Object
 from nixt.package import Mods
 from nixt.persist import Workdir
 from nixt.threads import Thread
@@ -111,7 +111,7 @@ def main():
         shutil.rmtree(Main.wdr)
     parsed = Data()
     Methods.parse(parsed, " ".join(sys.argv[1:]))
-    Methods.merge(Main, parsed)
+    Object.merge(Main, parsed)
     Workdir.skel()
     Log.level(Main.level)
     Mods.pkg(MODS, MODS2)

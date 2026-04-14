@@ -112,6 +112,23 @@ class Object:
         return obj.__dict__.keys()
 
     @staticmethod
+    def merge(obj, obj2):
+        "skip emoty values."
+        for key, value in Object.items(obj2):
+            if not value and getattr(obj, key, False):
+                continue
+            setattr(obj, key, value)
+
+    @staticmethod
+    def notset(obj, obj2):
+        "only set if not set."
+        for key, value in Object.items(obj2):
+            if getattr(obj, key, False):
+                continue
+            if value:
+                setattr(obj, key, value)
+
+    @staticmethod
     def pop(obj, key, default=None):
         "remove key from object and return it's value. return default or KeyError."
         return obj.__dict__.pop(key, default)
@@ -120,6 +137,31 @@ class Object:
     def popitem(obj):
         "remove and return (key, value) pair."
         return obj.__dict__.popitem()
+
+    @staticmethod
+    def reduce(obj):
+        "return dict with values setted attributes."
+        result = {}
+        for key, value in Object.items(obj):
+            if value:
+                result[key] = value
+        return result
+
+    @staticmethod
+    def skip(obj, chars="_"):
+        "skip keys containing chars."
+        res = Data()
+        for key, value in Object.items(obj):
+            if isinstance(value, types.MethodType):
+                continue
+            donext = False
+            for char in chars:
+                if char in key:
+                    donext = True
+            if donext:
+                continue
+            setattr(res, key, value)
+        return res
 
     @staticmethod
     def update(obj, data, empty=True):
@@ -227,23 +269,6 @@ class Methods:
         return os.path.join(Methods.fqn(obj), *str(datetime.datetime.now()).split())
 
     @staticmethod
-    def merge(obj, obj2):
-        "skip emoty values."
-        for key, value in Object.items(obj2):
-            if not value and getattr(obj, key, False):
-                continue
-            setattr(obj, key, value)
-
-    @staticmethod
-    def notset(obj, obj2):
-        "only set if not set."
-        for key, value in Object.items(obj2):
-            if getattr(obj, key, False):
-                continue
-            if value:
-                setattr(obj, key, value)
-
-    @staticmethod
     def parse(obj, text):
         "parse text for command."
         data = {
@@ -295,16 +320,7 @@ class Methods:
             obj.text = obj.cmd + " " + obj.rest
         else:
             obj.text = obj.cmd or ""
-        Methods.notset(obj, obj.sets)
-
-    @staticmethod
-    def reduce(obj):
-        "return dict with values setted attributes."
-        result = {}
-        for key, value in Object.items(obj):
-            if value:
-                result[key] = value
-        return result
+        Object.notset(obj, obj.sets)
 
     @staticmethod
     def search(obj, selector={}, matching=False):
@@ -322,22 +338,6 @@ class Methods:
                 res = False
                 break
             res = True
-        return res
-
-    @staticmethod
-    def skip(obj, chars="_"):
-        "skip keys containing chars."
-        res = Data()
-        for key, value in Object.items(obj):
-            if isinstance(value, types.MethodType):
-                continue
-            donext = False
-            for char in chars:
-                if char in key:
-                    donext = True
-            if donext:
-                continue
-            setattr(res, key, value)
         return res
 
     @staticmethod
