@@ -78,7 +78,7 @@ class Disk:
                     logging.error("failed read at %s: %s", pth, str(ex))
                     if error:
                         raise
-                    
+
     @classmethod
     def write(cls, obj, path="", base="store", skip=False):
         "write object to disk."
@@ -197,17 +197,6 @@ class Workdir:
                 res = names
                 break
         return res
-
-    @staticmethod
-    def pidfile(name):
-        "write pidfile."
-        filename = os.path.join(Main.wdr, f"{name}.pid")
-        if os.path.exists(filename):
-            os.unlink(filename)
-        path2 = pathlib.Path(filename)
-        path2.parent.mkdir(parents=True, exist_ok=True)
-        with open(filename, "w", encoding="utf-8") as fds:
-            fds.write(str(os.getpid()))
 
     @staticmethod
     def skel():

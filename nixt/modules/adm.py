@@ -4,15 +4,9 @@
 "administrator"
 
 
-import os
-
-
-from nixt.booting import Boot
 from nixt.command import Commands
 from nixt.configs import Main
-from nixt.encoder import Json
 from nixt.package import Mods
-from nixt.persist import Workdir
 from nixt.utility import Utils
 
 

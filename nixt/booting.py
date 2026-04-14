@@ -109,7 +109,6 @@ class Boot:
         with open(filename, "w", encoding="utf-8") as fds:
             fds.write(str(os.getpid()))
 
-
     @classmethod
     def privileges(cls):
         "drop privileges."

@@ -9,8 +9,7 @@ import logging
 import os
 
 
-from .objects import Base, Data
-from .persist import Disk
+from .objects import Base
 from .utility import Utils
 
 

@@ -5,8 +5,6 @@
 
 
 import argparse
-import os
-import time
 
 
 from .booting import Boot
@@ -16,7 +14,6 @@ from .encoder import Json
 from .handler import Console, Event
 from .objects import Methods
 from .package import Mods
-from .utility import COLORS, Utils
 
 
 class Arguments:
@@ -156,6 +153,7 @@ class Scripts:
 
 class Cmd:
 
+    @staticmethod
     def srv(event):
         "generate systemd service file."
         import getpass
@@ -164,6 +162,7 @@ class Cmd:
 
     srv.skip = "irc"
 
+    @staticmethod
     def tbl(event):
         "create table."
         Mods.md5s = {}
@@ -176,7 +175,6 @@ class Cmd:
         event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4)}")
 
     tbl.skip = "irc,csl"
-
 
 
 SYSTEMD = """[Unit]

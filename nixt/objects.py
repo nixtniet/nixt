@@ -5,7 +5,6 @@
 
 
 import datetime
-import inspect
 import os
 import types
 
@@ -52,7 +51,7 @@ class Data(Base):
 class Configuration(Data):
 
     pass
-    
+
 
 class Object:
 

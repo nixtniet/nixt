@@ -7,9 +7,8 @@
 import inspect
 
 
-from .objects import Base, Data, Methods, Object
+from .objects import Methods
 from .package import Mods
-from .persist import Disk
 from .utility import Utils
 
 
@@ -89,6 +88,7 @@ class Commands:
         names = getattr(mod, "NAMES", None)
         if names:
             cls.names.update(names)
+
 
 def __dir__():
     return (

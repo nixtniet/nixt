@@ -93,7 +93,7 @@ class TestObject(unittest.TestCase):
 
     def test_read(self):
         obj = Data()
-        #Disk.read(obj, "bla")
+        Disk.read(obj, "bla")
         res = {}
         Object.update(res, obj)
         self.assertEqual(res, {})
