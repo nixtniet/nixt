@@ -9,6 +9,7 @@ import unittest
 
 from nixt.encoder import Json
 from nixt.objects import Data, Object, Methods
+from nixt.persist import Disk
 
 
 import nixt.objects
@@ -89,6 +90,13 @@ class TestObject(unittest.TestCase):
         obj = Data()
         obj.key = "value"
         self.assertEqual(list(Object.items(obj)), [("key", "value")])
+
+    def test_read(self):
+        obj = Data()
+        #Disk.read(obj, "bla")
+        res = {}
+        Object.update(res, obj)
+        self.assertEqual(res, {})
 
     def test_register(self):
         obj = Data()

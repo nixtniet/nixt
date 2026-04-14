@@ -5,8 +5,14 @@
 
 
 import datetime
+import inspect
 import os
 import types
+
+
+class Reserved(Exception):
+
+    pass
 
 
 class Base:
@@ -14,11 +20,20 @@ class Base:
     def __contains__(self, key):
         return key in dir(self)
 
+    def __delitem__(self, key):
+        del self.__dict__[key]
+
+    def __getitem__(self, key):
+        return self.__dict__.get(key)
+
     def __iter__(self):
         return iter(self.__dict__)
 
     def __len__(self):
         return len(self.__dict__)
+
+    def __setitem__(self, key, value):
+        setattr(self, key, value)
 
     def __str__(self):
         return str(self.__dict__)
@@ -27,10 +42,13 @@ class Base:
 class Data(Base):
 
     def __getattr__(self, key):
-        try:
-            return self.__getattribute__(key)
-        except AttributeError:
-            return self.__dict__.get(key, "")
+        return self.__dict__.setdefault(key, "")
+
+    def __setattr__(self, key, value):
+        meth = getattr(self, key, False)
+        if meth and inspect.ismethod(meth):
+            raise Reserved(key)
+        super().__setattr__(key, value)
 
 
 class Configuration(Data):
@@ -126,7 +144,10 @@ class Object:
                 for key, value in Object.items(data):
                     setattr(obj, key, value)
         elif isinstance(obj, dict):
-            obj.update(data)
+            if isinstance(data, dict):
+                obj.update(data)
+            else:
+                obj.update(data.__dict__)
         elif isinstance(obj.__dict__, types.MappingProxyType):
             for key, value in data.items():
                 setattr(obj, key, value)

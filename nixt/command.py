@@ -85,7 +85,7 @@ class Commands:
 
     @classmethod
     def table(cls):
-        mod = cls.get("tbl")
+        mod = Mods.get("tbl")
         names = getattr(mod, "NAMES", None)
         if names:
             cls.names.update(names)
