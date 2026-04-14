@@ -15,7 +15,7 @@ class Reserved(Exception):
     pass
 
 
-class Base:
+class Base():
 
     def __contains__(self, key):
         return key in dir(self)
@@ -33,7 +33,7 @@ class Base:
         return len(self.__dict__)
 
     def __setitem__(self, key, value):
-        setattr(self, key, value)
+        self.__dict__[key] = value
 
     def __str__(self):
         return str(self.__dict__)
@@ -41,25 +41,18 @@ class Base:
 
 class Data(Base):
 
-    def __getattr__(self, key):
-        return self.__dict__.setdefault(key, "")
+    def __init__(self, *args, **kwargs):
+        Base.__init__(self)
+        Object.construct(self, *args, **kwargs)
 
-    def __setattr__(self, key, value):
-        meth = getattr(self, key, False)
-        if meth and inspect.ismethod(meth):
-            raise Reserved(key)
-        super().__setattr__(key, value)
+    def __getattr__(self, key):
+        return self.__dict__.get(key, "")
 
 
 class Configuration(Data):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__()
-        if args:
-            Object.update(self, args[0])
-        if kwargs:
-            Object.update(self, kwargs)
-
+    pass
+    
 
 class Object:
 

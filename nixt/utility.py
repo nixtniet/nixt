@@ -11,6 +11,9 @@ import os
 import time
 
 
+from .objects import Data
+
+
 class NoDate(Exception):
 
     pass
@@ -210,7 +213,13 @@ class Log:
         )
 
 
-LEVELS = {
+COLORS = Data({
+    "bold": "\033[1m",
+    "end": "\033[0m"
+})
+
+
+LEVELS = Data({
     "notset": logging.NOTSET,
     "debug": logging.DEBUG,
     "info": logging.INFO,
@@ -218,7 +227,7 @@ LEVELS = {
     "error": logging.ERROR,
     "critical": logging.CRITICAL,
     "fatal": logging.FATAL
-}
+})
 
 
 TIMES = [
@@ -238,6 +247,7 @@ TIMES = [
 
 def __dir__():
     return (
+        'COLORS',
         'LEVELS',
         'TIMES',
         'Log',

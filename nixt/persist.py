@@ -69,7 +69,6 @@ class Disk:
         "read object from path."
         with cls.lock:
             pth = os.path.join(Main.wdr, base, path)
-            print(pth)
             if not os.path.exists(pth):
                 return
             with open(pth, "r", encoding="utf-8") as fpt:

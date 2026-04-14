@@ -20,7 +20,7 @@ j = os.path.join
 
 class Mods:
 
-    dirs = {"modules": j(d(__spec__.loader.path), "modules")}
+    dirs = {f"{Utils.pkgname(Base)}.modules": j(d(__spec__.loader.path), "modules")}
     md5s = {}
     modules = {}
 

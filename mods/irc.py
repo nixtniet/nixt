@@ -22,11 +22,6 @@ from nixt.threads import Thread
 from nixt.utility import Utils
 
 
-def configure():
-    for name, bot in Broker.like("IRC"):
-        Cfg.load(bot.cfg)
-
-
 def init():
     irc = IRC()
     irc.start()

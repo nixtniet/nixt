@@ -6,7 +6,6 @@
 
 import argparse
 import os
-import sys
 import time
 
 
@@ -17,7 +16,7 @@ from .encoder import Json
 from .handler import Console, Event
 from .objects import Methods
 from .package import Mods
-from .utility import Utils
+from .utility import COLORS, Utils
 
 
 class Arguments:
@@ -32,6 +31,7 @@ class Arguments:
         parser.add_argument("-a", "--all", action="store_true", help="load all modules")
         parser.add_argument("-c", "--console", action="store_true", help="start console")
         parser.add_argument("-d", "--background", action="store_true", help="start background daemon")
+        parser.add_argument("-i", "--ignore", default=Main.level, help='modules to ignore')
         parser.add_argument("-l", "--level", default=Main.level, help='set loglevel')
         parser.add_argument("-m", "--mods", default="", help='modules to load')
         parser.add_argument("-n", "--nochdir", action="store_true", help="disable chroot")
@@ -67,18 +67,6 @@ class CSL(Line):
 
 
 class Run:
-
-    @classmethod
-    def banner(cls):
-        "hello."
-        tme = time.ctime(time.time()).replace("  ", " ")
-        print("%s since %s %s (%s)" % (
-            Main.name.upper(),
-            tme,
-            Main.level.upper() or "INFO",
-            Utils.md5sum(Mods.path("tbl"))[:7],
-        ))
-        sys.stdout.flush()
 
     @classmethod
     def cmd(cls, text):
@@ -136,7 +124,7 @@ class Scripts:
         readline.redisplay()
         Boot.configure()
         if Main.verbose:
-            Run.banner()
+            Boot.banner()
         Boot.scan()
         Boot.init()
         csl = CSL()
@@ -146,7 +134,7 @@ class Scripts:
     @staticmethod
     def control():
         "cli script."
-        if len(sys.argv) == 1:
+        if not Arguments.txt:
             return
         Boot.configure()
         Boot.scan()
@@ -159,10 +147,10 @@ class Scripts:
         "service script."
         Boot.privileges()
         Boot.configure()
-        Run.banner()
-        Boot.scan(Main.ignore)
+        Boot.banner()
+        Boot.scan()
         Boot.pidfile(Main.name)
-        Boot.init(Main.ignore, Main.wait)
+        Boot.init()
         Boot.forever()
 
 

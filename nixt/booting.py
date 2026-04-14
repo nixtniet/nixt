@@ -17,7 +17,7 @@ from .configs import Main
 from .package import Mods
 from .persist import Disk, Workdir
 from .threads import Thread
-from .utility import Log, Utils
+from .utility import COLORS, Log, Utils
 
 
 class Boot:
@@ -25,6 +25,18 @@ class Boot:
     inits = []
     md5s = {}
     path = os.path.dirname(__spec__.loader.path)
+
+    @classmethod
+    def banner(cls):
+        "hello."
+        tme = time.ctime(time.time()).replace("  ", " ")
+        print(f"%s since %s %s ({COLORS.bold}%s{COLORS.end})" % (
+            Main.name.upper(),
+            tme,
+            Main.level.upper() or "INFO",
+            Utils.md5sum(Mods.path("tbl"))[:7],
+        ))
+        sys.stdout.flush()
 
     @classmethod
     def configure(cls, name=""):
@@ -37,7 +49,7 @@ class Boot:
         Workdir.skel()
         Log.size(len(Main.name))
         Log.level(Main.level or "info")
-        Mods.add("modules", os.path.join(Main.wdr, "mods"))
+        Mods.add(os.path.join(Main.wdr, "mods"), "modules")
         if Main.user:
             Mods.add('mods', 'mods')
         if Main.all:
@@ -118,7 +130,7 @@ class Boot:
             cls.scanner()
 
     @classmethod
-    def scanner(cls, ignore=""):
+    def scanner(cls):
         "scan named modules for commands."
         res = []
         for name, mod in Mods.iter(Main.ignore):
