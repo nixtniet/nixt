@@ -9,14 +9,14 @@ from nixt.persist import Locate, Workdir
 
 def fie(event):
     if not event.rest:
-        res = sorted({x.split('.')[-1].lower() for x in Workdir.kinds()})
-        if res:
-            event.reply(",".join(res))
+        result = sorted({y.split('.')[-1].lower() for y in Workdir.kinds()})
+        if result:
+            event.reply(",".join(result))
         else:
-            event.reply("no types")
+            event.reply("no fields")
         return
     itms = Locate.attrs(event.args[0])
     if not itms:
-        event.reply("no attributes")
+        event.reply("no fields")
     else:
         event.reply(",".join(itms))

@@ -4,8 +4,16 @@
 "configurations"
 
 
+import os
+
+
 from .objects import Data, Object
 from .utility import Utils
+
+
+d = os.path.dirname
+e = os.path.exists
+j = os.path.join
 
 
 class Configuration(Data):
@@ -34,5 +42,8 @@ class Main(metaclass=MainConfig):
 def __dir__():
     return (
         'Configuration',
-        'Main'
+        'Main',
+        'd',
+        'e',
+        'j'
     )

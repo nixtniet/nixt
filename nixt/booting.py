@@ -13,9 +13,9 @@ import _thread
 
 
 from .command import Commands
-from .configs import Main
+from .configs import Main, d, e, j
 from .package import Mods
-from .persist import Disk, Workdir, d, e, j
+from .persist import Disk, Workdir
 from .threads import Thread
 from .utility import Log, Utils
 

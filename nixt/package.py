@@ -9,9 +9,8 @@ import logging
 import os
 
 
-from .configs import Main
+from .configs import Main, d, e, j
 from .objects import Base
-from .persist import d, e, j
 from .utility import Utils
 
 

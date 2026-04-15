@@ -33,7 +33,7 @@ def mod(event):
 def tbl(event):
     "create table."
     Mods.md5s = {}
-    for name, module in Mods.all():
+    for _name, module in Mods.all():
         Commands.scan(module)
     event.reply("# This file is placed in the Pubic Domain.\n\n")
     event.reply('"tables"\n\n')

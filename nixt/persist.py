@@ -11,15 +11,10 @@ import pathlib
 import threading
 
 
-from .configs import Main
+from .configs import Main, e, j
 from .encoder import Json
 from .objects import Data, Methods, Object
 from .utility import Time, Utils
-
-
-d = os.path.dirname
-e = os.path.exists
-j = os.path.join
 
 
 class Cache:
@@ -83,8 +78,7 @@ class Disk:
                     logging.error("failed read at %s: %s", pth, str(ex))
                     if error:
                         raise
-                    else:
-                        return False
+                    return False
             return True
 
     @classmethod
@@ -184,6 +178,17 @@ class Locate:
         return path.split('store')[-1][1:]
 
 
+class Table:
+
+    @classmethod
+    def load(cls, obj, name=""):
+        return Disk.read(obj, name or Utils.modname(obj), "tables")
+
+    @classmethod
+    def save(cls, obj, name=""):
+        return Disk.write(obj, name or Utils.modname(obj), "tables")
+
+
 class Workdir:
 
     @staticmethod
@@ -229,6 +234,7 @@ def __dir__():
         'Cfg',
         'Disk',
         'Locate',
+        'Yable',
         'Workdir',
         'd',
         'e',

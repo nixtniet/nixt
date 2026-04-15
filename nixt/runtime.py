@@ -112,32 +112,6 @@ class Scripts:
         Boot.forever()
 
 
-class Cmd:
-
-    @staticmethod
-    def srv(event):
-        "generate systemd service file."
-        import getpass
-        name = getpass.getuser()
-        event.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
-
-    srv.skip = "irc"
-
-    @staticmethod
-    def tbl(event):
-        "create table."
-        Mods.md5s = {}
-        for name, module in Mods.all():
-            Commands.scan(module)
-        event.reply("# This file is placed in the Pubic Domain.\n\n")
-        event.reply('"tables"\n\n')
-        event.reply(f"CORE = {Json.dumps(Boot.md5s, indent=4)}\n\n")
-        event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4)}\n\n")
-        event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4)}")
-
-    tbl.skip = "irc,csl"
-
-
 class Run:
 
     @classmethod
@@ -173,6 +147,32 @@ class Run:
         else:
             Boot.wrap(Scripts.control)
         Boot.shutdown()
+
+
+class Cmd:
+
+    @staticmethod
+    def srv(event):
+        "generate systemd service file."
+        import getpass
+        name = getpass.getuser()
+        event.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
+
+    srv.skip = "irc"
+
+    @staticmethod
+    def tbl(event):
+        "create table."
+        Mods.md5s = {}
+        for name, module in Mods.all():
+            Commands.scan(module)
+        event.reply("# This file is placed in the Pubic Domain.\n\n")
+        event.reply('"tables"\n\n')
+        event.reply(f"CORE = {Json.dumps(Boot.md5s, indent=4)}\n\n")
+        event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4)}\n\n")
+        event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4)}")
+
+    tbl.skip = "irc,csl"
 
 
 SYSTEMD = """[Unit]
