@@ -20,11 +20,16 @@ from .threads import Thread
 from .utility import Log, Utils
 
 
+d = os.path.dirname
+e = os.path.exists
+j = os.path.join
+
+
 class Boot:
 
     inits = []
     md5s = {}
-    path = os.path.dirname(__spec__.loader.path)
+    path = d(__spec__.loader.path)
 
     @classmethod
     def banner(cls):
@@ -50,7 +55,7 @@ class Boot:
         Log.size(len(Main.name))
         Log.level(Main.level or "info")
         if Main.user:
-            Mods.add(os.path.join(Main.wdr, "mods"), "modules")
+            Mods.add(j(Main.wdr, "mods"), "modules")
             Mods.add('mods', 'mods')
         if Main.all:
             Main.mods = Mods.list(Main.ignore)
@@ -101,8 +106,8 @@ class Boot:
     @staticmethod
     def pidfile(name):
         "write pidfile."
-        filename = os.path.join(Main.wdr, f"{name}.pid")
-        if os.path.exists(filename):
+        filename = j(Main.wdr, f"{name}.pid")
+        if e(filename):
             os.unlink(filename)
         path2 = pathlib.Path(filename)
         path2.parent.mkdir(parents=True, exist_ok=True)

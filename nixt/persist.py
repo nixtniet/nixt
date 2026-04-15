@@ -17,6 +17,11 @@ from .objects import Data, Methods, Object
 from .utility import Time, Utils
 
 
+d = os.path.dirname
+e = os.path.exists
+j = os.path.join
+
+
 class Cache:
 
     paths = {}
@@ -58,18 +63,18 @@ class Disk:
     @classmethod
     def cdir(cls, path):
         "create directory."
-        if os.path.exists(path):
+        if e(path):
             return
         pth = pathlib.Path(path)
-        if not os.path.exists(pth.parent):
+        if not e(pth.parent):
             pth.parent.mkdir(parents=True, exist_ok=True)
 
     @classmethod
     def read(cls, obj, path, base="store", error=False):
         "read object from path."
         with cls.lock:
-            pth = os.path.join(Main.wdr, base, path)
-            if not os.path.exists(pth):
+            pth = j(Main.wdr, base, path)
+            if not e(pth):
                 return
             with open(pth, "r", encoding="utf-8") as fpt:
                 try:
@@ -85,7 +90,7 @@ class Disk:
         with cls.lock:
             if path == "":
                 path = Methods.ident(obj)
-            pth = os.path.join(Main.wdr, base, path)
+            pth = j(Main.wdr, base, path)
             Disk.cdir(pth)
             with open(pth, "w", encoding="utf-8") as fpt:
                 Json.dump(obj, fpt, indent=4)
@@ -147,14 +152,14 @@ class Locate:
     @classmethod
     def fns(cls, kind):
         "file names by kind of object."
-        path = os.path.join(Main.wdr, "store", kind)
+        path = j(Main.wdr, "store", kind)
         for rootdir, dirs, _files in os.walk(path, topdown=True):
             for dname in dirs:
                 if dname.count("-") != 2:
                     continue
-                ddd = os.path.join(rootdir, dname)
+                ddd = j(rootdir, dname)
                 for fll in os.listdir(ddd):
-                    yield cls.strip(os.path.join(ddd, fll))
+                    yield cls.strip(j(ddd, fll))
 
     @classmethod
     def last(cls, obj, selector={}):
@@ -181,8 +186,8 @@ class Workdir:
     @staticmethod
     def kinds():
         "show kind on objects in cache."
-        path = os.path.join(Main.wdr, "store")
-        if os.path.exists(path):
+        path = j(Main.wdr, "store")
+        if e(path):
             return os.listdir(path)
 
     @staticmethod
@@ -203,17 +208,17 @@ class Workdir:
         "create directories."
         if not Main.wdr:
             return
-        if not os.path.exists(Main.wdr):
+        if not e(Main.wdr):
             Disk.cdir(Main.wdr)
         path = os.path.abspath(Main.wdr)
         for wpth in ["config", "files", "logs", "mods", "store", "tables"]:
-            pth = pathlib.Path(os.path.join(path, wpth))
+            pth = pathlib.Path(j(path, wpth))
             pth.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
     def workdir(path=""):
         "return workdir."
-        return os.path.join(Main.wdr, path)
+        return j(Main.wdr, path)
 
 
 def __dir__():

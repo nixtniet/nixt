@@ -12,7 +12,7 @@ from .command import Commands
 from .configs import Main
 from .encoder import Json
 from .handler import Console, Event
-from .objects import Methods
+from .objects import Object
 from .package import Mods
 
 
@@ -42,7 +42,7 @@ class Arguments:
         parser.add_argument("--wdr", help='set working directory')
         cls.args, arguments = parser.parse_known_args()
         cls.txt = " ".join(arguments)
-        Methods.merge(Main, cls.args)
+        Object.merge(Main, cls.args)
 
 
 class Line(Console):

@@ -365,6 +365,7 @@ def __dir__():
         'Base',
         'Configuration',
         'Data',
+        'Join',
         'Object',
         'Methods'
     )

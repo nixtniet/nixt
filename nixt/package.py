@@ -14,6 +14,7 @@ from .utility import Utils
 
 
 d = os.path.dirname
+e = os.path.exists
 j = os.path.join
 
 
@@ -30,7 +31,7 @@ class Mods:
             name = path
         elif name is None:
             name = path.split(os.sep)[-2]
-        if os.path.exists(path):
+        if e(path):
             cls.dirs[name] = path
 
     @classmethod
@@ -69,8 +70,8 @@ class Mods:
             if name in has:
                 continue
             for pkgname, path in cls.dirs.items():
-                fnm = os.path.join(path, name + ".py")
-                if not os.path.exists(fnm):
+                fnm = j(path, name + ".py")
+                if not e(fnm):
                     continue
                 modname = f"{pkgname}.{name}"
                 mod = cls.modules.get(modname, None)
@@ -97,7 +98,7 @@ class Mods:
     @classmethod
     def importer(cls, name, pth=""):
         "import module by path."
-        if pth and os.path.exists(pth):
+        if pth and e(pth):
             spec = imp.spec_from_file_location(name, pth)
         else:
             spec = imp.find_spec(name)
@@ -121,8 +122,8 @@ class Mods:
     def path(cls, name):
         "return existing paths."
         for pkgname, path in cls.dirs.items():
-            pth = os.path.join(path, name + ".py")
-            if os.path.exists(pth):
+            pth = j(path, name + ".py")
+            if e(pth):
                 return pth
 
     @classmethod
