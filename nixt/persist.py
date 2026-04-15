@@ -211,7 +211,7 @@ class Workdir:
         if not e(Main.wdr):
             Disk.cdir(Main.wdr)
         path = os.path.abspath(Main.wdr)
-        for wpth in ["config", "files", "logs", "mods", "store", "tables"]:
+        for wpth in ["config", "mods", "store"]:
             pth = pathlib.Path(j(path, wpth))
             pth.mkdir(parents=True, exist_ok=True)
 
