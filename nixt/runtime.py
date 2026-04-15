@@ -164,6 +164,8 @@ class Run:
         "main"
         Main.name = name or Main.name
         Arguments.getargs()
+        Main.user = True
+        Main.ignore = "mbx,rst,udp,web"
         if Main.background:
             Scripts.background()
         elif Main.console:

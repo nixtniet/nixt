@@ -39,7 +39,7 @@ class Boot:
             Main.name.upper(),
             tme,
             Main.level.upper() or "INFO",
-            Utils.md5sum(Mods.path("tbl"))[:7],
+            Utils.md5sum(Mods.path("tbl") or "")[:7],
         ))
         sys.stdout.flush()
 
@@ -58,8 +58,6 @@ class Boot:
         if Main.user:
             Mods.add(j(Main.wdr, "mods"), "modules")
             Mods.add('mods', 'mods')
-        if Main.all:
-            Main.mods = Mods.list(Main.ignore)
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):
@@ -96,7 +94,7 @@ class Boot:
     def init(cls):
         "scan named modules for commands."
         thrs = []
-        for name, mod in Mods.iter(Main.ignore):
+        for name, mod in Mods.iter():
             if "init" in dir(mod):
                 thrs.append((name, Thread.launch(mod.init)))
                 cls.inits.append(name)
@@ -138,7 +136,7 @@ class Boot:
     def scanner(cls):
         "scan named modules for commands."
         res = []
-        for name, mod in Mods.iter(Main.ignore):
+        for name, mod in Mods.iter():
             Commands.scan(mod)
             if "configure" in dir(mod):
                 mod.configure()

@@ -9,6 +9,7 @@ import logging
 import os
 
 
+from .configs import Main
 from .objects import Base
 from .utility import Utils
 
@@ -35,9 +36,9 @@ class Mods:
             cls.dirs[name] = path
 
     @classmethod
-    def all(cls, force=False):
+    def all(cls):
         "return all modules."
-        return cls.iter(cls.list(), force=force)
+        return cls.iter(Main.ignore)
 
     @classmethod
     def get(cls, modname):
@@ -59,13 +60,13 @@ class Mods:
         return ",".join(result)
 
     @classmethod
-    def iter(cls, modlist="", ignore="", force=False):
+    def iter(cls, mods=""):
         "loop over modules."
         has = []
-        for name in Utils.spl(cls.list()):
-            if modlist and name not in Utils.spl(modlist):
-                continue
-            if ignore and name in Utils.spl(ignore):
+        if Main.all:
+            Main.mods = cls.list()
+        for name in Utils.spl(mods or Main.mods):
+            if name in Utils.spl(Main.ignore):
                 continue
             if name in has:
                 continue
@@ -75,7 +76,7 @@ class Mods:
                     continue
                 modname = f"{pkgname}.{name}"
                 mod = cls.modules.get(modname, None)
-                if force or not mod:
+                if not mod:
                     mod = cls.importer(modname, fnm)
                 if mod:
                     has.append(name)
@@ -83,7 +84,7 @@ class Mods:
                     break
 
     @classmethod
-    def list(cls, ignore="tbl"):
+    def list(cls):
         "comma seperated list of available modules."
         mods = []
         for pkgname, path in cls.dirs.items():
@@ -91,7 +92,7 @@ class Mods:
                 x[:-3] for x in os.listdir(path)
                 if x.endswith(".py") and
                 not x.startswith("__") and
-                x[:-3] not in Utils.spl(ignore)
+                x[:-3] not in Utils.spl(Main.ignore)
             ])
         return ",".join(sorted(set(mods)))
 
