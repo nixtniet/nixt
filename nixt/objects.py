@@ -9,11 +9,6 @@ import os
 import types
 
 
-class Reserved(Exception):
-
-    pass
-
-
 class Base():
 
     def __contains__(self, key):
@@ -46,11 +41,6 @@ class Data(Base):
 
     def __getattr__(self, key):
         return self.__dict__.get(key, "")
-
-
-class Configuration(Data):
-
-    pass
 
 
 class Object:
@@ -363,9 +353,7 @@ class Methods:
 def __dir__():
     return (
         'Base',
-        'Configuration',
         'Data',
-        'Join',
         'Object',
         'Methods'
     )

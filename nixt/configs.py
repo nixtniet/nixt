@@ -4,8 +4,13 @@
 "configurations"
 
 
-from .objects import Object
+from .objects import Data, Object
 from .utility import Utils
+
+
+class Configuration(Data):
+
+    pass
 
 
 class MainConfig(type):
@@ -28,5 +33,6 @@ class Main(metaclass=MainConfig):
 
 def __dir__():
     return (
-        'Main',
+        'Configuration',
+        'Main'
     )
