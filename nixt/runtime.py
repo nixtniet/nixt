@@ -44,7 +44,6 @@ class Arguments:
         cls.txt = " ".join(arguments)
         Object.merge(Main, cls.args)
 
-
 class Line(Console):
 
     def raw(self, text):
@@ -165,7 +164,6 @@ class Run:
         "main"
         Main.name = name or Main.name
         Arguments.getargs()
-        Main.wdr = ""
         if Main.background:
             Scripts.background()
         elif Main.console:
