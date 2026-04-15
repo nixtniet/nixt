@@ -49,11 +49,11 @@ class Cfg:
 
     @classmethod
     def load(cls, obj, name=""):
-        Disk.read(obj, name or Utils.modname(obj), "config")
+        return Disk.read(obj, name or Utils.modname(obj), "config")
 
     @classmethod
     def save(cls, obj, name=""):
-        Disk.write(obj, name or Utils.modname(obj), "config")
+        return Disk.write(obj, name or Utils.modname(obj), "config")
 
 
 class Disk:
@@ -75,7 +75,7 @@ class Disk:
         with cls.lock:
             pth = j(Main.wdr, base, path)
             if not e(pth):
-                return
+                return False
             with open(pth, "r", encoding="utf-8") as fpt:
                 try:
                     Object.update(obj, Json.load(fpt))
@@ -83,6 +83,9 @@ class Disk:
                     logging.error("failed read at %s: %s", pth, str(ex))
                     if error:
                         raise
+                    else:
+                        return False
+            return True
 
     @classmethod
     def write(cls, obj, path="", base="store", skip=False):

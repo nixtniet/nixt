@@ -436,7 +436,8 @@ class IRC(Output):
         self.state.lastline = splitted[-1]
 
     def start(self):
-        Cfg.load(self.cfg)
+        if not Cfg.load(self.cfg):
+            Cfg.save(self.cfg)
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
         self.events.ready.clear()

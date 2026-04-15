@@ -49,7 +49,8 @@ class Boot:
         Main.name = name or Main.name or Utils.pkgname(Boot)
         if Main.read:
             Disk.read(Main, "main", "config")
-        Main.wdr = Main.wdr or os.path.expanduser(f"~/.{Main.name}")
+        if Main.wdr == f".{Main.name}":
+            Main.wdr = os.path.expanduser(f"~/.{Main.name}")
         cls.md5s.update(Utils.md5dir(cls.path))
         Workdir.skel()
         Log.size(len(Main.name))

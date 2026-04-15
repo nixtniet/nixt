@@ -34,7 +34,6 @@ class Arguments:
         parser.add_argument("-n", "--nochdir", action="store_true", help="disable chroot")
         parser.add_argument("-r", "--read", action="store_true", help="read modules on start")
         parser.add_argument("-s", "--service", action="store_true", help="start service")
-        parser.add_argument("-t", "--threaded", action='store_true', help='enable multiple workers')
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose')
         parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start')
         parser.add_argument("-u", "--user", action="store_true", help="use local mods directory")
@@ -43,6 +42,7 @@ class Arguments:
         cls.args, arguments = parser.parse_known_args()
         cls.txt = " ".join(arguments)
         Object.merge(Main, cls.args)
+
 
 class Line(Console):
 
