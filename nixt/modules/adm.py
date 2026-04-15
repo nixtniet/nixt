@@ -17,7 +17,8 @@ def cmd(event):
 
 def mod(event):
     "list available modules."
-    mods = Mods.list(Main.ignore)
+    ignore = Main.ignore + ",tbl"
+    mods = Mods.list(ignore)
     if not mods:
         event.reply("no modules available")
         return
