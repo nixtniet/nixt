@@ -1,0 +1,78 @@
+# This file is placed in the Pubic Domain.
+
+
+"tables"
+
+
+NAMES = {
+    "cmd": "adm",
+    "mod": "adm",
+    "tbl": "adm",
+    "ver": "adm",
+    "wdr": "adm",
+    "cfg": "cfg",
+    "krn": "cfg",
+    "fie": "fie",
+    "flt": "flt",
+    "fnd": "fnd",
+    "log": "log",
+    "man": "man",
+    "eml": "mbx",
+    "mbx": "mbx",
+    "dis": "mdl",
+    "now": "mdl",
+    "pth": "pth",
+    "pwd": "pwd",
+    "req": "req",
+    "atr": "rss",
+    "dpl": "rss",
+    "err": "rss",
+    "exp": "rss",
+    "imp": "rss",
+    "nme": "rss",
+    "rem": "rss",
+    "res": "rss",
+    "rss": "rss",
+    "syn": "rss",
+    "lou": "sil",
+    "sil": "sil",
+    "slg": "slg",
+    "srv": "srv",
+    "dne": "tdo",
+    "tdo": "tdo",
+    "thr": "thr",
+    "tmr": "tmr",
+    "udp": "udp",
+    "upt": "upt",
+    "wsd": "wsd"
+}
+
+
+MD5 = {
+    "nixt.modules.adm": "c7c4881b4711111ac97189c40cbd3cc4",
+    "nixt.modules.cfg": "209b716b6429d71f997790c034b9e94c",
+    "nixt.modules.fie": "63d5b771d15c46beae8f6f4d56ee7b90",
+    "nixt.modules.flt": "5a76d4cded22b2bd01dcca20ae2733dd",
+    "nixt.modules.fnd": "9cc828b218b9c941c03928c9481722c6",
+    "nixt.modules.irc": "05f70ef2b32e38540f03124eb33be55c",
+    "nixt.modules.log": "a86ab4755c53546318a8c0d52a87068a",
+    "nixt.modules.man": "e987cbc9c2fe80934b1e6191189c7c7a",
+    "nixt.modules.mbx": "6c36e5b188f0a206a5c2cfc7ca7c8ec0",
+    "nixt.modules.mdl": "58645f82c900a614a3f41c3dfc1045ed",
+    "nixt.modules.pth": "211bf9ef6898555135249123b584fe6c",
+    "nixt.modules.pwd": "c308a6405f500bbcdde84334fc377bb8",
+    "nixt.modules.req": "272635755a01b6e21d39ffba6a219e43",
+    "nixt.modules.rss": "b0d1f18d64b755327fc9060a84f84f7e",
+    "nixt.modules.rst": "72efb03f5618ba71956291a3c0b74eb5",
+    "nixt.modules.sil": "10b9cd0d61444e800d9d881bef7e9a22",
+    "nixt.modules.slg": "0196cecb8ff67e032bd389a0b1860353",
+    "nixt.modules.srv": "7d4f5ff24093a9d61ced84e7318f4e05",
+    "nixt.modules.tbl": "d41d8cd98f00b204e9800998ecf8427e",
+    "nixt.modules.tdo": "697df10ca46da4c114647c97a3104e71",
+    "nixt.modules.thr": "415f1a965b843e8ecc532657fffea0c0",
+    "nixt.modules.tmr": "8f45cdf9eeca48c6d0dfd4af94ef3f8b",
+    "nixt.modules.udp": "4974c3d1d0f9ae01673d8d8dbaf808f0",
+    "nixt.modules.upt": "382ded2084373a18641daca24ec933f5",
+    "nixt.modules.web": "1560c18681c4eeaf7c4c91d34098e361",
+    "nixt.modules.wsd": "592faedad8cf9c86f8b3a89907fc7006"
+}
