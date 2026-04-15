@@ -127,7 +127,7 @@ class Cmd:
     def tbl(event):
         "create table."
         Mods.md5s = {}
-        for name, module in Mods.all(True):
+        for name, module in Mods.all():
             Commands.scan(module)
         event.reply("# This file is placed in the Pubic Domain.\n\n")
         event.reply('"tables"\n\n')
@@ -164,8 +164,6 @@ class Run:
         "main"
         Main.name = name or Main.name
         Arguments.getargs()
-        Main.user = True
-        Main.ignore = "mbx,rst,udp,web"
         if Main.background:
             Scripts.background()
         elif Main.console:

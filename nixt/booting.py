@@ -15,14 +15,9 @@ import _thread
 from .command import Commands
 from .configs import Main
 from .package import Mods
-from .persist import Disk, Workdir
+from .persist import Disk, Workdir, d, e, j
 from .threads import Thread
 from .utility import Log, Utils
-
-
-d = os.path.dirname
-e = os.path.exists
-j = os.path.join
 
 
 class Boot:

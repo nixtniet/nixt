@@ -229,5 +229,8 @@ def __dir__():
         'Cfg',
         'Disk',
         'Locate',
-        'Workdir'
+        'Workdir',
+        'd',
+        'e',
+        'j'
     )

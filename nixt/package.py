@@ -11,12 +11,8 @@ import os
 
 from .configs import Main
 from .objects import Base
+from .persist import d, e, j
 from .utility import Utils
-
-
-d = os.path.dirname
-e = os.path.exists
-j = os.path.join
 
 
 class Mods:
@@ -38,7 +34,7 @@ class Mods:
     @classmethod
     def all(cls):
         "return all modules."
-        return cls.iter(Main.ignore)
+        return cls.iter(cls.list())
 
     @classmethod
     def get(cls, modname):
