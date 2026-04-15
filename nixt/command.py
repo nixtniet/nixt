@@ -21,11 +21,12 @@ class Commands:
     def add(cls, *args):
         "add functions to commands."
         for func in args:
-            cls.cmds[func.__name__] = func
+            name = func.__name__
+            cls.cmds[name] = func
             modname = func.__module__.split(".")[-1]
-            if "__" in modname:
+            if "__" in modname or name in ["tbl", "srv"]:
                 continue
-            cls.names[func.__name__] = modname
+            cls.names[name] = modname
 
     @classmethod
     def command(cls, evt):

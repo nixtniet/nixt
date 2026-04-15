@@ -83,7 +83,7 @@ class Mods:
                     break
 
     @classmethod
-    def list(cls, ignore=""):
+    def list(cls, ignore="tbl"):
         "comma seperated list of available modules."
         mods = []
         for pkgname, path in cls.dirs.items():
