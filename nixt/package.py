@@ -59,7 +59,7 @@ class Mods:
         "loop over modules."
         has = []
         if Main.all:
-            Main.mods = cls.list()
+            mods = cls.list()
         for name in Utils.spl(mods or Main.mods):
             if name in Utils.spl(Main.ignore):
                 continue
@@ -105,7 +105,8 @@ class Mods:
         md5sum = Utils.md5sum(spec.loader.path)
         if md5 and md5sum != md5:
             logging.info("mismatch %s", spec.loader.path)
-        cls.md5s[name] = md5sum
+        if "tbl" not in name:
+            cls.md5s[name] = md5sum
         mod = imp.module_from_spec(spec)
         if not mod:
             logging.debug("can't load %s module", name)

@@ -133,7 +133,7 @@ class Object:
     @staticmethod
     def skip(obj, chars="_"):
         "skip keys containing chars."
-        res = Object()
+        res = Base()
         for key, value in Object.items(obj):
             if isinstance(value, types.MethodType):
                 continue
@@ -257,14 +257,14 @@ class Methods:
         data = {
             "args": [],
             "cmd": "",
-            "gets": Object(),
+            "gets": Base(),
             "index": None,
             "init": "",
             "opts": "",
             "otxt": text,
             "rest": "",
-            "silent": Object(),
-            "sets": Object(),
+            "silent": Base(),
+            "sets": Base(),
             "text": text
         }
         for k, v in data.items():

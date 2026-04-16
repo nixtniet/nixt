@@ -56,7 +56,7 @@ class Config(Configuration):
 
 class Feed(Base):
 
-    pass
+    skip = False
 
 
 class Modified(Base):
@@ -100,7 +100,7 @@ class Fetcher:
     def run(self, silent=False):
         nrs = 0
         for fnm, feed in Locate.find(Methods.fqn(Rss)):
-            if feed.skip:
+            if "skip" in feed and feed.skip:
                 continue
             Runners.put((fnm, feed, silent))
             nrs += 1

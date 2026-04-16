@@ -14,7 +14,7 @@ import time
 
 
 from nixt.command import Commands
-from nixt.configs import Configuration, Main
+from nixt.configs import Configuration, Main, MainConfig
 from nixt.handler import Broker, Event, Output
 from nixt.objects import Base, Methods
 from nixt.persist import Cfg
@@ -145,7 +145,7 @@ class IRC(Output):
         self.state.nrconnect += 1
         self.events.connected.clear()
         self.events.joined.clear()
-        if self.cfg.word or self.cfg.password:
+        if self.cfg.word or self.cfg.word:
             logging.debug("using SASL")
             self.cfg.sasl = True
             self.cfg.port = "6697"
@@ -464,12 +464,12 @@ class IRC(Output):
 
 def cb_auth(evt):
     bot = Broker.get(evt.orig)
-    bot.docommand(f"AUTHENTICATE {bot.cfg.word or bot.cfg.password}")
+    bot.docommand(f"AUTHENTICATE {bot.cfg.word or bot.cfg.word}")
 
 
 def cb_cap(evt):
     bot = Broker.get(evt.orig)
-    if (bot.cfg.word or bot.cfg.password) and "ACK" in evt.arguments:
+    if (bot.cfg.word or bot.cfg.word and "ACK" in evt.arguments):
         bot.direct("AUTHENTICATE PLAIN")
     else:
         bot.direct("CAP REQ :sasl")

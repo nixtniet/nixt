@@ -124,7 +124,7 @@ class Boot:
         else:
             Commands.table()
             Mods.sums()
-        if not Commands.names:
+        if Main.all or not Commands.names:
             cls.scanner()
 
     @classmethod
