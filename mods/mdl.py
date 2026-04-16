@@ -11,7 +11,7 @@ import time
 
 from nixt.brokers import Broker
 from nixt.handler import Event
-from nixt.objects import Data, Object
+from nixt.objects import Base, Object
 from nixt.threads import Repeater
 from nixt.utility import Time
 
@@ -59,7 +59,7 @@ aliases["Zwangerschap"] = "pregnancy"
 aliases["Suicide"] = "suicide"
 
 
-demo = Data()
+demo = Base()
 demo.gehandicapten = 2000000
 demo.ggz = 800000
 demo.population = 17440000
@@ -389,9 +389,9 @@ aantal = """
          """.split(";")
 
 
-oorzaak = Data()
+oorzaak = Base()
 Object.construct(oorzaak, zip([x.strip() for x in oor], [int(x.strip()) for x in aantal]))
-oorzaken = Data()
+oorzaken = Base()
 
 
 def boot():

@@ -11,7 +11,7 @@ import os
 import time
 
 
-from .objects import Data
+from .objects import Base
 
 
 class NoDate(Exception):
@@ -213,7 +213,7 @@ class Log:
         )
 
 
-LEVELS = Data({
+LEVELS = Base({
     "notset": logging.NOTSET,
     "debug": logging.DEBUG,
     "info": logging.INFO,

@@ -13,21 +13,22 @@ import _thread
 
 from .brokers import Broker
 from .command import Commands
-from .objects import Data
+from .objects import Base
 from .threads import Thread
 
 
-class Event(Data):
+class Event(Base):
 
     def __init__(self):
-        Data.__init__(self)
+        Base.__init__(self)
         self._ready = threading.Event()
         self._thr = None
-        self.result = {}
         self.args = []
+        self.channel = ""
         self.index = 0
-        self.orig = ""
         self.kind = "event"
+        self.orig = ""
+        self.result = {}
 
     def display(self):
         bot = Broker.get(self.orig)

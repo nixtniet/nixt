@@ -7,7 +7,7 @@
 import os
 
 
-from .objects import Data, Object
+from .objects import Base, Object
 from .utility import Utils
 
 
@@ -16,7 +16,7 @@ e = os.path.exists
 j = os.path.join
 
 
-class Configuration(Data):
+class Configuration(Base):
 
     pass
 

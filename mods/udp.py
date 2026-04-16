@@ -14,7 +14,7 @@ import time
 
 from nixt.brokers import Broker
 from nixt.configs import Configuration
-from nixt.objects import Data
+from nixt.objects import Base
 from nixt.persist import Cfg
 from nixt.runtime import Main
 from nixt.threads import Thread
@@ -37,10 +37,10 @@ class Config(Configuration):
     port = 5500
 
 
-class UDP(Data):
+class UDP(Base):
 
     def __init__(self):
-        Data.__init__(self)
+        Base.__init__(self)
         self.stopped = False
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

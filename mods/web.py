@@ -14,14 +14,14 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from nixt.configs import Configuration
-from nixt.objects import Data
+from nixt.objects import Base
 from nixt.persist import Main
 from nixt.threads import Thread
 from nixt.utility import Utils
 
 
 def init():
-    path = Utils.pkgname(Data)
+    path = Utils.pkgname(Base)
     if not os.path.exists(os.path.join(path, "network", 'index.html')):
         logging.warning("no index.html")
         return
@@ -41,14 +41,14 @@ class Config(Configuration):
     port = 8000
 
 
-class HTTP(HTTPServer, Data):
+class HTTP(HTTPServer, Base):
 
     daemon_thread = True
     allow_reuse_address = True
 
     def __init__(self, *args, **kwargs):
         HTTPServer.__init__(self, *args, **kwargs)
-        Data.__init__(self)
+        Base.__init__(self)
         self.host = args[0]
         self._starttime = time.time()
         self._last = time.time()
@@ -76,7 +76,7 @@ class HTTPHandler(BaseHTTPRequestHandler):
 
     def setup(self):
         BaseHTTPRequestHandler.setup(self)
-        self._path = os.path.join(Utils.where(Data), "network")
+        self._path = os.path.join(Utils.where(Base), "network")
         self._size = 0
         self._ip = self.client_address[0]
 

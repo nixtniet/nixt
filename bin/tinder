@@ -19,7 +19,7 @@ sys.path.insert(0, os.getcwd())
 from nixt.command import Commands
 from nixt.configs import Main
 from nixt.handler import Console, Event
-from nixt.objects import Data, Methods, Object
+from nixt.objects import Base, Methods, Object
 from nixt.package import Mods
 from nixt.persist import Workdir
 from nixt.threads import Thread
@@ -109,7 +109,7 @@ def payload(todo):
 def main():
     if "p" not in Main.opts and os.path.exists(Main.wdr):
         shutil.rmtree(Main.wdr)
-    parsed = Data()
+    parsed = Base()
     Methods.parse(parsed, " ".join(sys.argv[1:]))
     Object.merge(Main, parsed)
     Workdir.skel()

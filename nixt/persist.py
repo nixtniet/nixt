@@ -13,7 +13,7 @@ import threading
 
 from .configs import Main, e, j
 from .encoder import Json
-from .objects import Data, Methods, Object
+from .objects import Base, Methods, Object
 from .utility import Time, Utils
 
 
@@ -118,7 +118,7 @@ class Locate:
         for pth in Locate.fns(Workdir.long(kind)):
             obj = Cache.get(pth)
             if obj is None:
-                obj = Data()
+                obj = Base()
                 Disk.read(obj, pth)
                 Cache.add(pth, obj)
             if not removed and Methods.deleted(obj):

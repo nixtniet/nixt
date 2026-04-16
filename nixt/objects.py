@@ -9,7 +9,10 @@ import os
 import types
 
 
-class Base():
+class Base:
+
+    def __init__(self, *args, **kwargs):
+        Object.construct(self, *args, **kwargs)
 
     def __contains__(self, key):
         return key in dir(self)
@@ -31,16 +34,6 @@ class Base():
 
     def __str__(self):
         return str(self.__dict__)
-
-
-class Data(Base):
-
-    def __init__(self, *args, **kwargs):
-        Base.__init__(self)
-        Object.construct(self, *args, **kwargs)
-
-    def __getattr__(self, key):
-        return self.__dict__.get(key, "")
 
 
 class Object:
@@ -140,7 +133,7 @@ class Object:
     @staticmethod
     def skip(obj, chars="_"):
         "skip keys containing chars."
-        res = Data()
+        res = Object()
         for key, value in Object.items(obj):
             if isinstance(value, types.MethodType):
                 continue
@@ -264,14 +257,14 @@ class Methods:
         data = {
             "args": [],
             "cmd": "",
-            "gets": Data(),
+            "gets": Object(),
             "index": None,
             "init": "",
             "opts": "",
             "otxt": text,
             "rest": "",
-            "silent": Data(),
-            "sets": Data(),
+            "silent": Object(),
+            "sets": Object(),
             "text": text
         }
         for k, v in data.items():
@@ -353,7 +346,6 @@ class Methods:
 def __dir__():
     return (
         'Base',
-        'Data',
         'Object',
         'Methods'
     )

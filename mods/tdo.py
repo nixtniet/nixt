@@ -4,14 +4,14 @@
 "todo"
 
 
-from nixt.objects import Data
+from nixt.objects import Base
 from nixt.persist import Disk, Locate
 
 
-class Todo(Data):
+class Todo(Base):
 
     def __init__(self):
-        Data.__init__(self)
+        Base.__init__(self)
         self.txt = ''
 
 

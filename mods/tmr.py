@@ -11,7 +11,7 @@ import time
 
 
 from nixt.brokers import Broker
-from nixt.objects import Data, Object, Methods
+from nixt.objects import Base, Object, Methods
 from nixt.persist import Disk, Locate
 from nixt.threads import Thread, Timed
 from nixt.utility import Time
@@ -43,12 +43,12 @@ def init():
     logging.warning("%s timers", len(Timers.timers))
 
 
-class Timer(Data):
+class Timer(Base):
 
     pass
 
 
-class Timers(Data):
+class Timers(Base):
 
     path = ""
     timers = Timer()

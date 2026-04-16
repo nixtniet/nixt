@@ -4,7 +4,7 @@
 "configuration"
 
 
-from nixt.objects import Data, Methods, Object
+from nixt.objects import Base, Methods, Object
 from nixt.package import Mods
 from nixt.persist import Cfg
 
@@ -17,7 +17,7 @@ def cfg(event):
         event.reply(mods)
         return
     name = event.args[0]
-    config = Data()
+    config = Base()
     Cfg.load(config, name)
     if name != "main" and not config:
         mod = Mods.get(name)

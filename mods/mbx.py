@@ -9,12 +9,12 @@ import os
 import time
 
 
-from nixt.objects import Data, Methods, Object
+from nixt.objects import Base, Methods, Object
 from nixt.persist import Disk, Locate
 from nixt.utility import Time
 
 
-class Email(Data):
+class Email(Base):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
