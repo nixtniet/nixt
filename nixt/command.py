@@ -48,8 +48,8 @@ class Commands:
                 cls.scan(mod)
                 func = cls.get(evt.cmd)
         if func:
-                func(evt)
-                evt.display()
+            func(evt)
+            evt.display()
         evt.ready()
 
     @classmethod

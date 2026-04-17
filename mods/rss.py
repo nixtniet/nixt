@@ -56,6 +56,7 @@ class Config(Configuration):
 
 class Feed(Base):
 
+    link = ""
     skip = False
 
 

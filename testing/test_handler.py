@@ -51,7 +51,7 @@ class TestHandler(unittest.TestCase):
     def test_loop(self):
         evt = Event()
         evt.kind = "hello"
-        #evt.text = "hello"
+        evt.text = "hello"
         self.hdl.put(evt)
         evt.wait()
         self.assertTrue(evt._ready.is_set())

@@ -164,7 +164,7 @@ class Cmd:
     @staticmethod
     def tbl(event):
         "create table."
-        #Mods.md5s = {}
+        # Mods.md5s = {}
         for name, module in Mods.all():
             Commands.scan(module)
         event.reply("# This file is placed in the Pubic Domain.\n\n")

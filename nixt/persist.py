@@ -44,11 +44,11 @@ class Cfg:
 
     @classmethod
     def load(cls, obj, name=""):
-        return Disk.read(obj, name or Utils.modname(obj), "config")
+        return Disk.read(obj, name or obj.__name__.lower(), "config")
 
     @classmethod
     def save(cls, obj, name=""):
-        return Disk.write(obj, name or Utils.modname(obj), "config")
+        return Disk.write(obj, name or obj.__name__.lower(), "config")
 
 
 class Disk:
