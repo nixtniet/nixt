@@ -38,7 +38,7 @@ class TestPersist(unittest.TestCase):
 
     def test_writecfg(self):
         Main.a = "b"
-        Cfg.save(Main)
+        Cfg.save(Main, "main")
         self.assertTrue(os.path.exists(os.path.join(
                                                     Main.wdr,
                                                     "config",
