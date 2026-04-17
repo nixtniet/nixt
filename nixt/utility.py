@@ -115,6 +115,10 @@ class Time:
 class Utils:
 
     @staticmethod
+    def clsname(obj):
+        return obj.__class__.__name__
+
+    @staticmethod
     def md5dir(path):
         md5s = {}
         for fnm in os.listdir(path):
