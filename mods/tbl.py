@@ -8,10 +8,10 @@ CORE = {
     "configs": "79fd61ebe02f2c7a8d550664faf7c98b",
     "objects": "744383d02a432cd133d59d20c095e403",
     "command": "b7dddb61ca85797909eaf6088422a23b",
-    "package": "4348d78f33a2df4a79a5794daa9e5332",
-    "utility": "19cdaaad2d4c604cf9c4e21c63bf0739",
+    "package": "edbdd8b055801711ec8c2422810bce31",
+    "utility": "65d11d9e26edab6d90dbf46e86863b81",
     "brokers": "0e4c27ffe2ed97146dd7a346cae1734c",
-    "persist": "e9ba353b520413155eb4b2f4e12a52fc",
+    "persist": "73684ee1e02a79ac356286e2b236bd29",
     "encoder": "99a5714698346a23e399605fb98c3efe",
     "handler": "5c6c018b23f44b74bd9acbb19095bc4f",
     "threads": "c8dc6421e843dd0632740976b1649fb2",
@@ -26,7 +26,6 @@ NAMES = {
     "ver": "adm",
     "wdr": "wdr",
     "cfg": "cfg",
-    "krn": "cfg",
     "fie": "fnd",
     "flt": "flt",
     "fnd": "fnd",
@@ -65,7 +64,7 @@ NAMES = {
 
 MD5 = {
     "mods.adm": "3c85c99095248d55284398d0780960ea",
-    "mods.cfg": "da4f2344c14fc45aa347adf927cda3b6",
+    "mods.cfg": "cb6e5e407c3046f16303341ec3a5ca66",
     "mods.fie": "6c38143e012c48ee08af29c2e35e8898",
     "mods.flt": "68b06f967b47b2567c8eccb7113a72f0",
     "mods.fnd": "2d3aed0fc5476fb422f97b8d91d08461",
@@ -96,7 +95,6 @@ MD5 = {
 SKIPS = {
     "wdr": "irc",
     "cfg": "irc",
-    "krn": "irc",
     "fnd": "irc",
     "hlp": "irc",
     "man": "irc",

@@ -46,12 +46,3 @@ def cfg(event):
 
 
 cfg.skip = "irc"
-
-
-def krn(event):
-    txt = "cfg main " + event.rest
-    Methods.parse(event, txt)
-    cfg(event)
-
-
-krn.skip = "irc"
