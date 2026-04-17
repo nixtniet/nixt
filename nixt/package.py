@@ -58,8 +58,6 @@ class Mods:
     def iter(cls, mods=""):
         "loop over modules."
         has = []
-        if Main.all:
-            mods = cls.list()
         for name in Utils.spl(mods or Main.mods):
             if name in Utils.spl(Main.ignore):
                 continue

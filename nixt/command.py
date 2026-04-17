@@ -16,6 +16,7 @@ class Commands:
 
     cmds = {}
     names = {}
+    skips = {}
 
     @classmethod
     def add(cls, *args):
@@ -27,11 +28,16 @@ class Commands:
             if "__" in modname or name in ["tbl", "srv"]:
                 continue
             cls.names[name] = modname
+            if "skip" in dir(func):
+                cls.skips[name] = func.skip
 
     @classmethod
     def command(cls, evt):
         "command callback."
         Methods.parse(evt, evt.text)
+        if cls.skip(evt.orig, cls.skips.get(evt.cmd, "")):
+            evt.ready()
+            return
         func = cls.get(evt.cmd)
         if not func:
             name = cls.names.get(evt.cmd)
@@ -42,7 +48,6 @@ class Commands:
                 cls.scan(mod)
                 func = cls.get(evt.cmd)
         if func:
-            if not cls.skip(func, evt.orig):
                 func(evt)
                 evt.display()
         evt.ready()
@@ -51,10 +56,11 @@ class Commands:
     def commands(cls, orig):
         "list cpmmands available."
         res = []
-        for func in cls.cmds.values():
-            if cls.skip(func, orig):
+        for nme in cls.names:
+            skp = cls.skips.get(nme, False)
+            if skp and cls.skip(orig, skp):
                 continue
-            res.append(func.__name__)
+            res.append(nme)
         return res
 
     @classmethod
@@ -76,11 +82,10 @@ class Commands:
             cls.scan(mod)
 
     @classmethod
-    def skip(cls, func, orig):
-        if "skip" in dir(func):
-            for skp in Utils.spl(func.skip):
-                if skp.lower() in orig.lower():
-                    return True
+    def skip(cls, orig, skips):
+        for skp in Utils.spl(skips):
+            if skp.lower() in orig.lower():
+                return True
         return False
 
     @classmethod
@@ -89,6 +94,9 @@ class Commands:
         names = getattr(mod, "NAMES", None)
         if names:
             cls.names.update(names)
+        skips = getattr(mod, "SKIPS", None)
+        if skips:
+            cls.skips.update(skips)
 
 
 def __dir__():

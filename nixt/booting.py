@@ -86,10 +86,10 @@ class Boot:
                 _thread.interrupt_main()
 
     @classmethod
-    def init(cls):
+    def init(cls, mods=""):
         "scan named modules for commands."
         thrs = []
-        for name, mod in Mods.iter():
+        for name, mod in Mods.iter(mods):
             if "init" in dir(mod):
                 thrs.append((name, Thread.launch(mod.init)))
                 cls.inits.append(name)
@@ -118,20 +118,20 @@ class Boot:
         os.setuid(pwnam2.pw_uid)
 
     @classmethod
-    def scan(cls):
+    def scan(cls, mods=""):
         if Main.read:
-            cls.scanner()
+            cls.scanner(mods)
         else:
             Commands.table()
             Mods.sums()
-        if Main.all or not Commands.names:
-            cls.scanner()
+        if not Commands.names:
+            cls.scanner(mods)
 
     @classmethod
-    def scanner(cls):
+    def scanner(cls, mods=""):
         "scan named modules for commands."
         res = []
-        for name, mod in Mods.iter():
+        for name, mod in Mods.iter(mods):
             Commands.scan(mod)
             if "configure" in dir(mod):
                 mod.configure()

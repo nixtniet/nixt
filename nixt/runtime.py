@@ -83,8 +83,8 @@ class Scripts:
         Boot.configure()
         if Main.verbose:
             Boot.banner()
-        Boot.scan()
-        Boot.init()
+        Boot.scan(Mods.list())
+        Boot.init(Main.mods)
         csl = CSL()
         csl.start()
         Boot.forever()
@@ -171,7 +171,8 @@ class Cmd:
         event.reply('"tables"\n\n')
         event.reply(f"CORE = {Json.dumps(Boot.md5s, indent=4)}\n\n")
         event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4)}\n\n")
-        event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4)}")
+        event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4)}\n\n")
+        event.reply(f"SKIPS = {Json.dumps(Commands.skips, indent=4)}")
 
     tbl.skip = "irc,csl"
 

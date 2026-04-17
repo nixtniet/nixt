@@ -29,6 +29,7 @@ class Event(Base):
         self.kind = "event"
         self.orig = ""
         self.result = {}
+        #self.text = ""
 
     def display(self):
         bot = Broker.get(self.orig)
