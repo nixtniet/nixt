@@ -44,8 +44,8 @@ class Task(threading.Thread):
 
     def run(self):
         "run function."
-        if time.time() - Task.last < 0.01:
-            time.sleep(0.01)
+        #if time.time() - Task.last < 0.01:
+        #    time.sleep(0.01)
         Task.last = time.time()
         func, args = self.queue.get()
         if args and hasattr(args[0], "ready"):

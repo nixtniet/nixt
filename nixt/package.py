@@ -9,14 +9,14 @@ import logging
 import os
 
 
-from .configs import Main, d, e, j
+from .configs import Main
 from .objects import Base
 from .utility import Utils
 
 
 class Mods:
 
-    dirs = {f"{Utils.pkgname(Base)}.modules": j(d(__spec__.loader.path), "modules")}
+    dirs = {f"{Utils.pkgname(Base)}.modules": os.path.join(os.path.dirname(__spec__.loader.path), "modules")}
     md5s = {}
     modules = {}
 
@@ -27,7 +27,7 @@ class Mods:
             name = path
         elif name is None:
             name = path.split(os.sep)[-2]
-        if e(path):
+        if os.path.exists(path):
             cls.dirs[name] = path
 
     @classmethod
@@ -66,8 +66,8 @@ class Mods:
             if name in has:
                 continue
             for pkgname, path in cls.dirs.items():
-                fnm = j(path, name + ".py")
-                if not e(fnm):
+                fnm = os.path.join(path, name + ".py")
+                if not os.path.exists(fnm):
                     continue
                 modname = f"{pkgname}.{name}"
                 mod = cls.modules.get(modname, None)
@@ -94,7 +94,7 @@ class Mods:
     @classmethod
     def importer(cls, name, pth=""):
         "import module by path."
-        if pth and e(pth):
+        if pth and os.path.exists(pth):
             spec = imp.spec_from_file_location(name, pth)
         else:
             spec = imp.find_spec(name)
@@ -119,8 +119,8 @@ class Mods:
     def path(cls, name):
         "return existing paths."
         for pkgname, path in cls.dirs.items():
-            pth = j(path, name + ".py")
-            if e(pth):
+            pth = os.path.join(path, name + ".py")
+            if os.path.exists(pth):
                 return pth
 
     @classmethod

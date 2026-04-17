@@ -131,7 +131,7 @@ class Client(Handler):
                 break
             event.orig = repr(self)
             self.callback(event)
-            time.sleep(0.001)
+            #time.sleep(0.001)
 
     def poll(self):
         "return event."

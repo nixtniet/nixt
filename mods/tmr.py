@@ -28,7 +28,7 @@ def init():
             continue
         orig, channel, txt = args
         for origin, bot in Broker.like(orig):
-            if not origin:
+            if not origin or not bot:
                 continue
             diff = float(tme) - time.time()
             if diff > 0:
@@ -82,6 +82,9 @@ def tmr(event):
     Timers.add(todo, event.orig, event.channel, txt)
     Disk.write(Timers.timers, Timers.path or Methods.ident(Timers.timers))
     bot = Broker.get(event.orig)
+    if not bot:
+        event.reply("no bot")
+        return
     timer = Timed(diff, bot.say, event.channel, txt)
     Thread.launch(timer.start).join()
     event.reply("ok " + Time.elapsed(diff))
