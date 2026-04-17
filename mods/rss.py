@@ -421,14 +421,15 @@ class Helpers:
         return []
 
     @staticmethod
-    def geturl(url):
+    def geturl(url, force=False):
         "fetch an url."
         url = urllib.parse.urlunparse(urllib.parse.urlparse(url))
         req = urllib.request.Request(str(url))
         req.add_header("User-Agent", Helpers.useragent("RSS Fetcher"))
-        since = getattr(State.modified, url, "")
-        if since:
-            req.add_header('If-Modified-Since', since)
+        if not force:
+            since = getattr(State.modified, url, "")
+            if since:
+                req.add_header('If-Modified-Since', since)
         logging.debug("fetching %s %s", url, req.headers)
         with urllib.request.urlopen(req, timeout=5.0) as response:  # nosec
             modi = response.headers.get('Last-Modified', "")
@@ -476,7 +477,11 @@ def atr(event):
         event.reply("atr <stringinurl>")
         return
     for _fnm, obj in Locate.find(Methods.fqn(Rss), {'rss': event.rest}):
-        request = Helpers.geturl(obj.rss)
+        try:
+            request = Helpers.geturl(obj.rss, True)
+        except Exception as ex:
+            event.reply(ex)
+            return
         if obj.rss.endswith('atom'):
             result = list(Parser.getitems(str(request.data, 'utf-8', errors='ignore'), 'entry', 1))
         else:

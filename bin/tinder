@@ -110,9 +110,7 @@ def main():
     Arguments.getargs()
     if "p" not in Main.opts and os.path.exists(Main.wdr):
         shutil.rmtree(Main.wdr)
-    Boot.configure()
-    Boot.scanner(Mods.list())
-    Boot.banner()
+    Boot.boot()
     if Main.threaded:
         Clients.init(os.cpu_count(), CLI)
     else:

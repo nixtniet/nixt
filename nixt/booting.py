@@ -38,6 +38,14 @@ class Boot:
         ))
         sys.stdout.flush()
 
+
+    @classmethod
+    def boot(cls):
+        cls.configure()
+        if Main.verbose:
+            cls.banner()
+        cls.scan()
+
     @classmethod
     def configure(cls, name=""):
         "in the beginning."

@@ -72,8 +72,7 @@ class Scripts:
         Boot.daemon(Main.verbose, Main.nochdir)
         Boot.privileges()
         Boot.pidfile(Main.name)
-        Boot.configure()
-        Boot.scan()
+        Boot.boot()
         Boot.init()
         Boot.forever()
 
@@ -82,10 +81,7 @@ class Scripts:
         "console script."
         import readline
         readline.redisplay()
-        Boot.configure()
-        if Main.verbose:
-            Boot.banner()
-        Boot.scan(Mods.list())
+        Boot.boot()
         Boot.init(Main.mods)
         csl = CSL()
         csl.start()
@@ -97,8 +93,7 @@ class Scripts:
         if not Arguments.txt:
             return
         Main.all = True
-        Boot.configure()
-        Boot.scan()
+        Boot.boot()
         if Main.admin:
             Commands.add(Cmd.tbl, Cmd.srv)
         Run.cmd(Arguments.txt)
@@ -107,9 +102,7 @@ class Scripts:
     def service():
         "service script."
         Boot.privileges()
-        Boot.configure()
-        Boot.banner()
-        Boot.scan()
+        Boot.boot()
         Boot.pidfile(Main.name)
         Boot.init()
         Boot.forever()
