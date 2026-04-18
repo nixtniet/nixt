@@ -19,22 +19,11 @@ sys.path.insert(0, os.getcwd())
 from nixt.booting import Boot
 from nixt.command import Commands
 from nixt.configs import Main
-from nixt.handler import Client, Console, Event
-from nixt.objects import Base, Methods, Object
-from nixt.package import Mods
-from nixt.persist import Workdir
+from nixt.handler import Client, Event
+from nixt.objects import Methods
 from nixt.runtime import Arguments
 from nixt.threads import Thread
-from nixt.utility import Log, Time, Utils
-
-
-from nixt import modules as MODS
-
-
-try:
-    import mods as MODS2
-except ModuleNotFoundError:
-    MODS2 = None
+from nixt.utility import Time
 
 
 Main.debug = True

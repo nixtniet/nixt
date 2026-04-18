@@ -38,7 +38,6 @@ class Boot:
         ))
         sys.stdout.flush()
 
-
     @classmethod
     def boot(cls):
         cls.configure()
