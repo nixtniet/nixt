@@ -19,7 +19,7 @@ sys.path.insert(0, os.getcwd())
 from nixt.booting import Boot
 from nixt.command import Commands
 from nixt.configs import Main
-from nixt.handler import Client, Event
+from nixt.handler import Client, Event, Output
 from nixt.objects import Methods
 from nixt.runtime import Arguments
 from nixt.threads import Thread
@@ -34,7 +34,7 @@ Main.user = True
 events = queue.Queue()
 
 
-class CLI(Client):
+class CLI(Output):
 
     def __init__(self):
         super().__init__()
@@ -84,14 +84,17 @@ def consume():
             os._exit(0)
 
 
-def payload(todo):
+def payload(cli, todo):
     for cmd, example in todo.items():
         for ex in example:
             evt = Event()
             evt.kind = "command"
             evt.text = f"{cmd} {ex}"
-            #Commands.command(evt)
-            Clients.put(evt)
+            if Main.threaded:
+                Clients.put(evt)
+            else:
+                evt.orig = repr(cli)
+                Commands.command(evt)
             events.put(evt)
 
 
@@ -104,15 +107,16 @@ def main():
         Clients.init(os.cpu_count(), CLI)
     else:
         Clients.init(1, CLI)
+    cli = CLI()
     starttime = time.time()
     nrs = Main.index or 1
     thrs = []
     for _x in range(nrs):
-        thrs.append(Thread.launch(payload, pre))
+        thrs.append(Thread.launch(payload, cli, pre))
     for _x in range(nrs):
-        thrs.append(Thread.launch(payload, examples))
+        thrs.append(Thread.launch(payload, cli, examples))
     for _x in range(nrs):
-        thrs.append(Thread.launch(payload, post))
+        thrs.append(Thread.launch(payload, cli, post))
     for thr in thrs:
         thr.join()
     nrevents = events.qsize()
@@ -125,6 +129,7 @@ def main():
     lap = Time.elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
+    Boot.shutdown()
     if Main.verbose:
         print(f"{Methods.fmt(Main, skip='otxt,txt')}")
         print(f"cores: {Clients.nrcpu} events: {nrs}")

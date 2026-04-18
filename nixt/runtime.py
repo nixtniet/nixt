@@ -32,6 +32,7 @@ class Arguments:
         parser.add_argument("-l", "--level", default=Main.level, help='set loglevel.')
         parser.add_argument("-m", "--mods", default="", help='modules to load.')
         parser.add_argument("-n", "--index", action="store", type=int, help="set index to use.")
+        parser.add_argument("-p", "--prune", action="store_true", help="prune directories.")
         parser.add_argument("-r", "--read", action="store_true", help="read modules on start.")
         parser.add_argument("-s", "--service", action="store_true", help="start service.")
         parser.add_argument("-t", "--threaded", action="store_true", help="use threads.")

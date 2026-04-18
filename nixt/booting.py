@@ -12,6 +12,7 @@ import time
 import _thread
 
 
+from .brokers import Broker
 from .command import Commands
 from .configs import Main
 from .package import Mods
@@ -155,6 +156,7 @@ class Boot:
                     mod.shutdown()
                 except Exception as ex:
                     logging.exception(ex)
+        Broker.stop()
 
     @classmethod
     def wrap(cls, func, *args):

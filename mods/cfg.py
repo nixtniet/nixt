@@ -11,10 +11,10 @@ from nixt.persist import Cfg
 
 def cfg(event):
     if not event.args:
-        mods = f"cfg <{Mods.has('Config') + ',main'}>"
+        mods = f"{Mods.has('Config') + ',main'}"
         if mods.startswith(","):
             mods = mods[1:]
-        event.reply(mods)
+        event.reply(f"cfg <{mods}>")
         return
     name = event.args[0]
     config = Base()
