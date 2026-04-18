@@ -5,8 +5,8 @@
 
 
 from nixt.command import Commands
+from nixt.configs import Main
 from nixt.package import Mods
-from nixt.runtime import Main
 from nixt.persist import Workdir
 
 

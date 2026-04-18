@@ -19,9 +19,8 @@ sys.path.insert(0, os.getcwd())
 from nixt.booting import Boot
 from nixt.command import Commands
 from nixt.configs import Main
-from nixt.handler import Client, Event, Output
+from nixt.handler import Event, Output
 from nixt.objects import Methods
-from nixt.runtime import Arguments
 from nixt.threads import Thread
 from nixt.utility import Time
 
@@ -99,10 +98,10 @@ def payload(cli, todo):
 
 
 def main():
-    Arguments.getargs()
-    if "p" not in Main.opts and os.path.exists(Main.wdr):
+    if Main.prune and os.path.exists(Main.wdr):
         shutil.rmtree(Main.wdr)
-    Boot.boot()
+    Boot.configure()
+    Boot.scan()
     if Main.threaded:
         Clients.init(os.cpu_count(), CLI)
     else:

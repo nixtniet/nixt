@@ -13,10 +13,9 @@ import time
 
 
 from nixt.brokers import Broker
-from nixt.configs import Configuration
+from nixt.configs import Configuration, Main
 from nixt.objects import Base
 from nixt.persist import Cfg
-from nixt.runtime import Main
 from nixt.threads import Thread
 
 
