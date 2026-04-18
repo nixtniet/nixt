@@ -111,6 +111,7 @@ class Scripts:
         "cli script."
         if not Arguments.txt:
             return
+        Main.all = True
         Boot.configure()
         Boot.scan()
         Run.cmd(Arguments.txt)

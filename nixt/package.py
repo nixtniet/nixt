@@ -16,7 +16,9 @@ from .utility import Utils
 
 class Mods:
 
-    dirs = {f"{Utils.pkgname(Base)}.modules": os.path.join(os.path.dirname(__spec__.loader.path), "modules")}
+    dirs = {
+            f"{Utils.pkgname(Base)}.modules": os.path.join(os.path.dirname(__spec__.loader.path), "modules")
+           }
     md5s = {}
     modules = {}
 
@@ -36,9 +38,16 @@ class Mods:
         return cls.iter(cls.list())
 
     @classmethod
-    def get(cls, modname):
-        "return module."
-        return cls.modules.get(modname, None)
+    def get(cls, name):
+        for pkgname, path in cls.dirs.items():
+            fnm = os.path.join(path, name + ".py")
+            if not os.path.exists(fnm):
+                continue
+            modname = f"{pkgname}.{name}"
+            mod = cls.modules.get(modname, None)
+            if not mod:
+                mod = cls.importer(modname, fnm)
+            return mod
 
     @classmethod
     def has(cls, attr):
@@ -62,18 +71,10 @@ class Mods:
                 continue
             if name in has:
                 continue
-            for pkgname, path in cls.dirs.items():
-                fnm = os.path.join(path, name + ".py")
-                if not os.path.exists(fnm):
-                    continue
-                modname = f"{pkgname}.{name}"
-                mod = cls.modules.get(modname, None)
-                if not mod:
-                    mod = cls.importer(modname, fnm)
-                if mod:
-                    has.append(name)
-                    yield name, mod
-                    break
+            mod = cls.get(name)
+            if mod:
+                has.append(name)
+                yield name, mod
 
     @classmethod
     def list(cls):

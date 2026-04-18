@@ -44,6 +44,7 @@ class Boot:
     def configure(cls, name=""):
         "in the beginning."
         if cls.configured:
+            logging.warning("already configured")
             return
         Main.name = name or Main.name or Utils.pkgname(Boot)
         if Main.read:
@@ -54,6 +55,10 @@ class Boot:
         Workdir.skel()
         Log.size(len(Main.name))
         Log.level(Main.level or "info")
+        Mods.add(
+                 f"{Utils.pkgname(Main)}.modules",
+                 os.path.join(os.path.dirname(__spec__.loader.path), "modules")
+                ) 
         if Main.user:
             Mods.add(os.path.join(Main.wdr, "mods"), "modules")
             Mods.add('mods', 'mods')
@@ -139,7 +144,6 @@ class Boot:
         "scan named modules for commands."
         res = []
         for name, mod in Mods.iter():
-            print(name, mod)
             Commands.scan(mod)
             if "configure" in dir(mod):
                 mod.configure()
