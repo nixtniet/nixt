@@ -4,6 +4,7 @@
 "in the beginning"
 
 
+import argparse
 import logging
 import os
 import pathlib
@@ -15,14 +16,66 @@ import _thread
 from .brokers import Broker
 from .command import Commands
 from .configs import Main
+from .handler import Console, Event
+from .objects import Object
 from .package import Mods
 from .persist import Disk, Workdir
 from .threads import Thread
 from .utility import Log, Utils
 
 
-class Boot:
+class Arguments:
 
+    args = None
+    txt = None
+
+    @classmethod
+    def getargs(cls):
+        "parse commandline arguments."
+        parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
+        parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
+        parser.add_argument("-c", "--console", action="store_true", help="start console.")
+        parser.add_argument("-d", "--background", action="store_true", help="start background daemon.")
+        parser.add_argument("-i", "--ignore", default="", help='modules to ignore.')
+        parser.add_argument("-l", "--level", default=Main.level, help='set loglevel.')
+        parser.add_argument("-m", "--mods", default="", help='modules to load.')
+        parser.add_argument("-n", "--index", action="store", type=int, help="set index to use.")
+        parser.add_argument("-p", "--prune", action="store_true", help="prune directories.")
+        parser.add_argument("-r", "--read", action="store_true", help="read modules on start.")
+        parser.add_argument("-s", "--service", action="store_true", help="start service.")
+        parser.add_argument("-t", "--threaded", action="store_true", help="use threads.")
+        parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
+        parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
+        parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
+        parser.add_argument("-x", "--admin", action="store_true", help="enable admin mode.")
+        parser.add_argument("--wdr", help='set working directory.')
+        parser.add_argument("--nochdir", action="store_true", help='set working directory.')
+        cls.args, arguments = parser.parse_known_args()
+        cls.txt = " ".join(arguments)
+        Object.merge(Main, cls.args)
+
+
+class Line(Console):
+
+    def raw(self, text):
+        "write to console."
+        print(text.encode('utf-8', 'replace').decode("utf-8"))
+
+
+class CSL(Line):
+
+    def poll(self):
+        "poll for an event."
+        evt = Event()
+        evt.orig = repr(self)
+        evt.text = input("> ")
+        evt.kind = "command"
+        return evt
+
+
+class Kernel:
+
+    configured = False
     inits = []
     md5s = {}
     path = os.path.dirname(__spec__.loader.path)
@@ -41,14 +94,50 @@ class Boot:
 
     @classmethod
     def boot(cls):
+        Arguments.getargs()
+        csl = None
+        if Arguments.txt:
+            Boot.cmd(" ".join(sys.argv[1:]))
+            return
+        if Main.console:
+            import readline
+            readline.redisplay()
+            csl = CSL()
+        elif Main.daemon:
+            cls.daemon()
+        if Main.daemon or Main.service:
+            cls.privileges()
         cls.configure()
         if Main.verbose:
             cls.banner()
+        if Main.daemon or Main.service:
+            cls.pidfile(Main.name)
         cls.scan()
+        if Main.all or Main.mods:
+            cls.init()
+        if csl:
+            csl.start()
+        if Main.daemon or Main.service or Main.console:
+            cls.forever()
+        cls.shutdown()
+
+    @classmethod
+    def cmd(cls, text):
+        cli = Line()
+        for txt in text.split(" ! "):
+            evt = Event()
+            evt.kind = "command"
+            evt.orig = repr(cli)
+            evt.text = txt
+            Commands.command(evt)
+            evt.wait()
+        return evt
 
     @classmethod
     def configure(cls, name=""):
         "in the beginning."
+        if cls.configured:
+            return
         Main.name = name or Main.name or Utils.pkgname(Boot)
         if Main.read:
             Disk.read(Main, "main", "config")
@@ -61,6 +150,9 @@ class Boot:
         if Main.user:
             Mods.add(os.path.join(Main.wdr, "mods"), "modules")
             Mods.add('mods', 'mods')
+        if Main.all:
+            Main.mods = Mods.list()
+        cls.configured = True
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):
@@ -94,10 +186,10 @@ class Boot:
                 _thread.interrupt_main()
 
     @classmethod
-    def init(cls, mods=""):
+    def init(cls):
         "scan named modules for commands."
         thrs = []
-        for name, mod in Mods.iter(mods):
+        for name, mod in Mods.iter():
             if "init" in dir(mod):
                 thrs.append((name, Thread.launch(mod.init)))
                 cls.inits.append(name)
@@ -126,20 +218,20 @@ class Boot:
         os.setuid(pwnam2.pw_uid)
 
     @classmethod
-    def scan(cls, mods=""):
+    def scan(cls):
         if Main.read:
-            cls.scanner(mods)
+            cls.scanner()
         else:
             Commands.table()
             Mods.sums()
         if not Commands.names:
-            cls.scanner(mods)
+            cls.scanner()
 
     @classmethod
-    def scanner(cls, mods=""):
+    def scanner(cls):
         "scan named modules for commands."
         res = []
-        for name, mod in Mods.iter(mods):
+        for name, mod in Mods.iter():
             Commands.scan(mod)
             if "configure" in dir(mod):
                 mod.configure()
@@ -157,6 +249,10 @@ class Boot:
                 except Exception as ex:
                     logging.exception(ex)
         Broker.stop()
+
+    @classmethod
+    def start(cls):
+        cls.wrap(cls.boot)
 
     @classmethod
     def wrap(cls, func, *args):

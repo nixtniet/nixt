@@ -16,37 +16,6 @@ from .objects import Object
 from .package import Mods
 
 
-class Arguments:
-
-    args = None
-    txt = None
-
-    @classmethod
-    def getargs(cls):
-        "parse commandline arguments."
-        parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
-        parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
-        parser.add_argument("-c", "--console", action="store_true", help="start console.")
-        parser.add_argument("-d", "--background", action="store_true", help="start background daemon.")
-        parser.add_argument("-i", "--ignore", default="", help='modules to ignore.')
-        parser.add_argument("-l", "--level", default=Main.level, help='set loglevel.')
-        parser.add_argument("-m", "--mods", default="", help='modules to load.')
-        parser.add_argument("-n", "--index", action="store", type=int, help="set index to use.")
-        parser.add_argument("-p", "--prune", action="store_true", help="prune directories.")
-        parser.add_argument("-r", "--read", action="store_true", help="read modules on start.")
-        parser.add_argument("-s", "--service", action="store_true", help="start service.")
-        parser.add_argument("-t", "--threaded", action="store_true", help="use threads.")
-        parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
-        parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
-        parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
-        parser.add_argument("-x", "--admin", action="store_true", help="enable admin mode.")
-        parser.add_argument("--wdr", help='set working directory.')
-        parser.add_argument("--nochdir", action="store_true", help='set working directory.')
-        cls.args, arguments = parser.parse_known_args()
-        cls.txt = " ".join(arguments)
-        Object.merge(Main, cls.args)
-
-
 class Line(Console):
 
     def raw(self, text):
@@ -74,7 +43,7 @@ class Scripts:
         Boot.privileges()
         Boot.pidfile(Main.name)
         Boot.boot()
-        Boot.init()
+        Boot.init(Main.mods)
         Boot.forever()
 
     @staticmethod
@@ -105,7 +74,6 @@ class Scripts:
         Boot.privileges()
         Boot.boot()
         Boot.pidfile(Main.name)
-        Boot.init()
         Boot.forever()
 
 
@@ -134,7 +102,6 @@ class Run:
     def main(cls, name=""):
         "main"
         Main.name = name or Main.name
-        Arguments.getargs()
         if Main.background:
             Scripts.background()
         elif Main.console:
@@ -189,7 +156,6 @@ WantedBy=multi-user.target"""
 
 def __dir__():
     return (
-        'Arguments',
         'Line',
         'CSL',
         'Run',

@@ -38,12 +38,7 @@ class Mods:
     @classmethod
     def get(cls, modname):
         "return module."
-        mod = cls.modules.get(modname, None)
-        if mod:
-            return mod
-        result = list(cls.iter(modname))
-        if result:
-            return result[0][-1]
+        return cls.modules.get(modname, None)
 
     @classmethod
     def has(cls, attr):
@@ -55,12 +50,14 @@ class Mods:
         return ",".join(result)
 
     @classmethod
-    def iter(cls, mods=""):
+    def iter(cls):
         "loop over modules."
         has = []
-        if Main.all and not mods:
+        if Main.all:
             mods = Mods.list()
-        for name in Utils.spl(mods or Main.mods):
+        else:
+            mods = Main.mods
+        for name in Utils.spl(mods):
             if name in Utils.spl(Main.ignore):
                 continue
             if name in has:
