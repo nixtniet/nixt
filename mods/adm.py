@@ -12,25 +12,14 @@ from nixt.package import Mods
 from nixt.persist import Workdir
 
 
-def cmd(event):
-    "list available commands."
-    event.reply(",".join(sorted(Commands.commands(event.orig))))
-
-
-def mod(event):
-    "list available modules."
-    mods = Mods.list()
-    if not mods:
-        event.reply("no modules available")
-        return
-    event.reply(mods)
-
-
 def srv(event):
     "generate systemd service file."
     import getpass
     name = getpass.getuser()
     event.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
+
+
+srv.allow = "admin"
 
 
 def tbl(event):
@@ -45,15 +34,13 @@ def tbl(event):
     Mods.setmd5s()
     event.reply("# This file is placed in the Pubic Domain.\n\n")
     event.reply('"tables"\n\n')
+    event.reply(f"ALLOWS = {Json.dumps(Commands.allows, indent=4, sort_keys=True)}\n\n")
     event.reply(f"CORE = {Json.dumps(Boot.md5s, indent=4, sort_keys=True)}\n\n")
     event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4, sort_keys=True)}\n\n")
-    event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4, sort_keys=True)}\n\n")
-    event.reply(f"SKIPS = {Json.dumps(Commands.skips, indent=4, sort_keys=True)}")
+    event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4, sort_keys=True)}")
 
 
-def ver(event):
-    "show verson."
-    event.reply(f"{Main.name.upper()} {Main.version}")
+tbl.allow = "admin"
 
 
 def wdr(event):
@@ -61,7 +48,7 @@ def wdr(event):
     event.reply(Workdir.workdir())
 
 
-wdr.skip = "irc"
+wdr.allow = "admin"
 
 
 SYSTEMD = """[Unit]

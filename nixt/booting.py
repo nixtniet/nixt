@@ -62,7 +62,6 @@ class Boot:
             Disk.read(Main, "main", "config")
         if Main.wdr == f".{Main.name}":
             Main.wdr = os.path.expanduser(f"~/.{Main.name}")
-        cls.setmd5s()
         Workdir.skel()
         Log.size(len(Main.name))
         Log.level(Main.level or "info")
@@ -117,10 +116,6 @@ class Boot:
             for name, thr in thrs:
                 thr.join()
 
-    @classmethod
-    def setmd5s(cls):
-        cls.md5s.update(Utils.md5dir(cls.path))
-
     @staticmethod
     def pidfile(name):
         "write pidfile."
@@ -150,18 +145,23 @@ class Boot:
             Commands.table()
             Mods.sums()
         if not Commands.names:
-            cls.scanner()
+            cls.scanner(Mods.list())
 
     @classmethod
-    def scanner(cls):
+    def scanner(cls, mods=""):
         "scan named modules for commands."
         res = []
-        for name, mod in Mods.iter():
+        for name, mod in Mods.iter(mods):
             Commands.scan(mod)
             if "configure" in dir(mod):
                 mod.configure()
             res.append((name, mod))
         return res
+
+    @classmethod
+    def setmd5s(cls):
+        "set md5 sums."
+        cls.md5s.update(Utils.md5dir(cls.path))
 
     @classmethod
     def shutdown(cls):

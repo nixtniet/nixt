@@ -10,10 +10,11 @@ from nixt.persist import Cfg
 
 
 def cfg(event):
+    "configure."
     if not event.args:
-        mods = f"{Mods.has('Config') + ',main'}"
-        if mods.startswith(","):
-            mods = mods[1:]
+        mods = f"{'main,' + Mods.has('Config')}"
+        if mods.endswith(","):
+            mods = mods[:-1]
         event.reply(f"cfg <{mods}>")
         return
     name = event.args[0]
@@ -45,4 +46,4 @@ def cfg(event):
     event.ok()
 
 
-cfg.skip = "irc"
+cfg.allow = "admin"

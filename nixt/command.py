@@ -15,10 +15,9 @@ from .utility import Utils
 
 class Commands:
 
-    admin = ""
+    allows = {}
     cmds = {}
     names = {}
-    skips = {}
 
     @classmethod
     def add(cls, *args):
@@ -30,16 +29,31 @@ class Commands:
             if "__" in modname:
                 continue
             cls.names[name] = modname
-            if "skip" in dir(func):
-                cls.skips[name] = func.skip
+            if "allow" in dir(func):
+                cls.allows[name] = func.allow
+
+    @classmethod
+    def allow(cls, cmd, txt):
+        "check whether to skip a command."
+        alw = cls.allows.get(cmd, None)
+        if not alw:
+            return True
+        if Main.admin and "admin" not in alw:
+            return False
+        for ok in Utils.spl(alw):
+            if ok.lower() in txt.lower():
+                return True
+            return False
+        return True
 
     @classmethod
     def command(cls, evt):
         "command callback."
         Methods.parse(evt, evt.text)
-        if cls.skip(evt.orig, cls.skips.get(evt.cmd, "")):
-            evt.ready()
-            return
+        if cls.allows.get(evt.cmd):
+            if not cls.allow(evt.cmd, evt.orig):
+                evt.ready()
+                return
         func = cls.get(evt.cmd)
         if not func:
             name = cls.names.get(evt.cmd)
@@ -61,8 +75,8 @@ class Commands:
         for nme in cls.names:
             if Main.admin and name not in Utils.spl(cls.admin):
                 continue
-            skp = cls.skips.get(nme, False)
-            if skp and cls.skip(orig, skp):
+            alw = cls.allows.get(nme, False)
+            if alw and not cls.allow(nme, orig):
                 continue
             res.append(nme)
         return res
@@ -80,29 +94,15 @@ class Commands:
                 cls.add(cmdz)
 
     @classmethod
-    def scanner(cls):
-        "scan named modules for commands."
-        for name, mod in Mods.iter(Mods.list()):
-            cls.scan(mod)
-
-    @classmethod
-    def skip(cls, orig, skips):
-        "check whether to skip a command."
-        for skp in Utils.spl(skips):
-            if skp.lower() in orig.lower():
-                return True
-        return False
-
-    @classmethod
     def table(cls):
         "load names from table."
         mod = Mods.get("tbl")
         names = getattr(mod, "NAMES", None)
         if names:
             cls.names.update(names)
-        skips = getattr(mod, "SKIPS", None)
-        if skips:
-            cls.skips.update(skips)
+        alw = getattr(mod, "ALLOWS", None)
+        if alw:
+            cls.allows.update(alw)
 
 
 def __dir__():
