@@ -32,11 +32,13 @@ class Event(Base):
         self.text = ""
 
     def display(self):
+        "print results."
         bot = Broker.get(self.orig)
         if bot:
             bot.display(self)
 
     def ok(self, txt=""):
+        "print ok response."
         self.reply(f"ok {txt}".strip())
 
     def ready(self):
@@ -137,6 +139,7 @@ class Client(Handler):
         return self.iqueue.get()
 
     def put(self, event):
+        "put event into queue."
         self.iqueue.put(event)
 
     def raw(self, text):

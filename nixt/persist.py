@@ -44,12 +44,14 @@ class Cfg:
 
     @classmethod
     def load(cls, obj, name=""):
+        "read a config."
         if not name:
-            name = Utils.modname(obj)
+            name = Utils.clsname(obj).lower()
         return Disk.read(obj, name, "config")
 
     @classmethod
     def save(cls, obj, name=""):
+        "save a config."
         return Disk.write(obj, name, "config")
 
 
@@ -184,11 +186,13 @@ class Table:
 
     @classmethod
     def load(cls, obj, name=""):
-        return Disk.read(obj, name or Utils.modname(obj), "tables")
+        "load a table."
+        return Disk.read(obj, name or Utils.clsname(obj), "tables")
 
     @classmethod
     def save(cls, obj, name=""):
-        return Disk.write(obj, name or Utils.modname(obj), "tables")
+        "save a table."
+        return Disk.write(obj, name or Utils.clsname(obj), "tables")
 
 
 class Workdir:

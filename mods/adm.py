@@ -4,8 +4,10 @@
 "administrator"
 
 
+from nixt.booting import Boot
 from nixt.command import Commands
 from nixt.configs import Main
+from nixt.encoder import Json
 from nixt.package import Mods
 from nixt.persist import Workdir
 
@@ -24,6 +26,31 @@ def mod(event):
     event.reply(mods)
 
 
+def srv(event):
+    "generate systemd service file."
+    import getpass
+    name = getpass.getuser()
+    event.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
+
+
+def tbl(event):
+    "create table."
+    Boot.md5s = {}
+    Commands.names = {}
+    Mods.md5s = {}
+    Commands.skip = {}
+    for name, module in Mods.all():
+        Commands.scan(module)
+    Boot.setmd5s()
+    Mods.setmd5s()
+    event.reply("# This file is placed in the Pubic Domain.\n\n")
+    event.reply('"tables"\n\n')
+    event.reply(f"CORE = {Json.dumps(Boot.md5s, indent=4, sort_keys=True)}\n\n")
+    event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4, sort_keys=True)}\n\n")
+    event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4, sort_keys=True)}\n\n")
+    event.reply(f"SKIPS = {Json.dumps(Commands.skips, indent=4, sort_keys=True)}")
+
+
 def ver(event):
     "show verson."
     event.reply(f"{Main.name.upper()} {Main.version}")
@@ -35,3 +62,17 @@ def wdr(event):
 
 
 wdr.skip = "irc"
+
+
+SYSTEMD = """[Unit]
+Description=%s
+After=multi-user.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""

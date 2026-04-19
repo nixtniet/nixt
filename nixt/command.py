@@ -7,6 +7,7 @@
 import inspect
 
 
+from .configs import Main
 from .objects import Methods
 from .package import Mods
 from .utility import Utils
@@ -14,6 +15,7 @@ from .utility import Utils
 
 class Commands:
 
+    admin = ""
     cmds = {}
     names = {}
     skips = {}
@@ -25,7 +27,7 @@ class Commands:
             name = func.__name__
             cls.cmds[name] = func
             modname = func.__module__.split(".")[-1]
-            if "__" in modname or name in ["tbl", "srv"]:
+            if "__" in modname:
                 continue
             cls.names[name] = modname
             if "skip" in dir(func):
@@ -57,6 +59,8 @@ class Commands:
         "list cpmmands available."
         res = []
         for nme in cls.names:
+            if Main.admin and name not in Utils.spl(cls.admin):
+                continue
             skp = cls.skips.get(nme, False)
             if skp and cls.skip(orig, skp):
                 continue
@@ -83,6 +87,7 @@ class Commands:
 
     @classmethod
     def skip(cls, orig, skips):
+        "check whether to skip a command."
         for skp in Utils.spl(skips):
             if skp.lower() in orig.lower():
                 return True
@@ -90,6 +95,7 @@ class Commands:
 
     @classmethod
     def table(cls):
+        "load names from table."
         mod = Mods.get("tbl")
         names = getattr(mod, "NAMES", None)
         if names:

@@ -10,15 +10,13 @@ import os
 
 
 from .configs import Main
-from .objects import Base
+from .objects import Base, Object
 from .utility import Utils
 
 
 class Mods:
 
-    dirs = {
-            f"{Utils.pkgname(Base)}.modules": os.path.join(os.path.dirname(__spec__.loader.path), "modules")
-           }
+    dirs = {}
     md5s = {}
     modules = {}
 
@@ -39,6 +37,7 @@ class Mods:
 
     @classmethod
     def get(cls, name):
+        "return module from cache or import module."
         for pkgname, path in cls.dirs.items():
             fnm = os.path.join(path, name + ".py")
             if not os.path.exists(fnm):
@@ -128,7 +127,15 @@ class Mods:
             cls.add(package.__path__[0], package.__name__)
 
     @classmethod
+    def setmd5s(cls):
+        md5s = Base()
+        for path in cls.dirs.values():
+            Object.notset(md5s, Utils.md5dir(path))
+        Object.update(cls.md5s, md5s)
+
+    @classmethod
     def sums(cls):
+        "load md5 sums from table."
         mod = cls.get("tbl")
         if not mod:
             return

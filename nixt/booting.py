@@ -42,6 +42,7 @@ class Boot:
 
     @classmethod
     def check(cls, opts):
+        "check for command line options."
         for arg in sys.argv:
             if not arg.startswith("-"):
                 continue
@@ -61,7 +62,7 @@ class Boot:
             Disk.read(Main, "main", "config")
         if Main.wdr == f".{Main.name}":
             Main.wdr = os.path.expanduser(f"~/.{Main.name}")
-        cls.md5s.update(Utils.md5dir(cls.path))
+        cls.setmd5s()
         Workdir.skel()
         Log.size(len(Main.name))
         Log.level(Main.level or "info")
@@ -116,6 +117,10 @@ class Boot:
             for name, thr in thrs:
                 thr.join()
 
+    @classmethod
+    def setmd5s(cls):
+        cls.md5s.update(Utils.md5dir(cls.path))
+
     @staticmethod
     def pidfile(name):
         "write pidfile."
@@ -138,6 +143,7 @@ class Boot:
 
     @classmethod
     def scan(cls):
+        "load tables or scan directories."
         if Main.read:
             cls.scanner()
         else:

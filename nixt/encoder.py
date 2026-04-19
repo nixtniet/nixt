@@ -14,6 +14,7 @@ from .objects import Object
 class Encoder(json.JSONEncoder):
 
     def default(self, o):
+        "generate serializable versions."
         if isinstance(o, type):
             return Object.skip(o)
         if isinstance(o, dict):
