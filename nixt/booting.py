@@ -41,6 +41,16 @@ class Boot:
         sys.stdout.flush()
 
     @classmethod
+    def check(cls, opts):
+        for arg in sys.argv:
+            if not arg.startswith("-"):
+                continue
+            for opt in opts:
+                if opt in arg:
+                    return True
+        return False
+
+    @classmethod
     def configure(cls, name=""):
         "in the beginning."
         if cls.configured:

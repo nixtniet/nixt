@@ -100,7 +100,12 @@ def payload(cli, todo):
 def main():
     if Main.prune and os.path.exists(Main.wdr):
         shutil.rmtree(Main.wdr)
+    if Boot.check("v"):
+        Main.verbose = True
+    if Boot.check("t"):
+        Main.threaded = True
     Boot.configure()
+    Main.all = True
     Boot.scan()
     if Main.threaded:
         Clients.init(os.cpu_count(), CLI)
