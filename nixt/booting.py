@@ -55,10 +55,7 @@ class Boot:
         Workdir.skel()
         Log.size(len(Main.name))
         Log.level(Main.level or "info")
-        Mods.add(
-                 f"{Utils.pkgname(Main)}.modules",
-                 os.path.join(os.path.dirname(__spec__.loader.path), "modules")
-                ) 
+        Mods.add(f"{Utils.pkgname(Main)}.modules", Utils.moddir()) 
         if Main.user:
             Mods.add(os.path.join(Main.wdr, "mods"), "modules")
             Mods.add('mods', 'mods')
