@@ -59,13 +59,13 @@ class Mods:
         return ",".join(result)
 
     @classmethod
-    def iter(cls):
+    def iter(cls, mods=None):
         "loop over modules."
         has = []
         if Main.all:
             mods = Mods.list()
         else:
-            mods = Main.mods
+            mods = mods or Main.mods
         for name in Utils.spl(mods):
             if name in Utils.spl(Main.ignore):
                 continue

@@ -509,6 +509,8 @@ def err(event):
     nre = 0
     nrs = 0
     for fnm, obj in Locate.find(Methods.fqn(Rss), event.gets):
+        if "error" not in obj:
+            continue
         if not obj.error:
             continue
         if event.rest and event.rest in obj.error:
@@ -679,3 +681,4 @@ TEMPLATE = """<opml version="1.0">
     </head>
     <body>
         <outline title="opml" text="rss feeds">"""
+

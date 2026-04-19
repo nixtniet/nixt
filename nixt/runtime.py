@@ -114,6 +114,8 @@ class Scripts:
         Main.all = True
         Boot.configure()
         Boot.scan()
+        if Main.admin:
+            Commands.add(Cmd.srv, Cmd.tbl)
         Run.cmd(Arguments.txt)
 
     @staticmethod

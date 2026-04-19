@@ -91,14 +91,13 @@ class Commands:
     @classmethod
     def table(cls):
         mod = Mods.get("tbl")
-        print(mod)
         names = getattr(mod, "NAMES", None)
         if names:
             cls.names.update(names)
         skips = getattr(mod, "SKIPS", None)
         if skips:
             cls.skips.update(skips)
-        print(cls.names)
+
 
 def __dir__():
     return (
