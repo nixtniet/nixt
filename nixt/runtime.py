@@ -14,6 +14,7 @@ from .encoder import Json
 from .handler import Console, Event
 from .objects import Object
 from .package import Mods
+from .utility import SYSTEMD
 
 
 class Arguments:
@@ -151,20 +152,6 @@ class Cmd:
         event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4)}\n\n")
         event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4)}\n\n")
         event.reply(f"SKIPS = {Json.dumps(Commands.skips, indent=4)}")
-
-
-SYSTEMD = """[Unit]
-Description=%s
-After=multi-user.target
-
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
 
 
 def main():
