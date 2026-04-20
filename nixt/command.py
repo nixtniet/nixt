@@ -7,7 +7,6 @@
 import inspect
 
 
-from .configs import Main
 from .objects import Methods
 from .package import Mods
 from .utility import Utils
@@ -29,31 +28,11 @@ class Commands:
             if "__" in modname:
                 continue
             cls.names[name] = modname
-            if "allow" in dir(func):
-                cls.allows[name] = func.allow
-
-    @classmethod
-    def allow(cls, cmd, txt):
-        "check whether to skip a command."
-        alw = cls.allows.get(cmd, None)
-        if not alw:
-            return True
-        if Main.admin and "admin" not in alw:
-            return False
-        for ok in Utils.spl(alw):
-            if ok.lower() in txt.lower():
-                return True
-            return False
-        return True
 
     @classmethod
     def command(cls, evt):
         "command callback."
         Methods.parse(evt, evt.text)
-        if cls.allows.get(evt.cmd):
-            if not cls.allow(evt.cmd, evt.orig):
-                evt.ready()
-                return
         func = cls.get(evt.cmd)
         if not func:
             name = cls.names.get(evt.cmd)
@@ -71,15 +50,7 @@ class Commands:
     @classmethod
     def commands(cls, orig):
         "list cpmmands available."
-        res = []
-        for nme in cls.names:
-            if Main.admin and name not in Utils.spl(cls.admin):
-                continue
-            alw = cls.allows.get(nme, False)
-            if alw and not cls.allow(nme, orig):
-                continue
-            res.append(nme)
-        return res
+        return cls.names.keys()
 
     @classmethod
     def get(cls, cmd):
@@ -100,9 +71,6 @@ class Commands:
         names = getattr(mod, "NAMES", None)
         if names:
             cls.names.update(names)
-        alw = getattr(mod, "ALLOWS", None)
-        if alw:
-            cls.allows.update(alw)
 
 
 def __dir__():

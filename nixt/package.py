@@ -9,8 +9,8 @@ import logging
 import os
 
 
-from .configs import Main
 from .objects import Base, Object
+from .persist import Workdir
 from .utility import Utils
 
 
@@ -36,6 +36,13 @@ class Mods:
         return cls.iter(cls.list())
 
     @classmethod
+    def configure(cls, user=False):
+        cls.add(f"{Utils.pkgname(Mods)}.modules", Utils.moddir())
+        if user:
+            cls.add(os.path.join(Workdir.wdr, "mods"), "modules")
+            cls.add('mods', 'mods')
+
+    @classmethod
     def get(cls, name):
         "return module from cache or import module."
         for pkgname, path in cls.dirs.items():
@@ -58,15 +65,11 @@ class Mods:
         return ",".join(result)
 
     @classmethod
-    def iter(cls, mods=None):
+    def iter(cls, mods="", ignore=""):
         "loop over modules."
         has = []
-        if Main.all:
-            mods = Mods.list()
-        else:
-            mods = mods or Main.mods
         for name in Utils.spl(mods):
-            if name in Utils.spl(Main.ignore):
+            if name in Utils.spl(ignore):
                 continue
             if name in has:
                 continue
@@ -76,7 +79,7 @@ class Mods:
                 yield name, mod
 
     @classmethod
-    def list(cls):
+    def list(cls, ignore=""):
         "comma seperated list of available modules."
         mods = []
         for pkgname, path in cls.dirs.items():
@@ -84,7 +87,7 @@ class Mods:
                 x[:-3] for x in os.listdir(path)
                 if x.endswith(".py") and
                 not x.startswith("__") and
-                x[:-3] not in Utils.spl(Main.ignore)
+                x[:-3] not in Utils.spl(ignore)
             ])
         return ",".join(sorted(set(mods)))
 

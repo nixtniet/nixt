@@ -5,15 +5,17 @@
 
 
 import argparse
+import os
 
 
 from .booting import Boot
 from .command import Commands
 from .configs import Main
-from .encoder import Json
 from .handler import Console, Event
 from .objects import Object
+from .persist import Disk, Workdir
 from .package import Mods
+from .utility import Log, Utils
 
 
 class Arguments:
@@ -42,6 +44,7 @@ class Arguments:
         parser.add_argument("-x", "--admin", action="store_true", help="enable admin mode.")
         parser.add_argument("--wdr", help='set working directory.')
         parser.add_argument("--nochdir", action="store_true", help='set working directory.')
+        parser.add_argument("--noignore", action="store_true", help="disable ignore")
         cls.args, arguments = parser.parse_known_args()
         cls.txt = " ".join(arguments)
         Object.merge(Main, cls.args)
@@ -78,6 +81,31 @@ class Run:
             Commands.command(evt)
             evt.wait()
 
+    @classmethod
+    def configure(cls, name=""):
+        "in the beginning."
+        Main.name = name or Main.name or Utils.pkgname(Boot)
+        if Main.read:
+            Disk.read(Main, "main", "config")
+        Workdir.configure(Main.name)
+        Log.configure(Main.name, Main.level or "info")
+        Mods.configure(Main.user)
+        if Main.all:
+            Main.mods = Mods.list()
+        if Main.noignore:
+            Main.ignore = ""
+
+    @classmethod
+    def scan(cls):
+        "load tables or scan directories."
+        if Main.read:
+            Boot.scanner(Mods.list())
+        else:
+            Commands.table()
+            Mods.sums()
+        if not Commands.names:
+            Boot.scanner(Mods.list())
+
 
 class Scripts:
 
@@ -86,10 +114,10 @@ class Scripts:
         "background script."
         Boot.daemon(Main.verbose, Main.nochdir)
         Boot.privileges()
-        Boot.configure()
-        Boot.pidfile(Main.name)
-        Boot.scan()
-        Boot.init()
+        Run.configure()
+        Boot.pidfile(Main.name, Main.wait)
+        Run.scan()
+        Boot.init(Main.mods)
         Boot.forever()
 
     @staticmethod
@@ -97,11 +125,11 @@ class Scripts:
         "console script."
         import readline
         readline.redisplay()
-        Boot.configure()
+        Run.configure()
         if Main.verbose:
             Boot.banner()
-        Boot.scan()
-        Boot.init()
+        Run.scan()
+        Boot.init(Main.mods, Main.wait)
         csl = CSL()
         csl.start()
         Boot.forever()
@@ -112,25 +140,26 @@ class Scripts:
         if not Arguments.txt:
             return
         Main.all = True
-        Boot.configure()
-        Boot.scan()
+        Run.configure()
+        Run.scan()
         Run.cmd(Arguments.txt)
 
     @staticmethod
     def service():
         "service script."
         Boot.privileges()
-        Boot.configure()
-        Boot.scan()
+        Run.configure()
+        Run.scan()
         Boot.banner()
-        Boot.pidfile(Main.name)
-        Boot.init()
+        Boot.pidfile(Main.name, Main.wait)
+        Boot.init(Main.mods)
         Boot.forever()
 
 
 def main():
     "main"
     Arguments.getargs()
+    Main.ignore = "mbx,rst,udp,web,wsd"
     if Main.daemon:
         Scripts.background()
     elif Main.console:

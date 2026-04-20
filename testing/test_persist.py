@@ -14,10 +14,10 @@ sys.path.insert(0, ".")
 
 from nixt.configs import Main
 from nixt.objects import Base
-from nixt.persist import Cfg, Disk
+from nixt.persist import Cfg, Disk, Workdir
 
 
-Main.wdr = '.test'
+Workdir.wdr = '.test'
 
 
 class TestPersist(unittest.TestCase):
@@ -31,7 +31,7 @@ class TestPersist(unittest.TestCase):
         obj = Base()
         opath = Disk.write(obj)
         self.assertTrue(os.path.exists(os.path.join(
-                                                    Main.wdr,
+                                                    Workdir.wdr,
                                                     "store",
                                                     opath
                                                    )))
@@ -40,7 +40,7 @@ class TestPersist(unittest.TestCase):
         Main.a = "b"
         Cfg.save(Main, "main")
         self.assertTrue(os.path.exists(os.path.join(
-                                                    Main.wdr,
+                                                    Workdir.wdr,
                                                     "config",
                                                     "main"
                                                    )))

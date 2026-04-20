@@ -21,6 +21,7 @@ from nixt.command import Commands
 from nixt.configs import Main
 from nixt.handler import Event, Output
 from nixt.objects import Methods
+from nixt.package import Mods
 from nixt.threads import Thread
 from nixt.utility import Time
 
@@ -98,15 +99,16 @@ def payload(cli, todo):
 
 
 def main():
-    if Main.prune and os.path.exists(Main.wdr):
+    if not Boot.check('p') and os.path.exists(Main.wdr):
         shutil.rmtree(Main.wdr)
     if Boot.check("v"):
         Main.verbose = True
     if Boot.check("t"):
         Main.threaded = True
-    Boot.configure()
     Main.all = True
-    Boot.scan()
+    Methods.parse(Main, " ".join(sys.argv[1:]))
+    Boot.configure(path=Main.wdr, user=True)
+    Boot.scan(Mods.list())
     if Main.threaded:
         Clients.init(os.cpu_count(), CLI)
     else:
@@ -117,8 +119,14 @@ def main():
     thrs = []
     for _x in range(nrs):
         thrs.append(Thread.launch(payload, cli, pre))
+    for thr in thrs:
+        thr.join()
+    thrs = []
     for _x in range(nrs):
         thrs.append(Thread.launch(payload, cli, examples))
+    thrs = []
+    for thr in thrs:
+        thr.join()
     for _x in range(nrs):
         thrs.append(Thread.launch(payload, cli, post))
     for thr in thrs:
@@ -148,7 +156,7 @@ examples = {
     "eml": ["", "root@localhost"],
     "fie": ["", "log", "todo"],
     "flt": ["", "0"],
-    "fnd": ["", "log", "rss", "config", "todo"],
+    "fnd": ["", "log", "rss", "config", "todo", 'timers'],
     "lou": [""],
     "man": ["", "nixt nixtniet@gmail.com Nixt Niet"],
     "mbx": [""],
@@ -163,22 +171,36 @@ examples = {
     "sil": [""],
     "slg": [""],
     "srv": [""],
-    "syn": [""],
     "thr": [""],
-    "tmr": ["", "22:00 test"],
     "upt": [""],
     "wsd": [""]
 }
 
+
 pre = {
-    "cfg": ["", "nick=mekker"],
+    "cfg": [
+        '',
+        'main',
+        'irc',
+        'rss',
+        'rst',
+        'udp',
+        'web',
+        'main nick=mekker',
+        'irc nick=mekker',
+        'rss nick=mekker',
+        'rst nick=mekker',
+        'udp nick=mekker',
+        'web nick=mekker'
+    ],
     "imp": [
         "",
         "testing/opml/feeds.opml",
     ],
-    "log": ["", "log test"],
+    "log": ["", "test"],
     "rss": ["", "http://hnrss.org/newest"],
-    "tdo": ["", "test"]
+    "tdo": ["", "test"],
+    "tmr": ["", "22:00 test"],
 }
 
 post = {

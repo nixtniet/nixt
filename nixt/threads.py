@@ -45,7 +45,7 @@ class Task(threading.Thread):
     def run(self):
         "run function."
         if time.time() - Task.last < 0.01:
-            time.sleep(0.001)
+            time.sleep(0.01)
         Task.last = time.time()
         func, args = self.queue.get()
         if args and hasattr(args[0], "ready"):
@@ -81,7 +81,7 @@ class Thread:
     def name(cls, obj):
         "string of function/method."
         if inspect.ismethod(obj):
-            return f"{obj.__func__.__qualname__}"
+            return f"{obj.__self__.__class__.__name__}.{obj.__name__}"
         if inspect.isfunction(obj):
             return repr(obj).split()[1]
         return repr(obj)

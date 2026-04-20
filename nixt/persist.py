@@ -11,7 +11,6 @@ import pathlib
 import threading
 
 
-from .configs import Main
 from .encoder import Json
 from .objects import Base, Methods, Object
 from .utility import Time, Utils
@@ -69,10 +68,10 @@ class Disk:
             pth.parent.mkdir(parents=True, exist_ok=True)
 
     @classmethod
-    def read(cls, obj, path, base="store", error=False):
+    def read(cls, obj, path, base="store", error=True):
         "read object from path."
         with cls.lock:
-            pth = os.path.join(Main.wdr, base, path)
+            pth = os.path.join(Workdir.wdr, base, path)
             if not os.path.exists(pth):
                 return False
             with open(pth, "r", encoding="utf-8") as fpt:
@@ -91,7 +90,7 @@ class Disk:
         with cls.lock:
             if path == "":
                 path = Methods.ident(obj)
-            pth = os.path.join(Main.wdr, base, path)
+            pth = os.path.join(Workdir.wdr, base, path)
             Disk.cdir(pth)
             with open(pth, "w", encoding="utf-8") as fpt:
                 Json.dump(obj, fpt, indent=4)
@@ -118,7 +117,6 @@ class Locate:
     def find(cls, kind, selector={}, removed=False, matching=False, nritems=None):
         "locate objects by matching atributes."
         nrs = 0
-        Workdir.skel()
         for pth in Locate.fns(Workdir.long(kind)):
             obj = Cache.get(pth)
             if obj is None:
@@ -153,7 +151,7 @@ class Locate:
     @classmethod
     def fns(cls, kind):
         "file names by kind of object."
-        path = os.path.join(Main.wdr, "store", kind)
+        path = os.path.join(Workdir.wdr, "store", kind)
         for rootdir, dirs, _files in os.walk(path, topdown=True):
             for dname in dirs:
                 if dname.count("-") != 2:
@@ -197,10 +195,20 @@ class Table:
 
 class Workdir:
 
+    wdr = f".{Utils.pkgname(Disk)}"
+
+    @staticmethod
+    def configure(name="", path=""):
+        if path:
+            Workdir.wdr = path
+        else:
+            Workdir.wdr = os.path.expanduser(f"~/.{name}")
+        Workdir.skel()
+
     @staticmethod
     def kinds():
         "show kind on objects in cache."
-        path = os.path.join(Main.wdr, "store")
+        path = os.path.join(Workdir.wdr, "store")
         if os.path.exists(path):
             return os.listdir(path)
 
@@ -220,11 +228,11 @@ class Workdir:
     @staticmethod
     def skel():
         "create directories."
-        if not Main.wdr:
+        if not Workdir.wdr:
             return
-        if not os.path.exists(Main.wdr):
-            Disk.cdir(Main.wdr)
-        path = os.path.abspath(Main.wdr)
+        if not os.path.exists(Workdir.wdr):
+            Disk.cdir(Workdir.wdr)
+        path = os.path.abspath(Workdir.wdr)
         for wpth in ["config", "mods", "store"]:
             pth = pathlib.Path(os.path.join(path, wpth))
             pth.mkdir(parents=True, exist_ok=True)
@@ -232,7 +240,7 @@ class Workdir:
     @staticmethod
     def workdir(path=""):
         "return workdir."
-        return os.path.join(Main.wdr, path)
+        return os.path.join(Workdir.wdr, path)
 
 
 def __dir__():
@@ -242,7 +250,4 @@ def __dir__():
         'Locate',
         'Yable',
         'Workdir',
-        'd',
-        'e',
-        'j'
     )

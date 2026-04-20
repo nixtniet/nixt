@@ -4,6 +4,7 @@
 "callback engine"
 
 
+import collections
 import logging
 import queue
 import threading
@@ -28,7 +29,7 @@ class Event(Base):
         self.index = 0
         self.kind = "event"
         self.orig = ""
-        self.result = {}
+        self.result = collections.deque()
         self.text = ""
 
     def display(self):
@@ -47,7 +48,7 @@ class Event(Base):
 
     def reply(self, text):
         "add text to result."
-        self.result[time.time()] = text
+        self.result.append(text)
 
     def wait(self, timeout=0.0):
         "wait for completion."
@@ -118,8 +119,8 @@ class Client(Handler):
     def display(self, event):
         "display event results."
         with self.olock:
-            for tme in event.result:
-                self.dosay(event.channel, event.result.get(tme))
+            for txt in event.result:
+                self.dosay(event.channel, txt)
 
     def dosay(self, channel, text):
         "say called by display."
@@ -205,6 +206,7 @@ class Output(Client):
     def wait(self):
         "wait for output to finish."
         try:
+            print(self)
             self.oqueue.join()
         except Exception as ex:
             logging.exception(ex)

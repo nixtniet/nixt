@@ -198,18 +198,23 @@ class Log:
     datefmt = "%H:%M:%S"
     format = "%(module)-3s %(message)s"
 
-    @staticmethod
-    def size(nr):
+    @classmethod
+    def configure(cls, name, level="info"):
+        cls.size(len(name))
+        cls.level(level or "info")
+
+    @classmethod
+    def size(cls, nr):
         "set text size."
-        index = Log.format.find("-")+1
-        newformat = Log.format[:index]
+        index = cls.format.find("-")+1
+        newformat = cls.format[:index]
         newformat += str(nr)
-        newformat += Log.format[index+1:]
-        Log.format = newformat
+        newformat += cls.format[index+1:]
+        cls.format = newformat
         Format.size = nr
 
-    @staticmethod
-    def level(loglevel):
+    @classmethod
+    def level(cls, loglevel):
         "set log level."
         formatter = Format(Log.format, Log.datefmt)
         stream = logging.StreamHandler()

@@ -5,6 +5,7 @@
 
 
 import json
+import threading
 import types
 
 
@@ -13,45 +14,52 @@ from .objects import Object
 
 class Encoder(json.JSONEncoder):
 
+    lock = threading.RLock()
+
     def default(self, o):
         "generate serializable versions."
-        if isinstance(o, type):
-            return Object.skip(o)
-        if isinstance(o, dict):
-            return o.items()
-        if isinstance(o, list):
-            return iter(o)
-        if isinstance(o, types.MappingProxyType):
-            return dict(o)
-        try:
-            return json.JSONEncoder.default(self, o)
-        except TypeError:
+        with Encoder.lock:
+            if isinstance(o, type):
+                return Object.skip(o)
+            if isinstance(o, dict):
+                return o.items()
+            if isinstance(o, list):
+                return iter(o)
+            if isinstance(o, types.MappingProxyType):
+                return dict(o)
             try:
-                return vars(o)
+                return json.JSONEncoder.default(self, o)
             except TypeError:
-                return repr(o)
+                try:
+                    return vars(o)
+                except TypeError:
+                    return repr(o)
 
 
 class Json:
 
-    @staticmethod
-    def dump(*args, **kw):
-        "dump object to disk."
-        kw["cls"] = Encoder
-        return json.dump(*args, **kw)
+    lock = threading.RLock()
 
-    @staticmethod
-    def dumps(*args, **kw):
+    @classmethod
+    def dump(cls, *args, **kw):
+        "dump object to disk."
+        with cls.lock:
+            kw["cls"] = Encoder
+            return json.dump(*args, **kw)
+
+    @classmethod
+    def dumps(cls, *args, **kw):
         "dump object to string."
         kw["cls"] = Encoder
         return json.dumps(*args, **kw)
 
-    @staticmethod
-    def load(s, *args, **kw):
+    @classmethod
+    def load(cls, s, *args, **kw):
         "load object from disk."
-        return json.load(s, *args, **kw)
+        with cls.lock:
+            return json.load(s, *args, **kw)
 
-    @staticmethod
+    @classmethod
     def loads(s, *args, **kw):
         "load object from string."
         return json.loads(s, *args, **kw)

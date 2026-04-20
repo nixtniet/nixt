@@ -16,7 +16,7 @@ from .brokers import Broker
 from .command import Commands
 from .configs import Main
 from .package import Mods
-from .persist import Disk, Workdir
+from .persist import Workdir
 from .threads import Thread
 from .utility import Log, Utils
 
@@ -52,26 +52,10 @@ class Boot:
         return False
 
     @classmethod
-    def configure(cls, name=""):
-        "in the beginning."
-        if cls.configured:
-            logging.warning("already configured")
-            return
-        Main.name = name or Main.name or Utils.pkgname(Boot)
-        if Main.read:
-            Disk.read(Main, "main", "config")
-        if Main.wdr == f".{Main.name}":
-            Main.wdr = os.path.expanduser(f"~/.{Main.name}")
-        Workdir.skel()
-        Log.size(len(Main.name))
-        Log.level(Main.level or "info")
-        Mods.add(f"{Utils.pkgname(Main)}.modules", Utils.moddir()) 
-        if Main.user:
-            Mods.add(os.path.join(Main.wdr, "mods"), "modules")
-            Mods.add('mods', 'mods')
-        if Main.all:
-            Main.mods = Mods.list()
-        cls.configured = True
+    def configure(cls, name="", level="info", user=False, path=""):
+        Workdir.configure(name, path)
+        Log.configure(name, level or "info")
+        Mods.configure(user)
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):
@@ -105,21 +89,21 @@ class Boot:
                 _thread.interrupt_main()
 
     @classmethod
-    def init(cls):
+    def init(cls, mods, wait=False):
         "scan named modules for commands."
         thrs = []
-        for name, mod in Mods.iter():
+        for name, mod in Mods.iter(mods):
             if "init" in dir(mod):
                 thrs.append((name, Thread.launch(mod.init)))
                 cls.inits.append(name)
-        if Main.wait:
+        if wait:
             for name, thr in thrs:
                 thr.join()
 
     @staticmethod
     def pidfile(name):
         "write pidfile."
-        filename = os.path.join(Main.wdr, f"{name}.pid")
+        filename = os.path.join(Workdir.wdr, f"{name}.pid")
         if os.path.exists(filename):
             os.unlink(filename)
         path2 = pathlib.Path(filename)
@@ -137,15 +121,15 @@ class Boot:
         os.setuid(pwnam2.pw_uid)
 
     @classmethod
-    def scan(cls):
+    def scan(cls, mods="", ignore="", read=False):
         "load tables or scan directories."
-        if Main.read:
-            cls.scanner()
+        if read:
+            cls.scanner(mods or Mods.list(ignore))
         else:
             Commands.table()
             Mods.sums()
         if not Commands.names:
-            cls.scanner(Mods.list())
+            Boot.scanner(mods or Mods.list(ignore))
 
     @classmethod
     def scanner(cls, mods=""):

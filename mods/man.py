@@ -253,4 +253,4 @@ def man(event):
     ))
 
 
-man.skip = "irc"
+man.allow = "admin"
