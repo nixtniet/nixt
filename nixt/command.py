@@ -9,7 +9,6 @@ import inspect
 
 from .objects import Methods
 from .package import Mods
-from .utility import Utils
 
 
 class Commands:

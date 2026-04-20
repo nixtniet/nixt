@@ -10,7 +10,6 @@ import unittest
 
 from nixt.command import Commands
 from nixt.handler import Event, Handler
-from nixt.objects import Object
 from nixt.package import Mods
 from nixt.threads import Task
 
@@ -40,7 +39,7 @@ class TestCommands(unittest.TestCase):
         evt.text = "cmnd"
         evt.orig = repr(clt)
         Commands.command(evt)
-        self.assertTrue("yo!" in Object.values(evt.result))
+        self.assertTrue("yo!" in evt.result)
 
 
 class TestPackage(unittest.TestCase):

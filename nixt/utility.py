@@ -199,9 +199,9 @@ class Log:
     format = "%(module)-3s %(message)s"
 
     @classmethod
-    def configure(cls, name, level="info"):
-        cls.size(len(name))
-        cls.level(level or "info")
+    def configure(cls, cfg):
+        cls.size(len(cfg.name))
+        cls.level(cfg.level or "info")
 
     @classmethod
     def size(cls, nr):

@@ -15,6 +15,7 @@ import _thread
 from .brokers import Broker
 from .command import Commands
 from .configs import Main
+from .handler import Handler
 from .package import Mods
 from .persist import Workdir
 from .threads import Thread
@@ -52,10 +53,10 @@ class Boot:
         return False
 
     @classmethod
-    def configure(cls, name="", level="info", user=False, path=""):
-        Workdir.configure(name, path)
-        Log.configure(name, level or "info")
-        Mods.configure(user)
+    def configure(cls, cfg):
+        Workdir.configure(cfg)
+        Log.configure(cfg)
+        Mods.configure(cfg)
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):
@@ -157,7 +158,6 @@ class Boot:
                     mod.shutdown()
                 except Exception as ex:
                     logging.exception(ex)
-        Broker.stop()
 
     @classmethod
     def wrap(cls, func, *args):

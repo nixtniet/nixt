@@ -46,7 +46,7 @@ class TestHandler(unittest.TestCase):
         evt.text = "hello"
         self.hdl.callback(evt)
         evt.wait()
-        self.assertTrue("hello" in evt.result.values())
+        self.assertTrue("hello" in evt.result)
 
     def test_loop(self):
         evt = Event()
@@ -62,7 +62,7 @@ class TestHandler(unittest.TestCase):
         evt.text = "hello bot"
         self.hdl.put(evt)
         evt.wait()
-        self.assertTrue("hello bot" in evt.result.values())
+        self.assertTrue("hello bot" in evt.result)
 
     def test_put(self):
         hdl = Handler()
@@ -138,7 +138,7 @@ class TestMessage(unittest.TestCase):
     def test_reply(self):
         msg = Event()
         msg.reply("test")
-        self.assertTrue("test" in msg.result.values())
+        self.assertTrue("test" in msg.result)
 
     def test_wait(self):
         msg = Event()

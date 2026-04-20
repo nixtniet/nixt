@@ -5,7 +5,6 @@
 
 
 import argparse
-import os
 
 
 from .booting import Boot
@@ -82,14 +81,14 @@ class Run:
             evt.wait()
 
     @classmethod
-    def configure(cls, name=""):
+    def configure(cls, cfg):
         "in the beginning."
-        Main.name = name or Main.name or Utils.pkgname(Boot)
-        if Main.read:
+        Main.name = cfg.name or Main.name or Utils.pkgname(Boot)
+        if cfg.read:
             Disk.read(Main, "main", "config")
-        Workdir.configure(Main.name)
-        Log.configure(Main.name, Main.level or "info")
-        Mods.configure(Main.user)
+        Workdir.configure(cfg)
+        Log.configure(cfg)
+        Mods.configure(cfg)
         if Main.all:
             Main.mods = Mods.list()
         if Main.noignore:
@@ -114,7 +113,7 @@ class Scripts:
         "background script."
         Boot.daemon(Main.verbose, Main.nochdir)
         Boot.privileges()
-        Run.configure()
+        Run.configure(Main)
         Boot.pidfile(Main.name, Main.wait)
         Run.scan()
         Boot.init(Main.mods)
@@ -125,7 +124,7 @@ class Scripts:
         "console script."
         import readline
         readline.redisplay()
-        Run.configure()
+        Run.configure(Main)
         if Main.verbose:
             Boot.banner()
         Run.scan()
@@ -140,7 +139,7 @@ class Scripts:
         if not Arguments.txt:
             return
         Main.all = True
-        Run.configure()
+        Run.configure(Main)
         Run.scan()
         Run.cmd(Arguments.txt)
 
@@ -148,7 +147,7 @@ class Scripts:
     def service():
         "service script."
         Boot.privileges()
-        Run.configure()
+        Run.configure(Main)
         Run.scan()
         Boot.banner()
         Boot.pidfile(Main.name, Main.wait)

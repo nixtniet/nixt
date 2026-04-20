@@ -38,28 +38,24 @@ class Encoder(json.JSONEncoder):
 
 class Json:
 
-    lock = threading.RLock()
-
-    @classmethod
-    def dump(cls, *args, **kw):
+    @staticmethod
+    def dump(*args, **kw):
         "dump object to disk."
-        with cls.lock:
-            kw["cls"] = Encoder
-            return json.dump(*args, **kw)
+        kw["cls"] = Encoder
+        return json.dump(*args, **kw)
 
-    @classmethod
-    def dumps(cls, *args, **kw):
+    @staticmethod
+    def dumps(*args, **kw):
         "dump object to string."
         kw["cls"] = Encoder
         return json.dumps(*args, **kw)
 
-    @classmethod
-    def load(cls, s, *args, **kw):
+    @staticmethod
+    def load(s, *args, **kw):
         "load object from disk."
-        with cls.lock:
-            return json.load(s, *args, **kw)
+        return json.load(s, *args, **kw)
 
-    @classmethod
+    @staticmethod
     def loads(s, *args, **kw):
         "load object from string."
         return json.loads(s, *args, **kw)

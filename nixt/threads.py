@@ -4,6 +4,7 @@
 "threads"
 
 
+import collections
 import inspect
 import logging
 import queue
@@ -61,6 +62,9 @@ class Task(threading.Thread):
             self.event.ready()
         _thread.interrupt_main()
 
+    def stop(self):
+        self.join()
+
 
 class Thread:
 
@@ -99,6 +103,9 @@ class Timy(threading.Timer):
         self.state["starttime"] = time.time()
         self.starttime = time.time()
 
+    def stop(self):
+        self.cancel()
+
 
 class Timed:
 
@@ -120,11 +127,12 @@ class Timed:
 
     def start(self):
         "start timer."
+        self.kwargs["daemon"] = True
         self.kwargs["name"] = self.name
         timer = Timy(self.sleep, self.run, *self.args, **self.kwargs)
         timer.start()
         self.timer = timer
-
+        
     def stop(self):
         "stop timer."
         if self.timer:

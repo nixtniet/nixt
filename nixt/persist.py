@@ -198,11 +198,8 @@ class Workdir:
     wdr = f".{Utils.pkgname(Disk)}"
 
     @staticmethod
-    def configure(name="", path=""):
-        if path:
-            Workdir.wdr = path
-        else:
-            Workdir.wdr = os.path.expanduser(f"~/.{name}")
+    def configure(cfg):
+        Workdir.wdr = cfg.wdr or os.path.expanduser(f"~/.{name}")
         Workdir.skel()
 
     @staticmethod

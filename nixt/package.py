@@ -36,9 +36,9 @@ class Mods:
         return cls.iter(cls.list())
 
     @classmethod
-    def configure(cls, user=False):
+    def configure(cls, cfg):
         cls.add(f"{Utils.pkgname(Mods)}.modules", Utils.moddir())
-        if user:
+        if cfg.user:
             cls.add(os.path.join(Workdir.wdr, "mods"), "modules")
             cls.add('mods', 'mods')
 

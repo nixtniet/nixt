@@ -73,15 +73,17 @@ class Clients:
             cls.clients[cls.last].put(*args)
             cls.last += 1
 
+    @classmethod
+    def shutdown(cls):
+        for client in cls.clients:
+            client.stop()
+
 
 def consume():
     while True:
-        try:
-            event = events.get()
-            event.wait()
-            events.task_done()
-        except (KeyboardInterrupt, EOFError):
-            os._exit(0)
+        event = events.get()
+        event.wait()
+        events.task_done()
 
 
 def payload(cli, todo):
@@ -90,11 +92,7 @@ def payload(cli, todo):
             evt = Event()
             evt.kind = "command"
             evt.text = f"{cmd} {ex}"
-            if Main.threaded:
-                Clients.put(evt)
-            else:
-                evt.orig = repr(cli)
-                Commands.command(evt)
+            Clients.put(evt)
             events.put(evt)
 
 
@@ -107,7 +105,7 @@ def main():
         Main.threaded = True
     Main.all = True
     Methods.parse(Main, " ".join(sys.argv[1:]))
-    Boot.configure(path=Main.wdr, user=True)
+    Boot.configure(Main)
     Boot.scan(Mods.list())
     if Main.threaded:
         Clients.init(os.cpu_count(), CLI)
@@ -133,21 +131,22 @@ def main():
         thr.join()
     nrevents = events.qsize()
     Thread.launch(consume)
-    try:
-        events.join()
-    except (KeyboardInterrupt, EOFError):
-        pass
+    events.join()
+    Clients.shutdown()
     endtime = time.time()
     lap = Time.elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
-    #Boot.shutdown()
     if Main.verbose:
         print(f"{Methods.fmt(Main, skip='otxt,txt')}")
         print(f"cores: {Clients.nrcpu} events: {nrs}")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
-
-
+    try:
+        Boot.shutdown()
+    except:
+        print(Thread.threads)
+        print(threading.enumerate())
+        
 examples = {
     "cmd": [""],
     "dis": [""],

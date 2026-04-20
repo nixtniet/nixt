@@ -40,6 +40,8 @@ class Event(Base):
 
     def ok(self, txt=""):
         "print ok response."
+        if not txt:
+            txt = self.text
         self.reply(f"ok {txt}".strip())
 
     def ready(self):
@@ -77,7 +79,7 @@ class Handler:
         "event loop."
         while self.running.is_set():
             event = self.queue.get()
-            if not event:
+            if event is None:
                 break
             event.orig = repr(self)
             self.callback(event)
@@ -93,12 +95,15 @@ class Handler:
     def start(self):
         "start event handler loop."
         self.running.set()
-        Thread.launch(self.loop)
+        Thread.launch(self.loop, daemon=False)
 
     def stop(self):
         "stop event handler loop."
         self.running.clear()
         self.queue.put(None)
+
+    def wait(self):
+        pass
 
 
 class Client(Handler):
@@ -107,7 +112,7 @@ class Client(Handler):
         Handler.__init__(self)
         self.iqueue = queue.Queue()
         self.olock = threading.RLock()
-        self.silent = True
+        self.silent = False
         self.stopped = threading.Event()
         Broker.add(self)
 
@@ -128,16 +133,12 @@ class Client(Handler):
 
     def loop(self):
         "input loop."
-        while True:
-            event = self.poll()
-            if not event or self.stopped.is_set():
+        while self.running.is_set():
+            event = self.iqueue.get()
+            if not event:
                 break
             event.orig = repr(self)
             self.callback(event)
-
-    def poll(self):
-        "return event."
-        return self.iqueue.get()
 
     def put(self, event):
         "put event into queue."
@@ -150,6 +151,11 @@ class Client(Handler):
         "say text in channel."
         self.raw(text)
 
+    def stop(self):
+        "stop client."
+        self.running.clear()
+        self.iqueue.put(None)
+
 
 class Console(Client):
 
@@ -159,9 +165,9 @@ class Console(Client):
 
     def loop(self):
         "input loop."
-        while True:
+        while self.running.is_set():
             event = self.poll()
-            if not event or self.stopped.is_set():
+            if event is None:
                 break
             if not event.text:
                 event.ready()
@@ -184,7 +190,7 @@ class Output(Client):
 
     def output(self):
         "output loop."
-        while True:
+        while self.running.is_set():
             event = self.oqueue.get()
             if event is None:
                 self.oqueue.task_done()
@@ -196,7 +202,7 @@ class Output(Client):
     def start(self):
         "start output loop."
         super().start()
-        Thread.launch(self.output)
+        Thread.launch(self.output, daemon=False)
 
     def stop(self):
         "stop output loop."
