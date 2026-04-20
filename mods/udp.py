@@ -121,6 +121,3 @@ def udp(event):
             toudp(Config.host, Config.port, txt)
         if stop:
             break
-
-
-udp.skip = "irc"

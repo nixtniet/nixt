@@ -47,10 +47,8 @@ class Broker:
     def stop(cls):
         "announce text on all objects with an announce method."
         for obj in cls.objs("stop"):
-            try:
+            if "wait" in dir(obj):
                 obj.wait()
-            except Exception as ex:
-                print(obj, ex)
             obj.stop()
 
 def __dir__():

@@ -141,7 +141,7 @@ def main():
     lap = Time.elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
-    Boot.shutdown()
+    #Boot.shutdown()
     if Main.verbose:
         print(f"{Methods.fmt(Main, skip='otxt,txt')}")
         print(f"cores: {Clients.nrcpu} events: {nrs}")

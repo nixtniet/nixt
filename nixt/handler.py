@@ -206,7 +206,6 @@ class Output(Client):
     def wait(self):
         "wait for output to finish."
         try:
-            print(self)
             self.oqueue.join()
         except Exception as ex:
             logging.exception(ex)

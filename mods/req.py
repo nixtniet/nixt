@@ -69,6 +69,3 @@ torture and impotent making) possible."""
 
 def req(event):
     event.reply(__doc__)
-
-
-req.skip = "irc"

@@ -27,28 +27,20 @@ def tbl(event):
     Boot.md5s = {}
     Commands.names = {}
     Mods.md5s = {}
-    Commands.skip = {}
     for name, module in Mods.all():
         Commands.scan(module)
     Boot.setmd5s()
     Mods.setmd5s()
     event.reply("# This file is placed in the Pubic Domain.\n\n")
     event.reply('"tables"\n\n')
-    event.reply(f"ALLOWS = {Json.dumps(Commands.allows, indent=4, sort_keys=True)}\n\n")
     event.reply(f"CORE = {Json.dumps(Boot.md5s, indent=4, sort_keys=True)}\n\n")
     event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4, sort_keys=True)}\n\n")
     event.reply(f"MD5 = {Json.dumps(Mods.md5s, indent=4, sort_keys=True)}")
 
 
-tbl.allow = "admin"
-
-
 def wdr(event):
     "show working directory."
     event.reply(Workdir.workdir())
-
-
-wdr.allow = "admin"
 
 
 SYSTEMD = """[Unit]

@@ -530,9 +530,6 @@ def err(event):
         event.reply(f'{nre} feeds reset.')
 
 
-err.skip = "irc"
-
-
 def exp(event):
     with Run.importlock:
         event.reply(TEMPLATE)
@@ -547,9 +544,6 @@ def exp(event):
         event.reply(" " * 8 + "</outline>")
         event.reply("    <body>")
         event.reply("</opml>")
-
-
-exp.skip = "irc"
 
 
 def imp(event):
@@ -594,9 +588,6 @@ def imp(event):
         event.reply(f"skipped {nrskip} urls.")
     if nrs:
         event.reply(f"added {nrs} urls.")
-
-
-imp.skip = "irc"
 
 
 def nme(event):
@@ -670,9 +661,6 @@ def syn(event):
     fetcher.start(False)
     nrs = fetcher.run(True)
     event.reply(f"{nrs} feeds synced")
-
-
-syn.skip = "irc"
 
 
 TEMPLATE = """<opml version="1.0">
