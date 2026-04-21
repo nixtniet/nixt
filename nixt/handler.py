@@ -95,7 +95,7 @@ class Handler:
     def start(self):
         "start event handler loop."
         self.running.set()
-        Thread.launch(self.loop, daemon=False)
+        Thread.launch(self.loop, daemon=True)
 
     def stop(self):
         "stop event handler loop."
