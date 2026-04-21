@@ -199,7 +199,6 @@ class Workdir:
 
     @staticmethod
     def configure(cfg):
-        print(cfg)
         Workdir.wdr = cfg.wdr or os.path.expanduser(f"~/.{cfg.name}")
         Workdir.skel()
 

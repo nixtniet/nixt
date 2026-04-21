@@ -141,10 +141,6 @@ def main():
         print(f"{Methods.fmt(Main, skip='otxt,txt')}")
         print(f"cores: {Clients.nrcpu} events: {nrs}")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
-    try:
-        Boot.shutdown()
-    except:
-        print(threading.enumerate())
 
         
 examples = {

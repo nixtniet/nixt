@@ -211,7 +211,6 @@ class Log:
         newformat += str(nr)
         newformat += cls.format[index+1:]
         cls.format = newformat
-        Format.size = nr
 
     @classmethod
     def level(cls, loglevel):

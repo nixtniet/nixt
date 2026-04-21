@@ -95,7 +95,7 @@ class Handler:
     def start(self):
         "start event handler loop."
         self.running.set()
-        Thread.launch(self.loop, daemon=True)
+        Thread.launch(self.loop)
 
     def stop(self):
         "stop event handler loop."
@@ -185,8 +185,7 @@ class Console(Client):
     def loop(self):
         "input loop."
         while self.running.is_set():
-            self.poll()
-            event = self.iqueue.get()
+            event = self.poll()
             if event is None:
                 break
             if not event.text:
@@ -218,7 +217,7 @@ class Output(Polled):
     def start(self):
         "start output loop."
         super().start()
-        Thread.launch(self.output, daemon=False)
+        Thread.launch(self.output)
 
     def stop(self):
         "stop output loop."
