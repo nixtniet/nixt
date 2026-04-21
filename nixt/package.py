@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"write your own commands"
+"module mamagement"
 
 
 import importlib.util as imp
@@ -37,6 +37,7 @@ class Mods:
 
     @classmethod
     def configure(cls, cfg):
+        "configure module directories."
         cls.add(f"{Utils.pkgname(Mods)}.modules", Utils.moddir())
         if cfg.user:
             cls.add(os.path.join(Workdir.wdr, "mods"), "modules")
@@ -129,6 +130,7 @@ class Mods:
 
     @classmethod
     def setmd5s(cls):
+        "update md5 sums"
         md5s = Base()
         for path in cls.dirs.values():
             Object.notset(md5s, Utils.md5dir(path))

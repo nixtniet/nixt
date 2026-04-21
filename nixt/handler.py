@@ -92,10 +92,10 @@ class Handler:
         "register callback."
         self.cbs[kind] = callback
 
-    def start(self):
+    def start(self, daemon=True):
         "start event handler loop."
         self.running.set()
-        Thread.launch(self.loop)
+        Thread.launch(self.loop, daemon=daemon)
 
     def stop(self):
         "stop event handler loop."
@@ -160,7 +160,7 @@ class Client(Handler):
 class Polled(Client):
 
     def loop(self):
-        "input loop."
+        "polling loop."
         while self.running.is_set():
             event = self.poll()
             if event is None:
@@ -194,7 +194,6 @@ class Console(Client):
             event.orig = repr(self)
             self.callback(event)
             event.wait()
-            time.sleep(0.001)
 
 
 class Output(Polled):
@@ -212,12 +211,11 @@ class Output(Polled):
                 break
             self.display(event)
             self.oqueue.task_done()
-            time.sleep(0.001)
 
-    def start(self):
+    def start(self, daemon=True):
         "start output loop."
         super().start()
-        Thread.launch(self.output)
+        Thread.launch(self.output, daemon=daemon)
 
     def stop(self):
         "stop output loop."

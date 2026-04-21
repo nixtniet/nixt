@@ -13,7 +13,6 @@ from .package import Mods
 
 class Commands:
 
-    allows = {}
     cmds = {}
     names = {}
 

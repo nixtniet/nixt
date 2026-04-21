@@ -17,7 +17,6 @@ from nixt.command import Commands
 from nixt.configs import Configuration, Main
 from nixt.handler import Broker, Event, Output
 from nixt.objects import Base, Methods
-from nixt.persist import Cfg
 from nixt.threads import Thread
 from nixt.utility import Utils
 
@@ -435,8 +434,8 @@ class IRC(Output):
         self.state.lastline = splitted[-1]
 
     def start(self):
-        if not Cfg.load(self.cfg):
-            Cfg.save(self.cfg)
+        if not Disk.read(self.cfg, "irc", "config"):
+            Disk.write(self.cfg, "irc", "config")
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
         self.events.ready.clear()

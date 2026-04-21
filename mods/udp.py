@@ -15,12 +15,12 @@ import time
 from nixt.brokers import Broker
 from nixt.configs import Configuration, Main
 from nixt.objects import Base
-from nixt.persist import Cfg
+from nixt.persist import Disk
 from nixt.threads import Thread
 
 
 def configure():
-    Cfg.load(Config)
+    Disk.read(Config, "udp", "config")
 
 
 def init():

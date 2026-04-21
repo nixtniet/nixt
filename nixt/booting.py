@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"runtime"
+"at the beginning"
 
 
 import argparse
@@ -78,7 +78,7 @@ class Scripts:
         Runtime.configure(Main)
         Runtime.pidfile(Main.name)
         Runtime.scan(Main)
-        Runtime.init(Main.mods)
+        Runtime.init(Main)
         Runtime.forever()
 
     @staticmethod
@@ -101,7 +101,7 @@ class Scripts:
         if Main.verbose:
             Runtime.banner()
         Runtime.scan(Main)
-        Runtime.init(Main.mods, Main.wait)
+        Runtime.init(Main)
         csl = CSL()
         csl.start()
         Runtime.forever()
@@ -124,7 +124,7 @@ class Scripts:
         Runtime.scan(Main)
         Runtime.banner()
         Runtime.pidfile(Main.name)
-        Runtime.init(Main.mods)
+        Runtime.init(Main)
         Runtime.forever()
 
 

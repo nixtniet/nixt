@@ -62,7 +62,7 @@ class Clients:
             cls.nrcpu = nrcpu
             for _x in range(Clients.nrcpu):
                 clt = client()
-                clt.start()
+                clt.start(False)
                 cls.add(clt)
 
     @classmethod
@@ -86,7 +86,7 @@ def consume():
         events.task_done()
 
 
-def payload(cli, todo):
+def payload(todo):
     for cmd, example in todo.items():
         for ex in example:
             evt = Event()
@@ -111,22 +111,21 @@ def main():
         Clients.init(os.cpu_count(), CLI)
     else:
         Clients.init(1, CLI)
-    cli = CLI()
     starttime = time.time()
     nrs = Main.index or 1
     thrs = []
     for _x in range(nrs):
-        thrs.append(Thread.launch(payload, cli, pre))
+        thrs.append(Thread.launch(payload, pre))
     for thr in thrs:
         thr.join()
     thrs = []
     for _x in range(nrs):
-        thrs.append(Thread.launch(payload, cli, examples))
+        thrs.append(Thread.launch(payload, examples))
     thrs = []
     for thr in thrs:
         thr.join()
     for _x in range(nrs):
-        thrs.append(Thread.launch(payload, cli, post))
+        thrs.append(Thread.launch(payload, post))
     for thr in thrs:
         thr.join()
     nrevents = events.qsize()

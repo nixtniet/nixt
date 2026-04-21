@@ -39,21 +39,6 @@ class Cache:
             cls.add(path, obj)
 
 
-class Cfg:
-
-    @classmethod
-    def load(cls, obj, name=""):
-        "read a config."
-        if not name:
-            name = Utils.clsname(obj).lower()
-        return Disk.read(obj, name, "config")
-
-    @classmethod
-    def save(cls, obj, name=""):
-        "save a config."
-        return Disk.write(obj, name, "config")
-
-
 class Disk:
 
     lock = threading.RLock()
@@ -178,19 +163,6 @@ class Locate:
     def strip(cls, path):
         "strip filename from path."
         return path.split('store')[-1][1:]
-
-
-class Table:
-
-    @classmethod
-    def load(cls, obj, name=""):
-        "load a table."
-        return Disk.read(obj, name or Utils.clsname(obj), "tables")
-
-    @classmethod
-    def save(cls, obj, name=""):
-        "save a table."
-        return Disk.write(obj, name or Utils.clsname(obj), "tables")
 
 
 class Workdir:

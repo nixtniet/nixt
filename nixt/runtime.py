@@ -53,6 +53,7 @@ class Runtime:
 
     @staticmethod
     def cmd(text):
+        "do command."
         cli = Line()
         for txt in text.split(" ! "):
             evt = Event()
@@ -108,14 +109,14 @@ class Runtime:
                 break
 
     @classmethod
-    def init(cls, mods, wait=False):
+    def init(cls, cfg):
         "scan named modules for commands."
         thrs = []
-        for name, mod in Mods.iter(mods):
+        for name, mod in Mods.iter(cfg.mods):
             if "init" in dir(mod):
                 thrs.append((name, Thread.launch(mod.init)))
                 cls.inits.append(name)
-        if wait:
+        if cfg.wait:
             for name, thr in thrs:
                 thr.join()
 
@@ -143,18 +144,18 @@ class Runtime:
     def scan(cls, cfg):
         "load tables or scan directories."
         if cfg.read:
-            cls.scanner(cfg.mods or Mods.list(cfg.ignore))
+            cls.scanner(cfg)
         else:
             Commands.table()
             Mods.sums()
         if not Commands.names:
-            cls.scanner(cfg.mods or Mods.list(cfg.ignore))
+            cls.scanner(cfg)
 
     @classmethod
-    def scanner(cls, mods=""):
+    def scanner(cls, cfg):
         "scan named modules for commands."
         res = []
-        for name, mod in Mods.iter(mods):
+        for name, mod in Mods.iter(cfg.mods):
             Commands.scan(mod)
             if "configure" in dir(mod):
                 mod.configure()

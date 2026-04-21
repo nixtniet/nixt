@@ -6,7 +6,7 @@
 
 from nixt.objects import Base, Methods, Object
 from nixt.package import Mods
-from nixt.persist import Cfg
+from nixt.persist import Disk
 
 
 def cfg(event):
@@ -19,7 +19,7 @@ def cfg(event):
         return
     name = event.args[0]
     config = Base()
-    Cfg.load(config, name)
+    Disk.read(config, name, "config")
     if name != "main" and not config:
         mod = Mods.get(name)
         if not mod:
@@ -39,7 +39,7 @@ def cfg(event):
         )
         return
     Methods.edit(config, event.sets)
-    Cfg.save(config, name)
+    Disk.write(config, name, "config")
     mod = Mods.get(name)
     if mod and "configure" in dir(mod):
         mod.configure()

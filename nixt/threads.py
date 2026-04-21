@@ -46,7 +46,7 @@ class Task(threading.Thread):
     def run(self):
         "run function."
         if time.time() - Task.last < 0.01:
-            time.sleep(0.01)
+            time.sleep(0.001)
         Task.last = time.time()
         func, args = self.queue.get()
         if args and hasattr(args[0], "ready"):
@@ -63,6 +63,7 @@ class Task(threading.Thread):
         _thread.interrupt_main()
 
     def stop(self):
+        "join thread."
         self.join()
 
 
