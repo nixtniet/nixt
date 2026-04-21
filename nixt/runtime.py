@@ -1,73 +1,55 @@
 # This file is placed in the Public Domain.
 
 
-"runtime"
+"in the beginning"
 
 
-import argparse
+import logging
+import os
+import pathlib
+import sys
+import time
+import _thread
 
 
-from .booting import Boot
+from .brokers import Broker
 from .command import Commands
 from .configs import Main
-from .handler import Console, Event
-from .objects import Object
-from .persist import Disk, Workdir
+from .handler import Handler
 from .package import Mods
+from .persist import Workdir
+from .threads import Thread
 from .utility import Log, Utils
 
 
-class Arguments:
+class Runtime:
 
-    args = None
-    txt = None
+    inits = []
+    md5s = {}
+    path = os.path.dirname(__spec__.loader.path)
 
     @classmethod
-    def getargs(cls):
-        "parse commandline arguments."
-        parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
-        parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
-        parser.add_argument("-c", "--console", action="store_true", help="start console.")
-        parser.add_argument("-d", "--daemon", action="store_true", help="start background daemon.")
-        parser.add_argument("-i", "--ignore", default="", help='modules to ignore.')
-        parser.add_argument("-l", "--level", default=Main.level, help='set loglevel.')
-        parser.add_argument("-m", "--mods", default="", help='modules to load.')
-        parser.add_argument("-n", "--index", action="store", type=int, help="set index to use.")
-        parser.add_argument("-p", "--prune", action="store_true", help="prune directories.")
-        parser.add_argument("-r", "--read", action="store_true", help="read modules on start.")
-        parser.add_argument("-s", "--service", action="store_true", help="start service.")
-        parser.add_argument("-t", "--threaded", action="store_true", help="use threads.")
-        parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
-        parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
-        parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
-        parser.add_argument("-x", "--admin", action="store_true", help="enable admin mode.")
-        parser.add_argument("--wdr", help='set working directory.')
-        parser.add_argument("--nochdir", action="store_true", help='set working directory.')
-        parser.add_argument("--noignore", action="store_true", help="disable ignore")
-        cls.args, arguments = parser.parse_known_args()
-        cls.txt = " ".join(arguments)
-        Object.merge(Main, cls.args)
+    def banner(cls):
+        "hello."
+        tme = time.ctime(time.time()).replace("  ", " ")
+        print("%s since %s %s (%s)" % (
+            Main.name.upper(),
+            tme,
+            Main.level.upper() or "INFO",
+            Utils.md5sum(Mods.path("tbl") or "")[:7],
+        ))
+        sys.stdout.flush()
 
-
-class Line(Console):
-
-    def raw(self, text):
-        "write to console."
-        print(text.encode('utf-8', 'replace').decode("utf-8"))
-
-
-class CSL(Line):
-
-    def poll(self):
-        "poll for an event."
-        evt = Event()
-        evt.orig = repr(self)
-        evt.text = input("> ")
-        evt.kind = "command"
-        return evt
-
-
-class Run:
+    @classmethod
+    def check(cls, opts):
+        "check for command line options."
+        for arg in sys.argv:
+            if not arg.startswith("-"):
+                continue
+            for opt in opts:
+                if opt in arg:
+                    return True
+        return False
 
     @staticmethod
     def cmd(text):
@@ -83,7 +65,7 @@ class Run:
     @classmethod
     def configure(cls, cfg):
         "in the beginning."
-        Main.name = cfg.name or Main.name or Utils.pkgname(Boot)
+        Main.name = cfg.name or Main.name or Utils.pkgname(Runtime)
         if cfg.read:
             Disk.read(Main, "main", "config")
         Workdir.configure(cfg)
@@ -95,76 +77,132 @@ class Run:
             Main.ignore = ""
 
     @classmethod
-    def scan(cls):
+    def daemon(cls, verbose=False, nochdir=False):
+        "run in the background."
+        pid = os.fork()
+        if pid != 0:
+            os._exit(0)
+        os.setsid()
+        pid2 = os.fork()
+        if pid2 != 0:
+            os._exit(0)
+        if not verbose:
+            with open('/dev/null', 'r', encoding="utf-8") as sis:
+                os.dup2(sis.fileno(), sys.stdin.fileno())
+            with open('/dev/null', 'a+', encoding="utf-8") as sos:
+                os.dup2(sos.fileno(), sys.stdout.fileno())
+            with open('/dev/null', 'a+', encoding="utf-8") as ses:
+                os.dup2(ses.fileno(), sys.stderr.fileno())
+        os.umask(0)
+        if not nochdir:
+            os.chdir("/")
+        os.nice(10)
+
+    @classmethod
+    def forever(cls):
+        "run forever until ctrl-c."
+        while True:
+            try:
+                time.sleep(0.1)
+            except (KeyboardInterrupt, EOFError):
+                break
+
+    @classmethod
+    def init(cls, mods, wait=False):
+        "scan named modules for commands."
+        thrs = []
+        for name, mod in Mods.iter(mods):
+            if "init" in dir(mod):
+                thrs.append((name, Thread.launch(mod.init)))
+                cls.inits.append(name)
+        if wait:
+            for name, thr in thrs:
+                thr.join()
+
+    @staticmethod
+    def pidfile(name):
+        "write pidfile."
+        filename = os.path.join(Workdir.wdr, f"{name}.pid")
+        if os.path.exists(filename):
+            os.unlink(filename)
+        path2 = pathlib.Path(filename)
+        path2.parent.mkdir(parents=True, exist_ok=True)
+        with open(filename, "w", encoding="utf-8") as fds:
+            fds.write(str(os.getpid()))
+
+    @classmethod
+    def privileges(cls):
+        "drop privileges."
+        import getpass
+        import pwd
+        pwnam2 = pwd.getpwnam(getpass.getuser())
+        os.setgid(pwnam2.pw_gid)
+        os.setuid(pwnam2.pw_uid)
+
+    @classmethod
+    def scan(cls, cfg):
         "load tables or scan directories."
-        if Main.read:
-            Boot.scanner(Mods.list())
+        if cfg.read:
+            cls.scanner(cfg.mods or Mods.list(cfg.ignore))
         else:
             Commands.table()
             Mods.sums()
         if not Commands.names:
-            Boot.scanner(Mods.list())
+            cls.scanner(cfg.mods or Mods.list(cfg.ignore))
+
+    @classmethod
+    def scanner(cls, mods=""):
+        "scan named modules for commands."
+        res = []
+        for name, mod in Mods.iter(mods):
+            Commands.scan(mod)
+            if "configure" in dir(mod):
+                mod.configure()
+            res.append((name, mod))
+        return res
+
+    @classmethod
+    def setmd5s(cls):
+        "set md5 sums."
+        cls.md5s.update(Utils.md5dir(cls.path))
+
+    @classmethod
+    def shutdown(cls):
+        "call shutdown on modules."
+        for name in cls.inits:
+            mod = Mods.get(name)
+            if "shutdown" in dir(mod):
+                logging.info(f"shutdown {name}")
+                try:
+                    mod.shutdown()
+                except Exception as ex:
+                    logging.exception(ex)
+        Broker.stop()
+
+    @classmethod
+    def wrap(cls, func, *args):
+        "restore console."
+        import termios
+        old = None
+        try:
+            old = termios.tcgetattr(sys.stdin.fileno())
+        except termios.error:
+            pass
+        try:
+            func(*args)
+        except (KeyboardInterrupt, EOFError):
+            pass
+        except Exception as ex:
+            logging.exception(ex)
+        try:
+            cls.shutdown()
+        except Exception as ex:
+            logging.exception(ex)
+        if old:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
-class Scripts:
-
-    @staticmethod
-    def background():
-        "background script."
-        Boot.daemon(Main.verbose, Main.nochdir)
-        Boot.privileges()
-        Run.configure(Main)
-        Boot.pidfile(Main.name, Main.wait)
-        Run.scan()
-        Boot.init(Main.mods)
-        Boot.forever()
-
-    @staticmethod
-    def console():
-        "console script."
-        import readline
-        readline.redisplay()
-        Run.configure(Main)
-        if Main.verbose:
-            Boot.banner()
-        Run.scan()
-        Boot.init(Main.mods, Main.wait)
-        csl = CSL()
-        csl.start()
-        Boot.forever()
-
-    @staticmethod
-    def control():
-        "cli script."
-        if not Arguments.txt:
-            return
-        Main.all = True
-        Run.configure(Main)
-        Run.scan()
-        Run.cmd(Arguments.txt)
-
-    @staticmethod
-    def service():
-        "service script."
-        Boot.privileges()
-        Run.configure(Main)
-        Run.scan()
-        Boot.banner()
-        Boot.pidfile(Main.name, Main.wait)
-        Boot.init(Main.mods)
-        Boot.forever()
-
-
-def main():
-    "main"
-    Arguments.getargs()
-    Main.ignore = "mbx,rst,udp,web,wsd"
-    if Main.daemon:
-        Scripts.background()
-    elif Main.console:
-        Boot.wrap(Scripts.console)
-    elif Main.service:
-        Boot.wrap(Scripts.service)
-    else:
-        Boot.wrap(Scripts.control)
-    Boot.shutdown()
+def __dir__():
+    return (
+        "Runtime",
+    )

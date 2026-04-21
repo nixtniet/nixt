@@ -157,11 +157,7 @@ class Client(Handler):
         self.iqueue.put(None)
 
 
-class Console(Client):
-
-    def __init__(self):
-        super().__init__()
-        self.register("command", Commands.command)
+class Polled(Client):
 
     def loop(self):
         "input loop."
@@ -174,15 +170,35 @@ class Console(Client):
                 continue
             event.orig = repr(self)
             self.callback(event)
-            event.wait()
-            time.sleep(0.001)
 
     def poll(self):
         "return event."
         return self.iqueue.get()
 
 
-class Output(Client):
+class Console(Client):
+
+    def __init__(self):
+        super().__init__()
+        self.register("command", Commands.command)
+
+    def loop(self):
+        "input loop."
+        while self.running.is_set():
+            self.poll()
+            event = self.iqueue.get()
+            if event is None:
+                break
+            if not event.text:
+                event.ready()
+                continue
+            event.orig = repr(self)
+            self.callback(event)
+            event.wait()
+            time.sleep(0.001)
+
+
+class Output(Polled):
 
     def __init__(self):
         super().__init__()

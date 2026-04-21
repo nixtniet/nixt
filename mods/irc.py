@@ -185,8 +185,7 @@ class IRC(Output):
         if len(event.result) > 3:
             self.say(event.channel, "command would flood")
             return
-        for key in sorted(event.result):
-            txt = event.result.get(key)
+        for txt in event.result:
             for text in wrapper.wrap(txt):
                 self.dosay(event.channel, text)
 

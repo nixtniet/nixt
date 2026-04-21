@@ -16,12 +16,12 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.booting import Boot
 from nixt.command import Commands
 from nixt.configs import Main
 from nixt.handler import Event, Output
 from nixt.objects import Methods
 from nixt.package import Mods
+from nixt.runtime import Runtime
 from nixt.threads import Thread
 from nixt.utility import Time
 
@@ -97,16 +97,16 @@ def payload(cli, todo):
 
 
 def main():
-    if not Boot.check('p') and os.path.exists(Main.wdr):
+    if not Runtime.check('p') and os.path.exists(Main.wdr):
         shutil.rmtree(Main.wdr)
-    if Boot.check("v"):
+    if Runtime.check("v"):
         Main.verbose = True
-    if Boot.check("t"):
+    if Runtime.check("t"):
         Main.threaded = True
     Main.all = True
     Methods.parse(Main, " ".join(sys.argv[1:]))
-    Boot.configure(Main)
-    Boot.scan(Mods.list())
+    Runtime.configure(Main)
+    Runtime.scan(Main)
     if Main.threaded:
         Clients.init(os.cpu_count(), CLI)
     else:
@@ -144,8 +144,8 @@ def main():
     try:
         Boot.shutdown()
     except:
-        print(Thread.threads)
         print(threading.enumerate())
+
         
 examples = {
     "cmd": [""],
