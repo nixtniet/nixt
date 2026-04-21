@@ -14,7 +14,7 @@ sys.path.insert(0, ".")
 
 from nixt.configs import Main
 from nixt.objects import Base
-from nixt.persist import Cfg, Disk, Workdir
+from nixt.persist import Disk, Workdir
 
 
 Workdir.wdr = '.test'
@@ -24,7 +24,7 @@ class TestPersist(unittest.TestCase):
 
     def test_loadcfg(self):
         Main.a = "b"
-        Cfg.load(Main)
+        Disk.read(Main, "main", "config")
         self.assertEqual(Main.a, "b")
 
     def test_save(self):
@@ -38,7 +38,7 @@ class TestPersist(unittest.TestCase):
 
     def test_writecfg(self):
         Main.a = "b"
-        Cfg.save(Main, "main")
+        Disk.write(Main, "main", "config")
         self.assertTrue(os.path.exists(os.path.join(
                                                     Workdir.wdr,
                                                     "config",

@@ -17,6 +17,7 @@ from nixt.command import Commands
 from nixt.configs import Configuration, Main
 from nixt.handler import Broker, Event, Output
 from nixt.objects import Base, Methods
+from nixt.persist import Disk
 from nixt.threads import Thread
 from nixt.utility import Utils
 
@@ -433,7 +434,7 @@ class IRC(Output):
             self.buffer.append(line)
         self.state.lastline = splitted[-1]
 
-    def start(self):
+    def start(self, daemon=True):
         if not Disk.read(self.cfg, "irc", "config"):
             Disk.write(self.cfg, "irc", "config")
         if self.cfg.channel not in self.channels:
@@ -443,12 +444,13 @@ class IRC(Output):
         self.events.joined.clear()
         Output.start(self)
         if not self.state.keeprunning:
-            Thread.launch(self.keep)
+            Thread.launch(self.keep, daemon=daemon)
         Thread.launch(
             self.doconnect,
             self.cfg.server or "localhost",
             self.cfg.nick,
             int(self.cfg.port) or 6667,
+            daemon=daemon
         )
 
     def stop(self):

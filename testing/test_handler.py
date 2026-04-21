@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.handler import Client, Event, Handler
+from nixt.handler import Client, Event, Handler, Polled
 
 
 buffer = []
@@ -115,7 +115,7 @@ class TestClient(unittest.TestCase):
         self.assertTrue("yo!" in buffer)
 
     def test_poll(self):
-        clt = Client()
+        clt = Polled()
         evt = Event()
         evt.text = "okdan"
         clt.iqueue.put(evt)

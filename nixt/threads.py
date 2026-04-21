@@ -4,7 +4,6 @@
 "threads"
 
 
-import collections
 import inspect
 import logging
 import queue
@@ -38,7 +37,7 @@ class Task(threading.Thread):
         try:
             super().join(timeout or None)
             return self.result
-        except (KeyboardInterrupt, EOFError) as ex:
+        except (KeyboardInterrupt, EOFError):
             if self.event and self.event.ready:
                 self.event.ready()
             _thread.interrupt_main()
@@ -55,7 +54,7 @@ class Task(threading.Thread):
             self.result = func(*args)
             return self.result
         except (KeyboardInterrupt, EOFError):
-            _pass
+            pass
         except Exception as ex:
             logging.exception(ex)
         if self.event:
@@ -133,7 +132,7 @@ class Timed:
         timer = Timy(self.sleep, self.run, *self.args, **self.kwargs)
         timer.start()
         self.timer = timer
-        
+
     def stop(self):
         "stop timer."
         if self.timer:

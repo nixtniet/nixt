@@ -8,7 +8,6 @@ import collections
 import logging
 import queue
 import threading
-import time
 import _thread
 
 
@@ -176,7 +175,7 @@ class Polled(Client):
         return self.iqueue.get()
 
 
-class Console(Client):
+class Console(Polled):
 
     def __init__(self):
         super().__init__()

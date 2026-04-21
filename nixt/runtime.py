@@ -9,15 +9,13 @@ import os
 import pathlib
 import sys
 import time
-import _thread
 
 
 from .brokers import Broker
 from .command import Commands
 from .configs import Main
-from .handler import Handler
 from .package import Mods
-from .persist import Workdir
+from .persist import Disk, Workdir
 from .threads import Thread
 from .utility import Log, Utils
 
@@ -50,18 +48,6 @@ class Runtime:
                 if opt in arg:
                     return True
         return False
-
-    @staticmethod
-    def cmd(text):
-        "do command."
-        cli = Line()
-        for txt in text.split(" ! "):
-            evt = Event()
-            evt.kind = "command"
-            evt.orig = repr(cli)
-            evt.text = txt
-            Commands.command(evt)
-            evt.wait()
 
     @classmethod
     def configure(cls, cfg):
@@ -173,7 +159,7 @@ class Runtime:
         for name in cls.inits:
             mod = Mods.get(name)
             if "shutdown" in dir(mod):
-                logging.info(f"shutdown {name}")
+                logging.info("shutdown %s", name)
                 try:
                     mod.shutdown()
                 except Exception as ex:

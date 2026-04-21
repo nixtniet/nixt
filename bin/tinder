@@ -20,7 +20,6 @@ from nixt.command import Commands
 from nixt.configs import Main
 from nixt.handler import Event, Output
 from nixt.objects import Methods
-from nixt.package import Mods
 from nixt.runtime import Runtime
 from nixt.threads import Thread
 from nixt.utility import Time
@@ -141,7 +140,7 @@ def main():
         print(f"cores: {Clients.nrcpu} events: {nrs}")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
 
-        
+
 examples = {
     "cmd": [""],
     "dis": [""],

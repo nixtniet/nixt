@@ -5,7 +5,6 @@
 
 
 import argparse
-import _thread
 
 
 from .runtime import Runtime
@@ -13,9 +12,6 @@ from .command import Commands
 from .configs import Main
 from .handler import Console, Event
 from .objects import Object
-from .persist import Disk, Workdir
-from .package import Mods
-from .utility import Log, Utils
 
 
 class Arguments:
