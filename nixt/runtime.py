@@ -141,7 +141,7 @@ class Runtime:
     def scanner(cls, cfg):
         "scan named modules for commands."
         res = []
-        for name, mod in Mods.iter(cfg.mods):
+        for name, mod in Mods.iter(cfg.mods, cfg.ignore):
             Commands.scan(mod)
             if "configure" in dir(mod):
                 mod.configure()

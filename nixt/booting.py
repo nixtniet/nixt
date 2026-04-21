@@ -30,10 +30,8 @@ class Arguments:
         parser.add_argument("-l", "--level", default=Main.level, help='set loglevel.')
         parser.add_argument("-m", "--mods", default="", help='modules to load.')
         parser.add_argument("-n", "--index", action="store", type=int, help="set index to use.")
-        parser.add_argument("-p", "--prune", action="store_true", help="prune directories.")
-        parser.add_argument("-r", "--read", action="store_true", help="read modules on start.")
+        parser.add_argument("-r", "--read", action="store_true", help="read config on start.")
         parser.add_argument("-s", "--service", action="store_true", help="start service.")
-        parser.add_argument("-t", "--threaded", action="store_true", help="use threads.")
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
         parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
         parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
@@ -128,6 +126,8 @@ def main():
     "main"
     Arguments.getargs()
     Main.ignore = "mbx,rst,udp,web,wsd"
+    if not Main.admin:
+        Main.ignore = "adm," + Main.ignore    
     if Main.daemon:
         Runtime.wrap(Scripts.background)
     elif Main.console:

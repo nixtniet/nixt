@@ -19,9 +19,6 @@ def srv(event):
     event.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
 
 
-srv.allow = "admin"
-
-
 def tbl(event):
     "create table."
     Runtime.md5s = {}
