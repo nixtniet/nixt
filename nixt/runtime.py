@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"in the beginning"
+"runtime"
 
 
 import logging
@@ -98,7 +98,7 @@ class Runtime:
     def init(cls, cfg):
         "scan named modules for commands."
         thrs = []
-        for name, mod in Mods.iter(cfg.mods):
+        for name, mod in Mods.iter(cfg.mods, cfg.ignore):
             if "init" in dir(mod):
                 thrs.append((name, Thread.launch(mod.init)))
                 cls.inits.append(name)
