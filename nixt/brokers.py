@@ -43,14 +43,6 @@ class Broker:
             if attr in dir(obj):
                 yield obj
 
-    @classmethod
-    def stop(cls):
-        "announce text on all objects with an announce method."
-        for obj in cls.objs("stop"):
-            if "wait" in dir(obj):
-                obj.wait()
-            obj.stop()
-
 
 def __dir__():
     return (

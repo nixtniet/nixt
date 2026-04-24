@@ -1,1 +1,1 @@
-python3 -c "from nixt.booting import main ; main()" $* ;
+python3 -c "from nixt.runtime import main ; main()" $* ;
