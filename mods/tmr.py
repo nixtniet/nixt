@@ -13,7 +13,7 @@ import time
 from nixt.brokers import Broker
 from nixt.objects import Base, Object, Methods
 from nixt.persist import Disk, Locate
-from nixt.threads import Timed
+from nixt.threads import Thread, Timed
 from nixt.utility import Time
 
 
@@ -21,31 +21,8 @@ rand = random.SystemRandom()
 
 
 def init():
-    Timers.path = Locate.last(Timers.timers) or Methods.ident(Timers.timers)
-    remove = []
-    for tme, args in Object.items(Timers.timers):
-        if not args:
-            continue
-        orig, channel, txt = args
-        for origin, bot in Broker.like(orig):
-            if not origin or not bot:
-                continue
-            diff = float(tme) - time.time()
-            if diff > 0:
-                timer = Timed(diff, bot.say, channel, txt)
-                timer.start()
-            else:
-                remove.append(tme)
-    for tme in remove:
-        Timers.delete(tme)
-    if Timers.timers:
-        Disk.write(Timers.timers, Timers.path)
-    logging.warning("%s timers", len(Timers.timers))
-
-
-def shutdown():
-    for timer in Timers.timers:
-        timer.stop()
+    Timers.start()
+    logging.info(f"{len(Timers.timers)} timers")
 
 
 class Timer(Base):
@@ -56,18 +33,47 @@ class Timer(Base):
 class Timers(Base):
 
     path = ""
+    running = threading.Event()
     timers = Timer()
     lock = threading.RLock()
 
-    @staticmethod
-    def add(tme, orig, channel,  txt):
+    @classmethod
+    def add(cls, tme, orig, channel,  txt):
         with Timers.lock:
             setattr(Timers.timers, str(tme), (orig, channel, txt))
 
-    @staticmethod
-    def delete(tme):
+    @classmethod
+    def delete(cls, tme):
         with Timers.lock:
             delattr(Timers.timers, str(tme))
+
+    @classmethod
+    def loop(cls):
+        while cls.running.is_set():
+            time.sleep(1.0)
+            timed = time.time()
+            for tme, args in Object.items(cls.timers):
+                if float(tme) < timed:
+                    Thread.launch(cls.run, args) 
+
+    @classmethod
+    def run(cls, args):
+        orig, channel, txt = args
+        for origin, bot in Broker.like(orig):
+            if not origin or not bot:
+                continue
+            bot.say(channel, txt)
+
+    @classmethod
+    def start(cls):
+        cls.path = Locate.last(cls.timers) or Methods.ident(cls.timers)
+        cls.running.set()
+        Thread.launch(cls.loop)
+
+    @classmethod
+    def stop(cls):
+        cls.running.clear()
+        Disk.write(cls.timers, cls.path)
 
 
 def tmr(event):

@@ -545,7 +545,8 @@ def cb_privmsg(evt):
         if evt.text:
             evt.text = evt.text[0].lower() + evt.text[1:]
         if evt.text:
-            Thread.launch(Commands.command, evt)
+            name = evt.text and evt.text.split()[0]
+            Thread.launch(Commands.command, evt, name=name)
 
 
 def cb_quit(evt):
