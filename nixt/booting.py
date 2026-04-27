@@ -30,11 +30,11 @@ class Boot:
     def banner(cls):
         "hello."
         tme = time.ctime(time.time()).replace("  ", " ")
-        print("%s since %s %s (%s)" % (
+        print("%s %s since %s (%s)" % (
             Main.name.upper(),
+            Utils.md5sum(Mods.path("tbl") or "")[:7].upper(),
             tme,
-            Main.level.upper() or "warning",
-            Utils.md5sum(Mods.path("tbl") or "")[:7],
+            Main.level.upper() or "warning"
         ))
         sys.stdout.flush()
 
@@ -60,8 +60,10 @@ class Boot:
         Mods.configure(cfg)
         if Main.noignore:
             Main.ignore = ""
-        if Main.all:
+        if not Main.mods:
             Main.mods = Mods.list(Main.ignore)
+        if Main.all:
+            Main.init = Mods.list(Main.ignore)
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):
@@ -98,7 +100,7 @@ class Boot:
     def init(cls, cfg):
         "scan named modules for commands."
         thrs = []
-        for name, mod in Mods.iter(cfg.mods, cfg.ignore):
+        for name, mod in Mods.iter(cfg.init, cfg.ignore):
             if "init" in dir(mod):
                 thrs.append((name, Thread.launch(mod.init)))
                 cls.inits.append(name)

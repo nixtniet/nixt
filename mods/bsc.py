@@ -37,4 +37,4 @@ def upt(event):
 
 def ver(event):
     "show verson."
-    event.reply(f"{Main.name.upper()} {Utils.md5sum(Mods.path('tbl') or '')[:7]}")
+    event.reply(f"{Main.name.upper()} {Utils.md5sum(Mods.path('tbl') or '')[:7].upper()}")

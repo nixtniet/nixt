@@ -26,7 +26,7 @@ class Arguments:
         parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
         parser.add_argument("-c", "--console", action="store_true", help="start console.")
         parser.add_argument("-d", "--daemon", action="store_true", help="start background daemon.")
-        parser.add_argument("-i", "--ignore", default="", help='modules to ignore.')
+        parser.add_argument("-i", "--init", default="", help='modules to initialize.')
         parser.add_argument("-l", "--level", default=Main.level, help='set loglevel.')
         parser.add_argument("-m", "--mods", default="", help='modules to load.')
         parser.add_argument("-n", "--index", action="store", type=int, help="set index to use.")
