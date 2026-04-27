@@ -13,7 +13,7 @@ import time
 from nixt.brokers import Broker
 from nixt.objects import Base, Object, Methods
 from nixt.persist import Disk, Locate
-from nixt.threads import Thread, Timed
+from nixt.threads import Thread
 from nixt.utility import Time
 
 
@@ -22,7 +22,7 @@ rand = random.SystemRandom()
 
 def init():
     TimerLoop.start()
-    logging.warning(f"{len(TimerLoop.timers)} timers")
+    logging.warning("%s timers" , len(TimerLoop.timers))
 
 
 def shutdown():
