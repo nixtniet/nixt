@@ -21,40 +21,48 @@ rand = random.SystemRandom()
 
 
 def init():
-    Timers.start()
-    logging.info(f"{len(Timers.timers)} timers")
+    TimerLoop.start()
+    logging.warning(f"{len(TimerLoop.timers)} timers")
 
 
-class Timer(Base):
-
-    pass
+def shutdown():
+    TimerLoop.stop()
 
 
 class Timers(Base):
 
+    pass
+
+
+class TimerLoop:
+
     path = ""
     running = threading.Event()
-    timers = Timer()
+    timers = Timers()
     lock = threading.RLock()
 
     @classmethod
     def add(cls, tme, orig, channel,  txt):
-        with Timers.lock:
-            setattr(Timers.timers, str(tme), (orig, channel, txt))
+        with cls.lock:
+            setattr(cls.timers, str(tme), (orig, channel, txt))
 
     @classmethod
     def delete(cls, tme):
-        with Timers.lock:
-            delattr(Timers.timers, str(tme))
+        with cls.lock:
+            delattr(cls.timers, str(tme))
 
     @classmethod
     def loop(cls):
         while cls.running.is_set():
             time.sleep(1.0)
             timed = time.time()
+            remove = []
             for tme, args in Object.items(cls.timers):
                 if float(tme) < timed:
-                    Thread.launch(cls.run, args) 
+                    Thread.launch(cls.run, args)
+                    remove.append(tme)
+            for tme in remove:
+                cls.delete(tme)
 
     @classmethod
     def run(cls, args):
@@ -68,7 +76,7 @@ class Timers(Base):
     def start(cls):
         cls.path = Locate.last(cls.timers) or Methods.ident(cls.timers)
         cls.running.set()
-        Thread.launch(cls.loop)
+        Thread.launch(cls.loop, name="Timers.loop")
 
     @classmethod
     def stop(cls):
@@ -90,13 +98,6 @@ def tmr(event):
         return
     diff = todo - time.time()
     txt = " ".join(event.args[1:])
-    Timers.add(todo, event.orig, event.channel, txt)
-    with Timers.lock:
-        Disk.write(Timers.timers, Timers.path or Methods.ident(Timers.timers))
     bot = Broker.get(event.orig)
-    if not bot:
-        event.reply("no bot")
-        return
-    timer = Timed(diff, bot.say, event.channel, txt)
-    timer.start()
-    event.reply("ok " + Time.elapsed(diff))
+    TimerLoop.add(todo, Methods.fqn(bot), event.channel, txt)
+    event.ok(Time.elapsed(diff))
