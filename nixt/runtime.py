@@ -35,7 +35,7 @@ class Arguments:
         parser.add_argument("-n", "--nowait", action='store_true', help="don't wait for services to start.")
         parser.add_argument("-r", "--read", action="store_true", help="read config on start.")
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
-        parser.add_argument("-w", "--wdr", default=".%(prog)s", help='set working directory.')
+        parser.add_argument("-w", "--wdr", default="", help='set working directory.')
         parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
         parser.add_argument("-x", "--admin", action="store_true", help="enable admin mode.")
         parser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
@@ -75,6 +75,8 @@ class Scripts:
     @staticmethod
     def background():
         "background script."
+        Main.read = True
+        Main.init = Main.init or "irc,rss"
         Boot.daemon(Main.verbose, Main.nochdir)
         Boot.privileges()
         Boot.configure(Main)
@@ -121,6 +123,8 @@ class Scripts:
     @staticmethod
     def service():
         "service script."
+        Main.read = True
+        Main.init = Main.init or "irc,rss"
         Boot.privileges()
         Boot.configure(Main)
         Boot.scan(Main)

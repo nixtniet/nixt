@@ -53,8 +53,8 @@ class Boot:
     def configure(cls, cfg):
         "in the beginning."
         Main.name = cfg.name or Main.name or Utils.pkgname(Boot)
-        if cfg.read:
-            Disk.read(Main, "main", "config")
+        Disk.read(Main, "main", "config")
+        print(Main)
         Workdir.configure(cfg)
         Log.configure(cfg)
         Mods.configure(cfg)
