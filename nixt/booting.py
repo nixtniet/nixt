@@ -104,7 +104,7 @@ class Boot:
             if "init" in dir(mod):
                 thrs.append((name, Thread.launch(mod.init)))
                 cls.inits.append(name)
-        if cfg.wait:
+        if not cfg.nowait:
             for name, thr in thrs:
                 thr.join()
 

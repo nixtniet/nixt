@@ -22,23 +22,28 @@ class Arguments:
     @classmethod
     def getargs(cls):
         "parse commandline arguments."
-        parser = argparse.ArgumentParser(prog=Main.name, description=f"{Main.name.upper()}")
+        parser = argparse.ArgumentParser(
+                                         prog=Main.name,
+                                         description=f'{Main.name.upper()}',
+                                         epilog='use "%(prog)s cmd" for a list of commands.',
+                                         usage="%(prog)s [cmd] [arg=val] [arg==val] [-c|d|h|s] [-i INIT] [-l LEVEL] [-m MODS] [-w WORKDIR] [-a] [-n] [-r] [-v] [-u] [-x]",
+                                        )
         parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
-        parser.add_argument("-c", "--console", action="store_true", help="start console.")
-        parser.add_argument("-d", "--daemon", action="store_true", help="start background daemon.")
-        parser.add_argument("-i", "--init", default="", help='modules to initialize.')
+        parser.add_argument("-i", "--init", default="", help='serives to start.',metavar="mod1,mod2" )
         parser.add_argument("-l", "--level", default=Main.level, help='set loglevel.')
-        parser.add_argument("-m", "--mods", default="", help='modules to load.')
-        parser.add_argument("-n", "--index", action="store", type=int, help="set index to use.")
+        parser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="mod1,mod2")
+        parser.add_argument("-n", "--nowait", action='store_true', help="don't wait for services to start.")
         parser.add_argument("-r", "--read", action="store_true", help="read config on start.")
-        parser.add_argument("-s", "--service", action="store_true", help="start service.")
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
-        parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
+        parser.add_argument("-w", "--wdr", default=".%(prog)s", help='set working directory.')
         parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
         parser.add_argument("-x", "--admin", action="store_true", help="enable admin mode.")
-        parser.add_argument("--wdr", help='set working directory.')
-        parser.add_argument("--nochdir", action="store_true", help='set working directory.')
-        parser.add_argument("--noignore", action="store_true", help="disable ignore")
+        parser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
+        parser.add_argument("--noignore", action="store_true", help=argparse.SUPPRESS)
+        group = parser.add_mutually_exclusive_group()
+        group.add_argument("-c", "--console", action="store_true", help="run as console.")
+        group.add_argument("-d", "--daemon", action="store_true", help="run as background daemon.")
+        group.add_argument("-s", "--service", action="store_true", help="run as service.")
         cls.args, arguments = parser.parse_known_args()
         cls.txt = " ".join(arguments)
         Object.merge(Main, cls.args)
