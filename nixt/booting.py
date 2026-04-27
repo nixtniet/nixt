@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"runtime"
+"in the beginning"
 
 
 import logging
@@ -12,7 +12,6 @@ import time
 import _thread
 
 
-from .brokers import Broker
 from .command import Commands
 from .configs import Main
 from .package import Mods
@@ -24,7 +23,7 @@ from .utility import Log, Utils
 class Boot:
 
     inits = []
-    md5s = {}
+    md5 = {}
     path = os.path.dirname(__spec__.loader.path)
 
     @classmethod
@@ -34,7 +33,7 @@ class Boot:
         print("%s since %s %s (%s)" % (
             Main.name.upper(),
             tme,
-            Main.level.upper() or "INFO",
+            Main.level.upper() or "warning",
             Utils.md5sum(Mods.path("tbl") or "")[:7],
         ))
         sys.stdout.flush()
@@ -59,10 +58,10 @@ class Boot:
         Workdir.configure(cfg)
         Log.configure(cfg)
         Mods.configure(cfg)
-        if Main.all:
-            Main.mods = Mods.list()
         if Main.noignore:
             Main.ignore = ""
+        if Main.all:
+            Main.mods = Mods.list(Main.ignore)
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):
@@ -107,6 +106,11 @@ class Boot:
             for name, thr in thrs:
                 thr.join()
 
+    @classmethod
+    def md5s(cls):
+        "set md5 sums."
+        cls.md5.update(Utils.md5dir(cls.path))
+
     @staticmethod
     def pidfile(name):
         "write pidfile."
@@ -150,11 +154,6 @@ class Boot:
         return res
 
     @classmethod
-    def setmd5s(cls):
-        "set md5 sums."
-        cls.md5s.update(Utils.md5dir(cls.path))
-
-    @classmethod
     def shutdown(cls):
         "call shutdown on modules."
         for name in cls.inits:
@@ -163,16 +162,6 @@ class Boot:
                 logging.info("shutdown %s", name)
                 try:
                     mod.shutdown()
-                except (KeyboardInterrupt, EOFError):
-                    _thread.interrupt_main()
-                except Exception as ex:
-                    logging.exception(ex)
-                    return
-        for obj in Broker.objs("stop"):
-            if "wait" in dir(obj):
-                try:
-                    obj.wait()
-                    obj.stop()
                 except (KeyboardInterrupt, EOFError):
                     _thread.interrupt_main()
                 except Exception as ex:
@@ -192,7 +181,7 @@ class Boot:
             func(*args)
             cls.shutdown()
         except (KeyboardInterrupt, EOFError):
-            os._exit(0)
+            return
         except Exception as ex:
             logging.exception(ex)
         if old:

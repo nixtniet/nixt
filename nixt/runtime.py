@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"at the beginning"
+"main program"
 
 
 import argparse
@@ -11,7 +11,7 @@ from .booting import Boot
 from .command import Commands
 from .configs import Main
 from .handler import Console, Event
-from .objects import Object
+from .objects import Base, Methods, Object
 
 
 class Arguments:
@@ -42,6 +42,9 @@ class Arguments:
         cls.args, arguments = parser.parse_known_args()
         cls.txt = " ".join(arguments)
         Object.merge(Main, cls.args)
+        parsed = Base()
+        Methods.parse(parsed, cls.txt)
+        Object.merge(Main, parsed)
 
 
 class Line(Console):
@@ -97,7 +100,7 @@ class Scripts:
         Boot.scan(Main)
         Boot.init(Main)
         csl = CSL()
-        csl.start()
+        csl.start(daemon=True)
         Boot.forever()
 
     @staticmethod
@@ -125,7 +128,9 @@ class Scripts:
 def main():
     "main"
     Arguments.getargs()
-    Main.ignore = "mbx,rst,udp,web,wsd"
+    Main.ignore = "man,mbx,rst,tmr,udp,web,wsd"
+    if not Main.admin:
+        Main.ignore += ",adm"
     if Main.daemon:
         Boot.wrap(Scripts.background)
     elif Main.console:

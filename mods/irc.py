@@ -11,6 +11,7 @@ import ssl
 import textwrap
 import threading
 import time
+import _thread
 
 
 from nixt.command import Commands
@@ -31,6 +32,11 @@ def init():
     else:
         irc.stop()
     return irc
+
+
+def shutdown():
+    for name, bot in Broker.like("irc"):
+        bot.stop()
 
 
 def rlog(txt):
@@ -123,6 +129,7 @@ class IRC(Output):
         self.state.nrerror = 0
         self.state.nrsend = 0
         self.state.pongcheck = False
+        self.state.running = threading.Event()
         self.state.sleep = self.cfg.sleep
         self.state.stopkeep = False
         self.zelf = ""
@@ -260,7 +267,7 @@ class IRC(Output):
             self.docommand("JOIN", channel)
 
     def keep(self):
-        while True:
+        while self.running.is_set():
             if self.state.stopkeep:
                 self.state.stopkeep = False
                 break
@@ -268,7 +275,10 @@ class IRC(Output):
             self.events.authed.wait()
             self.state.keeprunning = True
             self.state.latest = time.time()
-            time.sleep(self.cfg.sleep)
+            for x in range(self.cfg.sleep*10):
+                time.sleep(0.1)
+                if not self.running.is_set():
+                    break
             self.docommand("PING", self.cfg.server)
             if self.state.pongcheck:
                 self.restart()
@@ -454,12 +464,14 @@ class IRC(Output):
         )
 
     def stop(self):
-        logging.warning("stopping")
         self.state.stopkeep = True
-        Output.stop(self)
+        super().stop()
 
     def wait(self):
-        self.events.ready.wait()
+        try:
+            self.events.ready.wait()
+        except (KeyboardInterrupt, EOFError):
+            _thread.interrupt_main()
 
 
 def cb_auth(evt):

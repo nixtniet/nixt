@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"threads"
+"make it non blocking"
 
 
 import inspect
@@ -137,6 +137,7 @@ class Timed:
         "stop timer."
         if self.timer:
             self.timer.cancel()
+            self.timer = None
 
 
 class Repeater(Timed):

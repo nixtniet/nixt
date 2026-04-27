@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"configurations"
+"one config to rule them all"
 
 
 from .objects import Base, Object
@@ -26,7 +26,7 @@ class MainConfig(type):
 
 class Main(metaclass=MainConfig):
 
-    level = "info"
+    level = "warning"
     name = Utils.pkgname(MainConfig)
     wdr = ""
 

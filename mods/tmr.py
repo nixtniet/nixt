@@ -13,7 +13,7 @@ import time
 from nixt.brokers import Broker
 from nixt.objects import Base, Object, Methods
 from nixt.persist import Disk, Locate
-from nixt.threads import Thread, Timed
+from nixt.threads import Timed
 from nixt.utility import Time
 
 
@@ -41,6 +41,11 @@ def init():
     if Timers.timers:
         Disk.write(Timers.timers, Timers.path)
     logging.warning("%s timers", len(Timers.timers))
+
+
+def shutdown():
+    for timer in Timers.timers:
+        timer.stop()
 
 
 class Timer(Base):
@@ -87,5 +92,5 @@ def tmr(event):
         event.reply("no bot")
         return
     timer = Timed(diff, bot.say, event.channel, txt)
-    Thread.launch(timer.start).join()
+    timer.start()
     event.reply("ok " + Time.elapsed(diff))

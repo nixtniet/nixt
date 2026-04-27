@@ -1,10 +1,9 @@
 # This file is placed in the Public Domain.
 
 
-"callback engine"
+"event handling"
 
 
-import collections
 import logging
 import queue
 import threading
@@ -28,7 +27,7 @@ class Event(Base):
         self.index = 0
         self.kind = "event"
         self.orig = ""
-        self.result = collections.deque()
+        self.result = []
         self.text = ""
 
     def display(self):
@@ -111,7 +110,7 @@ class Client(Handler):
         Handler.__init__(self)
         self.iqueue = queue.Queue()
         self.olock = threading.RLock()
-        self.silent = False
+        self.silent = True
         self.stopped = threading.Event()
         Broker.add(self)
 
@@ -152,6 +151,7 @@ class Client(Handler):
 
     def stop(self):
         "stop client."
+        super().stop()
         self.running.clear()
         self.iqueue.put(None)
 
@@ -173,6 +173,9 @@ class Polled(Client):
     def poll(self):
         "return event."
         return self.iqueue.get()
+
+    def start(self, daemon=True):
+        super().start(daemon=daemon)
 
 
 class Console(Polled):

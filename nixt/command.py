@@ -9,6 +9,7 @@ import inspect
 
 from .objects import Methods
 from .package import Mods
+from .utility import Utils
 
 
 class Commands:
@@ -46,9 +47,9 @@ class Commands:
         evt.ready()
 
     @classmethod
-    def commands(cls, orig):
+    def commands(cls, ignore=""):
         "list cpmmands available."
-        return cls.names.keys()
+        return [x for x in cls.names if cls.names.get(x) not in Utils.spl(ignore)]
 
     @classmethod
     def get(cls, cmd):
