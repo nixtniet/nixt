@@ -12,6 +12,7 @@ from .command import Commands
 from .configs import Main
 from .handler import Console, Event
 from .objects import Methods, Object
+from .persist import Disk
 
 
 class Arguments:
@@ -39,6 +40,7 @@ class Arguments:
         parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
         parser.add_argument("-x", "--admin", action="store_true", help="enable admin mode.")
         parser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
+        parser.add_argument("-z", "--nodisk", action="store_true", help="use ram only mode.")
         parser.add_argument("--noignore", action="store_true", help=argparse.SUPPRESS)
         group = parser.add_mutually_exclusive_group()
         group.add_argument("-c", "--console", action="store_true", help="run as console.")
@@ -136,6 +138,8 @@ def main():
     "main"
     Arguments.getargs()
     Main.ignore = "man,mbx,rst,tmr,udp,web,wsd"
+    if Main.nodisk:
+        Disk.nodisk = True
     if not Main.admin:
         Main.ignore += ",adm"
     if Main.daemon:
