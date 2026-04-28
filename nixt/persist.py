@@ -57,7 +57,6 @@ class Disk:
         "read object from path."
         with cls.lock:
             pth = os.path.join(Workdir.wdr, base, path)
-            print(pth)
             if not os.path.exists(pth):
                 return False
             with open(pth, "r", encoding="utf-8") as fpt:
@@ -77,7 +76,9 @@ class Disk:
             if path == "":
                 path = Methods.ident(obj)
             pth = os.path.join(Workdir.wdr, base, path)
-            Disk.cdir(pth)
+            if not os.path.exists(pth):
+                Workdir.skel()
+            cls.cdir(pth)
             with open(pth, "w", encoding="utf-8") as fpt:
                 Json.dump(obj, fpt, indent=4)
             Cache.sync(path, obj)
@@ -177,7 +178,7 @@ class Workdir:
     def configure(cls, cfg):
         if cfg.wdr:
            cls.wdr = cfg.wdr
-        cls.skel()
+        #cls.skel()
 
     @classmethod
     def kinds(cls):
@@ -185,6 +186,7 @@ class Workdir:
         path = os.path.join(cls.wdr, "store")
         if os.path.exists(path):
             return os.listdir(path)
+        return []
 
     @classmethod
     def long(cls, name):

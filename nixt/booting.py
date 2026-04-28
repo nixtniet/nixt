@@ -55,7 +55,8 @@ class Boot:
         "in the beginning."
         Main.name = cfg.name or Main.name or Utils.pkgname(Boot)
         Workdir.configure(cfg)
-        Disk.read(Main, "main", "config")
+        if Main.read:
+            Disk.read(Main, "main", "config")
         Log.configure(cfg)
         Mods.configure(cfg)
         if Main.noignore:

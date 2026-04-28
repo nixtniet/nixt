@@ -445,8 +445,7 @@ class IRC(Output):
         self.state.lastline = splitted[-1]
 
     def start(self, daemon=True):
-        if not Disk.read(self.cfg, "irc", "config"):
-            Disk.write(self.cfg, "irc", "config")
+        Disk.read(self.cfg, "irc", "config")
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
         self.events.ready.clear()
