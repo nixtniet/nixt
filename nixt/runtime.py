@@ -5,15 +5,13 @@
 
 
 import argparse
-import os
 
 
 from .booting import Boot
 from .command import Commands
 from .configs import Main
 from .handler import Console, Event
-from .objects import Base, Methods, Object
-from .persist import Disk
+from .objects import Methods, Object
 
 
 class Arguments:
@@ -31,13 +29,13 @@ class Arguments:
                                          usage="%(prog)s [cmd] [arg=val] [arg==val] [-c|d|h|s] [-i INIT] [-l LEVEL] [-m MODS] [-w WORKDIR] [-a] [-n] [-r] [-v] [-u] [-x]",
                                         )
         parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
-        parser.add_argument("-i", "--init", default="", help='serives to start.',metavar="mod1,mod2" )
+        parser.add_argument("-i", "--init", default="", help='serives to start.', metavar="mod1,mod2")
         parser.add_argument("-l", "--level", default=Main.level, help='set loglevel.')
         parser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="mod1,mod2")
         parser.add_argument("-n", "--nowait", action='store_true', help="don't wait for services to start.")
         parser.add_argument("-r", "--read", action="store_true", help="read config on start.")
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
-        parser.add_argument("-w", "--wdr", default=os.path.expanduser(f"~/.{Main.name}"), help='set working directory.')
+        parser.add_argument("-w", "--wdr", default="", help='set working directory.')
         parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
         parser.add_argument("-x", "--admin", action="store_true", help="enable admin mode.")
         parser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)

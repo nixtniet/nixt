@@ -14,7 +14,6 @@ import _thread
 
 from .command import Commands
 from .configs import Main
-from .objects import Base, Object
 from .package import Mods
 from .persist import Disk, Workdir
 from .threads import Thread
