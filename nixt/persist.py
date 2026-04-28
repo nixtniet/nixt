@@ -57,6 +57,7 @@ class Disk:
         "read object from path."
         with cls.lock:
             pth = os.path.join(Workdir.wdr, base, path)
+            print(pth)
             if not os.path.exists(pth):
                 return False
             with open(pth, "r", encoding="utf-8") as fpt:
@@ -170,11 +171,12 @@ class Locate:
 
 class Workdir:
 
-    wdr = f".{Utils.pkgname(Disk)}"
+    wdr = os.path.expanduser(f"~/.{Utils.pkgname(Disk)}")
 
     @classmethod
     def configure(cls, cfg):
-        cls.wdr = cfg.wdr or os.path.expanduser(f"~/.{cfg.name}")
+        if cfg.wdr:
+           cls.wdr = cfg.wdr
         cls.skel()
 
     @classmethod

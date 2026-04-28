@@ -14,6 +14,7 @@ import _thread
 
 from .command import Commands
 from .configs import Main
+from .objects import Base, Object
 from .package import Mods
 from .persist import Disk, Workdir
 from .threads import Thread
@@ -53,9 +54,8 @@ class Boot:
     def configure(cls, cfg):
         "in the beginning."
         Main.name = cfg.name or Main.name or Utils.pkgname(Boot)
-        Disk.read(Main, "main", "config")
-        print(Main)
         Workdir.configure(cfg)
+        Disk.read(Main, "main", "config")
         Log.configure(cfg)
         Mods.configure(cfg)
         if Main.noignore:

@@ -5,6 +5,7 @@
 
 
 import argparse
+import os
 
 
 from .booting import Boot
@@ -12,6 +13,7 @@ from .command import Commands
 from .configs import Main
 from .handler import Console, Event
 from .objects import Base, Methods, Object
+from .persist import Disk
 
 
 class Arguments:
@@ -35,7 +37,7 @@ class Arguments:
         parser.add_argument("-n", "--nowait", action='store_true', help="don't wait for services to start.")
         parser.add_argument("-r", "--read", action="store_true", help="read config on start.")
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
-        parser.add_argument("-w", "--wdr", default="", help='set working directory.')
+        parser.add_argument("-w", "--wdr", default=os.path.expanduser(f"~/.{Main.name}"), help='set working directory.')
         parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
         parser.add_argument("-x", "--admin", action="store_true", help="enable admin mode.")
         parser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
@@ -46,10 +48,8 @@ class Arguments:
         group.add_argument("-s", "--service", action="store_true", help="run as service.")
         cls.args, arguments = parser.parse_known_args()
         cls.txt = " ".join(arguments)
-        Object.merge(Main, cls.args)
-        parsed = Base()
-        Methods.parse(parsed, cls.txt)
-        Object.merge(Main, parsed)
+        Object.update(Main, cls.args)
+        Methods.parse(Main, cls.txt)
 
 
 class Line(Console):
