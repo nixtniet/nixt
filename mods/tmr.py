@@ -36,10 +36,11 @@ class Timers(Base):
 
 class TimerLoop:
 
+    dosave = False
+    lock = threading.RLock()
     path = ""
     running = threading.Event()
     timers = Timers()
-    lock = threading.RLock()
 
     @classmethod
     def add(cls, tme, orig, channel,  txt):
@@ -62,6 +63,7 @@ class TimerLoop:
                     Thread.launch(cls.run, args)
                     remove.append(tme)
             for tme in remove:
+                cls.dosave = True
                 cls.delete(tme)
 
     @classmethod
@@ -74,14 +76,15 @@ class TimerLoop:
 
     @classmethod
     def start(cls):
-        cls.path = Locate.last(cls.timers) or Methods.ident(cls.timers)
+        cls.path = Locate.first(cls.timers) or Methods.ident(cls.timers)
         cls.running.set()
         Thread.launch(cls.loop, name="Timers.loop")
 
     @classmethod
     def stop(cls):
         cls.running.clear()
-        Disk.write(cls.timers, cls.path)
+        if cls.timers or cls.dosave:
+            Disk.write(cls.timers, cls.path)
 
 
 def tmr(event):
