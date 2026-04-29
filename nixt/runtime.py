@@ -80,7 +80,7 @@ class Scripts:
         Boot.privileges()
         Boot.configure(Main)
         Boot.pidfile(Main.name)
-        Boot.scan(Main)
+        Boot.scanner(Main)
         Boot.init(Main)
         Boot.forever()
 
@@ -103,7 +103,7 @@ class Scripts:
         Boot.configure(Main)
         if Main.verbose:
             Boot.banner()
-        Boot.scan(Main)
+        Boot.scanner(Main)
         Boot.init(Main)
         csl = CSL()
         csl.start(daemon=True)
@@ -116,7 +116,7 @@ class Scripts:
             return
         Main.all = True
         Boot.configure(Main)
-        Boot.scan(Main)
+        Boot.scanner(Main)
         Scripts.cmd(Arguments.txt)
 
     @staticmethod
@@ -126,7 +126,7 @@ class Scripts:
         Main.init = Main.init or "irc,rss"
         Boot.privileges()
         Boot.configure(Main)
-        Boot.scan(Main)
+        Boot.scanner(Main)
         Boot.banner()
         Boot.pidfile(Main.name)
         Boot.init(Main)

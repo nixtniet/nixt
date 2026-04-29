@@ -27,6 +27,7 @@ class Mods:
             name = path
         elif name is None:
             name = path.split(os.sep)[-2]
+        path = os.path.abspath(path)
         if os.path.exists(path):
             cls.dirs[name] = path
 
@@ -118,6 +119,14 @@ class Mods:
         return mod
 
     @classmethod
+    def md5s(cls):
+        "update md5 sums"
+        md5 = Base()
+        for path in cls.dirs.values():
+            Object.notset(md5, Utils.md5dir(path))
+        Object.update(cls.md5, md5)
+
+    @classmethod
     def path(cls, name):
         "return existing paths."
         for pkgname, path in cls.dirs.items():
@@ -130,14 +139,6 @@ class Mods:
         "register packages their directories."
         for package in packages:
             cls.add(package.__path__[0], package.__name__)
-
-    @classmethod
-    def md5s(cls):
-        "update md5 sums"
-        md5 = Base()
-        for path in cls.dirs.values():
-            Object.notset(md5, Utils.md5dir(path))
-        Object.update(cls.md5, md5)
 
     @classmethod
     def sums(cls):

@@ -106,7 +106,7 @@ def main():
     Main.all = True
     Methods.parse(Main, " ".join(sys.argv[1:]))
     Boot.configure(Main)
-    Boot.scan(Main)
+    Boot.scanner(Main)
     if Main.threaded:
         Clients.init(os.cpu_count(), CLI)
     else:

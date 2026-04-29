@@ -14,6 +14,7 @@ import _thread
 
 from .command import Commands
 from .configs import Main
+from .objects import Object
 from .package import Mods
 from .persist import Disk, Workdir
 from .threads import Thread
@@ -22,19 +23,20 @@ from .utility import Log, Utils
 
 class Boot:
 
+    digest = ""
     inits = []
-    md5 = {}
 
     @classmethod
     def banner(cls):
         "hello."
         tme = time.ctime(time.time()).replace("  ", " ")
-        print("%s %s since %s (%s)" % (
+        msg = "%s %s since %s (%s)" % (
             Main.name.upper(),
-            Utils.md5sum(Mods.path("tbl") or "")[:7].upper(),
+            cls.digest[:7].upper(),
             tme,
             Main.level.upper() or "warning"
-        ))
+        )
+        print(msg.replace("  ", " "))
         sys.stdout.flush()
 
     @classmethod
@@ -63,6 +65,7 @@ class Boot:
             Main.mods = Mods.list(Main.ignore)
         if Main.all:
             Main.init = Mods.list(Main.ignore)
+        cls.md5s()
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):
@@ -108,10 +111,26 @@ class Boot:
                 thr.join()
 
     @classmethod
+    def md5dir(cls, path, md5):
+        "create a md5 for a directory."
+        for fnm in os.listdir(path):
+            if not fnm.endswith(".py"):
+                continue
+            mpath = os.path.join(path, fnm)
+            with open(mpath, "r", encoding="utf-8") as file:
+                txt = file.read().encode("utf-8")
+                md5.update(txt)
+
+    @classmethod
     def md5s(cls):
         "set md5 sums."
+        import hashlib
+        md5 = hashlib.md5()
         path = os.path.dirname(__spec__.loader.path)
-        cls.md5.update(Utils.md5dir(path))
+        cls.md5dir(path, md5)
+        for path in Object.values(Mods.dirs):
+            cls.md5dir(path, md5)
+        cls.digest = md5.hexdigest()
 
     @staticmethod
     def pidfile(name):
@@ -132,17 +151,6 @@ class Boot:
         pwnam2 = pwd.getpwnam(getpass.getuser())
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
-
-    @classmethod
-    def scan(cls, cfg):
-        "load tables or scan directories."
-        if cfg.read:
-            cls.scanner(cfg)
-        else:
-            Commands.table()
-            Mods.sums()
-        if not Commands.names:
-            cls.scanner(cfg)
 
     @classmethod
     def scanner(cls, cfg):

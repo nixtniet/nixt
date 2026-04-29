@@ -23,24 +23,12 @@ class Commands:
         for func in args:
             name = func.__name__
             cls.cmds[name] = func
-            modname = func.__module__.split(".")[-1]
-            if "__" in modname:
-                continue
-            cls.names[name] = modname
 
     @classmethod
     def command(cls, evt):
         "command callback."
         Methods.parse(evt, evt.text)
         func = cls.get(evt.cmd)
-        if not func:
-            name = cls.names.get(evt.cmd)
-            mod = None
-            if name:
-                mod = Mods.get(name)
-            if mod:
-                cls.scan(mod)
-                func = cls.get(evt.cmd)
         if func:
             func(evt)
             evt.display()
@@ -49,7 +37,7 @@ class Commands:
     @classmethod
     def commands(cls, ignore=""):
         "list cpmmands available."
-        return [x for x in cls.names if cls.names.get(x) not in Utils.spl(ignore)]
+        return [x for x in cls.cmds if x not in Utils.spl(ignore)]
 
     @classmethod
     def get(cls, cmd):
