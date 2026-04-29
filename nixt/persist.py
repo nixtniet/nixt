@@ -43,7 +43,7 @@ class Disk:
 
     lock = threading.RLock()
     nodisk = False
-    
+
     @classmethod
     def cdir(cls, path):
         "create directory."
