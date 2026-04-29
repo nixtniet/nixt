@@ -51,14 +51,6 @@ class Commands:
             if 'event' in inspect.signature(cmdz).parameters:
                 cls.add(cmdz)
 
-    @classmethod
-    def table(cls):
-        "load names from table."
-        mod = Mods.get("tbl")
-        names = getattr(mod, "NAMES", None)
-        if names:
-            cls.names.update(names)
-
 
 def __dir__():
     return (

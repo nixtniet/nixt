@@ -33,7 +33,6 @@ class Arguments:
         parser.add_argument("-l", "--level", default=Main.level, help='set loglevel.')
         parser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="mod1,mod2")
         parser.add_argument("-n", "--nowait", action='store_true', help="don't wait for services to start.")
-        parser.add_argument("-o", "--other", action="store_true", help="use other directory.")
         parser.add_argument("-r", "--read", action="store_true", help="read config on start.")
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
         parser.add_argument("-w", "--wdr", default="", help='set working directory.')
@@ -79,7 +78,6 @@ class Scripts:
         Boot.daemon(Main.verbose, Main.nochdir)
         Boot.privileges()
         Boot.configure(Main)
-        Boot.pidfile(Main.name)
         Boot.scanner(Main)
         Boot.init(Main)
         Boot.forever()
@@ -128,7 +126,6 @@ class Scripts:
         Boot.configure(Main)
         Boot.scanner(Main)
         Boot.banner()
-        Boot.pidfile(Main.name)
         Boot.init(Main)
         Boot.forever()
 

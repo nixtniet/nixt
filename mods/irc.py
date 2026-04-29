@@ -15,9 +15,9 @@ import _thread
 
 
 from nixt.command import Commands
-from nixt.configs import Configuration, Main
+from nixt.configs import Main
 from nixt.handler import Broker, Event, Output
-from nixt.objects import Base, Methods
+from nixt.objects import Base, Configuration, Methods
 from nixt.persist import Disk
 from nixt.threads import Thread
 from nixt.utility import Utils

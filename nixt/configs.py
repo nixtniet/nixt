@@ -4,13 +4,8 @@
 "one config to rule them all"
 
 
-from .objects import Base, Object
+from .objects import Object
 from .utility import Utils
-
-
-class Configuration(Base):
-
-    pass
 
 
 class MainConfig(type):
@@ -33,6 +28,5 @@ class Main(metaclass=MainConfig):
 
 def __dir__():
     return (
-        'Configuration',
         'Main'
     )

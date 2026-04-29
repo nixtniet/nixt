@@ -79,6 +79,17 @@ class Clients:
             client.stop()
 
 
+def check(cls, opts):
+    "check for command line options."
+    for arg in sys.argv:
+        if not arg.startswith("-"):
+            continue
+        for opt in opts:
+            if opt in arg:
+                return True
+    return False
+
+
 def consume():
     while True:
         event = events.get()
@@ -97,11 +108,11 @@ def payload(todo):
 
 
 def main():
-    if not Boot.check('p') and os.path.exists(Main.wdr):
+    if not check('p') and os.path.exists(Main.wdr):
         shutil.rmtree(Main.wdr)
-    if Boot.check("v"):
+    if check("v"):
         Main.verbose = True
-    if Boot.check("t"):
+    if check("t"):
         Main.threaded = True
     Main.all = True
     Methods.parse(Main, " ".join(sys.argv[1:]))

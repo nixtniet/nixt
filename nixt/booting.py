@@ -28,43 +28,33 @@ class Boot:
     @classmethod
     def banner(cls):
         "hello."
+        paths = []
+        paths.append(os.path.dirname(__spec__.loader.path))
+        paths.extend(Object.values(Mods.dirs))
         tme = time.ctime(time.time()).replace("  ", " ")
-        msg = "%s %s since %s (%s)" % (
+        print("%s since %s %s (%s)" % (
             Main.name.upper(),
-            cls.md5s()[:7].upper(),
             tme,
-            Main.level.upper() or "warning"
-        )
-        print(msg.replace("  ", " "))
+            Main.level.upper() or "warning",
+            Utils.md5s(*paths)[:7].upper()))
         sys.stdout.flush()
-
-    @classmethod
-    def check(cls, opts):
-        "check for command line options."
-        for arg in sys.argv:
-            if not arg.startswith("-"):
-                continue
-            for opt in opts:
-                if opt in arg:
-                    return True
-        return False
 
     @classmethod
     def configure(cls, cfg):
         "in the beginning."
-        Main.name = cfg.name or Main.name or Utils.pkgname(Boot)
         Workdir.configure(cfg)
-        if Main.read:
+        if cfg.read:
             Disk.read(Main, "main", "config")
         Log.configure(cfg)
         Mods.configure(cfg)
-        if Main.noignore:
-            Main.ignore = ""
-        if not Main.mods:
-            Main.mods = Mods.list(Main.ignore)
-        if Main.all:
-            Main.init = Mods.list(Main.ignore)
-        cls.md5s()
+        if cfg.noignore:
+            cfg.ignore = ""
+        if not cfg.mods:
+            cfg.mods = Mods.list(cfg.ignore)
+        if cfg.all:
+            cfg.init = Mods.list(cfg.ignore)
+        if cfg.daemon or cfg.service:
+            Workdir.pidfile(cfg.name)
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):
@@ -108,28 +98,6 @@ class Boot:
         if not cfg.nowait:
             for name, thr in thrs:
                 thr.join()
-
-    @classmethod
-    def md5s(cls):
-        "set md5 sums."
-        import hashlib
-        md5 = hashlib.md5()
-        path = os.path.dirname(__spec__.loader.path)
-        Utils.md5dir(path, md5)
-        for path in Object.values(Mods.dirs):
-            Utils.md5dir(path, md5)
-        return md5.hexdigest()
-
-    @staticmethod
-    def pidfile(name):
-        "write pidfile."
-        filename = os.path.join(Workdir.wdr, f"{name}.pid")
-        if os.path.exists(filename):
-            os.unlink(filename)
-        path2 = pathlib.Path(filename)
-        path2.parent.mkdir(parents=True, exist_ok=True)
-        with open(filename, "w", encoding="utf-8") as fds:
-            fds.write(str(os.getpid()))
 
     @classmethod
     def privileges(cls):

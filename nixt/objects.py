@@ -36,6 +36,11 @@ class Base:
         return str(self.__dict__)
 
 
+class Configuration(Base):
+
+    pass
+
+
 class Object:
 
     @staticmethod
@@ -346,6 +351,7 @@ class Methods:
 def __dir__():
     return (
         'Base',
+        'Configuration',
         'Object',
         'Methods'
     )

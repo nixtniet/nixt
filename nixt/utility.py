@@ -11,7 +11,7 @@ import os
 import time
 
 
-from .objects import Base
+from .objects import Base, Object
 
 
 class NoDate(Exception):
@@ -129,6 +129,15 @@ class Utils:
             with open(mpath, "r", encoding="utf-8") as file:
                 txt = file.read().encode("utf-8")
                 md5.update(txt)
+
+    @staticmethod
+    def md5s(*paths):
+        "set md5 sums."
+        import hashlib
+        md5 = hashlib.md5()
+        for path in paths:
+            Utils.md5dir(path, md5)
+        return md5.hexdigest()
 
     @staticmethod
     def moddir():
