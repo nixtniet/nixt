@@ -41,6 +41,8 @@ class Mods:
         if cfg.user:
             cls.add(os.path.join(Workdir.wdr, "mods"), "modules")
             cls.add('mods', 'mods')
+        if cfg.other:
+            cls.add("other", "other")
         cls.add(Utils.moddir(), f"{Utils.pkgname(Mods)}.modules")
 
     @classmethod

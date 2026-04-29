@@ -26,6 +26,7 @@ from nixt.utility import Time
 
 
 Main.debug = True
+Main.other = True
 Main.wdr = ".test"
 Main.user = True
 

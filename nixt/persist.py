@@ -42,7 +42,6 @@ class Cache:
 class Disk:
 
     lock = threading.RLock()
-    nodisk = False
 
     @classmethod
     def cdir(cls, path):
@@ -57,9 +56,6 @@ class Disk:
     def read(cls, obj, path, base="store", error=True):
         "read object from path."
         with cls.lock:
-            if cls.nodisk:
-                Object.update(obj, Cache.get(path) or {})
-                return
             pth = os.path.join(Workdir.wdr, base, path)
             if not os.path.exists(pth):
                 return False
@@ -79,9 +75,6 @@ class Disk:
         with cls.lock:
             if path == "":
                 path = Methods.ident(obj)
-            if cls.nodisk:
-                Cache.sync(obj, path)
-                return
             pth = os.path.join(Workdir.wdr, base, path)
             if not os.path.exists(pth):
                 Workdir.skel()

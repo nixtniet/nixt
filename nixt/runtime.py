@@ -12,7 +12,6 @@ from .command import Commands
 from .configs import Main
 from .handler import Console, Event
 from .objects import Methods, Object
-from .persist import Disk
 
 
 class Arguments:
@@ -34,13 +33,13 @@ class Arguments:
         parser.add_argument("-l", "--level", default=Main.level, help='set loglevel.')
         parser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="mod1,mod2")
         parser.add_argument("-n", "--nowait", action='store_true', help="don't wait for services to start.")
+        parser.add_argument("-o", "--other", action="store_true", help="use other directory.")
         parser.add_argument("-r", "--read", action="store_true", help="read config on start.")
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
         parser.add_argument("-w", "--wdr", default="", help='set working directory.')
         parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
         parser.add_argument("-x", "--admin", action="store_true", help="enable admin mode.")
         parser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
-        parser.add_argument("-z", "--nodisk", action="store_true", help="use ram only mode.")
         parser.add_argument("--noignore", action="store_true", help=argparse.SUPPRESS)
         group = parser.add_mutually_exclusive_group()
         group.add_argument("-c", "--console", action="store_true", help="run as console.")
@@ -137,9 +136,7 @@ class Scripts:
 def main():
     "main"
     Arguments.getargs()
-    Main.ignore = "man,mbx,rst,tmr,udp,web,wsd"
-    if Main.nodisk:
-        Disk.nodisk = True
+    Main.ignore = "man,mbx,rst,tmr,udp,web"
     if not Main.admin:
         Main.ignore += ",adm"
     if Main.daemon:

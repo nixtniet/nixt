@@ -24,7 +24,6 @@ class Boot:
 
     inits = []
     md5 = {}
-    path = os.path.dirname(__spec__.loader.path)
 
     @classmethod
     def banner(cls):
@@ -111,7 +110,8 @@ class Boot:
     @classmethod
     def md5s(cls):
         "set md5 sums."
-        cls.md5.update(Utils.md5dir(cls.path))
+        path = os.path.dirname(__spec__.loader.path)
+        cls.md5.update(Utils.md5dir(path))
 
     @staticmethod
     def pidfile(name):
