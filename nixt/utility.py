@@ -120,26 +120,15 @@ class Utils:
         return obj.__class__.__name__
 
     @staticmethod
-    def md5dir(path):
+    def md5dir(path, md5):
         "create a md5 for a directory."
-        md5s = {}
         for fnm in os.listdir(path):
             if not fnm.endswith(".py"):
                 continue
-            name = fnm[:-3]
             mpath = os.path.join(path, fnm)
-            md5s[name] = Utils.md5sum(mpath)
-        return md5s
-
-    @staticmethod
-    def md5sum(path):
-        "return md5 of a file."
-        import hashlib
-        if not os.path.exists(path):
-            return ""
-        with open(path, "r", encoding="utf-8") as file:
-            txt = file.read().encode("utf-8")
-            return hashlib.md5(txt, usedforsecurity=False).hexdigest()  # pylint: disable=E1123
+            with open(mpath, "r", encoding="utf-8") as file:
+                txt = file.read().encode("utf-8")
+                md5.update(txt)
 
     @staticmethod
     def moddir():

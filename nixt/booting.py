@@ -23,7 +23,6 @@ from .utility import Log, Utils
 
 class Boot:
 
-    digest = ""
     inits = []
 
     @classmethod
@@ -32,7 +31,7 @@ class Boot:
         tme = time.ctime(time.time()).replace("  ", " ")
         msg = "%s %s since %s (%s)" % (
             Main.name.upper(),
-            cls.digest[:7].upper(),
+            cls.md5s()[:7].upper(),
             tme,
             Main.level.upper() or "warning"
         )
@@ -111,26 +110,15 @@ class Boot:
                 thr.join()
 
     @classmethod
-    def md5dir(cls, path, md5):
-        "create a md5 for a directory."
-        for fnm in os.listdir(path):
-            if not fnm.endswith(".py"):
-                continue
-            mpath = os.path.join(path, fnm)
-            with open(mpath, "r", encoding="utf-8") as file:
-                txt = file.read().encode("utf-8")
-                md5.update(txt)
-
-    @classmethod
     def md5s(cls):
         "set md5 sums."
         import hashlib
         md5 = hashlib.md5()
         path = os.path.dirname(__spec__.loader.path)
-        cls.md5dir(path, md5)
+        Utils.md5dir(path, md5)
         for path in Object.values(Mods.dirs):
-            cls.md5dir(path, md5)
-        cls.digest = md5.hexdigest()
+            Utils.md5dir(path, md5)
+        return md5.hexdigest()
 
     @staticmethod
     def pidfile(name):

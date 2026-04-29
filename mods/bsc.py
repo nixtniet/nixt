@@ -7,6 +7,7 @@
 import time
 
 
+from nixt.booting import Boot
 from nixt.command import Commands
 from nixt.configs import Main
 from nixt.package import Mods
@@ -37,4 +38,4 @@ def upt(event):
 
 def ver(event):
     "show verson."
-    event.reply(f"{Main.name.upper()} {Utils.md5sum(Mods.path('tbl') or '')[:7].upper()}")
+    event.reply(f"{Main.name.upper()} {Boot.md5s()[:7].upper()}")
