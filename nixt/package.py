@@ -9,7 +9,6 @@ import logging
 import os
 
 
-from .objects import Base, Object
 from .persist import Workdir
 from .utility import Utils
 
@@ -17,7 +16,6 @@ from .utility import Utils
 class Mods:
 
     dirs = {}
-    md5 = {}
     modules = {}
 
     @classmethod
@@ -108,17 +106,10 @@ class Mods:
         if not mod:
             logging.debug("can't load %s module", name)
             return None
+        logging.debug("load %s", name)
         cls.modules[name] = mod
         spec.loader.exec_module(mod)
         return mod
-
-    @classmethod
-    def md5s(cls):
-        "update md5 sums"
-        md5 = Base()
-        for path in cls.dirs.values():
-            Object.notset(md5, Utils.md5dir(path))
-        Object.update(cls.md5, md5)
 
     @classmethod
     def path(cls, name):
@@ -133,17 +124,6 @@ class Mods:
         "register packages their directories."
         for package in packages:
             cls.add(package.__path__[0], package.__name__)
-
-    @classmethod
-    def sums(cls):
-        "load md5 sums from table."
-        mod = cls.get("tbl")
-        if not mod:
-            return
-        md5s = getattr(mod, "MD5", {})
-        if not md5s:
-            return
-        cls.md5.update(md5s)
 
 
 def __dir__():

@@ -6,7 +6,6 @@
 
 import logging
 import os
-import pathlib
 import sys
 import time
 import _thread
@@ -28,15 +27,13 @@ class Boot:
     @classmethod
     def banner(cls):
         "hello."
-        paths = []
-        paths.append(os.path.dirname(__spec__.loader.path))
-        paths.extend(Object.values(Mods.dirs))
         tme = time.ctime(time.time()).replace("  ", " ")
         print("%s since %s %s (%s)" % (
             Main.name.upper(),
             tme,
             Main.level.upper() or "warning",
-            Utils.md5s(*paths)[:7].upper()))
+            cls.md5s().upper()
+        ))
         sys.stdout.flush()
 
     @classmethod
@@ -98,6 +95,14 @@ class Boot:
         if not cfg.nowait:
             for name, thr in thrs:
                 thr.join()
+
+    @classmethod
+    def md5s(cls):
+        paths = []
+        paths.append(os.path.dirname(__spec__.loader.path))
+        for path in Object.values(Mods.dirs):
+            paths.append(path)
+        return str(Utils.md5s(*paths)[:7])
 
     @classmethod
     def privileges(cls):

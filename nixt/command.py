@@ -8,7 +8,6 @@ import inspect
 
 
 from .objects import Methods
-from .package import Mods
 from .utility import Utils
 
 
@@ -27,7 +26,8 @@ class Commands:
     @classmethod
     def command(cls, evt):
         "command callback."
-        Methods.parse(evt, evt.text)
+        #Methods.parse(evt, evt.text)
+        evt.cmd = evt.text.split()[0]
         func = cls.get(evt.cmd)
         if func:
             func(evt)

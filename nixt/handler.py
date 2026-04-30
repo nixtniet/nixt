@@ -24,6 +24,7 @@ class Event(Base):
         self._thr = None
         self.args = []
         self.channel = ""
+        self.cmd = ""
         self.index = 0
         self.kind = "event"
         self.orig = ""

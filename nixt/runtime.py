@@ -29,7 +29,7 @@ class Arguments:
                                          usage="%(prog)s [cmd] [arg=val] [arg==val] [-c|d|h|s] [-i INIT] [-l LEVEL] [-m MODS] [-w WORKDIR] [-a] [-n] [-r] [-v] [-u] [-x]",
                                         )
         parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
-        parser.add_argument("-i", "--init", default="", help='serives to start.', metavar="mod1,mod2")
+        parser.add_argument("-i", "--init", default="", help='services to start.', metavar="mod1,mod2")
         parser.add_argument("-l", "--level", default=Main.level, help='set loglevel.')
         parser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="mod1,mod2")
         parser.add_argument("-n", "--nowait", action='store_true', help="don't wait for services to start.")
@@ -82,16 +82,6 @@ class Scripts:
         Boot.init(Main)
         Boot.forever()
 
-    @staticmethod
-    def cmd(text):
-        cli = Line()
-        for txt in text.split(" ! "):
-            evt = Event()
-            evt.kind = "command"
-            evt.orig = repr(cli)
-            evt.text = txt
-            Commands.command(evt)
-            evt.wait()
 
     @staticmethod
     def console():
@@ -115,7 +105,7 @@ class Scripts:
         Main.all = True
         Boot.configure(Main)
         Boot.scanner(Main)
-        Scripts.cmd(Arguments.txt)
+        cmd(Arguments.txt)
 
     @staticmethod
     def service():
@@ -129,6 +119,16 @@ class Scripts:
         Boot.init(Main)
         Boot.forever()
 
+
+def cmd(text):
+    cli = Line()
+    for txt in text.split(" ! "):
+        evt = Event()
+        evt.kind = "command"
+        evt.orig = repr(cli)
+        evt.text = txt
+        Commands.command(evt)
+        evt.wait()
 
 def main():
     "main"

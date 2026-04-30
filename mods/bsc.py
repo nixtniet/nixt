@@ -4,12 +4,14 @@
 "administrator"
 
 
+import os
 import time
 
 
 from nixt.booting import Boot
 from nixt.command import Commands
 from nixt.configs import Main
+from nixt.objects import Object
 from nixt.package import Mods
 from nixt.utility import Time, Utils
 
@@ -38,4 +40,4 @@ def upt(event):
 
 def ver(event):
     "show verson."
-    event.reply(f"{Main.name.upper()} {Boot.md5s()[:7].upper()}")
+    event.reply(f"{Main.name.upper()} {Boot.md5s().upper()}")
