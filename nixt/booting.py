@@ -152,7 +152,7 @@ class Boot:
             func(*args)
             cls.shutdown()
         except (KeyboardInterrupt, EOFError):
-            return
+            os._exit(0)
         except Exception as ex:
             logging.exception(ex)
         if old:
