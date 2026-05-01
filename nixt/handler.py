@@ -39,8 +39,6 @@ class Event(Base):
 
     def ok(self, txt=""):
         "print ok response."
-        if not txt:
-            txt = self.text
         self.reply(f"ok {txt}".strip())
 
     def ready(self):

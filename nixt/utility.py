@@ -160,13 +160,14 @@ class Utils:
         return f"~/.local/share/pipx/venvs/{name}/share/{name}/"
 
     @staticmethod
-    def spl(txt):
+    def spl(txt, ignore=""):
         "list from comma seperated string."
         try:
+            ignores = ignore.split(",")
             result = txt.split(",")
         except (TypeError, ValueError):
             result = []
-        return [x for x in result if x]
+        return [x for x in result if x and x not in ignores]
 
     @staticmethod
     def where(obj):

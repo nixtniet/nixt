@@ -4,16 +4,14 @@
 "administrator"
 
 
-import os
 import time
 
 
 from nixt.booting import Boot
 from nixt.command import Commands
 from nixt.configs import Main
-from nixt.objects import Object
 from nixt.package import Mods
-from nixt.utility import Time, Utils
+from nixt.utility import Time
 
 
 STARTTIME = time.time()

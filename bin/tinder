@@ -25,6 +25,9 @@ from nixt.threads import Thread
 from nixt.utility import Time
 
 
+e = os.path.exists
+
+
 Main.debug = True
 Main.other = True
 Main.wdr = ".test"
@@ -108,7 +111,7 @@ def payload(todo):
 
 
 def main():
-    if not check('p') and os.path.exists(Main.wdr):
+    if not check('p') and e(Main.wdr):
         shutil.rmtree(Main.wdr)
     if check("v"):
         Main.verbose = True

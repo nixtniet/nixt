@@ -8,7 +8,6 @@ import logging
 import os
 import sys
 import time
-import _thread
 
 
 from .command import Commands
@@ -116,13 +115,10 @@ class Boot:
     @classmethod
     def scanner(cls, cfg):
         "scan named modules for commands."
-        res = []
         for name, mod in Mods.iter(cfg.mods, cfg.ignore):
             Commands.scan(mod)
             if "configure" in dir(mod):
                 mod.configure()
-            res.append((name, mod))
-        return res
 
     @classmethod
     def shutdown(cls):
@@ -130,14 +126,7 @@ class Boot:
         for name in cls.inits:
             mod = Mods.get(name)
             if "shutdown" in dir(mod):
-                logging.info("shutdown %s", name)
-                try:
-                    mod.shutdown()
-                except (KeyboardInterrupt, EOFError):
-                    _thread.interrupt_main()
-                except Exception as ex:
-                    logging.exception(ex)
-                    return
+                mod.shutdown()
 
     @classmethod
     def wrap(cls, func, *args):

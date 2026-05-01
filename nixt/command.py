@@ -7,7 +7,7 @@
 import inspect
 
 
-from .objects import Base, Methods
+from .objects import Methods
 from .utility import Utils
 
 
@@ -20,8 +20,7 @@ class Commands:
     def add(cls, *args):
         "add functions to commands."
         for func in args:
-            name = func.__name__
-            cls.cmds[name] = func
+            cls.cmds[func.__name__] = func
 
     @classmethod
     def command(cls, evt):

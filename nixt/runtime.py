@@ -82,7 +82,6 @@ class Scripts:
         Boot.init(Main)
         Boot.forever()
 
-
     @staticmethod
     def console():
         "console script."
@@ -129,6 +128,7 @@ def cmd(text):
         evt.text = txt
         Commands.command(evt)
         evt.wait()
+
 
 def main():
     "main"
