@@ -4,8 +4,8 @@
 "show bots in fleet"
 
 
-from nixt.brokers import Broker
-from nixt.objects import Methods
+
+from nixt.defines import Broker, Methods
 
 
 def flt(event):

@@ -4,9 +4,7 @@
 "configuration"
 
 
-from nixt.objects import Base, Methods, Object
-from nixt.package import Mods
-from nixt.persist import Disk
+from nixt.defines import Base, Disk, Methods, Mods, Object
 
 
 def cfg(event):
@@ -44,6 +42,3 @@ def cfg(event):
     if mod and "configure" in dir(mod):
         mod.configure()
     event.ok()
-
-
-cfg.allow = "admin"

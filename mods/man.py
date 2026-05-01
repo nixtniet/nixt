@@ -251,6 +251,3 @@ def man(event):
         email,
         name.upper()
     ))
-
-
-man.allow = "admin"

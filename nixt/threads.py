@@ -71,15 +71,15 @@ class Thread:
     lock = threading.RLock()
 
     @classmethod
-    def launch(cls, func, *args, **kwargs):
+    def launch(cls,func, *args, **kwargs):
         "run function in a thread."
-        with cls.lock:
-            try:
-                task = Task(func, *args, **kwargs)
-                task.start()
-                return task
-            except (KeyboardInterrupt, EOFError):
-                _thread.interrupt_main()
+        try:
+            task = Task(func, *args, **kwargs)
+            task.start()
+            return task
+        except (KeyboardInterrupt, EOFError):
+            _thread.interrupt_main()
+
 
     @classmethod
     def name(cls, obj):
@@ -150,9 +150,13 @@ class Repeater(Timed):
         Thread.launch(self.start)
 
 
+
+
+
 def __dir__():
     return (
         'Repeater',
         'Thread',
-        'Timed'
+        'Timed',
+        'launch'
     )

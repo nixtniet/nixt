@@ -14,13 +14,8 @@ import time
 import _thread
 
 
-from nixt.command import Commands
-from nixt.configs import Main
-from nixt.handler import Broker, Event, Output
-from nixt.objects import Base, Configuration, Methods
-from nixt.persist import Disk
-from nixt.threads import Thread
-from nixt.utility import Utils
+from nixt.defines import Base, Configuration, Disk, Methods, Thread
+from nixt.defines import Broker, Commands, Event, Main, Output, Utils
 
 
 def init():

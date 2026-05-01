@@ -1,146 +1,136 @@
 # This file is placed in the Public Domain.
 
 
-"main program"
+"in the beginning"
 
 
-import argparse
+import logging
+import os
+import sys
+import time
 
 
-from .booting import Boot
 from .command import Commands
 from .configs import Main
-from .handler import Console, Event
-from .objects import Methods, Object
+from .objects import Object
+from .package import Mods
+from .persist import Disk, Workdir
+from .threads import Thread
+from .utility import Log, Utils
 
 
-class Arguments:
-
-    args = None
-    txt = None
+class Runtime:
 
     @classmethod
-    def getargs(cls):
-        "parse commandline arguments."
-        parser = argparse.ArgumentParser(
-                                         prog=Main.name,
-                                         description=f'{Main.name.upper()}',
-                                         epilog='use "%(prog)s cmd" for a list of commands.',
-                                         usage="%(prog)s [cmd] [arg=val] [arg==val] [-c|d|h|s] [-i INIT] [-l LEVEL] [-m MODS] [-w WORKDIR] [-a] [-n] [-r] [-v] [-u] [-x]",
-                                        )
-        parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
-        parser.add_argument("-i", "--init", default="", help='services to start.', metavar="mod1,mod2")
-        parser.add_argument("-l", "--level", default=Main.level, help='set loglevel.')
-        parser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="mod1,mod2")
-        parser.add_argument("-n", "--nowait", action='store_true', help="don't wait for services to start.")
-        parser.add_argument("-r", "--read", action="store_true", help="read config on start.")
-        parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
-        parser.add_argument("-w", "--wdr", default="", help='set working directory.')
-        parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
-        parser.add_argument("-x", "--admin", action="store_true", help="enable admin mode.")
-        parser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
-        parser.add_argument("--noignore", action="store_true", help=argparse.SUPPRESS)
-        group = parser.add_mutually_exclusive_group()
-        group.add_argument("-c", "--console", action="store_true", help="run as console.")
-        group.add_argument("-d", "--daemon", action="store_true", help="run as background daemon.")
-        group.add_argument("-s", "--service", action="store_true", help="run as service.")
-        cls.args, arguments = parser.parse_known_args()
-        cls.txt = " ".join(arguments)
-        Object.update(Main, cls.args)
-        Methods.parse(Main, cls.txt)
+    def banner(cls):
+        "hello."
+        tme = time.ctime(time.time()).replace("  ", " ")
+        txt = "%s %s since %s %s (%s)" % (
+            Main.name.upper(),
+            Main.version,
+            tme,
+            Main.level.upper() or "warning",
+            cls.md5s().upper()
+        )
+        print(txt.replace("  ", " "))
+        sys.stdout.flush()
+
+    @classmethod
+    def configure(cls, cfg=None):
+        "in the beginning."
+        if cfg is None:
+            cfg = Main
+        Workdir.configure(cfg)
+        if cfg.read:
+            Disk.read(Main, "main", "config")
+        Log.configure(cfg)
+        Mods.configure(cfg)
+        if cfg.noignore:
+            cfg.ignore = ""
+        if not cfg.mods:
+            cfg.mods = Mods.list(cfg.ignore)
+        if cfg.all:
+            cfg.init = Mods.list(cfg.ignore)
+        if cfg.daemon or cfg.service:
+            Workdir.pidfile(cfg.name)
+
+    @classmethod
+    def daemon(cls, verbose=False, nochdir=False):
+        "run in the background."
+        pid = os.fork()
+        if pid != 0:
+            os._exit(0)
+        os.setsid()
+        pid2 = os.fork()
+        if pid2 != 0:
+            os._exit(0)
+        if not verbose:
+            with open('/dev/null', 'r', encoding="utf-8") as sis:
+                os.dup2(sis.fileno(), sys.stdin.fileno())
+            with open('/dev/null', 'a+', encoding="utf-8") as sos:
+                os.dup2(sos.fileno(), sys.stdout.fileno())
+            with open('/dev/null', 'a+', encoding="utf-8") as ses:
+                os.dup2(ses.fileno(), sys.stderr.fileno())
+        os.umask(0)
+        if not nochdir:
+            os.chdir("/")
+        os.nice(10)
+
+    @classmethod
+    def forever(cls):
+        "run forever until ctrl-c."
+        while True:
+            try:
+               time.sleep(0.1)
+            except (KeyboardInterrupt, EOFError):
+               os._exit(0)
+
+    @classmethod
+    def md5s(cls):
+        paths = []
+        paths.append(os.path.dirname(__spec__.loader.path))
+        for path in Object.values(Mods.dirs):
+            paths.append(path)
+        return str(Utils.md5s(*paths)[:7])
+
+    @classmethod
+    def privileges(cls):
+        "drop privileges."
+        import getpass
+        import pwd
+        pwnam2 = pwd.getpwnam(getpass.getuser())
+        os.setgid(pwnam2.pw_gid)
+        os.setuid(pwnam2.pw_uid)
+
+    @classmethod
+    def scanner(cls, mods=""):
+        "scan named modules for commands."
+        for name in Utils.spl(mods):
+            mod = Mods.get(name)
+            Commands.scan(mod)
+            if "configure" in dir(mod):
+                mod.configure()
+
+    @classmethod
+    def wrap(cls, func, *args):
+        "restore console."
+        import termios
+        old = None
+        try:
+            old = termios.tcgetattr(sys.stdin.fileno())
+        except termios.error:
+            pass
+        try:
+            func(*args)
+        except (KeyboardInterrupt, EOFError):
+            os._exit(0)
+        except Exception as ex:
+            logging.exception(ex)
+        if old:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
-class Line(Console):
-
-    def raw(self, text):
-        "write to console."
-        print(text.encode('utf-8', 'replace').decode("utf-8"))
-
-
-class CSL(Line):
-
-    def poll(self):
-        "poll for an event."
-        evt = Event()
-        evt.orig = repr(self)
-        evt.text = input("> ")
-        evt.kind = "command"
-        return evt
-
-
-class Scripts:
-
-    @staticmethod
-    def background():
-        "background script."
-        Main.read = True
-        Main.init = Main.init or "irc,rss"
-        Boot.daemon(Main.verbose, Main.nochdir)
-        Boot.privileges()
-        Boot.configure(Main)
-        Boot.scanner(Main)
-        Boot.init(Main)
-        Boot.forever()
-
-    @staticmethod
-    def console():
-        "console script."
-        import readline
-        readline.redisplay()
-        Boot.configure(Main)
-        if Main.verbose:
-            Boot.banner()
-        Boot.scanner(Main)
-        Boot.init(Main)
-        csl = CSL()
-        csl.start(daemon=True)
-        Boot.forever()
-
-    @staticmethod
-    def control():
-        "cli script."
-        if not Arguments.txt:
-            return
-        Main.all = True
-        Boot.configure(Main)
-        Boot.scanner(Main)
-        cmd(Arguments.txt)
-
-    @staticmethod
-    def service():
-        "service script."
-        Main.read = True
-        Main.init = Main.init or "irc,rss"
-        Boot.privileges()
-        Boot.configure(Main)
-        Boot.scanner(Main)
-        Boot.banner()
-        Boot.init(Main)
-        Boot.forever()
-
-
-def cmd(text):
-    cli = Line()
-    for txt in text.split(" ! "):
-        evt = Event()
-        evt.kind = "command"
-        evt.orig = repr(cli)
-        evt.text = txt
-        Commands.command(evt)
-        evt.wait()
-
-
-def main():
-    "main"
-    Arguments.getargs()
-    Main.ignore = "man,mbx,rst,tmr,udp,web"
-    if not Main.admin:
-        Main.ignore += ",adm"
-    if Main.daemon:
-        Boot.wrap(Scripts.background)
-    elif Main.console:
-        Boot.wrap(Scripts.console)
-    elif Main.service:
-        Boot.wrap(Scripts.service)
-    else:
-        Boot.wrap(Scripts.control)
+def __dir__():
+    return (
+        'Runtime',
+    )

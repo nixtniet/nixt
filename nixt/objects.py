@@ -256,6 +256,7 @@ class Methods:
         "return ident string for object."
         return os.path.join(Methods.fqn(obj), *str(datetime.datetime.now()).split())
 
+
     @staticmethod
     def parse(obj, text):
         "parse text for command."
@@ -353,5 +354,6 @@ def __dir__():
         'Base',
         'Configuration',
         'Object',
-        'Methods'
+        'Methods',
+        'parse'
     )

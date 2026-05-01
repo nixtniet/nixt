@@ -13,10 +13,7 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.configs import Main
-from nixt.objects import Base, Configuration
-from nixt.persist import Locate, Workdir
-from nixt.threads import Thread
+from nixt.defines import Base, Configuration, Locate, Main, Thread, Workdir
 
 
 def configure():
@@ -134,3 +131,11 @@ def html(txt):
    %s
 </html>
 """ % txt
+
+
+def rst(event):
+    if not Main.rest:
+        event.reply("rest is not enable, use `rest=true'.")
+        return
+    configure()
+    init()
