@@ -258,7 +258,6 @@ class Methods:
         "return ident string for object."
         return os.path.join(Methods.fqn(obj), *str(datetime.datetime.now()).split())
 
-
     @staticmethod
     def search(obj, selector={}, matching=False):
         "check whether object matches search criteria."

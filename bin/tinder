@@ -16,13 +16,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.runtime import Runtime
-from nixt.command import Commands
-from nixt.configs import Main
-from nixt.handler import Event, Output
-from nixt.objects import Methods
-from nixt.threads import Thread
-from nixt.utility import Time
+from nixt.defines import Boot, Commands, Event, Main, Methods
+from nixt.defines import Output, Parse, Thread, Time
 
 
 e = os.path.exists
@@ -118,9 +113,9 @@ def main():
     if check("t"):
         Main.threaded = True
     Main.all = True
-    Methods.parse(Main, " ".join(sys.argv[1:]))
-    Runtime.configure(Main)
-    Runtime.scanner(Main)
+    Parse.parse(Main, " ".join(sys.argv[1:]))
+    Boot.configure(Main)
+    Boot.scanner(Main)
     if Main.threaded:
         Clients.init(os.cpu_count(), CLI)
     else:
@@ -220,4 +215,4 @@ post = {
 
 
 if __name__ == "__main__":
-    Runtime.wrap(main)
+    Boot.wrap(main)

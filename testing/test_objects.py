@@ -7,9 +7,7 @@
 import unittest
 
 
-from nixt.encoder import Json
-from nixt.objects import Base, Object, Methods
-from nixt.persist import Disk
+from nixt.defines import Base, Disk, Json, Object, Methods
 
 
 import nixt.objects

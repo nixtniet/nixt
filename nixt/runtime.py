@@ -8,8 +8,7 @@
 import argparse
 
 
-from .defines import Boot, Commands, Console, Event, Main
-from .defines import Methods, Object
+from .defines import Boot, Commands, Console, Event, Main, Object, Parse
 
 
 class Arguments:
@@ -46,7 +45,7 @@ class Arguments:
         cls.args, arguments = theparser.parse_known_args()
         cls.txt = " ".join(arguments)
         Object.update(Main, cls.args)
-        Methods.parse(Main, cls.txt)
+        Parse.parse(Main, cls.txt)
 
 
 class Line(Console):
@@ -145,5 +144,5 @@ def main():
         Boot.wrap(Scripts.control)
 
 
-if __name__ =="__main__":
+if __name__ == "__main__":
     main()

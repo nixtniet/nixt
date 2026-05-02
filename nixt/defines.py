@@ -1,11 +1,11 @@
 # This file is placed in the Public Domain.
-# fleke8: noqa: F401
+# flake8: noqa: F401
 
 
 "interface"
 
 
-from .booting import Boot 
+from .booting import Boot as Boot
 from .brokers import Broker as Broker
 from .command import Commands as Commands
 from .configs import Main as Main
@@ -19,6 +19,7 @@ from .objects import Configuration as Configuration
 from .objects import Json as Json
 from .objects import Object as Object
 from .objects import Methods as Methods
+from .objects import Parse as Parse
 from .package import Mods as Mods
 from .persist import Disk as Disk
 from .persist import Locate as Locate
@@ -46,11 +47,12 @@ def __dir__():
        'Json',
        'Locate',
        'Log',
-       'MOds',
+       'Mods',
        'Main',
        'Methods',
        'Object',
        'Output',
+       'Parse',
        'Repeater',
        'Thread',
        'Time',
