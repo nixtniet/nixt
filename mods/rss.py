@@ -23,7 +23,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.defines import Disk, Locate, Repeater, Thread, Utils
+from nixt.defines import Main, Disk, Locate, Repeater, Thread, Utils
 from nixt.defines import Base, Broker, Configuration, Methods, Object
 
 

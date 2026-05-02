@@ -13,7 +13,7 @@ class MainConfig(type):
     def __getattr__(cls, key):
         try:
             return cls.__getattribute__(key)
-        except:
+        except AttributeError:
             return ""
 
     def __str__(cls):

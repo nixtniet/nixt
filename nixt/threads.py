@@ -149,9 +149,6 @@ class Repeater(Timed):
         Thread.launch(self.start)
 
 
-
-
-
 def __dir__():
     return (
         'Repeater',

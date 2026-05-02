@@ -81,9 +81,9 @@ class Boot:
         "run forever until ctrl-c."
         while True:
             try:
-               time.sleep(0.1)
+                time.sleep(0.1)
             except (KeyboardInterrupt, EOFError):
-               return
+                return
 
     @classmethod
     def init(cls, cfg):
