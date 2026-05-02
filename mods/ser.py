@@ -4,7 +4,7 @@
 "service"
 
 
-from nixt.defines import Runtime
+from nixt.defines import Main, Runtime
 
 
 def ser():

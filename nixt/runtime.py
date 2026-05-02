@@ -86,6 +86,17 @@ class Runtime:
                os._exit(0)
 
     @classmethod
+    def init(cls, cfg):
+        thrs = ""
+        for name, in Mods.has("init"):
+            if name not in Utils.spl(cfg.init):
+                continue
+            mod = Mods.get(name)
+            thrs.append(Thread.launch(mod.init))
+        for thr in thrs:
+            thr.join()
+
+    @classmethod
     def md5s(cls):
         paths = []
         paths.append(os.path.dirname(__spec__.loader.path))
@@ -103,9 +114,11 @@ class Runtime:
         os.setuid(pwnam2.pw_uid)
 
     @classmethod
-    def scanner(cls, mods=""):
+    def scanner(cls, cfg=None):
         "scan named modules for commands."
-        for name in Utils.spl(mods):
+        if cfg is None:
+            cfg = Main
+        for name in Utils.spl(cfg.mods):
             mod = Mods.get(name)
             Commands.scan(mod)
             if "configure" in dir(mod):

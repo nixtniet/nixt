@@ -4,7 +4,7 @@
 "console"
 
 
-from nixt.defines import Event, Main, Runtime
+from nixt.defines import Console, Event, Main, Runtime
 
 
 class Line(Console):
@@ -32,7 +32,7 @@ def csl(event):
     Runtime.configure(Main)
     if Main.verbose:
         Runtime.banner()
-    Runtime.scan(Main)
+    Runtime.scanner(Main)
     Runtime.init(Main)
     csl = CSL()
     csl.start()

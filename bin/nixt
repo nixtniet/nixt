@@ -1,1 +1,1 @@
-python3 -c "from nixt.defines import Runtime ; from mods.cli import main ; Runtime.wrap(main)" $* ;
+python3 -c "from nixt.defines import Runtime ; from mods.ctl import main ; Runtime.wrap(main)" $* ;
