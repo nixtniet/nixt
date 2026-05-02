@@ -7,7 +7,7 @@
 import time
 
 
-from nixt.defines import Commands, Main, Mods, Runtime, Time
+from nixt.defines import Boot, Commands, Main, Mods, Time
 
 
 STARTTIME = time.time()

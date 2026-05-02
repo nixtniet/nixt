@@ -19,7 +19,7 @@ from .threads import Thread
 from .utility import Log, Utils
 
 
-class Runtime:
+class Boot:
 
     @classmethod
     def banner(cls):
@@ -87,15 +87,14 @@ class Runtime:
 
     @classmethod
     def init(cls, cfg):
-        thrs = ""
-        for name, in Mods.has("init"):
+        thrs = []
+        for name in Utils.spl(Mods.has("init")):
             if name not in Utils.spl(cfg.init):
                 continue
             mod = Mods.get(name)
             thrs.append(Thread.launch(mod.init))
-        if Main.wait:
-            for thr in thrs:
-                thr.join()
+        for thr in thrs:
+            thr.join()
 
     @classmethod
     def md5s(cls):
@@ -146,5 +145,5 @@ class Runtime:
 
 def __dir__():
     return (
-        'Runtime',
+        'Boot',
     )

@@ -80,7 +80,6 @@ class Thread:
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
 
-
     @classmethod
     def name(cls, obj):
         "string of function/method."

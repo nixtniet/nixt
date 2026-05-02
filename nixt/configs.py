@@ -11,9 +11,10 @@ from .utility import Utils
 class MainConfig(type):
 
     def __getattr__(cls, key):
-        if key not in dir(cls):
+        try:
+            return cls.__getattribute__(key)
+        except:
             return ""
-        return cls.__getattribute__(key)
 
     def __str__(cls):
         return str(Object.skip(cls.__dict__))

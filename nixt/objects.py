@@ -5,7 +5,9 @@
 
 
 import datetime
+import json
 import os
+import threading
 import types
 
 
@@ -258,6 +260,95 @@ class Methods:
 
 
     @staticmethod
+    def search(obj, selector={}, matching=False):
+        "check whether object matches search criteria."
+        res = False
+        for key, value in Object.items(selector):
+            val = getattr(obj, key, None)
+            if not val:
+                res = False
+                break
+            if matching and value != val:
+                res = False
+                break
+            if str(value).lower() not in str(val).lower():
+                res = False
+                break
+            res = True
+        return res
+
+    @staticmethod
+    def typed(obj, key, val):
+        "assign proper types."
+        if not val:
+            return
+        if val in ["True", "true", True]:
+            return setattr(obj, key, True)
+        if val in ["False", "false", False]:
+            return setattr(obj, key, False)
+        try:
+            return setattr(obj, key, int(val))
+        except ValueError:
+            pass
+        try:
+            return setattr(obj, key, float(val))
+        except ValueError:
+            pass
+        setattr(obj, key, val)
+
+
+class Encoder(json.JSONEncoder):
+
+    lock = threading.RLock()
+
+    def default(self, o):
+        "generate serializable versions."
+        with Encoder.lock:
+            if isinstance(o, type):
+                return Object.skip(o)
+            if isinstance(o, dict):
+                return o.items()
+            if isinstance(o, list):
+                return iter(o)
+            if isinstance(o, types.MappingProxyType):
+                return dict(o)
+            try:
+                return json.JSONEncoder.default(self, o)
+            except TypeError:
+                try:
+                    return vars(o)
+                except TypeError:
+                    return repr(o)
+
+
+class Json:
+
+    @staticmethod
+    def dump(*args, **kw):
+        "dump object to disk."
+        kw["cls"] = Encoder
+        return json.dump(*args, **kw)
+
+    @staticmethod
+    def dumps(*args, **kw):
+        "dump object to string."
+        kw["cls"] = Encoder
+        return json.dumps(*args, **kw)
+
+    @staticmethod
+    def load(s, *args, **kw):
+        "load object from disk."
+        return json.load(s, *args, **kw)
+
+    @staticmethod
+    def loads(s, *args, **kw):
+        "load object from string."
+        return json.loads(s, *args, **kw)
+
+
+class Parse:
+
+    @staticmethod
     def parse(obj, text):
         "parse text for command."
         data = {
@@ -311,49 +402,13 @@ class Methods:
             obj.text = obj.cmd or ""
         Object.notset(obj, obj.sets)
 
-    @staticmethod
-    def search(obj, selector={}, matching=False):
-        "check whether object matches search criteria."
-        res = False
-        for key, value in Object.items(selector):
-            val = getattr(obj, key, None)
-            if not val:
-                res = False
-                break
-            if matching and value != val:
-                res = False
-                break
-            if str(value).lower() not in str(val).lower():
-                res = False
-                break
-            res = True
-        return res
-
-    @staticmethod
-    def typed(obj, key, val):
-        "assign proper types."
-        if not val:
-            return
-        if val in ["True", "true", True]:
-            return setattr(obj, key, True)
-        if val in ["False", "false", False]:
-            return setattr(obj, key, False)
-        try:
-            return setattr(obj, key, int(val))
-        except ValueError:
-            pass
-        try:
-            return setattr(obj, key, float(val))
-        except ValueError:
-            pass
-        setattr(obj, key, val)
-
 
 def __dir__():
     return (
         'Base',
         'Configuration',
-        'Object',
+        'Json',
         'Methods',
-        'parse'
+        'Object'
+        'Parse'
     )
