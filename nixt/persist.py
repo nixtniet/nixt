@@ -178,6 +178,7 @@ class Workdir:
     def configure(cls, cfg):
         if cfg.wdr:
             cls.wdr = cfg.wdr
+        cls.skel()
 
     @classmethod
     def kinds(cls):

@@ -83,7 +83,7 @@ class Runtime:
             try:
                time.sleep(0.1)
             except (KeyboardInterrupt, EOFError):
-               os._exit(0)
+               return
 
     @classmethod
     def init(cls, cfg):
@@ -93,8 +93,9 @@ class Runtime:
                 continue
             mod = Mods.get(name)
             thrs.append(Thread.launch(mod.init))
-        for thr in thrs:
-            thr.join()
+        if Main.wait:
+            for thr in thrs:
+                thr.join()
 
     @classmethod
     def md5s(cls):
@@ -136,7 +137,7 @@ class Runtime:
         try:
             func(*args)
         except (KeyboardInterrupt, EOFError):
-            os._exit(0)
+            pass
         except Exception as ex:
             logging.exception(ex)
         if old:
