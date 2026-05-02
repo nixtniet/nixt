@@ -91,8 +91,9 @@ class Boot:
                 continue
             mod = Mods.get(name)
             thrs.append(Thread.launch(mod.init))
-        for thr in thrs:
-            thr.join()
+        if cfg.wait:
+            for thr in thrs:
+                thr.join()
 
     @classmethod
     def md5s(cls):
@@ -116,7 +117,7 @@ class Boot:
         "scan named modules for commands."
         if cfg is None:
             cfg = Main
-        for name in Utils.spl(Mods.list(Main.ignore)):
+        for name in Utils.spl(Mods.list(cfg.ignore)):
             mod = Mods.get(name)
             Commands.scan(mod)
             if "configure" in dir(mod):
