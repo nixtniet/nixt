@@ -47,10 +47,8 @@ class Boot:
         Mods.configure(cfg)
         if cfg.noignore:
             cfg.ignore = ""
-        if not cfg.mods:
-            cfg.mods = Mods.list(cfg.ignore)
         if cfg.all:
-            cfg.init = Mods.list(cfg.ignore)
+            cfg.mods = Mods.list(cfg.ignore)
         if cfg.daemon or cfg.service:
             Workdir.pidfile(cfg.name)
 
@@ -89,7 +87,7 @@ class Boot:
     def init(cls, cfg):
         thrs = []
         for name in Utils.spl(Mods.has("init")):
-            if name not in Utils.spl(cfg.init):
+            if name not in Utils.spl(cfg.mods):
                 continue
             mod = Mods.get(name)
             thrs.append(Thread.launch(mod.init))
@@ -118,7 +116,7 @@ class Boot:
         "scan named modules for commands."
         if cfg is None:
             cfg = Main
-        for name in Utils.spl(cfg.mods):
+        for name in Utils.spl(Mods.list(Main.ignore)):
             mod = Mods.get(name)
             Commands.scan(mod)
             if "configure" in dir(mod):

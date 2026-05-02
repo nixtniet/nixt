@@ -23,7 +23,8 @@ class Arguments:
                                          prog=Main.name,
                                          description=f'{Main.name.upper()}',
                                          epilog='use "%(prog)s cmd" for a list of commands.',
-                                         usage="%(prog)s [cmd] [arg=val] [arg==val] [-c|d|h|s] [-i INIT] [-l LEVEL] [-m MODS] [-w WORKDIR] [-a] [-n] [-r] [-v] [-u] [-x]",
+                                         formatter_class=argparse.RawDescriptionHelpFormatter,
+                                         usage='''%(prog)s [-c|d|h|s] [-l level] [-m m1,m2] [-w wdr] [-a] [-r] [-v] [-u] [-x]\n       %(prog)s [cmd] [arg=val] [arg==val]'''
                                         )
         group = theparser.add_mutually_exclusive_group()
         group.add_argument("-c", "--console", action="store_true", help="run as console.")
@@ -31,13 +32,11 @@ class Arguments:
         group.add_argument("-s", "--service", action="store_true", help="run as service.")
         parser = theparser.add_argument_group()
         parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
-        parser.add_argument("-i", "--init", default="", help='services to start.', metavar="mod1,mod2")
-        parser.add_argument("-l", "--level", default=Main.level, help='set loglevel.')
-        parser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="mod1,mod2")
-        parser.add_argument("-n", "--nowait", action='store_true', help="don't wait for services to start.")
+        parser.add_argument("-l", "--level", default=Main.level, help='set loglevel.', metavar="level")
+        parser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
         parser.add_argument("-r", "--read", action="store_true", help="read config on start.")
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
-        parser.add_argument("-w", "--wdr", default="", help='set working directory.')
+        parser.add_argument("-w", "--wdr", default="", help='set working directory.', metavar="wdr")
         parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
         parser.add_argument("-x", "--admin", action="store_true", help="enable admin mode.")
         parser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
