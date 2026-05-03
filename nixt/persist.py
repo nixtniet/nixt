@@ -231,9 +231,7 @@ class Workdir:
 
 def __dir__():
     return (
-        'Cfg',
         'Disk',
         'Locate',
-        'Yable',
         'Workdir'
     )

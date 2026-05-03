@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # This file is placed in the Public Domain.
 
 
@@ -41,10 +40,10 @@ class Arguments:
         parser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
         parser.add_argument("--noignore", action="store_true", help=argparse.SUPPRESS)
         parser.add_argument("--wdr", default="", help='set working directory.', metavar="wdr")
-        cls.args, arguments = theparser.parse_known_args()
-        cls.txt = " ".join(arguments)
-        Object.update(Main, cls.args)
-        Parse.parse(Main, cls.txt)
+        args, arguments = theparser.parse_known_args()
+        Main.otxt = txt = " ".join(arguments)
+        Object.update(Main, args)
+        Parse.parse(Main, txt)
 
 
 class Line(Console):
@@ -70,13 +69,9 @@ class Scripts:
     @staticmethod
     def background():
         "background script."
-        Main.read = True
         Main.mods = Main.mods or "irc,rss"
         Boot.daemon(Main.verbose, Main.nochdir)
-        Boot.privileges()
-        Boot.configure(Main)
-        Boot.scanner(Main)
-        Boot.init(Main)
+        Boot.boot()
         Boot.forever()
 
     @staticmethod
@@ -84,11 +79,7 @@ class Scripts:
         "console script."
         import readline
         readline.redisplay()
-        Boot.configure(Main)
-        if Main.verbose:
-            Boot.banner()
-        Boot.scanner(Main)
-        Boot.init(Main)
+        Boot.boot()
         csl = CSL()
         csl.start(daemon=True)
         Boot.forever()
@@ -96,23 +87,16 @@ class Scripts:
     @staticmethod
     def control():
         "cli script."
-        if not Arguments.txt:
-            return
-        Main.all = True
-        Boot.configure(Main)
-        Boot.scanner(Main)
-        cmd(Arguments.txt)
+        Main.control = True
+        Boot.boot()
+        cmd(Main.otxt)
 
     @staticmethod
     def service():
         "service script."
-        Main.read = True
         Main.mods = Main.mods or "irc,rss"
-        Boot.privileges()
-        Boot.configure(Main)
-        Boot.scanner(Main)
-        Boot.banner()
-        Boot.init(Main)
+        Main.verbose = True
+        Boot.boot()
         Boot.forever()
 
 

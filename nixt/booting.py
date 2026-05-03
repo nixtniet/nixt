@@ -36,6 +36,23 @@ class Boot:
         sys.stdout.flush()
 
     @classmethod
+    def boot(cls,cfg=None):
+        if cfg is None:
+            cfg = Main
+        if cfg.daemon or cfg.service:
+            Main.read = True
+            Main.all = True
+            cls.privileges()
+        if cfg.control:
+            Main.all = True
+        cls.configure(cfg)
+        if cfg.verbose:
+            cls.banner()
+        cls.scanner(cfg)
+        if cfg.console or cfg.daemon or cfg.service:
+            cls.init(cfg)
+
+    @classmethod
     def configure(cls, cfg=None):
         "in the beginning."
         if cfg is None:
@@ -117,7 +134,7 @@ class Boot:
         "scan named modules for commands."
         if cfg is None:
             cfg = Main
-        for name in Utils.spl(Mods.list(cfg.ignore)):
+        for name in Utils.spl(cfg.mods):
             mod = Mods.get(name)
             Commands.scan(mod)
             if "configure" in dir(mod):
