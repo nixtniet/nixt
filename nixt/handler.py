@@ -33,9 +33,7 @@ class Event(Base):
 
     def display(self):
         "print results."
-        bot = Broker.get(self.orig)
-        if bot:
-            bot.display(self)
+        Broker.display(self)
 
     def ok(self, txt=""):
         "print ok response."
