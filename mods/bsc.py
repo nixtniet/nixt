@@ -10,9 +10,6 @@ import time
 from nixt.defines import Boot, Commands, Main, Mods, Time
 
 
-STARTTIME = time.time()
-
-
 def cmd(event):
     "list available commands."
     event.reply(",".join(sorted(Commands.commands(Main.ignore))))
@@ -29,7 +26,7 @@ def mod(event):
 
 def upt(event):
     "show uptiome."
-    event.reply(Time.elapsed(time.time()-STARTTIME))
+    event.reply(Time.elapsed(time.time()-Time.starttime))
 
 
 def ver(event):

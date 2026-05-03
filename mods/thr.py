@@ -11,9 +11,6 @@ import time
 from nixt.defines import Time
 
 
-STARTTIME = time.time()
-
-
 def thr(event):
     result = []
     for thread in sorted(threading.enumerate(), key=lambda x: x.name):
@@ -24,7 +21,7 @@ def thr(event):
         elif getattr(thread, "starttime", None):
             uptime = time.time() - thread.starttime
         else:
-            uptime = time.time() - STARTTIME
+            uptime = time.time() - Time.starttime
         result.append((uptime, thread.name))
     res = []
     for uptime, txt in sorted(result, key=lambda x: x[0]):

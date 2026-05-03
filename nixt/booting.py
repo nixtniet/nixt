@@ -36,15 +36,15 @@ class Boot:
         sys.stdout.flush()
 
     @classmethod
-    def boot(cls,cfg=None):
+    def boot(cls, cfg=None):
         if cfg is None:
             cfg = Main
         if cfg.daemon or cfg.service:
-            Main.read = True
-            Main.all = True
+            cfg.read = True
+            cfg.all = True
             cls.privileges()
         if cfg.control:
-            Main.all = True
+            cfg.all = True
         cls.configure(cfg)
         if cfg.verbose:
             cls.banner()
@@ -59,7 +59,7 @@ class Boot:
             cfg = Main
         Workdir.configure(cfg)
         if cfg.read:
-            Disk.read(Main, "main", "config")
+            Disk.read(cfg, "main", "config")
         Log.configure(cfg)
         Mods.configure(cfg)
         if cfg.noignore:

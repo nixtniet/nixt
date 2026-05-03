@@ -35,10 +35,8 @@ class Mods:
     def configure(cls, cfg):
         "configure module directories."
         if cfg.user:
-            if e("mods"):
-                cls.add('mods', 'mods')
-            if e("other"):
-                cls.add("other", "other")
+            if e("mods"): cls.add('mods', 'mods')
+            if e("other"): cls.add("other", "other")
         cls.add("modules", j(Workdir.wdr, "mods"))
         cls.add(f"{Utils.pkgname(Mods)}.modules", Utils.moddir())
 

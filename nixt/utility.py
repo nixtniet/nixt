@@ -21,6 +21,8 @@ class NoDate(Exception):
 
 class Time:
 
+    starttime = time.time()
+
     @staticmethod
     def date(daystr):
         "date from string."

@@ -9,21 +9,18 @@
 
 **SYNOPSIS**
 
-| ``%s [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [-u] [-x][--wdr WDR]``
-|
-| ``%s <cmd> [key=val] [key==val]``
-| ``%s -cvaw [mods=mod1,mod2]``
+| ``%s [-c|d|h|s] [-a] [-v] [-u] [-x] [-l level] [-m m1,m2] [-w wdr]``
+| ``%s [cmd] [arg=val] [arg==val]``
 |
 
 **DESCRIPTION**
 
 ``%s`` has all you need to program a unix cli program, such as disk
 perisistence for configuration files, event handler to handle the
-client/server connection, deferred exception handling to not crash
-on an error, etc.
+client/server connection, bork on exit for have an early exit, etc.
 
 ``%s`` contains python3 code to program objects in a functional way.
-it provides an "clean namespace" Object class that only has dunder
+it provides an "clean namespace" Base class that only has dunder
 methods, so the namespace is not cluttered with method names. This
 makes storing and reading to/from json possible.
 
@@ -44,7 +41,7 @@ installation is done with pipx
 |
 | <new terminal>
 |
-| ``$ %s srv > %s.service``
+| ``$ %s -x srv > %s.service``
 | ``$ sudo mv %s.service /etc/systemd/system/``
 | ``$ sudo systemctl enable %s --now``
 |
@@ -64,31 +61,28 @@ use ``%s`` to control the program, default it does nothing
 the -h option will show you possible options
 
 | ``$ %s -h``
-| usage: nixt [-h] [-a] [-c] [-d] [-i IGNORE] [-l LEVEL] [-m MODS] [-n INDEX]
-|             [-p] [-r] [-s] [-t] [-v] [-w] [-u] [-x] [--wdr WDR] [--nochdir]
+| usage: nixt [-c|d|h|s] [-a] [-v] [-u] [-x] [-l level] [-m m1,m2] [-w wdr]
+|        nixt [cmd] [arg=val] [arg==val]
 |
 | NIXT
 |
 | options:
-|   -h, --help           show this help message and exit
-|   -a, --all            load all modules.
-|   -c, --console        start console.
-|   -d, --daemon         start background daemon.
-|   -i, --ignore IGNORE  modules to ignore.
-|   -l, --level LEVEL    set loglevel.
-|   -m, --mods MODS      modules to load.
-|   -n, --index INDEX    set index to use.
-|   -p, --prune          prune directories.
-|   -r, --read           read modules on start.
-|   -s, --service        start service.
-|   -t, --threaded       use threads.
-|   -v, --verbose        enable verbose.
-|   -w, --wait           wait for services to start.
-|   -u, --user           use local mods directory.
-|   -x, --admin          enable admin mode.
-|   --wdr WDR            set working directory.
-|   --nochdir            set working directory.
-
+|   -h, --help         show this help message and exit
+|   -c, --console      run as console.
+|   -d, --daemon       run as background daemon.
+|   -s, --service      run as service.
+|
+|   -a, --all          load all modules.
+|   -l, --level level  set loglevel.
+|   -m, --mods m1,m2   modules to load.
+|   -v, --verbose      enable verbose.
+|   -w, --wait         wait for services to start.
+|   -u, --user         use local mods directory.
+|   -x, --admin        enable admin mode.
+|   --wdr wdr          set working directory.
+|
+| use "nixt cmd" for a list of commands.
+|
 
 see list of commands
 
@@ -104,7 +98,7 @@ start console
 
 start console and run irc and rss clients
 
-| ``$ %s -c init=irc,rss``
+| ``$ %s -c mods=irc,rss``
 |
 
 list available modules
@@ -143,7 +137,6 @@ here is a list of available commands
 | ``pwd`` - sasl nickserv name/pass
 | ``rem`` - removes a rss feed
 | ``res`` - restore deleted feeds
-| ``req`` - reconsider
 | ``rss`` - add a feed
 | ``syn`` - sync rss feeds
 | ``tdo`` - add todo item
@@ -244,7 +237,7 @@ def man(event):
     event.reply(__doc__ % (
         name,
         name.upper(),
-        *(name,) * 3,
+        *(name,) * 2,
         *(name.upper(),) * 4,
         *(name,) * 33,
         author,

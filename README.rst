@@ -6,21 +6,18 @@
 
 **SYNOPSIS**
 
-| ``nixt [-h] [-a] [-c] [-d] [-l LEVEL] [-m MODS] [-n] [-s] [-t] [-v] [-w] [--local] [--wdr WDR]``
-|
-| ``nixt <cmd> [key=val] [key==val]``
-| ``nixt -cvaw [mods=mod1,mod2]``
+| ``nixt [-c|d|h|s] [-a] [-v] [-u] [-x] [-l level] [-m m1,m2] [-w wdr]``
+| ``nixt [cmd] [arg=val] [arg==val]``
 |
 
 **DESCRIPTION**
 
 ``NIXT`` has all you need to program a unix cli program, such as disk
 perisistence for configuration files, event handler to handle the
-client/server connection, deferred exception handling to not crash
-on an error, etc.
+client/server connection, bork on exit for have an early exit, etc.
 
 ``NIXT`` contains python3 code to program objects in a functional way.
-it provides an "clean namespace" Object class that only has dunder
+it provides an "clean namespace" Base class that only has dunder
 methods, so the namespace is not cluttered with method names. This
 makes storing and reading to/from json possible.
 
@@ -41,7 +38,7 @@ installation is done with pipx
 |
 | <new terminal>
 |
-| ``$ nixt srv > nixt.service``
+| ``$ nixt -x srv > nixt.service``
 | ``$ sudo mv nixt.service /etc/systemd/system/``
 | ``$ sudo systemctl enable nixt --now``
 |
@@ -61,23 +58,27 @@ use ``nixt`` to control the program, default it does nothing
 the -h option will show you possible options
 
 | ``$ nixt -h``
+| usage: nixt [-c|d|h|s] [-a] [-v] [-u] [-x] [-l level] [-m m1,m2] [-w wdr]
+|        nixt [cmd] [arg=val] [arg==val]
+|
+| NIXT
 |
 | options:
+|   -h, --help         show this help message and exit
+|   -c, --console      run as console.
+|   -d, --daemon       run as background daemon.
+|   -s, --service      run as service.
 |
-| ``-h,--help          show this help message and exit``
-| ``-a,--all           load all modules``
-| ``-c,--console       start console``
-| ``-d,--daemon        start background daemon``
-| ``-l,--level LEVEL   set loglevel``
-| ``-m,--mods MODS     modules to load``
-| ``-n,--noignore      disable ignore```
-| ``-r, --read         read modules on start``
-| ``-s,--service       start service``
-| ``-t,--threaded      enable multiple workers``
-| ``-v,--verbose       enable verbose``
-| ``-w,--wait          wait for services to start``
-| ``--local            use local mods directory``
-| ``--wdr <WDR>        set working directory``
+|   -a, --all          load all modules.
+|   -l, --level level  set loglevel.
+|   -m, --mods m1,m2   modules to load.
+|   -v, --verbose      enable verbose.
+|   -w, --wait         wait for services to start.
+|   -u, --user         use local mods directory.
+|   -x, --admin        enable admin mode.
+|   --wdr wdr          set working directory.
+|
+| use "nixt cmd" for a list of commands.
 |
 
 see list of commands
@@ -94,7 +95,7 @@ start console
 
 start console and run irc and rss clients
 
-| ``$ nixt -c init=irc,rss``
+| ``$ nixt -c mods=irc,rss``
 |
 
 list available modules
@@ -133,7 +134,6 @@ here is a list of available commands
 | ``pwd`` - sasl nickserv name/pass
 | ``rem`` - removes a rss feed
 | ``res`` - restore deleted feeds
-| ``req`` - reconsider
 | ``rss`` - add a feed
 | ``syn`` - sync rss feeds
 | ``tdo`` - add todo item
@@ -146,15 +146,15 @@ here is a list of available commands
 
 irc
 
-| ``$ nixt cfg server=<server>``
-| ``$ nixt cfg channel=<channel>``
-| ``$ nixt cfg nick=<nick>``
+| ``$ nixt cfg irc server=<server>``
+| ``$ nixt cfg irc hannel=<channel>``
+| ``$ nixt cfg irc nick=<nick>``
 |
 
 sasl
 
 | ``$ nixt pwd <nsnick> <nspass>``
-| ``$ nixt cfg password=<frompwd>``
+| ``$ nixt cfg irc password=<frompwd>``
 |
 
 rss
@@ -213,12 +213,11 @@ opml
 **AUTHOR**
 
 |
-| ``Nixt Niet`` <``nixtniet@gmail.com``>
+| ``Nixt Niet`` <``nietniet@gmail.com``>
 |
 
 **COPYRIGHT**
 
 |
-| ``NIXT`` is Public Domain..
+| ``NIXT`` is Public Domain.
 |
-

@@ -43,7 +43,6 @@ class Configuration(Base):
     pass
 
 
-
 class Object:
 
     @staticmethod

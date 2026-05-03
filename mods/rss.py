@@ -23,8 +23,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.defines import Main, Disk, Locate, Repeater, Thread, Utils
-from nixt.defines import Base, Broker, Configuration, Methods, Object
+from nixt.defines import Base, Broker, Configuration, Disk, Locate
+from nixt.defines import Main, Methods, Object, Repeater, Thread, Utils
 
 
 def configure():
