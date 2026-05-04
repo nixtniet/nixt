@@ -7,11 +7,7 @@
 import time
 
 
-from nixt.booting import Boot
-from nixt.command import Commands
-from nixt.configs import Main
-from nixt.package import Mods
-from nixt.utility import Time
+from nixt.defines import Boot, Commands, Main, Mods, Time
 
 
 def cmd(event):

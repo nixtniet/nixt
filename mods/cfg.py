@@ -4,9 +4,7 @@
 "configuration"
 
 
-from nixt.objects import Dict, Methods, Object
-from nixt.package import Mods
-from nixt.persist import Disk
+from nixt.defines import Object, Disk, Methods, Mods, Dict
 
 
 def cfg(event):

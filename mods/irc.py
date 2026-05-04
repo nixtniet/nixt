@@ -14,14 +14,8 @@ import time
 import _thread
 
 
-from nixt.brokers import Broker
-from nixt.command import Commands
-from nixt.configs import Main
-from nixt.handler import Event, Output
-from nixt.objects import Methods, Object
-from nixt.persist import Disk
-from nixt.threads import Thread
-from nixt.utility import Utils
+from nixt.defines import Object, Broker, Commands, Disk, Event
+from nixt.defines import Main, Methods, Output, Thread, Utils
 
 
 def init():
@@ -95,7 +89,7 @@ class TextWrap(textwrap.TextWrapper):
         self.break_long_words = False
         self.drop_whitespace = False
         self.fix_sentence_endings = True
-        self.replace_whitespace = False
+        self.replace_whitespace = True
         self.tabsize = 4
         self.width = 400
 
@@ -232,12 +226,9 @@ class IRC(Output):
 
     def dosay(self, channel, text):
         self.events.joined.wait()
-        if text.count("\n") > 3:
-            self.docommand("PRIVMSG", channel, "command would flood")
-            return
-        for txt in text.split("\n"):
-            txt = txt.replace("  ", " ")
-            self.docommand("PRIVMSG", channel, txt)
+        txt = str(text).replace("\n", "")
+        txt = txt.replace("  ", " ")
+        self.docommand("PRIVMSG", channel, txt)
 
     def event(self, txt):
         evt = self.parsing(txt)

@@ -9,9 +9,7 @@ import os
 import time
 
 
-from nixt.objects import Dict, Methods, Object
-from nixt.persist import Disk, Locate
-from nixt.utility import Time
+from nixt.defines import Object, Disk, Methods, Dict, Locate, Time
 
 
 class Email(Object):

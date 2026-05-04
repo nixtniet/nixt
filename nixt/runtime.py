@@ -140,7 +140,7 @@ class Scripts:
     @staticmethod
     def control():
         "cli script."
-        Run.configure()
+        Runs.configure()
         Boot.scanner()
         Line.cmd(Main.otxt)
 
