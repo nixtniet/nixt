@@ -4,7 +4,7 @@
 "configuration"
 
 
-from nixt.defines import Object, Disk, Method, Mods, Method
+from nixt.defines import Object, Disk, Method, Mods
 
 
 def cfg(event):

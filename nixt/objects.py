@@ -112,7 +112,7 @@ class Method:
             elif isinstance(value, str):
                 txt += f'{key}="{value}" '
             else:
-                txt += f"{key}={Method.cls(value)}({Methods.fmt(value)}) "
+                txt += f"{key}={Method.cls(value)}({Method.fmt(value)}) "
         if txt == "":
             txt = "{}"
         return txt.strip()

@@ -98,7 +98,7 @@ class Runs:
     @classmethod
     def configure(cls):
         Main.name = Utils.pkgname(Arguments)
-        Mods.add( f"{Utils.pkgname(Utils)}.modules", Utils.moddir())
+        Mods.add(f"{Utils.pkgname(Utils)}.modules", Utils.moddir())
         if Main.user:
             Mods.add("mods", "mods")
             Mods.add("other", "other")
@@ -116,6 +116,7 @@ class Scripts:
         Runs.configure()
         Boot.daemon()
         Boot.privileges()
+        Boot.pidfule(Main.name)
         Boot.scanner()
         Boot.init(Main.mods or "irc,rss")
         Boot.forever()
@@ -145,6 +146,7 @@ class Scripts:
         "service script."
         Runs.configure()
         Boot.privileges()
+        Boot.pidfule(Main.name)
         Runs.banner()
         Boot.scanner()
         Boot.init(Main.mods or "irc,rss")

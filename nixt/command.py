@@ -7,7 +7,6 @@
 import inspect
 
 
-from .brokers import Broker
 from .objects import Parse
 from .utility import Utils
 

@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Object, Disk, Json, Method, Method
+from nixt.defines import Object, Disk, Json, Method
 
 
 import nixt.objects
@@ -69,6 +69,11 @@ class TestMethod(unittest.TestCase):
         obj = Object()
         obj.key = "value"
         self.assertTrue(list(iter(obj)), ["key",])
+
+    def test_format2(self):
+        o = Object()
+        o.a = "b"
+        self.assertEqual(Method.fmt(o), 'a="b"')
 
     def test_getattr(self):
         obj = Object()
@@ -136,17 +141,6 @@ class TestComposite(unittest.TestCase):
         obj.obj = Object()
         obj.obj.a = "test"
         self.assertEqual(obj.obj.a, "test")
-
-
-class TestMethod(unittest.TestCase):
-
-    def testformat(self):
-        o = Object()
-        o.a = "b"
-        self.assertEqual(Method.fmt(o), 'a="b"')
-
-
-VALIDJSON = '{"test": "bla"}'
 
 
 class TestEncoder(unittest.TestCase):

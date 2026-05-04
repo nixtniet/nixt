@@ -6,6 +6,7 @@
 
 import logging
 import os
+import pathlib
 import sys
 import time
 
@@ -15,7 +16,11 @@ from .objects import Method
 from .package import Mods
 from .persist import Workdir
 from .threads import Thread
-from .utility import Log, Utils
+from .utility import Utils
+
+
+e = os.path.exists
+j = os.path.join
 
 
 class Boot:

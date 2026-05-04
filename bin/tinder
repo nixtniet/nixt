@@ -19,7 +19,7 @@ sys.path.insert(0, os.getcwd())
 from nixt.booting import Boot
 from nixt.command import Commands
 from nixt.configs import Main
-from nixt.handler import Buffer, Event
+from nixt.handler import Client, Event
 from nixt.objects import Method, Parse
 from nixt.package import Mods
 from nixt.persist import Workdir
@@ -39,7 +39,7 @@ Main.user = True
 events = queue.Queue()
 
 
-class CLI(Buffer):
+class CLI(Client):
 
     def __init__(self):
         super().__init__()
