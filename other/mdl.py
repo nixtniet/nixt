@@ -9,11 +9,15 @@ import logging
 import time
 
 
-from nixt.defines import Base, Broker, Event, Object, Repeater, Time
+from nixt.brokers import Broker
+from nixt.handler import Event
+from nixt.objects import Dict, Object
+from nixt.threads import Repeater
+from nixt.utility import Time
 
 
 def init():
-    for key in Object.keys(oorzaken):
+    for key in Dict.keys(oorzaken):
         if "Psych" not in key:
             continue
         val = getattr(oorzaken, key, None)
@@ -55,7 +59,7 @@ aliases["Zwangerschap"] = "pregnancy"
 aliases["Suicide"] = "suicide"
 
 
-demo = Base()
+demo = Object()
 demo.gehandicapten = 2000000
 demo.ggz = 800000
 demo.population = 17440000
@@ -86,7 +90,7 @@ def getday():
 
 
 def getnr(nme):
-    for k in Object.keys(oorzaken):
+    for k in Dict.keys(oorzaken):
         if nme.lower() in k.lower():
             return int(getattr(oorzaken, k))
     return 0
@@ -122,7 +126,7 @@ def hourly():
 def cbnow(evt):
     delta = time.time() - STARTTIME
     txt = Time.elapsed(delta) + " "
-    for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):
+    for nme in sorted(Dict.keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
             continue
@@ -157,7 +161,7 @@ def cbstats(evt):
 def dis(event):
     delta = time.time() - STARTTIME
     txt = Time.elapsed(delta) + " "
-    for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):
+    for nme in sorted(Dict.keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
             continue
@@ -385,14 +389,14 @@ aantal = """
          """.split(";")
 
 
-oorzaak = Base()
-Object.construct(oorzaak, zip([x.strip() for x in oor], [int(x.strip()) for x in aantal]))
-oorzaken = Base()
+oorzaak = Object()
+Dict.construct(oorzaak, zip([x.strip() for x in oor], [int(x.strip()) for x in aantal]))
+oorzaken = Object()
 
 
 def boot():
     _nr = -1
-    for key in Object.keys(oorzaak):
+    for key in Dict.keys(oorzaak):
         _nr += 1
         if _nr == 0:
             continue

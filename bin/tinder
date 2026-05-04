@@ -16,8 +16,15 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Commands, Event, Main, Methods
-from nixt.defines import Mods, Output, Parse, Thread, Time, Workdir
+from nixt.booting import Boot
+from nixt.command import Commands
+from nixt.configs import Main
+from nixt.handler import Event, Output
+from nixt.objects import Methods, Parse
+from nixt.package import Mods
+from nixt.persist import Workdir
+from nixt.threads import Thread
+from nixt.utility import Time
 
 
 e = os.path.exists
@@ -114,6 +121,7 @@ def main():
         Main.threaded = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
     Mods.add("mods", "mods")
+    Mods.add("other", "other")
     Workdir.wdr = Main.wdr
     Boot.scanner()
     if Main.threaded:
@@ -155,7 +163,7 @@ examples = {
     "cmd": [""],
     "dis": [""],
     "dne": ["", "bla"],
-    "dpl": ["hnrss title,url", ""],
+    "dpl": ["hnrss title,link", ""],
     "eml": ["", "root@localhost"],
     "fie": ["", "log", "todo"],
     "flt": ["", "0"],

@@ -8,7 +8,7 @@ import threading
 import time
 
 
-from nixt.defines import Time
+from nixt.utility import Time
 
 
 def thr(event):

@@ -13,7 +13,10 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.defines import Object, Main, Thread, Utils
+from nixt.configs import Main
+from nixt.objects import Object
+from nixt.threads import Thread
+from nixt.utility import Utils
 
 
 def init():

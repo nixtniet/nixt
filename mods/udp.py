@@ -12,7 +12,11 @@ import threading
 import time
 
 
-from nixt.defines import Object, Broker, Disk, Main, Thread
+from nixt.brokers import Broker
+from nixt.configs import Main
+from nixt.objects import Object
+from nixt.persist import Disk
+from nixt.threads import Thread
 
 
 def init():

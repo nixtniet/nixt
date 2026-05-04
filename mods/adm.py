@@ -4,7 +4,8 @@
 "administrator"
 
 
-from nixt.defines import Main, Workdir
+from nixt.configs import Main
+from nixt.persist import Workdir
 
 
 def srv(event):

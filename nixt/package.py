@@ -17,7 +17,9 @@ j = os.path.join
 
 class Mods:
 
-    dirs = {}
+    dirs = {
+        f"{Utils.pkgname(Utils)}.modules": Utils.moddir()
+    }
     modules = {}
 
     @classmethod

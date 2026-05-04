@@ -11,7 +11,8 @@ import pathlib
 import threading
 
 
-from .objects import Object, Json, Methods, Dict
+from .encoder import Json
+from .objects import Object, Methods, Dict
 from .utility import Time, Utils
 
 
