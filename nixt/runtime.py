@@ -5,18 +5,13 @@
 
 
 import argparse
+import os
 import sys
 import time
 
 
-from .booting import Boot
-from .command import Commands
-from .configs import Main
-from .handler import Console, Event
-from .objects import Dict, Parse
-from .package import Mods
-from .persist import Workdir
-from .utility import Log, Utils
+from .defines import Boot, Commands, Console, Dict, Event, Log, Main
+from .defines import Mods, Parse, Utils, Workdir
 
 
 class Arguments:
@@ -109,7 +104,7 @@ class Runs:
         if Main.all:
             Main.mods = Mods.list()
         Log.level(Main.level or "warning")
-        Workdir.wdr = Main.wdr or Workdir.wdr
+        Workdir.wdr = Main.wdr or Workdir.wdr or os.path.expanduser(f"~/.{Utils.pkgname(Arguments)}")
 
 
 class Scripts:
