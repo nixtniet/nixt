@@ -11,7 +11,7 @@ import pathlib
 import threading
 
 
-from .objects import Base, Json, Methods, Object
+from .objects import Object, Json, Methods, Dict
 from .utility import Time, Utils
 
 
@@ -33,7 +33,7 @@ class Cache:
     def sync(cls, path, obj):
         "update cached object."
         try:
-            Object.update(cls.paths[path], obj)
+            Dict.update(cls.paths[path], obj)
         except KeyError:
             cls.add(path, obj)
 
@@ -60,7 +60,7 @@ class Disk:
                 return False
             with open(pth, "r", encoding="utf-8") as fpt:
                 try:
-                    Object.update(obj, Json.load(fpt))
+                    Dict.update(obj, Json.load(fpt))
                 except json.decoder.JSONDecodeError as ex:
                     logging.error("failed read at %s: %s", pth, str(ex))
                     if error:
@@ -93,7 +93,7 @@ class Locate:
         "show attributes for kind of objects."
         result = []
         for pth, obj in Locate.find(kind, nritems=1):
-            result.extend(Object.keys(obj))
+            result.extend(Dict.keys(obj))
         return set(result)
 
     @classmethod
@@ -109,7 +109,7 @@ class Locate:
             for pth in Locate.fns(Workdir.long(kind)):
                 obj = Cache.get(pth)
                 if obj is None:
-                    obj = Base()
+                    obj = Object()
                     Disk.read(obj, pth)
                     Cache.add(pth, obj)
                 if not removed and Methods.deleted(obj):
@@ -133,7 +133,7 @@ class Locate:
         res = ""
         if result:
             inp = result[0]
-            Object.update(obj, inp[-1])
+            Dict.update(obj, inp[-1])
             res = inp[0]
         return res
 
@@ -159,7 +159,7 @@ class Locate:
         res = ""
         if result:
             inp = result[-1]
-            Object.update(obj, inp[-1])
+            Dict.update(obj, inp[-1])
             res = inp[0]
         return res
 
@@ -171,21 +171,15 @@ class Locate:
 
 class Workdir:
 
-    wdr = os.path.expanduser(f"~/.{Utils.pkgname(Disk)}")
-
-    @classmethod
-    def configure(cls, cfg):
-        if cfg.wdr:
-            cls.wdr = cfg.wdr
-        cls.skel()
+    wdr = os.path.expanduser(f"~/.{Utils.pkgname(Cache)}")
 
     @classmethod
     def kinds(cls):
         "show kind on objects in cache."
         path = os.path.join(cls.wdr, "store")
-        if os.path.exists(path):
-            return os.listdir(path)
-        return []
+        if not os.path.exists(path):
+            cls.skel()
+        return os.listdir(path)
 
     @classmethod
     def long(cls, name):

@@ -10,7 +10,7 @@ from .brokers import Broker
 from .command import Commands
 from .configs import Main
 from .handler import Client, Console, Event, Handler, Output
-from .objects import Base, Configuration, Json, Object, Methods, Parse
+from .objects import Object, Json, Dict, Methods, Parse
 from .package import Mods
 from .persist import Disk, Locate, Workdir
 from .threads import Repeater, Thread
@@ -19,21 +19,20 @@ from .utility import Log, Time, Utils
 
 def __dir__():
     return (
-       'Base',
        'Boot',
        'Broker',
        'Client',
        'Commands',
-       'Configuration',
        'Console',
+       'Dict',
        'Disk',
        'Event',
        'Handler',
        'Json',
        'Locate',
        'Log',
-       'Mods',
        'Main',
+       'Mods',
        'Methods',
        'Object',
        'Output',

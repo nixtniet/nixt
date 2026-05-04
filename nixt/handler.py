@@ -12,14 +12,14 @@ import _thread
 
 from .brokers import Broker
 from .command import Commands
-from .objects import Base
+from .objects import Object
 from .threads import Thread
 
 
-class Event(Base):
+class Event(Object):
 
     def __init__(self):
-        Base.__init__(self)
+        Object.__init__(self)
         self._ready = threading.Event()
         self._thr = None
         self.args = []

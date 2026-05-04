@@ -17,7 +17,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Boot, Commands, Event, Main, Methods
-from nixt.defines import Output, Parse, Thread, Time
+from nixt.defines import Mods, Output, Parse, Thread, Time, Workdir
 
 
 e = os.path.exists
@@ -112,10 +112,10 @@ def main():
         Main.verbose = True
     if check("t"):
         Main.threaded = True
-    Main.all = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
-    Boot.configure(Main)
-    Boot.scanner(Main)
+    Mods.add("mods", "mods")
+    Workdir.wdr = Main.wdr
+    Boot.scanner()
     if Main.threaded:
         Clients.init(os.cpu_count(), CLI)
     else:

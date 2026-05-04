@@ -12,11 +12,7 @@ import threading
 import time
 
 
-from nixt.defines import Base, Broker, Configuration, Disk, Main, Thread
-
-
-def configure():
-    Disk.read(Config, "udp", "config")
+from nixt.defines import Object, Broker, Disk, Main, Thread
 
 
 def init():
@@ -26,16 +22,16 @@ def init():
     return relay
 
 
-class Config(Configuration):
+class Config(Object):
 
     host = "localhost"
     port = 5500
 
 
-class UDP(Base):
+class UDP(Object):
 
     def __init__(self):
-        Base.__init__(self)
+        Object.__init__(self)
         self.stopped = False
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -73,6 +69,7 @@ class UDP(Base):
                          )
 
     def start(self):
+        Disk.read(Config, "udp", "config")
         Thread.launch(self.loop)
 
 

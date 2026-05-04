@@ -10,8 +10,8 @@ import threading
 import time
 
 
-from nixt.defines import Base, Broker, Disk, Locate
-from nixt.defines import Methods, Object, Thread, Time
+from nixt.defines import Object, Broker, Disk, Locate
+from nixt.defines import Methods, Dict, Thread, Time
 
 
 rand = random.SystemRandom()
@@ -26,7 +26,7 @@ def shutdown():
     TimerLoop.stop()
 
 
-class Timers(Base):
+class Timers(Object):
 
     pass
 
@@ -55,7 +55,7 @@ class TimerLoop:
             time.sleep(1.0)
             timed = time.time()
             remove = []
-            for tme, args in Object.items(cls.timers):
+            for tme, args in Dict.items(cls.timers):
                 if float(tme) < timed:
                     Thread.launch(cls.run, args)
                     remove.append(tme)

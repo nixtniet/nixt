@@ -14,8 +14,8 @@ import time
 import _thread
 
 
-from nixt.defines import Base, Broker, Commands, Configuration, Disk
-from nixt.defines import Event, Main, Methods, Output, Thread, Utils
+from nixt.defines import Object, Broker, Commands, Disk, Event
+from nixt.defines import Main, Methods, Output, Thread, Utils
 
 
 def init():
@@ -41,7 +41,7 @@ def rlog(txt):
     logging.debug(txt)
 
 
-class Config(Configuration):
+class Config(Object):
 
     name = Main.name or Utils.pkgname(Commands)
     channel = f"#{name}"
@@ -104,7 +104,7 @@ class IRC(Output):
         self.buffer = []
         self.cfg = Config()
         self.channels = []
-        self.events = Base()
+        self.events = Object()
         self.events.authed = threading.Event()
         self.events.connected = threading.Event()
         self.events.joined = threading.Event()
@@ -114,7 +114,7 @@ class IRC(Output):
         self.noflood = True
         self.silent = False
         self.sock = None
-        self.state = Base()
+        self.state = Object()
         self.state.error = ""
         self.state.keeprunning = False
         self.state.last = time.time()

@@ -11,10 +11,10 @@ import threading
 import types
 
 
-class Base:
+class Object:
 
     def __init__(self, *args, **kwargs):
-        Object.construct(self, *args, **kwargs)
+        Dict.construct(self, *args, **kwargs)
 
     def __contains__(self, key):
         return key in dir(self)
@@ -38,12 +38,12 @@ class Base:
         return str(self.__dict__)
 
 
-class Configuration(Base):
+class Configuration(Object):
 
     pass
 
 
-class Object:
+class Dict:
 
     @staticmethod
     def clear(obj):
@@ -56,19 +56,19 @@ class Object:
         if args:
             val = args[0]
             if isinstance(val, zip):
-                Object.update(obj, dict(val))
+                Dict.update(obj, dict(val))
             elif isinstance(val, dict):
-                Object.update(obj, val)
+                Dict.update(obj, val)
             else:
-                Object.update(obj, vars(val))
+                Dict.update(obj, vars(val))
         if kwargs:
-            Object.update(obj, kwargs)
+            Dict.update(obj, kwargs)
 
     @staticmethod
     def copy(obj):
         "return shallow copy of the object."
         oobj = type(obj)()
-        Object.update(oobj, obj.__dict__.copy())
+        Dict.update(oobj, obj.__dict__.copy())
         return oobj
 
     @staticmethod
@@ -104,7 +104,7 @@ class Object:
     @staticmethod
     def merge(obj, obj2):
         "skip emoty values."
-        for key, value in Object.items(obj2):
+        for key, value in Dict.items(obj2):
             if not value and getattr(obj, key, False):
                 continue
             setattr(obj, key, value)
@@ -112,7 +112,7 @@ class Object:
     @staticmethod
     def notset(obj, obj2):
         "only set if not set."
-        for key, value in Object.items(obj2):
+        for key, value in Dict.items(obj2):
             if getattr(obj, key, False):
                 continue
             if value:
@@ -132,7 +132,7 @@ class Object:
     def reduce(obj):
         "return dict with values setted attributes."
         result = {}
-        for key, value in Object.items(obj):
+        for key, value in Dict.items(obj):
             if value:
                 result[key] = value
         return result
@@ -140,8 +140,8 @@ class Object:
     @staticmethod
     def skip(obj, chars="_"):
         "skip keys containing chars."
-        res = Base()
-        for key, value in Object.items(obj):
+        res = Object()
+        for key, value in Dict.items(obj):
             if isinstance(value, types.MethodType):
                 continue
             donext = False
@@ -165,7 +165,7 @@ class Object:
                     if value:
                         setattr(obj, key, value)
             else:
-                for key, value in Object.items(data):
+                for key, value in Dict.items(data):
                     setattr(obj, key, value)
         elif isinstance(obj, dict):
             if isinstance(data, dict):
@@ -210,7 +210,7 @@ class Methods:
     @staticmethod
     def edit(obj, setter={}, skip=False):
         "update object with dict."
-        for key, val in Object.items(setter):
+        for key, val in Dict.items(setter):
             if skip and val == "":
                 continue
             Methods.typed(obj, key, val)
@@ -262,7 +262,7 @@ class Methods:
     def search(obj, selector={}, matching=False):
         "check whether object matches search criteria."
         res = False
-        for key, value in Object.items(selector):
+        for key, value in Dict.items(selector):
             val = getattr(obj, key, None)
             if not val:
                 res = False
@@ -304,14 +304,14 @@ class Parse:
         data = {
             "args": [],
             "cmd": "",
-            "gets": Base(),
+            "gets": Object(),
             "index": None,
             "init": "",
             "opts": "",
             "otxt": text,
             "rest": "",
-            "silent": Base(),
-            "sets": Base(),
+            "silent": Object(),
+            "sets": Object(),
             "text": text
         }
         for k, v in data.items():
@@ -350,7 +350,7 @@ class Parse:
             obj.text = obj.cmd + " " + obj.rest
         else:
             obj.text = obj.cmd or ""
-        Object.notset(obj, obj.sets)
+        Dict.notset(obj, obj.sets)
 
 
 class Encoder(json.JSONEncoder):
@@ -361,7 +361,7 @@ class Encoder(json.JSONEncoder):
         "generate serializable versions."
         with Encoder.lock:
             if isinstance(o, type):
-                return Object.skip(o)
+                return Dict.skip(o)
             if isinstance(o, dict):
                 return o.items()
             if isinstance(o, list):
@@ -404,10 +404,10 @@ class Json:
 
 def __dir__():
     return (
-        'Base',
+        'Object',
         'Configuration',
         'Json',
         'Methods',
-        'Object'
+        'Dict'
         'Parse'
     )

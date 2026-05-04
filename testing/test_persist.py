@@ -13,7 +13,7 @@ sys.path.insert(0, ".")
 
 
 from nixt.configs import Main
-from nixt.objects import Base
+from nixt.objects import Object
 from nixt.persist import Disk, Workdir
 
 
@@ -28,7 +28,7 @@ class TestPersist(unittest.TestCase):
         self.assertEqual(Main.a, "b")
 
     def test_save(self):
-        obj = Base()
+        obj = Object()
         opath = Disk.write(obj)
         self.assertTrue(os.path.exists(os.path.join(
                                                     Workdir.wdr,
