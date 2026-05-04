@@ -9,8 +9,8 @@ from .booting import Boot
 from .brokers import Broker
 from .command import Commands
 from .configs import Main
-from .handler import Client, Console, Event, Handler, Output
-from .objects import Object, Json, Dict, Methods, Parse
+from .handler import Client, Console, Event, Handler
+from .objects import Object, Json, Method, Parse
 from .package import Mods
 from .persist import Disk, Locate, Workdir
 from .threads import Repeater, Thread
@@ -24,7 +24,6 @@ def __dir__():
        'Client',
        'Commands',
        'Console',
-       'Dict',
        'Disk',
        'Event',
        'Handler',
@@ -33,9 +32,8 @@ def __dir__():
        'Log',
        'Main',
        'Mods',
-       'Methods',
+       'Method',
        'Object',
-       'Output',
        'Parse',
        'Repeater',
        'Thread',

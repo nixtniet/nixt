@@ -4,7 +4,7 @@
 "configuration"
 
 
-from nixt.defines import Object, Disk, Methods, Mods, Dict
+from nixt.defines import Object, Disk, Method, Mods, Method
 
 
 def cfg(event):
@@ -29,13 +29,13 @@ def cfg(event):
             return
     if not event.sets:
         event.reply(
-            Methods.fmt(
+            Method.fmt(
                 config,
-                Dict.keys(config),
+                Method.keys(config),
                 skip=["word",]
             )
         )
         return
-    Methods.edit(config, event.sets)
+    Method.edit(config, event.sets)
     Disk.write(config, name, "config")
     event.ok()

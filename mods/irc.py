@@ -14,8 +14,8 @@ import time
 import _thread
 
 
-from nixt.defines import Object, Broker, Commands, Disk, Event
-from nixt.defines import Main, Methods, Output, Thread, Utils
+from nixt.defines import Broker, Client, Commands, Disk, Event
+from nixt.defines import Main, Method, Object, Thread, Utils
 
 
 def init():
@@ -23,7 +23,7 @@ def init():
     irc.start()
     irc.events.joined.wait(60.0)
     if irc.events.joined.is_set():
-        logging.warning("%s", Methods.fmt(irc.cfg, skip=["name", "ignore", "word", "realname", "username", "version"]))
+        logging.warning("%s", Method.fmt(irc.cfg, skip=["name", "ignore", "word", "realname", "username", "version"]))
     else:
         irc.stop()
     return irc
@@ -97,10 +97,10 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-class IRC(Output):
+class IRC(Client):
 
     def __init__(self):
-        Output.__init__(self)
+        Client.__init__(self)
         self.buffer = []
         self.cfg = Config()
         self.channels = []
@@ -446,7 +446,7 @@ class IRC(Output):
         self.events.ready.clear()
         self.events.connected.clear()
         self.events.joined.clear()
-        Output.start(self)
+        Client.start(self)
         if not self.state.keeprunning:
             Thread.launch(self.keep, daemon=daemon)
         Thread.launch(
@@ -485,7 +485,7 @@ def cb_error(evt):
     bot = Broker.get(evt.orig)
     bot.state.nrerror += 1
     bot.state.error = evt.text
-    logging.debug(Methods.fmt(evt))
+    logging.debug(Method.fmt(evt))
 
 
 def cb_h903(evt):

@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Object, Disk, Json, Dict, Methods
+from nixt.defines import Object, Disk, Json, Method, Method
 
 
 import nixt.objects
@@ -17,7 +17,7 @@ TARGET = nixt.objects
 VALIDJSON = '{"test": "bla"}'
 
 
-class TestDict(unittest.TestCase):
+class TestMethod(unittest.TestCase):
 
     def test_constructor(self):
         obj = Object()
@@ -78,7 +78,7 @@ class TestDict(unittest.TestCase):
     def test_keys(self):
         obj = Object()
         obj.key = "value"
-        self.assertEqual(list(Dict.keys(obj)), ["key"])
+        self.assertEqual(list(Method.keys(obj)), ["key"])
 
     def test_len(self):
         obj = Object()
@@ -87,13 +87,13 @@ class TestDict(unittest.TestCase):
     def test_items(self):
         obj = Object()
         obj.key = "value"
-        self.assertEqual(list(Dict.items(obj)), [("key", "value")])
+        self.assertEqual(list(Method.items(obj)), [("key", "value")])
 
     def test_read(self):
         obj = Object()
         Disk.read(obj, "bla")
         res = {}
-        Dict.update(res, obj)
+        Method.update(res, obj)
         self.assertEqual(res, {})
 
     def test_register(self):
@@ -103,7 +103,7 @@ class TestDict(unittest.TestCase):
 
     def test_repr(self):
         self.assertTrue(
-                        repr(Dict.update(Object(), {"key": "value"})),
+                        repr(Method.update(Object(), {"key": "value"})),
                         {"key": "value"}
                        )
 
@@ -120,13 +120,13 @@ class TestDict(unittest.TestCase):
         obj = Object()
         obj.key = "value"
         oobj = Object()
-        Dict.update(oobj, obj)
+        Method.update(oobj, obj)
         self.assertTrue(oobj.key, "value")
 
     def test_values(self):
         obj = Object()
         obj.key = "value"
-        self.assertEqual(list(Dict.values(obj)), ["value"])
+        self.assertEqual(list(Method.values(obj)), ["value"])
 
 
 class TestComposite(unittest.TestCase):
@@ -138,12 +138,12 @@ class TestComposite(unittest.TestCase):
         self.assertEqual(obj.obj.a, "test")
 
 
-class TestMethods(unittest.TestCase):
+class TestMethod(unittest.TestCase):
 
     def testformat(self):
         o = Object()
         o.a = "b"
-        self.assertEqual(Methods.fmt(o), 'a="b"')
+        self.assertEqual(Method.fmt(o), 'a="b"')
 
 
 VALIDJSON = '{"test": "bla"}'
@@ -196,5 +196,5 @@ class TestTypes(unittest.TestCase):
         ooo = Object()
         ooo.a = "b"
         obj = Object()
-        Dict.update(obj, Json.loads(Json.dumps(ooo)))
+        Method.update(obj, Json.loads(Json.dumps(ooo)))
         self.assertEqual(obj.a, "b")

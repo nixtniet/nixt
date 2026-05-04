@@ -11,7 +11,7 @@ import time
 
 
 from nixt.defines import Object, Broker, Disk, Locate
-from nixt.defines import Methods, Dict, Thread, Time
+from nixt.defines import Method, Method, Thread, Time
 
 
 rand = random.SystemRandom()
@@ -55,7 +55,7 @@ class TimerLoop:
             time.sleep(1.0)
             timed = time.time()
             remove = []
-            for tme, args in Dict.items(cls.timers):
+            for tme, args in Method.items(cls.timers):
                 if float(tme) < timed:
                     Thread.launch(cls.run, args)
                     remove.append(tme)
@@ -73,7 +73,7 @@ class TimerLoop:
 
     @classmethod
     def start(cls):
-        cls.path = Locate.first(cls.timers) or Methods.ident(cls.timers)
+        cls.path = Locate.first(cls.timers) or Method.ident(cls.timers)
         cls.running.set()
         Thread.launch(cls.loop, name="Timers.loop")
 
@@ -99,5 +99,5 @@ def tmr(event):
     diff = todo - time.time()
     txt = " ".join(event.args[1:])
     bot = Broker.get(event.orig)
-    TimerLoop.add(todo, Methods.fqn(bot), event.channel, txt)
+    TimerLoop.add(todo, Method.fqn(bot), event.channel, txt)
     event.ok(Time.elapsed(diff))

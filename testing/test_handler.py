@@ -7,13 +7,13 @@
 import unittest
 
 
-from nixt.handler import Client, Event, Handler, Polled
+from nixt.handler import Input, Event, Handler, Polled
 
 
 buffer = []
 
 
-class MyClient(Client):
+class MyClient(Input):
 
     def raw(self, text):
         buffer.append(text)
@@ -86,7 +86,7 @@ class TestHandler(unittest.TestCase):
         self.assertTrue(not self.hdl.running.is_set())
 
 
-class TestClient(unittest.TestCase):
+class TestInput(unittest.TestCase):
 
     def setUp(self):
         self.clt = MyClient()

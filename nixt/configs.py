@@ -4,7 +4,7 @@
 "configurations"
 
 
-from .objects import Dict
+from .objects import Method
 
 
 class MainConfig(type):
@@ -15,7 +15,7 @@ class MainConfig(type):
         return ""
 
     def __str__(cls):
-        return str(Dict.skip(cls.__dict__))
+        return str(Method.skip(cls.__dict__))
 
 
 class Main(metaclass=MainConfig):

@@ -4,7 +4,7 @@
 "show bots in fleet"
 
 
-from nixt.defines import Broker, Methods
+from nixt.defines import Broker, Method
 
 
 def flt(event):
@@ -19,4 +19,4 @@ def flt(event):
         else:
             event.reply("no matching client in fleet.")
         return
-    event.reply(' | '.join([Methods.fqn(o).split(".")[-1] for o in clts]))
+    event.reply(' | '.join([Method.fqn(o).split(".")[-1] for o in clts]))

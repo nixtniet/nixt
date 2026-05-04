@@ -19,8 +19,8 @@ sys.path.insert(0, os.getcwd())
 from nixt.booting import Boot
 from nixt.command import Commands
 from nixt.configs import Main
-from nixt.handler import Event, Output
-from nixt.objects import Methods, Parse
+from nixt.handler import Buffer, Event
+from nixt.objects import Method, Parse
 from nixt.package import Mods
 from nixt.persist import Workdir
 from nixt.threads import Thread
@@ -39,7 +39,7 @@ Main.user = True
 events = queue.Queue()
 
 
-class CLI(Output):
+class CLI(Buffer):
 
     def __init__(self):
         super().__init__()
@@ -154,7 +154,7 @@ def main():
     percall = (endtime-starttime)/nrevents
     nrs = events.qsize()
     if Main.verbose:
-        print(f"{Methods.fmt(Main, skip='otxt,txt')}")
+        print(f"{Method.fmt(Main, skip='otxt,txt')}")
         print(f"cores: {Clients.nrcpu} events: {nrs}")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
 

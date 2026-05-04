@@ -11,7 +11,7 @@ import pathlib
 import threading
 
 
-from .objects import Dict, Json, Methods, Object
+from .objects import Method, Json, Method, Object
 from .utility import Time, Utils
 
 
@@ -37,7 +37,7 @@ class Cache:
     def sync(cls, path, obj):
         "update cached object."
         try:
-            Dict.update(cls.paths[path], obj)
+            Method.update(cls.paths[path], obj)
         except KeyError:
             cls.add(path, obj)
 
@@ -64,7 +64,7 @@ class Disk:
                 return False
             with open(pth, "r", encoding="utf-8") as fpt:
                 try:
-                    Dict.update(obj, Json.load(fpt))
+                    Method.update(obj, Json.load(fpt))
                 except json.decoder.JSONDecodeError as ex:
                     logging.error("failed read at %s: %s", pth, str(ex))
                     if error:
@@ -77,7 +77,7 @@ class Disk:
         "write object to disk."
         with cls.lock:
             if path == "":
-                path = Methods.ident(obj)
+                path = Method.ident(obj)
             pth = j(Workdir.wdr, base, path)
             if not e(pth):
                 Workdir.skel()
@@ -97,7 +97,7 @@ class Locate:
         "show attributes for kind of objects."
         result = []
         for pth, obj in Locate.find(kind, nritems=1):
-            result.extend(Dict.keys(obj))
+            result.extend(Method.keys(obj))
         return set(result)
 
     @classmethod
@@ -116,9 +116,9 @@ class Locate:
                     obj = Object()
                     Disk.read(obj, pth)
                     Cache.add(pth, obj)
-                if not removed and Methods.deleted(obj):
+                if not removed and Method.deleted(obj):
                     continue
-                if selector and not Methods.search(obj, selector, matching):
+                if selector and not Method.search(obj, selector, matching):
                     continue
                 if nritems and nrs >= nritems:
                     break
@@ -131,13 +131,13 @@ class Locate:
     def first(cls, obj, selector={}):
         "return first object of a kind."
         result = sorted(
-                        Locate.find(Methods.fqn(obj), selector),
+                        Locate.find(Method.fqn(obj), selector),
                         key=lambda x: Time.fntime(x[0])
                        )
         res = ""
         if result:
             inp = result[0]
-            Dict.update(obj, inp[-1])
+            Method.update(obj, inp[-1])
             res = inp[0]
         return res
 
@@ -157,13 +157,13 @@ class Locate:
     def last(cls, obj, selector={}):
         "last saved version."
         result = sorted(
-                        cls.find(Methods.fqn(obj), selector),
+                        cls.find(Method.fqn(obj), selector),
                         key=lambda x: Time.fntime(x[0])
                        )
         res = ""
         if result:
             inp = result[-1]
-            Dict.update(obj, inp[-1])
+            Method.update(obj, inp[-1])
             res = inp[0]
         return res
 

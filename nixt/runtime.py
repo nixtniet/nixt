@@ -10,8 +10,8 @@ import sys
 import time
 
 
-from .defines import Boot, Commands, Console, Dict, Event, Log, Main
-from .defines import Mods, Parse, Utils, Workdir
+from .defines import Boot, Commands, Console, Method, Event, Log
+from .defines import Main, Mods, Parse, Utils, Workdir
 
 
 class Arguments:
@@ -45,7 +45,7 @@ class Arguments:
         parser.add_argument("--wdr", default="", help='set working directory.', metavar="wdr")
         args, arguments = theparser.parse_known_args()
         Main.otxt = txt = " ".join(arguments)
-        Dict.update(Main, args)
+        Method.update(Main, args)
         Parse.parse(Main, txt)
 
 
@@ -98,6 +98,7 @@ class Runs:
     @classmethod
     def configure(cls):
         Main.name = Utils.pkgname(Arguments)
+        Mods.add( f"{Utils.pkgname(Utils)}.modules", Utils.moddir())
         if Main.user:
             Mods.add("mods", "mods")
             Mods.add("other", "other")

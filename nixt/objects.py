@@ -14,7 +14,7 @@ import types
 class Object:
 
     def __init__(self, *args, **kwargs):
-        Dict.construct(self, *args, **kwargs)
+        Method.construct(self, *args, **kwargs)
 
     def __contains__(self, key):
         return key in dir(self)
@@ -38,7 +38,7 @@ class Object:
         return str(self.__dict__)
 
 
-class Dict:
+class Method:
 
     @staticmethod
     def clear(obj):
@@ -46,25 +46,82 @@ class Dict:
         obj.__dict__.clear()
 
     @staticmethod
+    def cls(obj):
+        "return class name of an object."
+        return Method.fqn(obj).split(".")[-1]
+
+    @staticmethod
     def construct(obj, *args, **kwargs):
         "object contructor."
         if args:
             val = args[0]
             if isinstance(val, zip):
-                Dict.update(obj, dict(val))
+                Method.update(obj, dict(val))
             elif isinstance(val, dict):
-                Dict.update(obj, val)
+                Method.update(obj, val)
             else:
-                Dict.update(obj, vars(val))
+                Method.update(obj, vars(val))
         if kwargs:
-            Dict.update(obj, kwargs)
+            Method.update(obj, kwargs)
 
     @staticmethod
     def copy(obj):
         "return shallow copy of the object."
         oobj = type(obj)()
-        Dict.update(oobj, obj.__dict__.copy())
+        Method.update(oobj, obj.__dict__.copy())
         return oobj
+
+    @staticmethod
+    def deleted(obj):
+        "check whether obj had deleted flag set."
+        return "__deleted__" in dir(obj) and obj.__deleted__
+
+    @staticmethod
+    def edit(obj, setter={}, skip=False):
+        "update object with dict."
+        for key, val in Method.items(setter):
+            if skip and val == "":
+                continue
+            Method.typed(obj, key, val)
+
+    @staticmethod
+    def fmt(obj, args=[], skip=[], plain=False, empty=False):
+        "format object info printable string."
+        if args == []:
+            args = list(obj.__dict__.keys())
+        if args == []:
+            args = [x for x in dir(obj) if not x.startswith("_")]
+        txt = ""
+        for key in args:
+            if key.startswith("__"):
+                continue
+            if key in skip:
+                continue
+            value = getattr(obj, key, None)
+            if value is None:
+                continue
+            if not empty and value == "":
+                continue
+            if plain:
+                txt += f"{value} "
+            elif isinstance(value, (int, float, dict, bool, list)):
+                txt += f"{key}={value} "
+            elif isinstance(value, str):
+                txt += f'{key}="{value}" '
+            else:
+                txt += f"{key}={Method.cls(value)}({Methods.fmt(value)}) "
+        if txt == "":
+            txt = "{}"
+        return txt.strip()
+
+    @staticmethod
+    def fqn(obj):
+        "full qualified name."
+        kin = str(type(obj)).split()[-1][1:-2]
+        if kin == "type":
+            kin = f"{obj.__module__}.{obj.__name__}"
+        return kin
+
 
     @staticmethod
     def fromkeys(obj, keyz, value=None):
@@ -75,6 +132,12 @@ class Dict:
     def get(obj, key, default=None):
         "return value for key if key is in the object, otherwise return default."
         return obj.__dict__.get(key, default)
+
+    @staticmethod
+    def ident(obj):
+        "return ident string for object."
+        return os.path.join(Method.fqn(obj), *str(datetime.datetime.now()).split())
+
 
     @staticmethod
     def items(obj):
@@ -99,7 +162,7 @@ class Dict:
     @staticmethod
     def merge(obj, obj2):
         "skip emoty values."
-        for key, value in Dict.items(obj2):
+        for key, value in Method.items(obj2):
             if not value and getattr(obj, key, False):
                 continue
             setattr(obj, key, value)
@@ -107,7 +170,7 @@ class Dict:
     @staticmethod
     def notset(obj, obj2):
         "only set if not set."
-        for key, value in Dict.items(obj2):
+        for key, value in Method.items(obj2):
             if getattr(obj, key, False):
                 continue
             if value:
@@ -127,16 +190,35 @@ class Dict:
     def reduce(obj):
         "return dict with values setted attributes."
         result = {}
-        for key, value in Dict.items(obj):
+        for key, value in Method.items(obj):
             if value:
                 result[key] = value
         return result
 
     @staticmethod
+    def search(obj, selector={}, matching=False):
+        "check whether object matches search criteria."
+        res = False
+        for key, value in Method.items(selector):
+            val = getattr(obj, key, None)
+            if not val:
+                res = False
+                break
+            if matching and value != val:
+                res = False
+                break
+            if str(value).lower() not in str(val).lower():
+                res = False
+                break
+            res = True
+        return res
+
+
+    @staticmethod
     def skip(obj, chars="_"):
         "skip keys containing chars."
         res = Object()
-        for key, value in Dict.items(obj):
+        for key, value in Method.items(obj):
             if isinstance(value, types.MethodType):
                 continue
             donext = False
@@ -147,6 +229,25 @@ class Dict:
                 continue
             setattr(res, key, value)
         return res
+
+    @staticmethod
+    def typed(obj, key, val):
+        "assign proper types."
+        if not val:
+            return
+        if val in ["True", "true", True]:
+            return setattr(obj, key, True)
+        if val in ["False", "false", False]:
+            return setattr(obj, key, False)
+        try:
+            return setattr(obj, key, int(val))
+        except ValueError:
+            pass
+        try:
+            return setattr(obj, key, float(val))
+        except ValueError:
+            pass
+        setattr(obj, key, val)
 
     @staticmethod
     def update(obj, data, empty=True):
@@ -160,7 +261,7 @@ class Dict:
                     if value:
                         setattr(obj, key, value)
             else:
-                for key, value in Dict.items(data):
+                for key, value in Method.items(data):
                     setattr(obj, key, value)
         elif isinstance(obj, dict):
             if isinstance(data, dict):
@@ -188,107 +289,6 @@ class Dict:
                 res.append(obj[key])
             return res
         return obj.__dict__.values()
-
-
-class Methods:
-
-    @staticmethod
-    def cls(obj):
-        "return class name of an object."
-        return Methods.fqn(obj).split(".")[-1]
-
-    @staticmethod
-    def deleted(obj):
-        "check whether obj had deleted flag set."
-        return "__deleted__" in dir(obj) and obj.__deleted__
-
-    @staticmethod
-    def edit(obj, setter={}, skip=False):
-        "update object with dict."
-        for key, val in Dict.items(setter):
-            if skip and val == "":
-                continue
-            Methods.typed(obj, key, val)
-
-    @staticmethod
-    def fmt(obj, args=[], skip=[], plain=False, empty=False):
-        "format object info printable string."
-        if args == []:
-            args = list(obj.__dict__.keys())
-        if args == []:
-            args = [x for x in dir(obj) if not x.startswith("_")]
-        txt = ""
-        for key in args:
-            if key.startswith("__"):
-                continue
-            if key in skip:
-                continue
-            value = getattr(obj, key, None)
-            if value is None:
-                continue
-            if not empty and value == "":
-                continue
-            if plain:
-                txt += f"{value} "
-            elif isinstance(value, (int, float, dict, bool, list)):
-                txt += f"{key}={value} "
-            elif isinstance(value, str):
-                txt += f'{key}="{value}" '
-            else:
-                txt += f"{key}={Methods.cls(value)}({Methods.fmt(value)}) "
-        if txt == "":
-            txt = "{}"
-        return txt.strip()
-
-    @staticmethod
-    def fqn(obj):
-        "full qualified name."
-        kin = str(type(obj)).split()[-1][1:-2]
-        if kin == "type":
-            kin = f"{obj.__module__}.{obj.__name__}"
-        return kin
-
-    @staticmethod
-    def ident(obj):
-        "return ident string for object."
-        return os.path.join(Methods.fqn(obj), *str(datetime.datetime.now()).split())
-
-    @staticmethod
-    def search(obj, selector={}, matching=False):
-        "check whether object matches search criteria."
-        res = False
-        for key, value in Dict.items(selector):
-            val = getattr(obj, key, None)
-            if not val:
-                res = False
-                break
-            if matching and value != val:
-                res = False
-                break
-            if str(value).lower() not in str(val).lower():
-                res = False
-                break
-            res = True
-        return res
-
-    @staticmethod
-    def typed(obj, key, val):
-        "assign proper types."
-        if not val:
-            return
-        if val in ["True", "true", True]:
-            return setattr(obj, key, True)
-        if val in ["False", "false", False]:
-            return setattr(obj, key, False)
-        try:
-            return setattr(obj, key, int(val))
-        except ValueError:
-            pass
-        try:
-            return setattr(obj, key, float(val))
-        except ValueError:
-            pass
-        setattr(obj, key, val)
 
 
 class Parse:
@@ -322,16 +322,16 @@ class Parse:
                 continue
             if "-=" in spli:
                 key, value = spli.split("-=", maxsplit=1)
-                Methods.typed(obj.silent, key, value)
-                Methods.typed(obj.gets, key, value)
+                Method.typed(obj.silent, key, value)
+                Method.typed(obj.gets, key, value)
                 continue
             if "==" in spli:
                 key, value = spli.split("==", maxsplit=1)
-                Methods.typed(obj.gets, key, value)
+                Method.typed(obj.gets, key, value)
                 continue
             if "=" in spli:
                 key, value = spli.split("=", maxsplit=1)
-                Methods.typed(obj.sets, key, value)
+                Method.typed(obj.sets, key, value)
                 continue
             nr += 1
             if nr == 0:
@@ -345,7 +345,7 @@ class Parse:
             obj.text = obj.cmd + " " + obj.rest
         else:
             obj.text = obj.cmd or ""
-        Dict.notset(obj, obj.sets)
+        Method.notset(obj, obj.sets)
 
 
 class Encoder(json.JSONEncoder):
@@ -356,7 +356,7 @@ class Encoder(json.JSONEncoder):
         "generate serializable versions."
         with Encoder.lock:
             if isinstance(o, type):
-                return Dict.skip(o)
+                return Method.skip(o)
             if isinstance(o, dict):
                 return o.items()
             if isinstance(o, list):
@@ -400,9 +400,8 @@ class Json:
 
 def __dir__():
     return (
-        'Dict',
         'Json',
-        'Methods',
+        'Method',
         'Object',
         'Parse'
     )

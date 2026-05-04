@@ -101,7 +101,7 @@ class Handler:
         pass
 
 
-class Client(Handler):
+class Input(Handler):
 
     def __init__(self):
         Handler.__init__(self)
@@ -153,7 +153,7 @@ class Client(Handler):
         self.iqueue.put(None)
 
 
-class Polled(Client):
+class Polled(Input):
 
     def loop(self):
         "polling loop."
@@ -195,7 +195,7 @@ class Console(Polled):
             event.wait()
 
 
-class Output(Polled):
+class Client(Polled):
 
     def __init__(self):
         super().__init__()
@@ -235,6 +235,5 @@ def __dir__():
         'Client',
         'Console',
         'Event',
-        'Handler',
-        'Output'
+        'Handler'
     )

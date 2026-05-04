@@ -9,11 +9,11 @@ import logging
 import time
 
 
-from nixt.defines import Broker, Dict, Event, Object, Repeater, Time
+from nixt.defines import Broker, Method, Event, Object, Repeater, Time
 
 
 def init():
-    for key in Dict.keys(oorzaken):
+    for key in Method.keys(oorzaken):
         if "Psych" not in key:
             continue
         val = getattr(oorzaken, key, None)
@@ -86,7 +86,7 @@ def getday():
 
 
 def getnr(nme):
-    for k in Dict.keys(oorzaken):
+    for k in Method.keys(oorzaken):
         if nme.lower() in k.lower():
             return int(getattr(oorzaken, k))
     return 0
@@ -122,7 +122,7 @@ def hourly():
 def cbnow(evt):
     delta = time.time() - STARTTIME
     txt = Time.elapsed(delta) + " "
-    for nme in sorted(Dict.keys(oorzaken), key=lambda x: seconds(getnr(x))):
+    for nme in sorted(Method.keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
             continue
@@ -157,7 +157,7 @@ def cbstats(evt):
 def dis(event):
     delta = time.time() - STARTTIME
     txt = Time.elapsed(delta) + " "
-    for nme in sorted(Dict.keys(oorzaken), key=lambda x: seconds(getnr(x))):
+    for nme in sorted(Method.keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
             continue
@@ -386,13 +386,13 @@ aantal = """
 
 
 oorzaak = Object()
-Dict.construct(oorzaak, zip([x.strip() for x in oor], [int(x.strip()) for x in aantal]))
+Method.construct(oorzaak, zip([x.strip() for x in oor], [int(x.strip()) for x in aantal]))
 oorzaken = Object()
 
 
 def boot():
     _nr = -1
-    for key in Dict.keys(oorzaak):
+    for key in Method.keys(oorzaak):
         _nr += 1
         if _nr == 0:
             continue

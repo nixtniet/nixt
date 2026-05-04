@@ -11,7 +11,7 @@ import time
 
 
 from .command import Commands
-from .objects import Dict
+from .objects import Method
 from .package import Mods
 from .persist import Workdir
 from .threads import Thread
@@ -64,11 +64,23 @@ class Boot:
 
     @classmethod
     def md5s(cls):
+        "calculate n5sums of avaiable modules."
         paths = []
         paths.append(os.path.dirname(__spec__.loader.path))
-        for path in Dict.values(Mods.dirs):
+        for path in Method.values(Mods.dirs):
             paths.append(path)
         return str(Utils.md5s(*paths)[:7])
+
+    @classmethod
+    def pidfile(cls, name):
+        "write pidfile."
+        filename = j(Workdir.wdr, f"{name}.pid")
+        if e(filename):
+            os.unlink(filename)
+        path2 = pathlib.Path(filename)
+        path2.parent.mkdir(parents=True, exist_ok=True)
+        with open(filename, "w", encoding="utf-8") as fds:
+            fds.write(str(os.getpid()))
 
     @classmethod
     def privileges(cls):
