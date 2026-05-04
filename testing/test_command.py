@@ -14,6 +14,9 @@ from nixt.package import Mods
 from nixt.threads import Task
 
 
+e = os.path.exists
+
+
 def cmnd(event):
     event.reply("yo!")
 
@@ -45,7 +48,7 @@ class TestCommands(unittest.TestCase):
 class TestPackage(unittest.TestCase):
 
     def test_add(self):
-        if os.path.exists("mods"):
+        if e("mods"):
             Mods.add("mods", "mods")
             self.assertTrue("mods" in Mods.dirs)
 

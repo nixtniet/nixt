@@ -17,6 +17,10 @@ from nixt.objects import Object
 from nixt.persist import Disk, Workdir
 
 
+e = os.path.exists
+j = os.path.join
+
+
 Workdir.wdr = '.test'
 
 
@@ -30,17 +34,9 @@ class TestPersist(unittest.TestCase):
     def test_save(self):
         obj = Object()
         opath = Disk.write(obj)
-        self.assertTrue(os.path.exists(os.path.join(
-                                                    Workdir.wdr,
-                                                    "store",
-                                                    opath
-                                                   )))
+        self.assertTrue(e(j(Workdir.wdr, "store", opath)))
 
     def test_writecfg(self):
         Main.a = "b"
         Disk.write(Main, "main", "config")
-        self.assertTrue(os.path.exists(os.path.join(
-                                                    Workdir.wdr,
-                                                    "config",
-                                                    "main"
-                                                   )))
+        self.assertTrue(e(j(Workdir.wdr, "config", "main")))

@@ -27,6 +27,9 @@ from nixt.defines import Object, Broker, Disk, Locate, Main, Method
 from nixt.defines import Method, Repeater, Thread, Utils
 
 
+e = os.path.exists
+
+
 def init():
     Runners.init(1, Runner)
     Run.fetcher.start()
@@ -548,7 +551,7 @@ def imp(event):
         event.reply("imp <filename>")
         return
     fnm = event.args[0]
-    if not os.path.exists(fnm):
+    if not e(fnm):
         event.reply(f"no {fnm} file found.")
         return
     with Run.importlock:

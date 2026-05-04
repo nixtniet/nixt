@@ -11,6 +11,9 @@ import threading
 import types
 
 
+j = os.path.join
+
+
 class Object:
 
     def __init__(self, *args, **kwargs):
@@ -122,7 +125,6 @@ class Method:
             kin = f"{obj.__module__}.{obj.__name__}"
         return kin
 
-
     @staticmethod
     def fromkeys(obj, keyz, value=None):
         "create a new object with keys from iterable and values set to value/"
@@ -136,8 +138,7 @@ class Method:
     @staticmethod
     def ident(obj):
         "return ident string for object."
-        return os.path.join(Method.fqn(obj), *str(datetime.datetime.now()).split())
-
+        return j(Method.fqn(obj), *str(datetime.datetime.now()).split())
 
     @staticmethod
     def items(obj):
@@ -212,7 +213,6 @@ class Method:
                 break
             res = True
         return res
-
 
     @staticmethod
     def skip(obj, chars="_"):
@@ -395,7 +395,6 @@ class Json:
     def loads(s, *args, **kw):
         "load object from string."
         return json.loads(s, *args, **kw)
-
 
 
 def __dir__():

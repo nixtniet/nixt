@@ -16,6 +16,10 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from nixt.defines import Object, Locate, Main, Thread, Workdir
 
 
+a = os.path.abspath
+j = os.path.join
+
+
 def init():
     try:
         rest = REST((Config.hostname, int(Config.port)), RESTHandler)
@@ -97,8 +101,8 @@ class RESTHandler(BaseHTTPRequestHandler):
             fnm = self.path[1:]
         else:
             fnm = self.path
-        fnm = os.path.join(Workdir.workdir("store"), fnm)
-        fnm = os.path.abspath(fnm)
+        fnm = j(Workdir.workdir("store"), fnm)
+        fnm = a(fnm)
         if os.path.isdir(fnm):
             self.write_header("text/html")
             txt = ""

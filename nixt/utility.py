@@ -14,6 +14,9 @@ import time
 from .objects import Object
 
 
+j = os.path.join
+
+
 class NoDate(Exception):
 
     pass
@@ -127,7 +130,7 @@ class Utils:
         for fnm in os.listdir(path):
             if not fnm.endswith(".py"):
                 continue
-            mpath = os.path.join(path, fnm)
+            mpath = j(path, fnm)
             with open(mpath, "r", encoding="utf-8") as file:
                 md5.update(file.read().encode("utf-8"))
 
@@ -144,7 +147,7 @@ class Utils:
     @staticmethod
     def moddir():
         "return modules directory."
-        return os.path.join(os.path.dirname(__spec__.loader.path), "modules")
+        return j(os.path.dirname(__spec__.loader.path), "modules")
 
     @staticmethod
     def modname(obj):

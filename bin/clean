@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # This file is placed in the Public Domain.
-# pylint: disable=C,I,R,W0105
 
 
 "clean directories"
@@ -10,13 +9,13 @@ import os
 import sys
 
 
-"defines"
+a = os.path.abspath
+i = os.path.isdir
+j = os.path.join
 
 
 SKIP = ["env", ".git"]
 
-
-"utilities"
 
 def loop(path, txt):
     old = os.getcwd()
@@ -25,10 +24,10 @@ def loop(path, txt):
         if fnn in SKIP:
             continue
         old = os.getcwd()
-        fpath = os.path.abspath(os.path.join(path, fnn))
-        if os.path.isdir(fpath):
+        fpath = a(j(path, fnn))
+        if i(fpath):
             loop(fpath, txt)
-        if not os.path.isdir(fpath):
+        if not i(fpath):
             continue
         os.chdir(fpath)
         popen(txt)
@@ -40,9 +39,6 @@ def popen(txt):
     for line in os.popen(txt).readlines():
         print(line.rstrip())
         sys.stdout.flush()
-
-
-"runtime"
 
 
 def main():
