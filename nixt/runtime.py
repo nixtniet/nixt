@@ -107,8 +107,6 @@ class Runs:
         Log.size(len(Main.name))
         Log.level(Main.level or "warning")
         Workdir.wdr = Main.wdr or Workdir.wdr or os.path.expanduser(f"~/.{Utils.pkgname(Arguments)}")
-        if Main.verbose:
-            cls.banner()
 
 
 class Scripts:
@@ -132,17 +130,18 @@ class Scripts:
         import readline
         readline.redisplay()
         Runs.configure()
-        Boot.scanner()
-        Boot.init(Main.mods)
+        Runs.banner()
+        #Boot.scanner()
+        Boot.init(Main.mods, Main.wait)
         csl = CSL()
-        csl.start(daemon=True)
+        csl.start()
         Boot.forever()
 
     @staticmethod
     def control():
         "cli script."
         Runs.configure()
-        Boot.scanner()
+        #Boot.scanner()
         Line.cmd(Main.otxt)
 
     @staticmethod

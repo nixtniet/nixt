@@ -67,6 +67,7 @@ class Mods:
         mods = []
         for pkgname, path in cls.dirs.items():
             if not e(path):
+                print(path)
                 continue
             mods.extend([
                 x[:-3] for x in os.listdir(path)

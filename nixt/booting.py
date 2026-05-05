@@ -57,15 +57,16 @@ class Boot:
                 return
 
     @classmethod
-    def init(cls, modlist=""):
+    def init(cls, modlist, wait=False):
         thrs = []
-        for name in Utils.spl(Mods.has("init")):
-            if name not in Utils.spl(modlist):
-                continue
+        for name in Utils.spl(modlist):
             mod = Mods.get(name)
+            if not mod or "init" not in dir(mod):
+                continue
             thrs.append(Thread.launch(mod.init))
-        for thr in thrs:
-            thr.join()
+        if thrs and wait:
+            for thr in thrs:
+                thr.join()
 
     @classmethod
     def md5s(cls):
@@ -99,20 +100,9 @@ class Boot:
     @classmethod
     def scanner(cls):
         "scan named modules for commands."
-        if cls.table():
-            return
         for name in Utils.spl(Mods.list()):
             mod = Mods.get(name)
             Commands.scan(mod)
-
-    @classmethod
-    def table(cls):
-        mod = Mods.get("tbl")
-        names = getattr(mod, "NAMES", None)
-        if names:
-            Commands.names.update(names)
-            return True
-        return False
 
     @classmethod
     def wrap(cls, func, *args):
