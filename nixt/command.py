@@ -5,9 +5,11 @@
 
 
 import inspect
+import logging
 
 
 from .objects import Parse
+from .package import Mods
 from .utility import Utils
 
 
@@ -21,12 +23,24 @@ class Commands:
         "add functions to commands."
         for func in args:
             cls.cmds[func.__name__] = func
+            modname = func.__module__.split(".")[-1]
+            if "__" in modname:
+                continue
+            cls.names[func.__name__] = modname
 
     @classmethod
     def command(cls, evt):
         "command callback."
         Parse.parse(evt, evt.text)
         func = cls.get(evt.cmd)
+        if not func:
+            name = cls.names.get(evt.cmd)
+            mod = None
+            if name:
+                mod = Mods.get(name)
+            if mod:
+                cls.scan(mod)
+                func = cls.get(evt.cmd)
         if func:
             func(evt)
             evt.display()
@@ -35,7 +49,7 @@ class Commands:
     @classmethod
     def commands(cls, ignore=""):
         "list cpmmands available."
-        return [x for x in cls.cmds if x not in Utils.spl(ignore)]
+        return [x for x in cls.names if x not in Utils.spl(ignore)]
 
     @classmethod
     def get(cls, cmd):
@@ -48,7 +62,6 @@ class Commands:
         for key, cmdz in inspect.getmembers(module, inspect.isfunction):
             if 'event' in inspect.signature(cmdz).parameters:
                 cls.add(cmdz)
-
 
 def __dir__():
     return (

@@ -104,7 +104,7 @@ class Handler:
 class Input(Handler):
 
     def __init__(self):
-        Handler.__init__(self)
+        super().__init__()
         self.iqueue = queue.Queue()
         self.olock = threading.RLock()
         self.silent = True

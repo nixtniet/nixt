@@ -27,7 +27,7 @@ class Arguments:
                                          description=f'{Main.name.upper()}',
                                          epilog='use "%(prog)s cmd" for a list of commands.',
                                          formatter_class=argparse.RawDescriptionHelpFormatter,
-                                         usage='''%(prog)s [-c|d|h|s] [-a] [-v] [-u] [-l level] [-m m1,m2] [-w wdr]\n       %(prog)s [cmd] [arg=val] [arg==val]'''
+                                         usage='''%(prog)s [-c|d|h|s] [-a] [-v] [-u] [-l level] [-m m1,m2] [-w] [--default] [--wdr]\n       %(prog)s [cmd] [arg=val] [arg==val]'''
                                         )
         group = theparser.add_mutually_exclusive_group()
         group.add_argument("-c", "--console", action="store_true", help="run as console.")
@@ -40,9 +40,9 @@ class Arguments:
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
         parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
         parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
-        parser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
-        parser.add_argument("--noignore", action="store_true", help=argparse.SUPPRESS)
-        parser.add_argument("--wdr", default="", help='set working directory.', metavar="wdr")
+        optparser = theparser.add_argument_group()
+        optparser.add_argument("--default", default="irc,rss", help="set default modules.")
+        optparser.add_argument("--wdr", default="", help='set working directory.', metavar="wdr")
         args, arguments = theparser.parse_known_args()
         Main.otxt = txt = " ".join(arguments)
         Method.update(Main, args)
@@ -104,11 +104,16 @@ class Runs:
             Mods.add("other", "other")
         if Main.all:
             Main.mods = Mods.list()
+        Log.size(len(Main.name))
         Log.level(Main.level or "warning")
         Workdir.wdr = Main.wdr or Workdir.wdr or os.path.expanduser(f"~/.{Utils.pkgname(Arguments)}")
+        if Main.verbose:
+            cls.banner()
 
 
 class Scripts:
+
+    default = "bsc,cfg,thr,irc.rss"
 
     @staticmethod
     def background():
@@ -118,7 +123,7 @@ class Scripts:
         Boot.privileges()
         Boot.pidfule(Main.name)
         Boot.scanner()
-        Boot.init(Main.mods or "irc,rss")
+        Boot.init(Main.mods or Main.default)
         Boot.forever()
 
     @staticmethod
@@ -127,7 +132,6 @@ class Scripts:
         import readline
         readline.redisplay()
         Runs.configure()
-        Runs.banner()
         Boot.scanner()
         Boot.init(Main.mods)
         csl = CSL()
@@ -149,7 +153,7 @@ class Scripts:
         Boot.pidfule(Main.name)
         Runs.banner()
         Boot.scanner()
-        Boot.init(Main.mods or "irc,rss")
+        Boot.init(Main.mods or Main.default)
         Boot.forever()
 
 

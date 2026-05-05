@@ -207,12 +207,6 @@ class Log:
     format = "%(module)-3s %(message)s"
 
     @classmethod
-    def configure(cls, cfg):
-        "configure logging."
-        cls.size(len(cfg.name))
-        cls.level(cfg.level or "info")
-
-    @classmethod
     def size(cls, nr):
         "set text size."
         index = cls.format.find("-")+1

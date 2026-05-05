@@ -4,7 +4,7 @@
 "administrator"
 
 
-from nixt.defines import Main, Workdir
+from nixt.defines import Commands, Json, Main, Mods, Workdir
 
 
 def srv(event):
@@ -12,6 +12,15 @@ def srv(event):
     import getpass
     name = getpass.getuser()
     event.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
+
+
+def tbl(event):
+    "create table."
+    for name, module in Mods.all():
+        Commands.scan(module)
+    event.reply("# This file is placed in the Pubic Domain.\n\n")
+    event.reply('"tables"\n\n')
+    event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4)}\n\n")
 
 
 def wdr(event):

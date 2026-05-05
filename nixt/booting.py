@@ -99,9 +99,20 @@ class Boot:
     @classmethod
     def scanner(cls):
         "scan named modules for commands."
+        if cls.table():
+            return
         for name in Utils.spl(Mods.list()):
             mod = Mods.get(name)
             Commands.scan(mod)
+
+    @classmethod
+    def table(cls):
+        mod = Mods.get("tbl")
+        names = getattr(mod, "NAMES", None)
+        if names:
+            Commands.names.update(names)
+            return True
+        return False
 
     @classmethod
     def wrap(cls, func, *args):
