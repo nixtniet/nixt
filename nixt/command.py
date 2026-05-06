@@ -43,7 +43,8 @@ class Commands:
         if func:
             func(evt)
             evt.display()
-        evt.ready()
+        else:
+            evt.ready()
 
     @classmethod
     def commands(cls, ignore=""):
@@ -64,44 +65,44 @@ class Commands:
 
 
 NAMES = {
-    "srv": "adm",
-    "tbl": "adm",
-    "wdr": "adm",
-    "cmd": "bsc",
-    "mod": "bsc",
-    "upt": "bsc",
-    "ver": "bsc",
+    "atr": "rss",
     "cfg": "cfg",
-    "flt": "flt",
-    "fie": "fnd",
-    "fnd": "fnd",
-    "log": "log",
-    "man": "man",
-    "eml": "mbx",
-    "mbx": "mbx",
+    "cmd": "bsc",
     "dis": "mdl",
+    "dne": "tdo",
+    "dpl": "rss",
+    "eml": "mbx",
+    "err": "rss",
+    "exp": "rss",
+    "fie": "fnd",
+    "flt": "flt",
+    "fnd": "fnd",
+    "imp": "rss",
+    "log": "log",
+    "lou": "sil",
+    "man": "man",
+    "mbx": "mbx",
+    "mod": "bsc",
+    "nme": "rss",
     "now": "mdl",
     "pth": "pth",
     "pwd": "pwd",
-    "req": "req",
-    "atr": "rss",
-    "dpl": "rss",
-    "err": "rss",
-    "exp": "rss",
-    "imp": "rss",
-    "nme": "rss",
     "rem": "rss",
+    "req": "req",
     "res": "rss",
     "rss": "rss",
-    "syn": "rss",
-    "lou": "sil",
     "sil": "sil",
     "slg": "slg",
-    "dne": "tdo",
+    "srv": "adm",
+    "syn": "rss",
+    "tbl": "adm",
     "tdo": "tdo",
     "thr": "thr",
     "tmr": "tmr",
     "udp": "udp",
+    "upt": "bsc",
+    "ver": "bsc",
+    "wdr": "adm",
     "wsd": "wsd"
 }
 

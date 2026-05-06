@@ -34,6 +34,7 @@ class Event(Object):
     def display(self):
         "print results."
         Broker.display(self)
+        self.ready()
 
     def ok(self, txt=""):
         "print ok response."
@@ -49,9 +50,9 @@ class Event(Object):
 
     def wait(self, timeout=0.0):
         "wait for completion."
+        self._ready.wait(timeout or None)
         if self._thr:
             self._thr.join(timeout or None)
-        self._ready.wait(timeout or None)
 
 
 class Handler:

@@ -18,7 +18,7 @@ def tbl(event):
     "create table."
     for name, module in Mods.all():
         Commands.scan(module)
-    event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4)}")
+    event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4, sort_keys=True)}")
 
 
 def wdr(event):

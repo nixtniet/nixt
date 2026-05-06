@@ -9,7 +9,7 @@ from .booting import Boot
 from .brokers import Broker
 from .command import Commands
 from .configs import Main
-from .handler import Client, Console, Event, Handler
+from .handler import Client, Console, Event, Handler, Input
 from .objects import Object, Json, Method, Parse
 from .package import Mods
 from .persist import Disk, Locate, Workdir
@@ -27,6 +27,7 @@ def __dir__():
        'Disk',
        'Event',
        'Handler',
+       'Input',
        'Json',
        'Locate',
        'Log',

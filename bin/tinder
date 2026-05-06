@@ -16,15 +16,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.booting import Boot
-from nixt.command import Commands
-from nixt.configs import Main
-from nixt.handler import Client, Event
-from nixt.objects import Method, Parse
-from nixt.package import Mods
-from nixt.persist import Workdir
-from nixt.threads import Thread
-from nixt.utility import Time
+from nixt.defines import Boot, Client, Commands, Event, Input, Main, Method
+from nixt.defines import Mods, Parse, Thread, Time, Workdir
 
 
 e = os.path.exists
@@ -39,7 +32,7 @@ Main.user = True
 events = queue.Queue()
 
 
-class CLI(Client):
+class CLI(Input):
 
     def __init__(self):
         super().__init__()
@@ -67,7 +60,7 @@ class Clients:
             cls.nrcpu = nrcpu
             for _x in range(Clients.nrcpu):
                 clt = client()
-                clt.start(False)
+                clt.start()
                 cls.add(clt)
 
     @classmethod
@@ -123,7 +116,6 @@ def main():
     Mods.add("mods", "mods")
     Mods.add("other", "other")
     Workdir.wdr = Main.wdr
-    Boot.scanner()
     if Main.threaded:
         Clients.init(os.cpu_count(), CLI)
     else:
@@ -165,6 +157,7 @@ examples = {
     "dne": ["", "bla"],
     "dpl": ["hnrss title,link", ""],
     "eml": ["", "root@localhost"],
+    "exp": [""],
     "fie": ["", "log", "todo"],
     "flt": ["", "0"],
     "fnd": ["", "log", "rss", "config", "todo", 'timers'],
@@ -217,7 +210,6 @@ pre = {
 post = {
     "dbg": [""],
     "dne": ["", "mekker"],
-    "exp": [""],
     "rem": ["", "hnrss"]
 }
 
