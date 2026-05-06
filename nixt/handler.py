@@ -34,7 +34,6 @@ class Event(Object):
     def display(self):
         "print results."
         Broker.display(self)
-        self.ready()
 
     def ok(self, txt=""):
         "print ok response."

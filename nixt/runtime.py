@@ -42,6 +42,7 @@ class Arguments:
         parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
         optparser = theparser.add_argument_group()
         optparser.add_argument("--default", default="irc,rss", help="set default modules.")
+        optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
         optparser.add_argument("--wdr", default="", help='set working directory.', metavar="wdr")
         args, arguments = theparser.parse_known_args()
         Main.otxt = txt = " ".join(arguments)
@@ -89,7 +90,7 @@ class Runs:
             Main.name.upper(),
             Main.version,
             tme,
-            Main.level.upper() or "warning",
+            Main.level.upper() or "WARNING",
             Boot.md5s().upper()
         )
         print(txt.replace("  ", " "))
@@ -115,10 +116,10 @@ class Scripts:
     def background():
         "background script."
         Runs.configure()
-        Boot.daemon()
+        Boot.daemon(Main.verbose, Main.nochdir)
         Boot.privileges()
-        Boot.pidfule(Main.name)
-        Boot.table()
+        Boot.pidfile(Main.name)
+        Boot.scanner()
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 
@@ -129,8 +130,8 @@ class Scripts:
         readline.redisplay()
         Runs.configure()
         Runs.banner()
-        Boot.table()
-        Boot.init(Main.mods, Main.wait)
+        Boot.scanner()
+        Boot.init(Main.mods or Main.default, Main.wait)
         csl = CSL()
         csl.start()
         Boot.forever()
@@ -139,7 +140,7 @@ class Scripts:
     def control():
         "cli script."
         Runs.configure()
-        Boot.table()
+        Boot.scanner()
         Line.cmd(Main.otxt)
 
     @staticmethod
@@ -147,9 +148,9 @@ class Scripts:
         "service script."
         Runs.configure()
         Boot.privileges()
-        Boot.pidfule(Main.name)
-        Boot.table()
+        Boot.pidfile(Main.name)
         Runs.banner()
+        Boot.scanner()
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 

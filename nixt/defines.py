@@ -7,10 +7,10 @@
 
 from .booting import Boot
 from .brokers import Broker
-from .command import Commands, Mods
+from .command import Commands, Mods, Parse
 from .configs import Main
 from .handler import Client, Console, Event, Handler, Input
-from .objects import Object, Json, Method, Parse
+from .objects import Object, Json, Method
 from .persist import Disk, Locate, Workdir
 from .threads import Repeater, Thread
 from .utility import Log, Time, Utils

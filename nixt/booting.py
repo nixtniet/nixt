@@ -96,8 +96,14 @@ class Boot:
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
 
-    scanner = Commands.scanner
-    table = Commands.table
+    @classmethod
+    def scanner(cls):
+        "scan named modules for commands."
+        if Commands.names:
+            return
+        for name in Utils.spl(Mods.list()):
+            mod = Mods.get(name)
+            Commands.scan(mod)
 
     @classmethod
     def wrap(cls, func, *args):

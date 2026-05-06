@@ -76,8 +76,6 @@ class Clients:
         for client in cls.clients:
             client.wait()
             client.stop()
-            print(client.queue.qsize())
-            print(client.oqueue.qsize())
 
 
 def check(opts):

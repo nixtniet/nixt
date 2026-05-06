@@ -19,7 +19,7 @@ def tbl(event):
     for name, module in Mods.all():
         Commands.scan(module)
     event.reply("# This file is placed in the Public Domain.\n\n")
-    event.reply('"static files"\n\n')
+    event.reply('"tables"\n\n')
     event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4, sort_keys=True)}")
 
 
