@@ -61,8 +61,8 @@ use ``%s`` to control the program, default it does nothing
 the -h option will show you possible options
 
 | ``$ %s -h``
-| usage: nixt [-c|d|h|s] [-a] [-v] [-u] [-x] [-l level] [-m m1,m2] [-w wdr]
-|        nixt [cmd] [arg=val] [arg==val]
+| usage: %s [-c|d|h|s] [-a] [-v] [-u] [-x] [-l level] [-m m1,m2] [-w wdr]
+|        %s [cmd] [arg=val] [arg==val]
 |
 | NIXT
 |
@@ -81,7 +81,7 @@ the -h option will show you possible options
 |   -x, --admin        enable admin mode.
 |   --wdr wdr          set working directory.
 |
-| use "nixt cmd" for a list of commands.
+| use "%s cmd" for a list of commands.
 |
 
 see list of commands
@@ -239,7 +239,7 @@ def man(event):
         name.upper(),
         *(name,) * 2,
         *(name.upper(),) * 4,
-        *(name,) * 33,
+        *(name,) * 36,
         author,
         email,
         name.upper()

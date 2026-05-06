@@ -4,16 +4,17 @@
 "administrator"
 
 
+import inspect
 import os
 
 
 from nixt.defines import Commands, Json, Main, Mods, Utils, Workdir
 
 
-import nixt
-
-
+d = os.path.dirname
 j = os.path.join
+
+
 
 
 def srv(event):
@@ -31,7 +32,7 @@ def tbl(event):
     for name, module in Mods.all():
         md5s[name] = Utils.md5(module.__file__)
         Commands.scan(module)
-    corepath = nixt.__spec__.loader._path._path[0]
+    corepath = d(inspect.getsourcefile(Commands))
     for path in os.listdir(corepath):
         if path.startswith("__") or not path.endswith(".py"):
             continue

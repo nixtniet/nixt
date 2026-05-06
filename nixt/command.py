@@ -77,7 +77,9 @@ class Commands:
 
 class Mods:
 
+    core = {}
     dirs = {}
+    md5s = {}
     modules = {}
 
     @classmethod
@@ -157,6 +159,25 @@ class Mods:
         "register packages their directories."
         for package in packages:
             cls.add(package.__path__[0], package.__name__)
+
+    @classmethod
+    def scanner(cls):
+        "scan named modules for commands."
+        if Commands.names:
+            return
+        for name in Utils.spl(cls.list()):
+            mod = cls.get(name)
+            Commands.scan(mod)
+
+    @classmethod
+    def table(cls):
+        try:
+            from .statics import NAMES, VORE, MD5S
+            Commands.names.update(NAMES)
+            cls.core.update(CORE)
+            cls.md5s.update(MD5S)
+        except ImportError:
+            cls.scanner()
 
 
 class Parse:

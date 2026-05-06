@@ -97,23 +97,6 @@ class Boot:
         os.setuid(pwnam2.pw_uid)
 
     @classmethod
-    def scanner(cls):
-        "scan named modules for commands."
-        if Commands.names:
-            return
-        for name in Utils.spl(Mods.list()):
-            mod = Mods.get(name)
-            Commands.scan(mod)
-
-    @classmethod
-    def table(cls):
-        try:
-            from .statics import NAMES
-            Commands.names.update(NAMES)
-        except ImportError:
-            cls.scanner()
-
-    @classmethod
     def wrap(cls, func, *args):
         "restore console."
         import termios

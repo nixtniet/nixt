@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"nixt"
+"main program"
 
 
 import argparse
@@ -119,7 +119,7 @@ class Scripts:
         Boot.daemon(Main.verbose, Main.nochdir)
         Boot.privileges()
         Boot.pidfile(Main.name)
-        Boot.table()
+        Mods.table()
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 
@@ -130,7 +130,7 @@ class Scripts:
         readline.redisplay()
         Runs.configure()
         Runs.banner()
-        Boot.tabler()
+        Mods.table()
         Boot.init(Main.mods or Main.default, Main.wait)
         csl = CSL()
         csl.start()
@@ -140,7 +140,7 @@ class Scripts:
     def control():
         "cli script."
         Runs.configure()
-        Boot.table()
+        Mods.table()
         Line.cmd(Main.otxt)
 
     @staticmethod
@@ -150,7 +150,7 @@ class Scripts:
         Boot.privileges()
         Boot.pidfile(Main.name)
         Runs.banner()
-        Boot.table()
+        Mods.table()
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 
