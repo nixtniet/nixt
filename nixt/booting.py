@@ -106,6 +106,14 @@ class Boot:
             Commands.scan(mod)
 
     @classmethod
+    def table(cls):
+        try:
+            from .statics import NAMES
+            Commands.names.update(NAMES)
+        except ImportError:
+            cls.scanner()
+
+    @classmethod
     def wrap(cls, func, *args):
         "restore console."
         import termios

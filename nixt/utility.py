@@ -125,6 +125,14 @@ class Utils:
         return obj.__class__.__name__
 
     @staticmethod
+    def md5(path):
+        import hashlib
+        md5 = hashlib.md5()
+        with open(path, "r", encoding="utf-8") as file:
+            md5.update(file.read().encode("utf-8"))
+        return str(md5.hexdigest())
+
+    @staticmethod
     def md5dir(path, md5):
         "create a md5 for a directory."
         for fnm in os.listdir(path):

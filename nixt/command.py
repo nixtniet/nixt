@@ -10,7 +10,6 @@ import os
 
 
 from .objects import Method, Object
-from .statics import NAMES
 from .utility import Utils
 
 
@@ -68,6 +67,13 @@ class Commands:
             if 'event' in inspect.signature(cmdz).parameters:
                 cls.add(cmdz)
 
+    @classmethod
+    def table(cls):
+        try:
+            from .statics import NAMES
+            cls.names.update(NAMES)
+        except ImportError:
+            pass
 
 class Mods:
 
@@ -208,9 +214,6 @@ class Parse:
         else:
             obj.text = obj.cmd or ""
         Method.notset(obj, obj.sets)
-
-
-Commands.names.update(NAMES)
 
 
 def __dir__():

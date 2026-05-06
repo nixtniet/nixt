@@ -45,3 +45,46 @@ NAMES = {
     "wdr": "adm",
     "wsd": "wsd"
 }
+
+
+CORE = {
+    "booting": "262f5e78f47db82b514ba9ace825d918",
+    "brokers": "df6606e04b515c7f6d4ea5182bab416c",
+    "command": "8b8bc3d4a69c7858af523ca27a720a40",
+    "configs": "b1274e06a397aa20354a99e58026acc3",
+    "defines": "0e6d64381c97becd03129e533beca2a6",
+    "handler": "839c07590181316869dc1b8a9d0135ad",
+    "objects": "f5e7d04933218ca52d2298760d6d8ad5",
+    "persist": "5f0ad5a0bfe95aff6a3bff2398c39472",
+    "runtime": "8ab2c1ba345f579068034b501ea74259",
+    "statics": "d41d8cd98f00b204e9800998ecf8427e",
+    "threads": "71026d416538149a65e94c88b678a805",
+    "utility": "7ff43c5793dc93500aff265a36cce783"
+}
+
+
+MD5 = {
+    "adm": "6e7c03c8430f414e2db6c9a16ec519a6",
+    "bsc": "9021f18a6ce833b9f29458bf62ec6d6f",
+    "cfg": "2dbe785ad4e391bb9813697b234d3261",
+    "flt": "aa09f9c3469a85ce7940416f4b20e850",
+    "fnd": "5b2695aa7eb3d523b2431cd3804dcdec",
+    "irc": "747f0c1e7d9a45a2c7f793c36ea000ad",
+    "log": "3872aa0d0c57c88dfee2b82b3ac082d5",
+    "man": "5f87c91064ed30f151c33df3deae1559",
+    "mbx": "9f28e85f4a07c86ea7b3f44de063cd33",
+    "mdl": "b78050888549518797870ca12d09eb16",
+    "pth": "429229129dd5479a4b33dea20e568288",
+    "pwd": "c308a6405f500bbcdde84334fc377bb8",
+    "req": "bc1984d2e9de0310dc1b468f25c7ab8c",
+    "rss": "e87769712a2d259b1c34ff7cc943d231",
+    "rst": "0cc4a61efeeba4037ba38a8844fdf392",
+    "sil": "ba92eda7441da388a211dc5e2ebbc2da",
+    "slg": "0196cecb8ff67e032bd389a0b1860353",
+    "tdo": "016b61b03abc7a2c11d430227a8ba627",
+    "thr": "a6226286efab66f6eca3c467501aa7bd",
+    "tmr": "c637779dafd56ba90c06cb00ec325570",
+    "udp": "a4177cabbe077869ea99fd4bb8aa2725",
+    "web": "d9bcc3d7fa6f6c28eda1e1723c6663ee",
+    "wsd": "987bd81f25e2982df63cae5a6dbfddfc"
+}
