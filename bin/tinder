@@ -32,7 +32,7 @@ Main.user = True
 events = queue.Queue()
 
 
-class CLI(Input):
+class CLI(Client):
 
     def __init__(self):
         super().__init__()
@@ -74,7 +74,10 @@ class Clients:
     @classmethod
     def shutdown(cls):
         for client in cls.clients:
+            client.wait()
             client.stop()
+            print(client.queue.qsize())
+            print(client.oqueue.qsize())
 
 
 def check(opts):
@@ -133,6 +136,7 @@ def main():
     thrs = []
     for thr in thrs:
         thr.join()
+    thrs = []
     for _x in range(nrs):
         thrs.append(Thread.launch(payload, post))
     for thr in thrs:

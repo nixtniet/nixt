@@ -6,6 +6,7 @@
 
 import logging
 import queue
+import sys
 import threading
 import _thread
 
@@ -76,9 +77,11 @@ class Handler:
         while self.running.is_set():
             event = self.queue.get()
             if event is None:
+                self.queue.task_done()
                 break
             event.orig = repr(self)
             self.callback(event)
+            self.queue.task_done()
 
     def put(self, event):
         "put event on queue."
@@ -99,7 +102,7 @@ class Handler:
         self.queue.put(None)
 
     def wait(self):
-        pass
+        self.queue.join()
 
 
 class Input(Handler):
@@ -122,6 +125,7 @@ class Input(Handler):
         with self.olock:
             for txt in event.result:
                 self.dosay(event.channel, txt)
+            sys.stdout.flush()
 
     def dosay(self, channel, text):
         "say called by display."
@@ -171,9 +175,6 @@ class Polled(Input):
     def poll(self):
         "return event."
         return self.iqueue.get()
-
-    def start(self, daemon=True):
-        super().start(daemon=daemon)
 
 
 class Console(Polled):
@@ -225,6 +226,7 @@ class Client(Polled):
     def wait(self):
         "wait for output to finish."
         try:
+            super().wait()
             self.oqueue.join()
         except Exception as ex:
             logging.exception(ex)

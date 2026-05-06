@@ -111,8 +111,6 @@ class Runs:
 
 class Scripts:
 
-    default = "bsc,cfg,thr,irc.rss"
-
     @staticmethod
     def background():
         "background script."
