@@ -20,13 +20,6 @@ class Broker:
             obj.announce(txt)
 
     @classmethod
-    def display(cls, evt):
-        "print results."
-        bot = cls.get(evt.orig)
-        if bot:
-            bot.display(evt)
-
-    @classmethod
     def get(cls, origin):
         "object by repr(obj)."
         return cls.objects.get(origin)

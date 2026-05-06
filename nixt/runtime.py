@@ -5,6 +5,7 @@
 
 
 import argparse
+import inspect
 import os
 import sys
 import time
@@ -12,6 +13,9 @@ import time
 
 from .defines import Boot, Commands, Console, Method, Event, Log
 from .defines import Main, Mods, Parse, Utils, Workdir
+
+
+from . import statics
 
 
 class Arguments:
@@ -91,7 +95,7 @@ class Runs:
             Main.version,
             tme,
             Main.level.upper() or "WARNING",
-            Boot.md5s().upper()
+            Utils.md5source(inspect.getsource(statics))[:7].upper()
         )
         print(txt.replace("  ", " "))
         sys.stdout.flush()

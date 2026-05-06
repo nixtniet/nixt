@@ -31,7 +31,7 @@ def tbl(event):
         Commands.scan(module)
     corepath = d(inspect.getsourcefile(Commands))
     for path in os.listdir(corepath):
-        if path.startswith("__") or not path.endswith(".py"):
+        if path.startswith("__") or not path.endswith(".py") or "statics" in path:
             continue
         name = path[:-3]
         core[name] = Utils.md5(j(corepath, path))

@@ -591,7 +591,11 @@ def imp(event):
 
 
 def nme(event):
-    if len(event.args) != 2:
+    if len(event.args) == 1:
+        name = ""
+    elif len(event.args) == 2:
+        name = event.args[1]
+    else:
         event.reply("nme <stringinurl> <name>")
         return
     selector = {"rss": event.args[0]}
@@ -599,7 +603,7 @@ def nme(event):
         feed = Rss()
         Method.update(feed, fed)
         if feed:
-            feed.name = str(event.args[1])
+            feed.name = name
             Disk.write(feed, fnm)
     event.reply("ok")
 
