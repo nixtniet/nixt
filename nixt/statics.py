@@ -48,15 +48,15 @@ NAMES = {
 
 
 CORE = {
-    "booting": "262f5e78f47db82b514ba9ace825d918",
+    "booting": "74f3ea331b6be8fc185b7aff421945da",
     "brokers": "df6606e04b515c7f6d4ea5182bab416c",
-    "command": "8b8bc3d4a69c7858af523ca27a720a40",
+    "command": "f889f68c663fc3f12c26ecb5fbe74358",
     "configs": "b1274e06a397aa20354a99e58026acc3",
     "defines": "0e6d64381c97becd03129e533beca2a6",
     "handler": "839c07590181316869dc1b8a9d0135ad",
     "objects": "f5e7d04933218ca52d2298760d6d8ad5",
     "persist": "5f0ad5a0bfe95aff6a3bff2398c39472",
-    "runtime": "8ab2c1ba345f579068034b501ea74259",
+    "runtime": "556c618f94f65bf8d8d1e29d792623ce",
     "statics": "d41d8cd98f00b204e9800998ecf8427e",
     "threads": "71026d416538149a65e94c88b678a805",
     "utility": "7ff43c5793dc93500aff265a36cce783"
@@ -64,14 +64,14 @@ CORE = {
 
 
 MD5 = {
-    "adm": "6e7c03c8430f414e2db6c9a16ec519a6",
+    "adm": "74f9be8799928a1f73e57119ffbbc32c",
     "bsc": "9021f18a6ce833b9f29458bf62ec6d6f",
     "cfg": "2dbe785ad4e391bb9813697b234d3261",
     "flt": "aa09f9c3469a85ce7940416f4b20e850",
     "fnd": "5b2695aa7eb3d523b2431cd3804dcdec",
     "irc": "747f0c1e7d9a45a2c7f793c36ea000ad",
     "log": "3872aa0d0c57c88dfee2b82b3ac082d5",
-    "man": "5f87c91064ed30f151c33df3deae1559",
+    "man": "471c0bd10ba1ad32b0f39b61e6ff6e60",
     "mbx": "9f28e85f4a07c86ea7b3f44de063cd33",
     "mdl": "b78050888549518797870ca12d09eb16",
     "pth": "429229129dd5479a4b33dea20e568288",

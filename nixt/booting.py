@@ -11,7 +11,7 @@ import sys
 import time
 
 
-from .command import Commands, Mods
+from .command import Mods
 from .objects import Method
 from .persist import Workdir
 from .threads import Thread

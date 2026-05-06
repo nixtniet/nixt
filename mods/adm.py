@@ -1,4 +1,4 @@
-#  This file is placed in the Public Domain.
+# This file is placed in the Public Domain.
 
 
 "administrator"
@@ -15,8 +15,6 @@ d = os.path.dirname
 j = os.path.join
 
 
-
-
 def srv(event):
     "generate systemd service file."
     import getpass
@@ -28,7 +26,6 @@ def tbl(event):
     "create table."
     core = {}
     md5s = {}
-    pkgname = Utils.pkgname(Commands)
     for name, module in Mods.all():
         md5s[name] = Utils.md5(module.__file__)
         Commands.scan(module)
@@ -37,7 +34,7 @@ def tbl(event):
         if path.startswith("__") or not path.endswith(".py"):
             continue
         name = path[:-3]
-        core[name] = Utils.md5(j(corepath, path))    
+        core[name] = Utils.md5(j(corepath, path))
     event.reply("# This file is placed in the Public Domain.\n\n")
     event.reply('"tables"\n\n')
     event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4, sort_keys=True)}\n\n")

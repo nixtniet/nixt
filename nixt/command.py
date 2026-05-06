@@ -6,6 +6,7 @@
 
 import importlib.util as imp
 import inspect
+import logging
 import os
 
 
@@ -75,6 +76,7 @@ class Commands:
         except ImportError:
             pass
 
+
 class Mods:
 
     core = {}
@@ -102,6 +104,9 @@ class Mods:
                 fnm = j(path, name + ".py")
                 if not e(fnm):
                     continue
+                md5 = Utils.md5(fnm)
+                if md5 != cls.md5s.get(name):
+                    logging.warning("mismatch on module %s", name)
                 mod = cls.importer(modname, fnm)
             return mod
 
@@ -172,10 +177,10 @@ class Mods:
     @classmethod
     def table(cls):
         try:
-            from .statics import NAMES, VORE, MD5S
+            from .statics import NAMES, CORE, MD5
             Commands.names.update(NAMES)
             cls.core.update(CORE)
-            cls.md5s.update(MD5S)
+            cls.md5s.update(MD5)
         except ImportError:
             cls.scanner()
 
