@@ -4,12 +4,17 @@
 "write your own commands"
 
 
+import importlib.util as imp
 import inspect
+import os
 
 
 from .objects import Parse
-from .package import Mods
 from .utility import Utils
+
+
+e = os.path.exists
+j = os.path.join
 
 
 class Commands:
@@ -63,54 +68,108 @@ class Commands:
             if 'event' in inspect.signature(cmdz).parameters:
                 cls.add(cmdz)
 
+    @classmethod
+    def scanner(cls):
+        "scan named modules for commands."
+        for name in Utils.spl(Mods.list()):
+            mod = Mods.get(name)
+            cls.scan(mod)
 
-NAMES = {
-    "atr": "rss",
-    "cfg": "cfg",
-    "cmd": "bsc",
-    "dis": "mdl",
-    "dne": "tdo",
-    "dpl": "rss",
-    "eml": "mbx",
-    "err": "rss",
-    "exp": "rss",
-    "fie": "fnd",
-    "flt": "flt",
-    "fnd": "fnd",
-    "imp": "rss",
-    "log": "log",
-    "lou": "sil",
-    "man": "man",
-    "mbx": "mbx",
-    "mod": "bsc",
-    "nme": "rss",
-    "now": "mdl",
-    "pth": "pth",
-    "pwd": "pwd",
-    "rem": "rss",
-    "req": "req",
-    "res": "rss",
-    "rss": "rss",
-    "sil": "sil",
-    "slg": "slg",
-    "srv": "adm",
-    "syn": "rss",
-    "tbl": "adm",
-    "tdo": "tdo",
-    "thr": "thr",
-    "tmr": "tmr",
-    "udp": "udp",
-    "upt": "bsc",
-    "ver": "bsc",
-    "wdr": "adm",
-    "wsd": "wsd"
-}
+    @classmethod
+    def table(cls):
+        try:
+            from .statics import NAMES
+            cls.names.update(NAMES)
+        except (ModuleNotFoundError, ImportError):
+            cls.scanner()
 
 
-Commands.names.update(NAMES)
+class Mods:
+
+    dirs = {}
+    modules = {}
+
+    @classmethod
+    def add(cls, name, path):
+        "add modules directory."
+        cls.dirs[name] = path
+
+    @classmethod
+    def all(cls):
+        "return all modules."
+        return cls.iter(cls.list())
+
+    @classmethod
+    def get(cls, name):
+        "return module from cache or import module."
+        for pkgname, path in cls.dirs.items():
+            modname = f"{pkgname}.{name}"
+            mod = cls.modules.get(modname, None)
+            if not mod:
+                fnm = j(path, name + ".py")
+                if not e(fnm):
+                    continue
+                mod = cls.importer(modname, fnm)
+            return mod
+
+    @classmethod
+    def has(cls, attr):
+        "return list of modules containing an attribute."
+        result = []
+        for mod in cls.modules.values():
+            if not getattr(mod, attr, False):
+                continue
+            result.append(mod.__name__.split(".")[-1])
+        return ",".join(result)
+
+    @classmethod
+    def iter(cls, mods="", ignore=""):
+        "loop over modules."
+        for name in Utils.spl(mods, ignore):
+            mod = cls.get(name)
+            if mod:
+                yield name, mod
+
+    @classmethod
+    def list(cls, ignore=""):
+        "comma seperated list of available modules."
+        mods = []
+        for pkgname, path in cls.dirs.items():
+            if not e(path):
+                continue
+            mods.extend([
+                x[:-3] for x in os.listdir(path)
+                if x.endswith(".py") and
+                not x.startswith("__") and
+                x[:-3] not in Utils.spl(ignore)
+            ])
+        return ",".join(sorted(set(mods)))
+
+    @classmethod
+    def importer(cls, name, pth=""):
+        "import module by path."
+        spec = imp.spec_from_file_location(name, pth)
+        cls.modules[name] = imp.module_from_spec(spec)
+        spec.loader.exec_module(cls.modules[name])
+        return cls.modules[name]
+
+    @classmethod
+    def path(cls, name):
+        "return existing paths."
+        for pkgname, path in cls.dirs.items():
+            pth = j(path, name + ".py")
+            if e(pth):
+                return pth
+
+    @classmethod
+    def pkg(cls, *packages):
+        "register packages their directories."
+        for package in packages:
+            cls.add(package.__path__[0], package.__name__)
 
 
 def __dir__():
     return (
         'Commands',
+        'Mods',
     )

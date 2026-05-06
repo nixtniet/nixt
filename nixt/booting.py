@@ -11,9 +11,8 @@ import sys
 import time
 
 
-from .command import Commands
+from .command import Commands, Mods
 from .objects import Method
-from .package import Mods
 from .persist import Workdir
 from .threads import Thread
 from .utility import Utils
@@ -97,12 +96,8 @@ class Boot:
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
 
-    @classmethod
-    def scanner(cls):
-        "scan named modules for commands."
-        for name in Utils.spl(Mods.list()):
-            mod = Mods.get(name)
-            Commands.scan(mod)
+    scanner = Commands.scanner
+    table = Commands.table
 
     @classmethod
     def wrap(cls, func, *args):
