@@ -68,15 +68,6 @@ class Boot:
                 thr.join()
 
     @classmethod
-    def md5s(cls):
-        "calculate n5sums of avaiable modules."
-        paths = []
-        paths.append(os.path.dirname(__spec__.loader.path))
-        for path in Method.values(Mods.dirs):
-            paths.append(path)
-        return str(Utils.md5s(*paths)[:7])
-
-    @classmethod
     def pidfile(cls, name):
         "write pidfile."
         filename = j(Workdir.wdr, f"{name}.pid")

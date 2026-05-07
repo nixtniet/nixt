@@ -143,16 +143,6 @@ class Utils:
                 md5.update(file.read().encode("utf-8"))
 
     @staticmethod
-    def md5s(*paths, md5=None):
-        "set md5 sums."
-        import hashlib
-        if md5 is None:
-            md5 = hashlib.md5()
-        for path in paths:
-            Utils.md5dir(path, md5)
-        return md5.hexdigest()
-
-    @staticmethod
     def md5source(src):
         "determine md5 of source code."
         import hashlib
@@ -207,7 +197,7 @@ class Utils:
 class Format(logging.Formatter):
 
     disable = False
-    size = 4
+    size = 3
 
     def format(self, record):
         "logging formatter."
@@ -223,15 +213,6 @@ class Log:
     format = "%(module)-3s %(message)s"
 
     @classmethod
-    def size(cls, nr):
-        "set text size."
-        index = cls.format.find("-")+1
-        newformat = cls.format[:index]
-        newformat += str(nr)
-        newformat += cls.format[index+1:]
-        cls.format = newformat
-
-    @classmethod
     def level(cls, loglevel):
         "set log level."
         formatter = Format(Log.format, Log.datefmt)
@@ -242,6 +223,19 @@ class Log:
             handlers=[stream,],
             force=True
         )
+
+    @classmethod
+    def log(cls, modname, txt):
+        pass        
+
+    @classmethod
+    def size(cls, nr):
+        "set text size."
+        index = cls.format.find("-")+1
+        newformat = cls.format[:index]
+        newformat += str(nr)
+        newformat += cls.format[index+1:]
+        cls.format = newformat
 
 
 Log.level("warning")

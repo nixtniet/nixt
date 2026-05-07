@@ -68,14 +68,6 @@ class Commands:
             if 'event' in inspect.signature(cmdz).parameters:
                 cls.add(cmdz)
 
-    @classmethod
-    def table(cls):
-        try:
-            from .statics import NAMES
-            cls.names.update(NAMES)
-        except ImportError:
-            pass
-
 
 class Mods:
 
@@ -106,7 +98,7 @@ class Mods:
                     continue
                 md5 = Utils.md5(fnm)
                 if md5 != cls.md5s.get(name):
-                    logging.warning("mismatch on module %s", name)
+                    logging.warning("mismatch %s", modname)
                 mod = cls.importer(modname, fnm)
             return mod
 
