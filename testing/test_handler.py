@@ -7,7 +7,8 @@
 import unittest
 
 
-from nixt.handler import Input, Event, Handler, Polled
+from nixt.clients import Input, Polled
+from nixt.handler import Event, Handler
 
 
 buffer = []

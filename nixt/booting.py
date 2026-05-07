@@ -12,7 +12,8 @@ import sys
 import time
 
 
-from .command import Mods
+from .command import Commands
+from .package import Mods
 from .persist import Workdir
 from .threads import Thread
 from .utility import Utils
@@ -93,6 +94,27 @@ class Boot:
         pwnam2 = pwd.getpwnam(getpass.getuser())
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
+
+    @classmethod
+    def scanner(cls):
+        "scan named modules for commands."
+        if Commands.names:
+            return
+        for name in Utils.spl(Mods.list()):
+            mod = Mods.get(name)
+            if not mod:
+                continue
+            Commands.scan(mod)
+
+    @classmethod
+    def table(cls):
+        try:
+            from .statics import NAMES, CORE, MD5
+            Commands.names.update(NAMES)
+            Mods.core.update(CORE)
+            Mods.md5s.update(MD5)
+        except ImportError:
+            cls.scanner()
 
     @classmethod
     def wrap(cls, func, *args):

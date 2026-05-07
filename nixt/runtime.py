@@ -119,7 +119,7 @@ class Scripts:
         Boot.daemon(Main.verbose, Main.nochdir)
         Boot.privileges()
         Boot.pidfile(Main.name)
-        Mods.table()
+        Boot.table()
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 
@@ -130,7 +130,7 @@ class Scripts:
         readline.redisplay()
         Runs.configure()
         Runs.banner()
-        Mods.table()
+        Boot.table()
         Boot.init(Main.mods or Main.default, Main.wait)
         csl = CSL()
         csl.start()
@@ -140,7 +140,7 @@ class Scripts:
     def control():
         "cli script."
         Runs.configure()
-        Mods.table()
+        Boot.table()
         Line.cmd(Main.otxt)
 
     @staticmethod
@@ -150,7 +150,7 @@ class Scripts:
         Boot.privileges()
         Boot.pidfile(Main.name)
         Runs.banner()
-        Mods.table()
+        Boot.table()
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 
