@@ -4,10 +4,10 @@
 "log text"
 
 
-from nixt.defines import Object, Disk
+from nixt.defines import Base, Disk
 
 
-class Log(Object):
+class Log(Base):
 
     def __init__(self):
         super().__init__()

@@ -16,7 +16,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Event, Main, Method
+from nixt.defines import Boot, Client, Commands, Main, Message, Method
 from nixt.defines import Mods, Parse, Thread, Time, Workdir
 
 
@@ -99,7 +99,7 @@ def consume():
 def payload(todo):
     for cmd, example in todo.items():
         for ex in example:
-            evt = Event()
+            evt = Message()
             evt.kind = "command"
             evt.text = f"{cmd} {ex}"
             Clients.put(evt)
@@ -114,6 +114,7 @@ def main():
     if check("t"):
         Main.threaded = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
+    Boot.table()
     Mods.add("mods", "mods")
     Mods.add("other", "other")
     Workdir.wdr = Main.wdr

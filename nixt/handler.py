@@ -4,56 +4,11 @@
 "event handling"
 
 
-import logging
 import queue
 import threading
-import _thread
 
 
-from .brokers import Broker
-from .command import Commands
-from .objects import Object
 from .threads import Thread
-
-
-class Event(Object):
-
-    def __init__(self):
-        Object.__init__(self)
-        self._ready = threading.Event()
-        self._thr = None
-        self.args = []
-        self.channel = ""
-        self.cmd = ""
-        self.index = 0
-        self.kind = "event"
-        self.orig = ""
-        self.result = []
-        self.text = ""
-
-    def display(self):
-        "print results."
-        bot = Broker.get(self.orig)
-        if bot:
-            bot.display(self)
-
-    def ok(self, txt=""):
-        "print ok response."
-        self.reply(f"ok {txt}".strip())
-
-    def ready(self):
-        "flag message as ready."
-        self._ready.set()
-
-    def reply(self, text):
-        "add text to result."
-        self.result.append(text)
-
-    def wait(self, timeout=0.0):
-        "wait for completion."
-        self._ready.wait(timeout or None)
-        if self._thr:
-            self._thr.join(timeout or None)
 
 
 class Handler:

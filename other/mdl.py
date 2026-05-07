@@ -9,16 +9,16 @@ import logging
 import time
 
 
-from nixt.defines import Broker, Method, Event, Object, Repeater, Time
+from nixt.defines import Base, Broker, Message, Method, Object, Repeater, Time
 
 
 def init():
-    for key in Method.keys(oorzaken):
+    for key in Object.keys(oorzaken):
         if "Psych" not in key:
             continue
         val = getattr(oorzaken, key, None)
         if val and int(val) > 10000:
-            evt = Event()
+            evt = Message()
             evt.txt = ""
             evt.rest = key
             sec = seconds(val)
@@ -55,7 +55,7 @@ aliases["Zwangerschap"] = "pregnancy"
 aliases["Suicide"] = "suicide"
 
 
-demo = Object()
+demo = Base()
 demo.gehandicapten = 2000000
 demo.ggz = 800000
 demo.population = 17440000
@@ -86,7 +86,7 @@ def getday():
 
 
 def getnr(nme):
-    for k in Method.keys(oorzaken):
+    for k in Object.keys(oorzaken):
         if nme.lower() in k.lower():
             return int(getattr(oorzaken, k))
     return 0
@@ -108,21 +108,21 @@ def iswanted(k, line):
 def daily():
     while 1:
         time.sleep(24*60*60)
-        evt = Event()
+        evt = Message()
         cbnow(evt)
 
 
 def hourly():
     while 1:
         time.sleep(60*60)
-        evt = Event()
+        evt = Message()
         cbnow(evt)
 
 
 def cbnow(evt):
     delta = time.time() - STARTTIME
     txt = Time.elapsed(delta) + " "
-    for nme in sorted(Method.keys(oorzaken), key=lambda x: seconds(getnr(x))):
+    for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
             continue
@@ -157,7 +157,7 @@ def cbstats(evt):
 def dis(event):
     delta = time.time() - STARTTIME
     txt = Time.elapsed(delta) + " "
-    for nme in sorted(Method.keys(oorzaken), key=lambda x: seconds(getnr(x))):
+    for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
         if needed > 60*60:
             continue
@@ -385,14 +385,14 @@ aantal = """
          """.split(";")
 
 
-oorzaak = Object()
-Method.construct(oorzaak, zip([x.strip() for x in oor], [int(x.strip()) for x in aantal]))
-oorzaken = Object()
+oorzaak = Base()
+Object.construct(oorzaak, zip([x.strip() for x in oor], [int(x.strip()) for x in aantal]))
+oorzaken = Base()
 
 
 def boot():
     _nr = -1
-    for key in Method.keys(oorzaak):
+    for key in Object.keys(oorzaak):
         _nr += 1
         if _nr == 0:
             continue

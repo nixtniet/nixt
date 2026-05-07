@@ -8,7 +8,8 @@ import unittest
 
 
 from nixt.clients import Input, Polled
-from nixt.handler import Event, Handler
+from nixt.handler import Handler
+from nixt.message import Message
 
 
 buffer = []
@@ -21,7 +22,6 @@ class MyClient(Input):
 
 
 def hello(event):
-    print("hello")
     event.reply(event.text)
     event.ready()
 
@@ -42,7 +42,7 @@ class TestHandler(unittest.TestCase):
         self.hdl.stop()
 
     def test_callback(self):
-        evt = Event()
+        evt = Message()
         evt.kind = "hello"
         evt.text = "hello"
         self.hdl.callback(evt)
@@ -50,7 +50,7 @@ class TestHandler(unittest.TestCase):
         self.assertTrue("hello" in evt.result)
 
     def test_loop(self):
-        evt = Event()
+        evt = Message()
         evt.kind = "hello"
         evt.text = "hello"
         self.hdl.put(evt)
@@ -58,7 +58,7 @@ class TestHandler(unittest.TestCase):
         self.assertTrue(evt._ready.is_set())
 
     def test_loop2(self):
-        evt = Event()
+        evt = Message()
         evt.kind = "hello"
         evt.text = "hello bot"
         self.hdl.put(evt)
@@ -67,7 +67,7 @@ class TestHandler(unittest.TestCase):
 
     def test_put(self):
         hdl = Handler()
-        evt = Event()
+        evt = Message()
         evt.kind = "hello"
         hdl.put(evt)
         event = hdl.queue.get()
@@ -103,7 +103,7 @@ class TestInput(unittest.TestCase):
         self.assertTrue("hello" in buffer)
 
     def test_display(self):
-        evt = Event()
+        evt = Message()
         evt.reply("test1")
         evt.reply("test2")
         self.clt.display(evt)
@@ -117,32 +117,32 @@ class TestInput(unittest.TestCase):
 
     def test_poll(self):
         clt = Polled()
-        evt = Event()
+        evt = Message()
         evt.text = "okdan"
         clt.iqueue.put(evt)
         event = clt.poll()
         self.assertTrue(event is evt)
 
     def test_put(self):
-        evt = Event()
-        evt.type = "hello"
+        evt = Message()
+        evt.kind = "hello"
         self.clt.put(evt)
 
 
 class TestMessage(unittest.TestCase):
 
     def test_ready(self):
-        msg = Event()
+        msg = Message()
         msg.ready()  # pylint: disable=E1102
         self.assertTrue(msg._ready.is_set())
 
     def test_reply(self):
-        msg = Event()
+        msg = Message()
         msg.reply("test")
         self.assertTrue("test" in msg.result)
 
     def test_wait(self):
-        msg = Event()
+        msg = Message()
         msg.ready()  # pylint: disable=E1102
         msg.wait()
         self.assertTrue(msg._ready.is_set())

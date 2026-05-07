@@ -13,7 +13,7 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.defines import Object, Locate, Main, Thread, Workdir
+from nixt.defines import Base, Locate, Main, Thread, Workdir
 
 
 a = os.path.abspath
@@ -30,20 +30,20 @@ def init():
         logging.error(str(ex))
 
 
-class Config(Object):
+class Config(Base):
 
     hostname = "localhost"
     port = 10102
 
 
-class REST(HTTPServer, Object):
+class REST(HTTPServer, Base):
 
     allow_reuse_address = True
     daemon_thread = True
 
     def __init__(self, *args, **kwargs):
         HTTPServer.__init__(self, *args, **kwargs)
-        Object.__init__(self)
+        Base.__init__(self)
         self.host = args[0]
         self._last = time.time()
         self._starttime = time.time()

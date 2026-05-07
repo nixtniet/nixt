@@ -8,8 +8,10 @@ import os
 import unittest
 
 
-from nixt.command import Commands, Mods
-from nixt.handler import Event, Handler
+from nixt.command import Commands
+from nixt.handler import Handler
+from nixt.message import Message
+from nixt.package import Mods
 from nixt.threads import Task
 
 
@@ -37,7 +39,7 @@ class TestCommands(unittest.TestCase):
     def test_command(self):
         clt = Handler()
         Commands.add(cmnd)
-        evt = Event()
+        evt = Message()
         evt.text = "cmnd"
         evt.orig = repr(clt)
         Commands.command(evt)

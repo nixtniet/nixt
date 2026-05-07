@@ -4,7 +4,8 @@
 "command line options parsing"
 
 
-from .objects import Method, Object
+from .methods import Method
+from .objects import Base
 
 
 class Parse:
@@ -15,14 +16,14 @@ class Parse:
         data = {
             "args": [],
             "cmd": "",
-            "gets": Object(),
+            "gets": Base(),
             "index": None,
             "init": "",
             "opts": "",
             "otxt": text,
             "rest": "",
-            "silent": Object(),
-            "sets": Object(),
+            "silent": Base(),
+            "sets": Base(),
             "text": text
         }
         for k, v in data.items():
@@ -66,7 +67,5 @@ class Parse:
 
 def __dir__():
     return (
-        'Commands',
-        'Mods',
-        'Parse'
+        'Parse',
     )

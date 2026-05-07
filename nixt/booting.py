@@ -14,12 +14,9 @@ import time
 
 from .command import Commands
 from .package import Mods
-from .persist import Workdir
 from .threads import Thread
 from .utility import Utils
-
-
-from . import statics
+from .workdir import Workdir
 
 
 e = os.path.exists
@@ -73,6 +70,7 @@ class Boot:
 
     @classmethod
     def md5(cls):
+        from . import statics
         return Utils.md5source(inspect.getsource(statics))[:7].upper()
 
     @classmethod

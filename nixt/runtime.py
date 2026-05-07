@@ -10,8 +10,8 @@ import sys
 import time
 
 
-from .defines import Boot, Commands, Console, Method, Event, Log
-from .defines import Main, Mods, Parse, Utils, Workdir
+from .defines import Boot, Commands, Console, Log, Message, Main
+from .defines import Mods, Object, Parse, Utils, Workdir
 
 
 class Arguments:
@@ -46,7 +46,7 @@ class Arguments:
         optparser.add_argument("--wdr", default="", help='set working directory.', metavar="wdr")
         args, arguments = theparser.parse_known_args()
         Main.otxt = txt = " ".join(arguments)
-        Method.update(Main, args)
+        Object.update(Main, args)
         Parse.parse(Main, txt)
 
 
@@ -57,7 +57,7 @@ class Line(Console):
         "do a command."
         cli = Line()
         for txt in text.split(" ! "):
-            evt = Event()
+            evt = Message()
             evt.kind = "command"
             evt.orig = repr(cli)
             evt.text = txt
@@ -73,7 +73,7 @@ class CSL(Line):
 
     def poll(self):
         "poll for an event."
-        evt = Event()
+        evt = Message()
         evt.orig = repr(self)
         evt.text = input("> ")
         evt.kind = "command"
@@ -131,7 +131,7 @@ class Scripts:
         Runs.configure()
         Runs.banner()
         Boot.table()
-        Boot.init(Main.mods or Main.default, Main.wait)
+        Boot.init(Main.mods, Main.wait)
         csl = CSL()
         csl.start()
         Boot.forever()

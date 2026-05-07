@@ -9,10 +9,10 @@ import os
 import time
 
 
-from nixt.defines import Object, Disk, Method, Locate, Time
+from nixt.defines import Base, Object, Disk, Method, Locate, Time
 
 
-class Email(Object):
+class Email(Base):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -33,7 +33,7 @@ def eml(event):
     args = ["From", "Subject"]
     args.extend(event.args)
     if event.gets:
-        args.extend(Method.keys(event.gets))
+        args.extend(Object.keys(event.gets))
     for key in event.silent:
         if key in args:
             args.remove(key)
@@ -76,7 +76,7 @@ def mbx(event):
     nrs = 0
     for mail in thing:
         obj = Email()
-        Method.update(obj, dict(mail._headers))
+        Object.update(obj, dict(mail._headers))
         obj.text = ""
         for payload in mail.walk():
             if payload.get_content_type() == 'text/plain':

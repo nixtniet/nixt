@@ -14,7 +14,8 @@ sys.path.insert(0, ".")
 
 from nixt.configs import Main
 from nixt.objects import Object
-from nixt.persist import Disk, Workdir
+from nixt.storage import Disk
+from nixt.workdir import Workdir
 
 
 e = os.path.exists

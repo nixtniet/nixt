@@ -4,20 +4,12 @@
 "write your own commands"
 
 
-import importlib.util as imp
 import inspect
-import logging
-import os
 
 
-from .objects import Method, Object
 from .package import Mods
 from .parsers import Parse
 from .utility import Utils
-
-
-e = os.path.exists
-j = os.path.join
 
 
 class Commands:
@@ -70,9 +62,8 @@ class Commands:
             if 'event' in inspect.signature(cmdz).parameters:
                 cls.add(cmdz)
 
+
 def __dir__():
     return (
         'Commands',
-        'Mods',
-        'Parse'
     )

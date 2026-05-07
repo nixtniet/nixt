@@ -13,7 +13,7 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.defines import Object, Main, Thread, Utils
+from nixt.defines import Base, Main, Thread, Utils
 
 
 e = os.path.exists
@@ -21,7 +21,7 @@ j = os.path.join
 
 
 def init():
-    path = Utils.pkgname(Object)
+    path = Utils.pkgname(Base)
     if not e(j(path, "network", 'index.html')):
         logging.warning("no index.html")
         return
@@ -34,21 +34,21 @@ def init():
         logging.warning("%s", str(ex))
 
 
-class Config(Object):
+class Config(Base):
 
     hostname = "localhost"
     path = ""
     port = 8000
 
 
-class HTTP(HTTPServer, Object):
+class HTTP(HTTPServer, Base):
 
     daemon_thread = True
     allow_reuse_address = True
 
     def __init__(self, *args, **kwargs):
         HTTPServer.__init__(self, *args, **kwargs)
-        Object.__init__(self)
+        Base.__init__(self)
         self.host = args[0]
         self._starttime = time.time()
         self._last = time.time()
@@ -76,7 +76,7 @@ class HTTPHandler(BaseHTTPRequestHandler):
 
     def setup(self):
         BaseHTTPRequestHandler.setup(self)
-        self._path = j(Utils.where(Object), "network")
+        self._path = j(Utils.where(Base), "network")
         self._size = 0
         self._ip = self.client_address[0]
 

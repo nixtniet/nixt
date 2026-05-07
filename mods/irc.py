@@ -14,8 +14,8 @@ import time
 import _thread
 
 
-from nixt.defines import Broker, Client, Commands, Disk, Event
-from nixt.defines import Main, Method, Object, Thread, Utils
+from nixt.defines import Base, Broker, Client, Commands, Disk, Message
+from nixt.defines import Main, Method, Thread, Utils
 
 
 def init():
@@ -41,7 +41,7 @@ def rlog(txt):
     logging.debug(txt)
 
 
-class Config(Object):
+class Config(Base):
 
     name = Main.name or Utils.pkgname(Commands)
     channel = f"#{name}"
@@ -61,7 +61,7 @@ class Config(Object):
     version = 1
 
 
-class IEvent(Event):
+class Event(Message):
 
     def __init__(self):
         super().__init__()
@@ -104,7 +104,7 @@ class IRC(Client):
         self.buffer = []
         self.cfg = Config()
         self.channels = []
-        self.events = Object()
+        self.events = Base()
         self.events.authed = threading.Event()
         self.events.connected = threading.Event()
         self.events.joined = threading.Event()
@@ -114,7 +114,7 @@ class IRC(Client):
         self.noflood = True
         self.silent = False
         self.sock = None
-        self.state = Object()
+        self.state = Base()
         self.state.error = ""
         self.state.keeprunning = False
         self.state.last = time.time()
@@ -292,7 +292,7 @@ class IRC(Client):
         rawstr = rawstr.replace("\u0001", "")
         rawstr = rawstr.replace("\001", "")
         rlog(txt)
-        obj = IEvent()
+        obj = Event()
         obj.args = []
         obj.rawstr = rawstr
         obj.command = ""
@@ -420,7 +420,7 @@ class IRC(Client):
         Thread.launch(init)
 
     def say(self, channel, text):
-        event = IEvent()
+        event = Event()
         event.channel = channel
         event.reply(text)
         self.oput(event)

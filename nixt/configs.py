@@ -4,7 +4,7 @@
 "configurations"
 
 
-from .objects import Method
+from .methods import Method
 
 
 class MainConfig(type):

@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Object, Disk, Json, Method
+from nixt.defines import Base, Object, Disk, Json, Method
 
 
 import nixt.objects
@@ -20,125 +20,125 @@ VALIDJSON = '{"test": "bla"}'
 class TestMethod(unittest.TestCase):
 
     def test_constructor(self):
-        obj = Object()
-        self.assertTrue(type(obj), Object)
+        obj = Base()
+        self.assertTrue(type(obj), Base)
 
     def test_class(self):
-        obj = Object()
+        obj = Base()
         clz = obj.__class__()
-        self.assertTrue("Object" in str(type(clz)))
+        self.assertTrue("Base" in str(type(clz)))
 
     def test_contains(self):
-        obj = Object()
+        obj = Base()
         obj.key = "value"
         self.assertTrue("key" in obj)
 
     def test_delattr(self):
-        obj = Object()
+        obj = Base()
         obj.key = "value"
         del obj.key
         self.assertTrue("key" not in obj)
 
     def test_dict(self):
-        obj = Object()
+        obj = Base()
         self.assertEqual(obj.__dict__, {})
 
     def test_doc(self):
-        obj = Object()
+        obj = Base()
         self.assertEqual(obj.__doc__, None)
 
     def test_format(self):
-        obj = Object()
+        obj = Base()
         self.assertEqual(format(obj, ""), "{}")
 
     def test_getattribute(self):
-        obj = Object()
+        obj = Base()
         obj.key = "value"
         self.assertEqual(getattr(obj, "key", None), "value")
 
     def test_hash__(self):
-        obj = Object()
+        obj = Base()
         hsj = hash(obj)
         self.assertTrue(isinstance(hsj, int))
 
     def test_init(self):
-        obj = Object()
-        self.assertTrue(type(Object.__init__(obj)), Object)
+        obj = Base()
+        self.assertTrue(type(Base.__init__(obj)), Base)
 
     def test_iter(self):
-        obj = Object()
+        obj = Base()
         obj.key = "value"
         self.assertTrue(list(iter(obj)), ["key",])
 
     def test_format2(self):
-        o = Object()
+        o = Base()
         o.a = "b"
         self.assertEqual(Method.fmt(o), 'a="b"')
 
     def test_getattr(self):
-        obj = Object()
+        obj = Base()
         obj.key = "value"
         self.assertEqual(getattr(obj, "key"), "value")
 
     def test_keys(self):
-        obj = Object()
+        obj = Base()
         obj.key = "value"
-        self.assertEqual(list(Method.keys(obj)), ["key"])
+        self.assertEqual(list(Object.keys(obj)), ["key"])
 
     def test_len(self):
-        obj = Object()
+        obj = Base()
         self.assertEqual(len(obj), 0)
 
     def test_items(self):
-        obj = Object()
+        obj = Base()
         obj.key = "value"
-        self.assertEqual(list(Method.items(obj)), [("key", "value")])
+        self.assertEqual(list(Object.items(obj)), [("key", "value")])
 
     def test_read(self):
-        obj = Object()
+        obj = Base()
         Disk.read(obj, "bla")
         res = {}
-        Method.update(res, obj)
+        Object.update(res, obj)
         self.assertEqual(res, {})
 
     def test_register(self):
-        obj = Object()
+        obj = Base()
         setattr(obj, "key", "value")
         self.assertEqual(obj.key, "value")
 
     def test_repr(self):
         self.assertTrue(
-                        repr(Method.update(Object(), {"key": "value"})),
+                        repr(Object.update(Base(), {"key": "value"})),
                         {"key": "value"}
                        )
 
     def test_setattr(self):
-        obj = Object()
+        obj = Base()
         setattr(obj, "key", "value")
         self.assertTrue(obj.key, "value")
 
     def test_str(self):
-        obj = Object()
+        obj = Base()
         self.assertEqual(str(obj), "{}")
 
     def test_update(self):
-        obj = Object()
+        obj = Base()
         obj.key = "value"
-        oobj = Object()
-        Method.update(oobj, obj)
+        oobj = Base()
+        Object.update(oobj, obj)
         self.assertTrue(oobj.key, "value")
 
     def test_values(self):
-        obj = Object()
+        obj = Base()
         obj.key = "value"
-        self.assertEqual(list(Method.values(obj)), ["value"])
+        self.assertEqual(list(Object.values(obj)), ["value"])
 
 
 class TestComposite(unittest.TestCase):
 
     def testcomposite(self):
-        obj = Object()
-        obj.obj = Object()
+        obj = Base()
+        obj.obj = Base()
         obj.obj.a = "test"
         self.assertEqual(obj.obj.a, "test")
 
@@ -146,7 +146,7 @@ class TestComposite(unittest.TestCase):
 class TestEncoder(unittest.TestCase):
 
     def test_dumps(self):
-        obj = Object()
+        obj = Base()
         obj.test = "bla"
         self.assertEqual(Json.dumps(obj), VALIDJSON)
 
@@ -154,7 +154,7 @@ class TestEncoder(unittest.TestCase):
 class TestDecoder(unittest.TestCase):
 
     def test_loads(self):
-        obj = Object()
+        obj = Base()
         obj.test = "bla"
         oobj = Json.loads(Json.dumps(obj))
         self.assertEqual(oobj["test"], "bla")
@@ -187,8 +187,8 @@ class TestTypes(unittest.TestCase):
         self.assertEqual(obj, False)
 
     def test_object(self):
-        ooo = Object()
+        ooo = Base()
         ooo.a = "b"
-        obj = Object()
-        Method.update(obj, Json.loads(Json.dumps(ooo)))
+        obj = Base()
+        Object.update(obj, Json.loads(Json.dumps(ooo)))
         self.assertEqual(obj.a, "b")
