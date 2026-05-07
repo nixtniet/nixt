@@ -237,5 +237,6 @@ class Parse:
 def __dir__():
     return (
         'Commands',
-        'Mods'
+        'Mods',
+        'Parse'
     )

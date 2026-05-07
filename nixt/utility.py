@@ -225,10 +225,6 @@ class Log:
         )
 
     @classmethod
-    def log(cls, modname, txt):
-        pass        
-
-    @classmethod
     def size(cls, nr):
         "set text size."
         index = cls.format.find("-")+1

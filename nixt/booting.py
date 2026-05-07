@@ -4,6 +4,7 @@
 "in the beginning"
 
 
+import inspect
 import logging
 import os
 import pathlib
@@ -12,10 +13,12 @@ import time
 
 
 from .command import Mods
-from .objects import Method
 from .persist import Workdir
 from .threads import Thread
 from .utility import Utils
+
+
+from . import statics
 
 
 e = os.path.exists
@@ -66,6 +69,10 @@ class Boot:
         if thrs and wait:
             for thr in thrs:
                 thr.join()
+
+    @classmethod
+    def md5(cls):
+        return Utils.md5source(inspect.getsource(statics))[:7].upper()
 
     @classmethod
     def pidfile(cls, name):
