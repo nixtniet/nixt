@@ -42,7 +42,22 @@ class Boot:
         sys.stdout.flush()
 
     @classmethod
-    def checkcore(cls):
+    def configure(cls, cfg):
+        cfg.name = cfg.name or Utils.pkgname(Boot)
+        Mods.add(f"{cfg.name}.modules", Utils.moddir())
+        if cfg.user:
+            Mods.add("mods", "mods")
+            Mods.add("other", "other")
+        if cfg.read:
+            Disk.read(Main, 'main', "config")
+        if cfg.all:
+            cfg.mods = Mods.list()
+        Log.size(len(cfg.name))
+        Log.level(cfg.level or "warning")
+        Workdir.wdr = cfg.wdr or Workdir.wdr or os.path.expanduser(f"~/.{cfg.name}")
+
+    @classmethod
+    def core(cls):
         mismatch = False
         path = d(__spec__.loader.path)
         for pth in os.listdir(path):
@@ -55,19 +70,6 @@ class Boot:
                 mismatch = True
         if not mismatch:
             logging.warning("core ok")
-
-    @classmethod
-    def configure(cls, cfg):
-        cfg.name = Utils.pkgname(Boot)
-        Mods.add(f"{cfg.name}.modules", Utils.moddir())
-        if cfg.user:
-            Mods.add("mods", "mods")
-            Mods.add("other", "other")
-        if cfg.all:
-            cfg.mods = Mods.list()
-        Log.size(len(cfg.name))
-        Log.level(cfg.level or "warning")
-        Workdir.wdr = cfg.wdr or Workdir.wdr or os.path.expanduser(f"~/.{cfg.name}")
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):
@@ -144,6 +146,8 @@ class Boot:
             mod = Mods.get(name)
             if not mod:
                 continue
+            if "configure" in dir(mod):
+                mod.configure()
             Commands.scan(mod)
 
     @classmethod

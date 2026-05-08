@@ -41,6 +41,7 @@ class Task(threading.Thread):
 
     def run(self):
         "run function."
+        time.sleep(0.001)
         func, args = self.queue.get()
         if args and hasattr(args[0], "ready"):
             self.event = args[0]
@@ -51,12 +52,13 @@ class Task(threading.Thread):
             pass
         except Exception as ex:
             logging.exception(ex)
-        if self.event:
-            self.event.ready()
+            if self.event:
+                self.event.ready()
         _thread.interrupt_main()
 
     def stop(self):
         "join thread."
+        super().stop()
         self.join()
 
 

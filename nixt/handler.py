@@ -16,7 +16,7 @@ class Handler:
     def __init__(self):
         self.cbs = {}
         self.queue = queue.Queue()
-        self.running = threading.Event()
+        self.stopped = threading.Event()
 
     def callback(self, event):
         "run callback function with event."
@@ -29,7 +29,7 @@ class Handler:
 
     def loop(self):
         "event loop."
-        while self.running.is_set():
+        while not self.stopped.is_set():
             event = self.queue.get()
             if event is None:
                 self.queue.task_done()
@@ -48,12 +48,12 @@ class Handler:
 
     def start(self, daemon=True):
         "start event handler loop."
-        self.running.set()
+        self.stopped.clear()
         Thread.launch(self.loop, daemon=daemon)
 
     def stop(self):
         "stop event handler loop."
-        self.running.clear()
+        self.stopped.set()
         self.queue.put(None)
 
     def wait(self):

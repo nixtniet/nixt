@@ -42,16 +42,18 @@ class Input(Handler):
 
     def loop(self):
         "input loop."
-        while self.running.is_set():
+        while not self.stopped.is_set():
             event = self.iqueue.get()
             if not event:
+                self.iqueue.task_done()
                 break
             event.orig = repr(self)
             self.callback(event)
+            sel.iqueue.task_done()
 
     def put(self, event):
         "put event into queue."
-        self.iqueue.put(event)
+        self.iqueue.put_nowait(event)
 
     def raw(self, text):
         "raw output."
@@ -63,19 +65,22 @@ class Input(Handler):
     def stop(self):
         "stop client."
         super().stop()
-        self.running.clear()
+        self.stopped.set()
         self.iqueue.put(None)
 
     def wait(self):
         "wait for output to finish."
-        self.running.wait()
+        super().wait()
+        print("ijoin", self.iqueue.qsize())
+        self.iqueue.join()
+        print("ijoin2", self.iqueue.qsize())
 
 
 class Polled(Input):
 
     def loop(self):
         "polling loop."
-        while self.running.is_set():
+        while not self.stopped.is_set():
             event = self.poll()
             if event is None:
                 break
@@ -118,7 +123,7 @@ class Client(Polled):
 
     def output(self):
         "output loop."
-        while self.running.is_set():
+        while not self.stopped.is_set():
             event = self.oqueue.get()
             if event is None:
                 self.oqueue.task_done()
@@ -126,9 +131,9 @@ class Client(Polled):
             self.display(event)
             self.oqueue.task_done()
 
-    def start(self, daemon=False):
+    def start(self, daemon=True):
         "start output loop."
-        super().start()
+        super().start(daemon=daemon)
         Thread.launch(self.output, daemon=daemon)
 
     def stop(self):
@@ -139,7 +144,7 @@ class Client(Polled):
     def wait(self):
         "wait for output to finish."
         try:
-            super().wait()
+            #super().wait()
             self.oqueue.join()
         except Exception as ex:
             logging.exception(ex)

@@ -41,6 +41,7 @@ class CLI(Client):
     def raw(self, text):
         if Main.verbose:
             print(text.encode('utf-8', 'replace').decode("utf-8"))
+            sys.stdout.flush()
 
 
 class Clients:
@@ -60,7 +61,7 @@ class Clients:
             cls.nrcpu = nrcpu
             for _x in range(Clients.nrcpu):
                 clt = client()
-                clt.start()
+                clt.start(False)
                 cls.add(clt)
 
     @classmethod
@@ -209,6 +210,7 @@ pre = {
     "tdo": ["", "test"],
     "tmr": ["", "22:00 test"],
 }
+
 
 post = {
     "dbg": [""],

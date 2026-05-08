@@ -8,7 +8,7 @@ import argparse
 
 
 from .defines import Boot, Commands, Console, Message, Main
-from .defines import Object, Parse
+from .defines import Object, Parse, Utils
 
 
 class Arguments:
@@ -19,6 +19,7 @@ class Arguments:
     @classmethod
     def getargs(cls):
         "parse commandline arguments."
+        Main.name = Main.name or Utils.pkgname(Main)
         theparser = argparse.ArgumentParser(
                                          prog=Main.name,
                                          description=f'{Main.name.upper()}',
@@ -39,6 +40,7 @@ class Arguments:
         parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
         optparser = theparser.add_argument_group()
         optparser.add_argument("--check", action="store_true", help="check core's md5sums")
+        optparser.add_argument("--read", action="store_true", help="read config on boot.")
         optparser.add_argument("--default", default="irc,rss", help="set default modules.")
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
         optparser.add_argument("--wdr", default="", help='set working directory.', metavar="wdr")
@@ -110,7 +112,7 @@ class Scripts:
         Boot.configure(Main)
         Boot.table()
         if Main.check:
-            Boot.checkcore()
+            Boot.core()
         Line.cmd(Main.otxt)
 
     @staticmethod
