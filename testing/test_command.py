@@ -11,8 +11,6 @@ import unittest
 from nixt.command import Commands
 from nixt.handler import Handler
 from nixt.message import Message
-from nixt.package import Mods
-from nixt.threads import Task
 
 
 e = os.path.exists

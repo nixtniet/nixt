@@ -262,7 +262,7 @@ class IRC(Client):
             self.docommand("JOIN", channel)
 
     def keep(self):
-        while self.running.is_set():
+        while not self.stopped.is_set():
             if self.state.stopkeep:
                 self.state.stopkeep = False
                 break
@@ -272,7 +272,7 @@ class IRC(Client):
             self.state.latest = time.time()
             for x in range(self.cfg.sleep*10):
                 time.sleep(0.1)
-                if not self.running.is_set():
+                if self.stopped.is_set():
                     break
             self.docommand("PING", self.cfg.server)
             if self.state.pongcheck:

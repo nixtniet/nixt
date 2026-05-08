@@ -58,7 +58,6 @@ class Task(threading.Thread):
 
     def stop(self):
         "join thread."
-        super().stop()
         self.join()
 
 

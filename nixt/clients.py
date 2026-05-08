@@ -49,7 +49,7 @@ class Input(Handler):
                 break
             event.orig = repr(self)
             self.callback(event)
-            sel.iqueue.task_done()
+            self.iqueue.task_done()
 
     def put(self, event):
         "put event into queue."
@@ -140,12 +140,13 @@ class Client(Polled):
         "stop output loop."
         super().stop()
         self.oqueue.put(None)
+        self.oqueue.shutdown()
 
     def wait(self):
         "wait for output to finish."
         try:
-            #super().wait()
             self.oqueue.join()
+            #super().wait()
         except Exception as ex:
             logging.exception(ex)
             _thread.interrupt_main()
