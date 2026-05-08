@@ -9,14 +9,6 @@ import os
 import time
 
 
-j = os.path.join
-
-
-class NoDate(Exception):
-
-    pass
-
-
 class Time:
 
     starttime = time.time()

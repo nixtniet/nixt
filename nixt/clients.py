@@ -23,7 +23,6 @@ class Input(Handler):
         self.iqueue = queue.Queue()
         self.olock = threading.RLock()
         self.silent = True
-        self.stopped = threading.Event()
         Broker.add(self)
 
     def announce(self, text):
@@ -66,6 +65,10 @@ class Input(Handler):
         super().stop()
         self.running.clear()
         self.iqueue.put(None)
+
+    def wait(self):
+        "wait for output to finish."
+        self.running.wait()
 
 
 class Polled(Input):
@@ -123,7 +126,7 @@ class Client(Polled):
             self.display(event)
             self.oqueue.task_done()
 
-    def start(self, daemon=True):
+    def start(self, daemon=False):
         "start output loop."
         super().start()
         Thread.launch(self.output, daemon=daemon)

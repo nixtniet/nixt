@@ -10,7 +10,7 @@ import logging
 class Format(logging.Formatter):
 
     disable = False
-    size = 3
+    size = 4
 
     def format(self, record):
         "logging formatter."
@@ -45,9 +45,6 @@ class Log:
         newformat += str(nr)
         newformat += cls.format[index+1:]
         cls.format = newformat
-
-
-Log.level("warning")
 
 
 LEVELS = {

@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"event handling"
+"only message"
 
 
 import threading
@@ -53,5 +53,5 @@ class Message(Base):
 
 def __dir__():
     return (
-        'Handler',
+        'Message',
     )

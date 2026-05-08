@@ -13,17 +13,61 @@ import time
 
 
 from .command import Commands
+from .loggers import Log
 from .package import Mods
 from .threads import Thread
 from .utility import Utils
 from .workdir import Workdir
 
 
+d = os.path.dirname
 e = os.path.exists
 j = os.path.join
 
 
 class Boot:
+
+    @classmethod
+    def banner(cls, cfg):
+        "hello."
+        tme = time.ctime(time.time()).replace("  ", " ")
+        txt = "%s %s since %s %s (%s)" % (
+            cfg.name.upper(),
+            cfg.version,
+            tme,
+            cfg.level.upper() or "WARNING",
+            cls.md5()
+        )
+        print(txt.replace("  ", " "))
+        sys.stdout.flush()
+
+    @classmethod
+    def checkcore(cls):
+        mismatch = False
+        path = d(__spec__.loader.path)
+        for pth in os.listdir(path):
+            if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
+                continue
+            name = pth[:-3]
+            modpath = j(path, pth)
+            if Utils.md5(modpath) != Mods.core.get(name):
+                logging.warning("mismatch %s", name)
+                mismatch = True
+        if not mismatch:
+            logging.warning("core ok")
+
+    @classmethod
+    def configure(cls, cfg):
+        cfg.name = Utils.pkgname(Boot)
+        Mods.add(f"{cfg.name}.modules", Utils.moddir())
+        if cfg.user:
+            Mods.add("mods", "mods")
+            Mods.add("other", "other")
+        if cfg.all:
+            cfg.mods = Mods.list()
+        Log.size(len(cfg.name))
+        Log.level(cfg.level or "warning")
+        Workdir.wdr = cfg.wdr or Workdir.wdr or os.path.expanduser(f"~/.{cfg.name}")
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):
@@ -96,8 +140,6 @@ class Boot:
     @classmethod
     def scanner(cls):
         "scan named modules for commands."
-        if Commands.names:
-            return
         for name in Utils.spl(Mods.list()):
             mod = Mods.get(name)
             if not mod:

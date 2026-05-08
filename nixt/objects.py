@@ -4,13 +4,11 @@
 "a clean namespace"
 
 
-import datetime
 import os
 import types
 
 
 j = os.path.join
-now = datetime.datetime.now
 
 
 class Base:

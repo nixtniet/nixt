@@ -32,9 +32,10 @@ classifiers = [
 [tool.setuptools]
 packages = [
     'nixt',
-    'nixt.machine',
+    'nixt.mirrors',
     'nixt.modules',
-    'nixt.network'
+    'nixt.network',
+    'nixt.numbers'
 ]
 include-package-data = true
 

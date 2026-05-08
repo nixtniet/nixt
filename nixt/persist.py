@@ -1,17 +1,10 @@
 # This file is placed in the Public Domain.
 
 
-"persistence through storage"
-
-
-import os
+"persistence cache"
 
 
 from .objects import Object
-
-
-e = os.path.exists
-j = os.path.join
 
 
 class Cache:

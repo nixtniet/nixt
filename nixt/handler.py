@@ -62,6 +62,5 @@ class Handler:
 
 def __dir__():
     return (
-        'Event',
         'Handler'
     )

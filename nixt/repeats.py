@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"make it non blocking"
+"if it repeats it's important"
 
 
 import threading

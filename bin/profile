@@ -20,7 +20,7 @@ def main():
     with open(sys.argv[1], "r") as src:
         SRC = src.read()
     code = compile(SRC, fnm, "exec")
-    profile.runctx(code, __main__.__dict__, __main__.__dict__)
+    profile.runctx(code, __main__.__dict__, __main__.__dict__, sort="cumtime")
 
 
 if __name__ == "__main__":

@@ -27,21 +27,21 @@ class Locate:
     def attrs(cls, kind):
         "show attributes for kind of objects."
         result = []
-        for pth, obj in Locate.find(kind, nritems=1):
+        for pth, obj in cls.find(kind, nritems=1):
             result.extend(Object.keys(obj))
         return set(result)
 
     @classmethod
     def count(cls, kind):
         "count kinds of objects."
-        return len(list(Locate.find(kind)))
+        return len(list(cls.find(kind)))
 
     @classmethod
     def find(cls, kind, selector={}, removed=False, matching=False, nritems=None):
         "locate objects by matching atributes."
         with cls.lock:
             nrs = 0
-            for pth in Locate.fns(Workdir.long(kind)):
+            for pth in cls.fns(Workdir.long(kind)):
                 obj = Cache.get(pth)
                 if obj is None:
                     obj = Base()
@@ -62,7 +62,7 @@ class Locate:
     def first(cls, obj, selector={}):
         "return first object of a kind."
         result = sorted(
-                        Locate.find(Method.fqn(obj), selector),
+                        cls.find(Method.fqn(obj), selector),
                         key=lambda x: Time.fntime(x[0])
                        )
         res = ""
