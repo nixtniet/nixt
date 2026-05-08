@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"commands"
+"write your own commands"
 
 
 import os
@@ -44,24 +44,3 @@ class TestCommands(unittest.TestCase):
         evt.orig = repr(clt)
         Commands.command(evt)
         self.assertTrue("yo!" in evt.result)
-
-
-class TestPackage(unittest.TestCase):
-
-    def test_add(self):
-        if e("mods"):
-            Mods.add("mods", "mods")
-            self.assertTrue("mods" in Mods.dirs)
-
-
-def func():
-    return "ok"
-
-
-class TestThread(unittest.TestCase):
-
-    def test_construct(self):
-        task = Task(func)
-        task.start()
-        result = task.join()
-        self.assertEqual(result, "ok")

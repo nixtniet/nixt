@@ -11,7 +11,7 @@ import unittest
 from nixt.utility import Utils
 
 
-class TestUtilities(unittest.TestCase):
+class TestUtils(unittest.TestCase):
 
     def test_pkgname(self):
         self.assertEqual(Utils.pkgname(Utils), "nixt")

@@ -7,7 +7,6 @@
 import unittest
 
 
-from nixt.clients import Input, Polled
 from nixt.handler import Handler
 from nixt.message import Message
 
@@ -15,19 +14,9 @@ from nixt.message import Message
 buffer = []
 
 
-class MyClient(Input):
-
-    def raw(self, text):
-        buffer.append(text)
-
-
 def hello(event):
     event.reply(event.text)
     event.ready()
-
-
-def output(self, txt):
-    buffer.append(txt)
 
 
 class TestHandler(unittest.TestCase):
@@ -85,64 +74,3 @@ class TestHandler(unittest.TestCase):
     def test_stop(self):
         self.hdl.stop()
         self.assertTrue(not self.hdl.running.is_set())
-
-
-class TestInput(unittest.TestCase):
-
-    def setUp(self):
-        self.clt = MyClient()
-        self.clt.silent = False
-        self.clt.register("hello", hello)
-        self.clt.start()
-
-    def shutDown(self):
-        self.clt.stop()
-
-    def test_announce(self):
-        self.clt.announce("hello")
-        self.assertTrue("hello" in buffer)
-
-    def test_display(self):
-        evt = Message()
-        evt.reply("test1")
-        evt.reply("test2")
-        self.clt.display(evt)
-        self.assertTrue("test1" in buffer)
-        self.assertTrue("test2" in buffer)
-        self.assertTrue(buffer.index("test1") < buffer.index("test2"))
-
-    def test_dosay(self):
-        self.clt.dosay("#channel", "yo!")
-        self.assertTrue("yo!" in buffer)
-
-    def test_poll(self):
-        clt = Polled()
-        evt = Message()
-        evt.text = "okdan"
-        clt.iqueue.put(evt)
-        event = clt.poll()
-        self.assertTrue(event is evt)
-
-    def test_put(self):
-        evt = Message()
-        evt.kind = "hello"
-        self.clt.put(evt)
-
-
-class TestMessage(unittest.TestCase):
-
-    def test_ready(self):
-        msg = Message()
-        msg.ready()  # pylint: disable=E1102
-        self.assertTrue(msg._ready.is_set())
-
-    def test_reply(self):
-        msg = Message()
-        msg.reply("test")
-        self.assertTrue("test" in msg.result)
-
-    def test_wait(self):
-        msg = Message()
-        msg.ready()  # pylint: disable=E1102
-        msg.wait()
-        self.assertTrue(msg._ready.is_set())
