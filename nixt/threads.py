@@ -14,7 +14,7 @@ import _thread
 
 class Task(threading.Thread):
 
-    def __init__(self, func, *args, daemon=True, **kwargs):
+    def __init__(self, func, *args, daemon=False, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
         self.event = None
         self.name = kwargs.get("name", Thread.name(func))

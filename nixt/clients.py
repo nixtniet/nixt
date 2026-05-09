@@ -40,16 +40,6 @@ class Input(Handler):
         "say called by display."
         self.say(channel, text)
 
-    def loop(self):
-        "input loop."
-        while not self.stopped.is_set():
-            event = self.queue.get()
-            if not event:
-                break
-            event.orig = repr(self)
-            self.callback(event)
-        self.done.set()
-
     def raw(self, text):
         "raw output."
 
@@ -69,6 +59,7 @@ class Polled(Input):
             if not event.text:
                 event.ready()
                 continue
+            self.events.append(event)
             event.orig = repr(self)
             self.callback(event)
         self.done.set()
@@ -98,19 +89,20 @@ class Console(Polled):
             event.wait()
         self.done.set()
 
-    def start(self):
-        super().start(daemon=True)
+    def start(self, daemon=True):
+        super().start(daemon=daemon)
 
 
-class Client(Polled):
+class Client(Input):
 
     def __init__(self):
         super().__init__()
         self.oqueue = queue.Queue()
+        self.ostopped = threading.Event()
 
     def output(self):
         "output loop."
-        while not self.stopped.is_set():
+        while not self.ostopped.is_set():
             event = self.oqueue.get()
             if event is None:
                 self.oqueue.task_done()
@@ -118,14 +110,16 @@ class Client(Polled):
             self.display(event)
             self.oqueue.task_done()
 
-    def start(self, daemon=True):
+    def start(self, daemon=False):
         "start output loop."
         super().start(daemon=daemon)
+        self.ostopped.clear()
         Thread.launch(self.output, daemon=daemon)
 
     def stop(self):
         "stop output loop."
         super().stop()
+        self.ostopped.set()
         self.oqueue.put(None)
 
     def wait(self):

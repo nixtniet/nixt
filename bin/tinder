@@ -17,7 +17,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Boot, Client, Commands, Input, Main, Message, Method
-from nixt.defines import Mods, Parse, Thread, Time, Workdir
+from nixt.defines import Handler, Mods, Parse, Thread, Time, Workdir
 
 
 e = os.path.exists
@@ -32,7 +32,7 @@ Main.user = True
 events = queue.Queue()
 
 
-class CLI(Input):
+class CLI(Client):
 
     def __init__(self):
         super().__init__()
@@ -76,6 +76,7 @@ class Clients:
     def shutdown(cls):
         for client in cls.clients:
             client.wait()
+        for client in cls.clients:
             client.stop()
 
 
@@ -141,9 +142,9 @@ def main():
     for thr in thrs:
         thr.join()
     nrevents = events.qsize()
-    Thread.launch(consume)
-    events.join()
-    #Clients.shutdown()
+    #Thread.launch(consume)
+    #events.join()
+    Clients.shutdown()
     endtime = time.time()
     lap = Time.elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents
@@ -152,7 +153,8 @@ def main():
         print(f"{Method.fmt(Main, skip='otxt,txt')}")
         print(f"cores: {Clients.nrcpu} events: {nrs}")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
-
+    print(threading.enumerate())
+    
 
 examples = {
     "cmd": [""],
@@ -185,6 +187,10 @@ examples = {
 
 
 pre = {
+    "imp": [
+        "",
+        "testing/opml/feeds.opml",
+    ],
     "cfg": [
         '',
         'main',
@@ -199,10 +205,6 @@ pre = {
         'rst nick=mekker',
         'udp nick=mekker',
         'web nick=mekker'
-    ],
-    "imp": [
-        "",
-        "testing/opml/feeds.opml",
     ],
     "log": ["", "test"],
     "rss": ["", "http://hnrss.org/newest"],

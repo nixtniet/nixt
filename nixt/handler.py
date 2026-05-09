@@ -4,6 +4,7 @@
 "event handling"
 
 
+import collections
 import queue
 import threading
 
@@ -15,6 +16,7 @@ class Handler:
 
     def __init__(self):
         self.cbs = {}
+        self.events = collections.deque()
         self.queue = queue.Queue()
         self.stopped = threading.Event()
         self.done = threading.Event()
@@ -34,6 +36,7 @@ class Handler:
             event = self.queue.get()
             if event is None:
                 break
+            self.events.append(event)
             event.orig = repr(self)
             self.callback(event)
         self.done.set()
@@ -58,7 +61,13 @@ class Handler:
         self.queue.put(None)
 
     def wait(self):
-        self.done.wait()
+        while True:
+            try:
+                #self.done.wait()
+                event = self.events.pop()
+                event.wait()
+            except IndexError:
+                break
 
 
 def __dir__():

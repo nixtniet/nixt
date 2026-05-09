@@ -4,9 +4,6 @@
 "write your own commands"
 
 
-import inspect
-
-
 from .brokers import Broker
 from .package import Mods
 from .parsers import Parse
@@ -43,7 +40,7 @@ class Commands:
                 func = cls.get(evt.cmd)
         if func:
             func(evt)
-            Broker.display(evt)
+            evt.display()
         evt.ready()
 
     @classmethod
@@ -59,6 +56,7 @@ class Commands:
     @classmethod
     def scan(cls, module):
         "scan a module for functions with event as argument."
+        import inspect
         for key, cmdz in inspect.getmembers(module, inspect.isfunction):
             if 'event' in inspect.signature(cmdz).parameters:
                 cls.add(cmdz)
