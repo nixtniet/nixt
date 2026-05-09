@@ -6,48 +6,20 @@
 
 import logging
 import queue
+import select
+import sys
 import threading
 import _thread
 
 
 from .brokers import Broker
 from .command import Commands
-from .handler import Handler
+from .handler import Client
+from .message import Message
 from .threads import Thread
 
 
-class Input(Handler):
-
-    def __init__(self):
-        super().__init__()
-        self.olock = threading.RLock()
-        self.silent = True
-        Broker.add(self)
-
-    def announce(self, text):
-        "announce text to all channels."
-        if not self.silent:
-            self.raw(text)
-
-    def display(self, event):
-        "display event results."
-        with self.olock:
-            for txt in event.result:
-                self.dosay(event.channel, txt)
-
-    def dosay(self, channel, text):
-        "say called by display."
-        self.say(channel, text)
-
-    def raw(self, text):
-        "raw output."
-
-    def say(self, channel, text):
-        "say text in channel."
-        self.raw(text)
-
-
-class Polled(Input):
+class Poller(Client):
 
     def loop(self):
         "polling loop."
@@ -58,17 +30,13 @@ class Polled(Input):
             if not event.text:
                 event.ready()
                 continue
-            self.events.append(event)
+            self.working.append(event)
             event.orig = repr(self)
             self.callback(event)
         self.done.set()
 
-    def poll(self):
-        "return event."
-        return self.queue.get()
 
-
-class Console(Polled):
+class Console(Poller):
 
     def __init__(self):
         super().__init__()
@@ -88,11 +56,30 @@ class Console(Polled):
             event.wait()
         self.done.set()
 
+    def poll(self):
+        "return event."
+        sys.stdout.write("> ")
+        sys.stdout.flush()
+        while True:
+            (input, output, error) = select.select(
+                                             [sys.stdin,],
+                                             [sys.stdout],
+                                             [sys.stderr,]
+                                            )
+            if error:
+                break
+            for inp in input:
+                evt = Message()
+                evt.orig = repr(self)
+                evt.text = inp.readline().strip()
+                evt.kind = "command"
+                return evt
+
     def start(self, daemon=True):
         super().start(daemon=daemon)
 
 
-class Client(Input):
+class Output(Poller):
 
     def __init__(self):
         super().__init__()
@@ -135,6 +122,6 @@ def __dir__():
     return (
         'Client',
         'Console',
-        'Input',
-        'Polled'
+        'Output',
+        'Poller'
     )

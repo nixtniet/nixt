@@ -38,10 +38,11 @@ class Boot:
         Log.size(len(cfg.name))
         Log.level(cfg.level or "info")
         Workdir.wdr = cfg.wdr or Workdir.wdr or os.path.expanduser(f"~/.{cfg.name}")
-
+        cls.table()
+        
     @classmethod
     def core(cls):
-        mismatch = False
+        ok = True
         path = d(__spec__.loader.path)
         for pth in os.listdir(path):
             if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
@@ -50,9 +51,8 @@ class Boot:
             modpath = j(path, pth)
             if Utils.md5(modpath) != Mods.core.get(name):
                 logging.warning("mismatch %s", name)
-                mismatch = True
-        if not mismatch:
-            logging.warning("core ok")
+                ok = False
+        return ok
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):

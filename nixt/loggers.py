@@ -61,5 +61,6 @@ LEVELS = {
 def __dir__():
     return (
         'LEVELS',
+        'Format',
         'Log'
     )

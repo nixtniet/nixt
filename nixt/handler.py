@@ -9,6 +9,7 @@ import queue
 import threading
 
 
+from .brokers import Broker
 from .threads import Thread
 
 
@@ -16,7 +17,7 @@ class Handler:
 
     def __init__(self):
         self.cbs = {}
-        self.events = collections.deque()
+        self.working = collections.deque()
         self.queue = queue.Queue()
         self.stopped = threading.Event()
         self.done = threading.Event()
@@ -36,7 +37,7 @@ class Handler:
             event = self.queue.get()
             if event is None:
                 break
-            self.events.append(event)
+            self.working.append(event)
             event.orig = repr(self)
             self.callback(event)
         self.done.set()
@@ -64,13 +65,45 @@ class Handler:
         while True:
             try:
                 # self.done.wait()
-                event = self.events.pop()
+                event = self.working.pop()
                 event.wait()
             except IndexError:
                 break
 
 
+class Client(Handler):
+
+    def __init__(self):
+        super().__init__()
+        self.olock = threading.RLock()
+        self.silent = True
+        Broker.add(self)
+
+    def announce(self, text):
+        "announce text to all channels."
+        if not self.silent:
+            self.raw(text)
+
+    def display(self, event):
+        "display event results."
+        with self.olock:
+            for txt in event.result:
+                self.dosay(event.channel, txt)
+
+    def dosay(self, channel, text):
+        "say called by display."
+        self.say(channel, text)
+
+    def raw(self, text):
+        "raw output."
+
+    def say(self, channel, text):
+        "say text in channel."
+        self.raw(text)
+
+
 def __dir__():
     return (
+        'Client',
         'Handler'
     )

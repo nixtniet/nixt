@@ -5,12 +5,13 @@
 
 
 import argparse
+import logging
 import sys
 import time
 
 
 from .defines import Boot, Commands, Console, Message, Main
-from .defines import Object, Parse, Utils
+from .defines import Object, Parse, Poller, Utils
 
 
 class Arguments:
@@ -38,7 +39,7 @@ class Arguments:
         parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
         parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
         optparser = theparser.add_argument_group()
-        optparser.add_argument("--check", action="store_true", help="check core's md5sums")
+        optparser.add_argument("--check", action="store_false", help="don't check core's md5sums")
         optparser.add_argument("--read", action="store_true", help="read config on boot.")
         optparser.add_argument("--default", default="irc,rss", help="set default modules.")
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
@@ -70,6 +71,7 @@ class Line(Console):
 
 class CSL(Line):
 
+    '''
     def poll(self):
         "poll for an event."
         evt = Message()
@@ -77,7 +79,8 @@ class CSL(Line):
         evt.text = input("> ")
         evt.kind = "command"
         return evt
-
+    '''
+    pass
 
 class Runs:
 
@@ -95,17 +98,24 @@ class Runs:
         print(txt.replace("  ", " "))
         sys.stdout.flush()
 
+    @staticmethod
+    def boot(cfg):
+        Boot.configure(cfg)
+        if cfg.verbose:
+            Runs.banner(cfg)
+        if cfg.check and cfg.verbose and Boot.core():
+            logging.info("core ok")
+        
 
 class Scripts:
 
     @staticmethod
     def background():
         "background script."
-        Boot.configure(Main)
         Boot.daemon(Main.verbose, Main.nochdir)
         Boot.privileges()
+        Boot.boot(Main)
         Boot.pidfile(Main.name)
-        Boot.table()
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 
@@ -114,10 +124,7 @@ class Scripts:
         "console script."
         import readline
         readline.redisplay()
-        Boot.configure(Main)
-        if Main.verbose:
-            Runs.banner(Main)
-        Boot.table()
+        Runs.boot(Main)
         Boot.init(Main.mods, Main.wait)
         csl = CSL()
         csl.start()
@@ -126,20 +133,16 @@ class Scripts:
     @staticmethod
     def control():
         "cli script."
-        Boot.configure(Main)
-        Boot.table()
-        if Main.check:
-            Boot.core()
+        Runs.boot(Main)
+        Main.check = False
         Line.cmd(Main.otxt)
 
     @staticmethod
     def service():
         "service script."
-        Boot.configure(Main)
         Boot.privileges()
+        Runs.boot(Main)
         Boot.pidfile(Main.name)
-        Runs.banner(Main)
-        Boot.table()
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 
