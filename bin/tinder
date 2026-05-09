@@ -16,8 +16,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Input, Main, Message, Method
-from nixt.defines import Handler, Mods, Parse, Thread, Time, Workdir
+from nixt.defines import Boot, Client, Commands, Main, Message, Method
+from nixt.defines import Parse, Thread, Time
 
 
 e = os.path.exists
@@ -119,7 +119,7 @@ def main():
     Parse.parse(Main, " ".join(sys.argv[1:]))
     Boot.configure(Main)
     Boot.table()
-    #Workdir.wdr = Main.wdr
+    # Workdir.wdr = Main.wdr
     if Main.threaded:
         Clients.init(os.cpu_count(), CLI)
     else:
@@ -142,8 +142,8 @@ def main():
     for thr in thrs:
         thr.join()
     nrevents = events.qsize()
-    #Thread.launch(consume)
-    #events.join()
+    # Thread.launch(consume)
+    # events.join()
     Clients.shutdown()
     endtime = time.time()
     lap = Time.elapsed(endtime-starttime)
@@ -153,8 +153,8 @@ def main():
         print(f"{Method.fmt(Main, skip='otxt,txt')}")
         print(f"cores: {Clients.nrcpu} events: {nrs}")
         print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
-    print(threading.enumerate())
-    
+        print(threading.enumerate())
+
 
 examples = {
     "cmd": [""],

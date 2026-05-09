@@ -20,7 +20,7 @@ class Handler:
         self.queue = queue.Queue()
         self.stopped = threading.Event()
         self.done = threading.Event()
-        
+
     def callback(self, event):
         "run callback function with event."
         func = self.cbs.get(event.kind, None)
@@ -63,7 +63,7 @@ class Handler:
     def wait(self):
         while True:
             try:
-                #self.done.wait()
+                # self.done.wait()
                 event = self.events.pop()
                 event.wait()
             except IndexError:

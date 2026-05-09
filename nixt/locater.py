@@ -14,7 +14,7 @@ from .persist import Cache
 from .storage import Disk
 from .timings import Time
 from .workdir import Workdir
-from .utility import j 
+from .utility import j
 
 
 class Locate:
