@@ -89,7 +89,7 @@ class Runs:
             cfg.name.upper(),
             cfg.version,
             tme,
-            cfg.level or "info",
+            cfg.level.upper() or "INFO",
             Boot.md5()
         )
         print(txt.replace("  ", " "))
