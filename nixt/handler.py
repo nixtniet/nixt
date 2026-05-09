@@ -56,6 +56,8 @@ class Handler:
         "stop event handler loop."
         self.stopped.set()
         self.queue.put(None)
+
+    def wait(self):
         self.done.wait()
 
 

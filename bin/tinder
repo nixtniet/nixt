@@ -61,7 +61,7 @@ class Clients:
             cls.nrcpu = nrcpu
             for _x in range(Clients.nrcpu):
                 clt = client()
-                clt.start(False)
+                clt.start()
                 cls.add(clt)
 
     @classmethod
@@ -116,7 +116,6 @@ def main():
     if check("t"):
         Main.threaded = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
-    Boot.banner(Main)
     Boot.configure(Main)
     Boot.table()
     #Workdir.wdr = Main.wdr
@@ -144,7 +143,7 @@ def main():
     nrevents = events.qsize()
     Thread.launch(consume)
     events.join()
-    Clients.shutdown()
+    #Clients.shutdown()
     endtime = time.time()
     lap = Time.elapsed(endtime-starttime)
     percall = (endtime-starttime)/nrevents

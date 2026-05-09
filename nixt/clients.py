@@ -48,7 +48,6 @@ class Input(Handler):
                 break
             event.orig = repr(self)
             self.callback(event)
-            event.wait()
         self.done.set()
 
     def raw(self, text):
