@@ -9,11 +9,7 @@ import logging
 import os
 
 
-from .utility import Utils
-
-
-e = os.path.exists
-j = os.path.join
+from .utility import Utils, e, j
 
 
 class Mods:

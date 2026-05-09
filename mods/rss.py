@@ -379,7 +379,7 @@ class Helpers:
                 yield from Parser.parse(str(response.data, "utf-8", errors='ignore'), "entry", items) or []
             else:
                 yield from Parser.parse(str(response.data, "utf-8", errors='ignore'), "item", items) or []
-            if feed.error:
+            if "error" in feed and feed.error:
                 feed.error = ""
                 Disk.write(feed, fnm)
         except TimeoutError:

@@ -15,11 +15,7 @@ from .methods import Method
 from .objects import Object
 from .persist import Cache
 from .workdir import Workdir
-from .utility import Utils
-
-
-e = os.path.exists
-j = os.path.join
+from .utility import Utils, e, j
 
 
 class Disk:

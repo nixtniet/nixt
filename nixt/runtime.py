@@ -5,6 +5,8 @@
 
 
 import argparse
+import sys
+import time
 
 
 from .defines import Boot, Commands, Console, Message, Main
@@ -12,9 +14,6 @@ from .defines import Object, Parse, Utils
 
 
 class Arguments:
-
-    args = None
-    txt = None
 
     @classmethod
     def getargs(cls):
@@ -80,6 +79,23 @@ class CSL(Line):
         return evt
 
 
+class Runs:
+
+    @staticmethod
+    def banner(cfg):
+        "hello."
+        tme = time.ctime(time.time()).replace("  ", " ")
+        txt = "%s %s since %s %s (%s)" % (
+            cfg.name.upper(),
+            cfg.version,
+            tme,
+            cfg.level or "info",
+            Boot.md5()
+        )
+        print(txt.replace("  ", " "))
+        sys.stdout.flush()
+
+
 class Scripts:
 
     @staticmethod
@@ -99,7 +115,8 @@ class Scripts:
         import readline
         readline.redisplay()
         Boot.configure(Main)
-        Boot.banner(Main)
+        if Main.verbose:
+            Runs.banner(Main)
         Boot.table()
         Boot.init(Main.mods, Main.wait)
         csl = CSL()
@@ -121,7 +138,7 @@ class Scripts:
         Boot.configure(Main)
         Boot.privileges()
         Boot.pidfile(Main.name)
-        Boot.banner(Main)
+        Runs.banner(Main)
         Boot.table()
         Boot.init(Main.mods or Main.default)
         Boot.forever()

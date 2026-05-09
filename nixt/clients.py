@@ -21,7 +21,6 @@ class Input(Handler):
 
     def __init__(self):
         super().__init__()
-        self.iqueue = queue.Queue()
         self.olock = threading.RLock()
         self.silent = True
         Broker.add(self)
@@ -44,18 +43,13 @@ class Input(Handler):
     def loop(self):
         "input loop."
         while not self.stopped.is_set():
-            event = self.iqueue.get()
+            event = self.queue.get()
             if not event:
-                self.iqueue.task_done()
                 break
             event.orig = repr(self)
             self.callback(event)
             event.wait()
-            self.iqueue.task_done()
-
-    def put(self, event):
-        "put event into queue."
-        self.iqueue.put(event)
+        self.done.set()
 
     def raw(self, text):
         "raw output."
@@ -63,16 +57,6 @@ class Input(Handler):
     def say(self, channel, text):
         "say text in channel."
         self.raw(text)
-
-    def stop(self):
-        "stop client."
-        super().stop()
-        self.stopped.set()
-        self.iqueue.put(None)
-
-    def wait(self):
-        "wait for output to finish."
-        self.iqueue.join()
 
 
 class Polled(Input):
@@ -88,10 +72,11 @@ class Polled(Input):
                 continue
             event.orig = repr(self)
             self.callback(event)
+        self.done.set()
 
     def poll(self):
         "return event."
-        return self.iqueue.get()
+        return self.queue.get()
 
 
 class Console(Polled):
@@ -112,6 +97,7 @@ class Console(Polled):
             event.orig = repr(self)
             self.callback(event)
             event.wait()
+        self.done.set()
 
     def start(self):
         super().start(daemon=True)
@@ -142,7 +128,6 @@ class Client(Polled):
         "stop output loop."
         super().stop()
         self.oqueue.put(None)
-        self.oqueue.shutdown()
 
     def wait(self):
         "wait for output to finish."

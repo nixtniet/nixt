@@ -25,20 +25,6 @@ from .workdir import Workdir
 class Boot:
 
     @classmethod
-    def banner(cls, cfg):
-        "hello."
-        tme = time.ctime(time.time()).replace("  ", " ")
-        txt = "%s %s since %s %s (%s)" % (
-            cfg.name.upper(),
-            cfg.version,
-            tme,
-            cfg.level.upper() or "WARNING",
-            cls.md5()
-        )
-        print(txt.replace("  ", " "))
-        sys.stdout.flush()
-
-    @classmethod
     def configure(cls, cfg):
         cfg.name = cfg.name or Utils.pkgname(Boot)
         Mods.add(f"{cfg.name}.modules", Utils.moddir())
@@ -50,7 +36,7 @@ class Boot:
         if cfg.all:
             cfg.mods = Mods.list()
         Log.size(len(cfg.name))
-        Log.level(cfg.level or "warning")
+        Log.level(cfg.level or "info")
         Workdir.wdr = cfg.wdr or Workdir.wdr or os.path.expanduser(f"~/.{cfg.name}")
 
     @classmethod

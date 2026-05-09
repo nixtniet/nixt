@@ -8,9 +8,6 @@ import os
 import types
 
 
-j = os.path.join
-
-
 class Base:
 
     def __init__(self, *args, **kwargs):

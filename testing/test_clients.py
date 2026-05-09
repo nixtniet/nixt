@@ -61,7 +61,7 @@ class TestInput(unittest.TestCase):
         clt = Polled()
         evt = Message()
         evt.text = "okdan"
-        clt.iqueue.put(evt)
+        clt.queue.put(evt)
         event = clt.poll()
         self.assertTrue(event is evt)
 

@@ -17,7 +17,8 @@ class Handler:
         self.cbs = {}
         self.queue = queue.Queue()
         self.stopped = threading.Event()
-
+        self.done = threading.Event()
+        
     def callback(self, event):
         "run callback function with event."
         func = self.cbs.get(event.kind, None)
@@ -32,11 +33,10 @@ class Handler:
         while not self.stopped.is_set():
             event = self.queue.get()
             if event is None:
-                self.queue.task_done()
                 break
             event.orig = repr(self)
             self.callback(event)
-            self.queue.task_done()
+        self.done.set()
 
     def put(self, event):
         "put event on queue."
@@ -48,6 +48,7 @@ class Handler:
 
     def start(self, daemon=True):
         "start event handler loop."
+        self.done.clear()
         self.stopped.clear()
         Thread.launch(self.loop, daemon=daemon)
 
@@ -55,9 +56,7 @@ class Handler:
         "stop event handler loop."
         self.stopped.set()
         self.queue.put(None)
-
-    def wait(self):
-        self.queue.join()
+        self.done.wait()
 
 
 def __dir__():

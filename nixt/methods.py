@@ -10,9 +10,7 @@ import types
 
 
 from .objects import Base, Object
-
-
-j = os.path.join
+from .utility import j
 
 
 class Method:

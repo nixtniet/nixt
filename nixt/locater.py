@@ -14,9 +14,7 @@ from .persist import Cache
 from .storage import Disk
 from .timings import Time
 from .workdir import Workdir
-
-
-j = os.path.join
+from .utility import j 
 
 
 class Locate:
