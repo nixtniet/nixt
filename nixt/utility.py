@@ -9,6 +9,7 @@ import os
 import pathlib
 
 
+d = os.path.dirname
 e = os.path.exists
 j = os.path.join
 
@@ -101,5 +102,8 @@ class Utils:
 
 def __dir__():
     return (
-        'Utils'
+        'Utils',
+        'd',
+        'e',
+        'j'
     )

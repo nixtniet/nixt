@@ -53,7 +53,7 @@ class Input(Handler):
 
     def put(self, event):
         "put event into queue."
-        self.iqueue.put_nowait(event)
+        self.iqueue.put(event)
 
     def raw(self, text):
         "raw output."
@@ -103,7 +103,7 @@ class Console(Polled):
 
     def loop(self):
         "input loop."
-        while self.running.is_set():
+        while not self.stopped.is_set():
             event = self.poll()
             if event is None:
                 break
@@ -114,8 +114,11 @@ class Console(Polled):
             self.callback(event)
             event.wait()
 
+    def start(self):
+        super().start(daemon=True)
 
-class Client(Polled):
+
+class Client(Input):
 
     def __init__(self):
         super().__init__()
@@ -145,8 +148,8 @@ class Client(Polled):
     def wait(self):
         "wait for output to finish."
         try:
+            self.iqueue.join()
             self.oqueue.join()
-            #super().wait()
         except Exception as ex:
             logging.exception(ex)
             _thread.interrupt_main()

@@ -28,9 +28,8 @@ class Message(Base):
 
     def display(self):
         "print results."
-        bot = Broker.get(self.orig)
-        if bot:
-            bot.display(self)
+        Broker.display(self)
+        self.ready()
 
     def ok(self, txt=""):
         "print ok response."

@@ -75,8 +75,8 @@ class Clients:
     @classmethod
     def shutdown(cls):
         for client in cls.clients:
-            client.wait()
             client.stop()
+            client.wait()
 
 
 def check(opts):
@@ -215,6 +215,7 @@ pre = {
 post = {
     "dbg": [""],
     "dne": ["", "mekker"],
+    "exp": [""],
     "rem": ["", "hnrss"]
 }
 
