@@ -190,6 +190,7 @@ class IRC(Client):
         for txt in event.result:
             for text in wrapper.wrap(txt):
                 self.dosay(event.channel, text)
+        event.ready()
 
     def docommand(self, cmd, *args):
         with self.lock:

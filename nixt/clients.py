@@ -7,6 +7,7 @@
 import logging
 import queue
 import threading
+import time
 import _thread
 
 
@@ -49,6 +50,7 @@ class Input(Handler):
                 break
             event.orig = repr(self)
             self.callback(event)
+            event.wait()
             self.iqueue.task_done()
 
     def put(self, event):
@@ -70,10 +72,7 @@ class Input(Handler):
 
     def wait(self):
         "wait for output to finish."
-        super().wait()
-        print("ijoin", self.iqueue.qsize())
         self.iqueue.join()
-        print("ijoin2", self.iqueue.qsize())
 
 
 class Polled(Input):
@@ -118,7 +117,7 @@ class Console(Polled):
         super().start(daemon=True)
 
 
-class Client(Input):
+class Client(Polled):
 
     def __init__(self):
         super().__init__()
@@ -148,7 +147,7 @@ class Client(Input):
     def wait(self):
         "wait for output to finish."
         try:
-            self.iqueue.join()
+            super().wait()
             self.oqueue.join()
         except Exception as ex:
             logging.exception(ex)

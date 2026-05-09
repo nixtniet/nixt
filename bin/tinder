@@ -16,7 +16,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Main, Message, Method
+from nixt.defines import Boot, Client, Commands, Input, Main, Message, Method
 from nixt.defines import Mods, Parse, Thread, Time, Workdir
 
 
@@ -32,7 +32,7 @@ Main.user = True
 events = queue.Queue()
 
 
-class CLI(Client):
+class CLI(Input):
 
     def __init__(self):
         super().__init__()
@@ -75,8 +75,8 @@ class Clients:
     @classmethod
     def shutdown(cls):
         for client in cls.clients:
-            client.stop()
             client.wait()
+            client.stop()
 
 
 def check(opts):
@@ -110,15 +110,16 @@ def payload(todo):
 def main():
     if not check('p') and e(Main.wdr):
         shutil.rmtree(Main.wdr)
+    Main.user = True
     if check("v"):
         Main.verbose = True
     if check("t"):
         Main.threaded = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
+    Boot.banner(Main)
+    Boot.configure(Main)
     Boot.table()
-    Mods.add("mods", "mods")
-    Mods.add("other", "other")
-    Workdir.wdr = Main.wdr
+    #Workdir.wdr = Main.wdr
     if Main.threaded:
         Clients.init(os.cpu_count(), CLI)
     else:
@@ -133,7 +134,6 @@ def main():
     thrs = []
     for _x in range(nrs):
         thrs.append(Thread.launch(payload, examples))
-    thrs = []
     for thr in thrs:
         thr.join()
     thrs = []

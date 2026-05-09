@@ -41,7 +41,6 @@ class Task(threading.Thread):
 
     def run(self):
         "run function."
-        time.sleep(0.001)
         func, args = self.queue.get()
         if args and hasattr(args[0], "ready"):
             self.event = args[0]
