@@ -88,28 +88,20 @@ class Runs:
 
     @classmethod
     def boot(cls, cfg):
-        cls.configure(cfg)
-        if not (Boot.table() and Commands.table() and Mods.table()):
-            Boot.scanner()
-        if cfg.verbose:
-            Runs.banner(cfg)
-        if cfg.check and cfg.verbose:
-            Boot.check()
-
-    @classmethod
-    def configure(cls, cfg):
-        cfg.name = cfg.name or Utils.pkgname(Boot)
-        Mods.add(f"{cfg.name}.modules", Utils.moddir())
+        moddirs = []
+        moddirs.append(Utils.moddir()) 
         if cfg.user:
-            Mods.add("mods", "mods")
-            Mods.add("other", "other")
+            moddirs.append("mods")
+            moddirs.append("other")
+        Boot.boot(cfg, *moddirs)
         if cfg.read:
             Disk.read(Main, 'main', "config")
         if cfg.all:
             cfg.mods = Mods.list()
-        Log.size(len(cfg.name))
-        Log.level(cfg.level or "info")
-        Workdir.wdr = cfg.wdr or Workdir.wdr or os.path.expanduser(f"~/.{cfg.name}")
+        if cfg.verbose:
+            Runs.banner(cfg)
+        if cfg.check and cfg.verbose:
+            Boot.check()
 
 
 class Scripts:

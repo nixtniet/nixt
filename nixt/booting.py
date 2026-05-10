@@ -12,15 +12,29 @@ import time
 
 
 from .command import Commands
+from .configs import Main
+from .loggers import Log
 from .package import Mods
 from .threads import Thread
-from .utility import Utils, e, j
+from .utility import Utils, d, e, j
 from .workdir import Workdir
 
 
 class Boot:
 
     md5s = {}
+
+    @classmethod
+    def boot(cls, cfg, *moddirs):
+        Main.name = cfg.name or Utils.pkgname(Commands)
+        Workdir.wdr = cfg.workdir or os.path.expanduser(f"~/.{Main.name}")
+        for moddir in moddirs:
+            nme = moddir.split(os.sep)[-1]
+            Mods.add(nme, moddir)
+        Log.size(len(cfg.name))
+        Log.level(cfg.level or "info")
+        if not (cls.table() and Commands.table() and Mods.table()):
+            cls.scanner()
 
     @classmethod
     def check(cls):
