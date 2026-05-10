@@ -21,7 +21,10 @@ from nixt.defines import Main, Method, Output, Thread, Utils
 def init():
     irc = IRC()
     irc.start()
-    irc.events.joined.wait(60.0)
+    try:
+        irc.events.joined.wait(60.0)
+    except (KeyboardInterrupt, EOFError):
+        _thread.interrupt_main()
     if irc.events.joined.is_set():
         logging.warning("%s", Method.fmt(irc.cfg, skip=["name", "ignore", "word", "realname", "username", "version"]))
     else:
@@ -219,6 +222,8 @@ class IRC(Output):
                         self.events.joined.set()
                         continue
                     break
+            except (KeyboardInterrupt, EOFError):
+                _thread.interrupt_main()
             except (socket.error, socket.timeout, ssl.SSLError, OSError, ConnectionResetError) as ex:
                 self.events.joined.set()
                 self.state.error = str(ex)
@@ -447,7 +452,7 @@ class IRC(Output):
         self.events.ready.clear()
         self.events.connected.clear()
         self.events.joined.clear()
-        Client.start(self)
+        Output.start(self)
         if not self.state.keeprunning:
             Thread.launch(self.keep, daemon=daemon)
         Thread.launch(

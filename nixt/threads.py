@@ -14,7 +14,7 @@ import _thread
 
 class Task(threading.Thread):
 
-    def __init__(self, func, *args, daemon=False, **kwargs):
+    def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
         self.event = None
         self.name = kwargs.get("name", Thread.name(func))
@@ -48,7 +48,7 @@ class Task(threading.Thread):
             self.result = func(*args)
             return self.result
         except (KeyboardInterrupt, EOFError):
-            pass
+            _thread.interrupt_main()
         except Exception as ex:
             logging.exception(ex)
             if self.event:

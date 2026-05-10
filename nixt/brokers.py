@@ -17,7 +17,6 @@ class Broker:
     def announce(cls, txt):
         "announce text on all objects with an announce method."
         for obj in cls.objs("announce"):
-            print(obj)
             obj.announce(txt)
 
     @classmethod
@@ -50,6 +49,11 @@ class Broker:
         for obj in cls.objects.values():
             if attr in dir(obj):
                 yield obj
+
+    @classmethod
+    def shutdown(cls):
+        for client in cls.objs("stop"):
+            client.stop()
 
 
 def __dir__():

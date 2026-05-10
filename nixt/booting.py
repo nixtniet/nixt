@@ -10,8 +10,10 @@ import os
 import pathlib
 import sys
 import time
+import _thread
 
 
+from .brokers import Broker
 from .command import Commands
 from .configs import Main
 from .loggers import Log
@@ -83,7 +85,8 @@ class Boot:
             try:
                 time.sleep(0.1)
             except (KeyboardInterrupt, EOFError):
-                return
+                break
+        cls.shutdown()
 
     @classmethod
     def init(cls, modlist, wait=False):
@@ -95,7 +98,11 @@ class Boot:
             thrs.append(Thread.launch(mod.init))
         if thrs and wait:
             for thr in thrs:
-                thr.join()
+                try:
+                    thr.join()
+                except (KeyboardInterrupt, EOFError):
+                    return False
+        return True
 
     @classmethod
     def md5(cls):
@@ -134,7 +141,13 @@ class Boot:
             Commands.scan(mod)
 
     @classmethod
+    def shutdown(cls):
+        "shutdown clients."
+        Broker.shutdown()
+
+    @classmethod
     def table(cls):
+        "read table,"
         try:
             from .statics import NAMES, CORE, MD5
             Commands.names.update(NAMES)

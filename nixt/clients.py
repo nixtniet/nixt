@@ -44,10 +44,9 @@ class Poller(Client):
 
 class Console(Poller):
 
-    waiter = True
-
     def __init__(self):
         super().__init__()
+        self.waiter = True
         self.register("command", Commands.command)
 
     def poll(self):
@@ -55,19 +54,22 @@ class Console(Poller):
         sys.stdout.write("> ")
         sys.stdout.flush()
         while True:
-            (input, output, error) = select.select(
-                                             [sys.stdin,],
-                                             [],
-                                             [sys.stderr,]
-                                            )
-            if error:
-                break
-            for inp in input:
-                evt = Message()
-                evt.orig = repr(self)
-                evt.text = inp.readline().strip()
-                evt.kind = "command"
-                return evt
+            try:
+                (input, output, error) = select.select(
+                                                       [sys.stdin,],
+                                                       [],
+                                                       [sys.stderr,]
+                                                      )
+                if error:
+                    break
+                for inp in input:
+                    evt = Message()
+                    evt.orig = repr(self)
+                    evt.text = inp.readline().strip()
+                    evt.kind = "command"
+                    return evt
+            except (KeyboardInterrupt, EOFError):
+                return None
 
 
 class Output(Poller):
@@ -80,14 +82,17 @@ class Output(Poller):
     def output(self):
         "output loop."
         while not self.ostopped.is_set():
-            event = self.oqueue.get()
+            try:
+                event = self.oqueue.get()
+            except (KeyboardInterupt, EOFError):
+                _thread.interrupt_main()
             if event is None:
                 self.oqueue.task_done()
                 break
             self.display(event)
             self.oqueue.task_done()
 
-    def start(self, daemon=False):
+    def start(self, daemon=True):
         "start output loop."
         super().start(daemon=daemon)
         self.ostopped.clear()

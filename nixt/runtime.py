@@ -52,8 +52,8 @@ class Arguments:
 
 class CSL(Console):
 
-    @staticmethod
-    def cmd(text):
+    @classmethod
+    def cmd(cls, text):
         "do a command."
         cli = CSL()
         for txt in text.split(" ! "):
@@ -64,7 +64,8 @@ class CSL(Console):
             Commands.command(evt)
             evt.wait()
 
-    def raw(self, text):
+    @classmethod
+    def raw(tcls, text):
         "write to console."
         print(text.encode('utf-8', 'replace').decode("utf-8"))
 
@@ -112,7 +113,8 @@ class Scripts:
         import readline
         readline.redisplay()
         Runs.boot(Main)
-        Boot.init(Main.mods, Main.wait)
+        if not Boot.init(Main.mods, Main.wait):
+            return
         csl = CSL()
         csl.start()
         Boot.forever()

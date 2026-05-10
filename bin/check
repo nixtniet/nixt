@@ -9,7 +9,7 @@ import os
 import sys
 
 
-IGNORE = ["cli", "console", "daemon", "service", "modules/srv"]
+IGNORE = []
 NAME = "nixt"
 
 
