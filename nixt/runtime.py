@@ -50,12 +50,12 @@ class Arguments:
         Parse.parse(Main, txt)
 
 
-class Line(Console):
+class CSL(Console):
 
     @staticmethod
     def cmd(text):
         "do a command."
-        cli = Line()
+        cli = CSL()
         for txt in text.split(" ! "):
             evt = Message()
             evt.kind = "command"
@@ -68,19 +68,6 @@ class Line(Console):
         "write to console."
         print(text.encode('utf-8', 'replace').decode("utf-8"))
 
-
-class CSL(Line):
-
-    '''
-    def poll(self):
-        "poll for an event."
-        evt = Message()
-        evt.orig = repr(self)
-        evt.text = input("> ")
-        evt.kind = "command"
-        return evt
-    '''
-    pass
 
 class Runs:
 
@@ -135,7 +122,7 @@ class Scripts:
         "cli script."
         Runs.boot(Main)
         Main.check = False
-        Line.cmd(Main.otxt)
+        CSL.cmd(Main.otxt)
 
     @staticmethod
     def service():

@@ -17,6 +17,7 @@ class Broker:
     def announce(cls, txt):
         "announce text on all objects with an announce method."
         for obj in cls.objs("announce"):
+            print(obj)
             obj.announce(txt)
 
     @classmethod

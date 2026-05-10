@@ -15,7 +15,7 @@ import _thread
 
 
 from nixt.defines import Base, Broker, Client, Commands, Disk, Message
-from nixt.defines import Main, Method, Thread, Utils
+from nixt.defines import Main, Method, Output, Thread, Utils
 
 
 def init():
@@ -97,10 +97,10 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-class IRC(Client):
+class IRC(Output):
 
     def __init__(self):
-        Client.__init__(self)
+        Output.__init__(self)
         self.buffer = []
         self.cfg = Config()
         self.channels = []

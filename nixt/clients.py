@@ -21,6 +21,10 @@ from .threads import Thread
 
 class Poller(Client):
 
+    def __init__(self):
+        super().__init__()
+        self.waiter = False
+
     def loop(self):
         "polling loop."
         while not self.stopped.is_set():
@@ -33,28 +37,18 @@ class Poller(Client):
             self.working.append(event)
             event.orig = repr(self)
             self.callback(event)
+            if self.waiter:
+                event.wait()
         self.done.set()
 
 
 class Console(Poller):
 
+    waiter = True
+
     def __init__(self):
         super().__init__()
         self.register("command", Commands.command)
-
-    def loop(self):
-        "input loop."
-        while not self.stopped.is_set():
-            event = self.poll()
-            if event is None:
-                break
-            if not event.text:
-                event.ready()
-                continue
-            event.orig = repr(self)
-            self.callback(event)
-            event.wait()
-        self.done.set()
 
     def poll(self):
         "return event."
@@ -63,7 +57,7 @@ class Console(Poller):
         while True:
             (input, output, error) = select.select(
                                              [sys.stdin,],
-                                             [sys.stdout],
+                                             [],
                                              [sys.stderr,]
                                             )
             if error:
@@ -74,9 +68,6 @@ class Console(Poller):
                 evt.text = inp.readline().strip()
                 evt.kind = "command"
                 return evt
-
-    def start(self, daemon=True):
-        super().start(daemon=daemon)
 
 
 class Output(Poller):

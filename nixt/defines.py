@@ -7,7 +7,7 @@
 
 from .booting import Boot
 from .brokers import Broker
-from .clients import Console, Poller
+from .clients import Console, Output, Poller
 from .command import Commands
 from .configs import Main
 from .encoder import Json
