@@ -9,7 +9,7 @@ import logging
 import os
 
 
-from .utility import Utils, e, j
+from .utility import Utils, d, e, j
 
 
 class Mods:
@@ -28,6 +28,21 @@ class Mods:
     def all(cls):
         "return all modules."
         return cls.iter(cls.list())
+
+    @classmethod
+    def checkcore(cls):
+        ok = True
+        path = d(__spec__.loader.path)
+        for pth in os.listdir(path):
+            if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
+                continue
+            name = pth[:-3]
+            modpath = j(path, pth)
+            if Utils.md5(modpath) != Mods.core.get(name):
+                logging.warning("mismatch %s", name)
+                ok = False
+        return ok
+
 
     @classmethod
     def get(cls, name):

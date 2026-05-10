@@ -49,6 +49,14 @@ class Utils:
                 md5.update(file.read().encode("utf-8"))
 
     @staticmethod
+    def md5core():
+        try:
+            from . import statics
+        except ModuleNotFoundError:
+            return ""
+        return Utils.md5source(inspect.getsource(statics))[:7].upper()
+
+    @staticmethod
     def md5source(src):
         "determine md5 of source code."
         import hashlib

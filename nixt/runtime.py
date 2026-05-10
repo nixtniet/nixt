@@ -11,7 +11,7 @@ import time
 
 
 from .defines import Boot, Commands, Console, Message, Main
-from .defines import Object, Parse, Poller, Utils
+from .defines import Mods, Object, Parse, Poller, Utils
 
 
 class Arguments:
@@ -81,7 +81,7 @@ class Runs:
             cfg.version,
             tme,
             cfg.level.upper() or "INFO",
-            Boot.md5()
+            Utils.md5core()
         )
         print(txt.replace("  ", " "))
         sys.stdout.flush()
@@ -89,11 +89,12 @@ class Runs:
     @staticmethod
     def boot(cfg):
         Boot.configure(cfg)
+        Commands.table()
         if cfg.verbose:
             Runs.banner(cfg)
-        if cfg.check and cfg.verbose and Boot.core():
-            logging.info("core ok")
-        
+        if cfg.check and cfg.verbose:
+            Mods.checkcore()
+
 
 class Scripts:
 
@@ -102,7 +103,7 @@ class Scripts:
         "background script."
         Boot.daemon(Main.verbose, Main.nochdir)
         Boot.privileges()
-        Boot.boot(Main)
+        Runs.boot(Main)
         Boot.pidfile(Main.name)
         Boot.init(Main.mods or Main.default)
         Boot.forever()

@@ -40,22 +40,7 @@ class Boot:
         Log.size(len(cfg.name))
         Log.level(cfg.level or "info")
         Workdir.wdr = cfg.wdr or Workdir.wdr or os.path.expanduser(f"~/.{cfg.name}")
-        cls.table()
         
-    @classmethod
-    def core(cls):
-        ok = True
-        path = d(__spec__.loader.path)
-        for pth in os.listdir(path):
-            if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
-                continue
-            name = pth[:-3]
-            modpath = j(path, pth)
-            if Utils.md5(modpath) != Mods.core.get(name):
-                logging.warning("mismatch %s", name)
-                ok = False
-        return ok
-
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):
         "run in the background."
@@ -86,7 +71,6 @@ class Boot:
                 time.sleep(0.1)
             except (KeyboardInterrupt, EOFError):
                 break
-        cls.shutdown()
 
     @classmethod
     def init(cls, modlist, wait=False):
@@ -103,11 +87,6 @@ class Boot:
                 except (KeyboardInterrupt, EOFError):
                     return False
         return True
-
-    @classmethod
-    def md5(cls):
-        from . import statics
-        return Utils.md5source(inspect.getsource(statics))[:7].upper()
 
     @classmethod
     def pidfile(cls, name):
@@ -128,33 +107,6 @@ class Boot:
         pwnam2 = pwd.getpwnam(getpass.getuser())
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
-
-    @classmethod
-    def scanner(cls):
-        "scan named modules for commands."
-        for name in Utils.spl(Mods.list()):
-            mod = Mods.get(name)
-            if not mod:
-                continue
-            if "configure" in dir(mod):
-                mod.configure()
-            Commands.scan(mod)
-
-    @classmethod
-    def shutdown(cls):
-        "shutdown clients."
-        Broker.shutdown()
-
-    @classmethod
-    def table(cls):
-        "read table,"
-        try:
-            from .statics import NAMES, CORE, MD5
-            Commands.names.update(NAMES)
-            Mods.core.update(CORE)
-            Mods.md5s.update(MD5)
-        except ImportError:
-            cls.scanner()
 
     @classmethod
     def wrap(cls, func, *args):
