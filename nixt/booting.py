@@ -27,21 +27,6 @@ from .workdir import Workdir
 class Boot:
 
     @classmethod
-    def configure(cls, cfg):
-        cfg.name = cfg.name or Utils.pkgname(Boot)
-        Mods.add(f"{cfg.name}.modules", Utils.moddir())
-        if cfg.user:
-            Mods.add("mods", "mods")
-            Mods.add("other", "other")
-        if cfg.read:
-            Disk.read(Main, 'main', "config")
-        if cfg.all:
-            cfg.mods = Mods.list()
-        Log.size(len(cfg.name))
-        Log.level(cfg.level or "info")
-        Workdir.wdr = cfg.wdr or Workdir.wdr or os.path.expanduser(f"~/.{cfg.name}")
-        
-    @classmethod
     def daemon(cls, verbose=False, nochdir=False):
         "run in the background."
         pid = os.fork()
@@ -107,6 +92,28 @@ class Boot:
         pwnam2 = pwd.getpwnam(getpass.getuser())
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
+
+    @classmethod
+    def scanner(cls):
+        "scan named modules for commands."
+        for name in Utils.spl(Mods.list()):
+            mod = Mods.get(name)
+            if not mod:
+                continue
+            if "configure" in dir(mod):
+                mod.configure()
+            Commands.scan(mod)
+
+    @classmethod
+    def table(cls):
+        "read table,"
+        try:
+            from .statics import NAMES, CORE, MD5
+            Commands.names.update(NAMES)
+            Mods.core.update(CORE)
+            Mods.md5s.update(MD5)
+        except ImportError:
+            cls.scanner()
 
     @classmethod
     def wrap(cls, func, *args):

@@ -21,9 +21,23 @@ from .threads import Thread
 
 class Poller(Client):
 
-    def __init__(self):
-        super().__init__()
-        self.waiter = False
+    def loop(self):
+        "polling loop."
+        while not self.stopped.is_set():
+            event = self.poll()
+            if event is None:
+                break
+            if not event.text:
+                event.ready()
+                continue
+            self.working.append(event)
+            event.orig = repr(self)
+            self.callback(event)
+        self.done.set()
+
+
+class Waiter(Client):
+
 
     def loop(self):
         "polling loop."
@@ -37,16 +51,14 @@ class Poller(Client):
             self.working.append(event)
             event.orig = repr(self)
             self.callback(event)
-            if self.waiter:
-                event.wait()
+            event.wait()
         self.done.set()
 
 
-class Console(Poller):
+class Console(Waiter):
 
     def __init__(self):
         super().__init__()
-        self.waiter = True
         self.register("command", Commands.command)
 
     def poll(self):
@@ -116,8 +128,8 @@ class Output(Poller):
 
 def __dir__():
     return (
-        'Client',
         'Console',
         'Output',
-        'Poller'
+        'Poller',
+        'Waiter'
     )

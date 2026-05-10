@@ -60,28 +60,6 @@ class Commands:
             if 'event' in inspect.signature(cmdz).parameters:
                 cls.add(cmdz)
 
-    @classmethod
-    def scanner(cls):
-        "scan named modules for commands."
-        for name in Utils.spl(Mods.list()):
-            mod = Mods.get(name)
-            if not mod:
-                continue
-            if "configure" in dir(mod):
-                mod.configure()
-            Commands.scan(mod)
-
-    @classmethod
-    def table(cls):
-        "read table,"
-        try:
-            from .statics import NAMES, CORE, MD5
-            Commands.names.update(NAMES)
-            Mods.core.update(CORE)
-            Mods.md5s.update(MD5)
-        except ImportError:
-            cls.scanner()
-
 
 def __dir__():
     return (

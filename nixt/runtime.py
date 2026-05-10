@@ -6,12 +6,13 @@
 
 import argparse
 import logging
+import os
 import sys
 import time
 
 
-from .defines import Boot, Commands, Console, Message, Main
-from .defines import Mods, Object, Parse, Poller, Utils
+from .defines import Boot, Commands, Console, Log, Message, Main
+from .defines import Mods, Object, Parse, Poller, Utils, Workdir
 
 
 class Arguments:
@@ -72,8 +73,8 @@ class CSL(Console):
 
 class Runs:
 
-    @staticmethod
-    def banner(cfg):
+    @classmethod
+    def banner(cls, cfg):
         "hello."
         tme = time.ctime(time.time()).replace("  ", " ")
         txt = "%s %s since %s %s (%s)" % (
@@ -86,14 +87,30 @@ class Runs:
         print(txt.replace("  ", " "))
         sys.stdout.flush()
 
-    @staticmethod
-    def boot(cfg):
-        Boot.configure(cfg)
-        Commands.table()
+    @classmethod
+    def boot(cls, cfg):
+        cls.configure(cfg)
+        Boot.table()
         if cfg.verbose:
             Runs.banner(cfg)
         if cfg.check and cfg.verbose:
             Mods.checkcore()
+
+
+    @classmethod
+    def configure(cls, cfg):
+        cfg.name = cfg.name or Utils.pkgname(Boot)
+        Mods.add(f"{cfg.name}.modules", Utils.moddir())
+        if cfg.user:
+            Mods.add("mods", "mods")
+            Mods.add("other", "other")
+        if cfg.read:
+            Disk.read(Main, 'main', "config")
+        if cfg.all:
+            cfg.mods = Mods.list()
+        Log.size(len(cfg.name))
+        Log.level(cfg.level or "info")
+        Workdir.wdr = cfg.wdr or Workdir.wdr or os.path.expanduser(f"~/.{cfg.name}")
 
 
 class Scripts:
