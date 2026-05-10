@@ -14,7 +14,7 @@ import time
 import _thread
 
 
-from nixt.defines import Base, Broker, Client, Commands, Disk, Message
+from nixt.defines import Base, Broker, Commands, Disk, Message
 from nixt.defines import Main, Method, Output, Thread, Utils
 
 

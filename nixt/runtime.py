@@ -5,14 +5,13 @@
 
 
 import argparse
-import logging
 import os
 import sys
 import time
 
 
-from .defines import Boot, Commands, Console, Log, Message, Main
-from .defines import Mods, Object, Parse, Poller, Utils, Workdir
+from .defines import Boot, Commands, Console, Disk, Log, Message, Main
+from .defines import Mods, Object, Parse, Utils, Workdir
 
 
 class Arguments:
@@ -66,7 +65,7 @@ class CSL(Console):
             evt.wait()
 
     @classmethod
-    def raw(tcls, text):
+    def raw(cls, text):
         "write to console."
         print(text.encode('utf-8', 'replace').decode("utf-8"))
 
@@ -95,7 +94,6 @@ class Runs:
             Runs.banner(cfg)
         if cfg.check and cfg.verbose:
             Mods.checkcore()
-
 
     @classmethod
     def configure(cls, cfg):

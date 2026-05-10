@@ -12,7 +12,6 @@ import threading
 import _thread
 
 
-from .brokers import Broker
 from .command import Commands
 from .handler import Client
 from .message import Message
@@ -35,9 +34,11 @@ class Poller(Client):
             self.callback(event)
         self.done.set()
 
+    def poll(self):
+        return self.queue.get()
+
 
 class Waiter(Client):
-
 
     def loop(self):
         "polling loop."
@@ -67,17 +68,17 @@ class Console(Waiter):
         sys.stdout.flush()
         while True:
             try:
-                (input, output, error) = select.select(
+                (inp, out, err) = select.select(
                                                        [sys.stdin,],
                                                        [],
                                                        [sys.stderr,]
                                                       )
-                if error:
+                if err:
                     break
-                for inp in input:
+                for chan in inp:
                     evt = Message()
                     evt.orig = repr(self)
-                    evt.text = inp.readline().strip()
+                    evt.text = chan.readline().strip()
                     evt.kind = "command"
                     return evt
             except (KeyboardInterrupt, EOFError):
@@ -96,7 +97,7 @@ class Output(Poller):
         while not self.ostopped.is_set():
             try:
                 event = self.oqueue.get()
-            except (KeyboardInterupt, EOFError):
+            except (KeyboardInterrupt, EOFError):
                 _thread.interrupt_main()
             if event is None:
                 self.oqueue.task_done()
