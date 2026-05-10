@@ -89,11 +89,12 @@ class Runs:
     @classmethod
     def boot(cls, cfg):
         cls.configure(cfg)
-        Boot.table()
+        if not (Boot.table() and Commands.table() and Mods.table()):
+            Boot.scanner()
         if cfg.verbose:
             Runs.banner(cfg)
         if cfg.check and cfg.verbose:
-            Mods.checkcore()
+            Boot.check()
 
     @classmethod
     def configure(cls, cfg):

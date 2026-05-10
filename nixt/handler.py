@@ -62,6 +62,7 @@ class Handler:
         self.queue.put(None)
 
     def wait(self):
+        "wait for all events to finish,"
         while True:
             try:
                 # self.done.wait()

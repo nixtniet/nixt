@@ -14,7 +14,6 @@ from .utility import Utils, d, e, j
 
 class Mods:
 
-    core = {}
     dirs = {}
     md5s = {}
     modules = {}
@@ -28,20 +27,6 @@ class Mods:
     def all(cls):
         "return all modules."
         return cls.iter(cls.list())
-
-    @classmethod
-    def checkcore(cls):
-        ok = True
-        path = d(__spec__.loader.path)
-        for pth in os.listdir(path):
-            if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
-                continue
-            name = pth[:-3]
-            modpath = j(path, pth)
-            if Utils.md5(modpath) != Mods.core.get(name):
-                logging.warning("mismatch %s", name)
-                ok = False
-        return ok
 
     @classmethod
     def get(cls, name):
@@ -114,6 +99,16 @@ class Mods:
         for package in packages:
             cls.add(package.__path__[0], package.__name__)
 
+    @classmethod
+    def table(cls):
+        "read table,"
+        try:
+            from .statics import MD5
+            Mods.md5s.update(MD5)
+            return True
+        except ModuleNotFoundError:
+            return False
+        
 
 def __dir__():
     return (

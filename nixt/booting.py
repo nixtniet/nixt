@@ -20,6 +20,24 @@ from .workdir import Workdir
 
 class Boot:
 
+    md5s = {}
+
+    @classmethod
+    def check(cls):
+        ok = True
+        path = d(__spec__.loader.path)
+        for pth in os.listdir(path):
+            if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
+                continue
+            name = pth[:-3]
+            modpath = j(path, pth)
+            if Utils.md5(modpath) != cls.md5s.get(name):
+                logging.warning("mismatch %s", name)
+                ok = False
+        if ok:
+            logging.info("core ok")
+        return ok
+
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):
         "run in the background."
@@ -102,12 +120,11 @@ class Boot:
     def table(cls):
         "read table,"
         try:
-            from .statics import NAMES, CORE, MD5
-            Commands.names.update(NAMES)
-            Mods.core.update(CORE)
-            Mods.md5s.update(MD5)
+            from .statics import CORE
+            cls.md5s.update(CORE)
+            return True
         except ImportError:
-            cls.scanner()
+            return False
 
     @classmethod
     def wrap(cls, func, *args):

@@ -59,6 +59,15 @@ class Commands:
         for key, cmdz in inspect.getmembers(module, inspect.isfunction):
             if 'event' in inspect.signature(cmdz).parameters:
                 cls.add(cmdz)
+    @classmethod
+    def table(cls):
+        "read table,"
+        try:
+            from .statics import NAMES
+            cls.names.update(NAMES)
+            return True
+        except ModuleNotFoundError:
+            return False
 
 
 def __dir__():
