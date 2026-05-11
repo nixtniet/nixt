@@ -125,6 +125,19 @@ class Utils:
             pth.parent.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
+    def check(path, md5s):
+        ok = True
+        for pth in os.listdir(path):
+            if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
+                continue
+            name = pth[:-3]
+            modpath = j(path, pth)
+            if Utils.md5(modpath) != md5s.get(name):
+                logging.warning("mismatch %s", name)
+                ok = False
+        return ok
+
+    @staticmethod
     def clsname(obj):
         "reutrn classname of an object."
         return obj.__class__.__name__

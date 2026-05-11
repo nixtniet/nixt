@@ -25,19 +25,8 @@ class Boot:
 
     @classmethod
     def check(cls):
-        ok = True
-        path = d(__spec__.loader.path)
-        for pth in os.listdir(path):
-            if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
-                continue
-            name = pth[:-3]
-            modpath = j(path, pth)
-            if Utils.md5(modpath) != cls.md5s.get(name):
-                logging.warning("mismatch %s", name)
-                ok = False
-        if ok:
+        if Utils.check(d(__spec__.loader.path), cls.md5s):
             logging.info("core ok")
-        return ok
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):

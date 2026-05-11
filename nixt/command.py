@@ -71,7 +71,7 @@ class Commands:
             from .statics import NAMES
             cls.names.update(NAMES)
             return True
-        except ModuleNotFoundError:
+        except ImportError:
             return False
 
 

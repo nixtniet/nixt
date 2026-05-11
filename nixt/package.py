@@ -9,7 +9,7 @@ import logging
 import os
 
 
-from .utility import Utils, e, j
+from .utility import Utils, d, e, j
 
 
 class Mods:
@@ -27,6 +27,15 @@ class Mods:
     def all(cls):
         "return all modules."
         return cls.iter(cls.list())
+
+    @classmethod
+    def check(cls):
+        ok = True
+        for path in cls.dirs.values():
+            if not Utils.check(path, cls.md5s):
+                ok = False
+        if ok:
+            logging.info("modules ok")
 
     @classmethod
     def get(cls, name):
@@ -106,7 +115,7 @@ class Mods:
             from .statics import MD5
             Mods.md5s.update(MD5)
             return True
-        except ModuleNotFoundError:
+        except ImportError:
             return False
         
 
