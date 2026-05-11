@@ -13,8 +13,7 @@ import _thread
 
 
 from .command import Commands
-from .handler import Client
-from .message import Message
+from .handler import Client, Message
 from .threads import Thread
 
 

@@ -13,11 +13,7 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.defines import Base, Locate, Main, Thread, Workdir
-
-
-a = os.path.abspath
-j = os.path.join
+from nixt.defines import Base, Locate, Main, Thread, Workdir, a, j
 
 
 def init():

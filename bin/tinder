@@ -29,6 +29,9 @@ Main.wdr = ".test"
 Main.user = True
 
 
+Workdir.wdr = Main.wdr
+
+
 events = queue.Queue()
 
 
@@ -117,7 +120,9 @@ def main():
     if check("t"):
         Main.threaded = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
-    Boot.boot(Main, "mods", "other")
+    Mods.add("mods", "mods")
+    Mods.add("other", "other")
+    Commands.table()
     if Main.threaded:
         Clients.init(os.cpu_count(), CLI)
     else:
