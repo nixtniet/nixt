@@ -12,11 +12,10 @@ import time
 
 
 from .command import Commands
-from .configs import Main
 from .package import Mods
 from .persist import Workdir
 from .threads import Thread
-from .utility import Log, Utils, d, e, j
+from .utility import Utils, d, e, j
 
 
 class Boot:
@@ -25,8 +24,10 @@ class Boot:
 
     @classmethod
     def check(cls):
-        if Utils.check(d(__spec__.loader.path), cls.md5s):
-            logging.info("core ok")
+        if cls.md5s:
+            Utils.check(d(__spec__.loader.path), cls.md5s)
+        if Mods.md5s:
+            Mods.check()
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):

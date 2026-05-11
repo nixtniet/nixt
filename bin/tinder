@@ -17,7 +17,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Boot, Client, Commands, Main, Message, Method
-from nixt.defines import Main, Mods, Parse, Thread, Time, Workdir
+from nixt.defines import Mods, Parse, Thread, Time, Workdir
 
 
 e = os.path.exists

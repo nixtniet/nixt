@@ -4,14 +4,9 @@
 "write your own commands"
 
 
-import importlib.util
-import logging
-import os
-
-
 from .package import Mods
 from .parsers import Parse
-from .utility import Utils, d, e, j
+from .utility import Utils
 
 
 class Commands:
@@ -64,6 +59,7 @@ class Commands:
         for key, cmdz in inspect.getmembers(module, inspect.isfunction):
             if 'event' in inspect.signature(cmdz).parameters:
                 cls.add(cmdz)
+
     @classmethod
     def table(cls):
         "read table,"

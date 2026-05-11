@@ -7,10 +7,11 @@
 import unittest
 
 
-from nixt.loggers import Log
+from nixt.persist import Locate
 
 
-class TestLoggers(unittest.TestCase):
+class TestLocater(unittest.TestCase):
 
-    def test_dateformat(self):
-        self.assertTrue(Log.datefmt)
+    def test_construct(self):
+        lct = Locate()
+        self.assertTrue(lct)

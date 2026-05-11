@@ -4,7 +4,6 @@
 "persist tests"
 
 
-import os
 import sys
 import unittest
 
@@ -12,14 +11,7 @@ import unittest
 sys.path.insert(0, ".")
 
 
-from nixt.configs import Main
-from nixt.objects import Object
-from nixt.storage import Disk
-from nixt.workdir import Workdir
-
-
-e = os.path.exists
-j = os.path.join
+from nixt.defines import Disk, Main, Object, Workdir, e, j
 
 
 Workdir.wdr = '.test'

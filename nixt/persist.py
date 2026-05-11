@@ -5,6 +5,7 @@
 
 
 import json
+import logging
 import os
 import pathlib
 import threading
@@ -202,7 +203,6 @@ class Workdir:
     def workdir(cls, path=""):
         "return workdir."
         return j(cls.wdr, path)
-
 
 
 def __dir__():

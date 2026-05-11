@@ -30,7 +30,7 @@ def __dir__():
        'Client',
        'Commands',
        'Console',
-       'DIsk',
+       'Disk',
        'Handler',
        'Input',
        'Json',

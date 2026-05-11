@@ -64,8 +64,7 @@ class CSL(Console):
             Commands.command(evt)
             evt.wait()
 
-    @classmethod
-    def raw(cls, text):
+    def raw(self, text):
         "write to console."
         print(text.encode('utf-8', 'replace').decode("utf-8"))
 
@@ -89,7 +88,7 @@ class Runs:
     @classmethod
     def boot(cls, cfg):
         Workdir.wdr = os.path.expanduser(f"~/.{Main.name}")
-        Mods.add("modules", Utils.moddir()) 
+        Mods.add("modules", Utils.moddir())
         if cfg.user:
             Mods.add("mods", "mods")
             Mods.add("other", "other")

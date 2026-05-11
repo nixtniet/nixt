@@ -10,7 +10,6 @@ import threading
 
 
 from .brokers import Broker
-from .objects import Base
 from .threads import Thread
 
 

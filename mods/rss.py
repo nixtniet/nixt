@@ -8,7 +8,6 @@ import html
 import html.parser
 import http.client
 import logging
-import os
 import queue
 import re
 import threading

@@ -9,7 +9,7 @@ import logging
 import os
 
 
-from .utility import Utils, d, e, j
+from .utility import Utils, e, j
 
 
 class Mods:
@@ -34,8 +34,7 @@ class Mods:
         for path in cls.dirs.values():
             if not Utils.check(path, cls.md5s):
                 ok = False
-        if ok:
-            logging.info("modules ok")
+        return ok
 
     @classmethod
     def get(cls, name):
@@ -47,9 +46,10 @@ class Mods:
                 fnm = j(path, name + ".py")
                 if not e(fnm):
                     continue
-                md5 = Utils.md5(fnm)
-                if md5 != cls.md5s.get(name):
-                    logging.warning("mismatch %s", modname)
+                if cls.md5s:
+                    md5 = Utils.md5(fnm)
+                    if md5 != cls.md5s.get(name):
+                        logging.warning("mismatch %s", modname)
                 mod = cls.importer(modname, fnm)
             return mod
 
@@ -117,7 +117,7 @@ class Mods:
             return True
         except ImportError:
             return False
-        
+
 
 def __dir__():
     return (

@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.workdir import Workdir
+from nixt.persist import Workdir
 
 
 class TestWorkdir(unittest.TestCase):

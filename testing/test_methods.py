@@ -7,10 +7,13 @@
 import unittest
 
 
-from nixt.loggers import Log
+from nixt.objects import Base, Method
 
 
-class TestLoggers(unittest.TestCase):
+class TestMethod(unittest.TestCase):
 
-    def test_dateformat(self):
-        self.assertTrue(Log.datefmt)
+    def test_clear(self):
+        obj = Base()
+        obj.a = "b"
+        Method.clear(obj)
+        self.assertEqual(str(obj), "{}")

@@ -6,8 +6,6 @@
 
 import logging
 import queue
-import select
-import sys
 import threading
 import _thread
 
@@ -64,25 +62,11 @@ class Console(Waiter):
 
     def poll(self):
         "return event."
-        sys.stdout.write("> ")
-        sys.stdout.flush()
-        while True:
-            try:
-                (inp, out, err) = select.select(
-                                                       [sys.stdin,],
-                                                       [],
-                                                       [sys.stderr,]
-                                                      )
-                if err:
-                    break
-                for chan in inp:
-                    evt = Message()
-                    evt.orig = repr(self)
-                    evt.text = chan.readline().strip()
-                    evt.kind = "command"
-                    return evt
-            except (KeyboardInterrupt, EOFError):
-                return None
+        evt = Message()
+        evt.orig = repr(self)
+        evt.text = input("> ")
+        evt.kind = "command"
+        return evt
 
 
 class Output(Poller):
