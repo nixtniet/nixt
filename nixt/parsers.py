@@ -4,7 +4,8 @@
 "command line options parsing"
 
 
-from .objects import Base, Method
+from .methods import Method
+from .objects import Base
 
 
 class Parse:

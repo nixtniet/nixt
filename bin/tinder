@@ -17,7 +17,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Boot, Client, Commands, Main, Message, Method
-from nixt.defines import Mods, Parse, Thread, Time, Workdir
+from nixt.defines import Mods, Parse, Thread, Time, Utils, Workdir
 
 
 e = os.path.exists
@@ -120,6 +120,7 @@ def main():
     if check("t"):
         Main.threaded = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
+    Mods.add("modules", Utils.moddir())
     Mods.add("mods", "mods")
     Mods.add("other", "other")
     Commands.table()
