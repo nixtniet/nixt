@@ -100,10 +100,10 @@ class Runs:
             cfg.mods = Mods.list()
         if cfg.verbose:
             Runs.banner(cfg)
-        if cfg.check and cfg.verbose:
-            Boot.check()
         if not (Boot.table() and Commands.table() and Mods.table()):
             Boot.scanner()
+        if cfg.check and cfg.verbose:
+            Boot.check()
 
 
 class Scripts:
