@@ -11,8 +11,9 @@ import sys
 import time
 
 
-from .command import Commands, Mods
+from .command import Commands
 from .configs import Main
+from .package import Mods
 from .persist import Workdir
 from .threads import Thread
 from .utility import Log, Utils, d, e, j

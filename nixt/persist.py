@@ -13,8 +13,7 @@ import threading
 from .configs import Main
 from .encoder import Json
 from .objects import Base, Method, Object
-from .timings import Time
-from .utility import Utils, e, j
+from .utility import Time, Utils, e, j
 
 
 class Cache:
