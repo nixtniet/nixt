@@ -10,7 +10,7 @@ import threading
 import time
 
 
-from nixt.defines import Base, Broker, Disk, Locate, Method
+from nixt.defines import Base, Broker, Disk, Locate, Object
 from nixt.defines import Object, Thread, Time
 
 
@@ -73,7 +73,7 @@ class TimerLoop:
 
     @classmethod
     def start(cls):
-        cls.path = Locate.first(cls.timers) or Method.ident(cls.timers)
+        cls.path = Locate.first(cls.timers) or Object.ident(cls.timers)
         cls.running.set()
         Thread.launch(cls.loop, name="Timers.loop")
 
@@ -99,5 +99,5 @@ def tmr(event):
     diff = todo - time.time()
     txt = " ".join(event.args[1:])
     bot = Broker.get(event.orig)
-    TimerLoop.add(todo, Method.fqn(bot), event.channel, txt)
+    TimerLoop.add(todo, Object.fqn(bot), event.channel, txt)
     event.ok(Time.elapsed(diff))

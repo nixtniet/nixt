@@ -4,7 +4,7 @@
 "command line options parsing"
 
 
-from .methods import Method
+from .objects import Object
 from .objects import Base
 
 
@@ -39,16 +39,16 @@ class Parse:
                 continue
             if "-=" in spli:
                 key, value = spli.split("-=", maxsplit=1)
-                Method.typed(obj.silent, key, value)
-                Method.typed(obj.gets, key, value)
+                Object.typed(obj.silent, key, value)
+                Object.typed(obj.gets, key, value)
                 continue
             if "==" in spli:
                 key, value = spli.split("==", maxsplit=1)
-                Method.typed(obj.gets, key, value)
+                Object.typed(obj.gets, key, value)
                 continue
             if "=" in spli:
                 key, value = spli.split("=", maxsplit=1)
-                Method.typed(obj.sets, key, value)
+                Object.typed(obj.sets, key, value)
                 continue
             nr += 1
             if nr == 0:
@@ -62,7 +62,7 @@ class Parse:
             obj.text = obj.cmd + " " + obj.rest
         else:
             obj.text = obj.cmd or ""
-        Method.notset(obj, obj.sets)
+        Object.notset(obj, obj.sets)
 
 
 def __dir__():

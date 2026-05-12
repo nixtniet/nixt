@@ -4,7 +4,7 @@
 "configurations"
 
 
-from .methods import Method
+from .objects import Object
 from .utility import Utils
 
 
@@ -16,12 +16,12 @@ class MainConfig(type):
         return ""
 
     def __str__(cls):
-        return str(Method.skip(cls.__dict__))
+        return str(Object.skip(cls.__dict__))
 
 
 class Main(metaclass=MainConfig):
 
-    name = Utils.pkgname(Method)
+    name = Utils.pkgname(Object)
 
 
 def __dir__():

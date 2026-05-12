@@ -9,7 +9,7 @@ import os
 import time
 
 
-from nixt.defines import Base, Disk, Locate, Object, Method, Time
+from nixt.defines import Base, Disk, Locate, Object, Object, Time
 
 
 class Email(Base):
@@ -47,12 +47,12 @@ def eml(event):
         if obj:
             obj = obj[-1]
             tme = getattr(obj, "Date", "")
-            event.reply(f'{event.index} {Method.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - timed(tme))}')
+            event.reply(f'{event.index} {Object.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - timed(tme))}')
     else:
         for _fn, obj in result:
             nrs += 1
             tme = getattr(obj, "Date", "")
-            event.reply(f'{nrs} {Method.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - timed(tme))}')
+            event.reply(f'{nrs} {Object.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - timed(tme))}')
     if not result:
         event.reply("no emails found.")
 

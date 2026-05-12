@@ -40,6 +40,15 @@ class Base:
 
 class Object:
 
+    @staticmethod
+    def clear(obj):
+        "remove all items from the object."
+        obj.__dict__.clear()
+
+    @staticmethod
+    def cls(obj):
+        "return class name of an object."
+        return Object.fqn(obj).split(".")[-1]
 
     @staticmethod
     def construct(obj, *args, **kwargs):
@@ -54,6 +63,111 @@ class Object:
                 Object.update(obj, vars(val))
         if kwargs:
             Object.update(obj, kwargs)
+
+    @staticmethod
+    def copy(obj):
+        "return shallow copy of the object."
+        oobj = type(obj)()
+        Object.update(oobj, obj.__dict__.copy())
+        return oobj
+
+    @staticmethod
+    def deleted(obj):
+        "check whether obj had deleted flag set."
+        return "__deleted__" in dir(obj) and obj.__deleted__
+
+    @staticmethod
+    def difference(obj, *others):
+        "return a new object with elements that are not in the others."
+            
+    @staticmethod
+    def difference_update(obj, *others):
+        "update the object, removing elements found in others."
+
+    @staticmethod
+    def discard(obj):
+        "remove an element from a object if it is a member."
+
+    @staticmethod
+    def edit(obj, setter={}, skip=False):
+        "update object with dict."
+        for key, val in Object.items(setter):
+            if skip and val == "":
+                continue
+            Object.typed(obj, key, val)
+
+    @staticmethod
+    def fmt(obj, args=[], skip=[], plain=False, empty=False):
+        "format object info printable string."
+        if args == []:
+            args = list(obj.__dict__.keys())
+        if args == []:
+            args = [x for x in dir(obj) if not x.startswith("_")]
+        txt = ""
+        for key in args:
+            if key.startswith("__"):
+                continue
+            if key in skip:
+                continue
+            value = getattr(obj, key, None)
+            if value is None:
+                continue
+            if not empty and value == "":
+                continue
+            if plain:
+                txt += f"{value} "
+            elif isinstance(value, (int, float, dict, bool, list)):
+                txt += f"{key}={value} "
+            elif isinstance(value, str):
+                txt += f'{key}="{value}" '
+            else:
+                txt += f"{key}={Object.cls(value)}({Object.fmt(value)}) "
+        if txt == "":
+            txt = "{}"
+        return txt.strip()
+
+    @staticmethod
+    def fqn(obj):
+        "full qualified name."
+        kin = str(type(obj)).split()[-1][1:-2]
+        if kin == "type":
+            kin = f"{obj.__module__}.{obj.__name__}"
+        return kin
+
+    @staticmethod
+    def fromkeys(obj, keyz, value=None):
+        "create a new object with keys from iterable and values set to value/"
+        return obj.__dict__.fromkeys(keyz, value)
+
+    @staticmethod
+    def get(obj, key, default=None):
+        "return value for key if key is in the object, otherwise return default."
+        return obj.__dict__.get(key, default)
+
+    @staticmethod
+    def ident(obj):
+        "return ident string for object."
+        return j(Object.fqn(obj), *str(datetime.datetime.now()).split())
+
+    @staticmethod
+    def intersection(obj, *others):
+        "return a new object with elements common to all others."
+
+    @staticmethod
+    def intersection_update(obj, *others):
+        "update the object, keeping only elements found in it and all others."
+
+    @staticmethod
+    def isdisjoint(obj, other):
+        "return True if two objects have a null intersection."
+
+    @staticmethod
+    def isubset(obj, other):
+        "report whether another object contains this object's keys."
+
+    @staticmethod
+    def isuperset(obj, other):
+        "report whether this object contains another object's keys."
 
     @staticmethod
     def items(obj):
@@ -74,6 +188,111 @@ class Object:
         if isinstance(obj, types.MappingProxyType):
             return obj.keys()
         return obj.__dict__.keys()
+
+    @staticmethod
+    def merge(obj, obj2):
+        "skip emoty values."
+        for key, value in Object.items(obj2):
+            if not value and getattr(obj, key, False):
+                continue
+            setattr(obj, key, value)
+
+    @staticmethod
+    def notset(obj, obj2):
+        "only set if not set."
+        for key, value in Object.items(obj2):
+            if getattr(obj, key, False):
+                continue
+            if value:
+                setattr(obj, key, value)
+
+    @staticmethod
+    def pop(obj, key, default=None):
+        "remove key from object and return it's value. return default or KeyError."
+        return obj.__dict__.pop(key, default)
+
+    @staticmethod
+    def popitem(obj):
+        "remove and return (key, value) pair."
+        return obj.__dict__.popitem()
+
+    @staticmethod
+    def reduce(obj):
+        "return dict with values setted attributes."
+        result = {}
+        for key, value in Object.items(obj):
+            if value:
+                result[key] = value
+        return result
+
+    @staticmethod
+    def remove(obj, other):
+        "remove an element from an object."
+
+    @staticmethod
+    def search(obj, selector={}, matching=False):
+        "check whether object matches search criteria."
+        res = False
+        for key, value in Object.items(selector):
+            val = getattr(obj, key, None)
+            if not val:
+                res = False
+                break
+            if matching and value != val:
+                res = False
+                break
+            if str(value).lower() not in str(val).lower():
+                res = False
+                break
+            res = True
+        return res
+
+    @staticmethod
+    def skip(obj, chars="_"):
+        "skip keys containing chars."
+        res = Base()
+        for key, value in Object.items(obj):
+            if isinstance(value, types.MethodType):
+                continue
+            donext = False
+            for char in chars:
+                if char in key:
+                    donext = True
+            if donext:
+                continue
+            setattr(res, key, value)
+        return res
+
+    @staticmethod
+    def symmetric_difference(obj, other):
+        "return a new  object with elements in either the object or other but not both."
+    
+    @staticmethod
+    def symmetric_difference_update(obj, other):
+        "update the object, keeping only elements found in either object, but not in both."
+
+    @staticmethod
+    def typed(obj, key, val):
+        "assign proper types."
+        if not val:
+            return
+        if val in ["True", "true", True]:
+            return setattr(obj, key, True)
+        if val in ["False", "false", False]:
+            return setattr(obj, key, False)
+        try:
+            return setattr(obj, key, int(val))
+        except ValueError:
+            pass
+        try:
+            return setattr(obj, key, float(val))
+        except ValueError:
+            pass
+        setattr(obj, key, val)
+
+    @staticmethod
+    def union(obj, *others):
+        "return a new object with elements from the object and all others."
 
     @staticmethod
     def update(obj, data, empty=True):
@@ -117,81 +336,8 @@ class Object:
         return obj.__dict__.values()
 
 
-class Set:
-
-    @staticmethod
-    def clear(obj):
-       "remove all elements."
-       obj.__dict__.clear()
-
-    @staticmethod
-    def copy(obj):
-        "return a shallow copy."
-        oobj = type(obj)()
-        Object.update(oobj, obj.__dict__.copy())
-        return oobj
-
-    @staticmethod
-    def difference(obj, *others):
-        "return a new object with elements that are not in the others."
-            
-    @staticmethod
-    def difference_update(obj, *others):
-        "update the object, removing elements found in others."
-
-    @staticmethod
-    def discard(obj):
-        "remove an element from a object if it is a member."
-
-    @staticmethod
-    def intersection(obj, *others):
-        "return a new object with elements common to all others."
-
-    @staticmethod
-    def intersection_update(obj, *others):
-        "update the object, keeping only elements found in it and all others."
-
-    @staticmethod
-    def isdisjoint(obj, other):
-        "return True if two objects have a null intersection."
-
-    @staticmethod
-    def isubset(obj, other):
-        "report whether another object contains this object's keys."
-
-    @staticmethod
-    def isuperset(obj, other):
-        "report whether this object contains another object's keys."
-
-    @staticmethod
-    def pop(obj):
-        "remove and return an arbitrary object's element."
-        return obj.__dict__.pop(key, default)
-
-    @staticmethod
-    def remove(obj, other):
-        "remove an element from an object."
-         
-    @staticmethod
-    def symmetric_difference(obj, other):
-        "return a new  object with elements in either the object or other but not both."
-    
-    @staticmethod
-    def symmetric_difference_update(obj, other):
-        "update the object, keeping only elements found in either object, but not in both."
-
-    @staticmethod
-    def union(obj, *others):
-        "return a new object with elements from the object and all others."
-
-    @staticmethod
-    def update(obj, *others):
-        "update the set, adding elements from all others."
-
-
 def __dir__():
     return (
         'Base',
         'Object',
-        'Set'
     )

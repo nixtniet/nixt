@@ -21,7 +21,7 @@ client/server connection, bork on exit for have an early exit, etc.
 
 ``%s`` contains python3 code to program objects in a functional way.
 it provides an "clean namespace" Object class that only has dunder
-methods, so the namespace is not cluttered with method names. This
+objects, so the namespace is not cluttered with method names. This
 makes storing and reading to/from json possible.
 
 ``%s`` is a python3 IRC bot, it can connect to IRC, fetch and

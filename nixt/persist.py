@@ -13,7 +13,6 @@ import threading
 
 from .configs import Main
 from .encoder import Json
-from .methods import Method
 from .objects import Base, Object
 from .utility import Time, Utils, e, j
 
@@ -67,7 +66,7 @@ class Disk:
         "write object to disk."
         with cls.lock:
             if path == "":
-                path = Method.ident(obj)
+                path = Object.ident(obj)
             pth = j(Workdir.wdr, base, path)
             if not e(pth):
                 Workdir.skel()
@@ -106,9 +105,9 @@ class Locate:
                     obj = Base()
                     Disk.read(obj, pth)
                     Cache.add(pth, obj)
-                if not removed and Method.deleted(obj):
+                if not removed and Object.deleted(obj):
                     continue
-                if selector and not Method.search(obj, selector, matching):
+                if selector and not Object.search(obj, selector, matching):
                     continue
                 if nritems and nrs >= nritems:
                     break
@@ -121,7 +120,7 @@ class Locate:
     def first(cls, obj, selector={}):
         "return first object of a kind."
         result = sorted(
-                        cls.find(Method.fqn(obj), selector),
+                        cls.find(Object.fqn(obj), selector),
                         key=lambda x: Time.fntime(x[0])
                        )
         res = ""
@@ -147,7 +146,7 @@ class Locate:
     def last(cls, obj, selector={}):
         "last saved version."
         result = sorted(
-                        cls.find(Method.fqn(obj), selector),
+                        cls.find(Object.fqn(obj), selector),
                         key=lambda x: Time.fntime(x[0])
                        )
         res = ""

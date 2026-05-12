@@ -12,7 +12,7 @@ from .command import Commands
 from .configs import Main
 from .encoder import Json
 from .handler import Client, Handler, Message
-from .methods import Method
+from .objects import Object
 from .objects import Base, Object
 from .package import Mods
 from .parsers import Parse
@@ -39,7 +39,7 @@ def __dir__():
        'Main',
        'Message',
        'Mods',
-       'Method',
+       'Object',
        'Object',
        'Output',
        'Parse',

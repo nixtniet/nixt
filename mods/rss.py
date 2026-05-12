@@ -23,7 +23,7 @@ from urllib.parse import quote_plus, urlencode
 
 
 from nixt.defines import Base, Disk, Object, Broker, Locate
-from nixt.defines import Main, Method, Repeater, Thread, Utils, e
+from nixt.defines import Main, Object, Repeater, Thread, Utils, e
 
 
 def init():
@@ -91,7 +91,7 @@ class Fetcher:
 
     def run(self, silent=False):
         nrs = 0
-        for fnm, feed in Locate.find(Method.fqn(Rss)):
+        for fnm, feed in Locate.find(Object.fqn(Rss)):
             if "skip" in feed and feed.skip:
                 continue
             Runners.put((fnm, feed, silent))
@@ -100,8 +100,8 @@ class Fetcher:
 
     def start(self, repeat=True):
         Disk.read(Config, "rss", "config")
-        State.seenfn = Locate.last(State.seen) or Method.ident(State.seen)
-        State.modifiedfn = Locate.last(State.modified) or Method.ident(State.modified)
+        State.seenfn = Locate.last(State.seen) or Object.ident(State.seen)
+        State.modifiedfn = Locate.last(State.modified) or Object.ident(State.modified)
         if repeat:
             repeater = Repeater(Config.polltime, self.run)
             repeater.start()
@@ -175,7 +175,7 @@ class Runner:
             if silent:
                 return counter
             if not State.seenfn:
-                State.seenfn = Method.ident(State.seen)
+                State.seenfn = Object.ident(State.seen)
             Disk.write(State.seen, State.seenfn)
         txt = ""
         feedname = getattr(feed, "name", None)
@@ -475,7 +475,7 @@ def atr(event):
     if not event.rest:
         event.reply("atr <stringinurl>")
         return
-    for _fnm, obj in Locate.find(Method.fqn(Rss), {'rss': event.rest}):
+    for _fnm, obj in Locate.find(Object.fqn(Rss), {'rss': event.rest}):
         try:
             request = Helpers.geturl(obj.rss, True)
         except Exception as ex:
@@ -497,7 +497,7 @@ def dpl(event):
         event.reply("dpl <stringinurl> <item1,item2>")
         return
     setter = {"display_list": event.args[1]}
-    for fnm, feed in Locate.find(Method.fqn(Rss), {"rss": event.args[0]}):
+    for fnm, feed in Locate.find(Object.fqn(Rss), {"rss": event.args[0]}):
         if feed:
             Object.update(feed, setter)
             Disk.write(feed, fnm)
@@ -507,7 +507,7 @@ def dpl(event):
 def err(event):
     nre = 0
     nrs = 0
-    for fnm, obj in Locate.find(Method.fqn(Rss), event.gets):
+    for fnm, obj in Locate.find(Object.fqn(Rss), event.gets):
         if "error" not in obj:
             continue
         if not obj.error:
@@ -522,7 +522,7 @@ def err(event):
             continue
         if not event.rest:
             nrs += 1
-            event.reply(f"{nrs} {Method.fmt(obj)}")
+            event.reply(f"{nrs} {Object.fmt(obj)}")
     if not nrs:
         event.reply("no feed errors.")
     else:
@@ -533,7 +533,7 @@ def exp(event):
     with Run.importlock:
         event.reply(TEMPLATE)
         nrs = 0
-        for _fn, ooo in Locate.find(Method.fqn(Rss)):
+        for _fn, ooo in Locate.find(Object.fqn(Rss)):
             nrs += 1
             obj = Rss()
             Object.update(obj, ooo)
@@ -566,7 +566,7 @@ def imp(event):
                 continue
             if not url.startswith("http"):
                 continue
-            has = list(Locate.find(Method.fqn(Rss), {"rss": url}, matching=True))
+            has = list(Locate.find(Object.fqn(Rss), {"rss": url}, matching=True))
             if has:
                 State.skipped.append(url)
                 nrskip += 1
@@ -598,7 +598,7 @@ def nme(event):
         event.reply("nme <stringinurl> <name>")
         return
     selector = {"rss": event.args[0]}
-    for fnm, fed in Locate.find(Method.fqn(Rss), selector):
+    for fnm, fed in Locate.find(Object.fqn(Rss), selector):
         feed = Rss()
         Object.update(feed, fed)
         if feed:
@@ -611,7 +611,7 @@ def rem(event):
     if len(event.args) != 1:
         event.reply("rem <stringinurl>")
         return
-    for fnm, fed in Locate.find(Method.fqn(Rss)):
+    for fnm, fed in Locate.find(Object.fqn(Rss)):
         feed = Rss()
         Object.update(feed, fed)
         if event.args[0] not in feed.rss:
@@ -628,7 +628,7 @@ def res(event):
         event.reply("res <stringinurl>")
         return
     nrs = 0
-    for fnm, fed in Locate.find(Method.fqn(Rss), removed=True):
+    for fnm, fed in Locate.find(Object.fqn(Rss), removed=True):
         feed = Rss()
         Object.update(feed, fed)
         if event.args[0] not in feed.rss:
@@ -647,7 +647,7 @@ def rss(event):
     if "http://" not in url and "https://" not in url:
         event.reply("i need an url")
         return
-    for fnm, result in Locate.find(Method.fqn(Rss), {"rss": url}):
+    for fnm, result in Locate.find(Object.fqn(Rss), {"rss": url}):
         if result:
             event.reply(f"{url} is known")
             return

@@ -15,7 +15,7 @@ import _thread
 
 
 from nixt.defines import Base, Broker, Commands, Disk, Main, Message
-from nixt.defines import Method, Output, Thread, Utils
+from nixt.defines import Object, Output, Thread, Utils
 
 
 def init():
@@ -26,7 +26,7 @@ def init():
     except (KeyboardInterrupt, EOFError):
         _thread.interrupt_main()
     if irc.events.joined.is_set():
-        logging.warning("%s", Method.fmt(irc.cfg, skip=["name", "ignore", "word", "realname", "username", "version"]))
+        logging.warning("%s", Object.fmt(irc.cfg, skip=["name", "ignore", "word", "realname", "username", "version"]))
     else:
         irc.stop()
     return irc
@@ -491,7 +491,7 @@ def cb_error(evt):
     bot = Broker.get(evt.orig)
     bot.state.nrerror += 1
     bot.state.error = evt.text
-    logging.debug(Method.fmt(evt))
+    logging.debug(Object.fmt(evt))
 
 
 def cb_h903(evt):

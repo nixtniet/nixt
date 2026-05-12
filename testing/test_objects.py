@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Base, Object, Disk, Method
+from nixt.defines import Base, Object, Disk, Object
 
 
 import nixt.objects
@@ -16,7 +16,7 @@ import nixt.objects
 TARGET = nixt.objects
 
 
-class TestMethod(unittest.TestCase):
+class TestObject(unittest.TestCase):
 
     def test_constructor(self):
         obj = Base()
@@ -72,7 +72,7 @@ class TestMethod(unittest.TestCase):
     def test_format2(self):
         o = Base()
         o.a = "b"
-        self.assertEqual(Method.fmt(o), 'a="b"')
+        self.assertEqual(Object.fmt(o), 'a="b"')
 
     def test_getattr(self):
         obj = Base()

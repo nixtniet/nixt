@@ -10,7 +10,7 @@ import logging
 from random import SystemRandom
 
 
-from nixt.defines   import Broker, Disk, Locate, Message, Method, Repeater
+from nixt.defines   import Broker, Disk, Locate, Message, Object, Repeater
 
 
 rand = SystemRandom()
@@ -32,7 +32,7 @@ class State:
 
     def dump(self):
         if not self.fnm:
-            self.fnm = Locate.first(self) or Method.ident(self)
+            self.fnm = Locate.first(self) or Object.ident(self)
         Disk.write(self, self.fnm)
 
     def load(self):
