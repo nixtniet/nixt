@@ -7,7 +7,7 @@
 
 from .booting import Boot
 from .brokers import Broker
-from .clients import Console, Output, Poller
+from .clients import Buffered, Console, Poller
 from .command import Commands
 from .configs import Main
 from .encoder import Json
@@ -27,6 +27,7 @@ def __dir__():
        'Base',
        'Boot',
        'Broker',
+       'Buffered',
        'Client',
        'Commands',
        'Console',
@@ -41,7 +42,6 @@ def __dir__():
        'Mods',
        'Object',
        'Object',
-       'Output',
        'Parse',
        'Poller',
        'Repeater',

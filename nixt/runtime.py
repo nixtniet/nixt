@@ -92,6 +92,7 @@ class Runs:
         if cfg.user:
             Mods.add("mods", "mods")
             Mods.add("other", "other")
+        Log.size(len(Main.name))
         Log.level(cfg.level or "info")
         if cfg.read:
             Disk.read(Main, 'main', "config")

@@ -253,6 +253,7 @@ class Log:
     @classmethod
     def size(cls, nr):
         "set text size."
+        Format.size = nr
         index = cls.format.find("-")+1
         newformat = cls.format[:index]
         newformat += str(nr)
