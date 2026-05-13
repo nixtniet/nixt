@@ -10,8 +10,8 @@ import sys
 import time
 
 
-from nixt.defines import Boot, Commands, Console, Log, Main, Message, Mods
-from nixt.defines import Disk, Object, Parse, Utils, Workdir
+from nixt.defines import Boot, Commands, Console, Disk, Log, Main, Message
+from nixt.defines import Mods, Object, Parse, Utils, Workdir
 
 
 class Arguments:
@@ -25,7 +25,7 @@ class Arguments:
                                          description=f'{Main.name.upper()}',
                                          epilog='use "%(prog)s cmd" for a list of commands.',
                                          formatter_class=argparse.RawDescriptionHelpFormatter,
-                                         usage='''%(prog)s [-c|d|h|s] [-a] [-v] [-u] [-l level] [-m m1,m2] [-w] [--default] [--wdr]\n       %(prog)s [cmd] [arg=val] [arg==val]'''
+                                         usage='''%(prog)s [-c|d|h|s] [-a] [-v] [-u] [-l level] [-m m1,m2] [-w] [--wdr]\n       %(prog)s [cmd] [arg=val] [arg==val]'''
                                         )
         group = theparser.add_mutually_exclusive_group()
         group.add_argument("-c", "--console", action="store_true", help="run as console.")
@@ -39,9 +39,9 @@ class Arguments:
         parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
         parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
         optparser = theparser.add_argument_group()
-        optparser.add_argument("--check", action="store_false", help="don't check core's md5sums")
-        optparser.add_argument("--read", action="store_true", help="read config on boot.")
-        optparser.add_argument("--default", default="irc,rss", help="set default modules.")
+        optparser.add_argument("--check", action="store_false", help=argparse.SUPPRESS)
+        optparser.add_argument("--read", action="store_true", help=argparse.SUPPRESS)
+        optparser.add_argument("--default", default="irc,rss", help="use default values.")
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
         optparser.add_argument("--wdr", default="", help='set working directory.', metavar="wdr")
         args, arguments = theparser.parse_known_args()
@@ -52,8 +52,8 @@ class Arguments:
 
 class CSL(Console):
 
-    @classmethod
-    def cmd(cls, text):
+    @staticmethod
+    def cmd(text):
         "do a command."
         cli = CSL()
         for txt in text.split(" ! "):
@@ -106,7 +106,6 @@ class Runs:
         Mods.table()
         if cfg.check and cfg.verbose:
             Boot.check()
-            Mods.check()
 
 
 class Scripts:

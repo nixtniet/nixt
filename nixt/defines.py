@@ -11,7 +11,8 @@ from .clients import Buffered, Console, Poller
 from .command import Commands
 from .configs import Main
 from .encoder import Json
-from .handler import Client, Handler, Message
+from .handler import Client, Handler
+from .message import Message
 from .objects import Object
 from .objects import Base, Object
 from .package import Mods

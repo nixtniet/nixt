@@ -351,5 +351,5 @@ class Object:
 def __dir__():
     return (
         'Base',
-        'Object',
+        'Object'
     )
