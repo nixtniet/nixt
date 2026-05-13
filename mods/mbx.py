@@ -47,12 +47,16 @@ def eml(event):
         if obj:
             obj = obj[-1]
             tme = getattr(obj, "Date", "")
-            event.reply(f'{event.index} {Object.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - timed(tme))}')
+            diff = time.time = timed(tme)
+            txt = Object.fmt(obj, args, plain=True)
+            event.reply(f'{event.index} {txt} {Time.elapsed(diff)}')
     else:
         for _fn, obj in result:
             nrs += 1
             tme = getattr(obj, "Date", "")
-            event.reply(f'{nrs} {Object.fmt(obj, args, plain=True)} {Time.elapsed(time.time() - timed(tme))}')
+            diff = time.time - timed(tme)
+            txt = Object.fmt(obj, args, plain=True)
+            event.reply(f'{nrs} {txt} {Time.elapsed(diff)}')
     if not result:
         event.reply("no emails found.")
 

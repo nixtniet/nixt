@@ -9,9 +9,9 @@
 
 **SYNOPSIS**
 
-| ``%s [-c|d|h|s] [-a] [-v] [-u] [-x] [-l level] [-m m1,m2] [-w wdr]``
-| ``%s [cmd] [arg=val] [arg==val]``
-|
+
+| ``%s [-c|d|h|s] [-a] [-v] [-u] [-l level] [-m m1,m2] [-w] [--wdr]``
+| ``%s [cmd] [arg=val] [arg==val]
 
 **DESCRIPTION**
 
@@ -60,26 +60,28 @@ use ``%s`` to control the program, default it does nothing
 
 the -h option will show you possible options
 
+
 | ``$ %s -h``
-| usage: %s [-c|d|h|s] [-a] [-v] [-u] [-x] [-l level] [-m m1,m2] [-w wdr]
+| usage: %s [-c|d|h|s] [-a] [-v] [-u] [-l level] [-m m1,m2] [-w] [--wdr]
 |        %s [cmd] [arg=val] [arg==val]
 |
 | NIXT
 |
 | options:
-|   -h, --help         show this help message and exit
-|   -c, --console      run as console.
-|   -d, --daemon       run as background daemon.
-|   -s, --service      run as service.
+|  -h, --help         show this help message and exit
+|  -c, --console      run as console.
+|  -d, --daemon       run as background daemon.
+|  -s, --service      run as service.
 |
-|   -a, --all          load all modules.
-|   -l, --level level  set loglevel.
-|   -m, --mods m1,m2   modules to load.
-|   -v, --verbose      enable verbose.
-|   -w, --wait         wait for services to start.
-|   -u, --user         use local mods directory.
-|   -x, --admin        enable admin mode.
-|   --wdr wdr          set working directory.
+|  -a, --all          load all modules.
+|  -l, --level level  set loglevel.
+|  -m, --mods m1,m2   modules to load.
+|  -v, --verbose      enable verbose.
+|  -w, --wait         wait for services to start.
+|  -u, --user         use local mods directory.
+|
+|  --default DEFAULT  use default values.
+|  --wdr wdr          set working directory.
 |
 | use "%s cmd" for a list of commands.
 |

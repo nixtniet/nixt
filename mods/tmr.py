@@ -10,8 +10,7 @@ import threading
 import time
 
 
-from nixt.defines import Base, Broker, Disk, Locate, Object
-from nixt.defines import Object, Thread, Time
+from nixt.defines import Base, Broker, Disk, Locate, Object, Thread, Time
 
 
 rand = random.SystemRandom()

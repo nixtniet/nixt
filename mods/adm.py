@@ -11,11 +11,20 @@ import os
 from nixt.defines import Commands, Json, Main, Mods, Utils, Workdir, d, j
 
 
+dumps = Json.dumps
+
+
 def srv(event):
     "generate systemd service file."
     import getpass
     name = getpass.getuser()
-    event.reply(SYSTEMD % (Main.name.upper(), name, name, name, Main.name))
+    event.reply(SYSTEMD % (
+                           Main.name.upper(),
+                           name,
+                           name,
+                           name,
+                           Main.name
+                          ))
 
 
 def tbl(event):
@@ -31,11 +40,15 @@ def tbl(event):
             continue
         name = path[:-3]
         core[name] = Utils.md5(j(corepath, path))
-    event.reply("# This file is placed in the Public Domain.\n\n")
-    event.reply('"tables"\n\n')
-    event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4, sort_keys=True)}\n\n")
-    event.reply(f"CORE = {Json.dumps(core, indent=4, sort_keys=True)}\n\n")
-    event.reply(f"MD5 = {Json.dumps(md5s, indent=4, sort_keys=True)}")
+    event.reply("# This file is placed in the Public Domain.")
+    event.reply("\n")
+    event.reply('"tables"')
+    event.reply("\n")
+    event.reply(f"NAMES = {dumps(Commands.names, indent=4, sort_keys=True)}")
+    event.reply("\n")
+    event.reply(f"CORE = {dumps(core, indent=4, sort_keys=True)}")
+    event.reply("\n")
+    event.reply(f"MD5 = {dumps(md5s, indent=4, sort_keys=True)}")
 
 
 def wdr(event):

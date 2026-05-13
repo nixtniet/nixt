@@ -26,7 +26,7 @@ def init():
     except (KeyboardInterrupt, EOFError):
         _thread.interrupt_main()
     if irc.events.joined.is_set():
-        logging.warning("%s", Object.fmt(irc.cfg, skip=["name", "ignore", "word", "realname", "username", "version"]))
+        logging.warning("%s", Object.fmt(irc.cfg, skip=["ignore", "word"]))
     else:
         irc.stop()
     return irc
@@ -35,13 +35,6 @@ def init():
 def shutdown():
     for name, bot in Broker.like("irc"):
         bot.stop()
-
-
-def rlog(txt):
-    for ign in Config.ignore:
-        if ign in str(txt):
-            return
-    logging.debug(txt)
 
 
 class Config(Base):
@@ -79,10 +72,6 @@ class Event(Message):
         self.rest = ""
         self.sets = {}
         self.text = ""
-
-    def dosay(self, txt):
-        bot = Broker.get(self.orig)
-        bot.dosay(self.channel, txt)
 
 
 class TextWrap(textwrap.TextWrapper):
@@ -171,7 +160,12 @@ class IRC(Buffered):
             self.sock.setblocking(True)
             self.sock.settimeout(180.0)
             self.events.connected.set()
-            logging.debug("connected %s:%s channel %s", self.cfg.server, self.cfg.port, self.cfg.channel)
+            logging.debug(
+                          "connected %s:%s channel %s",
+                          self.cfg.server,
+                          self.cfg.port,
+                          self.cfg.channel
+                         )
             return True
         return False
 
@@ -224,7 +218,13 @@ class IRC(Buffered):
                     break
             except (KeyboardInterrupt, EOFError):
                 _thread.interrupt_main()
-            except (socket.error, socket.timeout, ssl.SSLError, OSError, ConnectionResetError) as ex:
+            except (
+                    socket.error,
+                    socket.timeout,
+                    ssl.SSLError,
+                    OSError,
+                    ConnectionResetError
+                   ) as ex:
                 self.events.joined.set()
                 self.state.error = str(ex)
                 logging.debug("%s", str(type(ex)) + " " + str(ex))
@@ -297,7 +297,7 @@ class IRC(Buffered):
         rawstr = str(txt)
         rawstr = rawstr.replace("\u0001", "")
         rawstr = rawstr.replace("\001", "")
-        rlog(txt)
+        self.rlog(txt)
         obj = Event()
         obj.args = []
         obj.rawstr = rawstr
@@ -384,7 +384,7 @@ class IRC(Buffered):
 
     def raw(self, text):
         text = text.rstrip()
-        rlog(text)
+        self.rlog(text)
         text = text[:500]
         text += "\r\n"
         text = bytes(text, "utf-8")
@@ -424,6 +424,12 @@ class IRC(Buffered):
         self.state.stopkeep = True
         self.stop()
         Thread.launch(init)
+
+    def rlog(self, txt):
+        for ign in Config.ignore:
+            if ign in str(txt):
+                return
+        logging.debug(txt)
 
     def say(self, channel, text):
         event = Event()
@@ -476,7 +482,7 @@ class IRC(Buffered):
 
 def cb_auth(evt):
     bot = Broker.get(evt.orig)
-    bot.docommand(f"AUTHENTICATE {bot.cfg.word or bot.cfg.word}")
+    bot.docommand(f"AUTHENTICATE {bot.cfg.word}")
 
 
 def cb_cap(evt):
@@ -527,7 +533,10 @@ def cb_001(evt):
 def cb_notice(evt):
     bot = Broker.get(evt.orig)
     if evt.text.startswith("VERSION"):
-        txt = f"\001VERSION {Config.name.upper()} {Config.version} - {bot.cfg.username}\001"
+        name = Config.name.upper()
+        ver = Config.version
+        user = bot.cfg.username
+        txt = f"\001VERSION {name} {ver} - {user}\001"
         bot.docommand("NOTICE", evt.channel, txt)
 
 

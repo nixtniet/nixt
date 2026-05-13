@@ -4,11 +4,7 @@
 "show path to website"
 
 
-import os
-
-
-d = os.path.dirname
-j = os.path.join
+from nixt.utility import d, j
 
 
 def pth(event):

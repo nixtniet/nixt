@@ -90,7 +90,9 @@ class RESTHandler(BaseHTTPRequestHandler):
             self.write_header("text/html")
             txt = ""
             for fnm in Workdir.kinds():
-                txt += f'<a href="http://{Config.hostname}:{Config.port}/{fnm}">{fnm}</a><br>\n'
+                hn = Config.hostname
+                port = Config.port
+                txt += f'<a href="http://{hn}:{port}/{fnm}">{fnm}</a><br>\n'
             self.send(html(txt.strip()))
             return
         if self.path.startswith("/"):
@@ -103,8 +105,10 @@ class RESTHandler(BaseHTTPRequestHandler):
             self.write_header("text/html")
             txt = ""
             for fnn in os.listdir(fnm):
-                filename = self.path + os.sep + fnn
-                txt += f'<a href="http://{Config.hostname}:{Config.port}/{filename}">{filename}</a><br>\n'
+                fn = self.path + os.sep + fnn
+                hn = Config.hostname
+                port = Config.port
+                txt += f'<a href="http://{hn}:{port}/{fn}">{fn}</a><br>\n'
             self.send(txt.strip())
             return
         try:

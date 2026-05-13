@@ -101,7 +101,8 @@ class Fetcher:
     def start(self, repeat=True):
         Disk.read(Config, "rss", "config")
         State.seenfn = Locate.last(State.seen) or Object.ident(State.seen)
-        State.modifiedfn = Locate.last(State.modified) or Object.ident(State.modified)
+        id = Object.ident(State.modified)
+        State.modifiedfn = Locate.last(State.modified) or id
         if repeat:
             repeater = Repeater(Config.polltime, self.run)
             repeater.start()
@@ -135,7 +136,8 @@ class Runner:
             data = getattr(obj, key, None)
             if not data:
                 continue
-            result += Helpers.unescape(Helpers.striphtml(data.replace("\n", " ").rstrip()))
+            stripped = Helpers.striphtml(data.replace("\n", " ").rstrip())
+            result += Helpers.unescape(stripped)
             result += " - "
         return result[:-2].rstrip()
 
@@ -270,7 +272,8 @@ class Parser:
             for itm in Utils.spl(items):
                 val = Parser.getitem(line, itm)
                 if val:
-                    obj[itm] = Helpers.striphtml(Helpers.unescape(val.strip())).replace("\n", "")
+                    escaped = Helpers.unescape(val.strip())
+                    obj[itm] = Helpers.striphtml(escaped).replace("\n", "")
             yield obj
 
 
@@ -372,9 +375,25 @@ class Helpers:
             if "link" not in items:
                 items += ",link"
             if feed.rss.endswith("atom"):
-                yield from Parser.parse(str(response.data, "utf-8", errors='ignore'), "entry", items) or []
+                yield from Parser.parse(
+                                        str(
+                                            response.data,
+                                            "utf-8",
+                                            errors='ignore'
+                                           ),
+                                        "entry",
+                                        items
+                                       ) or []
             else:
-                yield from Parser.parse(str(response.data, "utf-8", errors='ignore'), "item", items) or []
+                yield from Parser.parse(
+                                        str(
+                                            response.data,
+                                            "utf-8",
+                                            errors='ignore'
+                                           ),
+                                        "item",
+                                        items
+                                       ) or []
             if "error" in feed and feed.error:
                 feed.error = ""
                 Disk.write(feed, fnm)
@@ -482,9 +501,24 @@ def atr(event):
             event.reply(ex)
             return
         if obj.rss.endswith('atom'):
-            result = list(Parser.getitems(str(request.data, 'utf-8', errors='ignore'), 'entry', 1))
+            result = list(Parser.getitems(
+                                          str(
+                                              request.data,
+                                              'utf-8',
+                                              errors='ignore'
+                                             ),
+                                          'entry',
+                                          1
+                                         ))
         else:
-            result = list(Parser.getitems(str(request.data, 'utf-8', errors='ignore'), 'item', 1))
+            result = list(Parser.getitems(
+                                          str(
+                                              request.data,
+                                              'utf-8',
+                                              errors='ignore'),
+                                          'item',
+                                          1
+                                         ))
         resulting = []
         for x in re.findall('<.*?>', result[0]):
             if x[1] == '/' and len(x) > 4:
@@ -538,7 +572,9 @@ def exp(event):
             obj = Rss()
             Object.update(obj, ooo)
             name = f"url{nrs}"
-            txt = f'<outline name="{name}" display_list="{obj.display_list}" xmlUrl="{obj.rss}"/>'
+            dpl = obj.display_list
+            url = obj.rss
+            txt = f'<outline name="{name}" display_list="{dpl}" xmlUrl="{url}"/>'
             event.reply(" " * 12 + txt)
         event.reply(" " * 8 + "</outline>")
         event.reply("    <body>")
@@ -566,7 +602,11 @@ def imp(event):
                 continue
             if not url.startswith("http"):
                 continue
-            has = list(Locate.find(Object.fqn(Rss), {"rss": url}, matching=True))
+            has = list(Locate.find(
+                                   Object.fqn(Rss),
+                                   {"rss": url},
+                                   matching=True
+                                  ))
             if has:
                 State.skipped.append(url)
                 nrskip += 1
@@ -598,7 +638,10 @@ def nme(event):
         event.reply("nme <stringinurl> <name>")
         return
     selector = {"rss": event.args[0]}
-    for fnm, fed in Locate.find(Object.fqn(Rss), selector):
+    for fnm, fed in Locate.find(
+                                Object.fqn(Rss),
+                                selector
+                               ):
         feed = Rss()
         Object.update(feed, fed)
         if feed:
@@ -628,7 +671,10 @@ def res(event):
         event.reply("res <stringinurl>")
         return
     nrs = 0
-    for fnm, fed in Locate.find(Object.fqn(Rss), removed=True):
+    for fnm, fed in Locate.find(
+                                Object.fqn(Rss),
+                                removed=True
+                               ):
         feed = Rss()
         Object.update(feed, fed)
         if event.args[0] not in feed.rss:
@@ -647,7 +693,10 @@ def rss(event):
     if "http://" not in url and "https://" not in url:
         event.reply("i need an url")
         return
-    for fnm, result in Locate.find(Object.fqn(Rss), {"rss": url}):
+    for fnm, result in Locate.find(
+                                   Object.fqn(Rss),
+                                   {"rss": url}
+                                  ):
         if result:
             event.reply(f"{url} is known")
             return

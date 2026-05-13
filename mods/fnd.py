@@ -31,12 +31,16 @@ def fnd(event):
         if res:
             event.reply(",".join(res))
         else:
-            event.reply("no data yet.")
+            event.reply("no data.")
         return
     otype = event.args[0]
     nmr = 0
-    for fnm, obj in sorted(Locate.find(otype, event.gets), key=lambda x: Time.fntime(x[0])):
-        event.reply(f"{nmr} {Object.fmt(obj)} {Time.elapsed(time.time()-Time.fntime(fnm))}")
+    for fnm, obj in sorted(
+                           Locate.find(otype, event.gets),
+                           key=lambda x: Time.fntime(x[0])
+                          ):
+        diff = time.time()-Time.fntime(fnm)
+        event.reply(f"{nmr} {Object.fmt(obj)} {Time.elapsed(diff)}")
         nmr += 1
     if not nmr:
         event.reply("no result")
