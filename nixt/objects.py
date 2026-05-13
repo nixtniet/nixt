@@ -80,7 +80,7 @@ class Object:
     def difference(obj, *others):
         "return a new object with elements that are not in the others."
         raise NotImplementedError
-                    
+
     @staticmethod
     def difference_update(obj, *others):
         "update the object, removing elements found in others."
@@ -276,7 +276,7 @@ class Object:
     def symmetric_difference(obj, other):
         "return a new  object with elements in either the object or other but not both."
         raise NotImplementedError
-    
+
     @staticmethod
     def symmetric_difference_update(obj, other):
         "update the object, keeping only elements found in either object, but not in both."

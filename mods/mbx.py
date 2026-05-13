@@ -9,7 +9,7 @@ import os
 import time
 
 
-from nixt.defines import Base, Disk, Locate, Object, Object, Time
+from nixt.defines import Base, Disk, Locate, Object, Time
 
 
 class Email(Base):

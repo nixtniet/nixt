@@ -22,8 +22,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.defines import Base, Disk, Object, Broker, Locate
-from nixt.defines import Main, Object, Repeater, Thread, Utils, e
+from nixt.defines import Base, Broker, Disk, Locate, Main
+from nixt.defines import Object, Repeater, Thread, Utils, e
 
 
 def init():
@@ -101,8 +101,8 @@ class Fetcher:
     def start(self, repeat=True):
         Disk.read(Config, "rss", "config")
         State.seenfn = Locate.last(State.seen) or Object.ident(State.seen)
-        id = Object.ident(State.modified)
-        State.modifiedfn = Locate.last(State.modified) or id
+        oid = Object.ident(State.modified)
+        State.modifiedfn = Locate.last(State.modified) or oid
         if repeat:
             repeater = Repeater(Config.polltime, self.run)
             repeater.start()
@@ -572,9 +572,9 @@ def exp(event):
             obj = Rss()
             Object.update(obj, ooo)
             name = f"url{nrs}"
-            dpl = obj.display_list
+            dipl = obj.display_list
             url = obj.rss
-            txt = f'<outline name="{name}" display_list="{dpl}" xmlUrl="{url}"/>'
+            txt = f'<outline name="{name}" display_list="{dipl}" xmlUrl="{url}"/>'
             event.reply(" " * 12 + txt)
         event.reply(" " * 8 + "</outline>")
         event.reply("    <body>")
