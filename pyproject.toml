@@ -34,8 +34,7 @@ packages = [
     'nixt',
     'nixt.mirrors',
     'nixt.modules',
-    'nixt.network',
-    'nixt.numbers'
+    'nixt.network'
 ]
 include-package-data = true
 
