@@ -8,8 +8,8 @@ import queue
 import threading
 
 
-from .broker import Broker
-from .thread import Thread
+from .brokers import Broker
+from .threads import Thread
 
 
 class Handler:

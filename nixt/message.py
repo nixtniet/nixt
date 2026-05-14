@@ -7,11 +7,11 @@
 import threading
 
 
-from .broker import Broker
-from .object import Base
+from .brokers import Broker
+from .objects import Base
 
 
-class Event(Base):
+class Message(Base):
 
     def __init__(self):
         super().__init__()

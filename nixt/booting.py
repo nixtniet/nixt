@@ -11,11 +11,11 @@ import sys
 import time
 
 
-from .cmds import Commands
-from .mods import Mods
-from .disk import Workdir
-from .thread import Thread
-from .utils import Utils, d, e, j
+from .command import Commands
+from .package import Mods
+from .persist import Workdir
+from .threads import Thread
+from .utility import Utils, d, e, j
 
 
 class Boot:

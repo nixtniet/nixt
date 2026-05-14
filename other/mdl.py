@@ -9,7 +9,7 @@ import logging
 import time
 
 
-from nixt.face import Base, Broker, Event, Object, Repeater, Time
+from nixt.defines import Base, Broker, Message, Object, Repeater, Time
 
 
 def init():
@@ -18,7 +18,7 @@ def init():
             continue
         val = getattr(oorzaken, key, None)
         if val and int(val) > 10000:
-            evt = Event()
+            evt = Message()
             evt.txt = ""
             evt.rest = key
             sec = seconds(val)
@@ -108,14 +108,14 @@ def iswanted(k, line):
 def daily():
     while 1:
         time.sleep(24*60*60)
-        evt = Event()
+        evt = Message()
         cbnow(evt)
 
 
 def hourly():
     while 1:
         time.sleep(60*60)
-        evt = Event()
+        evt = Message()
         cbnow(evt)
 
 

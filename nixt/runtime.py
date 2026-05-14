@@ -10,8 +10,8 @@ import sys
 import time
 
 
-from .face import Boot, Commands, Console, Disk, Event, Log
-from .face import Main, Mods, Object, Parse, Utils, Workdir
+from .defines import Boot, Commands, Console, Disk, Log, Message
+from .defines import Main, Mods, Object, Parse, Utils, Workdir
 
 
 class Arguments:
@@ -58,7 +58,7 @@ class CSL(Console):
         "do a command."
         cli = CSL()
         for txt in text.split(" ! "):
-            evt = Event()
+            evt = Message()
             evt.kind = "command"
             evt.orig = repr(cli)
             evt.text = txt

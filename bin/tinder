@@ -15,8 +15,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.face import Boot, Client, Commands, Event, Main, Object
-from nixt.face import Mods, Parse, Thread, Time, Workdir, e
+from nixt.defines import Boot, Client, Commands, Main, Message, Object
+from nixt.defines import Mods, Parse, Thread, Time, Workdir, e
 
 
 Main.debug = True
@@ -113,7 +113,7 @@ class Run:
     def payload():
         for cmd in Commands.commands():
             for arg in Run.arguments:
-                evt = Event()
+                evt = Message()
                 evt.kind = "command"
                 evt.text = f"{cmd} {arg}"
                 Clients.put(evt)

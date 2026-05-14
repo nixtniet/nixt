@@ -129,7 +129,7 @@ class Utils:
     def check(path, md5s):
         ok = True
         for pth in os.listdir(path):
-            if pth.startswith("__") or not pth.endswith(".py") or "static" in pth:
+            if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
                 continue
             name = pth[:-3]
             modpath = j(path, pth)
@@ -164,10 +164,10 @@ class Utils:
     @staticmethod
     def md5core():
         try:
-            from . import static
+            from . import statics
         except ModuleNotFoundError:
             return ""
-        return Utils.md5source(inspect.getsource(static))[:7].upper()
+        return Utils.md5source(inspect.getsource(statics))[:7].upper()
 
     @staticmethod
     def md5source(src):

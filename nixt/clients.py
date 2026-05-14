@@ -10,10 +10,10 @@ import threading
 import _thread
 
 
-from .cmds import Commands
+from .command import Commands
 from .handler import Client
-from .event import Event
-from .thread import Thread
+from .message import Message
+from .threads import Thread
 
 
 class Poller(Client):

@@ -8,7 +8,7 @@ import inspect
 import os
 
 
-from nixt.face import Commands, Json, Main, Mods, Utils, Workdir, d, j
+from nixt.defines import Commands, Json, Main, Mods, Utils, Workdir, d, j
 
 
 dumps = Json.dumps
