@@ -102,7 +102,7 @@ class Console(Waiter):
 
     def poll(self):
         "return event."
-        evt = Event()
+        evt = Message()
         evt.orig = repr(self)
         evt.text = input("> ")
         evt.kind = "command"

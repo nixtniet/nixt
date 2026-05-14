@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.object import Base, Object
+from nixt.objects import Base, Object
 
 
 class TestObject(unittest.TestCase):

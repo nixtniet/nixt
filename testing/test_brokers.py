@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.face import Broker
+from nixt.defines import Broker
 
 
 class TestBroker(unittest.TestCase):

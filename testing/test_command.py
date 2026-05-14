@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.face import Commands, Event, Handler
+from nixt.defines import Commands, Message, Handler
 
 
 def cmnd(event):
@@ -31,7 +31,7 @@ class TestCommands(unittest.TestCase):
     def test_command(self):
         clt = Handler()
         Commands.add(cmnd)
-        evt = Event()
+        evt = Message()
         evt.text = "cmnd"
         evt.orig = repr(clt)
         Commands.command(evt)
