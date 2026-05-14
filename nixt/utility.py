@@ -15,6 +15,7 @@ import time
 a = os.path.abspath
 d = os.path.dirname
 e = os.path.exists
+i = os.path.isfile
 j = os.path.join
 
 

@@ -8,15 +8,21 @@ from nixt.defines import Broker, Object
 
 
 def flt(event):
+    if not event.args:
+        event.reply("flt [nr]")
+        return
+    try:
+        index = int(event.args[0])
+    except ValueError:
+        index = None
     clts = list(Broker.objs("announce"))
     if not clts:
-        event.reply("no bots")
+        event.reply("no clients")
         return
-    if event.args:
-        index = int(event.args[0])
-        if index < len(clts):
-            event.reply(str(clts[index]))
-        else:
-            event.reply("no matching client.")
+    if index is None:
+        event.reply(' | '.join([Object.fqn(o).split(".")[-1] for o in clts]))
         return
-    event.reply(' | '.join([Object.fqn(o).split(".")[-1] for o in clts]))
+    if index < len(clts):
+        event.reply(str(clts[index]))
+    else:
+        event.reply("no matching client.")

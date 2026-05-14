@@ -16,19 +16,20 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Boot, Client, Commands, Main, Message, Object
-from nixt.defines import Mods, Parse, Thread, Time, Utils, Workdir
-
-
-e = os.path.exists
+from nixt.defines import Mods, Parse, Thread, Time, Workdir, e
 
 
 Main.debug = True
-Main.other = True
+Main.threaded = True
 Main.wdr = ".test"
 Main.user = True
 
 
 Workdir.wdr = Main.wdr
+
+
+Mods.add("mods", "mods")
+Mods.add("other", "other")
 
 
 class CLI(Client):
@@ -56,9 +57,9 @@ class Clients:
         cls.clients.append(client)
 
     @classmethod
-    def init(cls, nrcpu, client):
+    def init(cls, client):
         with cls.lock:
-            cls.nrcpu = nrcpu
+            cls.nrcpu = os.cpu_count()
             for _x in range(Clients.nrcpu):
                 clt = client()
                 clt.start()
@@ -83,6 +84,20 @@ class Clients:
 
 class Run:
 
+    arguments = [
+                 "main",
+                 "log",
+                 "rss",
+                 "config",
+                 "todo",
+                 'timers',
+                 'hnrss title,link',
+                 "nick=mekker",
+                 "http://hnrss.org/newest",
+                 "22:00 test",
+                 "nixt nixtniet@gmail.com Nixt Niet"
+                ]
+
     @staticmethod
     def check(opts):
         "check for command line options."
@@ -95,124 +110,41 @@ class Run:
         return False
 
     @staticmethod
-    def payload(todo):
-        for cmd, example in todo.items():
-            for ex in example:
+    def payload():
+        for cmd in Commands.commands():
+            for arg in Run.arguments:
                 evt = Message()
                 evt.kind = "command"
-                evt.text = f"{cmd} {ex}"
+                evt.text = f"{cmd} {arg}"
+                print(evt)
                 Clients.put(evt)
 
 
 def main():
-    if not Run.check('p') and e(Main.wdr):
+    if e(Main.wdr):
         shutil.rmtree(Main.wdr)
-    Main.user = True
     if Run.check("v"):
         Main.verbose = True
-    if Run.check("t"):
-        Main.threaded = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
-    Mods.add("modules", Utils.moddir())
-    Mods.add("mods", "mods")
-    Mods.add("other", "other")
-    Commands.table()
-    if Main.threaded:
-        Clients.init(os.cpu_count(), CLI)
-    else:
-        Clients.init(1, CLI)
-    starttime = time.time()
+    Boot.scanner()
+    Clients.init(CLI)
     nrs = Main.index or 1
     thrs = []
     for _x in range(nrs):
-        thrs.append(Thread.launch(Run.payload, pre))
+        thrs.append(Thread.launch(Run.payload))
     for thr in thrs:
-        thr.join()
-    thrs = []
-    for _x in range(nrs):
-        thrs.append(Thread.launch(Run.payload, examples))
-    for thr in thrs:
-        thr.join()
-    thrs = []
-    for _x in range(nrs):
-        thrs.append(Thread.launch(Run.payload, post))
-    for thr in thrs:
+        print(thr)
         thr.join()
     Clients.shutdown()
     nrs = Clients.nrevents
     endtime = time.time()
-    lap = Time.elapsed(endtime-starttime)
-    percall = (endtime-starttime)/nrs
+    lap = Time.elapsed(endtime-Time.starttime)
+    percall = (endtime-Time.starttime)/nrs
     if Main.verbose:
         print(f"{Object.fmt(Main, skip='otxt,txt')}")
         print(f"cores: {Clients.nrcpu} events: {nrs}")
         print(f"total: {lap} nrs: {nrs} call: %.6fs" % percall)
         print(threading.enumerate())
-
-
-examples = {
-    "cmd": [""],
-    "dis": [""],
-    "dne": ["", "bla"],
-    "dpl": ["hnrss title,link", ""],
-    "eml": ["", "root@localhost"],
-    "exp": [""],
-    "fie": ["", "log", "todo"],
-    "flt": ["", "0"],
-    "fnd": ["", "log", "rss", "config", "todo", 'timers'],
-    "lou": [""],
-    "man": ["", "nixt nixtniet@gmail.com Nixt Niet"],
-    "mbx": [""],
-    "mod": [""],
-    "mre": [""],
-    "nme": ["", "hnrss hackernews"],
-    "now": [""],
-    "pth": [""],
-    "pwd": ["", "bla mekker"],
-    "req": [""],
-    "res": ["", "hnrss"],
-    "sil": [""],
-    "slg": [""],
-    "srv": [""],
-    "thr": [""],
-    "upt": [""],
-    "wsd": [""]
-}
-
-
-pre = {
-    "imp": [
-        "",
-        "testing/opml/feeds.opml",
-    ],
-    "cfg": [
-        '',
-        'main',
-        'irc',
-        'rss',
-        'rst',
-        'udp',
-        'web',
-        'main nick=mekker',
-        'irc nick=mekker',
-        'rss nick=mekker',
-        'rst nick=mekker',
-        'udp nick=mekker',
-        'web nick=mekker'
-    ],
-    "log": ["", "test"],
-    "rss": ["", "http://hnrss.org/newest"],
-    "tdo": ["", "test"],
-    "tmr": ["", "22:00 test"],
-}
-
-
-post = {
-    "dbg": [""],
-    "dne": ["", "mekker"],
-    "exp": [""],
-    "rem": ["", "hnrss"]
-}
 
 
 if __name__ == "__main__":

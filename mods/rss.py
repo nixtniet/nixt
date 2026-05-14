@@ -22,8 +22,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.defines import Base, Broker, Disk, Locate, Main
-from nixt.defines import Object, Repeater, Thread, Utils, e
+from nixt.defines import Base, Broker, Disk, Locate, Main, Object
+from nixt.defines import Repeater, Thread, Utils, i
 
 
 def init():
@@ -433,9 +433,9 @@ class Helpers:
         with urllib.request.urlopen(req) as htm:  # nosec
             for txt in htm.readlines():
                 line = txt.decode("UTF-8").strip()
-                i = re.search('data-clipboard-text="(.*?)"', line, re.M)
-                if i:
-                    return i.groups()
+                ii = re.search('data-clipboard-text="(.*?)"', line, re.M)
+                if ii:
+                    return ii.groups()
         return []
 
     @staticmethod
@@ -586,7 +586,7 @@ def imp(event):
         event.reply("imp <filename>")
         return
     fnm = event.args[0]
-    if not e(fnm):
+    if not i(fnm):
         event.reply(f"no {fnm} file found.")
         return
     with Run.importlock:

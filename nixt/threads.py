@@ -14,6 +14,8 @@ import _thread
 
 class Task(threading.Thread):
 
+    bork = False
+
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
         self.event = None
@@ -50,6 +52,8 @@ class Task(threading.Thread):
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
         except Exception as ex:
+            if Task.bork:
+                raise ex
             logging.exception(ex)
             if self.event:
                 self.event.ready()
