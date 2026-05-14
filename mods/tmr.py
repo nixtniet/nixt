@@ -72,7 +72,7 @@ class TimerLoop:
 
     @classmethod
     def start(cls):
-        cls.path = Locate.first(cls.timers) or Object.ident(cls.timers)
+        cls.path = Locate.first(cls.timers) or Disk.ident(cls.timers)
         cls.running.set()
         Thread.launch(cls.loop, name="Timers.loop")
 

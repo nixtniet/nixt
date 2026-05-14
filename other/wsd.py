@@ -32,7 +32,7 @@ class State:
 
     def dump(self):
         if not self.fnm:
-            self.fnm = Locate.first(self) or Object.ident(self)
+            self.fnm = Locate.first(self) or Disk.ident(self)
         Disk.write(self, self.fnm)
 
     def load(self):

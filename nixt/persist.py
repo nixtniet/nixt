@@ -4,6 +4,7 @@
 "persistence cache"
 
 
+import datetime
 import json
 import logging
 import os
@@ -45,6 +46,11 @@ class Disk:
     lock = threading.RLock()
 
     @classmethod
+    def ident(cls, obj):
+        "return ident string for object."
+        return j(Object.fqn(obj), *str(datetime.datetime.now()).split())
+
+    @classmethod
     def read(cls, obj, path, base="store", error=True):
         "read object from path."
         with cls.lock:
@@ -66,7 +72,7 @@ class Disk:
         "write object to disk."
         with cls.lock:
             if path == "":
-                path = Object.ident(obj)
+                path = cls.ident(obj)
             pth = j(Workdir.wdr, base, path)
             if not e(pth):
                 Workdir.skel()

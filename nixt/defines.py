@@ -41,7 +41,6 @@ def __dir__():
        'Message',
        'Mods',
        'Object',
-       'Object',
        'Parse',
        'Poller',
        'Repeater',

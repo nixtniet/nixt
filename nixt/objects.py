@@ -4,11 +4,7 @@
 "a clean namespace"
 
 
-import datetime
 import types
-
-
-from .utility import j
 
 
 class Base:
@@ -146,11 +142,6 @@ class Object:
     def get(obj, key, default=None):
         "return value for key if key is in the object, otherwise return default."
         return obj.__dict__.get(key, default)
-
-    @staticmethod
-    def ident(obj):
-        "return ident string for object."
-        return j(Object.fqn(obj), *str(datetime.datetime.now()).split())
 
     @staticmethod
     def intersection(obj, *others):

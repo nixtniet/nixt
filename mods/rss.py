@@ -100,8 +100,8 @@ class Fetcher:
 
     def start(self, repeat=True):
         Disk.read(Config, "rss", "config")
-        State.seenfn = Locate.last(State.seen) or Object.ident(State.seen)
-        oid = Object.ident(State.modified)
+        State.seenfn = Locate.last(State.seen) or Disk.ident(State.seen)
+        oid = Disk.ident(State.modified)
         State.modifiedfn = Locate.last(State.modified) or oid
         if repeat:
             repeater = Repeater(Config.polltime, self.run)
@@ -177,7 +177,7 @@ class Runner:
             if silent:
                 return counter
             if not State.seenfn:
-                State.seenfn = Object.ident(State.seen)
+                State.seenfn = Disk.ident(State.seen)
             Disk.write(State.seen, State.seenfn)
         txt = ""
         feedname = getattr(feed, "name", None)

@@ -10,8 +10,8 @@ import sys
 import time
 
 
-from nixt.defines import Boot, Commands, Console, Disk, Log, Main, Message
-from nixt.defines import Mods, Object, Parse, Utils, Workdir
+from nixt.defines import Boot, Commands, Console, Disk, Log, Message
+from nixt.defines import Main, Mods, Object, Parse, Utils, Workdir
 
 
 class Arguments:
@@ -25,7 +25,7 @@ class Arguments:
                                          description=f'{Main.name.upper()}',
                                          epilog='use "%(prog)s cmd" for a list of commands.',
                                          formatter_class=argparse.RawDescriptionHelpFormatter,
-                                         usage='''%(prog)s [-c|d|h|s] [-a] [-v] [-u] [-l level] [-m m1,m2] [-w] [--wdr]\n       %(prog)s [cmd] [arg=val] [arg==val]'''
+                                         usage='''%(prog)s [-c|d|h|s] [-a] [-v] [-u] [-w] [-l level] [-m m1,m2] [--wdr path]\n       %(prog)s [cmd] [arg=val] [arg==val]'''
                                         )
         group = theparser.add_mutually_exclusive_group()
         group.add_argument("-c", "--console", action="store_true", help="run as console.")
@@ -33,17 +33,18 @@ class Arguments:
         group.add_argument("-s", "--service", action="store_true", help="run as service.")
         parser = theparser.add_argument_group()
         parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
-        parser.add_argument("-l", "--level", default=Main.level, help='set loglevel.', metavar="level")
-        parser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
         parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
         parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
+        optionparser = theparser.add_argument_group()
+        optionparser.add_argument("-l", "--level", default=Main.level, help='set loglevel.', metavar="level")
+        optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
         optparser = theparser.add_argument_group()
         optparser.add_argument("--check", action="store_false", help=argparse.SUPPRESS)
         optparser.add_argument("--read", action="store_true", help=argparse.SUPPRESS)
-        optparser.add_argument("--default", default="irc,rss", help="use default values.")
+        optparser.add_argument("--default", default="irc,rss", help=argparse.SUPPRESS)
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
-        optparser.add_argument("--wdr", default="", help='set working directory.', metavar="wdr")
+        optparser.add_argument("--wdr", default="", help='set working directory.', metavar="path")
         args, arguments = theparser.parse_known_args()
         Main.otxt = txt = " ".join(arguments)
         Object.update(Main, args)
