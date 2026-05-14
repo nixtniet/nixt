@@ -128,6 +128,8 @@ class Utils:
     @staticmethod
     def check(path, md5s):
         ok = True
+        if not e(path):
+            return False
         for pth in os.listdir(path):
             if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
                 continue
