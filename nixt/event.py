@@ -7,11 +7,11 @@
 import threading
 
 
-from .brokers import Broker
-from .objects import Base
+from .broker import Broker
+from .object import Base
 
 
-class Message(Base):
+class Event(Base):
 
     def __init__(self):
         super().__init__()
@@ -51,5 +51,5 @@ class Message(Base):
 
 def __dir__():
     return (
-        'Message'
+        'Event',
     )

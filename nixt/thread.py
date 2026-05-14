@@ -14,7 +14,7 @@ import _thread
 
 class Task(threading.Thread):
 
-    bork = False
+    bork = True
 
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)

@@ -10,7 +10,7 @@ import logging
 from random import SystemRandom
 
 
-from nixt.defines import Broker, Disk, Locate, Message, Repeater
+from nixt.face import Broker, Disk, Event, Locate, Repeater
 
 
 rand = SystemRandom()
@@ -18,7 +18,7 @@ rand = SystemRandom()
 
 def init():
     state.load()
-    event = Message()
+    event = Event()
     repeater = Repeater(3600,  wsd, event)
     repeater.start()
     logging.warning("%s wise", len(TXTLIST))

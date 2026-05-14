@@ -7,23 +7,23 @@
 import unittest
 
 
-from nixt.message import Message
+from nixt.event import Event
 
 
-class TestMessage(unittest.TestCase):
+class TestEvent(unittest.TestCase):
 
     def test_ready(self):
-        msg = Message()
+        msg = Event()
         msg.ready()  # pylint: disable=E1102
         self.assertTrue(msg._ready.is_set())
 
     def test_reply(self):
-        msg = Message()
+        msg = Event()
         msg.reply("test")
         self.assertTrue("test" in msg.result)
 
     def test_wait(self):
-        msg = Message()
+        msg = Event()
         msg.ready()  # pylint: disable=E1102
         msg.wait()
         self.assertTrue(msg._ready.is_set())

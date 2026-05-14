@@ -32,12 +32,5 @@ classifiers = [
 [tool.setuptools]
 packages = [
     'nixt',
-    'nixt.mirrors',
     'nixt.modules',
-    'nixt.network'
 ]
-include-package-data = true
-
-
-[tool.setuptools.package-data]
-"nixbot.network" = ["*"]

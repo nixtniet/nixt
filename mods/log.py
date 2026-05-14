@@ -4,7 +4,7 @@
 "log text"
 
 
-from nixt.defines import Base, Disk
+from nixt.face import Base, Disk
 
 
 class Log(Base):

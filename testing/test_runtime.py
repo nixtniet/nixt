@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.runtime import Scripts
+from nixt.run import Scripts
 
 
 class TestRuntime(unittest.TestCase):

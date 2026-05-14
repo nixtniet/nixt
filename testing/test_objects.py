@@ -7,13 +7,13 @@
 import unittest
 
 
-from nixt.defines import Base, Disk, Object
+from nixt.face import Base, Disk, Object
 
 
-import nixt.objects
+import nixt.object
 
 
-TARGET = nixt.objects
+TARGET = nixt.object
 
 
 class TestObject(unittest.TestCase):

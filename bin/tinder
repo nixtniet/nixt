@@ -15,8 +15,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Main, Message, Object
-from nixt.defines import Mods, Parse, Thread, Time, Workdir, e
+from nixt.face import Boot, Client, Commands, Event, Main, Object
+from nixt.face import Mods, Parse, Thread, Time, Workdir, e
 
 
 Main.debug = True
@@ -113,10 +113,9 @@ class Run:
     def payload():
         for cmd in Commands.commands():
             for arg in Run.arguments:
-                evt = Message()
+                evt = Event()
                 evt.kind = "command"
                 evt.text = f"{cmd} {arg}"
-                print(evt)
                 Clients.put(evt)
 
 
@@ -133,17 +132,19 @@ def main():
     for _x in range(nrs):
         thrs.append(Thread.launch(Run.payload))
     for thr in thrs:
-        print(thr)
         thr.join()
     Clients.shutdown()
-    nrs = Clients.nrevents
+    total = len(Commands.commands()) * len(Run.arguments) * nrs
     endtime = time.time()
     lap = Time.elapsed(endtime-Time.starttime)
-    percall = (endtime-Time.starttime)/nrs
+    percall = (endtime-Time.starttime)/total
+    while 1:
+        if len(threading.enumerate()) == 1:
+            break
     if Main.verbose:
         print(f"{Object.fmt(Main, skip='otxt,txt')}")
-        print(f"cores: {Clients.nrcpu} events: {nrs}")
-        print(f"total: {lap} nrs: {nrs} call: %.6fs" % percall)
+        print(f"cores: {Clients.nrcpu} events: {total}")
+        print(f"total: {lap} nrs: {Clients.nrevents - total} call: %.6fs" % percall)
         print(threading.enumerate())
 
 

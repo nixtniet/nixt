@@ -9,7 +9,7 @@ import logging
 import os
 
 
-from .utility import Utils, e, j
+from .utils import Utils, e, j
 
 
 class Mods:

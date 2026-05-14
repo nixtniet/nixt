@@ -4,20 +4,18 @@
 "event handling"
 
 
-import collections
 import queue
 import threading
 
 
-from .brokers import Broker
-from .threads import Thread
+from .broker import Broker
+from .thread import Thread
 
 
 class Handler:
 
     def __init__(self):
         self.cbs = {}
-        self.working = collections.deque()
         self.queue = queue.Queue()
         self.stopped = threading.Event()
         self.done = threading.Event()
@@ -36,10 +34,11 @@ class Handler:
         while not self.stopped.is_set():
             event = self.queue.get()
             if event is None:
+                self.queue.task_done()
                 break
-            self.working.append(event)
             event.orig = repr(self)
             self.callback(event)
+            self.queue.task_done()
         self.done.set()
 
     def put(self, event):
@@ -60,16 +59,11 @@ class Handler:
         "stop event handler loop."
         self.stopped.set()
         self.queue.put(None)
+        self.done.wait()
 
     def wait(self):
         "wait for all events to finish,"
-        while True:
-            try:
-                # self.done.wait()
-                event = self.working.pop()
-                event.wait()
-            except IndexError:
-                break
+        self.queue.join()
 
 
 class Client(Handler):

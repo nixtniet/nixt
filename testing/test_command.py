@@ -4,16 +4,10 @@
 "write your own commands"
 
 
-import os
 import unittest
 
 
-from nixt.command import Commands
-from nixt.handler import Handler
-from nixt.message import Message
-
-
-e = os.path.exists
+from nixt.face import Commands, Event, Handler
 
 
 def cmnd(event):
@@ -37,7 +31,7 @@ class TestCommands(unittest.TestCase):
     def test_command(self):
         clt = Handler()
         Commands.add(cmnd)
-        evt = Message()
+        evt = Event()
         evt.text = "cmnd"
         evt.orig = repr(clt)
         Commands.command(evt)

@@ -12,10 +12,10 @@ import pathlib
 import threading
 
 
-from .configs import Main
+from .config import Main
 from .encoder import Json
-from .objects import Base, Object
-from .utility import Time, Utils, e, j
+from .object import Base, Object
+from .utils import Time, Utils, e, j
 
 
 class Cache:

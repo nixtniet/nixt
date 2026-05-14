@@ -7,8 +7,7 @@
 import unittest
 
 
-from nixt.handler import Handler
-from nixt.message import Message
+from nixt.face import Event, Handler
 
 
 buffer = []
@@ -31,7 +30,7 @@ class TestHandler(unittest.TestCase):
         self.hdl.stop()
 
     def test_callback(self):
-        evt = Message()
+        evt = Event()
         evt.kind = "hello"
         evt.text = "hello"
         self.hdl.callback(evt)
@@ -39,7 +38,7 @@ class TestHandler(unittest.TestCase):
         self.assertTrue("hello" in evt.result)
 
     def test_loop(self):
-        evt = Message()
+        evt = Event()
         evt.kind = "hello"
         evt.text = "hello"
         self.hdl.put(evt)
@@ -47,7 +46,7 @@ class TestHandler(unittest.TestCase):
         self.assertTrue(evt._ready.is_set())
 
     def test_loop2(self):
-        evt = Message()
+        evt = Event()
         evt.kind = "hello"
         evt.text = "hello bot"
         self.hdl.put(evt)
@@ -56,7 +55,7 @@ class TestHandler(unittest.TestCase):
 
     def test_put(self):
         hdl = Handler()
-        evt = Message()
+        evt = Event()
         evt.kind = "hello"
         hdl.put(evt)
         event = hdl.queue.get()

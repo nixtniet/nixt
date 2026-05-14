@@ -4,7 +4,7 @@
 "show path to website"
 
 
-from nixt.utility import d, j
+from nixt.utils import d, j
 
 
 def pth(event):

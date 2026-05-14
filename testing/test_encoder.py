@@ -7,8 +7,7 @@
 import unittest
 
 
-from nixt.encoder import Json
-from nixt.objects import Base, Object
+from nixt.face import Base, Json, Object
 
 
 VALIDJSON = '{"test": "bla"}'

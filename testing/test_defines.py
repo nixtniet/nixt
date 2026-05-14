@@ -7,7 +7,7 @@
 import unittest
 
 
-import nixt.defines as dev
+import nixt.face as dev
 
 
 class TestDefines(unittest.TestCase):

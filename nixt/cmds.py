@@ -4,9 +4,9 @@
 "write your own commands"
 
 
-from .package import Mods
-from .parsers import Parse
-from .utility import Utils
+from .mods import Mods
+from .parse import Parse
+from .utils import Utils
 
 
 class Commands:

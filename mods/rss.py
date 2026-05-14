@@ -22,8 +22,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.defines import Base, Broker, Disk, Locate, Main, Object
-from nixt.defines import Repeater, Thread, Utils, i
+from nixt.face import Base, Broker, Disk, Locate, Main, Object
+from nixt.face import Repeater, Thread, Utils, i
 
 
 def init():
@@ -370,7 +370,7 @@ class Helpers:
         result = [None,]
         try:
             response = Helpers.geturl(feed.rss)
-            if not response.data:
+            if not response or not response.data:
                 return result
             if "link" not in items:
                 items += ",link"
@@ -441,6 +441,8 @@ class Helpers:
     @staticmethod
     def geturl(url, force=False):
         "fetch an url."
+        if Main.debug:
+            return
         url = urllib.parse.urlunparse(urllib.parse.urlparse(url))
         req = urllib.request.Request(str(url))
         req.add_header("User-Agent", Helpers.useragent("RSS Fetcher"))
@@ -495,11 +497,14 @@ def atr(event):
         event.reply("atr <stringinurl>")
         return
     for _fnm, obj in Locate.find(Object.fqn(Rss), {'rss': event.rest}):
+        request = None
         try:
             request = Helpers.geturl(obj.rss, True)
         except Exception as ex:
-            event.reply(ex)
+            event.reply(str(ex))
             return
+        if not request:
+            continue
         if obj.rss.endswith('atom'):
             result = list(Parser.getitems(
                                           str(

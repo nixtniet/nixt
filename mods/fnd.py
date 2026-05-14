@@ -7,7 +7,7 @@
 import time
 
 
-from nixt.defines import Locate, Object, Time, Workdir
+from nixt.face import Locate, Object, Time, Workdir
 
 
 def fie(event):

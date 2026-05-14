@@ -7,9 +7,7 @@
 import unittest
 
 
-from nixt.clients import Poller
-from nixt.handler import Client
-from nixt.message import Message
+from nixt.face import Client, Event, Poller
 
 
 buffer = []
@@ -46,7 +44,7 @@ class TestInput(unittest.TestCase):
         self.assertTrue("hello" in buffer)
 
     def test_display(self):
-        evt = Message()
+        evt = Event()
         evt.reply("test1")
         evt.reply("test2")
         self.clt.display(evt)
@@ -60,13 +58,13 @@ class TestInput(unittest.TestCase):
 
     def test_poll(self):
         clt = Poller()
-        evt = Message()
+        evt = Event()
         evt.text = "okdan"
         clt.queue.put(evt)
         event = clt.poll()
         self.assertTrue(event is evt)
 
     def test_put(self):
-        evt = Message()
+        evt = Event()
         evt.kind = "hello"
         self.clt.put(evt)

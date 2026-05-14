@@ -5,21 +5,21 @@
 "interface"
 
 
-from .booting import Boot
-from .brokers import Broker
-from .clients import Buffered, Console, Poller
-from .command import Commands
-from .configs import Main
+from .boot    import Boot
+from .broker  import Broker
+from .client  import Buffered, Console, Poller
+from .cmds    import Commands
+from .config  import Main
 from .encoder import Json
 from .handler import Client, Handler
-from .message import Message
-from .objects import Base, Object
-from .package import Mods
-from .parsers import Parse
-from .persist import Disk, Locate, Workdir
-from .repeats import Repeater
-from .threads import Task, Thread
-from .utility import Log, Time, Utils, a, d ,e , i, j
+from .event   import Event
+from .object  import Base, Object
+from .mods    import Mods
+from .parse   import Parse
+from .disk    import Disk, Locate, Workdir
+from .repeat  import Repeater
+from .thread  import Task, Thread
+from .utils   import Log, Time, Utils, a, d ,e , i, j
 
 
 def __dir__():
@@ -32,13 +32,13 @@ def __dir__():
        'Commands',
        'Console',
        'Disk',
+       'Event',
        'Handler',
        'Input',
        'Json',
        'Locate',
        'Log',
        'Main',
-       'Message',
        'Mods',
        'Object',
        'Parse',

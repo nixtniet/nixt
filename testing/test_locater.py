@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.persist import Locate
+from nixt.disk import Locate
 
 
 class TestLocater(unittest.TestCase):

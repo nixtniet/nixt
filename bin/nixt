@@ -12,7 +12,7 @@ import sys
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.runtime import main
+from nixt.run import main
 
 
 if __name__ == "__main__":

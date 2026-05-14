@@ -9,7 +9,7 @@ import threading
 import types
 
 
-from .objects import Object
+from .object import Object
 
 
 class Encoder(json.JSONEncoder):

@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.package import Mods
+from nixt.mods import Mods
 
 
 class TestPackage(unittest.TestCase):

@@ -10,10 +10,10 @@ import threading
 import _thread
 
 
-from .command import Commands
+from .cmds import Commands
 from .handler import Client
-from .message import Message
-from .threads import Thread
+from .event import Event
+from .thread import Thread
 
 
 class Poller(Client):
@@ -27,7 +27,6 @@ class Poller(Client):
             if not event.text:
                 event.ready()
                 continue
-            self.working.append(event)
             event.orig = repr(self)
             self.callback(event)
         self.done.set()
@@ -89,7 +88,6 @@ class Waiter(Client):
             if not event.text:
                 event.ready()
                 continue
-            self.working.append(event)
             event.orig = repr(self)
             self.callback(event)
             event.wait()
@@ -104,7 +102,7 @@ class Console(Waiter):
 
     def poll(self):
         "return event."
-        evt = Message()
+        evt = Event()
         evt.orig = repr(self)
         evt.text = input("> ")
         evt.kind = "command"

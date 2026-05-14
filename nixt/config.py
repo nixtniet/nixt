@@ -4,8 +4,8 @@
 "configurations"
 
 
-from .objects import Object
-from .utility import Utils
+from .object import Object
+from .utils import Utils
 
 
 class MainConfig(type):
