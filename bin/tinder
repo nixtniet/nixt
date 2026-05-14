@@ -32,9 +32,6 @@ Main.user = True
 Workdir.wdr = Main.wdr
 
 
-events = queue.Queue()
-
-
 class CLI(Client):
 
     def __init__(self):
@@ -51,8 +48,9 @@ class Clients:
 
     clients = []
     lock = threading.RLock()
-    nrcpu = 1
     last = 0
+    nrevents = 0
+    nrcpu = 1
 
     @classmethod
     def add(cls, client):
@@ -74,6 +72,7 @@ class Clients:
                 cls.last = 0
             cls.clients[cls.last].put(*args)
             cls.last += 1
+            cls.nrevents += 1
 
     @classmethod
     def shutdown(cls):
@@ -83,41 +82,37 @@ class Clients:
             client.stop()
 
 
-def check(opts):
-    "check for command line options."
-    for arg in sys.argv:
-        if not arg.startswith("-"):
-            continue
-        for opt in opts:
-            if opt in arg:
-                return True
-    return False
 
+class Run:
 
-def consume():
-    while True:
-        event = events.get()
-        event.wait()
-        events.task_done()
+    @staticmethod
+    def check(opts):
+        "check for command line options."
+        for arg in sys.argv:
+            if not arg.startswith("-"):
+                continue
+            for opt in opts:
+                if opt in arg:
+                   return True
+        return False
 
-
-def payload(todo):
-    for cmd, example in todo.items():
-        for ex in example:
-            evt = Message()
-            evt.kind = "command"
-            evt.text = f"{cmd} {ex}"
-            Clients.put(evt)
-            events.put(evt)
+    @staticmethod
+    def payload(todo):
+        for cmd, example in todo.items():
+            for ex in example:
+                evt = Message()
+                evt.kind = "command"
+                evt.text = f"{cmd} {ex}"
+                Clients.put(evt)
 
 
 def main():
-    if not check('p') and e(Main.wdr):
+    if not Run.check('p') and e(Main.wdr):
         shutil.rmtree(Main.wdr)
     Main.user = True
-    if check("v"):
+    if Run.check("v"):
         Main.verbose = True
-    if check("t"):
+    if Run.check("t"):
         Main.threaded = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
     Mods.add("modules", Utils.moddir())
@@ -132,31 +127,28 @@ def main():
     nrs = Main.index or 1
     thrs = []
     for _x in range(nrs):
-        thrs.append(Thread.launch(payload, pre))
+        thrs.append(Thread.launch(Run.payload, pre))
     for thr in thrs:
         thr.join()
     thrs = []
     for _x in range(nrs):
-        thrs.append(Thread.launch(payload, examples))
+        thrs.append(Thread.launch(Run.payload, examples))
     for thr in thrs:
         thr.join()
     thrs = []
     for _x in range(nrs):
-        thrs.append(Thread.launch(payload, post))
+        thrs.append(Thread.launch(Run.payload, post))
     for thr in thrs:
         thr.join()
-    nrevents = events.qsize()
-    # Thread.launch(consume)
-    # events.join()
     Clients.shutdown()
+    nrs = Clients.nrevents
     endtime = time.time()
     lap = Time.elapsed(endtime-starttime)
-    percall = (endtime-starttime)/nrevents
-    nrs = events.qsize()
+    percall = (endtime-starttime)/nrs
     if Main.verbose:
         print(f"{Object.fmt(Main, skip='otxt,txt')}")
         print(f"cores: {Clients.nrcpu} events: {nrs}")
-        print(f"total: {lap} nrs: {nrevents} call: %.6fs" % percall)
+        print(f"total: {lap} nrs: {nrs} call: %.6fs" % percall)
         print(threading.enumerate())
 
 
