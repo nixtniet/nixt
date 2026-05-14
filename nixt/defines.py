@@ -39,6 +39,7 @@ def __dir__():
        'Locate',
        'Log',
        'Main',
+       'Message',
        'Mods',
        'Object',
        'Parse',
