@@ -33,13 +33,11 @@ class Handler:
         while not self.stopped.is_set():
             event = self.queue.get()
             if event is None:
-                print("end")
                 self.queue.task_done()
                 break
             event.orig = repr(self)
             self.callback(event)
             self.queue.task_done()
-        print("yo!")
         self.done.set()
 
     def put(self, event):
@@ -59,7 +57,6 @@ class Handler:
     def stop(self):
         "stop event handler loop."
         self.stopped.set()
-        print("put")
         self.queue.put(None)
         self.done.wait()
 

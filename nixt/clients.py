@@ -119,7 +119,7 @@ class Buffered(Client):
             self.display(event)
             self.oqueue.task_done()
 
-    def start(self, daemon=True):
+    def start(self, daemon=False):
         "start output loop."
         super().start(daemon=daemon)
         self.ostopped.clear()

@@ -95,17 +95,17 @@ class Run:
         return False
 
     @staticmethod
-    def payload(todo):
-        for cmd, example in todo.items():
-            for ex in example:
+    def payload():
+        for cmd in Commands.commands():
+            for arg in arguments:
                 evt = Message()
                 evt.kind = "command"
-                evt.text = f"{cmd} {ex}"
+                evt.text = f"{cmd} {arg}"
                 Clients.put(evt)
-                
+
 
 def final():
-    total = Clients.nrevents
+    total = len(Commands.commands()) * len(arguments) * Run.nrs
     endtime = time.time()
     lap = Time.elapsed(endtime-Time.starttime)
     percall = (endtime-Time.starttime)/total
@@ -131,17 +131,7 @@ def main():
     Run.nrs = Main.index or 1
     thrs = []
     for _x in range(Run.nrs):
-        thrs.append(Thread.launch(Run.payload, pre, daemon=True))
-    for thr in thrs:
-        thr.join()
-    thrs = []
-    for _x in range(Run.nrs):
-        thrs.append(Thread.launch(Run.payload, examples, daemon=True))
-    for thr in thrs:
-        thr.join()
-    thrs = []
-    for _x in range(Run.nrs):
-        thrs.append(Thread.launch(Run.payload, post, daemon=True))
+        thrs.append(Thread.launch(Run.payload))
     for thr in thrs:
         thr.join()
     Clients.shutdown()
@@ -151,67 +141,23 @@ def main():
         time.sleep(0.01)
 
 
-examples = {
-    "cmd": [""],
-    "dis": [""],
-    "dne": ["", "bla"],
-    "dpl": ["hnrss title,url", ""],
-    "eml": ["", "root@localhost"],
-    "fie": ["", "log", "todo"],
-    "flt": ["", "0"],
-    "fnd": ["", "log", "rss", "config", "todo", 'timers'],
-    "lou": [""],
-    "man": ["", "genocide nixtniet@gmail.com Nixt Niet"],
-    "mbx": [""],
-    "mod": [""],
-    "mre": [""],
-    "nme": ["", "hnrss hackernews"],
-    "now": [""],
-    "pth": [""],
-    "pwd": ["", "bla mekker"],
-    "req": [""],
-    "res": ["", "hnrss"],
-    "sil": [""],
-    "slg": [""],
-    "srv": [""],
-    "thr": [""],
-    "upt": [""],
-    "wsd": [""]
-}
-
-
-pre = {
-    "cfg": [
-        '',
-        'main',
-        'irc',
-        'rss',
-        'rst',
-        'udp',
-        'web',
-        'main nick=mekker',
-        'irc nick=mekker',
-        'rss nick=mekker',
-        'rst nick=mekker',
-        'udp nick=mekker',
-        'web nick=mekker'
-    ],
-    "imp": [
-        "",
-        "testing/opml/feeds.opml",
-    ],
-    "log": ["", "test"],
-    "rss": ["", "http://hnrss.org/newest"],
-    "tdo": ["", "test2"],
-    "tmr": ["", "22:00 test"],
-}
-
-post = {
-    "dbg": [""],
-    "dne": ["", "mekker"],
-    "exp": [""],
-    "rem": ["", "hnrss"]
-}
+arguments = [
+             "main",
+             "log",
+             "rss",
+             "config",
+             "todo",
+             'timers',
+             'hnrss title,link',
+             "nick=mekker",
+             "http://hnrss.org/newest",
+             "22:00 test",
+             "nixt nixtniet@gmail.com Nixt Niet",
+             '10',
+             10,
+             Base,
+             Base()
+            ]
 
 
 if __name__ == "__main__":
