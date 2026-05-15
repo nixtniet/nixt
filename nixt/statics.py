@@ -8,6 +8,7 @@ NAMES = {
     "atr": "rss",
     "cfg": "cfg",
     "cmd": "bsc",
+    "dbg": "dbg",
     "dis": "mdl",
     "dne": "tdo",
     "dpl": "rss",
@@ -63,7 +64,7 @@ CORE = {
     "persist": "571f48ca7fc922b3ba9c967612dfcdb9",
     "repeats": "7c8492ab2d848c15c780c3bfde8bd8ce",
     "runtime": "c60091d55932c2eb14c8e60e374529ae",
-    "threads": "2dea64fb6d78323b3711a5019ffcf974",
+    "threads": "96bf1394cd889978b3b70e0ee08514a5",
     "utility": "06b88132be959e8600bc7c80317c2595"
 }
 
@@ -72,6 +73,7 @@ MD5 = {
     "adm": "4842839ddb8fca7ffc491e9a32cebf48",
     "bsc": "84a1ea69e685d7ae6634a667ca35e5be",
     "cfg": "d0d7817696955d8126c35b97d468cc64",
+    "dbg": "00f50c2cc7c2c89280fb32d39edeb9f6",
     "flt": "698bc547a92d6233c7c5f7ccbe35e51a",
     "fnd": "13ed843ff995d3b2379587868d1b2e88",
     "irc": "d629f9d089a7848bc96276dd12756369",

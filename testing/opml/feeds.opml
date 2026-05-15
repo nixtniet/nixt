@@ -5,6 +5,7 @@
     <body>
         <outline title="opml" text="rss feeds">
             <outline name="url1" display_list="title,link,author" xmlUrl="https://www.icc-cpi.int/rss/records/all"/>
+            <outline name="url2" display_list="title,link,author" xmlUrl="https://www.eurojust.europa.eu/rss/press-releases.xml"/>
         </outline>
     <body>
 </opml>

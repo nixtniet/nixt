@@ -9,27 +9,25 @@ import os
 import shutil
 import sys
 import threading
+import traceback
 import time
 
 
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Main, Message, Object
-from nixt.defines import Mods, Parse, Thread, Time, Workdir, e
+from nixt.defines import Base, Boot, Client, Commands, Errors, Log, Main, Message
+from nixt.defines import Mods, Object, Parse, Thread, Time, Workdir, e
 
 
 Main.debug = True
 Main.threaded = True
 Main.wdr = ".test"
 Main.user = True
-
-
-Workdir.wdr = Main.wdr
-
-
 Mods.add("mods", "mods")
 Mods.add("other", "other")
+Workdir.wdr = Main.wdr
+Log.level("debug")
 
 
 class CLI(Client):
@@ -95,7 +93,11 @@ class Run:
                  "nick=mekker",
                  "http://hnrss.org/newest",
                  "22:00 test",
-                 "nixt nixtniet@gmail.com Nixt Niet"
+                 "nixt nixtniet@gmail.com Nixt Niet",
+                 '10',
+                 10,
+                 Base,
+                 Base()
                 ]
 
     @staticmethod
@@ -141,9 +143,17 @@ def main():
     while 1:
         if len(threading.enumerate()) == 1:
             break
+    nrerror = len(Errors.errors)
+    while 1:
+        try:
+            exc = Errors.get()
+            if exc:
+                traceback.print_exception(exc)
+        except IndexError:
+            break
     if Main.verbose:
         print(f"{Object.fmt(Main, skip='otxt,txt')}")
-        print(f"cores: {Clients.nrcpu} events: {total}")
+        print(f"cores: {Clients.nrcpu} events: {total} errors: {nrerror}")
         print(f"total: {lap} nrs: {Clients.nrevents - total} call: %.6fs" % percall)
         print(threading.enumerate())
 

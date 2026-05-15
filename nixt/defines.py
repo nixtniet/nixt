@@ -18,7 +18,7 @@ from .package import Mods
 from .parsers import Parse
 from .persist import Disk, Locate, Workdir
 from .repeats import Repeater
-from .threads import Task, Thread
+from .threads import Errors, Task, Thread
 from .utility import Log, Time, Utils, a, d ,e , i, j
 
 
@@ -32,6 +32,7 @@ def __dir__():
        'Commands',
        'Console',
        'Disk',
+       'Errors',
        'Event',
        'Handler',
        'Input',
