@@ -16,7 +16,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Base, Boot, Client, Commands, Errors, Log, Main, Message
+from nixt.defines import Base, Boot, Buffered, Client, Commands, Log, Main, Message
 from nixt.defines import Mods, Object, Parse, Thread, Time, Workdir, e
 
 
@@ -30,7 +30,7 @@ Workdir.wdr = Main.wdr
 Log.level("debug")
 
 
-class CLI(Client):
+class CLI(Buffered):
 
     def __init__(self):
         super().__init__()
@@ -74,31 +74,14 @@ class Clients:
 
     @classmethod
     def shutdown(cls):
-        for client in cls.clients:
+        for client in cls.clients[::-1]:
             client.wait()
-        for client in cls.clients:
             client.stop()
 
 
 class Run:
 
-    arguments = [
-                 "main",
-                 "log",
-                 "rss",
-                 "config",
-                 "todo",
-                 'timers',
-                 'hnrss title,link',
-                 "nick=mekker",
-                 "http://hnrss.org/newest",
-                 "22:00 test",
-                 "nixt nixtniet@gmail.com Nixt Niet",
-                 '10',
-                 10,
-                 Base,
-                 Base()
-                ]
+    nrs = 0
 
     @staticmethod
     def check(opts):
@@ -114,11 +97,27 @@ class Run:
     @staticmethod
     def payload():
         for cmd in Commands.commands():
-            for arg in Run.arguments:
+            for arg in arguments:
                 evt = Message()
                 evt.kind = "command"
                 evt.text = f"{cmd} {arg}"
                 Clients.put(evt)
+
+
+def final():
+    total = len(Commands.commands()) * len(arguments) * Run.nrs
+    endtime = time.time()
+    lap = Time.elapsed(endtime-Time.starttime)
+    percall = (endtime-Time.starttime)/total
+    if Main.verbose:
+        print(f"{Object.fmt(Main, skip='otxt,txt')}")
+        print(f"cores: {Clients.nrcpu} events: {total}")
+        print(f"total: {lap} nrs: {Clients.nrevents - total} call: %.6fs" % percall)
+        print(threading.enumerate())
+        res = ""
+        for client in Clients.clients:
+            res += str(client.queue.qsize()) + " "
+        print(res.strip())
 
 
 def main():
@@ -129,34 +128,38 @@ def main():
     Parse.parse(Main, " ".join(sys.argv[1:]))
     Boot.scanner()
     Clients.init(CLI)
-    nrs = Main.index or 1
+    Run.nrs = Main.index or 1
     thrs = []
-    for _x in range(nrs):
+    for _x in range(Run.nrs):
         thrs.append(Thread.launch(Run.payload))
     for thr in thrs:
         thr.join()
     Clients.shutdown()
-    total = len(Commands.commands()) * len(Run.arguments) * nrs
-    endtime = time.time()
-    lap = Time.elapsed(endtime-Time.starttime)
-    percall = (endtime-Time.starttime)/total
     while 1:
         if len(threading.enumerate()) == 1:
             break
-    nrerror = len(Errors.errors)
-    while 1:
-        try:
-            exc = Errors.get()
-            if exc:
-                traceback.print_exception(exc)
-        except IndexError:
-            break
-    if Main.verbose:
-        print(f"{Object.fmt(Main, skip='otxt,txt')}")
-        print(f"cores: {Clients.nrcpu} events: {total} errors: {nrerror}")
-        print(f"total: {lap} nrs: {Clients.nrevents - total} call: %.6fs" % percall)
-        print(threading.enumerate())
+        time.sleep(0.01)
+    final()
+
+
+arguments = [
+             "main",
+             "log",
+             "rss",
+             "config",
+             "todo",
+             'timers',
+             'hnrss title,link',
+             "nick=mekker",
+             "http://hnrss.org/newest",
+             "22:00 test",
+             "nixt nixtniet@gmail.com Nixt Niet",
+             '10',
+             10,
+             Base,
+             Base()
+            ]
 
 
 if __name__ == "__main__":
-    Boot.wrap(main)
+    Boot.wrap(main, final=final)

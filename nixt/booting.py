@@ -56,7 +56,7 @@ class Boot:
         "run forever until ctrl-c."
         while True:
             try:
-                time.sleep(0.1)
+                time.sleep(0.01)
             except (KeyboardInterrupt, EOFError):
                 break
 
@@ -118,7 +118,7 @@ class Boot:
             return False
 
     @classmethod
-    def wrap(cls, func, *args):
+    def wrap(cls, func, *args, final=None):
         "restore console."
         import termios
         old = None
@@ -134,6 +134,8 @@ class Boot:
             logging.exception(ex)
         if old:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+        if final:
+            final()
 
 
 def __dir__():

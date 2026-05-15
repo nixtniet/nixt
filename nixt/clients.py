@@ -99,7 +99,7 @@ class Console(Waiter):
         return evt
 
 
-class Buffered(Poller):
+class Buffered(Client):
 
     def __init__(self):
         super().__init__()
@@ -127,9 +127,9 @@ class Buffered(Poller):
 
     def stop(self):
         "stop output loop."
-        super().stop()
         self.ostopped.set()
         self.oqueue.put(None)
+        super().stop()
 
     def wait(self):
         "wait for output to finish."

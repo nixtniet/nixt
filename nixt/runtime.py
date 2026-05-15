@@ -68,6 +68,7 @@ class CSL(Console):
     def raw(self, text):
         "write to console."
         print(text.encode('utf-8', 'replace').decode("utf-8"))
+        sys.stdout.flush()
 
 
 class Runs:

@@ -7,28 +7,14 @@
 import collections
 import inspect
 import logging
+import os
 import queue
 import threading
 import time
 import _thread
 
 
-class Errors:
-
-    errors = collections.deque()
-
-    @classmethod
-    def defer(cls, exc):
-        cls.errors.append(exc)
-
-    @classmethod
-    def get(cls):
-        return cls.errors.pop()
-
-
 class Task(threading.Thread):
-
-    bork = False
 
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
@@ -51,7 +37,7 @@ class Task(threading.Thread):
             super().join(timeout or None)
             return self.result
         except (KeyboardInterrupt, EOFError):
-            if self.event and self.event.ready:
+            if self.event:
                 self.event.ready()
             _thread.interrupt_main()
 
@@ -66,13 +52,10 @@ class Task(threading.Thread):
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
         except Exception as ex:
-            Errors.defer(ex.with_traceback(ex.__traceback__))
-            if Task.bork:
-                raise ex
             logging.exception(ex)
-            if self.event:
-                self.event.ready()
-        # _thread.interrupt_main()
+        if self.event:
+            self.event.ready()
+        os._exit(1)
 
     def stop(self):
         "join thread."
