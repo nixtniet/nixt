@@ -8,7 +8,6 @@ import queue
 import threading
 
 
-from .brokers import Broker
 from .threads import Thread
 
 
@@ -66,39 +65,7 @@ class Handler:
         self.queue.join()
 
 
-class Client(Handler):
-
-    def __init__(self):
-        super().__init__()
-        self.olock = threading.RLock()
-        self.silent = True
-        Broker.add(self)
-
-    def announce(self, text):
-        "announce text to all channels."
-        if not self.silent:
-            self.raw(text)
-
-    def display(self, event):
-        "display event results."
-        with self.olock:
-            for txt in event.result:
-                self.dosay(event.channel, txt)
-
-    def dosay(self, channel, text):
-        "say called by display."
-        self.say(channel, text)
-
-    def raw(self, text):
-        "raw output."
-
-    def say(self, channel, text):
-        "say text in channel."
-        self.raw(text)
-
-
 def __dir__():
     return (
-        'Client',
-        'Handler'
+        'Handler',
     )

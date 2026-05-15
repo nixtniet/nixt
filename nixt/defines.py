@@ -7,11 +7,11 @@
 
 from .booting import Boot
 from .brokers import Broker
-from .clients import Buffered, Console, Poller
+from .clients import Buffered, Client, Console, Poller
 from .command import Commands
 from .configs import Main
 from .encoder import Json
-from .handler import Client, Handler
+from .handler import Handler
 from .message import Message
 from .objects import Base, Object
 from .package import Mods

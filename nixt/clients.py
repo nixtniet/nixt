@@ -10,10 +10,42 @@ import threading
 import _thread
 
 
+from .brokers import Broker
 from .command import Commands
-from .handler import Client
+from .handler import Handler
 from .message import Message
 from .threads import Thread
+
+
+class Client(Handler):
+
+    def __init__(self):
+        super().__init__()
+        self.olock = threading.RLock()
+        self.silent = True
+        Broker.add(self)
+
+    def announce(self, text):
+        "announce text to all channels."
+        if not self.silent:
+            self.raw(text)
+
+    def display(self, event):
+        "display event results."
+        with self.olock:
+            for txt in event.result:
+                self.dosay(event.channel, txt)
+
+    def dosay(self, channel, text):
+        "say called by display."
+        self.say(channel, text)
+
+    def raw(self, text):
+        "raw output."
+
+    def say(self, channel, text):
+        "say text in channel."
+        self.raw(text)
 
 
 class Poller(Client):
@@ -33,6 +65,38 @@ class Poller(Client):
 
     def poll(self):
         return self.queue.get()
+
+
+class Waiter(Client):
+
+    def loop(self):
+        "polling loop."
+        while not self.stopped.is_set():
+            event = self.poll()
+            if event is None:
+                break
+            if not event.text:
+                event.ready()
+                continue
+            event.orig = repr(self)
+            self.callback(event)
+            event.wait()
+        self.done.set()
+
+
+class Console(Waiter):
+
+    def __init__(self):
+        super().__init__()
+        self.register("command", Commands.command)
+
+    def poll(self):
+        "return event."
+        evt = Message()
+        evt.orig = repr(self)
+        evt.text = input("> ")
+        evt.kind = "command"
+        return evt
 
 
 class Buffered(Poller):
@@ -77,41 +141,10 @@ class Buffered(Poller):
             _thread.interrupt_main()
 
 
-class Waiter(Client):
-
-    def loop(self):
-        "polling loop."
-        while not self.stopped.is_set():
-            event = self.poll()
-            if event is None:
-                break
-            if not event.text:
-                event.ready()
-                continue
-            event.orig = repr(self)
-            self.callback(event)
-            event.wait()
-        self.done.set()
-
-
-class Console(Waiter):
-
-    def __init__(self):
-        super().__init__()
-        self.register("command", Commands.command)
-
-    def poll(self):
-        "return event."
-        evt = Message()
-        evt.orig = repr(self)
-        evt.text = input("> ")
-        evt.kind = "command"
-        return evt
-
-
 def __dir__():
     return (
         'Buffered',
+        'Client',
         'Console',
         'Poller',
         'Waiter'
