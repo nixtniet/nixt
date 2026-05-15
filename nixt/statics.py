@@ -8,7 +8,6 @@ NAMES = {
     "atr": "rss",
     "cfg": "cfg",
     "cmd": "bsc",
-    "dbg": "dbg",
     "dis": "mdl",
     "dne": "tdo",
     "dpl": "rss",
@@ -49,22 +48,22 @@ NAMES = {
 
 
 CORE = {
-    "booting": "c32611b1a6da2a123a92fbbb63a1faee",
+    "booting": "0ab63d1f7b74577a1193db443646590c",
     "brokers": "18fc6e381479829fbd822b0dc9380daa",
-    "clients": "f1da5d689c2eed254b8b93c6d8731ba5",
+    "clients": "f383620397878b8bbd2c813aea3c2a14",
     "command": "17198e126ff585d5202ea201da9aae94",
     "configs": "efb82659a3877aba9bf9200abea87b9b",
     "defines": "50403ac5851436a4de8581d05058f07e",
     "encoder": "4f4f1beb05e2a662fad03932437532dc",
-    "handler": "74a8cc74f898e12bf1b4172ba23760cd",
+    "handler": "742a89a6f43995042005ca9eaa96a028",
     "message": "c02f2cdd018c705d1e87b730134aaa58",
     "objects": "2f1165300f88b9280c6681bf6cedaf69",
     "package": "38ef5ec7af6ab071ab6ee2cd6ab0a573",
     "parsers": "a19dfbffca2222496dfafab52858f4bf",
     "persist": "571f48ca7fc922b3ba9c967612dfcdb9",
     "repeats": "7c8492ab2d848c15c780c3bfde8bd8ce",
-    "runtime": "c60091d55932c2eb14c8e60e374529ae",
-    "threads": "654d246a21cd045343a15bfe24932f0b",
+    "runtime": "b7a97c778db35c27cdcc6413ce1bc75f",
+    "threads": "72daf588a9de41ab51c190dd87e9d786",
     "utility": "06b88132be959e8600bc7c80317c2595"
 }
 
@@ -73,7 +72,6 @@ MD5 = {
     "adm": "4842839ddb8fca7ffc491e9a32cebf48",
     "bsc": "84a1ea69e685d7ae6634a667ca35e5be",
     "cfg": "d0d7817696955d8126c35b97d468cc64",
-    "dbg": "00f50c2cc7c2c89280fb32d39edeb9f6",
     "flt": "698bc547a92d6233c7c5f7ccbe35e51a",
     "fnd": "13ed843ff995d3b2379587868d1b2e88",
     "irc": "d629f9d089a7848bc96276dd12756369",
