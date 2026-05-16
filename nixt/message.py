@@ -51,5 +51,5 @@ class Message(Base):
 
 def __dir__():
     return (
-        'Event',
+        'Message',
     )

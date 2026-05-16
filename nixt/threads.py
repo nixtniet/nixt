@@ -57,10 +57,6 @@ class Task(threading.Thread):
             self.event.ready()
         os._exit(1)
 
-    def stop(self):
-        "join thread."
-        self.join()
-
 
 class Thread:
 
