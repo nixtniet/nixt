@@ -99,7 +99,7 @@ class Console(Waiter):
         return evt
 
 
-class Buffered(Client):
+class Buffered(Poller):
 
     def __init__(self):
         super().__init__()
