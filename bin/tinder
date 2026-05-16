@@ -9,14 +9,13 @@ import os
 import shutil
 import sys
 import threading
-import traceback
 import time
 
 
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Base, Boot, Buffered, Client, Commands, Log, Main, Message
+from nixt.defines import Boot, Buffered, Commands, Log, Main, Message
 from nixt.defines import Mods, Object, Parse, Thread, Time, Workdir, e
 
 
@@ -102,7 +101,7 @@ class Run:
                 evt.kind = "command"
                 evt.text = f"{cmd} {ex}"
                 Clients.put(evt)
-                
+
 
 def final():
     total = Clients.nrevents
@@ -113,11 +112,11 @@ def final():
         print(f"{Object.fmt(Main, skip='otxt,txt')}")
         print(f"cores: {Clients.nrcpu} events: {total}")
         print(f"total: {lap} nrs: {Clients.nrevents - total} call: %.6fs" % percall)
-        print(threading.enumerate())
         res = ""
         for client in Clients.clients:
             res += str(client.queue.qsize()) + " "
         print(res.strip())
+        print(threading.enumerate())
 
 
 def main():

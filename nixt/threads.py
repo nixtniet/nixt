@@ -4,7 +4,6 @@
 "make it non blocking"
 
 
-import collections
 import inspect
 import logging
 import os
