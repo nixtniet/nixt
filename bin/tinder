@@ -16,7 +16,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Engine, Event, Handler, Log
+from nixt.defines import Boot, Buffered, Client, Commands, Engine, Event, Handler, Log
 from nixt.defines import Console, Main, Mods, Object, Parse, Thread
 from nixt.defines import Time, Workdir, e
 
@@ -31,13 +31,11 @@ Workdir.wdr = Main.wdr
 Log.level("debug")
 
 
-events = queue.Queue()
-
-
-class CLI(Engine, Client):
+class CLI(Engine, Buffered):
 
     def __init__(self):
-        super().__init__()
+        Engine.__init__(self)
+        Buffered.__init__(self)
         self.register("command", Commands.command)
 
     def raw(self, text):
@@ -99,13 +97,6 @@ class Run:
         return False
 
     @staticmethod
-    def consume():
-        while 1:
-            evt = events.get()
-            evt.wait()
-            events.task_done()
-
-    @staticmethod
     def payload(todo):
         for cmd, example in todo.items():
             for ex in example:
@@ -113,7 +104,6 @@ class Run:
                 evt.kind = "command"
                 evt.text = f"{cmd} {ex}"
                 Clients.put(evt)
-                events.put(evt)
 
 
 def final():
@@ -154,9 +144,7 @@ def main():
     thrs = []
     for _x in range(Run.nrs):
         thrs.append(Thread.launch(Run.payload, post))
-    Thread.launch(Run.consume)
-    events.join()
-    #Clients.shutdown()
+    Clients.shutdown()
     while 1:
         if len(threading.enumerate()) == 1:
             break

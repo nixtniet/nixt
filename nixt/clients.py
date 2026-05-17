@@ -22,6 +22,7 @@ class Client:
         super().__init__()
         self.olock = threading.RLock()
         self.silent = True
+        Broker.add(self)
 
     def announce(self, text):
         "announce text to all channels."

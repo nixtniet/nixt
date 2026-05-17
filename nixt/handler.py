@@ -59,7 +59,6 @@ class Handler:
     def __init__(self):
         self.istopped = threading.Event()
         self.idone = threading.Event()
-        Broker.add(self)
 
     def handle(self, event):
         "handle evemt."
