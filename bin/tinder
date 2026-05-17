@@ -15,7 +15,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Buffered, Commands, Log, Main, Message
+from nixt.defines import Boot, Client, Commands, Log, Main, Message
 from nixt.defines import Mods, Object, Parse, Thread, Time, Workdir, e
 
 
@@ -29,7 +29,7 @@ Workdir.wdr = Main.wdr
 Log.level("debug")
 
 
-class CLI(Buffered):
+class CLI(Client):
 
     def __init__(self):
         super().__init__()
@@ -65,7 +65,7 @@ class Clients:
     @classmethod
     def put(cls, *args):
         with cls.lock:
-            if cls.last >= cls.nrcpu-1:
+            if cls.last >= cls.nrcpu:
                 cls.last = 0
             cls.clients[cls.last].put(*args)
             cls.last += 1
@@ -73,8 +73,8 @@ class Clients:
 
     @classmethod
     def shutdown(cls):
-        for client in cls.clients[::-1]:
-            client.wait()
+        for client in cls.clients:
+            #client.wait()
             client.stop()
 
 

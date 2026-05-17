@@ -14,8 +14,8 @@ import time
 import _thread
 
 
-from nixt.defines import Base, Broker, Buffered, Commands, Disk
-from nixt.defines import Main, Message, Object, Thread, Utils
+from nixt.defines import Base, Broker, Commands, Disk
+from nixt.defines import Main, Message, Object, Output, Thread, Utils
 
 
 def init():
@@ -89,10 +89,10 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-class IRC(Buffered):
+class IRC(Output):
 
     def __init__(self):
-        Buffered.__init__(self)
+        super().__init__()
         self.buffer = []
         self.cfg = Config()
         self.channels = []
@@ -458,7 +458,7 @@ class IRC(Buffered):
         self.events.ready.clear()
         self.events.connected.clear()
         self.events.joined.clear()
-        Buffered.start(self)
+        super().start(self)
         if not self.state.keeprunning:
             Thread.launch(self.keep, daemon=daemon)
         Thread.launch(

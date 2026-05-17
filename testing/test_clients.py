@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Client, Message, Poller
+from nixt.defines import Client, Message
 
 
 buffer = []
@@ -28,7 +28,7 @@ def output(self, txt):
     buffer.append(txt)
 
 
-class TestInput(unittest.TestCase):
+class TestClient(unittest.TestCase):
 
     def setUp(self):
         self.clt = MyClient()
@@ -56,15 +56,10 @@ class TestInput(unittest.TestCase):
         self.clt.dosay("#channel", "yo!")
         self.assertTrue("yo!" in buffer)
 
-    def test_poll(self):
-        clt = Poller()
-        evt = Message()
-        evt.text = "okdan"
-        clt.queue.put(evt)
-        event = clt.poll()
-        self.assertTrue(event is evt)
-
     def test_put(self):
         evt = Message()
         evt.kind = "hello"
+        evt.text = "hi world"
         self.clt.put(evt)
+        evt.wait()
+        self.assertTrue("hi world" in evt.result)

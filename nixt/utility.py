@@ -274,7 +274,6 @@ LEVELS = {
     "fatal": logging.FATAL
 }
 
-
 TIMES = [
     "%a, %d %b %Y %H:%M:%S %z",
     "%a, %d %b %Y %H:%M:%S",
@@ -294,9 +293,9 @@ def __dir__():
     return (
         'LEVELS',
         'TIMES',
+        'NoDate',
         'Format',
         'Log',
-        'NoDate',
         'Time',
         'Utils',
         'a',

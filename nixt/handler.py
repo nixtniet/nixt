@@ -4,6 +4,7 @@
 "event handling"
 
 
+import logging
 import queue
 import threading
 
@@ -39,6 +40,7 @@ class Handler:
             self.callback(event)
             self.queue.task_done()
         self.done.set()
+        logging.debug("handler stopped")
 
     def put(self, event):
         "put event on queue."
@@ -63,6 +65,7 @@ class Handler:
     def wait(self):
         "wait for all events to finish,"
         self.queue.join()
+        # self.queue.shutdown()
 
 
 def __dir__():
