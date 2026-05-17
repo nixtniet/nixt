@@ -40,7 +40,7 @@ class Engine:
             self.callback(event)
             self.queue.task_done()
         self.done.set()
-        logging.debug("handler stopped")
+        logging.debug("%s stopped" % repr(self))
 
     def put(self, event):
         "put event on queue."

@@ -6,6 +6,7 @@
 
 
 import os
+import queue
 import shutil
 import sys
 import threading
@@ -15,8 +16,9 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Handler, Log, Main, Message
-from nixt.defines import Console, Mods, Object, Output, Parse, Thread, Time, Workdir, e
+from nixt.defines import Boot, Client, Commands, Engine, Event, Handler, Log
+from nixt.defines import Console, Main, Mods, Object, Parse, Thread
+from nixt.defines import Time, Workdir, e
 
 
 Main.debug = True
@@ -29,7 +31,10 @@ Workdir.wdr = Main.wdr
 Log.level("debug")
 
 
-class CLI(Console):
+events = queue.Queue()
+
+
+class CLI(Engine, Client):
 
     def __init__(self):
         super().__init__()
@@ -74,7 +79,7 @@ class Clients:
     @classmethod
     def shutdown(cls):
         for client in cls.clients:
-            #client.wait()
+            client.wait()
             client.stop()
 
 
@@ -94,13 +99,21 @@ class Run:
         return False
 
     @staticmethod
+    def consume():
+        while 1:
+            evt = events.get()
+            evt.wait()
+            events.task_done()
+
+    @staticmethod
     def payload(todo):
         for cmd, example in todo.items():
             for ex in example:
-                evt = Message()
+                evt = Event()
                 evt.kind = "command"
                 evt.text = f"{cmd} {ex}"
                 Clients.put(evt)
+                events.put(evt)
 
 
 def final():
@@ -130,20 +143,20 @@ def main():
     Run.nrs = Main.index or 1
     thrs = []
     for _x in range(Run.nrs):
-        thrs.append(Thread.launch(Run.payload, pre, daemon=True))
+        thrs.append(Thread.launch(Run.payload, pre))
     for thr in thrs:
         thr.join()
     thrs = []
     for _x in range(Run.nrs):
-        thrs.append(Thread.launch(Run.payload, examples, daemon=True))
+        thrs.append(Thread.launch(Run.payload, examples))
     for thr in thrs:
         thr.join()
     thrs = []
     for _x in range(Run.nrs):
-        thrs.append(Thread.launch(Run.payload, post, daemon=True))
-    for thr in thrs:
-        thr.join()
-    Clients.shutdown()
+        thrs.append(Thread.launch(Run.payload, post))
+    Thread.launch(Run.consume)
+    events.join()
+    #Clients.shutdown()
     while 1:
         if len(threading.enumerate()) == 1:
             break

@@ -15,8 +15,8 @@ import _thread
 
 
 
-from nixt.defines import Base, Broker, Buffered, Commands, Disk, Engine, Event
-from nixt.defines import Main, Object, Thread, Utils
+from nixt.defines import Base, Broker, Buffered, Commands, Disk, Engine
+from nixt.defines import Event, Handler, Main, Object, Thread, Utils
 
 
 def init():
@@ -90,9 +90,10 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-class IRC(Buffered, Engine):
+class IRC(Handler, Engine, Buffered):
 
     def __init__(self):
+        Handler.__init__(self)
         Engine.__init__(self)
         Buffered.__init__(self)
         self.buffer = []
@@ -464,6 +465,7 @@ class IRC(Buffered, Engine):
         self.events.connected.clear()
         self.events.joined.clear()
         Engine.start(self)
+        Handler.start(self)
         Buffered.start(self)
         if not self.state.keeprunning:
             Thread.launch(self.keep, daemon=daemon)
@@ -478,6 +480,7 @@ class IRC(Buffered, Engine):
     def stop(self):
         self.state.stopkeep = True
         Engine.stop(self)
+        Handler.stop(self)
         Buffered.stop(self)
 
     def wait(self):

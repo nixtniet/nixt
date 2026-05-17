@@ -16,7 +16,7 @@ from .handler import Event, Handler
 from .threads import Thread
 
 
-class Client(Handler):
+class Client:
 
     def __init__(self):
         super().__init__()
@@ -62,7 +62,6 @@ class Buffered(Client):
             except (KeyboardInterrupt, EOFError):
                 _thread.interrupt_main()
             if event is None:
-                event.ready()
                 self.oqueue.task_done()
                 break
             self.display(event)
@@ -74,13 +73,11 @@ class Buffered(Client):
 
     def start(self, daemon=True):
         "start output loop."
-        super().start()
         self.ostopped.clear()
         Thread.launch(self.output, daemon=daemon)
 
     def stop(self):
         "stop output loop."
-        super().stop()
         self.wait()
         self.ostopped.set()
         self.oqueue.put(None)
@@ -94,7 +91,7 @@ class Buffered(Client):
             _thread.interrupt_main()
 
 
-class Console(Client):
+class Console(Client, Handler):
 
     def handle(self, event):
         "handle event."
