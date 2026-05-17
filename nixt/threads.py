@@ -54,7 +54,7 @@ class Task(threading.Thread):
             logging.exception(ex)
         if self.event:
             self.event.ready()
-        os._exit(1)
+        _thread.interrupt_main()
 
 
 class Thread:

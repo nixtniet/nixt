@@ -12,59 +12,16 @@ import _thread
 
 from .brokers import Broker
 from .command import Commands
-from .handler import Handler
-from .message import Message
+from .handler import Event, Handler
 from .threads import Thread
 
 
-class Input(Handler):
-
-    def __init__(self):
-        super().__init__()
-        self.iqueue = queue.Queue()
-        self.istopped = threading.Event()
-        self.idone = threading.Event()
-
-    def input(self):
-        while not self.istopped.is_set():
-            event = self.poll()
-            if event is None:
-                break
-            if not event.text:
-                event.ready()
-                continue
-            super().put(event)
-        self.idone.set()
-
-    def poll(self):
-        "poll for event."
-        return self.iqueue.get()
-
-    #def put(self, event):
-    #    "put event on iqueue."
-    #    self.iqueue.put(event)
-
-    def start(self, daemon=True):
-        "start event handler loop."
-        super().start()
-        self.idone.clear()
-        self.istopped.clear()
-        Thread.launch(self.input, daemon=daemon)
-
-    def stop(self):
-        "stop event handler loop."
-        super().stop()
-        self.istopped.set()
-        self.idone.wait()
-
-
-class Client(Input):
+class Client(Handler):
 
     def __init__(self):
         super().__init__()
         self.olock = threading.RLock()
         self.silent = True
-        Broker.add(self)
 
     def announce(self, text):
         "announce text to all channels."
@@ -90,7 +47,7 @@ class Client(Input):
         self.raw(text)
 
 
-class Output(Client):
+class Buffered(Client):
 
     def __init__(self):
         super().__init__()
@@ -105,6 +62,7 @@ class Output(Client):
             except (KeyboardInterrupt, EOFError):
                 _thread.interrupt_main()
             if event is None:
+                event.ready()
                 self.oqueue.task_done()
                 break
             self.display(event)
@@ -116,21 +74,20 @@ class Output(Client):
 
     def start(self, daemon=True):
         "start output loop."
-        super().start(daemon=daemon)
+        super().start()
         self.ostopped.clear()
         Thread.launch(self.output, daemon=daemon)
 
     def stop(self):
         "stop output loop."
-        self.wait()
         super().stop()
+        self.wait()
         self.ostopped.set()
         self.oqueue.put(None)
 
     def wait(self):
         "wait for output to finish."
         try:
-            super().wait()
             self.oqueue.join()
         except Exception as ex:
             logging.exception(ex)
@@ -139,26 +96,13 @@ class Output(Client):
 
 class Console(Client):
 
-    def __init__(self):
-        super().__init__()
-        self.register("command", Commands.command)
-
-    def input(self):
-        "polling loop."
-        while not self.istopped.is_set():
-            event = self.poll()
-            if event is None:
-                break
-            if not event.text:
-                event.ready()
-                continue
-            super().put(event)
-            event.wait()
-        self.idone.set()
+    def handle(self, event):
+        "handle event."
+        Commands.command(event)
 
     def poll(self):
         "return event."
-        evt = Message()
+        evt = Event()
         evt.orig = repr(self)
         evt.text = input("> ")
         evt.kind = "command"

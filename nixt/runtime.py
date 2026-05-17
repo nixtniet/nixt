@@ -10,7 +10,7 @@ import sys
 import time
 
 
-from .defines import Boot, Commands, Console, Disk, Log, Message
+from .defines import Boot, Commands, Console, Disk, Event, Log
 from .defines import Main, Mods, Object, Parse, Utils, Workdir
 
 
@@ -58,7 +58,7 @@ class CSL(Console):
         "do a command."
         cli = CSL()
         for txt in text.split(" ! "):
-            evt = Message()
+            evt = Event()
             evt.kind = "command"
             evt.orig = repr(cli)
             evt.text = txt

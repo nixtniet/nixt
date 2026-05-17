@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"event handling"
+"callback engine"
 
 
 import logging
@@ -12,7 +12,7 @@ import threading
 from .threads import Thread
 
 
-class Handler:
+class Engine:
 
     def __init__(self):
         self.cbs = {}
@@ -70,5 +70,5 @@ class Handler:
 
 def __dir__():
     return (
-        'Handler',
+        'Engine',
     )

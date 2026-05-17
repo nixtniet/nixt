@@ -14,8 +14,9 @@ import time
 import _thread
 
 
-from nixt.defines import Base, Broker, Commands, Disk
-from nixt.defines import Main, Message, Object, Output, Thread, Utils
+
+from nixt.defines import Base, Broker, Buffered, Commands, Disk, Engine, Event
+from nixt.defines import Main, Object, Thread, Utils
 
 
 def init():
@@ -57,7 +58,7 @@ class Config(Base):
     version = 1
 
 
-class Event(Message):
+class IEvent(Event):
 
     def __init__(self):
         super().__init__()
@@ -89,10 +90,11 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-class IRC(Output):
+class IRC(Buffered, Engine):
 
     def __init__(self):
-        super().__init__()
+        Engine.__init__(self)
+        Buffered.__init__(self)
         self.buffer = []
         self.cfg = Config()
         self.channels = []
@@ -263,6 +265,9 @@ class IRC(Output):
             self.docommand("NICK", nck)
         return evt
 
+    def handle(self, event):
+        Engine.put(self, event)
+
     def joinall(self):
         for channel in self.channels:
             self.docommand("JOIN", channel)
@@ -298,7 +303,7 @@ class IRC(Output):
         rawstr = rawstr.replace("\u0001", "")
         rawstr = rawstr.replace("\001", "")
         self.rlog(txt)
-        obj = Message()
+        obj = IEvent()
         obj.args = []
         obj.rawstr = rawstr
         obj.command = ""
@@ -432,7 +437,7 @@ class IRC(Output):
         logging.debug(txt)
 
     def say(self, channel, text):
-        event = Message()
+        event = IEvent()
         event.channel = channel
         event.reply(text)
         self.oput(event)
@@ -458,7 +463,8 @@ class IRC(Output):
         self.events.ready.clear()
         self.events.connected.clear()
         self.events.joined.clear()
-        super().start(self)
+        Engine.start(self)
+        Buffered.start(self)
         if not self.state.keeprunning:
             Thread.launch(self.keep, daemon=daemon)
         Thread.launch(
@@ -471,7 +477,8 @@ class IRC(Output):
 
     def stop(self):
         self.state.stopkeep = True
-        super().stop()
+        Engine.stop(self)
+        Buffered.stop(self)
 
     def wait(self):
         try:

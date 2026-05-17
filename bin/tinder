@@ -15,8 +15,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Log, Main, Message
-from nixt.defines import Mods, Object, Parse, Thread, Time, Workdir, e
+from nixt.defines import Boot, Client, Commands, Handler, Log, Main, Message
+from nixt.defines import Console, Mods, Object, Output, Parse, Thread, Time, Workdir, e
 
 
 Main.debug = True
@@ -29,7 +29,7 @@ Workdir.wdr = Main.wdr
 Log.level("debug")
 
 
-class CLI(Client):
+class CLI(Console):
 
     def __init__(self):
         super().__init__()
