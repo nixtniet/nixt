@@ -65,7 +65,6 @@ class Engine:
     def wait(self):
         "wait for all events to finish,"
         self.queue.join()
-        # self.queue.shutdown()
 
 
 def __dir__():

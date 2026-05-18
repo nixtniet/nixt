@@ -30,6 +30,7 @@ class Mods:
 
     @classmethod
     def check(cls):
+        "check modules for md5sums."
         ok = True
         for path in cls.dirs.values():
             if not Utils.check(path, cls.md5s):

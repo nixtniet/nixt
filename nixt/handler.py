@@ -59,7 +59,7 @@ class Handler:
         self.istopped = threading.Event()
 
     def handle(self, event):
-        "handle evemt."
+        "handle event."
         raise NotImplementedError
 
     def input(self):
@@ -76,6 +76,7 @@ class Handler:
         return self.iqueue.get()
 
     def put(self, event):
+        "put event on queue."
         self.iqueue.put(event)
 
     def start(self, daemon=True):

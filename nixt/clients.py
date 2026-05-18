@@ -61,7 +61,6 @@ class Buffer(Output):
                 event = self.oqueue.get()
             except (KeyboardInterrupt, EOFError):
                 _thread.interrupt_main()
-            print(event)
             if event is None:
                 self.oqueue.task_done()
                 break

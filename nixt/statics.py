@@ -50,7 +50,7 @@ NAMES = {
 CORE = {
     "booting": "0ab63d1f7b74577a1193db443646590c",
     "brokers": "18fc6e381479829fbd822b0dc9380daa",
-    "clients": "547783854e27be00827f0808b9c5097d",
+    "clients": "62d16dccc7ba05a109e4ad785e845bb3",
     "command": "17198e126ff585d5202ea201da9aae94",
     "configs": "efb82659a3877aba9bf9200abea87b9b",
     "defines": "71e13bd5e762ebd0642df9f583fb4787",
