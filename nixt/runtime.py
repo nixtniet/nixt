@@ -53,6 +53,8 @@ class Arguments:
 
 class Console(Client):
 
+    silent = True
+
     def handle(self, event):
         "handle event."
         Commands.command(event)

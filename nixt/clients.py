@@ -113,10 +113,12 @@ class Buffered(Handler, Buffer):
         raise NotImplementedError
 
     def start(self):
+        "start output loop."
         Handler.start(self)
         Buffer.start(self)
 
     def stop(self):
+        "stop output loop."
         Handler.stop(self)
         Buffer.stop(self)
 
