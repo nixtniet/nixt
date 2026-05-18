@@ -92,8 +92,8 @@ wrapper = TextWrap()
 class IRC(Engine, Buffered):
 
     def __init__(self):
-        Buffered.__init__(self)
         Engine.__init__(self)
+        Buffered.__init__(self)
         self.buffer = []
         self.cfg = Config()
         self.channels = []
@@ -133,6 +133,7 @@ class IRC(Engine, Buffered):
         self.register("366", cb_ready)
 
     def announce(self, text):
+        print("announce", self.channels)
         for channel in self.channels:
             self.say(channel, text)
 
@@ -232,6 +233,7 @@ class IRC(Engine, Buffered):
             time.sleep(self.cfg.sleep)
 
     def dosay(self, channel, text):
+        print(channel, text)
         self.events.joined.wait()
         txt = str(text).replace("\n", "")
         txt = txt.replace("  ", " ")

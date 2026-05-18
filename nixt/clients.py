@@ -20,7 +20,7 @@ class Output:
     def __init__(self):
         super().__init__()
         self.olock = threading.RLock()
-        self.silent = True
+        self.silent = False
         Broker.add(self)
 
     def announce(self, text):
@@ -61,6 +61,7 @@ class Buffer(Output):
                 event = self.oqueue.get()
             except (KeyboardInterrupt, EOFError):
                 _thread.interrupt_main()
+            print(event)
             if event is None:
                 self.oqueue.task_done()
                 break
@@ -101,7 +102,7 @@ class Client(Handler, Output):
         "raw output."
         raise NotImplementedError
 
-
+    
 class Buffered(Handler, Buffer):
 
     def __init__(self):
@@ -111,6 +112,14 @@ class Buffered(Handler, Buffer):
     def raw(self, text):
         "raw output."
         raise NotImplementedError
+
+    def start(self):
+        Handler.start(self)
+        Buffer.start(self)
+
+    def stop(self):
+        Handler.stop(self)
+        Buffer.stop(self)
 
 
 def __dir__():

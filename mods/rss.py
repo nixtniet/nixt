@@ -372,7 +372,6 @@ class Helpers:
             response = Helpers.geturl(feed.rss)
             if not response or not response.data:
                 return result
-            print("yo!")
             if "link" not in items:
                 items += ",link"
             if feed.rss.endswith("atom"):
@@ -405,7 +404,6 @@ class Helpers:
                 http.client.HTTPException,
                 ValueError,
                 HTTPError,
-                URLError,
                 UnicodeDecodeError,
                 ConnectionResetError
         ) as ex:
@@ -442,7 +440,6 @@ class Helpers:
     @staticmethod
     def geturl(url, force=False):
         "fetch an url."
-        print(Main.debug)
         if Main.debug:
             return
         url = urllib.parse.urlunparse(urllib.parse.urlparse(url))
@@ -453,7 +450,7 @@ class Helpers:
             if since:
                 req.add_header('If-Modified-Since', since)
         logging.debug("fetching %s %s", url, req.headers)
-        with urllib.request.urlopen(req, timeout=5.0) as response:  # nosec
+        with urllib.request.urlopen(req, timeout=10.0) as response:  # nosec
             modi = response.headers.get('Last-Modified', "")
             if modi:
                 setattr(State.modified, url, modi)
