@@ -6,7 +6,6 @@
 
 
 import os
-import queue
 import shutil
 import sys
 import threading
@@ -16,9 +15,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Buffered, Client, Commands, Engine, Event, Handler, Log
-from nixt.defines import Console, Main, Mods, Object, Parse, Thread
-from nixt.defines import Time, Workdir, e
+from nixt.defines import Boot, Buffer, Commands, Engine, Event, Log, Main
+from nixt.defines import Mods, Object, Parse, Thread, Time, Workdir, e
 
 
 Main.debug = True
@@ -31,11 +29,11 @@ Workdir.wdr = Main.wdr
 Log.level("debug")
 
 
-class CLI(Engine, Buffered):
+class CLI(Engine, Buffer):
 
     def __init__(self):
         Engine.__init__(self)
-        Buffered.__init__(self)
+        Buffer.__init__(self)
         self.register("command", Commands.command)
 
     def raw(self, text):

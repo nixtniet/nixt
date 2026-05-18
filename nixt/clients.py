@@ -1,4 +1,4 @@
- # This file is placed in the Public Domain.
+# This file is placed in the Public Domain.
 
 
 "event handling"
@@ -11,8 +11,7 @@ import _thread
 
 
 from .brokers import Broker
-from .command import Commands
-from .handler import Event, Handler
+from .handler import Handler
 from .threads import Thread
 
 
@@ -98,12 +97,20 @@ class Client(Handler, Output):
         Handler.__init__(self)
         Output.__init__(self)
 
+    def raw(self, text):
+        "raw output."
+        raise NotImplementedError
+
 
 class Buffered(Handler, Buffer):
 
     def __init__(self):
         Handler.__init__(self)
         Buffer.__init__(self)
+
+    def raw(self, text):
+        "raw output."
+        raise NotImplementedError
 
 
 def __dir__():

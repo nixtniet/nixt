@@ -4,7 +4,6 @@
 "callback engine"
 
 
-import logging
 import queue
 import threading
 import time
@@ -42,7 +41,6 @@ class Engine:
             self.queue.task_done()
             time.sleep(0.002)
         self.done.set()
-        logging.debug("%s stopped" % repr(self))
 
     def put(self, event):
         "put event on queue."
