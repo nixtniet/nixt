@@ -10,7 +10,7 @@ import sys
 import time
 
 
-from .defines import Boot, Commands, Console, Disk, Event, Log
+from .defines import Boot, Client, Commands, Disk, Event, Log
 from .defines import Main, Mods, Object, Parse, Utils, Workdir
 
 
@@ -51,19 +51,19 @@ class Arguments:
         Parse.parse(Main, txt)
 
 
-class CSL(Console):
+class Console(Client):
 
-    @staticmethod
-    def cmd(text):
-        "do a command."
-        cli = CSL()
-        for txt in text.split(" ! "):
-            evt = Event()
-            evt.kind = "command"
-            evt.orig = repr(cli)
-            evt.text = txt
-            Commands.command(evt)
-            evt.wait()
+    def handle(self, event):
+        "handle event."
+        Commands.command(event)
+
+    def poll(self):
+        "return event."
+        evt = Event()
+        evt.orig = repr(self)
+        evt.text = input("> ")
+        evt.kind = "command"
+        return evt
 
     def raw(self, text):
         "write to console."
@@ -109,6 +109,18 @@ class Runs:
         if cfg.check and cfg.verbose:
             Boot.check()
 
+    @staticmethod
+    def cmd(text):
+        "do a command."
+        cli = Console()
+        for txt in text.split(" ! "):
+            evt = Event()
+            evt.kind = "command"
+            evt.orig = repr(cli)
+            evt.text = txt
+            Commands.command(evt)
+            evt.wait()
+
 
 class Scripts:
 
@@ -130,7 +142,7 @@ class Scripts:
         Runs.boot(Main)
         if not Boot.init(Main.mods, Main.wait):
             return
-        csl = CSL()
+        csl = Console()
         csl.start()
         Boot.forever()
 
@@ -139,7 +151,7 @@ class Scripts:
         "cli script."
         Runs.boot(Main)
         Main.check = False
-        CSL.cmd(Main.otxt)
+        Runs.cmd(Main.otxt)
 
     @staticmethod
     def service():

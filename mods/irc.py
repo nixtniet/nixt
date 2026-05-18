@@ -90,12 +90,11 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-class IRC(Handler, Engine, Buffered):
+class IRC(Engine, Buffered):
 
     def __init__(self):
-        Handler.__init__(self)
-        Engine.__init__(self)
         Buffered.__init__(self)
+        Engine.__init__(self)
         self.buffer = []
         self.cfg = Config()
         self.channels = []
@@ -464,9 +463,8 @@ class IRC(Handler, Engine, Buffered):
         self.events.ready.clear()
         self.events.connected.clear()
         self.events.joined.clear()
-        Engine.start(self)
-        Handler.start(self)
         Buffered.start(self)
+        Engine.start(self)
         if not self.state.keeprunning:
             Thread.launch(self.keep, daemon=daemon)
         Thread.launch(
@@ -480,7 +478,6 @@ class IRC(Handler, Engine, Buffered):
     def stop(self):
         self.state.stopkeep = True
         Engine.stop(self)
-        Handler.stop(self)
         Buffered.stop(self)
 
     def wait(self):

@@ -1,4 +1,4 @@
-# This file is placed in the Public Domain.
+ # This file is placed in the Public Domain.
 
 
 "event handling"
@@ -16,7 +16,7 @@ from .handler import Event, Handler
 from .threads import Thread
 
 
-class Client:
+class Output:
 
     def __init__(self):
         super().__init__()
@@ -48,7 +48,7 @@ class Client:
         self.raw(text)
 
 
-class Buffered(Client):
+class Buffer(Output):
 
     def __init__(self):
         super().__init__()
@@ -92,29 +92,24 @@ class Buffered(Client):
             _thread.interrupt_main()
 
 
-class Console(Client, Handler):
+class Client(Handler, Output):
 
-    def handle(self, event):
-        "handle event."
-        Commands.command(event)
+    def __init__(self):
+        Handler.__init__(self)
+        Output.__init__(self)
 
-    def poll(self):
-        "return event."
-        evt = Event()
-        evt.orig = repr(self)
-        evt.text = input("> ")
-        evt.kind = "command"
-        return evt
 
-    def raw(self, text):
-        "raw output."
-        raise NotImplementedError
+class Buffered(Handler, Buffer):
+
+    def __init__(self):
+        Handler.__init__(self)
+        Buffer.__init__(self)
 
 
 def __dir__():
     return (
+        'Buffer',
+        'Buffered',
         'Client',
-        'Console',
-        'Input',
         'Output'
     )

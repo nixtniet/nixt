@@ -8,12 +8,9 @@ from nixt.defines import Broker, Object
 
 
 def flt(event):
-    if not event.args:
-        event.reply("flt [nr]")
-        return
     try:
         index = int(event.args[0])
-    except ValueError:
+    except (IndexError, ValueError):
         index = None
     clts = list(Broker.objs("announce"))
     if not clts:

@@ -372,6 +372,7 @@ class Helpers:
             response = Helpers.geturl(feed.rss)
             if not response or not response.data:
                 return result
+            print("yo!")
             if "link" not in items:
                 items += ",link"
             if feed.rss.endswith("atom"):
@@ -441,6 +442,7 @@ class Helpers:
     @staticmethod
     def geturl(url, force=False):
         "fetch an url."
+        print(Main.debug)
         if Main.debug:
             return
         url = urllib.parse.urlunparse(urllib.parse.urlparse(url))

@@ -57,8 +57,9 @@ class Event(Base):
 class Handler:
 
     def __init__(self):
-        self.istopped = threading.Event()
         self.idone = threading.Event()
+        self.iqueue = queue.Queue()
+        self.istopped = threading.Event()
 
     def handle(self, event):
         "handle evemt."
@@ -75,7 +76,10 @@ class Handler:
 
     def poll(self):
         "return event."
-        raise NotImplementedError
+        return self.iqueue.get()
+
+    def put(self, event):
+        self.iqueue.put(event)
 
     def start(self, daemon=True):
         "start event handler loop."

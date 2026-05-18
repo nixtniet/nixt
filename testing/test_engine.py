@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Message, Handler
+from nixt.defines import Event, Engine
 
 
 buffer = []
@@ -18,9 +18,9 @@ def hello(event):
     event.ready()
 
 
-class TestHandler(unittest.TestCase):
+class TestEngine(unittest.TestCase):
 
-    hdl = Handler()
+    hdl = Engine()
 
     def setUp(self):
         self.hdl.register("hello", hello)
@@ -30,7 +30,7 @@ class TestHandler(unittest.TestCase):
         self.hdl.stop()
 
     def test_callback(self):
-        evt = Message()
+        evt = Event()
         evt.kind = "hello"
         evt.text = "hello"
         self.hdl.callback(evt)
@@ -38,7 +38,7 @@ class TestHandler(unittest.TestCase):
         self.assertTrue("hello" in evt.result)
 
     def test_loop(self):
-        evt = Message()
+        evt = Event()
         evt.kind = "hello"
         evt.text = "hello"
         self.hdl.put(evt)
@@ -46,7 +46,7 @@ class TestHandler(unittest.TestCase):
         self.assertTrue(evt._ready.is_set())
 
     def test_loop2(self):
-        evt = Message()
+        evt = Event()
         evt.kind = "hello"
         evt.text = "hello bot"
         self.hdl.put(evt)
@@ -54,8 +54,8 @@ class TestHandler(unittest.TestCase):
         self.assertTrue("hello bot" in evt.result)
 
     def test_put(self):
-        hdl = Handler()
-        evt = Message()
+        hdl = Engine()
+        evt = Event()
         evt.kind = "hello"
         hdl.put(evt)
         event = hdl.queue.get()
@@ -66,7 +66,7 @@ class TestHandler(unittest.TestCase):
         self.assertTrue(hello in self.hdl.cbs.values())
 
     def test_start(self):
-        hdl = Handler()
+        hdl = Engine()
         hdl.start()
         self.assertTrue(not hdl.stopped.is_set())
 

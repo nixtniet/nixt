@@ -7,13 +7,16 @@
 import unittest
 
 
-from nixt.defines import Client, Message
+from nixt.defines import Client, Event
 
 
 buffer = []
 
 
 class MyClient(Client):
+
+    def handle(self, event):
+        hello(event)
 
     def raw(self, text):
         buffer.append(text)
@@ -24,16 +27,11 @@ def hello(event):
     event.ready()
 
 
-def output(self, txt):
-    buffer.append(txt)
-
-
 class TestClient(unittest.TestCase):
 
     def setUp(self):
         self.clt = MyClient()
         self.clt.silent = False
-        self.clt.register("hello", hello)
         self.clt.start()
 
     def shutDown(self):
@@ -44,7 +42,7 @@ class TestClient(unittest.TestCase):
         self.assertTrue("hello" in buffer)
 
     def test_display(self):
-        evt = Message()
+        evt = Event()
         evt.reply("test1")
         evt.reply("test2")
         self.clt.display(evt)
@@ -57,7 +55,7 @@ class TestClient(unittest.TestCase):
         self.assertTrue("yo!" in buffer)
 
     def test_put(self):
-        evt = Message()
+        evt = Event()
         evt.kind = "hello"
         evt.text = "hi world"
         self.clt.put(evt)
