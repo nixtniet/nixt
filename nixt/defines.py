@@ -7,7 +7,7 @@
 
 from .booting import Boot
 from .brokers import Broker
-from .clients import Buffer, Buffered, Client, Output
+from .clients import Buffer, Buffered, Client, Clients, Output
 from .command import Commands
 from .configs import Main
 from .encoder import Json
@@ -30,6 +30,7 @@ def __dir__():
        'Buffer',
        'Buffered',
        'Client',
+       'Clients',
        'Commands',
        'Console',
        'Disk',

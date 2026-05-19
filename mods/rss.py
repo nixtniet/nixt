@@ -22,7 +22,7 @@ from urllib.error import HTTPError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.defines import Base, Broker, Disk, Locate, Main, Object
+from nixt.defines import Base, Broker, Clients, Disk, Locate, Main, Object
 from nixt.defines import Repeater, Thread, Utils, i
 
 
@@ -184,7 +184,7 @@ class Runner:
         if feedname:
             txt = f"[{feedname}] "
         for obj in result:
-            Broker.announce(txt + self.display(obj))
+            Clients.announce(txt + self.display(obj))
         return counter
 
     def put(self, args):

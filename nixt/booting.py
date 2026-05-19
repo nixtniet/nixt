@@ -11,6 +11,7 @@ import sys
 import time
 
 
+from .brokers import Broker
 from .command import Commands
 from .package import Mods
 from .persist import Workdir
@@ -24,6 +25,7 @@ class Boot:
 
     @classmethod
     def check(cls):
+        "check md5sums."
         if cls.md5s:
             Utils.check(d(__spec__.loader.path), cls.md5s)
         if Mods.md5s:
@@ -62,6 +64,7 @@ class Boot:
 
     @classmethod
     def init(cls, modlist, wait=False):
+        "call init of modules that have an init function."
         thrs = []
         for name in Utils.spl(modlist):
             mod = Mods.get(name)
@@ -106,6 +109,16 @@ class Boot:
             if "configure" in dir(mod):
                 mod.configure()
             Commands.scan(mod)
+
+    @classmethod
+    def shutdown(cls):
+        "call stop on clients."
+        for client in Broker.objs("wait"):
+            client.wait()
+        time.sleep(0.01)
+        for client in Broker.objs("stop"):
+            client.stop()
+        time.sleep(0.01)
 
     @classmethod
     def table(cls):

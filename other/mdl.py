@@ -9,7 +9,7 @@ import logging
 import time
 
 
-from nixt.defines import Base, Broker, Event, Object, Repeater, Time
+from nixt.defines import Base, Broker, Clients, Event, Object, Repeater, Time
 
 
 def init():
@@ -129,7 +129,7 @@ def cbnow(evt):
         nrtimes = int(delta/needed)
         txt += f"{getalias(nme)} {nrtimes} | "
     txt += SOURCE
-    Broker.announce(txt)
+    Clients.announce(txt)
 
 
 def cbstats(evt):
@@ -151,7 +151,7 @@ def cbstats(evt):
             nryear,
             Time.elapsed(needed)
         )
-        Broker.announce(txt)
+        Clients.announce(txt)
 
 
 def dis(event):

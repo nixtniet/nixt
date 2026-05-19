@@ -10,7 +10,7 @@ import logging
 from random import SystemRandom
 
 
-from nixt.defines import Broker, Disk, Event, Locate, Repeater
+from nixt.defines import Broker, Clients, Disk, Event, Locate, Repeater
 
 
 rand = SystemRandom()
@@ -56,7 +56,7 @@ def wsd(event):
         state.seen = []
         txt = "* reset"
     state.dump()
-    Broker.announce(txt.strip()[2:])
+    Clients.announce(txt.strip()[2:])
 
 
 TXT = """| wijsheid, wijs !

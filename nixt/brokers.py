@@ -14,19 +14,6 @@ class Broker:
         cls.objects[repr(obj)] = obj
 
     @classmethod
-    def announce(cls, txt):
-        "announce text on all objects with an announce method."
-        for obj in cls.objs("announce"):
-            obj.announce(txt)
-
-    @classmethod
-    def display(cls, evt):
-        "print results."
-        bot = cls.get(evt.orig)
-        if bot:
-            bot.display(evt)
-
-    @classmethod
     def get(cls, origin):
         "object by repr(obj)."
         return cls.objects.get(origin)
@@ -49,12 +36,6 @@ class Broker:
         for obj in cls.objects.values():
             if attr in dir(obj):
                 yield obj
-
-    @classmethod
-    def shutdown(cls):
-        "call stop on clients."
-        for client in cls.objs("stop"):
-            client.stop()
 
 
 def __dir__():

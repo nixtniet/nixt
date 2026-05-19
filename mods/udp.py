@@ -12,7 +12,7 @@ import threading
 import time
 
 
-from nixt.defines import Base, Broker, Disk, Main, Thread
+from nixt.defines import Base, Broker, Clients, Disk, Main, Thread
 
 
 def init():
@@ -43,7 +43,7 @@ class UDP(Base):
     def output(self, txt, addr=None):
         if addr:
             Config.addr = addr
-        Broker.announce(txt.replace("\00", ""))
+        Clients.announce(txt.replace("\00", ""))
 
     def loop(self):
         try:
