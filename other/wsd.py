@@ -10,7 +10,7 @@ import logging
 from random import SystemRandom
 
 
-from nixt.defines import Broker, Clients, Disk, Event, Locate, Repeater
+from nixt.defines import Clients, Disk, Event, Locate, Repeater
 
 
 rand = SystemRandom()

@@ -9,7 +9,7 @@ import logging
 import time
 
 
-from nixt.defines import Base, Broker, Clients, Event, Object, Repeater, Time
+from nixt.defines import Base, Clients, Event, Object, Repeater, Time
 
 
 def init():
