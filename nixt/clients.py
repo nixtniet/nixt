@@ -101,7 +101,7 @@ class Client(Handler, Output):
         "raw output."
         raise NotImplementedError
 
-    
+
 class Buffered(Handler, Buffer):
 
     def __init__(self):
@@ -112,10 +112,10 @@ class Buffered(Handler, Buffer):
         "raw output."
         raise NotImplementedError
 
-    def start(self):
+    def start(self, daemon=True):
         "start output loop."
         Handler.start(self)
-        Buffer.start(self)
+        Buffer.start(self, daemon=daemon)
 
     def stop(self):
         "stop output loop."

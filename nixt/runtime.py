@@ -53,7 +53,9 @@ class Arguments:
 
 class Console(Client):
 
-    silent = True
+    def __init__(self):
+        Client.__init__(self)
+        self.silent = True
 
     def handle(self, event):
         "handle event."

@@ -62,7 +62,7 @@ CORE = {
     "parsers": "a19dfbffca2222496dfafab52858f4bf",
     "persist": "0aced2097a38944f4beb7a6d46cc941d",
     "repeats": "7c8492ab2d848c15c780c3bfde8bd8ce",
-    "runtime": "2e3d38d1a66a2a2e9b28e61f57cd937c",
+    "runtime": "d2a7aadaec2f95c44939eb9c44059681",
     "threads": "43527fea635612e61d00c764d9a01310",
     "utility": "72f839204976058dcc803cf29bfc234a"
 }

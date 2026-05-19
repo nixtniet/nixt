@@ -18,7 +18,7 @@ import uuid
 import _thread
 
 
-from urllib.error import HTTPError, URLError
+from urllib.error import HTTPError
 from urllib.parse import quote_plus, urlencode
 
 

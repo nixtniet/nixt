@@ -76,7 +76,10 @@ class Clients:
     def shutdown(cls):
         for client in cls.clients:
             client.wait()
+        time.sleep(0.01)
+        for client in cls.clients:
             client.stop()
+        time.sleep(0.01)
 
 
 class Run:

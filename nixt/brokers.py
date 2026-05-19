@@ -52,6 +52,7 @@ class Broker:
 
     @classmethod
     def shutdown(cls):
+        "call stop on clients."
         for client in cls.objs("stop"):
             client.stop()
 

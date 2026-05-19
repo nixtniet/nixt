@@ -127,6 +127,7 @@ class Utils:
 
     @staticmethod
     def check(path, md5s):
+        "check for md5sums in a given path."
         ok = True
         if not e(path):
             return False
@@ -147,6 +148,7 @@ class Utils:
 
     @staticmethod
     def md5(path):
+        "calculate md5sum of a file."
         import hashlib
         md5 = hashlib.md5()
         with open(path, "r", encoding="utf-8") as file:
@@ -165,6 +167,7 @@ class Utils:
 
     @staticmethod
     def md5core():
+        "calculate md5sum of core modules."
         try:
             from . import statics
         except ModuleNotFoundError:
@@ -273,6 +276,7 @@ LEVELS = {
     "critical": logging.CRITICAL,
     "fatal": logging.FATAL
 }
+
 
 TIMES = [
     "%a, %d %b %Y %H:%M:%S %z",

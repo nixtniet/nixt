@@ -122,5 +122,5 @@ class Mods:
 
 def __dir__():
     return (
-        'Mods'
+        'Mods',
     )
