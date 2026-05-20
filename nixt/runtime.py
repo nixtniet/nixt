@@ -5,6 +5,7 @@
 
 
 import argparse
+import logging
 import os
 import sys
 import time
@@ -125,13 +126,55 @@ class Runs:
             Commands.command(evt)
             evt.wait()
 
+    @classmethod
+    def daemon(cls, verbose=False, nochdir=False):
+        "run in the background."
+        pid = os.fork()
+        if pid != 0:
+            os._exit(0)
+        os.setsid()
+        pid2 = os.fork()
+        if pid2 != 0:
+            os._exit(0)
+        if not verbose:
+            with open('/dev/null', 'r', encoding="utf-8") as sis:
+                os.dup2(sis.fileno(), sys.stdin.fileno())
+            with open('/dev/null', 'a+', encoding="utf-8") as sos:
+                os.dup2(sos.fileno(), sys.stdout.fileno())
+            with open('/dev/null', 'a+', encoding="utf-8") as ses:
+                os.dup2(ses.fileno(), sys.stderr.fileno())
+        os.umask(0)
+        if not nochdir:
+            os.chdir("/")
+        os.nice(10)
+
+    @classmethod
+    def wrap(cls, func, *args, final=None):
+        "restore console."
+        import termios
+        old = None
+        try:
+            old = termios.tcgetattr(sys.stdin.fileno())
+        except termios.error:
+            pass
+        try:
+            func(*args)
+        except (KeyboardInterrupt, EOFError):
+            pass
+        except Exception as ex:
+            logging.exception(ex)
+        if old:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+        if final:
+            final()
+
 
 class Scripts:
 
     @staticmethod
     def background():
         "background script."
-        Boot.daemon(Main.verbose, Main.nochdir)
+        Runs.daemon(Main.verbose, Main.nochdir)
         Boot.privileges()
         Runs.boot(Main)
         Boot.pidfile(Main.name)
@@ -168,16 +211,16 @@ class Scripts:
 
 
 def main():
-    "main"
+    "main."
     Arguments.getargs()
     if Main.daemon:
-        Boot.wrap(Scripts.background)
+        Runs.wrap(Scripts.background)
     elif Main.console:
-        Boot.wrap(Scripts.console)
+        Runs.wrap(Scripts.console)
     elif Main.service:
-        Boot.wrap(Scripts.service)
+        Runs.wrap(Scripts.service)
     else:
-        Boot.wrap(Scripts.control)
+        Runs.wrap(Scripts.control)
 
 
 if __name__ == "__main__":

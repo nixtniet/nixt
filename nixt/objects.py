@@ -135,7 +135,7 @@ class Object:
 
     @staticmethod
     def fromkeys(obj, keyz, value=None):
-        "create a new object with keys from iterable and values set to value/"
+        "create a new object with keys from iterable and values set to value."
         return obj.__dict__.fromkeys(keyz, value)
 
     @staticmethod

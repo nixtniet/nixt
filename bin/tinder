@@ -5,6 +5,7 @@
 "stress test"
 
 
+import logging
 import os
 import shutil
 import sys
@@ -82,7 +83,7 @@ class Clients:
         time.sleep(0.01)
 
 
-class Run:
+class Runs:
 
     nrs = 0
 
@@ -106,6 +107,26 @@ class Run:
                 evt.text = f"{cmd} {ex}"
                 Clients.put(evt)
 
+    @classmethod
+    def wrap(cls, function, *args, dofinal=None):
+        "restore console."
+        import termios
+        oldie = None
+        try:
+            oldie = termios.tcgetattr(sys.stdin.fileno())
+        except termios.error:
+            pass
+        try:
+            function(*args)
+        except (KeyboardInterrupt, EOFError):
+            pass
+        except Exception as exc:
+            logging.exception(exc)
+        if oldie:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, oldie)
+        if dofinal:
+            final()
+
 
 def final():
     total = Clients.nrevents
@@ -126,25 +147,25 @@ def final():
 def main():
     if e(Main.wdr):
         shutil.rmtree(Main.wdr)
-    if Run.check("v"):
+    if Runs.check("v"):
         Main.verbose = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
     Boot.scanner()
     Clients.init(CLI)
-    Run.nrs = Main.index or 1
+    Runs.nrs = Main.index or 1
     thrs = []
-    for _x in range(Run.nrs):
-        thrs.append(Thread.launch(Run.payload, pre))
+    for _x in range(Runs.nrs):
+        thrs.append(Thread.launch(Runs.payload, pre))
     for thr in thrs:
         thr.join()
     thrs = []
-    for _x in range(Run.nrs):
-        thrs.append(Thread.launch(Run.payload, examples))
+    for _x in range(Runs.nrs):
+        thrs.append(Thread.launch(Runs.payload, examples))
     for thr in thrs:
         thr.join()
     thrs = []
-    for _x in range(Run.nrs):
-        thrs.append(Thread.launch(Run.payload, post))
+    for _x in range(Runs.nrs):
+        thrs.append(Thread.launch(Runs.payload, post))
     Clients.shutdown()
     while 1:
         if len(threading.enumerate()) == 1:
@@ -216,4 +237,4 @@ post = {
 
 
 if __name__ == "__main__":
-    Boot.wrap(main, final=final)
+    Runs.wrap(main, dofinal=final)

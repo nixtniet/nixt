@@ -37,7 +37,6 @@ def __dir__():
        'Engine',
        'Event',
        'Handler',
-       'Input',
        'Json',
        'Locate',
        'Log',

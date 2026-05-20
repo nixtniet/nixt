@@ -4,14 +4,11 @@
 "in the beginning"
 
 
-import logging
 import os
 import pathlib
-import sys
 import time
 
 
-from .brokers import Broker
 from .command import Commands
 from .package import Mods
 from .persist import Workdir
@@ -30,28 +27,6 @@ class Boot:
             Utils.check(d(__spec__.loader.path), cls.md5s)
         if Mods.md5s:
             Mods.check()
-
-    @classmethod
-    def daemon(cls, verbose=False, nochdir=False):
-        "run in the background."
-        pid = os.fork()
-        if pid != 0:
-            os._exit(0)
-        os.setsid()
-        pid2 = os.fork()
-        if pid2 != 0:
-            os._exit(0)
-        if not verbose:
-            with open('/dev/null', 'r', encoding="utf-8") as sis:
-                os.dup2(sis.fileno(), sys.stdin.fileno())
-            with open('/dev/null', 'a+', encoding="utf-8") as sos:
-                os.dup2(sos.fileno(), sys.stdout.fileno())
-            with open('/dev/null', 'a+', encoding="utf-8") as ses:
-                os.dup2(ses.fileno(), sys.stderr.fileno())
-        os.umask(0)
-        if not nochdir:
-            os.chdir("/")
-        os.nice(10)
 
     @classmethod
     def forever(cls):
@@ -111,16 +86,6 @@ class Boot:
             Commands.scan(mod)
 
     @classmethod
-    def shutdown(cls):
-        "call stop on clients."
-        for client in Broker.objs("wait"):
-            client.wait()
-        time.sleep(0.01)
-        for client in Broker.objs("stop"):
-            client.stop()
-        time.sleep(0.01)
-
-    @classmethod
     def table(cls):
         "read table,"
         try:
@@ -129,26 +94,6 @@ class Boot:
             return True
         except ImportError:
             return False
-
-    @classmethod
-    def wrap(cls, func, *args, final=None):
-        "restore console."
-        import termios
-        old = None
-        try:
-            old = termios.tcgetattr(sys.stdin.fileno())
-        except termios.error:
-            pass
-        try:
-            func(*args)
-        except (KeyboardInterrupt, EOFError):
-            pass
-        except Exception as ex:
-            logging.exception(ex)
-        if old:
-            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
-        if final:
-            final()
 
 
 def __dir__():
