@@ -4,6 +4,7 @@
 "in the beginning"
 
 
+import inspect
 import os
 import pathlib
 import time
@@ -53,6 +54,23 @@ class Boot:
                 except (KeyboardInterrupt, EOFError):
                     return False
         return True
+
+    @classmethod
+    def md5core(cls):
+        "calculate md5sum of core modules."
+        try:
+            from . import statics
+        except ModuleNotFoundError:
+            return ""
+        return cls.md5source(inspect.getsource(statics))[:7].upper()
+
+    @classmethod
+    def md5source(cls, src):
+        "determine md5 of source code."
+        import hashlib
+        md5 = hashlib.md5()
+        md5.update(src.encode("utf-8"))
+        return str(md5.hexdigest())
 
     @classmethod
     def pidfile(cls, name):

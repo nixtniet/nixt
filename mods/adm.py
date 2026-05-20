@@ -44,11 +44,11 @@ def tbl(event):
     event.reply("\n")
     event.reply('"tables"')
     event.reply("\n")
-    event.reply(f"NAMES = {dumps(Commands.names, indent=4, sort_keys=True)}")
-    event.reply("\n")
     event.reply(f"CORE = {dumps(core, indent=4, sort_keys=True)}")
     event.reply("\n")
     event.reply(f"MD5 = {dumps(md5s, indent=4, sort_keys=True)}")
+    event.reply("\n")
+    event.reply(f"NAMES = {dumps(Commands.names, indent=4, sort_keys=True)}")
 
 
 def wdr(event):

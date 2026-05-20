@@ -166,23 +166,6 @@ class Utils:
                 md5.update(file.read().encode("utf-8"))
 
     @staticmethod
-    def md5core():
-        "calculate md5sum of core modules."
-        try:
-            from . import statics
-        except ModuleNotFoundError:
-            return ""
-        return Utils.md5source(inspect.getsource(statics))[:7].upper()
-
-    @staticmethod
-    def md5source(src):
-        "determine md5 of source code."
-        import hashlib
-        md5 = hashlib.md5()
-        md5.update(src.encode("utf-8"))
-        return str(md5.hexdigest())
-
-    @staticmethod
     def moddir():
         "return modules directory."
         return j(os.path.dirname(__spec__.loader.path), "modules")

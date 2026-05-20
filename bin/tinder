@@ -21,7 +21,6 @@ from nixt.defines import Mods, Object, Parse, Thread, Time, Workdir, e
 
 
 Main.debug = True
-Main.threaded = True
 Main.wdr = ".test"
 Main.user = True
 Mods.add("mods", "mods")
@@ -56,9 +55,9 @@ class Clients:
         cls.clients.append(client)
 
     @classmethod
-    def init(cls, client):
+    def init(cls, nr, client):
         with cls.lock:
-            cls.nrcpu = os.cpu_count()
+            cls.nrcpu = nr
             for _x in range(Clients.nrcpu):
                 clt = client()
                 clt.start()
@@ -142,16 +141,21 @@ def final():
             res += str(client.queue.qsize()) + " "
         print(res.strip())
         print(threading.enumerate())
-
+        print(Main.threaded)
 
 def main():
     if e(Main.wdr):
         shutil.rmtree(Main.wdr)
     if Runs.check("v"):
         Main.verbose = True
+    if Runs.check("t"):
+        Main.threaded = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
     Boot.scanner()
-    Clients.init(CLI)
+    if Main.threaded:
+        Clients.init(os.cpu_count(), CLI)
+    else:
+        Clients.init(1, CLI)
     Runs.nrs = Main.index or 1
     thrs = []
     for _x in range(Runs.nrs):
