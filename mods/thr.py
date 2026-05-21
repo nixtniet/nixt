@@ -12,6 +12,7 @@ from nixt.defines import Time
 
 
 def thr(event):
+    "show running threads."
     result = []
     for thread in sorted(threading.enumerate(), key=lambda x: x.name):
         if str(thread).startswith("<_"):

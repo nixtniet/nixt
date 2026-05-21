@@ -15,6 +15,7 @@ class Todo(Base):
 
 
 def dne(event):
+    "mark todo as done."
     if not event.args:
         event.reply("dne <txt>")
         return
@@ -31,6 +32,7 @@ def dne(event):
 
 
 def tdo(event):
+    "add a todo."
     if not event.rest:
         event.reply("tdo <txt>")
         return

@@ -11,6 +11,7 @@ from nixt.defines import Locate, Object, Time, Workdir
 
 
 def fie(event):
+    "show fields of a type."
     if not event.rest:
         res = sorted({x.split('.')[-1].lower() for x in Workdir.kinds()})
         if res:
@@ -26,6 +27,7 @@ def fie(event):
 
 
 def fnd(event):
+    "find objects."
     if not event.rest:
         res = sorted([x.split('.')[-1].lower() for x in Workdir.kinds()])
         if res:

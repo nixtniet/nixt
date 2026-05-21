@@ -5,6 +5,7 @@
 
 
 def pwd(event):
+    "generate sasl password."
     if len(event.args) != 2:
         event.reply("pwd <nick> <password>")
         return

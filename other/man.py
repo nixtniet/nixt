@@ -230,6 +230,7 @@ opml
 
 
 def man(event):
+    "create manual page."
     args = event.args
     try:
         name, email, author = args[0], args[1], " ".join(args[2:])

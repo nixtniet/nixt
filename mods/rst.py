@@ -13,10 +13,11 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.defines import Base, Locate, Main, Thread, Workdir, a, j
+from nixt.defines import Base, Locate, Main, Thread, Utils, Workdir, a, j
 
 
 def init():
+    "initialize the rest module."
     try:
         rest = REST((Config.hostname, int(Config.port)), RESTHandler)
         rest.start()
@@ -46,19 +47,23 @@ class REST(HTTPServer, Base):
         self._status = "start"
 
     def exit(self):
+        "exit rest server."
         self._status = ""
         time.sleep(0.2)
         self.shutdown()
 
     def start(self):
+        "start rest server."
         Locate.first(Config)
         self._status = "ok"
         Thread.launch(self.serve_forever)
 
     def request(self):
+        "handle request."
         self._last = time.time()
 
     def error(self, _request, _addr):
+        "log error."
         exctype, excvalue, _trb = sys.exc_info()
         exc = exctype(excvalue)
         logging.exception(exc)
@@ -72,16 +77,19 @@ class RESTHandler(BaseHTTPRequestHandler):
         self._size = 0
 
     def send(self, txt):
+        "send text to socket."
         self.wfile.write(bytes(txt, "utf-8"))
         self.wfile.flush()
 
     def write_header(self, htype='text/plain'):
+        "write header to socket."
         self.send_response(200)
         self.send_header('Content-type', '%s; charset=%s ' % (htype, "utf-8"))
         self.send_header('Server', "1")
         self.end_headers()
 
     def do_GET(self):
+        "handle get request."
         if Main.debug:
             return
         if "favicon" in self.path:
@@ -93,7 +101,7 @@ class RESTHandler(BaseHTTPRequestHandler):
                 hn = Config.hostname
                 port = Config.port
                 txt += f'<a href="http://{hn}:{port}/{fnm}">{fnm}</a><br>\n'
-            self.send(html(txt.strip()))
+            self.send(Utils.html(txt.strip()))
             return
         if self.path.startswith("/"):
             fnm = self.path[1:]
@@ -116,19 +124,11 @@ class RESTHandler(BaseHTTPRequestHandler):
                 txt = file.read()
                 file.close()
             self.write_header("text/html")
-            self.send(html(txt))
+            self.send(Utils.html(txt))
         except (TypeError, FileNotFoundError, IsADirectoryError) as ex:
             self.send_response(404)
             logging.debug(str(ex))
             self.end_headers()
 
     def log(self, code):
-        pass
-
-
-def html(txt):
-    return """<!doctype html>
-<html>
-   %s
-</html>
-""" % txt
+        "log some."

@@ -16,6 +16,7 @@ from nixt.defines import Base, Clients, Disk, Main, Thread
 
 
 def init():
+    "initialize udp to irc relay."
     relay = UDP()
     relay.start()
     logging.warning("http://%s:%s", Config.host, Config.port)
@@ -41,11 +42,13 @@ class UDP(Base):
         self.ready = threading.Event()
 
     def output(self, txt, addr=None):
+        "announce text on channels."
         if addr:
             Config.addr = addr
         Clients.announce(txt.replace("\00", ""))
 
     def loop(self):
+        "udp to irc loop."
         try:
             self._sock.bind((Config.host, Config.port))
         except socket.gaierror:
@@ -61,6 +64,7 @@ class UDP(Base):
             self.output(data, addr)
 
     def exit(self):
+        "stop udp to irc relay."
         self.stopped = True
         self._sock.settimeout(0.01)
         self._sock.sendto(
@@ -69,11 +73,13 @@ class UDP(Base):
                          )
 
     def start(self):
+        "start udp to irc relay."
         Disk.read(Config, "udp", "config")
         Thread.launch(self.loop)
 
 
 def toudp(host, port, txt):
+    "send text on udp socket."
     if Main.debug:
         return
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -81,6 +87,7 @@ def toudp(host, port, txt):
 
 
 def udp(event):
+    "send text as udp to the relay."
     if event.rest:
         toudp(Config.host, Config.port, event.rest)
         return

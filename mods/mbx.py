@@ -20,6 +20,7 @@ class Email(Base):
 
 
 def timed(datestr):
+    "return time from string."
     if not datestr:
         return time.time()
     tme = Time.date(datestr)
@@ -29,6 +30,7 @@ def timed(datestr):
 
 
 def eml(event):
+    "search emails."
     nrs = -1
     args = ["From", "Subject"]
     args.extend(event.args)
@@ -62,6 +64,7 @@ def eml(event):
 
 
 def mbx(event):
+    "import emails from mailbox."
     if not event.args:
         event.reply("mbx <path>")
         return

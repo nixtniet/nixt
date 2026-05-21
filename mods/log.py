@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"log text"
+"text logging"
 
 
 from nixt.defines import Base, Disk
@@ -15,6 +15,7 @@ class Log(Base):
 
 
 def log(event):
+    "log text."
     if not event.rest:
         event.reply("log <txt>")
         return

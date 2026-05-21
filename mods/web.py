@@ -17,6 +17,7 @@ from nixt.defines import Base, Main, Thread, Utils, e, j
 
 
 def init():
+    "initialize web server."
     path = Utils.pkgname(Base)
     if not e(j(path, "network", 'index.html')):
         logging.warning("no index.html")
@@ -51,18 +52,22 @@ class HTTP(HTTPServer, Base):
         self._status = "start"
 
     def exit(self):
+        "exit web server."
         time.sleep(0.2)
         self._status = ""
         self.shutdown()
 
     def start(self):
+        "start web server."
         Thread.launch(self.serve_forever)
         self._status = "ok"
 
     def request(self):
+        "handle request."
         self._last = time.time()
 
     def error(self, _request, _addr):
+        "log an error."
         exctype, excvalue, _trb = sys.exc_info()
         exc = exctype(excvalue)
         logging.exception(exc)
@@ -71,19 +76,23 @@ class HTTP(HTTPServer, Base):
 class HTTPHandler(BaseHTTPRequestHandler):
 
     def setup(self):
+        "setup handler."
         BaseHTTPRequestHandler.setup(self)
         self._path = j(Utils.where(Base), "network")
         self._size = 0
         self._ip = self.client_address[0]
 
     def raw(self, data):
+        "write raw data on socket."
         self.wfile.write(data)
 
     def send(self, txt):
+        "sen text to socket."
         self.wfile.write(bytes(txt, encoding="utf-8"))
         self.wfile.flush()
 
     def write_header(self, htype='text/plain', size=None):
+        "write headers."
         self.send_response(200)
         self.send_header('Content-type: ', '%s' % htype)
         if size is not None:
@@ -92,9 +101,10 @@ class HTTPHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def log(self, code):
-        pass
+        "log code."
 
     def do_GET(self):
+        "handle get request."
         if "favicon" in self.path:
             return
         if Main.debug:
@@ -131,11 +141,3 @@ class HTTPHandler(BaseHTTPRequestHandler):
         except (TypeError, FileNotFoundError, IsADirectoryError):
             self.send_response(404)
             self.end_headers()
-
-
-def html2(txt):
-    return """<!doctype html>
-<html>
-   %s
-</html>
-""" % txt

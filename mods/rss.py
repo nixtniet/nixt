@@ -27,6 +27,7 @@ from nixt.defines import Repeater, Thread, Utils, i
 
 
 def init():
+    "initialize rss module."
     Runners.init(1, Runner)
     Run.fetcher.start()
     nrs = Locate.count("rss")
@@ -37,6 +38,7 @@ def init():
 
 
 def shutdown():
+    "shutdown rss module."
     Run.fetcher.stop()
 
 
@@ -90,6 +92,7 @@ class Fetcher:
         self.todo = queue.Queue()
 
     def run(self, silent=False):
+        "do a fetch run of all feeds."
         nrs = 0
         for fnm, feed in Locate.find(Object.fqn(Rss)):
             if "skip" in feed and feed.skip:
@@ -99,6 +102,7 @@ class Fetcher:
         return nrs
 
     def start(self, repeat=True):
+        "start rss fetcher."
         Disk.read(Config, "rss", "config")
         State.seenfn = Locate.last(State.seen) or Disk.ident(State.seen)
         oid = Disk.ident(State.modified)
@@ -108,6 +112,7 @@ class Fetcher:
             repeater.start()
 
     def stop(self):
+        "sto prss fetcher."
         logging.debug("stopped fetcher")
         if State.modified:
             Disk.write(State.modified, State.modifiedfn)
@@ -124,6 +129,7 @@ class Runner:
         self.todo = queue.Queue()
 
     def display(self, obj):
+        "display feed."
         displaylist = ""
         result = ""
         try:
@@ -142,6 +148,7 @@ class Runner:
         return result[:-2].rstrip()
 
     def loop(self):
+        "loop to handle fetch jobs."
         while self.running.is_set():
             job = self.queue.get()
             if job is None:
@@ -149,6 +156,7 @@ class Runner:
             self.fetch(*job)
 
     def fetch(self, fnm, feed, silent=False):
+        "fetch a feed."
         with Run.fetchlock:
             result = []
             see = getattr(State.seen, feed.rss, [])
@@ -188,13 +196,16 @@ class Runner:
         return counter
 
     def put(self, args):
+        "put jobs on queue."
         self.queue.put(args)
 
     def start(self, daemon=True):
+        "start runner."
         self.running.set()
         Thread.launch(self.loop, daemon=daemon)
 
     def stop(self):
+        "stop runner."
         self.running.clear()
         self.queue.put(None)
 
@@ -208,10 +219,12 @@ class Runners:
 
     @staticmethod
     def add(client):
+        "add a runner."
         Runners.runners.append(client)
 
     @staticmethod
     def init(nrcpu, cls):
+        "initialize a runner."
         Runners.nrcpu = nrcpu
         for _x in range(Runners.nrcpu):
             clt = cls()
@@ -220,6 +233,7 @@ class Runners:
 
     @staticmethod
     def put(*args):
+        "push job to a runner."
         if not Runners.runners:
             Runners.init(Runners.nrcpu, Runner)
         with Runners.lock:
@@ -234,6 +248,7 @@ class Parser:
 
     @staticmethod
     def getitem(line, item):
+        "return item from line."
         lne = ""
         index1 = line.find(f"<{item}>")
         if index1 == -1:
@@ -246,6 +261,7 @@ class Parser:
 
     @staticmethod
     def getitems(text, token, nrs=None):
+        "get items from text."
         index = 0
         end = len(text)
         stop = False
@@ -266,6 +282,7 @@ class Parser:
 
     @staticmethod
     def parse(txt, toke="item", items="title,link"):
+        "parse feed."
         for line in Parser.getitems(txt, toke):
             line = line.strip()
             obj = {}
@@ -281,10 +298,12 @@ class OPML:
 
     @staticmethod
     def getnames(line):
+        "get names from line."
         return [x.split('="')[0] for x in line.split()]
 
     @staticmethod
     def getvalue(line, attr):
+        "get value from line."
         lne = ""
         index1 = line.find(f'{attr}="')
         if index1 == -1:
@@ -299,6 +318,7 @@ class OPML:
 
     @staticmethod
     def getattrs(line, token):
+        "get attributes from line."
         index = 0
         result = []
         stop = False
@@ -316,6 +336,7 @@ class OPML:
 
     @staticmethod
     def parse(txt, toke="outline", itemz=None):
+        "parse opml from text."
         if itemz is None:
             itemz = ",".join(OPML.getnames(txt))
         for attrz in OPML.getattrs(txt, toke):
@@ -492,6 +513,7 @@ class Run:
 
 
 def atr(event):
+    "show attributes of a feed."
     if not event.rest:
         event.reply("atr <stringinurl>")
         return
@@ -531,6 +553,7 @@ def atr(event):
 
 
 def dpl(event):
+    "set feed items to display."
     if len(event.args) < 2:
         event.reply("dpl <stringinurl> <item1,item2>")
         return
@@ -543,6 +566,7 @@ def dpl(event):
 
 
 def err(event):
+    "show errors of a feed."
     nre = 0
     nrs = 0
     for fnm, obj in Locate.find(Object.fqn(Rss), event.gets):
@@ -568,6 +592,7 @@ def err(event):
 
 
 def exp(event):
+    "export opml."
     with Run.importlock:
         event.reply(TEMPLATE)
         nrs = 0
@@ -586,6 +611,7 @@ def exp(event):
 
 
 def imp(event):
+    "import opml."
     if not event.args:
         event.reply("imp <filename>")
         return
@@ -634,6 +660,7 @@ def imp(event):
 
 
 def nme(event):
+    "set name of a feed."
     if len(event.args) == 1:
         name = ""
     elif len(event.args) == 2:
@@ -655,6 +682,7 @@ def nme(event):
 
 
 def rem(event):
+    "remove a feed."
     if len(event.args) != 1:
         event.reply("rem <stringinurl>")
         return
@@ -671,6 +699,7 @@ def rem(event):
 
 
 def res(event):
+    "restore a feed."
     if len(event.args) != 1:
         event.reply("res <stringinurl>")
         return
@@ -690,6 +719,7 @@ def res(event):
 
 
 def rss(event):
+    "add a feed."
     if not event.rest:
         event.reply("rss <url>")
         return
@@ -711,6 +741,7 @@ def rss(event):
 
 
 def syn(event):
+    "synchronize a feed."
     if Main.debug:
         return
     fetcher = Fetcher()

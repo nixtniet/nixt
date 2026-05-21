@@ -8,6 +8,7 @@ from nixt.defines import Broker, Object
 
 
 def flt(event):
+    "show running clients."
     try:
         index = int(event.args[0])
     except (IndexError, ValueError):

@@ -17,6 +17,7 @@ rand = SystemRandom()
 
 
 def init():
+    "intialize wisdom module."
     state.load()
     event = Event()
     repeater = Repeater(3600,  wsd, event)
@@ -31,11 +32,13 @@ class State:
         self.fnm = ""
 
     def dump(self):
+        "dump state to disk."
         if not self.fnm:
             self.fnm = Locate.first(self) or Disk.ident(self)
         Disk.write(self, self.fnm)
 
     def load(self):
+        "load to disk."
         Locate.first(self)
 
 
@@ -43,6 +46,7 @@ state = State()
 
 
 def wsd(event):
+    "give wisdom quote."
     txt = ""
     if 'seen' not in dir(state):
         state.seen = []

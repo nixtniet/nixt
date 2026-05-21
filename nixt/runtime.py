@@ -87,7 +87,7 @@ class Runs:
             cfg.version,
             tme,
             cfg.level.upper() or "INFO",
-            Utils.md5core()
+            Boot.md5core()
         )
         print(txt.replace("  ", " "))
         sys.stdout.flush()

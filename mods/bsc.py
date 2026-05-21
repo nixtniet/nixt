@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"administrator"
+"basic commands"
 
 
 import time

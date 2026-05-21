@@ -147,6 +147,11 @@ class Utils:
         return obj.__class__.__name__
 
     @staticmethod
+    def html(text):
+        "wrap text as html."
+        return """<!doctype html>\n<html>   %s\n</html>""" % text
+
+    @staticmethod
     def md5(path):
         "calculate md5sum of a file."
         import hashlib

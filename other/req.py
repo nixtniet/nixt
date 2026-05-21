@@ -68,4 +68,5 @@ torture and impotent making) possible."""
 
 
 def req(event):
+    "show request to the prosecutor of the i.c.c."
     event.reply(__doc__)
