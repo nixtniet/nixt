@@ -43,16 +43,16 @@ class Mods:
         for pkgname, path in cls.dirs.items():
             modname = f"{pkgname}.{name}"
             mod = cls.modules.get(modname, None)
-            if not mod:
-                fnm = j(path, name + ".py")
-                if not e(fnm):
-                    continue
-                if cls.md5s:
-                    md5 = Utils.md5(fnm)
-                    if md5 != cls.md5s.get(name):
-                        logging.warning("mismatch %s", modname)
-                mod = cls.importer(modname, fnm)
-            return mod
+            if mod:
+                return mod
+            fnm = j(path, name + ".py")
+            if not e(fnm):
+                continue
+            if cls.md5s:
+                md5 = Utils.md5(fnm)
+                if md5 != cls.md5s.get(name):
+                    logging.warning("mismatch %s", modname)
+            return cls.importer(modname, fnm)
 
     @classmethod
     def has(cls, attr):

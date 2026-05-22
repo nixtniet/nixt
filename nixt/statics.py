@@ -1,13 +1,13 @@
 # This file is placed in the Public Domain.
 
 
-"tables"
+"static tables"
 
 
 CORE = {
     "booting": "a32432f60d3207caf306dd3a6b2f4cc4",
     "brokers": "ba7f144f1598b37bdfda200070cc9298",
-    "clients": "3c642145175b4fb070c10a804e636378",
+    "clients": "20d7f9ccf4052dc9a935d393f8194266",
     "command": "17198e126ff585d5202ea201da9aae94",
     "configs": "7eb06f9f1e182bfe52439a5e2ad2acfd",
     "defines": "53dab927bf4ec454ffb1cb1995cfaa7c",
@@ -15,7 +15,7 @@ CORE = {
     "engines": "db0c7d18826ec6028c347cc6efd7a8b5",
     "handler": "23b2ddd2156abc88e5805f8dbd56cc6f",
     "objects": "bbee30343d2526de3df232e8dc2f63d5",
-    "package": "ce5be35b0e9ed741894b481944ad22b2",
+    "package": "f408ab69616e2117fe8f3e8c91a1197a",
     "parsers": "a19dfbffca2222496dfafab52858f4bf",
     "persist": "0aced2097a38944f4beb7a6d46cc941d",
     "repeats": "7c8492ab2d848c15c780c3bfde8bd8ce",
@@ -26,7 +26,7 @@ CORE = {
 
 
 MD5 = {
-    "adm": "5710a2510102ca4aaa0bba2d558a9906",
+    "adm": "858a20815fe6a6fb1c98e6b69b084fac",
     "bsc": "2abbc6dcf6effdf67ced88cc292c42f5",
     "cfg": "d0d7817696955d8126c35b97d468cc64",
     "flt": "c8d75250a633002d67aa94b6f80e6b71",
