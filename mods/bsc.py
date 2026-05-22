@@ -31,4 +31,4 @@ def upt(event):
 
 def ver(event):
     "show verson."
-    event.reply(f"{Main.name.upper()} {Boot.md5core()}")
+    event.reply(f"{Main.name.upper()} {Boot.core()}")

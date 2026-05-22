@@ -48,6 +48,7 @@ def tbl(event):
         event.reply("\n")
         event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4, sort_keys=True)}")
 
+
 def wdr(event):
     "show working directory."
     event.reply(Workdir.workdir())
