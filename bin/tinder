@@ -23,9 +23,15 @@ from nixt.defines import Mods, Object, Parse, Thread, Time, Workdir, e
 Main.debug = True
 Main.wdr = ".test"
 Main.user = True
+
+
 Mods.add("mods", "mods")
 Mods.add("other", "other")
+
+
 Workdir.wdr = Main.wdr
+
+
 Log.level("debug")
 
 
@@ -141,7 +147,6 @@ def final():
             res += str(client.queue.qsize()) + " "
         print(res.strip())
         print(threading.enumerate())
-        print(Main.threaded)
 
 
 def main():

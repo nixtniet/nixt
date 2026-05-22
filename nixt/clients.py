@@ -124,30 +124,10 @@ class Buffered(Handler, Buffer):
         Buffer.stop(self)
 
 
-class Clients:
-
-    @staticmethod
-    def announce(txt):
-        "announce text on all objects with an announce method."
-        for obj in Broker.objs("announce"):
-            obj.announce(txt)
-
-    @staticmethod
-    def shutdown():
-        "call stop on clients."
-        for client in Broker.objs("wait"):
-            client.wait()
-        time.sleep(0.01)
-        for client in Broker.objs("stop"):
-            client.stop()
-        time.sleep(0.01)
-
-
 def __dir__():
     return (
         'Buffer',
         'Buffered',
         'Client',
-        'Clients',
         'Output'
     )

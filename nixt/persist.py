@@ -194,6 +194,10 @@ class Workdir:
         return res
 
     @classmethod
+    def moddir(cls):
+        return os.path.join(cls.wdr, "mods")
+
+    @classmethod
     def skel(cls):
         "create directories."
         if not cls.wdr:

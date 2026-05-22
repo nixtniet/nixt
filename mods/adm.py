@@ -39,14 +39,14 @@ def tbl(event):
         core[name] = Utils.md5(j(corepath, path))
     event.reply("# This file is placed in the Public Domain.")
     event.reply("\n")
-    event.reply('"static tables"')
+    event.reply('"static tables."')
     event.reply("\n")
     event.reply(f"CORE = {Json.dumps(core, indent=4, sort_keys=True)}")
-    event.reply("\n")
-    event.reply(f"MD5 = {Json.dumps(md5s, indent=4, sort_keys=True)}")
-    event.reply("\n")
-    event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4, sort_keys=True)}")
-
+    if Main.admin:
+        event.reply("\n")
+        event.reply(f"MD5 = {Json.dumps(md5s, indent=4, sort_keys=True)}")
+        event.reply("\n")
+        event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4, sort_keys=True)}")
 
 def wdr(event):
     "show working directory."

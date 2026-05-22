@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"module management"
+"module management."
 
 
 import importlib.util
@@ -14,7 +14,7 @@ from .utility import Utils, e, j
 
 class Mods:
 
-    dirs = {}
+    dirs = {"modules": Utils.moddir()}
     md5s = {}
     modules = {}
 

@@ -176,6 +176,11 @@ class Utils:
         return j(os.path.dirname(__spec__.loader.path), "modules")
 
     @staticmethod
+    def modsdir():
+        "return modules directory."
+        return j(Main.workdir, "modules")
+
+    @staticmethod
     def modname(obj):
         "return package name of an object."
         return obj.__module__.split(".")[-1]

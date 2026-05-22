@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"in the beginning"
+"in the beginning."
 
 
 import inspect
@@ -30,6 +30,15 @@ class Boot:
             Mods.check()
 
     @classmethod
+    def core(cls):
+        "calculate md5sum of core modules."
+        try:
+            from . import statics
+        except ModuleNotFoundError:
+            return ""
+        return cls.source(inspect.getsource(statics))[:7].upper()
+
+    @classmethod
     def forever(cls):
         "run forever until ctrl-c."
         while True:
@@ -56,24 +65,7 @@ class Boot:
         return True
 
     @classmethod
-    def md5core(cls):
-        "calculate md5sum of core modules."
-        try:
-            from . import statics
-        except ModuleNotFoundError:
-            return ""
-        return cls.md5source(inspect.getsource(statics))[:7].upper()
-
-    @classmethod
-    def md5source(cls, src):
-        "determine md5 of source code."
-        import hashlib
-        md5 = hashlib.md5()
-        md5.update(src.encode("utf-8"))
-        return str(md5.hexdigest())
-
-    @classmethod
-    def pidfile(cls, name):
+    def pid(cls, name):
         "write pidfile."
         filename = j(Workdir.wdr, f"{name}.pid")
         if e(filename):
@@ -102,6 +94,14 @@ class Boot:
             if "configure" in dir(mod):
                 mod.configure()
             Commands.scan(mod)
+
+    @classmethod
+    def source(cls, src):
+        "determine md5 of source code."
+        import hashlib
+        md5 = hashlib.md5()
+        md5.update(src.encode("utf-8"))
+        return str(md5.hexdigest())
 
     @classmethod
     def table(cls):

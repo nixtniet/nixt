@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"main program"
+"main program."
 
 
 import argparse
@@ -40,6 +40,7 @@ class Arguments:
         optionparser = theparser.add_argument_group()
         optionparser.add_argument("-l", "--level", default=Main.level, help='set loglevel.', metavar="level")
         optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
+        optionparser.add_argument("-x", "--admin", action="store_true", help="enable admin mode.")
         optparser = theparser.add_argument_group()
         optparser.add_argument("--check", action="store_false", help=argparse.SUPPRESS)
         optparser.add_argument("--read", action="store_true", help=argparse.SUPPRESS)
@@ -80,14 +81,14 @@ class Runs:
 
     @classmethod
     def banner(cls, cfg):
-        "hello."
+        "hello"
         tme = time.ctime(time.time()).replace("  ", " ")
         txt = "%s %s since %s %s (%s)" % (
             cfg.name.upper(),
             cfg.version,
             tme,
             cfg.level.upper() or "INFO",
-            Boot.md5core()
+            Boot.core()
         )
         print(txt.replace("  ", " "))
         sys.stdout.flush()
@@ -95,7 +96,8 @@ class Runs:
     @classmethod
     def boot(cls, cfg):
         Workdir.wdr = os.path.expanduser(f"~/.{Main.name}")
-        Mods.add("modules", Utils.moddir())
+        # Mods.add("modules", Utils.moddir())
+        Mods.add("modules", Workdir.moddir())
         if cfg.user:
             Mods.add("mods", "mods")
             Mods.add("other", "other")
@@ -177,7 +179,7 @@ class Scripts:
         Runs.daemon(Main.verbose, Main.nochdir)
         Boot.privileges()
         Runs.boot(Main)
-        Boot.pidfile(Main.name)
+        Boot.pid(Main.name)
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 
@@ -205,13 +207,13 @@ class Scripts:
         "service script."
         Boot.privileges()
         Runs.boot(Main)
-        Boot.pidfile(Main.name)
+        Boot.pid(Main.name)
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 
 
 def main():
-    "main."
+    "main"
     Arguments.getargs()
     if Main.daemon:
         Runs.wrap(Scripts.background)
@@ -221,7 +223,3 @@ def main():
         Runs.wrap(Scripts.service)
     else:
         Runs.wrap(Scripts.control)
-
-
-if __name__ == "__main__":
-    main()
