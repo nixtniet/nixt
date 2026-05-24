@@ -147,6 +147,10 @@ class Utils:
         return obj.__class__.__name__
 
     @staticmethod
+    def source(module):
+        return module.__loader__.get_source(module.__name__)
+
+    @staticmethod
     def html(text):
         "wrap text as html."
         return """<!doctype html>\n<html>   %s\n</html>""" % text

@@ -24,6 +24,12 @@ def srv(event):
                           ))
 
 
+def skl(event):
+    "create directories."
+    Workdir.skel()
+    event.ok()
+
+
 def tbl(event):
     "create table."
     core = {}

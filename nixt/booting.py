@@ -4,7 +4,6 @@
 "in the beginning."
 
 
-import inspect
 import os
 import pathlib
 import time
@@ -36,7 +35,7 @@ class Boot:
             from . import statics
         except ModuleNotFoundError:
             return ""
-        return cls.source(inspect.getsource(statics))[:7].upper()
+        return cls.source(Utils.source(statics))[:7].upper()
 
     @classmethod
     def forever(cls):
