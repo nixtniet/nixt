@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"one config to rule them all."
+"one config to rule them all"
 
 
 from .objects import Object

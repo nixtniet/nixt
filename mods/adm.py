@@ -45,7 +45,7 @@ def tbl(event):
         core[name] = Utils.md5(j(corepath, path))
     event.reply("# This file is placed in the Public Domain.")
     event.reply("\n")
-    event.reply('"static tables."')
+    event.reply('"static tables"')
     event.reply("\n")
     event.reply(f"CORE = {Json.dumps(core, indent=4, sort_keys=True)}")
     if Main.admin:

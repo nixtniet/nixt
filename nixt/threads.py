@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"make it non blocking."
+"make it non blocking"
 
 
 import inspect

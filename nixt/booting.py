@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"in the beginning."
+"in the beginning"
 
 
 import os

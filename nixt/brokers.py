@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"an object for a string."
+"an object for a string"
 
 
 import time
