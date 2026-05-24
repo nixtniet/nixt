@@ -14,7 +14,7 @@ from .utility import Utils, e, j
 
 class Mods:
 
-    dirs = {"modules": Utils.moddir()}
+    dirs = {}
     md5s = {}
     modules = {}
 
@@ -113,8 +113,8 @@ class Mods:
     def table(cls):
         "read table,"
         try:
-            from .statics import MD5
-            Mods.md5s.update(MD5)
+            from .statics import MODULES
+            Mods.md5s.update(MODULES)
             return True
         except ImportError:
             return False

@@ -30,7 +30,7 @@ class Engine:
         event._thr = Thread.launch(func, event, name=name)
 
     def loop(self):
-        "event loop."
+        "callback loop."
         while not self.stopped.is_set():
             event = self.queue.get()
             if event is None:
@@ -51,13 +51,13 @@ class Engine:
         self.cbs[kind] = callback
 
     def start(self, daemon=True):
-        "start event handler loop."
+        "start callback loop."
         self.done.clear()
         self.stopped.clear()
         Thread.launch(self.loop, daemon=daemon)
 
     def stop(self):
-        "stop event handler loop."
+        "stop xallback loop."
         self.stopped.set()
         self.queue.put(None)
         self.done.wait()

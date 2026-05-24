@@ -30,12 +30,12 @@ class Boot:
 
     @classmethod
     def core(cls):
-        "calculate md5sum of core modules."
+        "calculate md5 of the statics module."
         try:
             from . import statics
         except ModuleNotFoundError:
             return ""
-        return cls.source(Utils.source(statics))[:7].upper()
+        return Utils.md5source(Utils.source(statics))[:7].upper()
 
     @classmethod
     def forever(cls):
@@ -64,17 +64,6 @@ class Boot:
         return True
 
     @classmethod
-    def pid(cls, name):
-        "write pidfile."
-        filename = j(Workdir.wdr, f"{name}.pid")
-        if e(filename):
-            os.unlink(filename)
-        path2 = pathlib.Path(filename)
-        path2.parent.mkdir(parents=True, exist_ok=True)
-        with open(filename, "w", encoding="utf-8") as fds:
-            fds.write(str(os.getpid()))
-
-    @classmethod
     def privileges(cls):
         "drop privileges."
         import getpass
@@ -95,14 +84,6 @@ class Boot:
             Commands.scan(mod)
 
     @classmethod
-    def source(cls, src):
-        "determine md5 of source code."
-        import hashlib
-        md5 = hashlib.md5()
-        md5.update(src.encode("utf-8"))
-        return str(md5.hexdigest())
-
-    @classmethod
     def table(cls):
         "read table,"
         try:
@@ -111,6 +92,17 @@ class Boot:
             return True
         except ImportError:
             return False
+
+    @classmethod
+    def writepid(cls, name):
+        "write pidfile."
+        filename = j(Workdir.wdr, f"{name}.pid")
+        if e(filename):
+            os.unlink(filename)
+        path2 = pathlib.Path(filename)
+        path2.parent.mkdir(parents=True, exist_ok=True)
+        with open(filename, "w", encoding="utf-8") as fds:
+            fds.write(str(os.getpid()))
 
 
 def __dir__():

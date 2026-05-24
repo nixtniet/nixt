@@ -100,7 +100,7 @@ class Runs:
     @classmethod
     def boot(cls, cfg):
         Workdir.wdr = os.path.expanduser(f"~/.{Main.name}")
-        # Mods.add("modules", Utils.moddir())
+        Mods.add(f"{Main.name}.modules", Utils.moddir())
         Mods.add("modules", Workdir.moddir())
         if cfg.user:
             Mods.add("mods", "mods")
@@ -183,7 +183,7 @@ class Scripts:
         Runs.daemon(Main.verbose, Main.nochdir)
         Boot.privileges()
         Runs.boot(Main)
-        Boot.pid(Main.name)
+        Boot.writepid(Main.name)
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 
@@ -211,7 +211,7 @@ class Scripts:
         "service script."
         Boot.privileges()
         Runs.boot(Main)
-        Boot.pid(Main.name)
+        Boot.writepid(Main.name)
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 

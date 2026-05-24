@@ -64,8 +64,8 @@ class Handler:
         "handle event."
         raise NotImplementedError
 
-    def input(self):
-        "input loop."
+    def poller(self):
+        "polling loop."
         while not self.istopped.is_set():
             event = self.poll()
             if event is None:
@@ -82,13 +82,13 @@ class Handler:
         self.iqueue.put(event)
 
     def start(self, daemon=True):
-        "start event handler loop."
+        "start polling loop."
         self.idone.clear()
         self.istopped.clear()
-        Thread.launch(self.input, daemon=daemon)
+        Thread.launch(self.poller, daemon=daemon)
 
     def stop(self):
-        "stop event handler loop."
+        "stop polling loop."
         self.istopped.set()
         self.idone.wait()
 

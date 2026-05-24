@@ -5,28 +5,28 @@
 
 
 CORE = {
-    "booting": "296cbed87e01f2ecda9c265640e2346d",
-    "brokers": "f7b06e6c90e20ced067263b8ff194c56",
-    "clients": "2cc91ad8ad4100e0b57bcfedbe221d54",
-    "command": "d16452027958e90c2fa278b90cc01ff0",
-    "configs": "b262f8a94836ceac88ffb9b127105e48",
-    "defines": "276900cd20a346d4a85db9d91f9fe911",
+    "booting": "1594dcbb1f18d06b8bca49f736d8f91a",
+    "brokers": "ba7f144f1598b37bdfda200070cc9298",
+    "clients": "b104551450cd38ff046a8520a28fbd59",
+    "command": "17198e126ff585d5202ea201da9aae94",
+    "configs": "b054626f8d5171e35cb84ba02bfe4347",
+    "defines": "dd84c4f765d38326873aa9a9b5bce4cf",
     "encoder": "4f4f1beb05e2a662fad03932437532dc",
-    "engines": "ca120ae2d35be9765926590a5ee87d14",
-    "handler": "5aa5caf9bbcc19409c6a31623edc06bc",
-    "objects": "77674af7e9f122de198a68050faac9bb",
-    "package": "b8eac6edb52d7849eecf914f61290608",
-    "parsers": "a19dfbffca2222496dfafab52858f4bf",
+    "engines": "83b5f1cd21f989412a9365fc98a7881d",
+    "handler": "41ad53844af98ec8aab6daf2b227c8bf",
+    "objects": "bbee30343d2526de3df232e8dc2f63d5",
+    "package": "f408ab69616e2117fe8f3e8c91a1197a",
+    "parsers": "cc769a8eb4b948b46facc2fc062c283b",
     "persist": "33fe6a1cff2eee911de0b5364c08d15b",
-    "repeats": "67d19986944e59abc3d4581cb16808b0",
+    "repeats": "7c8492ab2d848c15c780c3bfde8bd8ce",
     "runtime": "c972844e3196b7546a8b6b1153c5f32f",
-    "threads": "91d04114f31bcb0379c97854be2c4ae8",
-    "utility": "bd834fb46a551251bf4a392673ea5bf4"
+    "threads": "43527fea635612e61d00c764d9a01310",
+    "utility": "949e0adad0c257661dba461be88564da"
 }
 
 
-MD5 = {
-    "adm": "5db0fa744ceefe4e3fdd51045112eaba",
+MODULES = {
+    "adm": "d57db764198a1afbdaf25a23883093a9",
     "bsc": "4ce24c809e59d88d857cc6fd086dd88b",
     "cfg": "d0d7817696955d8126c35b97d468cc64",
     "flt": "c8d75250a633002d67aa94b6f80e6b71",
@@ -39,7 +39,7 @@ MD5 = {
     "pth": "1393f60a7d3941f860d914daa2b565dc",
     "pwd": "3ce569eae80824787de0c2c5b7874ead",
     "req": "3463c19a588084cc8208122e46ac144e",
-    "rss": "bf6253a63c2d917b849b0cf7294a47d8",
+    "rss": "76cf239f5e20386cc32dddb747365bee",
     "rst": "becddec4f9088f9c927224cd7e85ab42",
     "sil": "7de0007925c823be72ec70305581e861",
     "slg": "e68f11973ddc2e3edeb0de0e16e9fe7a",

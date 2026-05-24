@@ -380,6 +380,7 @@ class Helpers:
 
     @staticmethod
     def doskip(errors):
+        "check whether to log."
         for error in Helpers.skip:
             if error in errors:
                 return True
