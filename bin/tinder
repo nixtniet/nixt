@@ -134,19 +134,20 @@ class Runs:
 
 
 def final():
+    if not Main.verbose:
+        return
     total = Clients.nrevents
     endtime = time.time()
     lap = Time.elapsed(endtime-Time.starttime)
     percall = (endtime-Time.starttime)/total
-    if Main.verbose:
-        print(f"{Object.fmt(Main, skip='otxt,txt')}")
-        print(f"cores: {Clients.nrcpu} events: {total}")
-        print(f"total: {lap} nrs: {Clients.nrevents - total} call: %.6fs" % percall)
-        res = ""
-        for client in Clients.clients:
-            res += str(client.queue.qsize()) + " "
-        print(res.strip())
-        print(threading.enumerate())
+    print(f"{Object.fmt(Main, skip='otxt,txt')}")
+    print(f"cores: {Clients.nrcpu} events: {total}")
+    print(f"total: {lap} nrs: {Clients.nrevents - total} call: %.6fs" % percall)
+    res = ""
+    for client in Clients.clients:
+        res += str(client.queue.qsize()) + " "
+    print(res.strip())
+    print(threading.enumerate())
 
 
 def main():
@@ -176,6 +177,8 @@ def main():
     thrs = []
     for _x in range(Runs.nrs):
         thrs.append(Thread.launch(Runs.payload, post))
+    for thr in thrs:
+        thr.join()
     Clients.shutdown()
     while 1:
         if len(threading.enumerate()) == 1:

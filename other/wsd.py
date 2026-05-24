@@ -60,7 +60,7 @@ def wsd(event):
         state.seen = []
         txt = "* reset"
     state.dump()
-    Clients.announce(txt.strip()[2:])
+    event.reply(txt.strip()[2:])
 
 
 TXT = """| wijsheid, wijs !
