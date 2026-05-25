@@ -4,7 +4,6 @@
 "module management"
 
 
-import importlib.util
 import logging
 import os
 
@@ -90,6 +89,7 @@ class Mods:
     @classmethod
     def importer(cls, name, pth=""):
         "import module by path."
+        import importlib.util
         spec = importlib.util.spec_from_file_location(name, pth)
         cls.modules[name] = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(cls.modules[name])
