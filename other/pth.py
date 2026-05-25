@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"show path to website"
+"path to website"
 
 
 from nixt.defines import d, j
