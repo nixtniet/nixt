@@ -16,8 +16,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Buffer, Commands, Engine, Event, Log, Main
-from nixt.defines import Mods, Object, Parse, Thread, Time, Workdir, e
+from bot.defines import Boot, Buffer, Commands, Engine, Log, Main, Message
+from bot.defines import Mods, Object, Parse, Thread, Time, Workdir, e
 
 
 Main.debug = True
@@ -107,7 +107,7 @@ class Runs:
     def payload(todo):
         for cmd, example in todo.items():
             for ex in example:
-                evt = Event()
+                evt = Message()
                 evt.kind = "command"
                 evt.text = f"{cmd} {ex}"
                 Clients.put(evt)

@@ -15,8 +15,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Disk, Event, Log
-from nixt.defines import Main, Mods, Object, Parse, Utils, Workdir
+from bot.defines import Boot, Client, Commands, Disk, Log, Message
+from bot.defines import Main, Mods, Object, Parse, Utils, Workdir
 
 
 class Arguments:
@@ -69,7 +69,7 @@ class Console(Client):
 
     def poll(self):
         "return event."
-        evt = Event()
+        evt = Message()
         evt.orig = repr(self)
         evt.text = input("> ")
         evt.kind = "command"
@@ -125,7 +125,7 @@ class Runs:
         "do a command."
         cli = Console()
         for txt in text.split(" ! "):
-            evt = Event()
+            evt = Message()
             evt.kind = "command"
             evt.orig = repr(cli)
             evt.text = txt

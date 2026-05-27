@@ -10,7 +10,7 @@ import logging
 from random import SystemRandom
 
 
-from nixt.defines import Disk, Event, Locate, Repeater
+from bot.defines import Disk, Locate, Message, Repeater
 
 
 rand = SystemRandom()
@@ -19,7 +19,7 @@ rand = SystemRandom()
 def init():
     "intialize wisdom module."
     state.load()
-    event = Event()
+    event = Message()
     repeater = Repeater(3600,  wsd, event)
     repeater.start()
     logging.warning("%s wise", len(TXTLIST))

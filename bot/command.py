@@ -4,9 +4,12 @@
 "write your own commands"
 
 
+from nixt.handler import Event
+from nixt.utility import Utils
+
+
 from .package import Mods
 from .parsers import Parse
-from .utility import Utils
 
 
 class Commands:
@@ -23,6 +26,7 @@ class Commands:
             if "__" in modname:
                 continue
             cls.names[func.__name__] = modname
+
 
     @classmethod
     def command(cls, evt):
@@ -71,7 +75,18 @@ class Commands:
             return False
 
 
+def cmd(cls, text):
+    Commands.table()
+    evt = Event()
+    evt.kind = "command"
+    evt.text = text
+    Commands.command(evt)
+    evt.wait()
+    yield from evt.result
+
+
 def __dir__():
     return (
         'Commands',
+        'cmd'
     )

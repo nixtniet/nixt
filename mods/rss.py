@@ -22,8 +22,8 @@ from urllib.error import HTTPError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.defines import Base, Clients, Disk, Locate, Main, Object
-from nixt.defines import Repeater, Thread, Utils, i
+from bot.defines import Base, Clients, Disk, Locate, Main, Object
+from bot.defines import Repeater, Thread, Utils, i
 
 
 def init():

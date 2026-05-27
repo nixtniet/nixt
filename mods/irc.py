@@ -14,8 +14,8 @@ import time
 import _thread
 
 
-from nixt.defines import Base, Broker, Buffered, Commands, Disk, Engine
-from nixt.defines import Event, Main, Object, Thread, Utils
+from bot.defines import Base, Broker, Buffered, Commands, Disk, Engine
+from bot.defines import Main, Message, Object, Thread, Utils
 
 
 def init():
@@ -59,7 +59,7 @@ class Config(Base):
     version = 1
 
 
-class IEvent(Event):
+class Event(Message):
 
     def __init__(self):
         super().__init__()
@@ -319,7 +319,7 @@ class IRC(Engine, Buffered):
         rawstr = rawstr.replace("\u0001", "")
         rawstr = rawstr.replace("\001", "")
         self.rlog(txt)
-        obj = IEvent()
+        obj = Event()
         obj.args = []
         obj.rawstr = rawstr
         obj.command = ""
@@ -459,7 +459,7 @@ class IRC(Engine, Buffered):
 
     def say(self, channel, text):
         "say text in the channel."
-        event = IEvent()
+        event = Event()
         event.channel = channel
         event.reply(text)
         self.oput(event)

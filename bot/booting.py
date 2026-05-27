@@ -9,11 +9,15 @@ import pathlib
 import time
 
 
+from nixt.message import Message
+from nixt.threads import Thread
+from nixt.utility import Utils, d, e, j
+
+
 from .command import Commands
+from .configs import Main
 from .package import Mods
 from .persist import Workdir
-from .threads import Thread
-from .utility import Utils, d, e, j
 
 
 class Boot:
@@ -105,7 +109,24 @@ class Boot:
             fds.write(str(os.getpid()))
 
 
+def cmd(text):
+    Workdir.wdr = os.path.expanduser(f"~/.{Main.name}")
+    Mods.add(f"{Main.name}.modules", Utils.moddir())
+    Mods.add("modules", Workdir.moddir())
+    Log.size(len(Main.name))
+    Log.level(cfg.level or "info")
+    if not Commands.table():
+        Boot.scanner()
+    evt = Message()
+    evt.kind = "command"
+    evt.text = text
+    Commands.command(evt)
+    evt.wait()
+    yield from evt.result
+
+
 def __dir__():
     return (
         'Boot',
+        'cmd'
     )

@@ -8,7 +8,7 @@ import logging
 import os
 
 
-from .utility import Utils, e, j
+from nixt.utility import Utils, e, j
 
 
 class Mods:

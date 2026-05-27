@@ -4,7 +4,7 @@
 "silence"
 
 
-from nixt.defines import Broker
+from bot.defines import Broker
 
 
 def sil(event):

@@ -8,7 +8,7 @@ import inspect
 import os
 
 
-from nixt.defines import Commands, Json, Main, Mods, Utils, Workdir, d, j
+from bot.defines import Commands, Json, Main, Mods, Utils, Workdir, d, j
 
 
 def srv(event):

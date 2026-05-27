@@ -4,7 +4,7 @@
 "show running clients"
 
 
-from nixt.defines import Broker, Object
+from bot.defines import Broker, Object
 
 
 def flt(event):

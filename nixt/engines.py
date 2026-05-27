@@ -6,7 +6,6 @@
 
 import queue
 import threading
-import time
 
 
 from .threads import Thread
