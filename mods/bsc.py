@@ -7,17 +7,17 @@
 import time
 
 
-from bot.defines import Boot, Commands, Main, Mods, Time
+from nixt.defines import Commands, Time
 
 
 def cmd(event):
     "list available commands."
-    event.reply(",".join(sorted(Commands.commands(Main.ignore))))
+    event.reply(",".join(sorted(Commands.cmds)))
 
 
 def mod(event):
     "list available modules."
-    mods = Mods.list()
+    mods = Commands.names.keys()
     if not mods:
         event.reply("no modules available")
         return
@@ -31,4 +31,4 @@ def upt(event):
 
 def ver(event):
     "show verson."
-    event.reply(f"{Main.name.upper()} {Boot.core()}")
+    event.reply(f"{Main.name.upper()}")

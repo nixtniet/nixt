@@ -9,12 +9,12 @@ import pathlib
 import time
 
 
+from nixt.command import Commands
 from nixt.message import Message
 from nixt.threads import Thread
 from nixt.utility import Utils, d, e, j
 
 
-from .command import Commands
 from .configs import Main
 from .package import Mods
 from .persist import Workdir

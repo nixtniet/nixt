@@ -12,11 +12,11 @@ import pathlib
 import threading
 
 
-from nixt.objects import Base, Json, Object
-from nixt.utility import Time, Utils, e, j
-
-
 from .configs import Main
+from .objects import Base, Json, Object
+from .utility import Time, Utils, e, j
+
+
 
 
 class Cache:
@@ -171,11 +171,12 @@ class Locate:
 
 class Workdir:
 
-    wdr = f".{Main.name}"
+    wdr = ""
 
     @classmethod
     def kinds(cls):
         "show kind on objects in cache."
+        assert cls.wdr
         path = j(cls.wdr, "store")
         if not e(path):
             cls.skel()
@@ -196,24 +197,19 @@ class Workdir:
 
     @classmethod
     def moddir(cls):
+        assert cls.wdr
         return os.path.join(cls.wdr, "mods")
 
     @classmethod
     def skel(cls):
         "create directories."
-        if not cls.wdr:
-            return
+        assert cls.wdr
         if not e(cls.wdr):
             Utils.cdir(cls.wdr)
         path = os.path.abspath(cls.wdr)
         for wpth in ["config", "mods", "store"]:
             pth = pathlib.Path(j(path, wpth))
             pth.mkdir(parents=True, exist_ok=True)
-
-    @classmethod
-    def workdir(cls, path=""):
-        "return workdir."
-        return j(cls.wdr, path)
 
 
 def __dir__():

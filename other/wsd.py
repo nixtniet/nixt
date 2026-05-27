@@ -10,7 +10,7 @@ import logging
 from random import SystemRandom
 
 
-from bot.defines import Disk, Locate, Message, Repeater
+from nixt.defines import Disk, Locate, Message, Repeater
 
 
 rand = SystemRandom()

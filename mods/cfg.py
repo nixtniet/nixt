@@ -4,7 +4,7 @@
 "configuration"
 
 
-from bot.defines import Base, Disk, Mods, Object
+from nixt.defines import Base, Disk, Object
 
 
 def cfg(event):

@@ -14,8 +14,8 @@ import time
 import _thread
 
 
-from bot.defines import Base, Broker, Buffered, Commands, Disk, Engine
-from bot.defines import Main, Message, Object, Thread, Utils
+from nixt.defines import Base, Broker, Buffered, Commands, Disk, Engine
+from nixt.defines import Main, Message, Object, Thread, Utils
 
 
 def init():
