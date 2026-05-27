@@ -63,6 +63,7 @@ class Commands:
 
 class Mods:
 
+    md5s = {}
     modules = {}
 
     @classmethod
@@ -100,7 +101,7 @@ class Mods:
             if "configure" in dir(mod):
                 mod.configure()
             Commands.scan(mod)
-
+        
 
 def __dir__():
     return (

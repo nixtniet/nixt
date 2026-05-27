@@ -15,8 +15,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from bot.defines import Boot, Client, Commands, Disk, Log, Message
-from bot.defines import Main, Mods, Object, Parse, Utils, Workdir
+from nixt.defines import Client, Commands, Disk, Log, Message
+from nixt.defines import Main, Mods, Object, Parse, Utils, Workdir
 
 
 class Arguments:

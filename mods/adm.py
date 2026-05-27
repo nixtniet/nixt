@@ -34,7 +34,7 @@ def tbl(event):
     "create table."
     core = {}
     md5s = {}
-    for name, module in Mods.all():
+    for name, module in Mods.modules.items():
         md5s[name] = Utils.md5(module.__file__)
         Commands.scan(module)
     corepath = d(inspect.getsourcefile(Commands))
