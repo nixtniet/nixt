@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+# This file is placed in the Public Domain.
+
+
+"main"
+
+
+import os
+import sys
+import time
+
+
+sys.path.insert(0, os.getcwd())
+
+
+from nixt.defines import Client, Commands, Main, Message, Mods, Parse, Workdir
+
+
+TXT = " ".join(sys.argv[1:])
+
+
+class Console(Client):
+
+    def __init__(self):
+        Client.__init__(self)
+        self.silent = True
+
+
+    def forever(cls):
+        "run forever until ctrl-c."
+        while True:
+            try:
+                time.sleep(0.01)
+            except (KeyboardInterrupt, EOFError):
+                break
+
+    def handle(self, event):
+        "handle event."
+        Commands.command(event)
+
+    def poll(self):
+        "return event."
+        evt = Message()
+        evt.orig = repr(self)
+        evt.text = input("> ")
+        evt.kind = "command"
+        return evt
+
+    def raw(self, text):
+        "write to console."
+        print(text.encode('utf-8', 'replace').decode("utf-8"))
+        sys.stdout.flush()
+
+
+def main():
+    Parse.parse(Main, TXT)
+    Workdir.wdr = os.path.expanduser("~/.nixt")
+    Mods.scanner("mods")
+    Mods.scanner("other")
+    if "c" in Main.opts:
+        csl = Console()
+        csl.start()
+        csl.forever()
+    else:
+        for txt in Commands.cmd(TXT):
+            print(txt)
+
+
+if __name__ == "__main__":
+    main()
