@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Client, Event
+from bot.defines import Client, Message
 
 
 buffer = []
@@ -42,7 +42,7 @@ class TestClient(unittest.TestCase):
         self.assertTrue("hello" in buffer)
 
     def test_display(self):
-        evt = Event()
+        evt = Message()
         evt.reply("test1")
         evt.reply("test2")
         self.clt.display(evt)
@@ -55,7 +55,7 @@ class TestClient(unittest.TestCase):
         self.assertTrue("yo!" in buffer)
 
     def test_put(self):
-        evt = Event()
+        evt = Message()
         evt.kind = "hello"
         evt.text = "hi world"
         self.clt.put(evt)

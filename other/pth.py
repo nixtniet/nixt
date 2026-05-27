@@ -4,7 +4,7 @@
 "path to website"
 
 
-from nixt.defines import d, j
+from bot.defines import d, j
 
 
 def pth(event):

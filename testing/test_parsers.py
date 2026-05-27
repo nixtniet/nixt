@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Base, Parse
+from bot.defines import Base, Parse
 
 
 class TestParse(unittest.TestCase):

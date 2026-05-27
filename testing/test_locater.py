@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Locate
+from bot.defines import Locate
 
 
 class TestLocater(unittest.TestCase):

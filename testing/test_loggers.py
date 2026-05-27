@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Log
+from bot.defines import Log
 
 
 class TestLoggers(unittest.TestCase):
