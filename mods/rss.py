@@ -94,9 +94,7 @@ class Fetcher:
     def run(self, silent=False):
         "do a fetch run of all feeds."
         nrs = 0
-        print("yo!")
         for fnm, feed in Locate.find(Object.fqn(Rss)):
-            print(fnm)
             if "skip" in feed and feed.skip:
                 continue
             Runners.put((fnm, feed, silent))

@@ -90,7 +90,7 @@ class Mods:
         for name in os.listdir(path):
             if name.startswith("__") or not name.endswith(".py"):
                 continue
-            modname = name[:-3]
+            modname = path.split(os.sep)[-1] + "." + name[:-3]
             fnm = j(path, name)
             if not e(fnm):
                 continue
