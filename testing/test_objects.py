@@ -7,7 +7,7 @@
 import unittest
 
 
-from bot.defines import Base, Disk, Object
+from nixt.defines import Base, Disk, Object
 
 
 import nixt.objects

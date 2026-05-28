@@ -17,11 +17,11 @@ def cmd(event):
 
 def mod(event):
     "list available modules."
-    mods = Commands.names.keys()
+    mods = list(Commands.names.keys())
     if not mods:
         event.reply("no modules available")
         return
-    event.reply(mods)
+    event.reply(" ".join(mods))
 
 
 def upt(event):

@@ -154,8 +154,8 @@ def main():
     if Runs.check("t"):
         Main.threaded = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
-    Mods.scanner("mods")
-    Mods.scanner("other")
+    Mods.scanner('mods', "mods")
+    Mods.scanner('other', "other")
     if Main.threaded:
         Clients.init(os.cpu_count(), CLI)
     else:

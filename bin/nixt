@@ -56,8 +56,8 @@ class Arguments:
         Object.update(Main, args)
         Parse.parse(Main, txt)
         Workdir.wdr = os.path.expanduser("~/.nixt")
-        Mods.scanner("mods")
-        Mods.scanner("other")
+        Mods.scanner("mods", "mods")
+        Mods.scanner("other", "other")
         Log.size(len(Main.name))
         Log.level(Main.level or "info")
 

@@ -105,7 +105,6 @@ class Locate:
         with cls.lock:
             nrs = 0
             for pth in cls.fns(Workdir.long(kind)):
-                print(pth)
                 obj = Cache.get(pth)
                 if obj is None:
                     obj = Base()

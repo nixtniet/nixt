@@ -85,15 +85,15 @@ class Mods:
         return cls.modules[name]
 
     @classmethod
-    def scanner(cls, path):
+    def scanner(cls, pkgname, path):
         "scan named modules for commands."
         for name in os.listdir(path):
             if name.startswith("__") or not name.endswith(".py"):
                 continue
-            modname = path.split(os.sep)[-1] + "." + name[:-3]
             fnm = j(path, name)
             if not e(fnm):
                 continue
+            modname = pkgname + ". " + name[:-3]
             mod = cls.importer(modname, fnm)
             if not mod:
                 continue

@@ -7,7 +7,7 @@
 import unittest
 
 
-from bot.defines import Commands, Message, Handler
+from nixt.defines import Commands, Message, Handler
 
 
 def cmnd(event):
