@@ -12,11 +12,9 @@ import pathlib
 import threading
 
 
-from .configs import Main
 from .objects import Base, Json, Object
-from .utility import Time, Utils, e, j
-
-
+from .timings import Time
+from .utility import Utils, e, j
 
 
 class Cache:
@@ -107,6 +105,7 @@ class Locate:
         with cls.lock:
             nrs = 0
             for pth in cls.fns(Workdir.long(kind)):
+                print(pth)
                 obj = Cache.get(pth)
                 if obj is None:
                     obj = Base()

@@ -5,18 +5,8 @@
 
 
 import datetime
-import inspect
-import logging
 import os
-import pathlib
 import time
-
-
-a = os.path.abspath
-d = os.path.dirname
-e = os.path.exists
-i = os.path.isfile
-j = os.path.join
 
 
 class Time:
@@ -114,170 +104,6 @@ class Time:
         return str(datetime.datetime.today()).split()[0]
 
 
-class Utils:
-
-    @staticmethod
-    def cdir(path):
-        "create directory."
-        if e(path):
-            return
-        pth = pathlib.Path(path)
-        if not e(pth.parent):
-            pth.parent.mkdir(parents=True, exist_ok=True)
-
-    @staticmethod
-    def check(path, md5s):
-        "check for md5sums in a given path."
-        ok = True
-        if not e(path):
-            return False
-        for pth in os.listdir(path):
-            if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
-                continue
-            name = pth[:-3]
-            modpath = j(path, pth)
-            if Utils.md5(modpath) != md5s.get(name):
-                logging.warning("mismatch %s", name)
-                ok = False
-        return ok
-
-    @staticmethod
-    def clsname(obj):
-        "reutrn classname of an object."
-        return obj.__class__.__name__
-
-    @staticmethod
-    def source(module):
-        return module.__loader__.get_source(module.__name__)
-
-    @staticmethod
-    def html(text):
-        "wrap text as html."
-        return """<!doctype html>\n<html>   %s\n</html>""" % text
-
-    @staticmethod
-    def md5(path):
-        "calculate md5sum of a file."
-        import hashlib
-        md5 = hashlib.md5()
-        with open(path, "r", encoding="utf-8") as file:
-            md5.update(file.read().encode("utf-8"))
-        return str(md5.hexdigest())
-
-    @staticmethod
-    def md5dir(path, md5):
-        "create a md5 for a directory."
-        for fnm in os.listdir(path):
-            if not fnm.endswith(".py"):
-                continue
-            mpath = j(path, fnm)
-            with open(mpath, "r", encoding="utf-8") as file:
-                md5.update(file.read().encode("utf-8"))
-
-    @staticmethod
-    def md5source(src):
-        "determine md5 of source code."
-        import hashlib
-        md5 = hashlib.md5()
-        md5.update(src.encode("utf-8"))
-        return str(md5.hexdigest())
-
-    @staticmethod
-    def moddir():
-        "return modules directory."
-        return j(os.path.dirname(__spec__.loader.path), "modules")
-
-    @staticmethod
-    def modname(obj):
-        "return package name of an object."
-        return obj.__module__.split(".")[-1]
-
-    @staticmethod
-    def pkgname(obj):
-        "return package name of an object."
-        return obj.__module__.split(".", maxsplit=1)[0]
-
-    @staticmethod
-    def pipxdir(name):
-        "return examples directory."
-        return f"~/.local/share/pipx/venvs/{name}/share/{name}/"
-
-    @staticmethod
-    def spl(txt, ignore=""):
-        "list from comma seperated string."
-        try:
-            ignores = ignore.split(",")
-            result = txt.split(",")
-        except (TypeError, ValueError):
-            result = []
-        return [x for x in result if x and x not in ignores]
-
-    @staticmethod
-    def where(obj):
-        "path where object is defined."
-        return os.path.dirname(inspect.getfile(obj))
-
-    @staticmethod
-    def wrapped(func):
-        "wrap function in a try/except, silence ctrl-c/ctrl-d."
-        try:
-            func()
-        except (KeyboardInterrupt, EOFError):
-            pass
-
-
-class Format(logging.Formatter):
-
-    disable = False
-    size = 4
-
-    def format(self, record):
-        "logging formatter."
-        if not Format.disable:
-            record.module = record.module.upper()
-            record.module = record.module[:Format.size]
-        return logging.Formatter.format(self, record)
-
-
-class Log:
-
-    datefmt = "%H:%M:%S"
-    format = "%(module)-3s %(message)s"
-
-    @classmethod
-    def level(cls, loglevel):
-        "set log level."
-        formatter = Format(Log.format, Log.datefmt)
-        stream = logging.StreamHandler()
-        stream.setFormatter(formatter)
-        logging.basicConfig(
-            level=loglevel.upper(),
-            handlers=[stream,],
-            force=True
-        )
-
-    @classmethod
-    def size(cls, nr):
-        "set text size."
-        Format.size = nr
-        index = cls.format.find("-")+1
-        newformat = cls.format[:index]
-        newformat += str(nr)
-        newformat += cls.format[index+1:]
-        cls.format = newformat
-
-
-LEVELS = {
-    "notset": logging.NOTSET,
-    "debug": logging.DEBUG,
-    "info": logging.INFO,
-    "warning": logging.WARNING,
-    "error": logging.ERROR,
-    "critical": logging.CRITICAL,
-    "fatal": logging.FATAL
-}
-
-
 TIMES = [
     "%a, %d %b %Y %H:%M:%S %z",
     "%a, %d %b %Y %H:%M:%S",
@@ -295,15 +121,7 @@ TIMES = [
 
 def __dir__():
     return (
-        'LEVELS',
         'TIMES',
         'NoDate',
-        'Format',
-        'Log',
-        'Time',
-        'Utils',
-        'a',
-        'd',
-        'e',
-        'j'
+        'Time'
     )

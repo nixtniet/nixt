@@ -16,7 +16,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Client, Commands, Log, Main, Message, Mods, Object
-from nixt.defines import Parse, Utils, Workdir
+from nixt.defines import Parse, Thread, Utils, Workdir
 
 
 class Arguments:
@@ -147,7 +147,7 @@ class Boot:
         "call init of modules that have an init function."
         thrs = []
         for name in Utils.spl(modlist):
-            mod = Commands.modules.get(name)
+            mod = Mods.modules.get(name)
             if not mod or "init" not in dir(mod):
                 continue
             thrs.append(Thread.launch(mod.init))
@@ -207,6 +207,8 @@ class Scripts:
         readline.redisplay()
         if Main.verbose:
             Boot.banner()
+        if Main.all:
+            Main.mods = ",".join(Mods.modules.keys())
         if not Boot.init(Main.mods, Main.wait):
             return
         csl = Console()

@@ -57,7 +57,7 @@ def tbl(event):
 
 def wdr(event):
     "show working directory."
-    event.reply(Workdir.workdir())
+    event.reply(Workdir.wdr)
 
 
 SYSTEMD = """[Unit]

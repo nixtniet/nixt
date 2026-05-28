@@ -7,7 +7,7 @@
 import time
 
 
-from nixt.defines import Commands, Time
+from nixt.defines import Commands, Main, Time
 
 
 def cmd(event):
