@@ -12,7 +12,7 @@ from nixt.defines import Commands, Main, Time
 
 def cmd(event):
     "list available commands."
-    event.reply(",".join(sorted(Commands.cmds)))
+    event.reply(",".join(sorted(Commands.names)))
 
 
 def mod(event):

@@ -8,6 +8,7 @@ import os
 
 
 from .message import Message
+from .package import Mods
 from .parsers import Parse
 from .utility import e, j
 
@@ -41,6 +42,14 @@ class Commands:
         "command callback."
         Parse.parse(evt, evt.text)
         func = cls.get(evt.cmd)
+        if not func:
+            name = cls.names.get(evt.cmd)
+            mod = None
+            if name:
+                mod = Mods.get(name)
+            if mod:
+                cls.scan(mod)
+                func = cls.get(evt.cmd)
         if func:
             func(evt)
             evt.display()
@@ -59,51 +68,18 @@ class Commands:
             if 'event' in inspect.signature(cmdz).parameters:
                 cls.add(cmdz)
 
-
-class Mods:
-
-    md5s = {}
-    modules = {}
-
     @classmethod
-    def has(cls, attr):
-        "return list of modules containing an attribute."
-        result = []
-        for mod in cls.modules.values():
-            if not getattr(mod, attr, False):
-                continue
-            result.append(mod.__name__.split(".")[-1])
-        return ",".join(result)
-
-    @classmethod
-    def importer(cls, name, pth=""):
-        "import module by path."
-        import importlib.util
-        spec = importlib.util.spec_from_file_location(name, pth)
-        cls.modules[name] = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(cls.modules[name])
-        return cls.modules[name]
-
-    @classmethod
-    def scanner(cls, pkgname, path):
-        "scan named modules for commands."
-        for name in os.listdir(path):
-            if name.startswith("__") or not name.endswith(".py"):
-                continue
-            fnm = j(path, name)
-            if not e(fnm):
-                continue
-            modname = pkgname + ". " + name[:-3]
-            mod = cls.importer(modname, fnm)
-            if not mod:
-                continue
-            if "configure" in dir(mod):
-                mod.configure()
-            Commands.scan(mod)
+    def table(cls):
+        "read table,"
+        try:
+            from .statics import NAMES
+            cls.names.update(NAMES)
+            return True
+        except ImportError:
+            return False
 
 
 def __dir__():
     return (
         'Commands',
-        'Mods'
     )

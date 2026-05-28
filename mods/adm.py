@@ -8,7 +8,7 @@ import inspect
 import os
 
 
-from nixt.defines import Commands, Json, Main, Mods, Utils, Workdir, d, j
+from nixt.defines import Boot, Commands, Json, Main, Mods, Utils, Workdir, d, j
 
 
 def srv(event):
@@ -34,8 +34,10 @@ def tbl(event):
     "create table."
     core = {}
     md5s = {}
+    Boot.scanner()
     for name, module in Mods.modules.items():
-        md5s[name] = Utils.md5(module.__file__)
+        modname = module.__name__.split(".")[-1]
+        md5s[modname] = Utils.md5(module.__file__)
         Commands.scan(module)
     corepath = d(inspect.getsourcefile(Commands))
     for path in os.listdir(corepath):
