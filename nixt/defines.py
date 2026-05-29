@@ -18,7 +18,7 @@ from .parsers import Parse
 from .persist import Disk, Locate, Workdir
 from .repeats import Repeater
 from .threads import Task, Thread
-from .utility import Log, Time, Utils, a, d ,e , i, j
+from .utility import Log, MD5, Time, Utils, a, d ,e , i, j
 
 
 def __dir__():
@@ -37,6 +37,7 @@ def __dir__():
        'Locate',
        'Log',
        'Main',
+       'MD5',
        'Message',
        'Mods',
        'Object',

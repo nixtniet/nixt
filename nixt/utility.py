@@ -59,6 +59,45 @@ class Log:
         cls.format = newformat
 
 
+class MD5:
+
+    @staticmethod
+    def md5(path):
+        "calculate md5sum of a file."
+        import hashlib
+        md5 = hashlib.md5()
+        with open(path, "r", encoding="utf-8") as file:
+            md5.update(file.read().encode("utf-8"))
+        return str(md5.hexdigest())
+
+    @classmethod
+    def core(cls):
+        "calculate md5 of the statics module."
+        try:
+            from . import statics
+        except ModuleNotFoundError:
+            return ""
+        return cls.source(Utils.source(statics))[:7].upper()
+
+    @staticmethod
+    def dir(path, md5):
+        "create a md5 for a directory."
+        for fnm in os.listdir(path):
+            if not fnm.endswith(".py"):
+                continue
+            mpath = j(path, fnm)
+            with open(mpath, "r", encoding="utf-8") as file:
+                md5.update(file.read().encode("utf-8"))
+
+    @staticmethod
+    def source(src):
+        "determine md5 of source code."
+        import hashlib
+        md5 = hashlib.md5()
+        md5.update(src.encode("utf-8"))
+        return str(md5.hexdigest())
+
+
 class Time:
 
     starttime = time.time()
@@ -187,40 +226,9 @@ class Utils:
         return obj.__class__.__name__
 
     @staticmethod
-    def source(module):
-        return module.__loader__.get_source(module.__name__)
-
-    @staticmethod
     def html(text):
         "wrap text as html."
         return """<!doctype html>\n<html>   %s\n</html>""" % text
-
-    @staticmethod
-    def md5(path):
-        "calculate md5sum of a file."
-        import hashlib
-        md5 = hashlib.md5()
-        with open(path, "r", encoding="utf-8") as file:
-            md5.update(file.read().encode("utf-8"))
-        return str(md5.hexdigest())
-
-    @staticmethod
-    def md5dir(path, md5):
-        "create a md5 for a directory."
-        for fnm in os.listdir(path):
-            if not fnm.endswith(".py"):
-                continue
-            mpath = j(path, fnm)
-            with open(mpath, "r", encoding="utf-8") as file:
-                md5.update(file.read().encode("utf-8"))
-
-    @staticmethod
-    def md5source(src):
-        "determine md5 of source code."
-        import hashlib
-        md5 = hashlib.md5()
-        md5.update(src.encode("utf-8"))
-        return str(md5.hexdigest())
 
     @staticmethod
     def moddir():
@@ -241,6 +249,10 @@ class Utils:
     def pipxdir(name):
         "return examples directory."
         return f"~/.local/share/pipx/venvs/{name}/share/{name}/"
+
+    @staticmethod
+    def source(module):
+        return module.__loader__.get_source(module.__name__)
 
     @staticmethod
     def spl(txt, ignore=""):
@@ -295,6 +307,7 @@ TIMES = [
 def __dir__():
     return (
         'LEVELS',
+        'MD5',
         'TIMES',
         'NoDate',
         'Format',

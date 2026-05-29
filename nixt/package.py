@@ -8,7 +8,7 @@ import logging
 import os
 
 
-from .utility import Utils, e, j
+from .utility import MD5, Utils, e, j
 
 
 class Mods:
@@ -33,7 +33,7 @@ class Mods:
             if not e(fnm):
                 continue
             if cls.md5s:
-                md5 = Utils.md5(fnm)
+                md5 = MD5.md5(fnm)
                 if md5 != cls.md5s.get(name):
                     logging.warning("mismatch %s", modname)
             return cls.importer(modname, fnm)

@@ -6,7 +6,6 @@
 
 import logging
 import os
-import sys
 import time
 
 
@@ -23,20 +22,6 @@ class Boot:
     md5s = {}
 
     @classmethod
-    def banner(cls):
-        "hello"
-        tme = time.ctime(time.time()).replace("  ", " ")
-        txt = "%s %s since %s %s (%s)" % (
-            Main.name.upper(),
-            Main.version,
-            tme,
-            Main.level.upper() or "INFO",
-            cls.core()
-        )
-        print(txt.replace("  ", " "))
-        sys.stdout.flush()
-
-    @classmethod
     def boot(cls, cfg):
         Workdir.wdr = cfg.wdr or os.path.expanduser("~/.{cfg.name}")
         if cfg.user:
@@ -48,37 +33,6 @@ class Boot:
         Mods.table()
         Log.size(len(cfg.name))
         Log.level(cfg.level or "info")
-
-    @classmethod
-    def core(cls):
-        "calculate md5 of the statics module."
-        try:
-            from nixt import statics
-        except ModuleNotFoundError:
-            return ""
-        return Utils.md5source(Utils.source(statics))[:7].upper()
-
-    @classmethod
-    def daemon(cls, verbose=False, nochdir=False):
-        "run in the background."
-        pid = os.fork()
-        if pid != 0:
-            os._exit(0)
-        os.setsid()
-        pid2 = os.fork()
-        if pid2 != 0:
-            os._exit(0)
-        if not verbose:
-            with open('/dev/null', 'r', encoding="utf-8") as sis:
-                os.dup2(sis.fileno(), sys.stdin.fileno())
-            with open('/dev/null', 'a+', encoding="utf-8") as sos:
-                os.dup2(sos.fileno(), sys.stdout.fileno())
-            with open('/dev/null', 'a+', encoding="utf-8") as ses:
-                os.dup2(ses.fileno(), sys.stderr.fileno())
-        os.umask(0)
-        if not nochdir:
-            os.chdir("/")
-        os.nice(10)
 
     @classmethod
     def forever(cls):
@@ -94,7 +48,7 @@ class Boot:
         "call init of modules that have an init function."
         thrs = []
         for name in Utils.spl(modlist):
-            mod = Mods.modules.get(name)
+            mod = Mods.get(name)
             if not mod or "init" not in dir(mod):
                 continue
             thrs.append(Thread.launch(mod.init))
@@ -107,17 +61,9 @@ class Boot:
         return True
 
     @classmethod
-    def privileges(cls):
-        "drop privileges."
-        import getpass
-        import pwd
-        pwnam2 = pwd.getpwnam(getpass.getuser())
-        os.setgid(pwnam2.pw_gid)
-        os.setuid(pwnam2.pw_uid)
-
-    @classmethod
     def scanner(cls):
         "scan named modules for commands."
+        logging.debug("running scanner")
         for name in Utils.spl(Mods.list()):
             mod = Mods.get(name)
             if not mod:
@@ -135,26 +81,6 @@ class Boot:
             return True
         except ImportError:
             return False
-
-    @classmethod
-    def wrap(cls, func, *args, final=None):
-        "restore console."
-        import termios
-        old = None
-        try:
-            old = termios.tcgetattr(sys.stdin.fileno())
-        except termios.error:
-            pass
-        try:
-            func(*args)
-        except (KeyboardInterrupt, EOFError):
-            pass
-        except Exception as ex:
-            logging.exception(ex)
-        if old:
-            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
-        if final:
-            final()
 
 
 def __dir__():

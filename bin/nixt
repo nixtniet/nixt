@@ -15,8 +15,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Log, Main, Message, Mods
-from nixt.defines import Object, Parse, Thread, Utils, Workdir
+from nixt.defines import Boot, Client, Commands, Log, Main, MD5, Message
+from nixt.defines import Mods, Object, Parse, Thread, Utils, Workdir
 
 
 class Arguments:
@@ -48,7 +48,7 @@ class Arguments:
         optparser = theparser.add_argument_group()
         optparser.add_argument("--check", action="store_false", help=argparse.SUPPRESS)
         optparser.add_argument("--read", action="store_true", help="read table on start.")
-        optparser.add_argument("--default", default="irc,mdl,rss,wsd", help=argparse.SUPPRESS)
+        optparser.add_argument("--default", default="irc,mdl,rss", help=argparse.SUPPRESS)
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
         optparser.add_argument("--wdr", default="", help='set working directory.', metavar="path")
         args, arguments = theparser.parse_known_args()
@@ -82,14 +82,93 @@ class Console(Client):
         sys.stdout.flush()
 
 
+class Runs:
+
+    @classmethod
+    def banner(cls):
+        "hello"
+        tme = time.ctime(time.time()).replace("  ", " ")
+        txt = "%s %s since %s %s (%s)" % (
+            Main.name.upper(),
+            Main.version,
+            tme,
+            Main.level.upper() or "INFO",
+            MD5.core()
+        )
+        print(txt.replace("  ", " "))
+        sys.stdout.flush()
+
+    @classmethod
+    def daemon(cls, verbose=False, nochdir=False):
+        "run in the background."
+        pid = os.fork()
+        if pid != 0:
+            os._exit(0)
+        os.setsid()
+        pid2 = os.fork()
+        if pid2 != 0:
+            os._exit(0)
+        if not verbose:
+            with open('/dev/null', 'r', encoding="utf-8") as sis:
+                os.dup2(sis.fileno(), sys.stdin.fileno())
+            with open('/dev/null', 'a+', encoding="utf-8") as sos:
+                os.dup2(sos.fileno(), sys.stdout.fileno())
+            with open('/dev/null', 'a+', encoding="utf-8") as ses:
+                os.dup2(ses.fileno(), sys.stderr.fileno())
+        os.umask(0)
+        if not nochdir:
+            os.chdir("/")
+        os.nice(10)
+
+    @classmethod
+    def privileges(cls):
+        "drop privileges."
+        import getpass
+        import pwd
+        pwnam2 = pwd.getpwnam(getpass.getuser())
+        os.setgid(pwnam2.pw_gid)
+        os.setuid(pwnam2.pw_uid)
+
+    @classmethod
+    def wrap(cls, func, *args, final=None):
+        "restore console."
+        import termios
+        old = None
+        try:
+            old = termios.tcgetattr(sys.stdin.fileno())
+        except termios.error:
+            pass
+        try:
+            func(*args)
+        except (KeyboardInterrupt, EOFError):
+            pass
+        except Exception as ex:
+            logging.exception(ex)
+        if old:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+        if final:
+            final()
+
+    @classmethod
+    def writepid(cls, name):
+        "write pidfile."
+        filename = j(Workdir.wdr, f"{name}.pid")
+        if e(filename):
+            os.unlink(filename)
+        path2 = pathlib.Path(filename)
+        path2.parent.mkdir(parents=True, exist_ok=True)
+        with open(filename, "w", encoding="utf-8") as fds:
+            fds.write(str(os.getpid()))
+
+
 class Scripts:
 
     @staticmethod
     def background():
         "background script."
-        Boot.daemon(Main.verbose, Main.nochdir)
-        Boot.privileges()
-        Boot.writepid(Main.name)
+        Runs.daemon(Main.verbose, Main.nochdir)
+        Runs.privileges()
+        Runs.writepid(Main.name)
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 
@@ -99,9 +178,9 @@ class Scripts:
         import readline
         readline.redisplay()
         if Main.verbose:
-            Boot.banner()
+            Runs.banner()
         if Main.all:
-            Main.mods = ",".join(Mods.modules.keys())
+            Main.mods = Mods.list()
         if not Boot.init(Main.mods, Main.wait):
             return
         csl = Console()
@@ -117,8 +196,8 @@ class Scripts:
     @staticmethod
     def service():
         "service script."
-        Boot.privileges()
-        Boot.writepid(Main.name)
+        Runs.privileges()
+        Runs.writepid(Main.name)
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 
@@ -127,13 +206,13 @@ def main():
     "main"
     Arguments.getargs()
     if Main.daemon:
-        Boot.wrap(Scripts.background)
+        Runs.wrap(Scripts.background)
     elif Main.console:
-        Boot.wrap(Scripts.console)
+        Runs.wrap(Scripts.console)
     elif Main.service:
-        Boot.wrap(Scripts.service)
+        Runs.wrap(Scripts.service)
     else:
-        Boot.wrap(Scripts.control)
+        Runs.wrap(Scripts.control)
 
 
 if __name__ == "__main__":
