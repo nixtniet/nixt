@@ -4,13 +4,9 @@
 "write your own commands"
 
 
-import os
-
-
 from .message import Message
 from .package import Mods
 from .parsers import Parse
-from .utility import e, j
 
 
 class Commands:

@@ -9,7 +9,7 @@ import os
 
 
 from nixt.defines import Boot, Commands, Json, Main, MD5
-from nixt.defines import Mods, Utils, Workdir, d, j
+from nixt.defines import Mods, Workdir, d, j
 
 
 def srv(event):

@@ -4,17 +4,15 @@
 "in the beginning"
 
 
-import logging
 import os
 import time
 
 
 from .command import Commands
-from .configs import Main
 from .package import Mods
 from .persist import Workdir
 from .threads import Thread
-from .utility import Log, Utils, e, j
+from .utility import Log, Utils
 
 
 class Boot:

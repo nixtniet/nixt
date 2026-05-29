@@ -24,6 +24,7 @@ from .utility import Log, MD5, Time, Utils, a, d ,e , i, j
 def __dir__():
     return (
        'Base',
+       'Boot',
        'Broker',
        'Buffer',
        'Buffered',

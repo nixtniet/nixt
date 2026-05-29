@@ -216,7 +216,7 @@ class Utils:
                 continue
             name = pth[:-3]
             modpath = j(path, pth)
-            if Utils.md5(modpath) != md5s.get(name):
+            if MD5.md5(modpath) != md5s.get(name):
                 logging.warning("mismatch %s", name)
                 ok = False
         return ok

@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.timings import TIMES
+from nixt.utility import TIMES
 
 
 class TestTime(unittest.TestCase):
