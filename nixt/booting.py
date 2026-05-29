@@ -63,7 +63,6 @@ class Boot:
     @classmethod
     def scanner(cls):
         "scan named modules for commands."
-        logging.debug("running scanner")
         for name in Utils.spl(Mods.list()):
             mod = Mods.get(name)
             if not mod:
