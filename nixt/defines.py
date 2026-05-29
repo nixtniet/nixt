@@ -8,17 +8,18 @@
 from .booting import Boot
 from .brokers import Broker
 from .clients import Buffer, Buffered, Client, Clients, Output
-from .command import Commands, Mods
+from .command import Commands
 from .configs import Main
 from .engines import Engine
 from .handler import Handler
 from .message import Message
 from .objects import Base, Json, Object
+from .package import Mods
 from .parsers import Parse
 from .persist import Disk, Locate, Workdir
 from .repeats import Repeater
 from .threads import Task, Thread
-from .utility import Log, MD5, Time, Utils, a, d ,e , i, j
+from .utility import Log, Md5, Time, Utils, a, d ,e , i, j
 
 
 def __dir__():
@@ -38,7 +39,7 @@ def __dir__():
        'Locate',
        'Log',
        'Main',
-       'MD5',
+       'Md5',
        'Message',
        'Mods',
        'Object',

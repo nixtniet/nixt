@@ -8,7 +8,7 @@ import logging
 import os
 
 
-from .utility import MD5, Utils, e, j
+from .utility import Md5, Utils, e, j
 
 
 class Mods:
@@ -19,6 +19,7 @@ class Mods:
 
     @classmethod
     def add(cls, pkgname, path):
+        "add module/patgh."
         cls.dirs[pkgname] = path
 
     @classmethod
@@ -33,7 +34,7 @@ class Mods:
             if not e(fnm):
                 continue
             if cls.md5s:
-                md5 = MD5.md5(fnm)
+                md5 = Md5.md5(fnm)
                 if md5 != cls.md5s.get(name):
                     logging.warning("mismatch %s", modname)
             return cls.importer(modname, fnm)

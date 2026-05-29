@@ -60,7 +60,7 @@ class Log:
         cls.format = newformat
 
 
-class MD5:
+class Md5:
 
     @staticmethod
     def md5(path):
@@ -216,7 +216,7 @@ class Utils:
                 continue
             name = pth[:-3]
             modpath = j(path, pth)
-            if MD5.md5(modpath) != md5s.get(name):
+            if Md5.md5(modpath) != md5s.get(name):
                 logging.warning("mismatch %s", name)
                 ok = False
         return ok
@@ -308,11 +308,11 @@ TIMES = [
 def __dir__():
     return (
         'LEVELS',
-        'MD5',
         'TIMES',
         'NoDate',
         'Format',
         'Log',
+        'Md5',
         'Time',
         'Utils',
         'a',

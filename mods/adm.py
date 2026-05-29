@@ -8,7 +8,7 @@ import inspect
 import os
 
 
-from nixt.defines import Boot, Commands, Json, Main, MD5
+from nixt.defines import Boot, Commands, Json, Main, Md5
 from nixt.defines import Mods, Workdir, d, j
 
 
@@ -38,14 +38,14 @@ def tbl(event):
     Boot.scanner()
     for name, module in Mods.modules.items():
         modname = module.__name__.split(".")[-1]
-        md5s[modname] = MD5.md5(module.__file__)
+        md5s[modname] = Md5.md5(module.__file__)
         Commands.scan(module)
     corepath = d(inspect.getsourcefile(Commands))
     for path in os.listdir(corepath):
         if path.startswith("__") or not path.endswith(".py") or "statics" in path:
             continue
         name = path[:-3]
-        core[name] = MD5.md5(j(corepath, path))
+        core[name] = Md5.md5(j(corepath, path))
     event.reply("# This file is placed in the Public Domain.")
     event.reply("\n")
     event.reply('"static tables"')
