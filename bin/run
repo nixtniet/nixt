@@ -1,4 +1,4 @@
 bin/ruff
 bin/lint
 bin/flake
-bin/tinder -10
+bin/tinder

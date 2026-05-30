@@ -15,8 +15,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Log, Main, Md5, Message
-from nixt.defines import Mods, Object, Parse, Thread, Utils, Workdir
+from nixt.defines import Boot, Client, Commands, Main, Md5, Message
+from nixt.defines import Mods, Object, Utils, Workdir
 
 
 class Arguments:
@@ -52,7 +52,7 @@ class Arguments:
         optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
         optparser.add_argument("--user", action="store_true", help="use local mods directory.")
         args, arguments = theparser.parse_known_args()
-        Main.otxt = txt = " ".join(arguments)
+        Main.otxt = " ".join(arguments)
         Object.update(Main, args)
         Boot.boot(Main)
 
@@ -148,16 +148,7 @@ class Runs:
         if final:
             final()
 
-    @classmethod
-    def writepid(cls, name):
-        "write pidfile."
-        filename = j(Workdir.wdr, f"{name}.pid")
-        if e(filename):
-            os.unlink(filename)
-        path2 = pathlib.Path(filename)
-        path2.parent.mkdir(parents=True, exist_ok=True)
-        with open(filename, "w", encoding="utf-8") as fds:
-            fds.write(str(os.getpid()))
+    pid = Workdir.pid
 
 
 class Scripts:
@@ -167,7 +158,7 @@ class Scripts:
         "background script."
         Runs.daemon(Main.verbose, Main.nochdir)
         Runs.privileges()
-        Runs.writepid(Main.name)
+        Runs.pid(Main.name)
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 
@@ -196,7 +187,7 @@ class Scripts:
     def service():
         "service script."
         Runs.privileges()
-        Runs.writepid(Main.name)
+        Runs.pid(Main.name)
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 
