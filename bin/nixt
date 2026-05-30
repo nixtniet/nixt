@@ -30,7 +30,7 @@ class Arguments:
                                          description=f'{Main.name.upper()}',
                                          epilog='use "%(prog)s cmd" for a list of commands.',
                                          formatter_class=argparse.RawDescriptionHelpFormatter,
-                                         usage='''%(prog)s [-c|d|h|s] [-a] [-v] [-u] [-w] [-l level] [-m m1,m2] [--wdr path]\n       %(prog)s [cmd] [arg=val] [arg==val]'''
+                                         usage='''%(prog)s [-c|-d|-h|-s] [-a] [-v] [-w] [-l level] [-m m1,m2] [-p path]\n       %(prog)s [cmd] [key=val] [key==val]'''
                                         )
         group = theparser.add_mutually_exclusive_group()
         group.add_argument("-c", "--console", action="store_true", help="run as console.")
@@ -40,21 +40,20 @@ class Arguments:
         parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
         parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
-        parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
         optionparser = theparser.add_argument_group()
         optionparser.add_argument("-l", "--level", default=Main.level, help='set loglevel.', metavar="level")
         optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
-        optionparser.add_argument("-x", "--admin", action="store_true", help="enable admin mode.")
+        optionparser.add_argument("-p", "--path", default="", help='path to working directory.', metavar="path")
         optparser = theparser.add_argument_group()
         optparser.add_argument("--check", action="store_false", help=argparse.SUPPRESS)
-        optparser.add_argument("--read", action="store_true", help="read table on start.")
         optparser.add_argument("--default", default="irc,mdl,rss", help=argparse.SUPPRESS)
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
-        optparser.add_argument("--wdr", default="", help='set working directory.', metavar="path")
+        optparser.add_argument("--read", action="store_true", help=argparse.SUPPRESS)
+        optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
+        optparser.add_argument("--user", action="store_true", help="use local mods directory.")
         args, arguments = theparser.parse_known_args()
         Main.otxt = txt = " ".join(arguments)
         Object.update(Main, args)
-        Parse.parse(Main, txt)
         Boot.boot(Main)
 
 
@@ -121,15 +120,6 @@ class Runs:
         os.nice(10)
 
     @classmethod
-    def forever(cls):
-        "run forever until ctrl-c."
-        while True:
-            try:
-                time.sleep(0.01)
-            except (KeyboardInterrupt, EOFError):
-                break
-
-    @classmethod
     def privileges(cls):
         "drop privileges."
         import getpass
@@ -179,7 +169,7 @@ class Scripts:
         Runs.privileges()
         Runs.writepid(Main.name)
         Boot.init(Main.mods or Main.default)
-        Runs.forever()
+        Boot.forever()
 
     @staticmethod
     def console():
@@ -194,7 +184,7 @@ class Scripts:
             return
         csl = Console()
         csl.start()
-        Runs.forever()
+        Boot.forever()
 
     @staticmethod
     def control():
@@ -208,7 +198,7 @@ class Scripts:
         Runs.privileges()
         Runs.writepid(Main.name)
         Boot.init(Main.mods or Main.default)
-        Runs.forever()
+        Boot.forever()
 
 
 def main():
