@@ -144,7 +144,7 @@ class IRC(Engine, Buffered):
         self.state.nrconnect += 1
         self.events.connected.clear()
         self.events.joined.clear()
-        if self.cfg.word or self.cfg.word:
+        if self.cfg.word:
             logging.debug("using SASL")
             self.cfg.sasl = True
             self.cfg.port = "6697"
@@ -522,7 +522,7 @@ def cb_auth(evt):
 def cb_cap(evt):
     "capabilities callback."
     bot = Broker.get(evt.orig)
-    if (bot.cfg.word or bot.cfg.word and "ACK" in evt.arguments):
+    if (bot.cfg.word and "ACK" in evt.arguments):
         bot.direct("AUTHENTICATE PLAIN")
     else:
         bot.direct("CAP REQ :sasl")

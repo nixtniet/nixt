@@ -21,7 +21,7 @@ class Boot:
 
     @classmethod
     def boot(cls, cfg):
-        Workdir.wdr = cfg.wdr or os.path.expanduser("~/.{cfg.name}")
+        Workdir.wdr = cfg.wdr or os.path.expanduser(f"~/.{cfg.name}")
         if cfg.user:
             Mods.add("mods", "mods")
             Mods.add("other", "other")

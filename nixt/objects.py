@@ -171,7 +171,7 @@ class Object:
             elif isinstance(value, str):
                 txt += f'{key}="{value}" '
             else:
-                txt += f"{key}={Object.cls(value)}({Object.fmt(value)}) "
+                txt += f"{key}={Object.cls(value)}({str(value)}) "
         if txt == "":
             txt = "{}"
         return txt.strip()

@@ -19,7 +19,7 @@ def cfg(event):
     config = Base()
     Disk.read(config, name, "config")
     if name != "main" and not config:
-        mod = Mods.modules.get(name)
+        mod = Mods.get(name)
         if not mod:
             event.reply(f"no {name} module found.")
             return
