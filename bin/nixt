@@ -121,6 +121,15 @@ class Runs:
         os.nice(10)
 
     @classmethod
+    def forever(cls):
+        "run forever until ctrl-c."
+        while True:
+            try:
+                time.sleep(0.01)
+            except (KeyboardInterrupt, EOFError):
+                break
+
+    @classmethod
     def privileges(cls):
         "drop privileges."
         import getpass
@@ -170,7 +179,7 @@ class Scripts:
         Runs.privileges()
         Runs.writepid(Main.name)
         Boot.init(Main.mods or Main.default)
-        Boot.forever()
+        Runs.forever()
 
     @staticmethod
     def console():
@@ -185,7 +194,7 @@ class Scripts:
             return
         csl = Console()
         csl.start()
-        Boot.forever()
+        Runs.forever()
 
     @staticmethod
     def control():
@@ -199,7 +208,7 @@ class Scripts:
         Runs.privileges()
         Runs.writepid(Main.name)
         Boot.init(Main.mods or Main.default)
-        Boot.forever()
+        Runs.forever()
 
 
 def main():
