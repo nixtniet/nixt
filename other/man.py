@@ -159,7 +159,7 @@ irc
 sasl
 
 | ``$ %s pwd <nsnick> <nspass>``
-| ``$ %s cfg irc password=<frompwd>``
+| ``$ %s cfg irc word=<frompwd>``
 |
 
 rss

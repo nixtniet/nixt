@@ -154,7 +154,7 @@ irc
 sasl
 
 | ``$ nixt pwd <nsnick> <nspass>``
-| ``$ nixt cfg irc password=<frompwd>``
+| ``$ nixt cfg irc word=<frompwd>``
 |
 
 rss
