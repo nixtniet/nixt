@@ -48,7 +48,7 @@ class Commands:
         else:
             func = getattr(cmds, evt.cmd, False)
             if not func:
-                evt.reply(f"{evt.mod} <{Utils.skip(cmds)}>")
+                evt.reply(f"{evt.mod} <{'|'.join(Utils.skip(cmds))}>")
                 evt.ready()
         if func:
             func(evt)

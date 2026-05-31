@@ -5,7 +5,7 @@
 
 
 CORE = {
-    "booting": "fb21ff6f3f34f5328feba0c7f06db33f",
+    "booting": "2403707361d889dde472df500776d5df",
     "brokers": "ba7f144f1598b37bdfda200070cc9298",
     "clients": "b104551450cd38ff046a8520a28fbd59",
     "command": "2e6296a6074f67954cc8333e6b61c6a1",
@@ -26,25 +26,25 @@ CORE = {
 
 
 MODULES = {
-    "admin": "ebae6a80323c109d27ca04f3250f7b7e",
-    "basic": "9232f1162354d2dee8d4c7789d491988",
-    "config": "547f20df4efecab75a7f1cb0ffb42b1e",
-    "find": "1e6fe9d207cc8394f7431bd85a220ba5",
+    "adm": "ebae6a80323c109d27ca04f3250f7b7e",
+    "bsc": "40948e4501605eb3a649072e0f677b4b",
+    "cfg": "547f20df4efecab75a7f1cb0ffb42b1e",
+    "fnd": "1e6fe9d207cc8394f7431bd85a220ba5",
     "irc": "84e641687e515cd4f12bede27aa9fb22",
     "log": "a4be3689036d3c73790b16cd35967b61",
-    "mail": "b675ca592388d0f5e62fca5d6eadc3e3",
-    "manual": "c511d2c73910fbe595322d376049e675",
-    "model": "4482d74060e8a4af20a781ae0ff5aa85",
-    "path": "653000ba52bd13a2c6690f7049a4c5d3",
-    "request": "ad84bbcdeee60b58e38d992c6c2d7da6",
-    "rest": "b6798332298ddc8a097a2f6c343462cd",
+    "man": "c511d2c73910fbe595322d376049e675",
+    "mbx": "b675ca592388d0f5e62fca5d6eadc3e3",
+    "mdl": "4482d74060e8a4af20a781ae0ff5aa85",
+    "pth": "653000ba52bd13a2c6690f7049a4c5d3",
+    "req": "ad84bbcdeee60b58e38d992c6c2d7da6",
     "rss": "1a927adf61a8089005699dd1267d3f70",
-    "silent": "79a4fbac8f95cdcc00e0594e9344fcd0",
-    "slogan": "bc20d711a5761983ba3c8538c7e53c84",
-    "thread": "da08208acac4f293332f92bb3a961f88",
-    "timer": "a864697dd840e2d72be79dd3b94f909a",
-    "todo": "7aad2f6bd5df281b03ea6fd72b8fb4e3",
+    "rst": "b6798332298ddc8a097a2f6c343462cd",
+    "sil": "79a4fbac8f95cdcc00e0594e9344fcd0",
+    "slg": "bc20d711a5761983ba3c8538c7e53c84",
+    "tdo": "7aad2f6bd5df281b03ea6fd72b8fb4e3",
+    "thr": "da08208acac4f293332f92bb3a961f88",
+    "tmr": "a864697dd840e2d72be79dd3b94f909a",
     "udp": "ef0dba8834eab1269689ec02f1e32c00",
     "web": "cda5b00b4fc79c242287fed32014277f",
-    "wisdom": "c3a67746d28302c887abbd87dd0654e9"
+    "wsd": "c3a67746d28302c887abbd87dd0654e9"
 }

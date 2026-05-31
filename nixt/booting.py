@@ -29,7 +29,7 @@ class Boot:
         Mods.table()
         Log.size(len(cfg.name))
         Log.level(cfg.level or "info")
-        Mods.get("basic")
+        Mods.get("bsc")
 
     @classmethod
     def forever(cls):

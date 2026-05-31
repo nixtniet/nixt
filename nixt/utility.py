@@ -268,7 +268,14 @@ class Utils:
             if x.startswith("_"):
                 continue
             result.append(x)
-        return ",".join(sorted(result))
+        return sorted(result)
+
+    @staticmethod
+    def skipped(obj):
+        for key in dir(obj):
+            if key.startswith("_"):
+                continue
+            yield getattr(obj, key)
 
     @staticmethod
     def source(module):
