@@ -27,7 +27,7 @@ class Cmd:
         else:
             event.reply(",".join(itms))
 
-    def find(event):
+    def fnd(event):
         "find objects."
         if not event.rest:
             res = sorted([x.split('.')[-1].lower() for x in Workdir.kinds()])
@@ -49,4 +49,4 @@ class Cmd:
             event.reply("no result")
 
 
-Commands.add(Cmd.find)
+Commands.add(Cmd.fnd)

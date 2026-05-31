@@ -42,17 +42,15 @@ class Commands:
             return
         Parse.parse(evt, evt.text)
         mod = Mods.get(evt.mod)
-        cmds = getattr(mod, "Cmd", False)
-        if not cmds:
-            func = cls.cmds.get(evt.mod)
-        else:
+        func = cls.cmds.get(evt.mod)
+        if not func:
+            cmds = getattr(mod, "Cmd", False)
             func = getattr(cmds, evt.cmd, False)
-            if not func:
-                evt.reply(f"{evt.mod} <{'|'.join(Utils.skip(cmds))}>")
-                evt.ready()
         if func:
             func(evt)
             evt.display()
+        elif cmds:
+            evt.reply(f"{evt.mod} <{'|'.join(Utils.skip(cmds))}>")
         evt.ready()
 
     @classmethod

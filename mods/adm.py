@@ -16,7 +16,7 @@ from nixt.defines import Time, Workdir, d, j
 class Cmd:
 
     @staticmethod
-    def fleet(event):
+    def flt(event):
         "list of running clients."
         try:
             index = int(event.args[0])
@@ -35,7 +35,7 @@ class Cmd:
             event.reply("no matching client.")
 
     @staticmethod
-    def service(event):
+    def srv(event):
         "generate systemd service file."
         import getpass
         name = getpass.getuser()
@@ -48,13 +48,13 @@ class Cmd:
                               ))
 
     @staticmethod
-    def skel(event):
+    def skl(event):
         "create directories."
         Workdir.skel()
         event.ok()
 
     @staticmethod
-    def table(event):
+    def tbl(event):
         "create table."
         core = {}
         md5s = {}
@@ -77,14 +77,16 @@ class Cmd:
         if Main.admin:
             event.reply("\n")
             event.reply(f"MODULES = {Json.dumps(md5s, indent=4, sort_keys=True)}")
+            event.reply("\n")
+            event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4, sort_keys=True)}")
 
     @staticmethod
-    def uptime(event):
+    def upt(event):
         "show uptiome."
         event.reply(Time.elapsed(time.time()-Time.starttime))
 
     @staticmethod
-    def version(event):
+    def ver(event):
         "show verson."
         event.reply(f"{Main.name.upper()}")
 
