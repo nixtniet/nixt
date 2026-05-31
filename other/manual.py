@@ -41,7 +41,7 @@ installation is done with pipx
 |
 | <new terminal>
 |
-| ``$ %s -x srv > %s.service``
+| ``$ %s srv > %s.service``
 | ``$ sudo mv %s.service /etc/systemd/system/``
 | ``$ sudo systemctl enable %s --now``
 |
@@ -62,27 +62,28 @@ the -h option will show you possible options
 
 
 | ``$ %s -h``
-| usage: %s [-c|d|h|s] [-a] [-v] [-u] [-l level] [-m m1,m2] [-w] [--wdr]
-|        %s [cmd] [arg=val] [arg==val]
-|
+| usage: %s [-c|-d|-h|-s] [-a] [-v] [-w] [-l level] [-m m1,m2] [-p path]
+|        %s [cmd] [key=val] [key==val]
+| 
 | NIXT
 |
 | options:
-|  -h, --help         show this help message and exit
-|  -c, --console      run as console.
-|  -d, --daemon       run as background daemon.
-|  -s, --service      run as service.
-|
-|  -a, --all          load all modules.
-|  -l, --level level  set loglevel.
-|  -m, --mods m1,m2   modules to load.
-|  -v, --verbose      enable verbose.
-|  -w, --wait         wait for services to start.
-|  -u, --user         use local mods directory.
-|
-|  --default DEFAULT  use default values.
-|  --wdr wdr          set working directory.
-|
+|   -h, --help         show this help message and exit
+|   -c, --console      run as console.
+|   -d, --daemon       run as background daemon.
+|   -s, --service      run as service.
+| 
+|   -a, --all          load all modules.
+|   -v, --verbose      enable verbose.
+|   -w, --wait         wait for services to start.
+| 
+|   -l, --level level  set loglevel.
+|   -m, --mods m1,m2   modules to load.
+|   -p, --path path    path to working directory.
+| 
+|   --admin            enable admin mode.
+|   --user             use local mods directory.
+| 
 | use "%s cmd" for a list of commands.
 |
 
@@ -229,7 +230,10 @@ opml
 """
 
 
-def man(event):
+from nixt.defines import Commands
+
+
+def manual(event):
     "create manual page."
     args = event.args
     try:
@@ -247,3 +251,6 @@ def man(event):
         email,
         name.upper()
     ))
+
+
+Commands.add(manual)

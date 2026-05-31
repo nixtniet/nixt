@@ -45,11 +45,11 @@ class Arguments:
         optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
         optionparser.add_argument("-p", "--path", default="", help='path to working directory.', metavar="path")
         optparser = theparser.add_argument_group()
+        optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
         optparser.add_argument("--check", action="store_false", help=argparse.SUPPRESS)
         optparser.add_argument("--default", default="irc,mdl,rss", help=argparse.SUPPRESS)
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
         optparser.add_argument("--read", action="store_true", help=argparse.SUPPRESS)
-        optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
         optparser.add_argument("--user", action="store_true", help="use local mods directory.")
         args, arguments = theparser.parse_known_args()
         Main.otxt = " ".join(arguments)
@@ -120,6 +120,18 @@ class Runs:
         os.nice(10)
 
     @classmethod
+    def pid(cls, name):
+        "write pidfile."
+        assert cls.wdr
+        filename = j(cls.wdr, f"{name}.pid")
+        if e(filename):
+            os.unlink(filename)
+        path2 = pathlib.Path(filename)
+        path2.parent.mkdir(parents=True, exist_ok=True)
+        with open(filename, "w", encoding="utf-8") as fds:
+            fds.write(str(os.getpid()))
+
+    @classmethod
     def privileges(cls):
         "drop privileges."
         import getpass
@@ -132,11 +144,10 @@ class Runs:
     def wrap(cls, func, *args, final=None):
         "restore console."
         import termios
-        old = None
         try:
             old = termios.tcgetattr(sys.stdin.fileno())
         except termios.error:
-            pass
+            old = False
         try:
             func(*args)
         except (KeyboardInterrupt, EOFError):
@@ -147,8 +158,6 @@ class Runs:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
         if final:
             final()
-
-    pid = Workdir.pid
 
 
 class Scripts:
@@ -170,7 +179,7 @@ class Scripts:
         if Main.verbose:
             Runs.banner()
         if Main.all:
-            Main.mods = Mods.list()
+            Main.mods = ",".join(Mods.list())
         if not Boot.init(Main.mods, Main.wait):
             return
         csl = Console()

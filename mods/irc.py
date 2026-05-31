@@ -608,3 +608,20 @@ def cb_quit(evt):
     bot.state.error = evt.text
     if evt.orig and evt.orig in bot.zelf:
         bot.stop()
+
+
+class Cmd:
+
+    def pwd(event):
+        "generate sasl password."
+        if len(event.args) != 2:
+            event.reply("pwd <nick> <password>")
+            return
+        import base64
+        arg1 = event.args[0]
+        arg2 = event.args[1]
+        txt = f"\x00{arg1}\x00{arg2}"
+        enc = txt.encode("ascii")
+        base = base64.b64encode(enc)
+        dcd = base.decode("ascii")
+        event.reply(dcd)

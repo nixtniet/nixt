@@ -78,46 +78,48 @@ class UDP(Base):
         Thread.launch(self.loop)
 
 
-def toudp(host, port, txt):
-    "send text on udp socket."
-    if Main.debug:
-        return
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))
-
-
-def udp(event):
-    "send text as udp to the relay."
-    if event.rest:
-        toudp(Config.host, Config.port, event.rest)
-        return
-    if not select.select(
-                         [sys.stdin, ],
-                         [],
-                         [],
-                         0.0
-                        )[0]:
-        event.reply("udp <text>")
-        return
-    size = 0
-    while 1:
-        try:
-            (inp, _out, err) = select.select(
-                                             [sys.stdin,],
-                                             [],
-                                             [sys.stderr,]
-                                            )
-        except KeyboardInterrupt:
+    def udp(host, port, txt):
+        "send text on udp socket."
+        if Main.debug:
             return
-        if err:
-            break
-        stop = False
-        for sock in inp:
-            txt = sock.readline()
-            if not txt:
-                stop = True
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))
+
+
+class Cmd:
+
+    def send(event):
+        "send text as udp to the relay."
+        if event.rest:
+            UDP.udp(Config.host, Config.port, event.rest)
+            return
+        if not select.select(
+                             [sys.stdin, ],
+                             [],
+                             [],
+                             0.0
+                            )[0]:
+            event.reply("udp <text>")
+            return
+        size = 0
+        while 1:
+            try:
+                (inp, _out, err) = select.select(
+                                                 [sys.stdin,],
+                                                 [],
+                                                 [sys.stderr,]
+                                                )
+            except KeyboardInterrupt:
+                return
+            if err:
+               break
+            stop = False
+            for sock in inp:
+                txt = sock.readline()
+                if not txt:
+                    stop = True
+                    break
+                size += len(txt)
+                UDP.udp(Config.host, Config.port, txt)
+            if stop:
                 break
-            size += len(txt)
-            toudp(Config.host, Config.port, txt)
-        if stop:
-            break

@@ -163,41 +163,43 @@ def cbstats(evt):
         Clients.announce(txt)
 
 
-def dis(event):
-    "show disease stats."
-    delta = time.time() - STARTTIME
-    txt = Time.elapsed(delta) + " "
-    for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):
-        needed = seconds(getnr(nme))
-        if needed > 60*60:
-            continue
-        nrtimes = int(delta/needed)
-        pertime = Time.elapsed(needed)
-        txt += f"{getalias(nme)} {nrtimes} ({pertime}) | "
-    txt += SOURCE
-    event.reply(txt)
+class Cmd:
 
-
-def now(event):
-    "show current stats."
-    nme = event.rest or "Psych"
-    needed = seconds(getnr(nme))
-    if needed:
+    def disease(event):
+        "show disease stats."
         delta = time.time() - STARTTIME
-        nrtimes = int(delta/needed)
-        nryear = int(YEAR/needed)
-        nrday = int(DAY/needed)
-        thisday = int(DAY % needed)
-        txt = "%s %s #%s (%s/%s/%s) every %s" % (
-            Time.elapsed(delta),
-            getalias(nme).upper(),
-            nrtimes,
-            thisday,
-            nrday,
-            nryear,
-            Time.elapsed(needed)
-        )
+        txt = Time.elapsed(delta) + " "
+        for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):
+            needed = seconds(getnr(nme))
+            if needed > 60*60:
+                continue
+            nrtimes = int(delta/needed)
+            pertime = Time.elapsed(needed)
+            txt += f"{getalias(nme)} {nrtimes} ({pertime}) | "
+        txt += SOURCE
         event.reply(txt)
+
+
+    def now(event):
+        "show current stats."
+        nme = event.rest or "Psych"
+        needed = seconds(getnr(nme))
+        if needed:
+            delta = time.time() - STARTTIME
+            nrtimes = int(delta/needed)
+            nryear = int(YEAR/needed)
+            nrday = int(DAY/needed)
+            thisday = int(DAY % needed)
+            txt = "%s %s #%s (%s/%s/%s) every %s" % (
+                Time.elapsed(delta),
+                getalias(nme).upper(),
+                nrtimes,
+                thisday,
+                nrday,
+                nryear,
+                Time.elapsed(needed)
+            )
+            event.reply(txt)
 
 
 oor = """"Totaal onderliggende doodsoorzaken (aantal)";

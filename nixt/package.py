@@ -71,7 +71,7 @@ class Mods:
                 not x.startswith("__") and
                 x[:-3] not in Utils.spl(ignore)
             ])
-        return ",".join(sorted(set(mods)))
+        return sorted(set(mods))
 
     @classmethod
     def table(cls):

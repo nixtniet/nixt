@@ -198,18 +198,6 @@ class Workdir:
         return os.path.join(cls.wdr, "mods")
 
     @classmethod
-    def pid(cls, name):
-        "write pidfile."
-        assert cls.wdr
-        filename = j(cls.wdr, f"{name}.pid")
-        if e(filename):
-            os.unlink(filename)
-        path2 = pathlib.Path(filename)
-        path2.parent.mkdir(parents=True, exist_ok=True)
-        with open(filename, "w", encoding="utf-8") as fds:
-            fds.write(str(os.getpid()))
-
-    @classmethod
     def skel(cls):
         "create directories."
         assert cls.wdr

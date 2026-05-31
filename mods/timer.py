@@ -91,21 +91,23 @@ class TimerLoop:
             Disk.write(cls.timers, cls.path)
 
 
-def tmr(event):
-    "add a timer."
-    if not event.rest:
-        event.reply("tmr <date> <txt>")
-        return
-    todo = Time.extract(event.rest)
-    if not todo:
-        event.reply("can't determine time")
-        return
-    todo += rand.random()
-    if not todo or time.time() > todo:
-        event.reply("already passed given time.")
-        return
-    diff = todo - time.time()
-    txt = " ".join(event.args[1:])
-    bot = Broker.get(event.orig)
-    TimerLoop.add(todo, Object.fqn(bot), event.channel, txt)
-    event.ok(Time.elapsed(diff))
+class Cmd:
+
+    def add(event):
+        "add a timer."
+        if not event.rest:
+            event.reply("timer add <date> <txt>")
+            return
+        todo = Time.extract(event.rest)
+        if not todo:
+            event.reply("can't determine time")
+            return
+        todo += rand.random()
+        if not todo or time.time() > todo:
+            event.reply("already passed given time.")
+            return
+        diff = todo - time.time()
+        txt = " ".join(event.args[1:])
+        bot = Broker.get(event.orig)
+        TimerLoop.add(todo, Object.fqn(bot), event.channel, txt)
+        event.ok(Time.elapsed(diff))

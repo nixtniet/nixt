@@ -26,11 +26,10 @@ class Boot:
             Mods.add("mods", "mods")
             Mods.add("other", "other")
         cls.table()
-        if not Commands.table():
-            cls.scanner()
         Mods.table()
         Log.size(len(cfg.name))
         Log.level(cfg.level or "info")
+        Mods.get("basic")
 
     @classmethod
     def forever(cls):
@@ -61,7 +60,7 @@ class Boot:
     @classmethod
     def scanner(cls):
         "scan named modules for commands."
-        for name in Utils.spl(Mods.list()):
+        for name in Mods.list():
             mod = Mods.get(name)
             if not mod:
                 continue

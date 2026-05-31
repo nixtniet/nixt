@@ -14,12 +14,14 @@ class Log(Base):
         self.txt = ''
 
 
-def log(event):
-    "log text."
-    if not event.rest:
-        event.reply("log <txt>")
-        return
-    obj = Log()
-    obj.txt = event.rest
-    Disk.write(obj)
-    event.reply("ok")
+class Cmd:
+
+    def add(event):
+        "log text."
+        if not event.rest:
+            event.reply("log add <txt>")
+            return
+        obj = Log()
+        obj.txt = event.rest
+        Disk.write(obj)
+        event.reply("ok")

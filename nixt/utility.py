@@ -189,6 +189,16 @@ class Time:
         return float(timd)
 
     @staticmethod
+    def timed(cls, datestr):
+        "return time from string."
+        if not datestr:
+            return time.time()
+        tme = cls.date(datestr)
+        if not tme:
+            tme = time.time()
+        return tme
+
+    @staticmethod
     def today():
         "start of the day."
         return str(datetime.datetime.today()).split()[0]
@@ -250,6 +260,15 @@ class Utils:
     def pipxdir(name):
         "return examples directory."
         return f"~/.local/share/pipx/venvs/{name}/share/{name}/"
+
+    @staticmethod
+    def skip(obj):
+        result = []
+        for x in dir(obj):
+            if x.startswith("_"):
+                continue
+            result.append(x)
+        return ",".join(sorted(result))
 
     @staticmethod
     def source(module):
