@@ -50,7 +50,7 @@ class Arguments:
         optparser.add_argument("--default", default="irc,mdl,rss", help=argparse.SUPPRESS)
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
         optparser.add_argument("--read", action="store_true", help=argparse.SUPPRESS)
-        optparser.add_argument("--user", action="store_true", help="use local mods directory.")
+        optparser.add_argument("--user", action="store_false", help="use local mods directory.")
         args, arguments = theparser.parse_known_args()
         Main.otxt = " ".join(arguments)
         Object.update(Main, args)

@@ -9,27 +9,28 @@ import time
 
 from nixt.defines import Commands, Main, Mods, Time, Utils
 
+dolist = list
 
-def cmd(event):
+def list(event):
     "list available commands."
-    cmds = list(Commands.cmds.keys())
+    cmds = dolist(Commands.cmds.keys())
     cmds.extend(Mods.list())
     event.reply(",".join(sorted(cmds)))
 
 
-Commands.add(cmd)
+Commands.add(list)
 
 
-def mod(event):
+def modules(event):
     "list available modules."
-    mods = list(Commands.names.keys())
+    mods = Mods.list()
     if not mods:
         event.reply("no modules available")
         return
     event.reply(",".join(mods))
 
 
-Commands.add(mod)
+Commands.add(modules)
 
 
 def help(event):

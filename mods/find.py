@@ -7,7 +7,7 @@
 import time
 
 
-from nixt.defines import Locate, Object, Time, Workdir
+from nixt.defines import Commands, Locate, Object, Time, Workdir
 
 
 class Cmd:
@@ -47,3 +47,6 @@ class Cmd:
             nmr += 1
         if not nmr:
             event.reply("no result")
+
+
+Commands.add(Cmd.find)

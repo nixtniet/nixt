@@ -9,8 +9,8 @@ import os
 import time
 
 
-from nixt.defines import Boot, Broker, Commands, Json, Main, Md5, Mods, Time
-from nixt.defines import Workdir, d, j
+from nixt.defines import Boot, Broker, Commands, Json, Main, Md5, Mods, Object
+from nixt.defines import Time, Workdir, d, j
 
 
 class Cmd:
