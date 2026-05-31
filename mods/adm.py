@@ -8,7 +8,7 @@ import inspect
 import os
 
 
-from nixt.defines import Commands, Json, Main, Md5, Mods, Utils, Workdir, d, j
+from nixt.defines import Commands, Json, Main, Md5, Mods, Workdir, d, j
 
 
 def srv(event):
@@ -58,7 +58,7 @@ def tbl(event):
 
 def wdr(event):
     "show working directory."
-    event.reply(Workdir.workdir())
+    event.reply(Workdir.wdr)
 
 
 SYSTEMD = """[Unit]

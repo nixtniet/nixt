@@ -26,7 +26,7 @@ class TestCommands(unittest.TestCase):
 
     def test_get(self):
         Commands.add(cmnd)
-        self.assertTrue(Commands.get("cmnd"))
+        self.assertTrue(Commands.cmds.get("cmnd"))
 
     def test_command(self):
         clt = Handler()

@@ -7,7 +7,7 @@
 import time
 
 
-from nixt.defines import Boot, Commands, Main, Mods, Time
+from nixt.defines import Commands, Main, Md5, Mods, Time
 
 
 def cmd(event):
@@ -31,4 +31,4 @@ def upt(event):
 
 def ver(event):
     "show verson."
-    event.reply(f"{Main.name.upper()} {Boot.core()}")
+    event.reply(f"{Main.name.upper()} {Md5.core()}")

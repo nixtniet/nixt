@@ -189,11 +189,11 @@ class Time:
         return float(timd)
 
     @staticmethod
-    def timed(cls, datestr):
+    def timed(datestr):
         "return time from string."
         if not datestr:
             return time.time()
-        tme = cls.date(datestr)
+        tme = Time.date(datestr)
         if not tme:
             tme = time.time()
         return tme

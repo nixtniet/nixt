@@ -19,16 +19,6 @@ class Email(Base):
         self.text = ""
 
 
-def timed(datestr):
-    "return time from string."
-    if not datestr:
-        return time.time()
-    tme = Time.date(datestr)
-    if not tme:
-        tme = time.time()
-    return tme
-
-
 def eml(event):
     "search emails."
     nrs = -1
@@ -42,21 +32,21 @@ def eml(event):
     args = set(args)
     result = sorted(
                     Locate.find("email", event.gets),
-                    key=lambda x: timed(x[1].Date)
+                    key=lambda x: Time.timed(x[1].Date)
                    )
     if event.index:
         obj = result[event.index]
         if obj:
             obj = obj[-1]
             tme = getattr(obj, "Date", "")
-            diff = time.time = timed(tme)
+            diff = time.time = Time.timed(tme)
             txt = Object.fmt(obj, args, plain=True)
             event.reply(f'{event.index} {txt} {Time.elapsed(diff)}')
     else:
         for _fn, obj in result:
             nrs += 1
             tme = getattr(obj, "Date", "")
-            diff = time.time - timed(tme)
+            diff = time.time - Time.timed(tme)
             txt = Object.fmt(obj, args, plain=True)
             event.reply(f'{nrs} {txt} {Time.elapsed(diff)}')
     if not result:

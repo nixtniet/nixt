@@ -7,7 +7,6 @@
 from .message import Message
 from .package import Mods
 from .parsers import Parse
-from .utility import Utils
 
 
 class Commands:
