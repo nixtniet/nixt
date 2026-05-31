@@ -28,6 +28,11 @@ Main.user = True
 Workdir.wdr = Main.wdr
 
 
+Mods.add("modules", Workdir.moddir())
+Mods.add("mods", "mods")
+Mods.add("other", "other")
+
+
 Log.level("debug")
 
 
@@ -154,8 +159,6 @@ def main():
     if Runs.check("t"):
         Main.threaded = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
-    Mods.add('mods', "mods")
-    Mods.add('other', "other")
     Boot.scanner()
     if Main.threaded:
         Clients.init(os.cpu_count(), CLI)
@@ -185,34 +188,36 @@ def main():
 
 
 examples = {
-    "list": [""],
-    "model disease": [""],
-    "todo done": ["", "bla"],
-    "rss display": ["hnrss title,url", ""],
-    "mail search": ["", "root@localhost"],
-    "find fields": ["", "log", "todo"],
-    "admin fleet": ["", "0"],
-    "find": ["", "log", "rss", "config", "todo", 'timers'],
-    "silent off": [""],
-    "manual": ["", "genocide nixtniet@gmail.com Nixt Niet"],
-    "modules": [""],
-    "rss name": ["", "hnrss hackernews"],
-    "model now": [""],
-    "path": [""],
-    "irc pwd": ["", "bla mekker"],
-    "request": [""],
-    "rss restore": ["", "hnrss"],
-    "silent on": [""],
-    "slogan": [""],
-    "admin service": [""],
-    "thread list": [""],
-    "admin uptime": [""],
-    "wisdom": [""]
+    "cmd": [""],
+    "dis": [""],
+    "dne": ["", "bla"],
+    "dpl": ["hnrss title,url", ""],
+    "eml": ["", "root@localhost"],
+    "fie": ["", "log", "todo"],
+    "flt": ["", "0"],
+    "fnd": ["", "log", "rss", "config", "todo", 'timers'],
+    "lou": [""],
+    "man": ["", "genocide nixtniet@gmail.com Nixt Niet"],
+    "mbx": [""],
+    "mod": [""],
+    "mre": [""],
+    "nme": ["", "hnrss hackernews"],
+    "now": [""],
+    "pth": [""],
+    "pwd": ["", "bla mekker"],
+    "req": [""],
+    "res": ["", "hnrss"],
+    "sil": [""],
+    "slg": [""],
+    "srv": [""],
+    "thr": [""],
+    "upt": [""],
+    "wsd": [""]
 }
 
 
 pre = {
-    "config": [
+    "cfg": [
         '',
         'main',
         'irc',
@@ -227,21 +232,21 @@ pre = {
         'udp nick=mekker',
         'web nick=mekker'
     ],
-    "rss opml": [
+    "imp": [
         "",
         "testing/opml/feeds.opml",
     ],
-    "log add": ["", "test"],
-    "rss add": ["", "http://hnrss.org/newest"],
-    "todo add": ["", "test2"],
-    "timer add": ["", "22:00 test"],
+    "log": ["", "test"],
+    "rss": ["", "http://hnrss.org/newest"],
+    "tdo": ["", "test2"],
+    "tmr": ["", "22:00 test"],
 }
 
 post = {
-    "denug": [""],
-    "todo done": ["", "mekker"],
-    "rss export": [""],
-    "rss remove": ["", "hnrss"]
+    "dbg": [""],
+    "dne": ["", "mekker"],
+    "exp": [""],
+    "rem": ["", "hnrss"]
 }
 
 

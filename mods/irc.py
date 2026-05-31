@@ -144,7 +144,7 @@ class IRC(Engine, Buffered):
         self.state.nrconnect += 1
         self.events.connected.clear()
         self.events.joined.clear()
-        if self.cfg.word:
+        if self.cfg.word or self.cfg.word:
             logging.debug("using SASL")
             self.cfg.sasl = True
             self.cfg.port = "6697"
@@ -522,7 +522,7 @@ def cb_auth(evt):
 def cb_cap(evt):
     "capabilities callback."
     bot = Broker.get(evt.orig)
-    if (bot.cfg.word and "ACK" in evt.arguments):
+    if (bot.cfg.word or bot.cfg.word and "ACK" in evt.arguments):
         bot.direct("AUTHENTICATE PLAIN")
     else:
         bot.direct("CAP REQ :sasl")
@@ -608,20 +608,3 @@ def cb_quit(evt):
     bot.state.error = evt.text
     if evt.orig and evt.orig in bot.zelf:
         bot.stop()
-
-
-class Cmd:
-
-    def pwd(event):
-        "generate sasl password."
-        if len(event.args) != 2:
-            event.reply("pwd <nick> <password>")
-            return
-        import base64
-        arg1 = event.args[0]
-        arg2 = event.args[1]
-        txt = f"\x00{arg1}\x00{arg2}"
-        enc = txt.encode("ascii")
-        base = base64.b64encode(enc)
-        dcd = base.decode("ascii")
-        event.reply(dcd)

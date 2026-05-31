@@ -27,6 +27,8 @@ class Boot:
             Mods.add("other", "other")
         cls.table()
         Mods.table()
+        if not Commands.table():
+            cls.scanner()
         Log.size(len(cfg.name))
         Log.level(cfg.level or "info")
         Mods.get("bsc")

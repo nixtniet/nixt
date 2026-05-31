@@ -7,22 +7,21 @@
 from nixt.defines import Broker
 
 
-class Cmd:
+def sil(event):
+    "enable silent mode."
+    bot = Broker.get(event.orig)
+    if not bot:
+        event.reply("no bot in fleet.")
+        return
+    bot.silent = True
+    event.reply("ok")
 
-    def off(event):
-        "disable silent mode."
-        bot = Broker.get(event.orig)
-        if not bot:
-            event.reply("no bot in fleet.")
-            return
-        bot.silent = False
-        event.reply("ok")
 
-    def on(event):
-        "enable silent mode."
-        bot = Broker.get(event.orig)
-        if not bot:
-            event.reply("no bot in fleet.")
-            return
-        bot.silent = True
-        event.reply("ok")
+def lou(event):
+    "disable silent mode."
+    bot = Broker.get(event.orig)
+    if not bot:
+        event.reply("no bot in fleet.")
+        return
+    bot.silent = False
+    event.reply("ok")

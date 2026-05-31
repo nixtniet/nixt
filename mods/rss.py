@@ -513,235 +513,242 @@ class Run:
     importlock = _thread.allocate_lock()
 
 
-class Cmd:
-
-    def add(event):
-        "add a feed."
-        if not event.rest:
-            event.reply("rss <url>")
+def atr(event):
+    "show attributes of a feed."
+    if not event.rest:
+        event.reply("atr <stringinurl>")
+        return
+    for _fnm, obj in Locate.find(Object.fqn(Rss), {'rss': event.rest}):
+        request = None
+        try:
+            request = Helpers.geturl(obj.rss, True)
+        except Exception as ex:
+            event.reply(str(ex))
             return
-        url = event.args[0]
-        if "http://" not in url and "https://" not in url:
-            event.reply("i need an url")
-            return
-        for fnm, result in Locate.find(
-                                       Object.fqn(Rss),
-                                       {"rss": url}
-                                      ):
-            if result:
-                event.reply(f"{url} is known")
-                return
-        feed = Rss()
-        feed.rss = event.args[0]
-        Disk.write(feed)
-        event.reply("ok")
-
-    def attributes(event):
-        "show attributes of a feed."
-        if not event.rest:
-            event.reply("atr <stringinurl>")
-            return
-        for _fnm, obj in Locate.find(Object.fqn(Rss), {'rss': event.rest}):
-            request = None
-            try:
-                request = Helpers.geturl(obj.rss, True)
-            except Exception as ex:
-                event.reply(str(ex))
-                return
-            if not request:
-                continue
-            if obj.rss.endswith('atom'):
-                result = list(Parser.getitems(
-                                              str(
-                                                  request.data,
-                                                  'utf-8',
-                                                  errors='ignore'
-                                                 ),
-                                              'entry',
-                                              1
-                                             ))
-            else:
-                result = list(Parser.getitems(
-                                              str(
-                                                  request.data,
-                                                  'utf-8',
-                                                  errors='ignore'),
-                                              'item',
-                                              1
-                                             ))
-            resulting = []
-            for x in re.findall('<.*?>', result[0]):
-                if x[1] == '/' and len(x) > 4:
-                    resulting.append(x[2:-1])
-            event.reply(','.join(resulting))
-
-    def display(event):
-        "set feed items to display."
-        if len(event.args) < 2:
-            event.reply("dpl <stringinurl> <item1,item2>")
-            return
-        setter = {"display_list": event.args[1]}
-        for fnm, feed in Locate.find(Object.fqn(Rss), {"rss": event.args[0]}):
-            if feed:
-                Object.update(feed, setter)
-                Disk.write(feed, fnm)
-        event.reply("ok")
-
-    def errors(event):
-        "show errors of a feed."
-        nre = 0
-        nrs = 0
-        for fnm, obj in Locate.find(Object.fqn(Rss), event.gets):
-            if "error" not in obj:
-                continue
-            if not obj.error:
-                continue
-            if event.rest and event.rest in obj.error:
-                nre += 1
-                feed = Rss()
-                Object.update(feed, obj)
-                feed.__deleted__ = False
-                feed.error = ""
-                Disk.write(feed, fnm)
-                continue
-            if not event.rest:
-                nrs += 1
-                event.reply(f"{nrs} {Object.fmt(obj)}")
-        if not nrs:
-            event.reply("no feed errors.")
+        if not request:
+            continue
+        if obj.rss.endswith('atom'):
+            result = list(Parser.getitems(
+                                          str(
+                                              request.data,
+                                              'utf-8',
+                                              errors='ignore'
+                                             ),
+                                          'entry',
+                                          1
+                                         ))
         else:
-            event.reply(f'{nre} feeds reset.')
+            result = list(Parser.getitems(
+                                          str(
+                                              request.data,
+                                              'utf-8',
+                                              errors='ignore'),
+                                          'item',
+                                          1
+                                         ))
+        resulting = []
+        for x in re.findall('<.*?>', result[0]):
+            if x[1] == '/' and len(x) > 4:
+                resulting.append(x[2:-1])
+        event.reply(','.join(resulting))
 
-    def export(event):
-        "export opml."
-        with Run.importlock:
-            event.reply(TEMPLATE)
-            nrs = 0
-            for _fn, ooo in Locate.find(Object.fqn(Rss)):
-                nrs += 1
-                obj = Rss()
-                Object.update(obj, ooo)
-                name = f"url{nrs}"
-                dipl = obj.display_list
-                url = obj.rss
-                txt = f'<outline name="{name}" display_list="{dipl}" xmlUrl="{url}"/>'
-                event.reply(" " * 12 + txt)
-            event.reply(" " * 8 + "</outline>")
-            event.reply("    <body>")
-            event.reply("</opml>")
 
-    def name(event):
-        "set name of a feed."
-        if len(event.args) == 1:
-            name = ""
-        elif len(event.args) == 2:
-            name = event.args[1]
-        else:
-            event.reply("nme <stringinurl> <name>")
-            return
-        selector = {"rss": event.args[0]}
-        for fnm, fed in Locate.find(
-                                    Object.fqn(Rss),
-                                    selector
-                                   ):
-            feed = Rss()
-            Object.update(feed, fed)
-            if feed:
-                feed.name = name
-                Disk.write(feed, fnm)
-        event.reply("ok")
-
-    def opml(event):
-        "import opml."
-        if not event.args:
-            event.reply("imp <filename>")
-            return
-        fnm = event.args[0]
-        if not i(fnm):
-            event.reply(f"no {fnm} file found.")
-            return
-        with Run.importlock:
-            with open(fnm, "r", encoding="utf-8") as file:
-                txt = file.read()
-            prs = OPML()
-            nrs = 0
-            nrskip = 0
-            insertid = Helpers.shortid()
-            for obj in prs.parse(txt, "outline", "name,xmlUrl"):
-                url = obj["xmlUrl"]
-                if url in State.skipped:
-                    continue
-                if not url.startswith("http"):
-                    continue
-                has = list(Locate.find(
-                                       Object.fqn(Rss),
-                                       {"rss": url},
-                                       matching=True
-                                      ))
-                if has:
-                    State.skipped.append(url)
-                    nrskip += 1
-                    continue
-                feed = Rss()
-                feed.rss = obj["xmlUrl"]
-                del obj["xmlUrl"]
-                Object.update(feed, obj)
-                uri = urllib.parse.urlparse(feed.rss)
-                if uri.netloc.count(".") >= 2:
-                    feed.name = ".".join(uri.netloc.split('.')[1:-1])
-                else:
-                    feed.name = '.'.join(uri.netloc.split('.')[:-1])
-                feed.insertid = insertid
-                Disk.write(feed)
-                nrs += 1
-        if nrskip:
-            event.reply(f"skipped {nrskip} urls.")
-        if nrs:
-            event.reply(f"added {nrs} urls.")
-
-    def remove(event):
-        "remove a feed."
-        if len(event.args) != 1:
-            event.reply("rem <stringinurl>")
-            return
-        for fnm, fed in Locate.find(Object.fqn(Rss)):
-            feed = Rss()
-            Object.update(feed, fed)
-            if event.args[0] not in feed.rss:
-                continue
-            if feed:
-                feed.__deleted__ = True
-                Disk.write(feed, fnm)
-                event.reply("ok")
-                break
-
-    def restore(event):
-        "restore a feed."
-        if len(event.args) != 1:
-            event.reply("res <stringinurl>")
-            return
-        nrs = 0
-        for fnm, fed in Locate.find(
-                                    Object.fqn(Rss),
-                                    removed=True
-                                   ):
-            feed = Rss()
-            Object.update(feed, fed)
-            if event.args[0] not in feed.rss:
-                continue
-            nrs += 1
-            feed.__deleted__ = False
+def dpl(event):
+    "set feed items to display."
+    if len(event.args) < 2:
+        event.reply("dpl <stringinurl> <item1,item2>")
+        return
+    setter = {"display_list": event.args[1]}
+    for fnm, feed in Locate.find(Object.fqn(Rss), {"rss": event.args[0]}):
+        if feed:
+            Object.update(feed, setter)
             Disk.write(feed, fnm)
-        event.reply(f"{nrs} feeds restored.")
+    event.reply("ok")
 
-    def sync(event):
-        "synchronize a feed."
-        if Main.debug:
+
+def err(event):
+    "show errors of a feed."
+    nre = 0
+    nrs = 0
+    for fnm, obj in Locate.find(Object.fqn(Rss), event.gets):
+        if "error" not in obj:
+            continue
+        if not obj.error:
+            continue
+        if event.rest and event.rest in obj.error:
+            nre += 1
+            feed = Rss()
+            Object.update(feed, obj)
+            feed.__deleted__ = False
+            feed.error = ""
+            Disk.write(feed, fnm)
+            continue
+        if not event.rest:
+            nrs += 1
+            event.reply(f"{nrs} {Object.fmt(obj)}")
+    if not nrs:
+        event.reply("no feed errors.")
+    else:
+        event.reply(f'{nre} feeds reset.')
+
+
+def exp(event):
+    "export opml."
+    with Run.importlock:
+        event.reply(TEMPLATE)
+        nrs = 0
+        for _fn, ooo in Locate.find(Object.fqn(Rss)):
+            nrs += 1
+            obj = Rss()
+            Object.update(obj, ooo)
+            name = f"url{nrs}"
+            dipl = obj.display_list
+            url = obj.rss
+            txt = f'<outline name="{name}" display_list="{dipl}" xmlUrl="{url}"/>'
+            event.reply(" " * 12 + txt)
+        event.reply(" " * 8 + "</outline>")
+        event.reply("    <body>")
+        event.reply("</opml>")
+
+
+def imp(event):
+    "import opml."
+    if not event.args:
+        event.reply("imp <filename>")
+        return
+    fnm = event.args[0]
+    if not i(fnm):
+        event.reply(f"no {fnm} file found.")
+        return
+    with Run.importlock:
+        with open(fnm, "r", encoding="utf-8") as file:
+            txt = file.read()
+        prs = OPML()
+        nrs = 0
+        nrskip = 0
+        insertid = Helpers.shortid()
+        for obj in prs.parse(txt, "outline", "name,xmlUrl"):
+            url = obj["xmlUrl"]
+            if url in State.skipped:
+                continue
+            if not url.startswith("http"):
+                continue
+            has = list(Locate.find(
+                                   Object.fqn(Rss),
+                                   {"rss": url},
+                                   matching=True
+                                  ))
+            if has:
+                State.skipped.append(url)
+                nrskip += 1
+                continue
+            feed = Rss()
+            feed.rss = obj["xmlUrl"]
+            del obj["xmlUrl"]
+            Object.update(feed, obj)
+            uri = urllib.parse.urlparse(feed.rss)
+            if uri.netloc.count(".") >= 2:
+                feed.name = ".".join(uri.netloc.split('.')[1:-1])
+            else:
+                feed.name = '.'.join(uri.netloc.split('.')[:-1])
+            feed.insertid = insertid
+            Disk.write(feed)
+            nrs += 1
+    if nrskip:
+        event.reply(f"skipped {nrskip} urls.")
+    if nrs:
+        event.reply(f"added {nrs} urls.")
+
+
+def nme(event):
+    "set name of a feed."
+    if len(event.args) == 1:
+        name = ""
+    elif len(event.args) == 2:
+        name = event.args[1]
+    else:
+        event.reply("nme <stringinurl> <name>")
+        return
+    selector = {"rss": event.args[0]}
+    for fnm, fed in Locate.find(
+                                Object.fqn(Rss),
+                                selector
+                               ):
+        feed = Rss()
+        Object.update(feed, fed)
+        if feed:
+            feed.name = name
+            Disk.write(feed, fnm)
+    event.reply("ok")
+
+
+def rem(event):
+    "remove a feed."
+    if len(event.args) != 1:
+        event.reply("rem <stringinurl>")
+        return
+    for fnm, fed in Locate.find(Object.fqn(Rss)):
+        feed = Rss()
+        Object.update(feed, fed)
+        if event.args[0] not in feed.rss:
+            continue
+        if feed:
+            feed.__deleted__ = True
+            Disk.write(feed, fnm)
+            event.reply("ok")
+            break
+
+
+def res(event):
+    "restore a feed."
+    if len(event.args) != 1:
+        event.reply("res <stringinurl>")
+        return
+    nrs = 0
+    for fnm, fed in Locate.find(
+                                Object.fqn(Rss),
+                                removed=True
+                               ):
+        feed = Rss()
+        Object.update(feed, fed)
+        if event.args[0] not in feed.rss:
+            continue
+        nrs += 1
+        feed.__deleted__ = False
+        Disk.write(feed, fnm)
+    event.reply(f"{nrs} feeds restored.")
+
+
+def rss(event):
+    "add a feed."
+    if not event.rest:
+        event.reply("rss <url>")
+        return
+    url = event.args[0]
+    if "http://" not in url and "https://" not in url:
+        event.reply("i need an url")
+        return
+    for fnm, result in Locate.find(
+                                   Object.fqn(Rss),
+                                   {"rss": url}
+                                  ):
+        if result:
+            event.reply(f"{url} is known")
             return
-        fetcher = Fetcher()
-        fetcher.start(False)
-        nrs = fetcher.run(True)
-        event.reply(f"{nrs} feeds synced")
+    feed = Rss()
+    feed.rss = event.args[0]
+    Disk.write(feed)
+    event.reply("ok")
+
+
+def syn(event):
+    "synchronize a feed."
+    if Main.debug:
+        return
+    fetcher = Fetcher()
+    fetcher.start(False)
+    nrs = fetcher.run(True)
+    event.reply(f"{nrs} feeds synced")
 
 
 TEMPLATE = """<opml version="1.0">

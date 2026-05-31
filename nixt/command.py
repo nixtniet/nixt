@@ -37,20 +37,19 @@ class Commands:
     @classmethod
     def command(cls, evt):
         "command callback."
-        if not evt.text:
-            evt.ready()
-            return
         Parse.parse(evt, evt.text)
-        mod = Mods.get(evt.mod)
-        func = cls.cmds.get(evt.mod)
+        func = cls.cmds.get(evt.cmd)
         if not func:
-            cmds = getattr(mod, "Cmd", False)
-            func = getattr(cmds, evt.cmd, False)
+            name = cls.names.get(evt.cmd)
+            mod = None
+            if name:
+                mod = Mods.get(name)
+            if mod:
+                cls.scan(mod)
+                func = cls.get(evt.cmd)
         if func:
             func(evt)
             evt.display()
-        elif cmds:
-            evt.reply(f"{evt.mod} <{'|'.join(Utils.skip(cmds))}>")
         evt.ready()
 
     @classmethod
@@ -60,6 +59,16 @@ class Commands:
         for key, cmdz in inspect.getmembers(module, inspect.isfunction):
             if 'event' in inspect.signature(cmdz).parameters:
                 cls.add(cmdz)
+
+    @classmethod
+    def table(cls):
+        "read table,"
+        try:
+            from .statics import NAMES
+            cls.names.update(NAMES)
+            return True
+        except ImportError:
+            return False
 
 
 def __dir__():

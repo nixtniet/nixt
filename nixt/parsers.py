@@ -51,9 +51,6 @@ class Parse:
                 continue
             nr += 1
             if nr == 0:
-                obj.mod = spli
-                continue
-            if nr == 1:
                 obj.cmd = spli
                 continue
             args.append(spli)

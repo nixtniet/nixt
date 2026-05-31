@@ -4,7 +4,7 @@
 "configuration"
 
 
-from nixt.defines import Base, Commands, Disk, Mods, Object
+from nixt.defines import Base, Disk, Mods, Object
 
 
 def cfg(event):
@@ -39,6 +39,3 @@ def cfg(event):
     Object.edit(config, event.sets)
     Disk.write(config, name, "config")
     event.ok()
-
-
-Commands.add(cfg)

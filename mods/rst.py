@@ -107,7 +107,7 @@ class RESTHandler(BaseHTTPRequestHandler):
             fnm = self.path[1:]
         else:
             fnm = self.path
-        fnm = j(Workdir.wdr, "store", fnm)
+        fnm = j(Workdir.workdir("store"), fnm)
         fnm = a(fnm)
         if os.path.isdir(fnm):
             self.write_header("text/html")
