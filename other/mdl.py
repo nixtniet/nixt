@@ -71,7 +71,6 @@ jaar["totaal"] = 168678
 
 
 def getalias(txt):
-    "return alias of txt."
     result = ""
     for key, value in aliases.items():
         if txt.lower() in key.lower():
@@ -81,14 +80,12 @@ def getalias(txt):
 
 
 def getday():
-    "get timestamp of today 00:00."
     day = datetime.datetime.now()
     day = day.replace(hour=0, minute=0, second=0, microsecond=0)
     return day.timestamp()
 
 
 def getnr(nme):
-    "get nummber of item."
     for k in Object.keys(oorzaken):
         if nme.lower() in k.lower():
             return int(getattr(oorzaken, k))
@@ -96,14 +93,12 @@ def getnr(nme):
 
 
 def seconds(nrs):
-    "convert times per year into number of seconds per time."
     if not nrs:
         return nrs
     return 60*60*24*365 / float(nrs)
 
 
 def iswanted(k, line):
-    "see if k is in line."
     for word in line:
         if word in k:
             return True
@@ -111,7 +106,6 @@ def iswanted(k, line):
 
 
 def daily():
-    "daily poller."
     while 1:
         time.sleep(24*60*60)
         evt = Message()
@@ -119,7 +113,6 @@ def daily():
 
 
 def hourly():
-    "hourly poller."
     while 1:
         time.sleep(60*60)
         evt = Message()
@@ -127,7 +120,6 @@ def hourly():
 
 
 def cbnow(evt):
-    "callback for current stats."
     delta = time.time() - STARTTIME
     txt = Time.elapsed(delta) + " "
     for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):
@@ -141,7 +133,6 @@ def cbnow(evt):
 
 
 def cbstats(evt):
-    "shwow stats for matching disease."
     nme = evt.rest or "Psych"
     needed = seconds(getnr(nme))
     if needed:
@@ -163,43 +154,39 @@ def cbstats(evt):
         Clients.announce(txt)
 
 
-class Cmd:
-
-    def disease(event):
-        "show disease stats."
-        delta = time.time() - STARTTIME
-        txt = Time.elapsed(delta) + " "
-        for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):
-            needed = seconds(getnr(nme))
-            if needed > 60*60:
-                continue
-            nrtimes = int(delta/needed)
-            pertime = Time.elapsed(needed)
-            txt += f"{getalias(nme)} {nrtimes} ({pertime}) | "
-        txt += SOURCE
-        event.reply(txt)
-
-
-    def now(event):
-        "show current stats."
-        nme = event.rest or "Psych"
+def dis(event):
+    delta = time.time() - STARTTIME
+    txt = Time.elapsed(delta) + " "
+    for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):
         needed = seconds(getnr(nme))
-        if needed:
-            delta = time.time() - STARTTIME
-            nrtimes = int(delta/needed)
-            nryear = int(YEAR/needed)
-            nrday = int(DAY/needed)
-            thisday = int(DAY % needed)
-            txt = "%s %s #%s (%s/%s/%s) every %s" % (
-                Time.elapsed(delta),
-                getalias(nme).upper(),
-                nrtimes,
-                thisday,
-                nrday,
-                nryear,
-                Time.elapsed(needed)
-            )
-            event.reply(txt)
+        if needed > 60*60:
+            continue
+        nrtimes = int(delta/needed)
+        pertime = Time.elapsed(needed)
+        txt += f"{getalias(nme)} {nrtimes} ({pertime}) | "
+    txt += SOURCE
+    event.reply(txt)
+
+
+def now(event):
+    nme = event.rest or "Psych"
+    needed = seconds(getnr(nme))
+    if needed:
+        delta = time.time() - STARTTIME
+        nrtimes = int(delta/needed)
+        nryear = int(YEAR/needed)
+        nrday = int(DAY/needed)
+        thisday = int(DAY % needed)
+        txt = "%s %s #%s (%s/%s/%s) every %s" % (
+            Time.elapsed(delta),
+            getalias(nme).upper(),
+            nrtimes,
+            thisday,
+            nrday,
+            nryear,
+            Time.elapsed(needed)
+        )
+        event.reply(txt)
 
 
 oor = """"Totaal onderliggende doodsoorzaken (aantal)";
@@ -404,7 +391,6 @@ oorzaken = Base()
 
 
 def boot():
-    "construct model."
     _nr = -1
     for key in Object.keys(oorzaak):
         _nr += 1

@@ -67,12 +67,5 @@ king for making the commiting of the above mentioned crimes (killing,
 torture and impotent making) possible."""
 
 
-from nixt.defines import Commands
-
-
-def request(event):
-    "show request to the prosecutor of the i.c.c."
+def req(event):
     event.reply(__doc__)
-
-
-Commands.add(request)

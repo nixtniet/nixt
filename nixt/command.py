@@ -46,7 +46,7 @@ class Commands:
                 mod = Mods.get(name)
             if mod:
                 cls.scan(mod)
-                func = cls.get(evt.cmd)
+                func = cls.cmds.get(evt.cmd)
         if func:
             func(evt)
             evt.display()

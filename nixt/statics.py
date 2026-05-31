@@ -8,7 +8,7 @@ CORE = {
     "booting": "d2ddf14a7fb6bc67c3ce2a9f0a7465d0",
     "brokers": "ba7f144f1598b37bdfda200070cc9298",
     "clients": "b104551450cd38ff046a8520a28fbd59",
-    "command": "d3da75e544887f67ebe5bc4e2acd500e",
+    "command": "bba218546e0f1a6b547d535fae8d9168",
     "configs": "b054626f8d5171e35cb84ba02bfe4347",
     "defines": "542506109944efca8d87bf5b1f63ff82",
     "engines": "3b7d6903c4739c3cf1b56da2a720144d",
@@ -27,7 +27,7 @@ CORE = {
 
 MODULES = {
     "adm": "ba2917632c4eefd51b445ab35453c42d",
-    "bsc": "4ce24c809e59d88d857cc6fd086dd88b",
+    "bsc": "32497c4d3ac448e64bfb20174fccf9da",
     "cfg": "d0d7817696955d8126c35b97d468cc64",
     "flt": "2d22327b1aea5cb5cff50850a4a2452e",
     "fnd": "2b45397414f2bacb86845e987005ddcf",
