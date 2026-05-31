@@ -201,51 +201,9 @@ class Scripts:
         Boot.forever()
 
 
-class Cmd:
-
-    def cmd(event):
-        "list available commands."
-        cmds = list(Commands.cmds.keys())
-        cmds.extend(Mods.list())
-        event.reply(",".join(sorted(cmds)))
-
-    def mod(event):
-        "list available modules."
-        mods = Mods.list()
-        if not mods:
-            event.reply("no modules available")
-            return
-        event.reply(",".join(mods))
-
-    def hlp(event):
-        if not event.cmd:
-            mods = "|".join(Mods.list())
-            event.reply(f"hlp <{mods}>")
-            return
-        name = event.cmd
-        mod = Mods.get(name)
-        dispatcher = getattr(mod, "Cmd", False)
-        if not dispatcher:
-            event.reply("no commands in %s module." % name)
-            return
-        if not event.args:
-            event.reply(f"{name} <{'|'.join(Utils.skip(dispatcher))}")
-        else:
-            funcname = event.args[0] 
-            function = getattr(dispatcher, funcname, False)
-            if not function:
-                event.reply(f"no {funcname}  command in {name} module")
-                return
-            comment = getattr(function, "__doc__", False)
-            if not comment:
-                event.reply(f"no docstring for {funcname} command.")
-            event.reply(comment)
-
-
 def main():
     "main"
     Arguments.getargs()
-    Commands.add(*Utils.skipped(Cmd))
     if Main.daemon:
         Runs.wrap(Scripts.background)
     elif Main.console:
