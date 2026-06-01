@@ -4,6 +4,7 @@
 "module management"
 
 
+import inspect
 import logging
 import os
 
@@ -38,6 +39,26 @@ class Mods:
                 if md5 != cls.md5s.get(name):
                     logging.warning("mismatch %s", modname)
             return cls.importer(modname, fnm)
+
+    @classmethod
+    def getcmd(cls, name, cmd):
+        mod = cls.get(name)
+        func = getattr(mod, cmd, False)
+        if not func:
+            return
+        if not inspect.isfunction(func):
+            return
+        if 'event' in inspect.signature(func).parameters:
+            return func
+
+    @classmethod
+    def getcmds(cls, name):
+        mod = cls.get(name)
+        if not mod:
+            return []
+        for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
+            if 'event' in inspect.signature(cmdz).parameters:
+                yield key
 
     @classmethod
     def has(cls, attr):

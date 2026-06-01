@@ -513,6 +513,28 @@ class Run:
     importlock = _thread.allocate_lock()
 
 
+def add(event):
+    "add a feed."
+    if not event.rest:
+        event.reply("rss <url>")
+        return
+    url = event.args[0]
+    if "http://" not in url and "https://" not in url:
+        event.reply("i need an url")
+        return
+    for fnm, result in Locate.find(
+                                   Object.fqn(Rss),
+                                   {"rss": url}
+                                  ):
+        if result:
+            event.reply(f"{url} is known")
+            return
+    feed = Rss()
+    feed.rss = event.args[0]
+    Disk.write(feed)
+    event.reply("ok")
+
+
 def atr(event):
     "show attributes of a feed."
     if not event.rest:
@@ -717,28 +739,6 @@ def res(event):
         feed.__deleted__ = False
         Disk.write(feed, fnm)
     event.reply(f"{nrs} feeds restored.")
-
-
-def rss(event):
-    "add a feed."
-    if not event.rest:
-        event.reply("rss <url>")
-        return
-    url = event.args[0]
-    if "http://" not in url and "https://" not in url:
-        event.reply("i need an url")
-        return
-    for fnm, result in Locate.find(
-                                   Object.fqn(Rss),
-                                   {"rss": url}
-                                  ):
-        if result:
-            event.reply(f"{url} is known")
-            return
-    feed = Rss()
-    feed.rss = event.args[0]
-    Disk.write(feed)
-    event.reply("ok")
 
 
 def syn(event):

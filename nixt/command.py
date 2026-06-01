@@ -37,16 +37,20 @@ class Commands:
     def command(cls, evt):
         "command callback."
         Parse.parse(evt, evt.text)
-        func = cls.cmds.get(evt.cmd)
+        func = Mods.getcmd(evt.cmd, evt.cmd)
         if not func:
-            name = cls.names.get(evt.cmd)
-            mod = None
-            if name:
-                mod = Mods.get(name)
-            if mod:
-                cls.scan(mod)
-                func = cls.cmds.get(evt.cmd)
-        if func:
+            func = Mods.getcmd(evt.mod, evt.mod)
+            if func:
+                splitted = evt.otxt.split()
+                Parse.parse(evt, " ".join(splitted[1:]), True)
+                print(evt)
+        if not func:
+            cmds = list(Mods.getcmds(evt.mod))
+            if cmds:
+                evt.reply(f"{evt.mod} <{'|'.join(cmds)}>")
+                evt.ready()
+                return
+        else:
             func(evt)
             evt.display()
         evt.ready()
