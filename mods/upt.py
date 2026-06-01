@@ -4,7 +4,7 @@
 "uptime"
 
 
-from nixt.utility import Time
+from nixt.defines import Time
 
 
 def upt(event):

@@ -43,7 +43,6 @@ class Commands:
             if func:
                 splitted = evt.otxt.split()
                 Parse.parse(evt, " ".join(splitted[1:]), True)
-                print(evt)
         if not func:
             cmds = list(Mods.getcmds(evt.mod))
             if cmds:
