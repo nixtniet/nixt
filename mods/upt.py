@@ -4,6 +4,9 @@
 "uptime"
 
 
+import time
+
+
 from nixt.defines import Time
 
 

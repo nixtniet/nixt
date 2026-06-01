@@ -4,6 +4,9 @@
 "create service file"
 
 
+from nixt.defines import Main
+
+
 def srv(event):
     "generate systemd service file."
     import getpass

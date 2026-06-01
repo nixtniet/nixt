@@ -12,17 +12,12 @@ from .parsers import Parse
 class Commands:
 
     cmds = {}
-    names = {}
 
     @classmethod
     def add(cls, *args):
         "add functions to commands."
         for func in args:
             cls.cmds[func.__name__] = func
-            modname = func.__module__.split(".")[-1]
-            if "__" in modname:
-                continue
-            cls.names[func.__name__] = modname
 
     @classmethod
     def cmd(cls, text):
@@ -61,16 +56,6 @@ class Commands:
         for key, cmdz in inspect.getmembers(module, inspect.isfunction):
             if 'event' in inspect.signature(cmdz).parameters:
                 cls.add(cmdz)
-
-    @classmethod
-    def table(cls):
-        "read table,"
-        try:
-            from .statics import NAMES
-            cls.names.update(NAMES)
-            return True
-        except ImportError:
-            return False
 
 
 def __dir__():
