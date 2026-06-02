@@ -16,8 +16,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Main, Md5
-from nixt.defines import Message, Mods, Object, Utils, e, j
+from nixt.defines import Boot, Client, Main, Md5, Message
+from nixt.defines import Mods, Object, Utils, e, j
 
 
 class Arguments:
@@ -31,7 +31,7 @@ class Arguments:
                                          description=f'{Main.name.upper()}',
                                          epilog='use "%(prog)s cmd" for a list of commands.',
                                          formatter_class=argparse.RawDescriptionHelpFormatter,
-                                         usage='''%(prog)s [-c|-d|-h|-s] [-a] [-v] [-w] [-l level] [-m m1,m2] [-p path]\n       %(prog)s [cmd] [key=val] [key==val]'''
+                                         usage='''%(prog)s [-c|-d|-h|-s] [-a] [-v] [-w] [-l level] [-m m1,m2] [-p path]\n       %(prog)s [mod] [cmd] [key=val] [key==val]'''
                                         )
         group = theparser.add_mutually_exclusive_group()
         group.add_argument("-c", "--console", action="store_true", help="run as console.")
@@ -65,7 +65,7 @@ class CLI(Client):
         evt.kind = "command"
         evt.orig = repr(self)
         evt.text = text
-        Commands.command(evt)
+        Mods.command(evt)
         evt.wait()
 
     def raw(self, text):

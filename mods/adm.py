@@ -10,7 +10,7 @@ import threading
 import time
 
 
-from nixt.defines import Base, Broker, Commands, Disk, Json, Main, Md5, Mods
+from nixt.defines import Base, Broker, Disk, Json, Main, Md5, Mods
 from nixt.defines import Object, Time, d, j
 
 
@@ -87,7 +87,6 @@ def table(event):
     for name in Mods.list():
         module = Mods.get(name)
         md5s[name] = Md5.md5(module.__file__)
-        Commands.scan(module)
     corepath = d(inspect.getsourcefile(Mods))
     for path in os.listdir(corepath):
         if path.startswith("__") or not path.endswith(".py") or "statics" in path:

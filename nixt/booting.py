@@ -9,12 +9,12 @@ import time
 import _thread
 
 
-from .command import Commands
+from .loggers import Log
 from .message import Message
 from .package import Mods
 from .persist import Workdir
 from .threads import Thread
-from .utility import Log, Utils
+from .utility import Utils
 
 
 class Boot:
@@ -59,17 +59,6 @@ class Boot:
         return True
 
     @classmethod
-    def scanner(cls):
-        "scan named modules for commands."
-        for name in Mods.list():
-            mod = Mods.get(name)
-            if not mod:
-                continue
-            if "configure" in dir(mod):
-                mod.configure()
-            Commands.scan(mod)
-
-    @classmethod
     def table(cls):
         "read table,"
         try:
@@ -80,20 +69,7 @@ class Boot:
             return False
 
 
-class Cmd:
-
-    @classmethod
-    def cmd(cls, text):
-        evt = Message()
-        evt.kind = "command"
-        evt.text = text
-        Commands.command(evt)
-        evt.wait()
-        yield from evt.result
-
-
 def __dir__():
     return (
         'Boot',
-        'Cmd'
     )

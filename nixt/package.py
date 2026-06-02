@@ -9,6 +9,7 @@ import logging
 import os
 
 
+from .parsers import Parse
 from .utility import Md5, Utils, e, j
 
 
@@ -22,6 +23,20 @@ class Mods:
     def add(cls, pkgname, path):
         "add module/patgh."
         cls.dirs[pkgname] = path
+
+    @classmethod
+    def command(cls, evt):
+        "command callback."
+        Parse.parse(evt, evt.text)
+        func = cls.getcmd(evt.mod, evt.cmd)
+        if not func:
+            cmds = list(cls.getcmds(evt.mod))
+            if cmds:
+                evt.reply(f"{evt.mod} <{'|'.join(cmds)}>")
+        else:
+            func(evt)
+        evt.display()
+        evt.ready()
 
     @classmethod
     def get(cls, name):
