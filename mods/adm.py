@@ -23,22 +23,22 @@ def config(event):
         event.reply(f"adm config <{mods}>")
         return
     name = event.args[0]
-    config = Base()
-    Disk.read(config, name, "config")
-    if name != "main" and not config:
+    cfg = Base()
+    Disk.read(cfg, name, "config")
+    if name != "main" and not cfg:
         mod = Mods.get(name)
         if not mod:
             event.reply(f"no {name} module found.")
             return
-        config = getattr(mod, "Config", None)
-        if not config:
+        cfg = getattr(mod, "Config", None)
+        if not cfg:
             event.reply("no configuration found.")
             return
     if not event.sets:
         event.reply(
             Object.fmt(
-                config,
-                Object.keys(config),
+                cfg,
+                Object.keys(cfg),
                 skip=["word",]
             )
         )
@@ -110,15 +110,15 @@ def threads(event):
         if str(thread).startswith("<_"):
             continue
         if getattr(thread, "state", None) and getattr(thread, "sleep", None):
-            uptime = thread.sleep - int(time.time() - thread.state["latest"])
+            upt = thread.sleep - int(time.time() - thread.state["latest"])
         elif getattr(thread, "starttime", None):
-            uptime = time.time() - thread.starttime
+            upt = time.time() - thread.starttime
         else:
-            uptime = time.time() - Time.starttime
-        result.append((uptime, thread.name))
+            upt = time.time() - Time.starttime
+        result.append((upt, thread.name))
     res = []
-    for uptime, txt in sorted(result, key=lambda x: x[0]):
-        lap = Time.elapsed(uptime)
+    for upt, txt in sorted(result, key=lambda x: x[0]):
+        lap = Time.elapsed(upt)
         res.append(f"{txt}/{lap}")
     if res:
         event.reply(" ".join(res))

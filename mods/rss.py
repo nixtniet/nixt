@@ -379,10 +379,10 @@ class Helpers:
         return line
 
     @staticmethod
-    def doskip(errors):
+    def doskip(errs):
         "check whether to log."
         for error in Helpers.skip:
-            if error in errors:
+            if error in errs:
                 return True
         return False
 
@@ -623,10 +623,10 @@ def export(event):
             nrs += 1
             obj = Rss()
             Object.update(obj, ooo)
-            name = f"url{nrs}"
+            nme = f"url{nrs}"
             dipl = obj.display_list
             url = obj.rss
-            txt = f'<outline name="{name}" display_list="{dipl}" xmlUrl="{url}"/>'
+            txt = f'<outline name="{nme}" display_list="{dipl}" xmlUrl="{url}"/>'
             event.reply(" " * 12 + txt)
         event.reply(" " * 8 + "</outline>")
         event.reply("    <body>")
@@ -685,9 +685,9 @@ def opml(event):
 def name(event):
     "set name of a feed."
     if len(event.args) == 1:
-        name = ""
+        nme = ""
     elif len(event.args) == 2:
-        name = event.args[1]
+        nme = event.args[1]
     else:
         event.reply("rss name <stringinurl> <name>")
         return
@@ -699,7 +699,7 @@ def name(event):
         feed = Rss()
         Object.update(feed, fed)
         if feed:
-            feed.name = name
+            feed.name = nme
             Disk.write(feed, fnm)
     event.reply("ok")
 

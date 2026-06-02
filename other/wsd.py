@@ -19,7 +19,7 @@ rand = SystemRandom()
 def init():
     state.load()
     event = Message()
-    repeater = Repeater(3600,  wsd, event)
+    repeater = Repeater(3600,  show, event)
     repeater.start()
     logging.warning("%s wise", len(TXTLIST))
 
