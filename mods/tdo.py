@@ -17,7 +17,7 @@ class Todo(Base):
 def add(event):
     "add a todo."
     if not event.rest:
-        event.reply("tdo <txt>")
+        event.iface("add <txt>")
         return
     obj = Todo()
     obj.txt = event.rest
@@ -28,7 +28,7 @@ def add(event):
 def done(event):
     "mark todo as done."
     if not event.args:
-        event.reply("dne <txt>")
+        event.iface("done <txt>")
         return
     selector = {'txt': event.args[0]}
     nmr = 0

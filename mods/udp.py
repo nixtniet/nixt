@@ -97,7 +97,7 @@ def send(event):
                          [],
                          0.0
                         )[0]:
-        event.reply("udp send <text>")
+        event.iface("send <text>")
         return
     size = 0
     while 1:

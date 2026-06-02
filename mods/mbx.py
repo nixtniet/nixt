@@ -22,7 +22,7 @@ class Email(Base):
 def read(event):
     "import emails from mailbox."
     if not event.args:
-        event.reply("mbx <path>")
+        event.iface("read <path>")
         return
     fnm = os.path.expanduser(event.args[0])
     if not e(fnm):

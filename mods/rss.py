@@ -516,7 +516,7 @@ class Run:
 def add(event):
     "add a feed."
     if not event.rest:
-        event.reply("rss add <url>")
+        event.iface("add <url>")
         return
     url = event.args[0]
     if "http://" not in url and "https://" not in url:
@@ -538,7 +538,7 @@ def add(event):
 def attributes(event):
     "show attributes of a feed."
     if not event.rest:
-        event.reply("rss attributes <stringinurl>")
+        event.iface("attributes <stringinurl>")
         return
     for _fnm, obj in Locate.find(Object.fqn(Rss), {'rss': event.rest}):
         request = None
@@ -578,7 +578,7 @@ def attributes(event):
 def display(event):
     "set feed items to display."
     if len(event.args) < 2:
-        event.reply("rss display <stringinurl> <item1,item2>")
+        event.iface("display <stringinurl> <item1,item2>")
         return
     setter = {"display_list": event.args[1]}
     for fnm, feed in Locate.find(Object.fqn(Rss), {"rss": event.args[0]}):
@@ -636,7 +636,7 @@ def export(event):
 def opml(event):
     "import opml."
     if not event.args:
-        event.reply("rss opml <filename>")
+        event.iface("opml <filename>")
         return
     fnm = event.args[0]
     if not i(fnm):
@@ -689,7 +689,7 @@ def name(event):
     elif len(event.args) == 2:
         nme = event.args[1]
     else:
-        event.reply("rss name <stringinurl> <name>")
+        event.iface("name <stringinurl> <name>")
         return
     selector = {"rss": event.args[0]}
     for fnm, fed in Locate.find(
@@ -707,7 +707,7 @@ def name(event):
 def remove(event):
     "remove a feed."
     if len(event.args) != 1:
-        event.reply("rss remove <stringinurl>")
+        event.iface("remove <stringinurl>")
         return
     for fnm, fed in Locate.find(Object.fqn(Rss)):
         feed = Rss()
@@ -724,7 +724,7 @@ def remove(event):
 def restore(event):
     "restore a feed."
     if len(event.args) != 1:
-        event.reply("rss restore <stringinurl>")
+        event.iface("restore <stringinurl>")
         return
     nrs = 0
     for fnm, fed in Locate.find(

@@ -20,7 +20,7 @@ def config(event):
         mods = f"{'main,' + Mods.has('Config')}"
         if mods.endswith(","):
             mods = mods[:-1]
-        event.reply(f"adm config <{mods}>")
+        event.iface(f"config <{mods}>")
         return
     name = event.args[0]
     cfg = Base()

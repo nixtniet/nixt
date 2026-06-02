@@ -94,7 +94,7 @@ class TimerLoop:
 def add(event):
     "add a timer."
     if not event.rest:
-        event.reply("tmr add <date> <txt>")
+        event.iface("add <date> <txt>")
         return
     todo = Time.extract(event.rest)
     if not todo:
