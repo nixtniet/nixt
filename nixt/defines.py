@@ -5,9 +5,9 @@
 "interface"
 
 
-from .booting import Boot
-from .brokers import Broker
-from .clients import Buffer, Buffered, Client, Clients, Output
+from .booting import Boot, Cmd
+from .brokers import Broker, Clients
+from .clients import Buffer, Buffered, Client, Output
 from .command import Commands
 from .configs import Main
 from .engines import Engine
@@ -31,6 +31,7 @@ def __dir__():
        'Buffered',
        'Client',
        'Clients',
+       'Cmd',
        'Commands',
        'Disk',
        'Engine',

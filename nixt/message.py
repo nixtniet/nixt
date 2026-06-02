@@ -22,6 +22,7 @@ class Message(Base):
         self.cmd = ""
         self.index = 0
         self.kind = "event"
+        self.mod = ""
         self.orig = ""
         self.result = []
         self.text = ""

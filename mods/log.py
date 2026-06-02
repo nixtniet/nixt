@@ -14,10 +14,10 @@ class Log(Base):
         self.txt = ''
 
 
-def log(event):
+def add(event):
     "log text."
     if not event.rest:
-        event.reply("log <txt>")
+        event.reply("log add <txt>")
         return
     obj = Log()
     obj.txt = event.rest

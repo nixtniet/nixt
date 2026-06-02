@@ -86,7 +86,7 @@ def toudp(host, port, txt):
     sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))
 
 
-def udp(event):
+def send(event):
     "send text as udp to the relay."
     if event.rest:
         toudp(Config.host, Config.port, event.rest)
@@ -97,7 +97,7 @@ def udp(event):
                          [],
                          0.0
                         )[0]:
-        event.reply("udp <text>")
+        event.reply("udp send <text>")
         return
     size = 0
     while 1:

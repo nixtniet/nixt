@@ -10,7 +10,7 @@ from .objects import Base, Object
 class Parse:
 
     @staticmethod
-    def parse(obj, text, cmdonly=False, clean=False):
+    def parse(obj, text, clean=False):
         "parse text for command."
         data = {
             "args": [],
@@ -55,13 +55,11 @@ class Parse:
                 continue
             nr += 1
             if nr == 0:
-                if cmdonly:
-                    obj.cmd = spli
-                else:
-                    obj.mod = spli
+                obj.mod = spli
                 continue
-            if nr == 1 and not cmdonly:
+            if nr == 1:
                 obj.cmd = spli
+                continue
             args.append(spli)
         if args:
             obj.args = args

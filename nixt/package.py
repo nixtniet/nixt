@@ -64,7 +64,8 @@ class Mods:
     def has(cls, attr):
         "return list of modules containing an attribute."
         result = []
-        for mod in cls.modules.values():
+        for modname in cls.list():
+            mod = cls.get(modname)
             if not getattr(mod, attr, False):
                 continue
             result.append(mod.__name__.split(".")[-1])

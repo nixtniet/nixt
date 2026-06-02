@@ -6,9 +6,11 @@
 
 import os
 import time
+import _thread
 
 
 from .command import Commands
+from .message import Message
 from .package import Mods
 from .persist import Workdir
 from .threads import Thread
@@ -27,11 +29,8 @@ class Boot:
             Mods.add("other", "other")
         cls.table()
         Mods.table()
-        if not Commands.table():
-            cls.scanner()
         Log.size(len(cfg.name))
         Log.level(cfg.level or "info")
-        Mods.get("bsc")
 
     @classmethod
     def forever(cls):
@@ -40,7 +39,7 @@ class Boot:
             try:
                 time.sleep(0.01)
             except (KeyboardInterrupt, EOFError):
-                break
+                _thread.interrupt_main()
 
     @classmethod
     def init(cls, modlist, wait=False):
@@ -81,7 +80,20 @@ class Boot:
             return False
 
 
+class Cmd:
+
+    @classmethod
+    def cmd(cls, text):
+        evt = Message()
+        evt.kind = "command"
+        evt.text = text
+        Commands.command(evt)
+        evt.wait()
+        yield from evt.result
+
+
 def __dir__():
     return (
         'Boot',
+        'Cmd'
     )

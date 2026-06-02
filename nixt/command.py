@@ -4,7 +4,6 @@
 "write your own commands"
 
 
-from .message import Message
 from .package import Mods
 from .parsers import Parse
 
@@ -20,33 +19,19 @@ class Commands:
             cls.cmds[func.__name__] = func
 
     @classmethod
-    def cmd(cls, text):
-        evt = Message()
-        evt.kind = "command"
-        evt.text = text
-        Commands.command(evt)
-        evt.wait()
-        yield from evt.result
-
-    @classmethod
     def command(cls, evt):
         "command callback."
         Parse.parse(evt, evt.text)
-        func = Mods.getcmd(evt.mod, evt.mod)
+        func = Mods.getcmd(evt.mod, evt.cmd)
         if not func:
-            func = Mods.getcmd(evt.mod, evt.cmd)
-            if func:
-                splitted = evt.otxt.split()
-                Parse.parse(evt, " ".join(splitted[1:]), True, True)
+            func = cls.cmds.get(evt.mod)
         if not func:
             cmds = list(Mods.getcmds(evt.mod))
             if cmds:
                 evt.reply(f"{evt.mod} <{'|'.join(cmds)}>")
-                evt.ready()
-                return
         else:
             func(evt)
-            evt.display()
+        evt.display()
         evt.ready()
 
     @classmethod

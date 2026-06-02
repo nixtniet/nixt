@@ -91,10 +91,10 @@ class TimerLoop:
             Disk.write(cls.timers, cls.path)
 
 
-def tmr(event):
+def add(event):
     "add a timer."
     if not event.rest:
-        event.reply("tmr <date> <txt>")
+        event.reply("tmr add <date> <txt>")
         return
     todo = Time.extract(event.rest)
     if not todo:

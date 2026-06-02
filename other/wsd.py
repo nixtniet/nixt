@@ -42,7 +42,7 @@ class State:
 state = State()
 
 
-def wsd(event):
+def show(event):
     txt = ""
     if 'seen' not in dir(state):
         state.seen = []

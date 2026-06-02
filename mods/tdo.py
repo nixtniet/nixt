@@ -14,7 +14,18 @@ class Todo(Base):
         self.txt = ''
 
 
-def dne(event):
+def add(event):
+    "add a todo."
+    if not event.rest:
+        event.reply("tdo <txt>")
+        return
+    obj = Todo()
+    obj.txt = event.rest
+    Disk.write(obj)
+    event.reply("ok")
+
+
+def done(event):
     "mark todo as done."
     if not event.args:
         event.reply("dne <txt>")
@@ -29,14 +40,3 @@ def dne(event):
         break
     if not nmr:
         event.reply("nothing todo")
-
-
-def tdo(event):
-    "add a todo."
-    if not event.rest:
-        event.reply("tdo <txt>")
-        return
-    obj = Todo()
-    obj.txt = event.rest
-    Disk.write(obj)
-    event.reply("ok")

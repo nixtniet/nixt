@@ -8,7 +8,7 @@ from nixt.defines import Base, Disk, Mods, Object
 
 
 def cfg(event):
-    "configure."
+    "configure modules."
     if not event.args:
         mods = f"{'main,' + Mods.has('Config')}"
         if mods.endswith(","):

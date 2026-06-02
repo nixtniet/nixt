@@ -16,7 +16,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Main, Md5
+from nixt.defines import Boot, Client, Cmd, Commands, Main, Md5
 from nixt.defines import Message, Mods, Object, Utils, e, j
 
 
@@ -58,10 +58,26 @@ class Arguments:
         Boot.boot(Main)
 
 
-class Console(Client):
+class CLI(Client):
+
+    def cmd(self, text):
+        evt = Message()
+        evt.kind = "command"
+        evt.orig = repr(self)
+        evt.text = text
+        Commands.command(evt)
+        evt.wait()
+
+    def raw(self, text):
+        "write to console."
+        print(text.encode('utf-8', 'replace').decode("utf-8"))
+        sys.stdout.flush()
+
+
+class Console(CLI):
 
     def __init__(self):
-        Client.__init__(self)
+        CLI.__init__(self)
         self.silent = True
 
     def handle(self, event):
@@ -75,11 +91,6 @@ class Console(Client):
         evt.text = input("> ")
         evt.kind = "command"
         return evt
-
-    def raw(self, text):
-        "write to console."
-        print(text.encode('utf-8', 'replace').decode("utf-8"))
-        sys.stdout.flush()
 
 
 class Runs:
@@ -152,7 +163,7 @@ class Runs:
         try:
             func(*args)
         except (KeyboardInterrupt, EOFError):
-            pass
+            print("")
         except Exception as ex:
             logging.exception(ex)
         if old:
@@ -190,8 +201,8 @@ class Scripts:
     @staticmethod
     def control():
         "cli script."
-        for txt in Commands.cmd(Main.otxt):
-            print(txt)
+        cli = CLI()
+        cli.cmd(Main.otxt)
 
     @staticmethod
     def service():

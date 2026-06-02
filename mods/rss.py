@@ -516,7 +516,7 @@ class Run:
 def add(event):
     "add a feed."
     if not event.rest:
-        event.reply("rss <url>")
+        event.reply("rss add <url>")
         return
     url = event.args[0]
     if "http://" not in url and "https://" not in url:
@@ -535,10 +535,10 @@ def add(event):
     event.reply("ok")
 
 
-def atr(event):
+def attributes(event):
     "show attributes of a feed."
     if not event.rest:
-        event.reply("atr <stringinurl>")
+        event.reply("rss attributes <stringinurl>")
         return
     for _fnm, obj in Locate.find(Object.fqn(Rss), {'rss': event.rest}):
         request = None
@@ -575,10 +575,10 @@ def atr(event):
         event.reply(','.join(resulting))
 
 
-def dpl(event):
+def display(event):
     "set feed items to display."
     if len(event.args) < 2:
-        event.reply("dpl <stringinurl> <item1,item2>")
+        event.reply("rss display <stringinurl> <item1,item2>")
         return
     setter = {"display_list": event.args[1]}
     for fnm, feed in Locate.find(Object.fqn(Rss), {"rss": event.args[0]}):
@@ -588,7 +588,7 @@ def dpl(event):
     event.reply("ok")
 
 
-def err(event):
+def errors(event):
     "show errors of a feed."
     nre = 0
     nrs = 0
@@ -614,7 +614,7 @@ def err(event):
         event.reply(f'{nre} feeds reset.')
 
 
-def exp(event):
+def export(event):
     "export opml."
     with Run.importlock:
         event.reply(TEMPLATE)
@@ -633,10 +633,10 @@ def exp(event):
         event.reply("</opml>")
 
 
-def imp(event):
+def opml(event):
     "import opml."
     if not event.args:
-        event.reply("imp <filename>")
+        event.reply("rss opml <filename>")
         return
     fnm = event.args[0]
     if not i(fnm):
@@ -682,14 +682,14 @@ def imp(event):
         event.reply(f"added {nrs} urls.")
 
 
-def nme(event):
+def name(event):
     "set name of a feed."
     if len(event.args) == 1:
         name = ""
     elif len(event.args) == 2:
         name = event.args[1]
     else:
-        event.reply("nme <stringinurl> <name>")
+        event.reply("rss name <stringinurl> <name>")
         return
     selector = {"rss": event.args[0]}
     for fnm, fed in Locate.find(
@@ -704,10 +704,10 @@ def nme(event):
     event.reply("ok")
 
 
-def rem(event):
+def remove(event):
     "remove a feed."
     if len(event.args) != 1:
-        event.reply("rem <stringinurl>")
+        event.reply("rss remove <stringinurl>")
         return
     for fnm, fed in Locate.find(Object.fqn(Rss)):
         feed = Rss()
@@ -721,10 +721,10 @@ def rem(event):
             break
 
 
-def res(event):
+def restore(event):
     "restore a feed."
     if len(event.args) != 1:
-        event.reply("res <stringinurl>")
+        event.reply("rss restore <stringinurl>")
         return
     nrs = 0
     for fnm, fed in Locate.find(
@@ -741,7 +741,7 @@ def res(event):
     event.reply(f"{nrs} feeds restored.")
 
 
-def syn(event):
+def sync(event):
     "synchronize a feed."
     if Main.debug:
         return

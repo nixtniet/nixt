@@ -154,7 +154,7 @@ def cbstats(evt):
         Clients.announce(txt)
 
 
-def dis(event):
+def disease(event):
     delta = time.time() - STARTTIME
     txt = Time.elapsed(delta) + " "
     for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):

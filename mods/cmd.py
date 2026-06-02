@@ -4,9 +4,9 @@
 "list commands"
 
 
-from nixt.package import Mods
+from nixt.defines import Mods
 
 
-def cmd(event):
+def show(event):
     "list available commands."
     event.reply(",".join(sorted(Mods.list())))

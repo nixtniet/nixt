@@ -188,65 +188,58 @@ def main():
 
 
 examples = {
-    "cmd": [""],
-    "dis": [""],
+    "cmd": ["", "show"],
+    "rss": ["", "display tittle.link", "name hnrss hn", "restore hnrss", ],
     "dne": ["", "bla"],
-    "dpl": ["hnrss title,url", ""],
     "eml": ["", "root@localhost"],
     "fie": ["", "log", "todo"],
     "flt": ["", "0"],
-    "fnd": ["", "log", "rss", "config", "todo", 'timers'],
-    "lou": [""],
+    "fnd": ["", "show log", "show rss", "show config", "show todo", 'show timers'],
     "man": ["", "genocide nixtniet@gmail.com Nixt Niet"],
-    "mbx": [""],
-    "mod": [""],
-    "mre": [""],
-    "nme": ["", "hnrss hackernews"],
-    "now": [""],
-    "pth": [""],
-    "pwd": ["", "bla mekker"],
-    "req": [""],
+    "mbx": ["", "read", "show"],
+    "mdl": ["", "disease", "now"],
+    "pth": ["", "show"],
+    "irc": ["", "pwd", "pwd bla mekker"],
+    "req": ["", "show"],
     "res": ["", "hnrss"],
-    "sil": [""],
-    "slg": [""],
-    "srv": [""],
-    "thr": [""],
-    "upt": [""],
-    "wsd": [""]
+    "sil": ["", "sil on", "sil off"],
+    "slg": ["", "show"],
+    "adm": ["", "fleet", "service", "table", "threads", "uptime", "version"],
+    "thr": ["", "show"],
+    "wsd": ["", "show"]
 }
 
 
 pre = {
-    "cfg": [
+    "adm": [
         '',
-        'main',
-        'irc',
-        'rss',
-        'rst',
-        'udp',
-        'web',
-        'main nick=mekker',
-        'irc nick=mekker',
-        'rss nick=mekker',
-        'rst nick=mekker',
-        'udp nick=mekker',
-        'web nick=mekker'
+        'config main',
+        'config irc',
+        'config rss',
+        'config rst',
+        'config udp',
+        'config web',
+        'config main nick=mekker',
+        'config irc nick=mekker',
+        'config rss nick=mekker',
+        'config rst nick=mekker',
+        'config udp nick=mekker',
+        'config web nick=mekker'
     ],
-    "imp": [
+    "rss opml": [
         "",
         "testing/opml/feeds.opml",
     ],
-    "log": ["", "test"],
-    "rss": ["", "http://hnrss.org/newest"],
-    "tdo": ["", "test2"],
-    "tmr": ["", "22:00 test"],
+    "log": ["", "add test"],
+    "rss": ["", "add http://hnrss.org/newest"],
+    "tdo": ["", "add test2"],
+    "tmr": ["", "add 22:00 test"],
 }
 
 post = {
     "dbg": [""],
-    "dne": ["", "mekker"],
-    "exp": [""],
-    "rem": ["", "hnrss"]
+    "tdo": ["done mekker"],
+    "rss": ["export", "remove hnrss"],
 }
 
 

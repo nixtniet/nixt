@@ -7,7 +7,7 @@
 from nixt.defines import d, j
 
 
-def pth(event):
+def show(event):
     path = d(d(__file__))
     path = j(path, "network", "index.html")
     event.reply(f"file://{path}")
