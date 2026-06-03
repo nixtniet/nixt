@@ -55,7 +55,6 @@ class Arguments:
         args, arguments = theparser.parse_known_args()
         Main.otxt = " ".join(arguments)
         Object.update(Main, args)
-        Boot.boot(Main)
 
 
 class CLI(Client):
@@ -67,6 +66,7 @@ class CLI(Client):
         evt.text = text
         Mods.command(evt)
         evt.wait()
+        return evt
 
     def raw(self, text):
         "write to console."
@@ -202,6 +202,10 @@ class Scripts:
     def control():
         "cli script."
         cli = CLI()
+        if not Main.otxt:
+            print(','.join(Mods.list()))
+            sys.stdout.flush()
+            return
         cli.cmd(Main.otxt)
 
     @staticmethod
@@ -216,6 +220,7 @@ class Scripts:
 def main():
     "main"
     Arguments.getargs()
+    Boot.boot(Main)
     if Main.daemon:
         Runs.wrap(Scripts.background)
     elif Main.console:

@@ -25,6 +25,7 @@ class Boot:
         Workdir.wdr = cfg.wdr or os.path.expanduser(f"~/.{cfg.name}")
         if cfg.user:
             Mods.add("mods", "mods")
+        if cfg.other:
             Mods.add("other", "other")
         cls.table()
         Mods.table()

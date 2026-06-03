@@ -14,41 +14,7 @@ from nixt.defines import Base, Broker, Disk, Json, Main, Md5, Mods
 from nixt.defines import Object, Time, d, j
 
 
-whitelist = ['config', 'fleet', 'service', 'table', 'threads', 'uptime', 'version']
-
-
-def config(event):
-    "configure modules."
-    if not event.args:
-        mods = f"{'main,' + Mods.has('Config')}"
-        if mods.endswith(","):
-            mods = mods[:-1]
-        event.iface(f"config <{mods}>")
-        return
-    name = event.args[0]
-    cfg = Base()
-    Disk.read(cfg, name, "config")
-    if name != "main" and not cfg:
-        mod = Mods.get(name)
-        if not mod:
-            event.reply(f"no {name} module found.")
-            return
-        cfg = getattr(mod, "Config", None)
-        if not cfg:
-            event.reply("no configuration found.")
-            return
-    if not event.sets:
-        event.reply(
-            Object.fmt(
-                cfg,
-                Object.keys(cfg),
-                skip=["word",]
-            )
-        )
-        return
-    Object.edit(config, event.sets)
-    Disk.write(config, name, "config")
-    event.ok()
+whitelist = ['fleet', 'service', 'table', 'threads', 'uptime', 'version']
 
 
 def fleet(event):

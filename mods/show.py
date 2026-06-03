@@ -7,10 +7,15 @@
 import time
 
 
-from nixt.defines import Locate, Object, Time, Workdir
+from nixt.defines import Locate, Mods, Object, Time, Workdir
 
 
-whitelist = ['fields', 'show']
+whitelist = ['cmd', 'fields', 'objects']
+
+
+def cmd(event):
+    "list available commands."
+    event.reply(",".join(sorted(Mods.list())))
 
 
 def fields(event):
@@ -29,7 +34,7 @@ def fields(event):
         event.reply(",".join(itms))
 
 
-def show(event):
+def objects(event):
     "find objects."
     if not event.rest:
         res = sorted([x.split('.')[-1].lower() for x in Workdir.kinds()])
