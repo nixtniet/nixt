@@ -188,19 +188,31 @@ def main():
 
 
 examples = {
-    "show": ["", "cmd", "fields", "fields log", "fields todo", "objects", "objects log", "objects todo"],
+    "show": [
+        "",
+        "cmd",
+        "fleet",
+        "fleet 0",
+        "fields",
+        "fields log",
+        "fields todo",
+        "objects",
+        "objects log",
+        "objects todo",
+        'threads',
+        'uptime',
+        'version'
+    ],
     "rss": ["", "display tittle.link", "name hnrss hn", "restore hnrss", ],
-    "done": ["", "bla"],
-    "email": ["", "root@localhost"],
-    "manual": ["", "nixt nixtniet@gmail.com Nixt Niet"],
-    "mail": ["", "read", "show"],
+    "email": ["", "read", "read ~/25-1-2013", "show", "show root@localhost"],
+    "manual": ["", "create nixt nixtniet@gmail.com Nixt Niet"],
     "model": ["", "disease", "now"],
     "path": ["", "show"],
     "irc": ["", "pwd", "pwd bla mekker"],
     "request": ["", "show"],
     "silent": ["", "on", "off"],
     "slogan": ["", "show"],
-    "admin": ["", "fleet", "service", "table", "threads", "uptime", "version"],
+    "admin": ["", "service", "table"],
 }
 
 
