@@ -16,8 +16,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Buffer, Commands, Engine, Log, Main, Message
-from nixt.defines import Mods, Object, Parse, Thread, Time, Workdir, e
+from nixt.defines import Buffer, Engine, Log, Main, Message, Mods, Output
+from nixt.defines import Object, Parse, Task, Thread, Time, Workdir, e
 
 
 Main.debug = True
@@ -25,6 +25,7 @@ Main.wdr = ".test"
 Main.user = True
 
 
+Task.bork = True
 Workdir.wdr = Main.wdr
 
 
@@ -39,9 +40,9 @@ Log.level("debug")
 class CLI(Engine, Buffer):
 
     def __init__(self):
-        Engine.__init__(self)
         Buffer.__init__(self)
-        self.register("command", Commands.command)
+        Engine.__init__(self)
+        self.register("command", Mods.command)
 
     def raw(self, text):
         if Main.verbose:
@@ -187,43 +188,37 @@ def main():
 
 
 examples = {
-    "cmd": ["", "show"],
+    "show": ["", "cmd", "fields", "fields log", "fields todo", "objects", "objects log", "objects todo"],
     "rss": ["", "display tittle.link", "name hnrss hn", "restore hnrss", ],
-    "dne": ["", "bla"],
-    "eml": ["", "root@localhost"],
-    "fie": ["", "log", "todo"],
-    "flt": ["", "0"],
-    "fnd": ["", "show log", "show rss", "show config", "show todo", 'show timers'],
-    "man": ["", "genocide nixtniet@gmail.com Nixt Niet"],
-    "mbx": ["", "read", "show"],
-    "mdl": ["", "disease", "now"],
-    "pth": ["", "show"],
+    "done": ["", "bla"],
+    "email": ["", "root@localhost"],
+    "manual": ["", "nixt nixtniet@gmail.com Nixt Niet"],
+    "mail": ["", "read", "show"],
+    "model": ["", "disease", "now"],
+    "path": ["", "show"],
     "irc": ["", "pwd", "pwd bla mekker"],
-    "req": ["", "show"],
-    "res": ["", "hnrss"],
-    "sil": ["", "sil on", "sil off"],
-    "slg": ["", "show"],
-    "adm": ["", "fleet", "service", "table", "threads", "uptime", "version"],
-    "thr": ["", "show"],
-    "wsd": ["", "show"]
+    "request": ["", "show"],
+    "silent": ["", "on", "off"],
+    "slogan": ["", "show"],
+    "admin": ["", "fleet", "service", "table", "threads", "uptime", "version"],
 }
 
 
 pre = {
-    "adm": [
+    "config": [
         '',
-        'config main',
-        'config irc',
-        'config rss',
-        'config rst',
-        'config udp',
-        'config web',
-        'config main nick=mekker',
-        'config irc nick=mekker',
-        'config rss nick=mekker',
-        'config rst nick=mekker',
-        'config udp nick=mekker',
-        'config web nick=mekker'
+        'edit main',
+        'edit irc',
+        'edit rss',
+        'edit rst',
+        'edit udp',
+        'edit web',
+        'edit main nick=mekker',
+        'edit irc nick=mekker',
+        'edit rss nick=mekker',
+        'edit rst nick=mekker',
+        'edit udp nick=mekker',
+        'edit web nick=mekker'
     ],
     "rss opml": [
         "",
@@ -231,13 +226,13 @@ pre = {
     ],
     "log": ["", "add test"],
     "rss": ["", "add http://hnrss.org/newest"],
-    "tdo": ["", "add test2"],
-    "tmr": ["", "add 22:00 test"],
+    "todo": ["", "add test2"],
+    "timer": ["", "add 22:00 test"],
 }
 
 post = {
     "dbg": [""],
-    "tdo": ["done mekker"],
+    "todo": ["done mekker"],
     "rss": ["export", "remove hnrss"],
 }
 

@@ -16,8 +16,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Main, Md5, Message
-from nixt.defines import Mods, Object, Utils, e, j
+from nixt.defines import Client, Log, Main, Md5, Message, Mods
+from nixt.defines import Object, Utils, Workdir, e, j
 
 
 class Arguments:
@@ -48,8 +48,9 @@ class Arguments:
         optparser = theparser.add_argument_group()
         optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
         optparser.add_argument("--check", action="store_false", help=argparse.SUPPRESS)
-        optparser.add_argument("--default", default="irc,mdl,rss", help=argparse.SUPPRESS)
+        optparser.add_argument("--default", default="irc,rss", help=argparse.SUPPRESS)
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
+        optparser.add_argument("--other", action="store_false", help=argparse.SUPPRESS)
         optparser.add_argument("--read", action="store_true", help=argparse.SUPPRESS)
         optparser.add_argument("--user", action="store_false", help="use local mods directory.")
         args, arguments = theparser.parse_known_args()
@@ -110,6 +111,17 @@ class Runs:
         sys.stdout.flush()
 
     @classmethod
+    def configure(cls, cfg):
+        Workdir.wdr = cfg.wdr or os.path.expanduser(f"~/.{cfg.name}")
+        if cfg.user:
+            Mods.add("mods", "mods")
+        if cfg.other:
+            Mods.add("other", "other")
+        Mods.table()
+        Log.size(len(cfg.name))
+        Log.level(cfg.level or "info")
+
+    @classmethod
     def daemon(cls, verbose=False, nochdir=False):
         "run in the background."
         pid = os.fork()
@@ -130,6 +142,15 @@ class Runs:
         if not nochdir:
             os.chdir("/")
         os.nice(10)
+
+    @classmethod
+    def forever(cls):
+        "run forever until ctrl-c."
+        while True:
+            try:
+                time.sleep(0.01)
+            except (KeyboardInterrupt, EOFError):
+                _thread.interrupt_main()
 
     @classmethod
     def pid(cls, name):
@@ -180,8 +201,8 @@ class Scripts:
         Runs.daemon(Main.verbose, Main.nochdir)
         Runs.privileges()
         Runs.pid(Main.name)
-        Boot.init(Main.mods or Main.default)
-        Boot.forever()
+        Mods.init(Main.mods or Main.default)
+        Runs.forever()
 
     @staticmethod
     def console():
@@ -192,11 +213,11 @@ class Scripts:
             Runs.banner()
         if Main.all:
             Main.mods = ",".join(Mods.list())
-        if not Boot.init(Main.mods, Main.wait):
+        if not Mods.init(Main.mods, Main.wait):
             return
         csl = Console()
         csl.start()
-        Boot.forever()
+        Runs.forever()
 
     @staticmethod
     def control():
@@ -213,14 +234,14 @@ class Scripts:
         "service script."
         Runs.privileges()
         Runs.pid(Main.name)
-        Boot.init(Main.mods or Main.default)
-        Boot.forever()
+        Mods.init(Main.mods or Main.default)
+        Runs.forever()
 
 
 def main():
     "main"
     Arguments.getargs()
-    Boot.boot(Main)
+    Runs.configure(Main)
     if Main.daemon:
         Runs.wrap(Scripts.background)
     elif Main.console:

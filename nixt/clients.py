@@ -46,6 +46,9 @@ class Output:
         "say text in channel."
         self.raw(text)
 
+    def wait(self):
+        "bogus wait."
+
 
 class Buffer(Output):
 

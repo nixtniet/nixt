@@ -5,7 +5,7 @@
 
 
 CORE = {
-    "booting": "38dbe35545c98264a6cd24c10ceb16cc",
+    "booting": "7a949a3d10003e7601bc4a9d07f8652c",
     "brokers": "b0f2374e516c4ba8581b728b7d3cc026",
     "clients": "d6dd63e499be04bbecf02e9c8c0348b4",
     "configs": "b054626f8d5171e35cb84ba02bfe4347",
@@ -28,6 +28,21 @@ CORE = {
 MODULES = {
     "admin": "475cbc7bf61342c8ecf6a72d9cc2290a",
     "config": "cbfabcc56e4bf278a6c1c2fe8aaff3fe",
-    "show": "f81c95dea99ca23e80787714a8262e6d",
-    "silent": "9309b68eb72540982700136710ed12a1"
+    "email": "ff8a28b6823e29bfdd7f58fa3c2e54f2",
+    "irc": "d6c7b0a4f1123053c40e37609455ecf4",
+    "log": "f17670435f3980bb9dcac701ae50802c",
+    "man": "1e03b1574d2e24d6cc41940a2212fc5f",
+    "mdl": "310dc1f3246513fdf729a13f9fd8d4b4",
+    "pth": "2af616a971b596e5770c9a984688421d",
+    "req": "f0610d879a8d1242b5d247f520870155",
+    "rest": "b6798332298ddc8a097a2f6c343462cd",
+    "rss": "b511e336ef916cf8b507bb0038db5188",
+    "show": "20b3863cfba8f2aab01993d1a586d542",
+    "silent": "9309b68eb72540982700136710ed12a1",
+    "slg": "16c704f6c30cee642183ff0cdafe96d3",
+    "timer": "42ed812ad2deb8400d5ab3095df4c13b",
+    "todo": "3991419714a5ac0a8561f0e88047ec3a",
+    "udp": "e5b0449dfa47e29a0557d7d643aa08e2",
+    "web": "cda5b00b4fc79c242287fed32014277f",
+    "wsd": "f9778e20ace4b3b3c66ee44367057606"
 }
