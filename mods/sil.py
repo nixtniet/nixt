@@ -7,6 +7,9 @@
 from nixt.defines import Broker
 
 
+whitelist = ['off', 'on']
+
+
 def on(event):
     "enable silent mode."
     bot = Broker.get(event.orig)

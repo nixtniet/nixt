@@ -15,6 +15,9 @@ import time
 from nixt.defines import Base, Clients, Disk, Main, Thread
 
 
+whitelist = ['send']
+
+
 def init():
     "initialize udp to irc relay."
     relay = UDP()

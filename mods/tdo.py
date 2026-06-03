@@ -7,6 +7,9 @@
 from nixt.defines import Base, Disk, Locate
 
 
+whitelist = ['add', 'done']
+
+
 class Todo(Base):
 
     def __init__(self):

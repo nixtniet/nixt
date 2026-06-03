@@ -10,7 +10,6 @@ import _thread
 
 
 from .loggers import Log
-from .message import Message
 from .package import Mods
 from .persist import Workdir
 from .threads import Thread

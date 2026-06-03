@@ -10,6 +10,9 @@ import time
 from nixt.defines import Locate, Object, Time, Workdir
 
 
+whitelist = ['fields', 'show']
+
+
 def fields(event):
     "show fields of a type."
     if not event.rest:

@@ -7,6 +7,9 @@
 from nixt.defines import Base, Disk
 
 
+whitelist = ['add']
+
+
 class Log(Base):
 
     def __init__(self):
@@ -16,7 +19,7 @@ class Log(Base):
 
 def add(event):
     "log text."
-    if not event.rest:
+    if len(event.args) == 0:
         event.iface("add <txt>")
         return
     obj = Log()

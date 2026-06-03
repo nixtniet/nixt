@@ -229,6 +229,9 @@ opml
 """
 
 
+whitelist = ['create']
+
+
 def create(event):
     args = event.args
     try:

@@ -7,6 +7,9 @@
 from nixt.defines import d, j
 
 
+whitelist = ['show']
+
+
 def show(event):
     path = d(d(__file__))
     path = j(path, "network", "index.html")

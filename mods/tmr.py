@@ -13,6 +13,9 @@ import time
 from nixt.defines import Base, Broker, Disk, Locate, Object, Thread, Time
 
 
+whitelist = ['add']
+
+
 rand = random.SystemRandom()
 
 

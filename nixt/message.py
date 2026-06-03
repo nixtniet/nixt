@@ -35,7 +35,7 @@ class Message(Base):
 
     def iface(self, txt):
         self.reply(f"{self.mod} {txt}")
-    
+
     def ok(self, txt=""):
         "print ok response."
         self.reply(f"ok {txt}".strip())

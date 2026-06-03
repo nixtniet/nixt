@@ -26,6 +26,9 @@ from nixt.defines import Base, Clients, Disk, Locate, Main, Object
 from nixt.defines import Repeater, Thread, Utils, i
 
 
+whitelist = ['add', 'attributes', 'display', 'errors', 'export', 'opml', 'name', 'remove', 'restore', 'sync']
+
+
 def init():
     "initialize rss module."
     Runners.init(1, Runner)

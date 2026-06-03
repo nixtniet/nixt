@@ -18,6 +18,9 @@ from nixt.defines import Base, Broker, Buffered, Disk, Engine, Main
 from nixt.defines import Message, Mods, Object, Thread, Utils
 
 
+whitelist = ['pwd']
+
+
 def init():
     "initialize irc module."
     irc = IRC()

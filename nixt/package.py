@@ -30,7 +30,8 @@ class Mods:
         Parse.parse(evt, evt.text)
         func = cls.getcmd(evt.mod, evt.cmd)
         if not func:
-            cmds = list(cls.getcmds(evt.mod))
+            mod = cls.get(evt.mod)
+            cmds = list(cls.getcmds(mod))
             if cmds:
                 evt.reply(f"{evt.mod} <{'|'.join(cmds)}>")
         else:
@@ -57,7 +58,10 @@ class Mods:
 
     @classmethod
     def getcmd(cls, name, cmd):
+        "return command."
         mod = cls.get(name)
+        if cmd not in cls.getcmds(mod):
+            return
         func = getattr(mod, cmd, False)
         if not func:
             return
@@ -67,13 +71,9 @@ class Mods:
             return func
 
     @classmethod
-    def getcmds(cls, name):
-        mod = cls.get(name)
-        if not mod:
-            return []
-        for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
-            if 'event' in inspect.signature(cmdz).parameters:
-                yield key
+    def getcmds(cls, mod):
+        "return whitelist."
+        return getattr(mod, 'whitelist', [])
 
     @classmethod
     def has(cls, attr):

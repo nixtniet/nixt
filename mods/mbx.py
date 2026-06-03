@@ -12,6 +12,9 @@ import time
 from nixt.defines import Base, Disk, Locate, Object, Time, e
 
 
+whitelist = ['read', 'show']
+
+
 class Email(Base):
 
     def __init__(self, *args, **kwargs):

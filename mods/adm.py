@@ -14,6 +14,9 @@ from nixt.defines import Base, Broker, Disk, Json, Main, Md5, Mods
 from nixt.defines import Object, Time, d, j
 
 
+whitelist = ['config', 'fleet', 'service', 'table', 'threads', 'uptime', 'version']
+
+
 def config(event):
     "configure modules."
     if not event.args:

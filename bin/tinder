@@ -16,7 +16,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Buffer, Commands, Engine, Log, Main, Message
+from nixt.defines import Buffer, Commands, Engine, Log, Main, Message
 from nixt.defines import Mods, Object, Parse, Thread, Time, Workdir, e
 
 
@@ -159,7 +159,6 @@ def main():
     if Runs.check("t"):
         Main.threaded = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
-    Boot.scanner()
     if Main.threaded:
         Clients.init(os.cpu_count(), CLI)
     else:

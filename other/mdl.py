@@ -12,6 +12,9 @@ import time
 from nixt.defines import Base, Clients, Message, Object, Repeater, Time
 
 
+whitelist = ['disease', 'now']
+
+
 def init():
     for key in Object.keys(oorzaken):
         if "Psych" not in key:

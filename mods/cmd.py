@@ -7,6 +7,9 @@
 from nixt.defines import Mods
 
 
+whitelist = ['show']
+
+
 def show(event):
     "list available commands."
     event.reply(",".join(sorted(Mods.list())))

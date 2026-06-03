@@ -13,6 +13,9 @@ from random import SystemRandom
 from nixt.defines import Clients, Disk, Locate, Message, Repeater
 
 
+whitelist = ['show']
+
+
 rand = SystemRandom()
 
 
