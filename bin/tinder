@@ -16,8 +16,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Buffer, Engine, Log, Main, Message, Mods, Output
-from nixt.defines import Object, Parse, Task, Thread, Time, Workdir, e
+from nixt.defines import Buffer, Engine, Log, Main, Message, Mods, Object
+from nixt.defines import Parse, Task, Thread, Time, Workdir, e
 
 
 Main.debug = True

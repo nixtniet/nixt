@@ -4,13 +4,14 @@
 "locate objects"
 
 
+import threading
 import time
 
 
-from nixt.defines import Locate, Mods, Object, Time, Workdir
+from nixt.defines import Broker, Locate, Main, Md5, Mods, Object, Time, Workdir
 
 
-whitelist = ['cmd', 'fields', 'objects']
+whitelist = ['cmd', 'fields', 'fleet', 'objects', 'threads', 'uptime', 'version']
 
 
 def cmd(event):
@@ -34,6 +35,25 @@ def fields(event):
         event.reply(",".join(itms))
 
 
+def fleet(event):
+    "list of running clients."
+    try:
+        index = int(event.args[0])
+    except (IndexError, ValueError):
+        index = None
+    clts = list(Broker.objs("announce"))
+    if not clts:
+        event.reply("no clients")
+        return
+    if index is None:
+        event.reply(' | '.join([Object.fqn(o).split(".")[-1] for o in clts]))
+        return
+    if index < len(clts):
+        event.reply(str(clts[index]))
+    else:
+        event.reply("no matching client.")
+
+
 def objects(event):
     "find objects."
     if not event.rest:
@@ -54,3 +74,36 @@ def objects(event):
         nmr += 1
     if not nmr:
         event.reply("no result")
+
+
+def threads(event):
+    "list of running threads."
+    result = []
+    for thread in sorted(threading.enumerate(), key=lambda x: x.name):
+        if str(thread).startswith("<_"):
+            continue
+        if getattr(thread, "state", None) and getattr(thread, "sleep", None):
+            upt = thread.sleep - int(time.time() - thread.state["latest"])
+        elif getattr(thread, "starttime", None):
+            upt = time.time() - thread.starttime
+        else:
+            upt = time.time() - Time.starttime
+        result.append((upt, thread.name))
+    res = []
+    for upt, txt in sorted(result, key=lambda x: x[0]):
+        lap = Time.elapsed(upt)
+        res.append(f"{txt}/{lap}")
+    if res:
+        event.reply(" ".join(res))
+    else:
+        event.reply("no threads")
+
+
+def uptime(event):
+    "show uptiome."
+    event.reply(Time.elapsed(time.time()-Time.starttime))
+
+
+def version(event):
+    "show verson."
+    event.reply(f"{Main.name.upper()} {Md5.core()}")

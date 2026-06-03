@@ -10,6 +10,7 @@ import os
 
 
 from .parsers import Parse
+from .threads import Thread
 from .utility import Md5, Utils, e, j
 
 

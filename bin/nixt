@@ -11,6 +11,7 @@ import os
 import pathlib
 import sys
 import time
+import _thread
 
 
 sys.path.insert(0, os.getcwd())
