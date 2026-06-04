@@ -51,9 +51,9 @@ class Arguments:
         optparser.add_argument("--check", action="store_false", help=argparse.SUPPRESS)
         optparser.add_argument("--default", default="irc,rss", help=argparse.SUPPRESS)
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
-        optparser.add_argument("--other", action="store_false", help=argparse.SUPPRESS)
+        optparser.add_argument("--other", action="store_true", help=argparse.SUPPRESS)
         optparser.add_argument("--read", action="store_true", help=argparse.SUPPRESS)
-        optparser.add_argument("--user", action="store_false", help="use local mods directory.")
+        optparser.add_argument("--user", action="store_true", help="use local mods directory.")
         args, arguments = theparser.parse_known_args()
         Main.otxt = " ".join(arguments)
         Object.update(Main, args)
@@ -113,7 +113,8 @@ class Runs:
 
     @classmethod
     def configure(cls, cfg):
-        Workdir.wdr = cfg.wdr or os.path.expanduser(f"~/.{cfg.name}")
+        Workdir.wdr = cfg.path or os.path.expanduser(f"~/.{cfg.name}")
+        Mods.add("modules", Workdir.moddir())
         if cfg.user:
             Mods.add("mods", "mods")
         if cfg.other:
