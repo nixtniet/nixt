@@ -34,6 +34,7 @@ class Message(Base):
             bot.display(self)
 
     def iface(self, txt):
+        "show interface."
         self.reply(f"{self.mod} {txt}")
 
     def ok(self, txt=""):

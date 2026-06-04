@@ -115,6 +115,7 @@ class Utils:
 
     @staticmethod
     def skip(obj):
+        "skip underscore keys."
         result = []
         for x in dir(obj):
             if x.startswith("_"):
@@ -124,6 +125,7 @@ class Utils:
 
     @staticmethod
     def skipped(obj):
+        "yield without underscore values."
         for key in dir(obj):
             if key.startswith("_"):
                 continue

@@ -42,6 +42,14 @@ class Mods:
         evt.ready()
 
     @classmethod
+    def completions(cls):
+        try:
+            from .statics import COMPLETIONS
+            return COMPLETIONS
+        except ImportError:
+            return []
+
+    @classmethod
     def get(cls, name):
         "return module from cache or import module."
         for pkgname, path in cls.dirs.items():

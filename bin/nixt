@@ -9,6 +9,8 @@ import argparse
 import logging
 import os
 import pathlib
+import readline
+import rlcompleter
 import sys
 import time
 import _thread
@@ -62,6 +64,7 @@ class Arguments:
 class CLI(Client):
 
     def cmd(self, text):
+        "do command."
         evt = Message()
         evt.kind = "command"
         evt.orig = repr(self)
@@ -95,6 +98,30 @@ class Console(CLI):
         return evt
 
 
+class Completer(rlcompleter.Completer):
+
+    def __init__(self, options):
+        super().__init__()
+        self.options = options
+ 
+    def complete(self, text, state):
+        if state == 0:
+            if text:
+                self.matches = [s for s in self.options if s and s.startswith(text)]
+            else:
+                self.matches = self.options[:]
+        try:
+            return self.matches[state]
+        except IndexError:
+            return None
+
+    @staticmethod
+    def enable(modlist):
+        completer = Completer(modlist)
+        readline.set_completer(completer.complete)
+        readline.parse_and_bind("tab: complete")
+
+
 class Runs:
 
     @classmethod
@@ -113,6 +140,7 @@ class Runs:
 
     @classmethod
     def configure(cls, cfg):
+        "configure program."
         Workdir.wdr = cfg.path or os.path.expanduser(f"~/.{cfg.name}")
         Mods.add("modules", Workdir.moddir())
         if cfg.user:
@@ -193,6 +221,7 @@ class Runs:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
         if final:
             final()
+        readline.set_completer(None)
 
 
 class Scripts:
@@ -209,14 +238,14 @@ class Scripts:
     @staticmethod
     def console():
         "console script."
-        import readline
-        readline.redisplay()
+        #readline.redisplay()
         if Main.verbose:
             Runs.banner()
         if Main.all:
             Main.mods = ",".join(Mods.list())
         if not Mods.init(Main.mods, Main.wait):
             return
+        Completer.enable(Mods.completions())
         csl = Console()
         csl.start()
         Runs.forever()
@@ -225,6 +254,8 @@ class Scripts:
     def control():
         "cli script."
         cli = CLI()
+        cli.silent = False
+        Completer.enable(Mods.completions())
         if not Main.otxt:
             print(','.join(Mods.list()))
             sys.stdout.flush()

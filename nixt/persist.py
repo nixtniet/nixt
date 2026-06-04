@@ -195,6 +195,7 @@ class Workdir:
 
     @classmethod
     def moddir(cls):
+        "return modules directory."
         assert cls.wdr
         return os.path.join(cls.wdr, "mods")
 

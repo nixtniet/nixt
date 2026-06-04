@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"options parsing"
+"option parsing"
 
 
 from .objects import Base, Object
@@ -11,7 +11,7 @@ class Parse:
 
     @staticmethod
     def parse(obj, text, clean=False):
-        "parse text for command."
+        "parse text for command and arguments."
         data = {
             "args": [],
             "cmd": "",

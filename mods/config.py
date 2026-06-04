@@ -16,7 +16,7 @@ def edit(event):
         mods = f"{'main,' + Mods.has('Config')}"
         if mods.endswith(","):
             mods = mods[:-1]
-        event.iface(f"edit <{mods}>")
+        event.iface(f"<{mods}>")
         return
     name = event.args[0]
     cfg = Base()
@@ -42,3 +42,7 @@ def edit(event):
     Object.edit(cfg, event.sets)
     Disk.write(cfg, name, "config")
     event.ok()
+
+
+def __dir__():
+    return whitelist

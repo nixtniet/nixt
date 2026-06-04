@@ -24,6 +24,7 @@ class Timy(threading.Timer):
         self.starttime = time.time()
 
     def stop(self):
+        "cancel timer."
         self.cancel()
 
 
