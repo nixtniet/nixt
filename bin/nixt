@@ -255,8 +255,10 @@ class Scripts:
         cli.silent = False
         Completer.enable(Mods.completions())
         if not Main.otxt:
-            print(','.join(Mods.list()))
-            sys.stdout.flush()
+            txt = ".".join(Mods.list())
+            if txt:
+                print(txt)
+                sys.stdout.flush()
             return
         cli.cmd(Main.otxt)
 
