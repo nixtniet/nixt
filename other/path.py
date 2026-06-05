@@ -11,7 +11,6 @@ whitelist = ['path']
 
 
 def path(event):
-    print(event)
-    path = d(d(__file__))
-    path = j(path, "network", "index.html")
-    event.reply(f"file://{path}")
+    pth = d(d(__file__))
+    pth = j(path, "network", "index.html")
+    event.reply(f"file://{pth}")

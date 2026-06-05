@@ -103,7 +103,7 @@ class Completer(rlcompleter.Completer):
     def __init__(self, options):
         super().__init__()
         self.options = options
- 
+
     def complete(self, text, state):
         if state == 0:
             if text:
@@ -236,7 +236,7 @@ class Scripts:
     @staticmethod
     def console():
         "console script."
-        #readline.redisplay()
+        readline.redisplay()
         if Main.verbose:
             Runs.banner()
         if Main.all:
