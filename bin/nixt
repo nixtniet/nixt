@@ -108,15 +108,24 @@ class Completer(rlcompleter.Completer):
         if state == 0:
             if text:
                 self.matches = [s for s in self.options if s and s.startswith(text)]
+            else:
+                self.matches = self.options[:]
+        #elif state == 1:
+        #    opt = Mods.complete(text, state)
+        #    if text:
+        #        self.matches = [s for s in opt if s and s.startswith(text)]
+        #    else:
+        #        self.matches = opt[:]
         try:
             return self.matches[state]
         except IndexError:
             return None
 
     @staticmethod
-    def enable(modlist):
-        completer = Completer(modlist)
-        readline.set_completer(completer.complete)
+    def enable(modlist=""):
+        print(Mods.list())
+        completer = Completer(Mods.list())
+        readline.set_completer(Completer.complete)
         readline.parse_and_bind("tab: complete")
 
 
@@ -243,7 +252,7 @@ class Scripts:
             Main.mods = ",".join(Mods.list())
         if not Mods.init(Main.mods, Main.wait):
             return
-        Completer.enable(Mods.completions())
+        Completer.enable(Mods.list())
         csl = Console()
         csl.start()
         Runs.forever()
@@ -253,13 +262,7 @@ class Scripts:
         "cli script."
         cli = CLI()
         cli.silent = False
-        Completer.enable(Mods.completions())
-        if not Main.otxt:
-            txt = ".".join(Mods.list())
-            if txt:
-                print(txt)
-                sys.stdout.flush()
-            return
+        Completer.enable(Mods.list())
         cli.cmd(Main.otxt)
 
     @staticmethod

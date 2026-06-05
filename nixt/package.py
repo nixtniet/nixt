@@ -16,6 +16,7 @@ from .utility import Md5, Utils, e, j
 
 class Mods:
 
+    completions = {}
     core = {}
     dirs = {}
     md5s = {}
@@ -29,11 +30,18 @@ class Mods:
     @classmethod
     def command(cls, evt):
         "command callback."
+        if not evt.text:
+            evt.iface(",".join(Mods.list()))
+            evt.ready()
+            return
         Parse.parse(evt, evt.text)
         func = cls.getcmd(evt.mod, evt.cmd)
+        print(func)
         if not func:
             mod = cls.get(evt.mod)
+            print(mod)
             cmds = list(cls.getcmds(mod))
+            print(cmds)
             if cmds:
                 evt.reply(f"{evt.mod} <{'|'.join(cmds)}>")
         else:
@@ -42,12 +50,10 @@ class Mods:
         evt.ready()
 
     @classmethod
-    def completions(cls):
-        try:
-            from .statics import COMPLETIONS
-            return COMPLETIONS
-        except ImportError:
-            return []
+    def complete(cls, txt, state):
+        name = txt.split()[0]
+        mod = cls.get(name)
+        return getattr(mod, "whitelist", None)
 
     @classmethod
     def get(cls, name):
@@ -141,7 +147,7 @@ class Mods:
     def table(cls):
         "read table,"
         try:
-            from .statics import CORE, MODULES
+            from .statics import COMPLETIONS, CORE, MODULES
             cls.md5s.update(MODULES)
             cls.core.update(CORE)
             return True
