@@ -16,38 +16,17 @@ from .utility import Md5, Utils, e, j
 
 class Mods:
 
-    completions = {}
+    completions = []
     core = {}
     dirs = {}
     md5s = {}
     modules = {}
+    names = {}
 
     @classmethod
     def add(cls, pkgname, path):
         "add module/patgh."
         cls.dirs[pkgname] = path
-
-    @classmethod
-    def command(cls, evt):
-        "command callback."
-        if not evt.text:
-            evt.iface(",".join(Mods.list()))
-            evt.ready()
-            return
-        Parse.parse(evt, evt.text)
-        func = cls.getcmd(evt.mod, evt.cmd)
-        print(func)
-        if not func:
-            mod = cls.get(evt.mod)
-            print(mod)
-            cmds = list(cls.getcmds(mod))
-            print(cmds)
-            if cmds:
-                evt.reply(f"{evt.mod} <{'|'.join(cmds)}>")
-        else:
-            func(evt)
-        evt.display()
-        evt.ready()
 
     @classmethod
     def complete(cls, txt, state):
@@ -147,11 +126,13 @@ class Mods:
     def table(cls):
         "read table,"
         try:
-            from .statics import COMPLETIONS, CORE, MODULES
+            from .statics import COMPLETIONS, CORE, NAMES, MODULES
             cls.md5s.update(MODULES)
             cls.core.update(CORE)
+            cls.completions.extend(COMPLETIONS)
+            cls.names.update(NAMES)
             return True
-        except ImportError:
+        except (SyntaxError, ImportError):
             return False
 
 

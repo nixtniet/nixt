@@ -33,11 +33,13 @@ def table(event):
     completions = []
     core = {}
     md5s = {}
+    names = {}
     for name in Mods.list():
         module = Mods.get(name)
         md5s[name] = Md5.md5(module.__file__)
         for cmd in Mods.getcmds(module):
-            completions.append(f"{name} {cmd}")
+            names[cmd] = name
+            completions.append(f"{name}-{cmd}")
     corepath = d(inspect.getsourcefile(Mods))
     for path in os.listdir(corepath):
         if path.startswith("__") or not path.endswith(".py") or "statics" in path:
@@ -51,6 +53,8 @@ def table(event):
     event.reply(f"CORE = {Json.dumps(core, indent=4, sort_keys=True)}")
     event.reply("\n")
     event.reply(f"COMPLETIONS = {Json.dumps(completions, indent=4, sort_keys=True)}")
+    event.reply("\n")
+    event.reply(f"NAMES = {Json.dumps(names, indent=4, sort_keys=True)}")
 
 
 SYSTEMD = """[Unit]

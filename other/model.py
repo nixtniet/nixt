@@ -172,7 +172,6 @@ def disease(event):
 
 
 def now(event):
-    print(event)
     nme = event.rest or "Psych"
     needed = seconds(getnr(nme))
     if needed:

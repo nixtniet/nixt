@@ -19,7 +19,7 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Client, Log, Main, Md5, Message, Mods
+from nixt.defines import Client, Commands, Log, Main, Md5, Message, Mods
 from nixt.defines import Object, Utils, Workdir, e, j
 
 
@@ -69,7 +69,7 @@ class CLI(Client):
         evt.kind = "command"
         evt.orig = repr(self)
         evt.text = text
-        Mods.command(evt)
+        Commands.command(evt)
         evt.wait()
         return evt
 
@@ -87,7 +87,7 @@ class Console(CLI):
 
     def handle(self, event):
         "handle event."
-        Mods.command(event)
+        Commands.command(event)
 
     def poll(self):
         "return event."
@@ -123,8 +123,7 @@ class Completer(rlcompleter.Completer):
 
     @staticmethod
     def enable(modlist=""):
-        print(Mods.list())
-        completer = Completer(Mods.list())
+        completer = Completer(Mods.completions)
         readline.set_completer(Completer.complete)
         readline.parse_and_bind("tab: complete")
 
@@ -154,7 +153,8 @@ class Runs:
             Mods.add("mods", "mods")
         if cfg.other:
             Mods.add("other", "other")
-        Mods.table()
+        if not Mods.table():
+            Commands.scanner()
         Log.size(len(cfg.name))
         Log.level(cfg.level or "info")
 
