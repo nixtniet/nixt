@@ -36,7 +36,6 @@ def table(event):
     for name in Mods.list():
         module = Mods.get(name)
         md5s[name] = Md5.md5(module.__file__)
-        completions.append(name)
         for cmd in Mods.getcmds(module):
             completions.append(f"{name} {cmd}")
     corepath = d(inspect.getsourcefile(Mods))
