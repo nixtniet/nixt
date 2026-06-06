@@ -7,10 +7,10 @@
 import unittest
 
 
-from nixt.defines import Log
+from nixt.defines import Logging
 
 
 class TestLoggers(unittest.TestCase):
 
     def test_dateformat(self):
-        self.assertTrue(Log.datefmt)
+        self.assertTrue(Logging.datefmt)

@@ -30,15 +30,14 @@ def service(event):
 
 def table(event):
     "create table."
-    completions = {}
+    completions = []
     core = {}
     md5s = {}
-    state = 0
     for name in Mods.list():
-        state = "0"
         module = Mods.get(name)
         md5s[name] = Md5.md5(module.__file__)
-        completions[name] = Mods.getcmds(name)
+        for cmd in Mods.getcmds(name):
+            completions.append(f"{name}.{cmd}")
     corepath = d(inspect.getsourcefile(Mods))
     for path in os.listdir(corepath):
         if path.startswith("__") or not path.endswith(".py") or "statics" in path:

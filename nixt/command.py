@@ -20,29 +20,24 @@ class Commands:
     def add(cls, *args):
         "add functions to commands."
         for func in args:
-            cls.cmds[func.__name__] = func
+            mname = func.__module__.split(".")[-1]
+            nme = f"{mname}.{func.__name__}"
+            cls.cmds[nme] = func
 
     @classmethod
     def command(cls, evt):
         "command callback."
         Parse.parse(evt, evt.text)
-        if not evt.mod:
-            evt.ready()
-            return
-        func = Mods.getcmd(evt.mod, evt.cmd)
+        func = cls.get(evt.cmd)
         if func:
-             func(evt)
-        else:
-            cmds = Mods.getcmds(evt.mod)
-            if cmds:
-                evt.iface(f"<{'|'.join(cmds)}>")
-        evt.display()
+            func(evt)
+            evt.display()
         evt.ready()
 
     @classmethod
     def commands(cls, ignore=""):
         "list cpmmands available."
-        return [x for x in cls.names if x not in Utils.spl(ignore)]
+        return [x for x in cls.cmds if x not in Utils.spl(ignore)]
 
     @classmethod
     def get(cls, name):
@@ -52,7 +47,6 @@ class Commands:
     @classmethod
     def scan(cls, module):
         "scan a module for functions with event as argument."
-        import inspect
         for key, cmdz in inspect.getmembers(module, inspect.isfunction):
             if 'event' in inspect.signature(cmdz).parameters:
                 cls.add(cmdz)
@@ -67,12 +61,6 @@ class Commands:
             if "configure" in dir(mod):
                 mod.configure()
             cls.scan(mod)
-
-    @classmethod
-    def table(cls):
-        "read table,"
-        if not Mods.table():
-            cls.scanner()
 
 
 def __dir__():

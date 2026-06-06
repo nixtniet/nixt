@@ -8,7 +8,7 @@ import threading
 import time
 
 
-from nixt.defines import Broker, Locate, Main, Md5, Mods, Object, Time, Workdir
+from nixt.defines import Broker, Commands, Locate, Main, Md5, Object, Time, Workdir
 
 
 whitelist = ['cmd', 'fields', 'fleet', 'objects', 'threads', 'uptime', 'version']
@@ -16,7 +16,7 @@ whitelist = ['cmd', 'fields', 'fleet', 'objects', 'threads', 'uptime', 'version'
 
 def cmd(event):
     "list available commands."
-    event.reply(",".join(sorted(Mods.list())))
+    event.reply(",".join(sorted(Commands.cmds)))
 
 
 def fields(event):

@@ -19,6 +19,47 @@ i = os.path.isfile
 j = os.path.join
 
 
+class Format(logging.Formatter):
+
+    disable = False
+    size = 4
+
+    def format(self, record):
+        "logging formatter."
+        if not Format.disable:
+            record.module = record.module.upper()
+            record.module = record.module[:Format.size]
+        return logging.Formatter.format(self, record)
+
+
+class Logging:
+
+    datefmt = "%H:%M:%S"
+    format = "%(module)-3s %(message)s"
+
+    @classmethod
+    def level(cls, loglevel):
+        "set log level."
+        formatter = Format(Logging.format, Logging.datefmt)
+        stream = logging.StreamHandler()
+        stream.setFormatter(formatter)
+        logging.basicConfig(
+            level=loglevel.upper(),
+            handlers=[stream,],
+            force=True
+        )
+
+    @classmethod
+    def size(cls, nr):
+        "set text size."
+        Format.size = nr
+        index = cls.format.find("-")+1
+        newformat = cls.format[:index]
+        newformat += str(nr)
+        newformat += cls.format[index+1:]
+        cls.format = newformat
+
+
 class Md5:
 
     @staticmethod
@@ -35,7 +76,7 @@ class Md5:
         "calculate md5 of the statics module."
         try:
             from . import statics
-        except (ModuleNotFoundError, ImportError):
+        except (ModuleNotFoundError, ImportError, SyntaxError):
             return ""
         return cls.source(Utils.source(statics))[:7].upper()
 
@@ -266,6 +307,17 @@ class Utils:
             pass
 
 
+LEVELS = {
+    "notset": logging.NOTSET,
+    "debug": logging.DEBUG,
+    "info": logging.INFO,
+    "warning": logging.WARNING,
+    "error": logging.ERROR,
+    "critical": logging.CRITICAL,
+    "fatal": logging.FATAL
+}
+
+
 TIMES = [
     "%a, %d %b %Y %H:%M:%S %z",
     "%a, %d %b %Y %H:%M:%S",
@@ -283,9 +335,12 @@ TIMES = [
 
 def __dir__():
     return (
+        'LEVELS',
         'TIMES',
+        'Format',
+        'Logging',
         'Md5',
-        'Time'
+        'Time',
         'Utils',
         'a',
         'd',

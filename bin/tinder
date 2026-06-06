@@ -16,8 +16,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Buffer, Engine, Log, Main, Message, Mods, Object
-from nixt.defines import Parse, Task, Thread, Time, Workdir, e
+from nixt.defines import Buffer, Commands, Engine, Logging, Main, Message, Mods
+from nixt.defines import Object, Parse, Task, Thread, Time, Workdir, e
 
 
 Main.debug = True
@@ -34,7 +34,7 @@ Mods.add("mods", "mods")
 Mods.add("other", "other")
 
 
-Log.level("debug")
+Logging.level("debug")
 
 
 class CLI(Engine, Buffer):
@@ -42,7 +42,7 @@ class CLI(Engine, Buffer):
     def __init__(self):
         Buffer.__init__(self)
         Engine.__init__(self)
-        self.register("command", Mods.command)
+        self.register("command", Commands.command)
 
     def raw(self, text):
         if Main.verbose:
@@ -90,7 +90,7 @@ class Clients:
         time.sleep(0.01)
 
 
-class Runs:
+class Boot:
 
     nrs = 0
 
@@ -155,29 +155,29 @@ def final():
 def main():
     if e(Main.wdr):
         shutil.rmtree(Main.wdr)
-    if Runs.check("v"):
+    if Boot.check("v"):
         Main.verbose = True
-    if Runs.check("t"):
+    if Boot.check("t"):
         Main.threaded = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
     if Main.threaded:
         Clients.init(os.cpu_count(), CLI)
     else:
         Clients.init(1, CLI)
-    Runs.nrs = Main.index or 1
+    Boot.nrs = Main.index or 1
     thrs = []
-    for _x in range(Runs.nrs):
-        thrs.append(Thread.launch(Runs.payload, pre))
+    for _x in range(Boot.nrs):
+        thrs.append(Thread.launch(Boot.payload, pre))
     for thr in thrs:
         thr.join()
     thrs = []
-    for _x in range(Runs.nrs):
-        thrs.append(Thread.launch(Runs.payload, examples))
+    for _x in range(Boot.nrs):
+        thrs.append(Thread.launch(Boot.payload, examples))
     for thr in thrs:
         thr.join()
     thrs = []
-    for _x in range(Runs.nrs):
-        thrs.append(Thread.launch(Runs.payload, post))
+    for _x in range(Boot.nrs):
+        thrs.append(Thread.launch(Boot.payload, post))
     for thr in thrs:
         thr.join()
     Clients.shutdown()
@@ -250,4 +250,4 @@ post = {
 
 
 if __name__ == "__main__":
-    Runs.wrap(main, dofinal=final)
+    Boot.wrap(main, dofinal=final)
