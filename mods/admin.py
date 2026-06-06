@@ -30,7 +30,6 @@ def service(event):
 
 def table(event):
     "create table."
-    completions = {}
     core = {}
     md5s = {}
     state = 0
@@ -38,13 +37,6 @@ def table(event):
         state = "0"
         module = Mods.get(name)
         md5s[name] = Md5.md5(module.__file__)
-        if state not in completions:
-            completions[state] = []
-        completions[state].append(name)
-        if name not in completions:
-            completions[name] = []
-        for cmd in Mods.getcmds(name):
-            completions[name].append(cmd)
     corepath = d(inspect.getsourcefile(Mods))
     for path in os.listdir(corepath):
         if path.startswith("__") or not path.endswith(".py") or "statics" in path:
@@ -54,8 +46,6 @@ def table(event):
     event.reply("# This file is placed in the Public Domain.")
     event.reply("\n")
     event.reply('"static tables"')
-    event.reply("\n")
-    event.reply(f"COMPLETIONS = {Json.dumps(completions, indent=4, sort_keys=True)}")
     event.reply("\n")
     event.reply(f"CORE = {Json.dumps(core, indent=4, sort_keys=True)}")
     event.reply("\n")

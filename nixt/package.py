@@ -121,11 +121,9 @@ class Mods:
     def table(cls):
         "read table,"
         try:
-            from .statics import COMPLETIONS, CORE, MODULES
+            from .statics import CORE, MODULES
             cls.md5s.update(MODULES)
             cls.core.update(CORE)
-            if not cls.completions:
-                cls.completions.extend(COMPLETIONS)
             return True
         except (SyntaxError, ImportError) as ex:
             return False
