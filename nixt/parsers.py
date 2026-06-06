@@ -63,11 +63,11 @@ class Parse:
             args.append(spli)
         if args:
             obj.args = args
-            obj.text = obj.cmd or ""
+            obj.text = obj.mod + " " + obj.cmd
             obj.rest = " ".join(obj.args)
-            obj.text = obj.cmd + " " + obj.rest
+            obj.text = obj.text + " " + obj.rest
         else:
-            obj.text = obj.cmd or ""
+            obj.text = obj.mod + " " + obj.cmd
         Object.notset(obj, obj.sets)
 
 

@@ -105,17 +105,14 @@ class Completer(rlcompleter.Completer):
         self.options = options
 
     def complete(self, text, state):
+        if not text:
+            return None
+        print(text, state)
+        name, *match = text.split()
         if state == 0:
-            if text:
-                self.matches = [s for s in self.options if s and s.startswith(text)]
-            else:
-                self.matches = self.options[:]
-        #elif state == 1:
-        #    opt = Mods.complete(text, state)
-        #    if text:
-        #        self.matches = [s for s in opt if s and s.startswith(text)]
-        #    else:
-        #        self.matches = opt[:]
+            self.matches = [s for s in self.options if s and s.startswith(text)]
+        elif state == 1:
+            self.matches = [s for s in opt if s and s.startswith(match)]
         try:
             return self.matches[state]
         except IndexError:
@@ -124,7 +121,7 @@ class Completer(rlcompleter.Completer):
     @staticmethod
     def enable(modlist=""):
         completer = Completer(Mods.completions)
-        readline.set_completer(Completer.complete)
+        readline.set_completer(completer.complete)
         readline.parse_and_bind("tab: complete")
 
 
@@ -211,6 +208,10 @@ class Runs:
         os.setuid(pwnam2.pw_uid)
 
     @classmethod
+    def table(cls):
+        Commands.table()
+
+    @classmethod
     def wrap(cls, func, *args, final=None):
         "restore console."
         import termios
@@ -239,6 +240,7 @@ class Scripts:
         Runs.daemon(Main.verbose, Main.nochdir)
         Runs.privileges()
         Runs.pid(Main.name)
+        Runs.table()
         Mods.init(Main.mods or Main.default)
         Runs.forever()
 
@@ -246,13 +248,14 @@ class Scripts:
     def console():
         "console script."
         readline.redisplay()
+        Runs.table()
         if Main.verbose:
             Runs.banner()
         if Main.all:
             Main.mods = ",".join(Mods.list())
         if not Mods.init(Main.mods, Main.wait):
             return
-        Completer.enable(Mods.list())
+        Completer.enable(Mods.completions)
         csl = Console()
         csl.start()
         Runs.forever()
@@ -260,9 +263,10 @@ class Scripts:
     @staticmethod
     def control():
         "cli script."
+        Runs.table()
         cli = CLI()
         cli.silent = False
-        Completer.enable(Mods.list())
+        Completer.enable(Mods.completions)
         cli.cmd(Main.otxt)
 
     @staticmethod
@@ -270,6 +274,7 @@ class Scripts:
         "service script."
         Runs.privileges()
         Runs.pid(Main.name)
+        Runs.table()
         Mods.init(Main.mods or Main.default)
         Runs.forever()
 

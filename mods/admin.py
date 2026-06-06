@@ -30,16 +30,21 @@ def service(event):
 
 def table(event):
     "create table."
-    completions = []
+    completions = {}
     core = {}
     md5s = {}
-    names = {}
+    state = 0
     for name in Mods.list():
+        state = "0"
         module = Mods.get(name)
         md5s[name] = Md5.md5(module.__file__)
-        for cmd in Mods.getcmds(module):
-            names[cmd] = name
-            completions.append(f"{name}-{cmd}")
+        if state not in completions:
+            completions[state] = []
+        completions[state].append(name)
+        if name not in completions:
+            completions[name] = []
+        for cmd in Mods.getcmds(name):
+            completions[name].append(cmd)
     corepath = d(inspect.getsourcefile(Mods))
     for path in os.listdir(corepath):
         if path.startswith("__") or not path.endswith(".py") or "statics" in path:
@@ -50,11 +55,11 @@ def table(event):
     event.reply("\n")
     event.reply('"static tables"')
     event.reply("\n")
-    event.reply(f"CORE = {Json.dumps(core, indent=4, sort_keys=True)}")
-    event.reply("\n")
     event.reply(f"COMPLETIONS = {Json.dumps(completions, indent=4, sort_keys=True)}")
     event.reply("\n")
-    event.reply(f"NAMES = {Json.dumps(names, indent=4, sort_keys=True)}")
+    event.reply(f"CORE = {Json.dumps(core, indent=4, sort_keys=True)}")
+    event.reply("\n")
+    event.reply(f"MODULES = {Json.dumps(md5s, indent=4, sort_keys=True)}")
 
 
 SYSTEMD = """[Unit]

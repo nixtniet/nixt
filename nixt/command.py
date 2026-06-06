@@ -26,18 +26,17 @@ class Commands:
     def command(cls, evt):
         "command callback."
         Parse.parse(evt, evt.text)
-        func = cls.get(evt.cmd)
-        if not func:
-            name = Mods.names.get(evt.cmd)
-            mod = None
-            if name:
-                mod = Mods.get(name)
-            if mod:
-                cls.scan(mod)
-                func = cls.get(evt.cmd)
+        if not evt.mod:
+            evt.ready()
+            return
+        func = Mods.getcmd(evt.mod, evt.cmd)
         if func:
-            func(evt)
-            evt.display()
+             func(evt)
+        else:
+            cmds = Mods.getcmds(evt.mod)
+            if cmds:
+                evt.iface(f"<{'|'.join(cmds)}>")
+        evt.display()
         evt.ready()
 
     @classmethod
@@ -72,12 +71,8 @@ class Commands:
     @classmethod
     def table(cls):
         "read table,"
-        try:
-            from .statics import NAMES
-            cls.names.update(NAMES)
-            return True
-        except ImportError:
-            return False
+        if not Mods.table():
+            cls.scanner()
 
 
 def __dir__():

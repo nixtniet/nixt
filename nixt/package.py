@@ -29,12 +29,6 @@ class Mods:
         cls.dirs[pkgname] = path
 
     @classmethod
-    def complete(cls, txt, state):
-        name = txt.split()[0]
-        mod = cls.get(name)
-        return getattr(mod, "whitelist", None)
-
-    @classmethod
     def get(cls, name):
         "return module from cache or import module."
         for pkgname, path in cls.dirs.items():
@@ -54,9 +48,9 @@ class Mods:
     @classmethod
     def getcmd(cls, name, cmd):
         "return command."
-        mod = cls.get(name)
-        if cmd not in cls.getcmds(mod):
+        if cmd not in cls.getcmds(name):
             return
+        mod = cls.get(name)
         func = getattr(mod, cmd, False)
         if not func:
             return
@@ -66,8 +60,9 @@ class Mods:
             return func
 
     @classmethod
-    def getcmds(cls, mod):
+    def getcmds(cls, name):
         "return whitelist."
+        mod = cls.get(name)
         return getattr(mod, 'whitelist', [])
 
     @classmethod
@@ -126,13 +121,13 @@ class Mods:
     def table(cls):
         "read table,"
         try:
-            from .statics import COMPLETIONS, CORE, NAMES, MODULES
+            from .statics import COMPLETIONS, CORE, MODULES
             cls.md5s.update(MODULES)
             cls.core.update(CORE)
-            cls.completions.extend(COMPLETIONS)
-            cls.names.update(NAMES)
+            if not cls.completions:
+                cls.completions.extend(COMPLETIONS)
             return True
-        except (SyntaxError, ImportError):
+        except (SyntaxError, ImportError) as ex:
             return False
 
 
