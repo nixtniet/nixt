@@ -107,7 +107,22 @@ class Completer(rlcompleter.Completer):
         self.options = options
 
     def complete(self, text, state):
-        return Mods.complete(text, state) or None
+        if state == 0 and self.matches:
+            if text:
+                self.matches = [s for s in Mods.completions.get(self.mod) if s.startswith(text)]
+            else:
+                self.matches = Mods.completions.get(self.mod)
+        elif state == 0:
+            if text:
+                self.matches = [s for s in Mods.completions.keys() if s.startswith(text)]
+            else:
+                self.matches = Mods.completions.keys()
+        try:
+            cmd = self.matches[state]
+            self.mod = cmd
+            return cmd
+        except IndexError:
+            return None
 
     @staticmethod
     def enable(modlist=""):
