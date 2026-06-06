@@ -27,6 +27,14 @@ class Mods:
         cls.dirs[pkgname] = path
 
     @classmethod
+    def find(cls, name):
+        for cmd in cls.completions:
+            if cmd.endswith(name):
+                mod, cmd = cmd.split(".")
+                print(mod, cmd)
+                return cls.getcmd(mod, cmd)
+
+    @classmethod
     def get(cls, name):
         "return module from cache or import module."
         for pkgname, path in cls.dirs.items():
@@ -118,7 +126,7 @@ class Mods:
         "read table,"
         try:
             from .statics import COMPLETIONS, CORE, MODULES
-            cls.completions.extend(COMPLETIONS)
+            cls.completions = COMPLETIONS
             cls.md5s.update(MODULES)
             cls.core.update(CORE)
             return True

@@ -29,6 +29,10 @@ class Commands:
         "command callback."
         Parse.parse(evt, evt.text)
         func = cls.get(evt.cmd)
+        if not func:
+            func = Mods.find(evt.cmd)
+        if not func:
+            func = cls.find(evt.cmd)
         if func:
             func(evt)
             evt.display()
@@ -38,6 +42,12 @@ class Commands:
     def commands(cls, ignore=""):
         "list cpmmands available."
         return [x for x in cls.cmds if x not in Utils.spl(ignore)]
+
+    @classmethod
+    def find(cls, name):
+        for cmd, func in cls.cmds.items():
+            if cmd.endswith(name):
+                return func
 
     @classmethod
     def get(cls, name):

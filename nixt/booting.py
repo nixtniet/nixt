@@ -43,8 +43,6 @@ class Boot:
         if cfg.user:
             Mods.add("mods", "mods")
             Mods.add("other", "other")
-        if not Mods.table() or cfg.read:
-            Commands.scanner()
         Logging.size(len(cfg.name))
         Logging.level(cfg.level or "info")
 
@@ -91,6 +89,7 @@ class Boot:
     @classmethod
     def table(cls):
         if not Mods.table():
+            logging.debug("running scanner")
             Commands.scanner()
 
     @classmethod

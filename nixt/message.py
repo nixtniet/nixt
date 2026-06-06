@@ -20,9 +20,9 @@ class Message(Base):
         self.args = []
         self.channel = ""
         self.cmd = ""
+        self.mod = ""
         self.index = 0
         self.kind = "event"
-        self.mod = ""
         self.orig = ""
         self.result = []
         self.text = ""
@@ -35,7 +35,7 @@ class Message(Base):
 
     def iface(self, txt):
         "show interface."
-        self.reply(f"{self.mod} {txt}")
+        self.reply(f"{self.cmd} {txt}")
 
     def ok(self, txt=""):
         "print ok response."

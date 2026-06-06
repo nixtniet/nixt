@@ -55,7 +55,10 @@ class Parse:
                 continue
             nr += 1
             if nr == 0:
-                obj.cmd = spli
+                try:
+                    obj.mod, obj.cmd = spli.split(".")
+                except ValueError:
+                    obj.cmd = spli
                 continue
             args.append(spli)
         if args:
