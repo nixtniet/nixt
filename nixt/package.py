@@ -16,17 +16,28 @@ from .utility import Md5, Utils, e, j
 
 class Mods:
 
-    completions = []
+    completions = {}
     core = {}
     dirs = {}
     md5s = {}
     modules = {}
-    names = {}
 
     @classmethod
     def add(cls, pkgname, path):
         "add module/patgh."
         cls.dirs[pkgname] = path
+
+    @classmethod
+    def complete(cls, text, state):
+        if state == 0:
+            if text:
+                options = [s for s in cls.completions.keys() if s.startswith(text)]
+            else:
+                options = cls.completions.keys()
+        try:
+            return options[state]
+        except IndexError:
+            return None
 
     @classmethod
     def get(cls, name):
@@ -48,8 +59,6 @@ class Mods:
     @classmethod
     def getcmd(cls, name, cmd):
         "return command."
-        if cmd not in cls.getcmds(name):
-            return
         mod = cls.get(name)
         func = getattr(mod, cmd, False)
         if not func:
@@ -121,11 +130,12 @@ class Mods:
     def table(cls):
         "read table,"
         try:
-            from .statics import CORE, MODULES
+            from .statics import COMPLETIONS, CORE, MODULES
+            cls.completions.update(COMPLETIONS)
             cls.md5s.update(MODULES)
             cls.core.update(CORE)
             return True
-        except (SyntaxError, ImportError) as ex:
+        except:
             return False
 
 

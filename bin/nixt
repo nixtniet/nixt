@@ -102,25 +102,16 @@ class Completer(rlcompleter.Completer):
 
     def __init__(self, options):
         super().__init__()
+        self.matches = []
+        self.mod = ""
         self.options = options
 
     def complete(self, text, state):
-        if not text:
-            return None
-        print(text, state)
-        name, *match = text.split()
-        if state == 0:
-            self.matches = [s for s in self.options if s and s.startswith(text)]
-        elif state == 1:
-            self.matches = [s for s in opt if s and s.startswith(match)]
-        try:
-            return self.matches[state]
-        except IndexError:
-            return None
+        return Mods.complete(text, state) or None
 
     @staticmethod
     def enable(modlist=""):
-        completer = Completer(Mods.completions)
+        completer = Completer(modlist)
         readline.set_completer(completer.complete)
         readline.parse_and_bind("tab: complete")
 
