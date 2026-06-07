@@ -33,6 +33,7 @@ class Mods:
     def command(cls, evt):
         "command callback."
         Parse.parse(evt, evt.text)
+        print(evt)
         func = cls.getcmd(evt.mod, evt.cmd)
         if not func:
             func = cls.find(evt.cmd)
@@ -40,17 +41,6 @@ class Mods:
             func(evt)
             evt.display()
         evt.ready()
-
-    @classmethod
-    def configure(cls, cfg):
-        "configure program."
-        Workdir.wdr = cfg.path or os.path.expanduser(f"~/.{cfg.name}")
-        cls.add("modules", Workdir.moddir())
-        if cfg.user:
-            cls.add("mods", "mods")
-            cls.add("other", "other")
-        Logging.size(len(cfg.name))
-        Logging.level(cfg.level or "info")
 
     @classmethod
     def find(cls, name):

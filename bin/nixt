@@ -18,7 +18,7 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Client, Main, Message, Mods
+from nixt.defines import Client, Logging, Main, Message, Mods
 from nixt.defines import Md5, Object, Utils, Workdir
 
 
@@ -139,6 +139,17 @@ class Boot:
         sys.stdout.flush()
 
     @classmethod
+    def configure(cls, cfg):
+        "configure program."
+        Workdir.wdr = cfg.path or os.path.expanduser(f"~/.{cfg.name}")
+        Mods.add("modules", Workdir.moddir())
+        if cfg.user:
+            Mods.add("mods", "mods")
+            Mods.add("other", "other")
+        Logging.size(len(cfg.name))
+        Logging.level(cfg.level or "info")
+
+    @classmethod
     def daemon(cls, verbose=False, nochdir=False):
         "run in the background."
         pid = os.fork()
@@ -198,7 +209,6 @@ class Boot:
             final()
         readline.set_completer(None)
 
-    configure = Mods.configure
     init = Mods.init
     pid = Workdir.pid
     table = Mods.table
