@@ -18,7 +18,7 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Main, Message, Mods, Logging
+from nixt.defines import Client, Main, Message, Mods
 from nixt.defines import Md5, Object, Utils, Workdir
 
 
