@@ -35,7 +35,7 @@ class Message(Base):
 
     def iface(self, txt):
         "show interface."
-        self.reply(f"{self.cmd} {txt}")
+        self.reply(f"{self.mod}.{self.cmd} {txt}")
 
     def ok(self, txt=""):
         "print ok response."

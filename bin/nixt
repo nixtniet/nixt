@@ -15,8 +15,8 @@ import sys
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Main
-from nixt.defines import Message, Mods, Object, Utils
+from nixt.defines import Boot, Client, Main, Message
+from nixt.defines import Mods, Object, Utils
 
 
 class Arguments:
@@ -90,7 +90,7 @@ class CLI(Client):
         evt.kind = "command"
         evt.orig = repr(self)
         evt.text = text
-        Commands.command(evt)
+        Mods.command(evt)
         evt.wait()
         return evt
 
@@ -108,7 +108,7 @@ class Console(CLI):
 
     def handle(self, event):
         "handle event."
-        Commands.command(event)
+        Mods.command(event)
 
     def poll(self):
         "return event."
@@ -128,7 +128,7 @@ class Scripts:
         Boot.privileges()
         Boot.pid(Main.name)
         Boot.table()
-        Mods.init(Main.mods or Main.default)
+        Boot.init(Main.mods or Main.default)
         Boot.forever()
 
     @staticmethod
@@ -140,7 +140,7 @@ class Scripts:
             Boot.banner()
         if Main.all:
             Main.mods = ",".join(Mods.list())
-        if not Mods.init(Main.mods, Main.wait):
+        if not Boot.init(Main.mods, Main.wait):
             return
         Completer.enable(Mods.completions)
         csl = Console()
@@ -162,7 +162,7 @@ class Scripts:
         Boot.privileges()
         Boot.pid(Main.name)
         Boot.table()
-        Mods.init(Main.mods or Main.default)
+        Boot.init(Main.mods or Main.default)
         Boot.forever()
 
 

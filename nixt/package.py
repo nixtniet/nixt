@@ -9,6 +9,7 @@ import logging
 import os
 
 
+from .parsers import Parse
 from .threads import Thread
 from .utility import Md5, Utils, e, j
 
@@ -27,11 +28,22 @@ class Mods:
         cls.dirs[pkgname] = path
 
     @classmethod
+    def command(cls, evt):
+        "command callback."
+        Parse.parse(evt, evt.text)
+        func = cls.getcmd(evt.mod, evt.cmd)
+        if not func:
+            func = cls.find(evt.cmd)
+        if func:
+            func(evt)
+            evt.display()
+        evt.ready()
+
+    @classmethod
     def find(cls, name):
         for cmd in cls.completions:
             if cmd.endswith(name):
                 mod, cmd = cmd.split(".")
-                print(mod, cmd)
                 return cls.getcmd(mod, cmd)
 
     @classmethod
@@ -79,23 +91,6 @@ class Mods:
                 continue
             result.append(mod.__name__.split(".")[-1])
         return ",".join(result)
-
-    @classmethod
-    def init(cls, modlist, wait=False):
-        "call init of modules that have an init function."
-        thrs = []
-        for name in Utils.spl(modlist):
-            mod = cls.get(name)
-            if not mod or "init" not in dir(mod):
-                continue
-            thrs.append(Thread.launch(mod.init))
-        if thrs and wait:
-            for thr in thrs:
-                try:
-                    thr.join()
-                except (KeyboardInterrupt, EOFError):
-                    return False
-        return True
 
     @classmethod
     def importer(cls, name, pth=""):

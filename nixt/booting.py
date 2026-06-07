@@ -12,11 +12,10 @@ import time
 import _thread
 
 
-from .command import Commands
 from .configs import Main
 from .package import Mods
 from .persist import Workdir
-from .utility import Logging, Md5
+from .utility import Logging, Md5, Utils
 
 
 class Boot:
@@ -78,6 +77,23 @@ class Boot:
                 _thread.interrupt_main()
 
     @classmethod
+    def init(cls, modlist, wait=False):
+        "call init of modules that have an init function."
+        thrs = []
+        for name in Utils.spl(modlist):
+            mod = cls.get(name)
+            if not mod or "init" not in dir(mod):
+                continue
+            thrs.append(Thread.launch(mod.init))
+        if thrs and wait:
+            for thr in thrs:
+                try:
+                    thr.join()
+                except (KeyboardInterrupt, EOFError):
+                    return False
+        return True
+
+    @classmethod
     def privileges(cls):
         "drop privileges."
         import getpass
@@ -85,12 +101,6 @@ class Boot:
         pwnam2 = pwd.getpwnam(getpass.getuser())
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
-
-    @classmethod
-    def table(cls):
-        if not Mods.table():
-            logging.debug("running scanner")
-            Commands.scanner()
 
     @classmethod
     def wrap(cls, func, *args, final=None):
@@ -113,7 +123,7 @@ class Boot:
         readline.set_completer(None)
 
     pid = Workdir.pid
-
+    table = Mods.table
 
 def __dir__():
     return (
