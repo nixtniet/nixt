@@ -60,7 +60,7 @@ def read(event):
         event.reply(str(ex))
 
 
-def show(event):
+def email(event):
     "search emails."
     nrs = -1
     args = ["From", "Subject"]

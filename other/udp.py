@@ -15,7 +15,7 @@ import time
 from nixt.defines import Base, Clients, Disk, Main, Thread
 
 
-whitelist = ['send']
+whitelist = ['udp']
 
 
 def init():
@@ -89,7 +89,7 @@ def toudp(host, port, txt):
     sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))
 
 
-def send(event):
+def udp(event):
     "send text as udp to the relay."
     if event.rest:
         toudp(Config.host, Config.port, event.rest)
@@ -100,7 +100,7 @@ def send(event):
                          [],
                          0.0
                         )[0]:
-        event.iface("send <text>")
+        event.iface("<text>")
         return
     size = 0
     while 1:

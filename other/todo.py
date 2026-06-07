@@ -7,7 +7,7 @@
 from nixt.defines import Base, Disk, Locate
 
 
-whitelist = ['add', 'done']
+whitelist = ['done', 'todo']
 
 
 class Todo(Base):
@@ -17,21 +17,10 @@ class Todo(Base):
         self.txt = ''
 
 
-def add(event):
-    "add a todo."
-    if not event.rest:
-        event.iface("add <txt>")
-        return
-    obj = Todo()
-    obj.txt = event.rest
-    Disk.write(obj)
-    event.reply("ok")
-
-
 def done(event):
     "mark todo as done."
     if not event.args:
-        event.iface("done <txt>")
+        event.iface("<txt>")
         return
     selector = {'txt': event.args[0]}
     nmr = 0
@@ -43,3 +32,14 @@ def done(event):
         break
     if not nmr:
         event.reply("nothing todo")
+
+
+def todo(event):
+    "add a todo."
+    if not event.rest:
+        event.iface("<txt>")
+        return
+    obj = Todo()
+    obj.txt = event.rest
+    Disk.write(obj)
+    event.reply("ok")

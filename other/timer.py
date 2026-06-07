@@ -13,7 +13,7 @@ import time
 from nixt.defines import Base, Broker, Disk, Locate, Object, Thread, Time
 
 
-whitelist = ['add']
+whitelist = ['timer']
 
 
 rand = random.SystemRandom()
@@ -94,10 +94,10 @@ class TimerLoop:
             Disk.write(cls.timers, cls.path)
 
 
-def add(event):
+def timer(event):
     "add a timer."
     if not event.rest:
-        event.iface("add <date> <txt>")
+        event.iface("<date> <txt>")
         return
     todo = Time.extract(event.rest)
     if not todo:

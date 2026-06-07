@@ -26,7 +26,7 @@ from nixt.defines import Base, Clients, Disk, Locate, Main, Object
 from nixt.defines import Repeater, Thread, Utils, i
 
 
-whitelist = ['add', 'attributes', 'display', 'errors', 'export', 'opml', 'name', 'remove', 'restore', 'sync']
+whitelist = ['attributes', 'display', 'errors', 'export', 'opml', 'name', 'remove', 'restore', 'rss', 'sync']
 
 
 def init():
@@ -516,26 +516,6 @@ class Run:
     importlock = _thread.allocate_lock()
 
 
-def add(event):
-    "add a feed."
-    if not event.rest:
-        event.iface("add <url>")
-        return
-    url = event.args[0]
-    if "http://" not in url and "https://" not in url:
-        event.reply("i need an url")
-        return
-    for fnm, result in Locate.find(
-                                   Object.fqn(Rss),
-                                   {"rss": url}
-                                  ):
-        if result:
-            event.reply(f"{url} is known")
-            return
-    feed = Rss()
-    feed.rss = event.args[0]
-    Disk.write(feed)
-    event.reply("ok")
 
 
 def attributes(event):
@@ -742,6 +722,28 @@ def restore(event):
         feed.__deleted__ = False
         Disk.write(feed, fnm)
     event.reply(f"{nrs} feeds restored.")
+
+
+def rss(event):
+    "add a feed."
+    if not event.rest:
+        event.iface("<url>")
+        return
+    url = event.args[0]
+    if "http://" not in url and "https://" not in url:
+        event.reply("i need an url")
+        return
+    for fnm, result in Locate.find(
+                                   Object.fqn(Rss),
+                                   {"rss": url}
+                                  ):
+        if result:
+            event.reply(f"{url} is known")
+            return
+    feed = Rss()
+    feed.rss = event.args[0]
+    Disk.write(feed)
+    event.reply("ok")
 
 
 def sync(event):

@@ -33,7 +33,6 @@ class Mods:
     def command(cls, evt):
         "command callback."
         Parse.parse(evt, evt.text)
-        print(evt)
         func = cls.getcmd(evt.mod, evt.cmd)
         if not func:
             func = cls.find(evt.cmd)
@@ -44,9 +43,9 @@ class Mods:
 
     @classmethod
     def find(cls, name):
-        for cmd in cls.completions:
-            if cmd.endswith(name):
-                mod, cmd = cmd.split(".")
+        for command in cls.completions:
+            mod, cmd = command.split(".")
+            if cmd == name:
                 return cls.getcmd(mod, cmd)
 
     @classmethod
@@ -137,6 +136,12 @@ class Mods:
         return sorted(set(mods))
 
     @classmethod
+    def scanner(cls):
+        for name in cls.list():
+            for cmd in cls.getcmds(name):
+                cls.completions.append(f"{name}.{cmd}")
+
+    @classmethod
     def table(cls):
         "read table,"
         try:
@@ -146,7 +151,7 @@ class Mods:
             cls.core.update(CORE)
             return True
         except (ImportError, SyntaxError, ValueError):
-            return False
+            cls.scanner()
 
 
 def __dir__():
