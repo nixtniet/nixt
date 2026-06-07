@@ -12,7 +12,7 @@ from nixt.defines import Broker, Locate, Main, Md5, Mods
 from nixt.defines import Object, Time, Workdir
 
 
-whitelist = ['cmd', 'fields', 'fleet', 'objects', 'threads', 'uptime', 'version']
+whitelist = ['cmd', 'fields', 'fleet', 'threads', 'uptime', 'version']
 
 
 def cmd(event):
@@ -56,28 +56,6 @@ def fleet(event):
         event.reply(str(clts[index]))
     else:
         event.reply("no matching client.")
-
-
-def objects(event):
-    "find objects."
-    if not event.rest:
-        res = sorted([x.split('.')[-1].lower() for x in Workdir.kinds()])
-        if res:
-            event.reply(",".join(res))
-        else:
-            event.reply("no data.")
-        return
-    otype = event.args[0]
-    nmr = 0
-    for fnm, obj in sorted(
-                           Locate.find(otype, event.gets),
-                           key=lambda x: Time.fntime(x[0])
-                          ):
-        diff = time.time()-Time.fntime(fnm)
-        event.reply(f"{nmr} {Object.fmt(obj)} {Time.elapsed(diff)}")
-        nmr += 1
-    if not nmr:
-        event.reply("no result")
 
 
 def threads(event):
