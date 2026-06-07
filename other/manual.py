@@ -229,10 +229,10 @@ opml
 """
 
 
-whitelist = ['create']
+whitelist = ['manual']
 
 
-def create(event):
+def manual(event):
     args = event.args
     try:
         name, email, author = args[0], args[1], " ".join(args[2:])
