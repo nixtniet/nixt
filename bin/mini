@@ -11,10 +11,13 @@ import sys
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Client, Message, Mods
+from nixt.defines import Client, Logging, Message, Mods, Workdir
 
 
+Logging.level('debug')
 Mods.add("mods", "mods")
+Mods.add('other', 'other')
+Workdir = os.path.expanduser("~/.nixt")
 
 
 class CLI(Client):

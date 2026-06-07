@@ -43,10 +43,9 @@ class Mods:
 
     @classmethod
     def find(cls, name):
-        for command in cls.completions:
-            mod, cmd = command.split(".")
-            if cmd == name:
-                return cls.getcmd(mod, cmd)
+        for modname in cls.list():
+            if name in cls.getcmds(modname):
+                return cls.getcmd(modname, name)
 
     @classmethod
     def get(cls, name):
