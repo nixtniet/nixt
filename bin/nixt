@@ -199,6 +199,7 @@ class Boot:
         readline.set_completer(None)
 
     configure = Mods.configure
+    init = Mods.init
     pid = Workdir.pid
     table = Mods.table
 
