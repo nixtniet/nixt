@@ -8,7 +8,7 @@ import inspect
 import os
 
 
-from nixt.defines import Json, Main, Md5, Mods
+from nixt.defines import Commands, Json, Main, Md5, Mods
 from nixt.defines import d, j
 
 
@@ -36,7 +36,7 @@ def tbl(event):
     for name in Mods.list():
         module = Mods.get(name)
         md5s[name] = Md5.md5(module.__file__)
-        for cmd in Mods.getcmds(name):
+        for cmd in Commands.getcmds(name):
             completions.append(f"{name}.{cmd}")
     corepath = d(inspect.getsourcefile(Mods))
     for path in os.listdir(corepath):

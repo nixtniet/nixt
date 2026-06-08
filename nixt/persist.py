@@ -12,9 +12,8 @@ import pathlib
 import threading
 
 
-from .clocker import Time
 from .objects import Base, Json, Object
-from .utility import Utils, e, j
+from .utility import Time, Utils, e, j
 
 
 class Cache:

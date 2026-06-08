@@ -16,7 +16,6 @@ from .utility import Md5, Utils, e, j
 
 class Mods:
 
-    completions = []
     core = {}
     dirs = {}
     md5s = {}
@@ -26,38 +25,6 @@ class Mods:
     def add(cls, pkgname, path):
         "add module/patgh."
         cls.dirs[pkgname] = path
-
-    @classmethod
-    def command(cls, evt):
-        "command callback."
-        Parse.parse(evt, evt.text)
-        func = cls.getcmd(evt.mod, evt.cmd)
-        if not func:
-            func = cls.find(evt.cmd)
-        if func:
-            func(evt)
-            evt.display()
-        evt.ready()
-
-    @classmethod
-    def commands(cls):
-        return [x.split(".")[-1] for x in cls.completions]
-
-    @classmethod
-    def find(cls, name):
-        modname = ""
-        for nme in cls.completions:
-            try:
-                mod, cmd = nme.split(".")
-            except ValueError:
-                continue
-            if cmd == name:
-                modname = mod
-        if not modname:
-            for nme in cls.list():
-                if name in cls.getcmds(nme):
-                    modname = nme
-        return cls.getcmd(modname, name)
 
     @classmethod
     def get(cls, name):
@@ -75,24 +42,6 @@ class Mods:
                 if md5 != cls.md5s.get(name):
                     logging.warning("mismatch %s", modname)
             return cls.importer(modname, fnm)
-
-    @classmethod
-    def getcmd(cls, name, cmd):
-        "return command."
-        mod = cls.get(name)
-        func = getattr(mod, cmd, False)
-        if not func:
-            return
-        if not inspect.isfunction(func):
-            return
-        if 'event' in inspect.signature(func).parameters:
-            return func
-
-    @classmethod
-    def getcmds(cls, name):
-        "return whitelist."
-        mod = cls.get(name)
-        return getattr(mod, 'whitelist', [])
 
     @classmethod
     def has(cls, attr):
@@ -153,16 +102,14 @@ class Mods:
                 cls.completions.append(f"{name}.{cmd}")
 
     @classmethod
-    def table(cls):
+    def sums(cls):
         "read table,"
         try:
-            from .statics import COMPLETIONS, CORE, MODULES
-            cls.completions = COMPLETIONS
+            from .statics import CORE, MODULES
             cls.md5s.update(MODULES)
             cls.core.update(CORE)
-            return True
-        except (ImportError, SyntaxError, ValueError):
-            cls.scanner()
+        except (ImportError, SyntaxError, ValueError) as ex:
+            logging.warn("can't load md5")
 
 
 def __dir__():

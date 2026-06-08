@@ -18,8 +18,8 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Client, Logging, Main, Message, Mods
-from nixt.defines import Md5, Object, Utils, Workdir
+from nixt.defines import Client, Commands, Logging, Main, Message
+from nixt.defines import Mods, Md5, Object, Utils, Workdir
 
 
 class Arguments:
@@ -41,7 +41,7 @@ class Arguments:
         group.add_argument("-s", "--service", action="store_true", help="run as service.")
         parser = theparser.add_argument_group()
         parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
-        parser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
+        parser.add_argument("-u", "--user", action="store_false", help="use local mods directory.")
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
         parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
         optionparser = theparser.add_argument_group()
@@ -70,9 +70,9 @@ class Completer(rlcompleter.Completer):
     def complete(self, text, state):
         if state == 0:
             if text:
-                self.matches = [s for s in Mods.completions if s.startswith(text)]
+                self.matches = [s for s in Commands.completions if s.startswith(text)]
             else:
-                self.matches = Mods.completions[:]
+                self.matches = Commands.completions[:]
         try:
             return self.matches[state]
         except IndexError:
@@ -93,7 +93,7 @@ class CLI(Client):
         evt.kind = "command"
         evt.orig = repr(self)
         evt.text = text
-        Mods.command(evt)
+        Commands.command(evt)
         evt.wait()
         return evt
 
@@ -111,7 +111,7 @@ class Console(CLI):
 
     def handle(self, event):
         "handle event."
-        Mods.command(event)
+        Commands.command(event)
 
     def poll(self):
         "return event."
@@ -148,6 +148,9 @@ class Boot:
             Mods.add("other", "other")
         Logging.size(len(cfg.name))
         Logging.level(cfg.level or "info")
+        Mods.sums()
+        Commands.table()
+        Commands.bork = True
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):
@@ -211,7 +214,6 @@ class Boot:
 
     init = Mods.init
     pid = Workdir.pid
-    table = Mods.table
 
 
 class Scripts:
@@ -222,7 +224,6 @@ class Scripts:
         Boot.daemon(Main.verbose, Main.nochdir)
         Boot.privileges()
         Boot.pid(Main.name)
-        Boot.table()
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 
@@ -230,7 +231,6 @@ class Scripts:
     def console():
         "console script."
         readline.redisplay()
-        Boot.table()
         if Main.verbose:
             Boot.banner()
         if Main.all:
@@ -245,10 +245,9 @@ class Scripts:
     @staticmethod
     def control():
         "cli script."
-        Boot.table()
         cli = CLI()
         cli.silent = False
-        Completer.enable(Mods.completions)
+        Completer.enable(Commands.completions)
         cli.cmd(Main.otxt)
 
     @staticmethod
@@ -256,7 +255,6 @@ class Scripts:
         "service script."
         Boot.privileges()
         Boot.pid(Main.name)
-        Boot.table()
         Boot.init(Main.mods or Main.default)
         Boot.forever()
 
