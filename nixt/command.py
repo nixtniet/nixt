@@ -6,13 +6,10 @@
 
 import inspect
 import logging
-import os
 
 
 from .package import Mods
 from .parsers import Parse
-from .threads import Thread
-from .utility import Md5, Utils, e, j
 
 
 class Commands:
@@ -79,10 +76,10 @@ class Commands:
     def table(cls):
         "read table,"
         try:
-            from .statics import COMPLETIONS, CORE, MODULES
+            from .statics import COMPLETIONS
             cls.completions = COMPLETIONS
         except (ImportError, SyntaxError, ValueError):
-            logging.warn("running scanner")
+            logging.warning("running scanner")
             cls.scanner()
 
 

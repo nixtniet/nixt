@@ -4,12 +4,10 @@
 "module management"
 
 
-import inspect
 import logging
 import os
 
 
-from .parsers import Parse
 from .threads import Thread
 from .utility import Md5, Utils, e, j
 
@@ -96,20 +94,14 @@ class Mods:
         return sorted(set(mods))
 
     @classmethod
-    def scanner(cls):
-        for name in cls.list():
-            for cmd in cls.getcmds(name):
-                cls.completions.append(f"{name}.{cmd}")
-
-    @classmethod
     def sums(cls):
         "read table,"
         try:
             from .statics import CORE, MODULES
             cls.md5s.update(MODULES)
             cls.core.update(CORE)
-        except (ImportError, SyntaxError, ValueError) as ex:
-            logging.warn("can't load md5")
+        except (ImportError, SyntaxError, ValueError):
+            logging.warning("can't load md5")
 
 
 def __dir__():

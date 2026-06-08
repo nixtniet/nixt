@@ -30,6 +30,7 @@ def __dir__():
        'Buffered',
        'Client',
        'Clients',
+       'Commands',
        'Disk',
        'Engine',
        'Handler',
