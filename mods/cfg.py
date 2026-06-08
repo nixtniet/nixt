@@ -19,26 +19,26 @@ def cfg(event):
         event.iface(f"<{mods}>")
         return
     name = event.args[0]
-    cfg = Base()
-    Disk.read(cfg, name, "config")
-    if name != "main" and not cfg:
+    config = Base()
+    Disk.read(config, name, "config")
+    if name != "main" and not config:
         mod = Mods.get(name)
         if not mod:
             event.reply(f"no {name} module found.")
             return
-        cfg = getattr(mod, "Config", None)
-        if not cfg:
+        config = getattr(mod, "Config", None)
+        if not config:
             event.reply(f"no {name} config found.")
             return
     if not event.sets:
         event.reply(
             Object.fmt(
-                cfg,
-                Object.keys(cfg),
+                config,
+                Object.keys(config),
                 skip=["word",]
             )
         )
         return
-    Object.edit(cfg, event.sets)
-    Disk.write(cfg, name, "config")
+    Object.edit(config, event.sets)
+    Disk.write(config, name, "config")
     event.ok()

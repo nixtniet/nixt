@@ -11,9 +11,9 @@ whitelist = ['pth']
 
 
 def pth(event):
-    pth = d(d(__file__))
-    pth = j(pth, "network", "index.html")
-    if e(pth):
+    path = d(d(__file__))
+    path = j(path, "network", "index.html")
+    if e(path):
         event.reply(f"file://{pth}")
     else:
         event.reply("no index.html")

@@ -604,10 +604,10 @@ def exp(event):
             nrs += 1
             obj = Rss()
             Object.update(obj, ooo)
-            nme = f"url{nrs}"
+            name = f"url{nrs}"
             dipl = obj.display_list
             url = obj.rss
-            txt = f'<outline name="{nme}" display_list="{dipl}" xmlUrl="{url}"/>'
+            txt = f'<outline name="{name}" display_list="{dipl}" xmlUrl="{url}"/>'
             event.reply(" " * 12 + txt)
         event.reply(" " * 8 + "</outline>")
         event.reply("    <body>")
@@ -666,9 +666,9 @@ def imp(event):
 def nme(event):
     "set name of a feed."
     if len(event.args) == 1:
-        nme = ""
+        name = ""
     elif len(event.args) == 2:
-        nme = event.args[1]
+        name = event.args[1]
     else:
         event.iface("<stringinurl> <name>")
         return
@@ -680,7 +680,7 @@ def nme(event):
         feed = Rss()
         Object.update(feed, fed)
         if feed:
-            feed.name = nme
+            feed.name = name
             Disk.write(feed, fnm)
     event.reply("ok")
 

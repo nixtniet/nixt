@@ -65,19 +65,19 @@ def thr(event):
         if str(thread).startswith("<_"):
             continue
         if getattr(thread, "state", None) and getattr(thread, "sleep", None):
-            upt = thread.sleep - int(time.time() - thread.state["latest"])
+            uptime = thread.sleep - int(time.time() - thread.state["latest"])
         elif getattr(thread, "starttime", None):
-            upt = time.time() - thread.starttime
+            uptime = time.time() - thread.starttime
         else:
-            upt = time.time() - Time.starttime
+            uptime = time.time() - Time.starttime
         if "." in thread.name:
             name = thread.name.split('.')[-1]
         else:
             name = thread.name
-        result.append((upt, name))
+        result.append((uptime, name))
     res = []
-    for upt, txt in sorted(result, key=lambda x: x[0]):
-        lap = Time.elapsed(upt)
+    for uptime, txt in sorted(result, key=lambda x: x[0]):
+        lap = Time.elapsed(uptime)
         res.append(f"{txt}/{lap}")
     if res:
         event.reply(" ".join(res))
