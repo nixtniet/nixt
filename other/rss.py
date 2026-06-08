@@ -516,8 +516,6 @@ class Run:
     importlock = _thread.allocate_lock()
 
 
-
-
 def attributes(event):
     "show attributes of a feed."
     if not event.rest:

@@ -35,9 +35,9 @@ class Message(Base):
 
     def iface(self, txt):
         "show interface."
-        txt = f"{self.mod}.{self.cmd} {txt}"
+        txt = f"{self.cmd} {txt}"
         if txt.startswith("."):
-           txt = txt[1:]
+            txt = txt[1:]
         self.reply(txt)
 
     def ok(self, txt=""):

@@ -7,10 +7,10 @@
 from nixt.defines import Base, Disk, Object, Mods
 
 
-whitelist = ['edit']
+whitelist = ['config']
 
 
-def edit(event):
+def config(event):
     "configure modules."
     if not event.args:
         mods = f"{'main,' + Mods.has('Config')}"
@@ -28,7 +28,7 @@ def edit(event):
             return
         cfg = getattr(mod, "Config", None)
         if not cfg:
-            event.reply("no configuration found.")
+            event.reply(f"no {name} config found.")
             return
     if not event.sets:
         event.reply(
@@ -42,7 +42,3 @@ def edit(event):
     Object.edit(cfg, event.sets)
     Disk.write(cfg, name, "config")
     event.ok()
-
-
-def __dir__():
-    return whitelist

@@ -70,7 +70,11 @@ def threads(event):
             upt = time.time() - thread.starttime
         else:
             upt = time.time() - Time.starttime
-        result.append((upt, thread.name))
+        if "." in thread.name:
+            name = thread.name.split('.')[-1]
+        else:
+            name = thread.name
+        result.append((upt, name))
     res = []
     for upt, txt in sorted(result, key=lambda x: x[0]):
         lap = Time.elapsed(upt)
