@@ -7,10 +7,10 @@
 from nixt.defines import d, e, j
 
 
-whitelist = ['path']
+whitelist = ['pth']
 
 
-def path(event):
+def pth(event):
     pth = d(d(__file__))
     pth = j(pth, "network", "index.html")
     if e(pth):

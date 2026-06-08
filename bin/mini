@@ -40,6 +40,7 @@ class CLI(Client):
 
 def main():
     "cli script."
+    Mods.table()
     cli = CLI()
     cli.silent = False
     cli.cmd(" ".join(sys.argv[1:]))

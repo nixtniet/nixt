@@ -12,7 +12,7 @@ import time
 from nixt.defines import Base, Clients, Message, Object, Repeater, Time
 
 
-whitelist = ['disease', 'now']
+whitelist = ['dis', 'now']
 
 
 def init():
@@ -157,7 +157,7 @@ def cbstats(evt):
         Clients.announce(txt)
 
 
-def disease(event):
+def dis(event):
     delta = time.time() - STARTTIME
     txt = Time.elapsed(delta) + " "
     for nme in sorted(Object.keys(oorzaken), key=lambda x: seconds(getnr(x))):

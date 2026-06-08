@@ -7,10 +7,10 @@
 from nixt.defines import Base, Disk, Object, Mods
 
 
-whitelist = ['config']
+whitelist = ['cfg']
 
 
-def config(event):
+def cfg(event):
     "configure modules."
     if not event.args:
         mods = f"{'main,' + Mods.has('Config')}"

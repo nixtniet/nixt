@@ -7,10 +7,10 @@
 from nixt.defines import Broker
 
 
-whitelist = ['off', 'on']
+whitelist = ['lou', 'sil']
 
 
-def on(event):
+def lou(event):
     "enable silent mode."
     bot = Broker.get(event.orig)
     if not bot:
@@ -20,7 +20,7 @@ def on(event):
     event.reply("ok")
 
 
-def off(event):
+def sil(event):
     "disable silent mode."
     bot = Broker.get(event.orig)
     if not bot:

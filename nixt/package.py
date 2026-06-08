@@ -40,6 +40,10 @@ class Mods:
         evt.ready()
 
     @classmethod
+    def commands(cls):
+        return [x.split(".")[-1] for x in cls.completions]
+
+    @classmethod
     def find(cls, name):
         modname = ""
         for nme in cls.completions:

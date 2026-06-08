@@ -67,8 +67,8 @@ king for making the commiting of the above mentioned crimes (killing,
 torture and impotent making) possible."""
 
 
-whitelist = ['request']
+whitelist = ['req']
 
 
-def request(event):
+def req(event):
     event.reply(__doc__)

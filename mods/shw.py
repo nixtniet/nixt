@@ -12,18 +12,18 @@ from nixt.defines import Broker, Locate, Main, Md5, Mods
 from nixt.defines import Object, Time, Workdir
 
 
-whitelist = ['cmd', 'fields', 'fleet', 'threads', 'uptime', 'version']
+whitelist = ['cmd', 'fie', 'flt', 'thr', 'upt', 'ver']
 
 
 def cmd(event):
     "list available commands."
     if not event.args:
-        event.reply(",".join(sorted(Mods.list())))
+        event.reply(",".join(sorted(Mods.commands())))
     else:
         event.reply(",".join(sorted(Mods.getcmds(event.args[0]))))
 
 
-def fields(event):
+def fie(event):
     "show fields of a type."
     if not event.rest:
         res = sorted({x.split('.')[-1].lower() for x in Workdir.kinds()})
@@ -39,7 +39,7 @@ def fields(event):
         event.reply(",".join(itms))
 
 
-def fleet(event):
+def flt(event):
     "list of running clients."
     try:
         index = int(event.args[0])
@@ -58,7 +58,7 @@ def fleet(event):
         event.reply("no matching client.")
 
 
-def threads(event):
+def thr(event):
     "list of running threads."
     result = []
     for thread in sorted(threading.enumerate(), key=lambda x: x.name):
@@ -85,11 +85,11 @@ def threads(event):
         event.reply("no threads")
 
 
-def uptime(event):
+def upt(event):
     "show uptiome."
     event.reply(Time.elapsed(time.time()-Time.starttime))
 
 
-def version(event):
+def ver(event):
     "show verson."
     event.reply(f"{Main.name.upper()} {Md5.core()}")

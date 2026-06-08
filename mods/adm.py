@@ -12,10 +12,10 @@ from nixt.defines import Json, Main, Md5, Mods
 from nixt.defines import d, j
 
 
-whitelist = ['service', 'table']
+whitelist = ['srv', 'tbl']
 
 
-def service(event):
+def srv(event):
     "generate systemd service file."
     import getpass
     name = getpass.getuser()
@@ -28,7 +28,7 @@ def service(event):
                           ))
 
 
-def table(event):
+def tbl(event):
     "create table."
     completions = []
     core = {}

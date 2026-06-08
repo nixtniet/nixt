@@ -26,7 +26,7 @@ from nixt.defines import Base, Clients, Disk, Locate, Main, Object
 from nixt.defines import Repeater, Thread, Utils, i
 
 
-whitelist = ['attributes', 'display', 'errors', 'export', 'opml', 'name', 'remove', 'restore', 'rss', 'sync']
+whitelist = ['atr', 'dpl', 'err', 'exp', 'imp', 'nme', 'rem', 'res', 'rss', 'syn']
 
 
 def init():
@@ -516,7 +516,7 @@ class Run:
     importlock = _thread.allocate_lock()
 
 
-def attributes(event):
+def atr(event):
     "show attributes of a feed."
     if not event.rest:
         event.iface("<stringinurl>")
@@ -556,7 +556,7 @@ def attributes(event):
         event.reply(','.join(resulting))
 
 
-def display(event):
+def dpl(event):
     "set feed items to display."
     if len(event.args) < 2:
         event.iface("<stringinurl> <item1,item2>")
@@ -569,7 +569,7 @@ def display(event):
     event.reply("ok")
 
 
-def errors(event):
+def err(event):
     "show errors of a feed."
     nre = 0
     nrs = 0
@@ -595,7 +595,7 @@ def errors(event):
         event.reply(f'{nre} feeds reset.')
 
 
-def export(event):
+def exp(event):
     "export opml."
     with Run.importlock:
         event.reply(TEMPLATE)
@@ -614,7 +614,7 @@ def export(event):
         event.reply("</opml>")
 
 
-def opml(event):
+def imp(event):
     "import opml."
     if not event.args:
         event.iface("<filename>")
@@ -663,7 +663,7 @@ def opml(event):
         event.reply(f"added {nrs} urls.")
 
 
-def name(event):
+def nme(event):
     "set name of a feed."
     if len(event.args) == 1:
         nme = ""
@@ -685,7 +685,7 @@ def name(event):
     event.reply("ok")
 
 
-def remove(event):
+def rem(event):
     "remove a feed."
     if len(event.args) != 1:
         event.iface("<stringinurl>")
@@ -702,7 +702,7 @@ def remove(event):
             break
 
 
-def restore(event):
+def res(event):
     "restore a feed."
     if len(event.args) != 1:
         event.iface("<stringinurl>")
@@ -744,7 +744,7 @@ def rss(event):
     event.reply("ok")
 
 
-def sync(event):
+def syn(event):
     "synchronize a feed."
     if Main.debug:
         return

@@ -13,7 +13,7 @@ from random import SystemRandom
 from nixt.defines import Clients, Disk, Locate, Message, Repeater
 
 
-whitelist = ['wisdom']
+whitelist = ['wsd']
 
 
 rand = SystemRandom()
@@ -45,7 +45,7 @@ class State:
 state = State()
 
 
-def wisdom(event):
+def wsd(event):
     txt = ""
     if 'seen' not in dir(state):
         state.seen = []

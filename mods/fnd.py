@@ -10,10 +10,10 @@ import time
 from nixt.defines import Locate, Object, Time, Workdir
 
 
-whitelist = ["find"]
+whitelist = ["fnd"]
 
 
-def find(event):
+def fnd(event):
     "find objects."
     if not event.rest:
         res = sorted([x.split('.')[-1].lower() for x in Workdir.kinds()])

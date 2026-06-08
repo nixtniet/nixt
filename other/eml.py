@@ -12,7 +12,7 @@ import time
 from nixt.defines import Base, Disk, Locate, Object, Time, e
 
 
-whitelist = ['read', 'show']
+whitelist = ['eml', 'mbx']
 
 
 class Email(Base):
@@ -22,7 +22,41 @@ class Email(Base):
         self.text = ""
 
 
-def read(event):
+def eml(event):
+    "search emails."
+    nrs = -1
+    args = ["From", "Subject"]
+    args.extend(event.args)
+    if event.gets:
+        args.extend(Object.keys(event.gets))
+    for key in event.silent:
+        if key in args:
+            args.remove(key)
+    args = set(args)
+    result = sorted(
+                    Locate.find("email", event.gets),
+                    key=lambda x: Time.timed(x[1].Date)
+                   )
+    if event.index:
+        obj = result[event.index]
+        if obj:
+            obj = obj[-1]
+            tme = getattr(obj, "Date", "")
+            diff = time.time = Time.timed(tme)
+            txt = Object.fmt(obj, args, plain=True)
+            event.reply(f'{event.index} {txt} {Time.elapsed(diff)}')
+    else:
+        for _fn, obj in result:
+            nrs += 1
+            tme = getattr(obj, "Date", "")
+            diff = time.time - Time.timed(tme)
+            txt = Object.fmt(obj, args, plain=True)
+            event.reply(f'{nrs} {txt} {Time.elapsed(diff)}')
+    if not result:
+        event.reply("no emails found.")
+
+
+def mbx(event):
     "import emails from mailbox."
     if not event.args:
         event.iface("read <path>")
@@ -58,37 +92,3 @@ def read(event):
             event.reply("ok %s" % nrs)
     except FileNotFoundError as ex:
         event.reply(str(ex))
-
-
-def email(event):
-    "search emails."
-    nrs = -1
-    args = ["From", "Subject"]
-    args.extend(event.args)
-    if event.gets:
-        args.extend(Object.keys(event.gets))
-    for key in event.silent:
-        if key in args:
-            args.remove(key)
-    args = set(args)
-    result = sorted(
-                    Locate.find("email", event.gets),
-                    key=lambda x: Time.timed(x[1].Date)
-                   )
-    if event.index:
-        obj = result[event.index]
-        if obj:
-            obj = obj[-1]
-            tme = getattr(obj, "Date", "")
-            diff = time.time = Time.timed(tme)
-            txt = Object.fmt(obj, args, plain=True)
-            event.reply(f'{event.index} {txt} {Time.elapsed(diff)}')
-    else:
-        for _fn, obj in result:
-            nrs += 1
-            tme = getattr(obj, "Date", "")
-            diff = time.time - Time.timed(tme)
-            txt = Object.fmt(obj, args, plain=True)
-            event.reply(f'{nrs} {txt} {Time.elapsed(diff)}')
-    if not result:
-        event.reply("no emails found.")
