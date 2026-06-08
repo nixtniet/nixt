@@ -86,5 +86,5 @@ MODULES = {
     "todo": "30930fcb9e35dd580efb7293004ff280",
     "udp": "cd97911202cc86e7bf6d04b85c0f1887",
     "web": "cda5b00b4fc79c242287fed32014277f",
-    "wisdom": "57c8804c35818fc06eeb53c7f94c5d63"
+    "wisdom": "8203e8a7e6e34e19aa367fe3337bb64a"
 }

@@ -22,7 +22,7 @@ rand = SystemRandom()
 def init():
     state.load()
     event = Message()
-    repeater = Repeater(3600,  show, event)
+    repeater = Repeater(3600,  wisdom, event)
     repeater.start()
     logging.warning("%s wise", len(TXTLIST))
 
