@@ -191,59 +191,59 @@ examples = {
     "show": [
         "",
         "cmd",
-        "fleet",
-        "fleet 0",
-        "fields",
-        "fields log",
-        "fields todo",
-        'threads',
-        'uptime',
-        'version'
+        "flt",
+        "flt 0",
+        "fie",
+        "fie log",
+        "fie todo",
+        'thr',
+        'upt',
+        'ver'
     ],
-    "email": ["", "read", "read ~/25-1-2013", "email", "email root@localhost"],
-    "find": ["", "find log", "find todo"],
-    "manual": ["", "manual nixt nixtniet@gmail.com Nixt Niet"],
-    "model": ["", "disease", "now"],
-    "path": ["", "path"],
+    "eml": ["", "mbx", "mbx ~/25-1-2013", "eml", "eml root@localhost"],
+    "fnd": ["", "fnd log", "fnd todo"],
+    "man": ["", "man nixt nixtniet@gmail.com Nixt Niet"],
+    "mdl": ["", "dis", "now"],
+    "pth": ["", "pth"],
     "irc": ["", "pwd", "pwd bla mekker"],
-    "request": ["", "request"],
-    "rss": ["", "display tittle.link", "name hnrss hn", "restore hnrss", ],
-    "silent": ["", "silent on", "silent off"],
-    "slogan": ["", "slogan slogan"],
-    "admin": ["", "admin service", "admin table"],
+    "req": ["", "req"],
+    "rss": ["", "dpl tittle.link", "nme hnrss hn", "res hnrss", ],
+    "sil": ["", "lou", "sil"],
+    "slg": ["", "slg"],
+    "adm": ["", "srv", "tbl"],
 }
 
 
 pre = {
-    "config": [
+    "cfg": [
         '',
-        'config main',
-        'config irc',
-        'config rss',
-        'config rest',
-        'config udp',
-        'config web',
-        'config main nick=mekker',
-        'config irc nick=mekker',
-        'config rss nick=mekker',
-        'config rest nick=mekker',
-        'config udp nick=mekker',
-        'config web nick=mekker'
+        'cig main',
+        'cfg irc',
+        'cfg rss',
+        'cfg rst',
+        'cfg udp',
+        'cfg web',
+        'cfg main nick=mekker',
+        'cfg irc nick=mekker',
+        'cfg rss nick=mekker',
+        'cfg rst nick=mekker',
+        'cfg udp nick=mekker',
+        'cfg web nick=mekker'
     ],
-    "opml": [
+    "imp": [
         "",
         "testing/opml/feeds.opml",
     ],
     "log": ["", "log test"],
     "rss": ["", "rss http://hnrss.org/newest"],
-    "todo": ["", "todo test2"],
-    "timer": ["", "timer 22:00 test"],
+    "tdo": ["", "tdo test2"],
+    "tmr": ["", "tmr 22:00 test"],
 }
 
 post = {
     "dbg": [""],
-    "todo": ["done mekker"],
-    "rss": ["export", "remove hnrss"],
+    "tdo": ["done mekker"],
+    "rss": ["exp", "rem hnrss"],
 }
 
 
