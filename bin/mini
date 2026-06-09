@@ -11,7 +11,7 @@ import sys
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Client, Logging, Message, Mods, Workdir
+from nixt.defines import Client, Commands, Logging, Message, Mods, Workdir
 
 
 Logging.level('debug')
@@ -28,7 +28,7 @@ class CLI(Client):
         evt.kind = "command"
         evt.orig = repr(self)
         evt.text = text
-        Mods.command(evt)
+        Commands.command(evt)
         evt.wait()
         return evt
 
@@ -40,7 +40,7 @@ class CLI(Client):
 
 def main():
     "cli script."
-    Mods.table()
+    Commands.table()
     cli = CLI()
     cli.silent = False
     cli.cmd(" ".join(sys.argv[1:]))

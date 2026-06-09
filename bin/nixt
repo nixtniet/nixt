@@ -19,7 +19,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Client, Commands, Logging, Main, Message
-from nixt.defines import Mods, Md5, Object, Utils, Workdir
+from nixt.defines import Mods, Md5, Object, Utils, Workdir, configure
 
 
 class Arguments:
@@ -139,20 +139,6 @@ class Boot:
         sys.stdout.flush()
 
     @classmethod
-    def configure(cls, cfg):
-        "configure program."
-        Workdir.wdr = cfg.path or os.path.expanduser(f"~/.{cfg.name}")
-        Mods.add("modules", Workdir.moddir())
-        if cfg.user:
-            Mods.add("mods", "mods")
-            Mods.add("other", "other")
-        Logging.size(len(cfg.name))
-        Logging.level(cfg.level or "info")
-        Mods.sums()
-        Commands.table()
-        Commands.bork = True
-
-    @classmethod
     def daemon(cls, verbose=False, nochdir=False):
         "run in the background."
         pid = os.fork()
@@ -212,6 +198,7 @@ class Boot:
             final()
         readline.set_completer(None)
 
+    configure = configure
     init = Mods.init
     pid = Workdir.pid
 
@@ -237,7 +224,7 @@ class Scripts:
             Main.mods = ",".join(Mods.list())
         if not Boot.init(Main.mods, Main.wait):
             return
-        Completer.enable(Mods.completions)
+        Completer.enable(Commands.completions)
         csl = Console()
         csl.start()
         Boot.forever()
@@ -247,7 +234,6 @@ class Scripts:
         "cli script."
         cli = CLI()
         cli.silent = False
-        Completer.enable(Commands.completions)
         cli.cmd(Main.otxt)
 
     @staticmethod
@@ -262,7 +248,7 @@ class Scripts:
 def main():
     "main"
     Arguments.getargs()
-    Boot.configure(Main)
+    Boot.configure()
     if Main.daemon:
         Boot.wrap(Scripts.background)
     elif Main.console:

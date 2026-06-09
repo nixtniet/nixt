@@ -4,7 +4,14 @@
 "one config to rule them all"
 
 
+import os
+
+
+from .command import Commands
+from .loggers import Logging
 from .objects import Object
+from .persist import Workdir
+from .package import Mods
 from .utility import Utils
 
 
@@ -21,10 +28,25 @@ class MainConfig(type):
 
 class Main(metaclass=MainConfig):
 
+    level = "info"
     name = Utils.pkgname(Object)
+
+ 
+def configure():
+    "configure program."
+    Workdir.wdr = Main.path or os.path.expanduser(f"~/.{Main.name}")
+    Mods.add("modules", Workdir.moddir())
+    if Main.user:
+        Mods.add("mods", "mods")
+    Logging.size(len(Main.name))
+    Logging.level(Main.level)
+    Mods.sums()
+    Commands.table()
+    Commands.bork = True
 
 
 def __dir__():
     return (
         'Main',
+        'configure'
     )
