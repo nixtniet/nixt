@@ -42,7 +42,7 @@ def configure():
     Logging.level(Main.level)
     Mods.sums()
     Commands.table()
-    Commands.bork = True
+    Commands.bork = Main.bork
 
 
 def __dir__():

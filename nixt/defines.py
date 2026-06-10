@@ -8,7 +8,7 @@
 from .brokers import Broker, Clients
 from .clients import Buffer, Buffered, Client, Output
 from .command import Commands
-from .configs import Main, configure
+from .configs import Main
 from .engines import Engine
 from .handler import Handler
 from .loggers import Logging
@@ -50,7 +50,6 @@ def __dir__():
        'Time',
        'Utils',
        'Workdir',
-       'configure',
        'a',
        'd',
        'e',

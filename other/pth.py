@@ -14,6 +14,6 @@ def pth(event):
     path = d(d(__file__))
     path = j(path, "network", "index.html")
     if e(path):
-        event.reply(f"file://{pth}")
+        event.reply(f"file://{path}")
     else:
         event.reply("no index.html")

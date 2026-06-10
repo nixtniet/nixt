@@ -19,7 +19,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Client, Commands, Logging, Main, Message
-from nixt.defines import Mods, Md5, Object, Utils, Workdir, configure
+from nixt.defines import Mods, Md5, Object, Utils, Workdir
 
 
 class Arguments:
@@ -139,6 +139,21 @@ class Boot:
         sys.stdout.flush()
 
     @classmethod
+    def configure(cls):
+        "configure program."
+        Workdir.wdr = Main.path or os.path.expanduser(f"~/.{Main.name}")
+        Mods.add(f"{Main.name}.modules", Utils.moddir())
+        Mods.add("modules", Workdir.moddir())
+        if Main.user:
+            Mods.add("mods", "mods")
+            Mods.add("other", "other")
+        Logging.size(len(Main.name))
+        Logging.level(Main.level)
+        Mods.sums()
+        Commands.table()
+        Commands.bork = Main.bork
+
+    @classmethod
     def daemon(cls, verbose=False, nochdir=False):
         "run in the background."
         pid = os.fork()
@@ -198,7 +213,6 @@ class Boot:
             final()
         readline.set_completer(None)
 
-    configure = configure
     init = Mods.init
     pid = Workdir.pid
 

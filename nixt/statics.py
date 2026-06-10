@@ -48,30 +48,30 @@ COMPLETIONS = [
 CORE = {
     "brokers": "b0f2374e516c4ba8581b728b7d3cc026",
     "clients": "0de88d3b063319b47418b62710d92e0c",
-    "clocker": "c6a60c2b43ba9c8c498654166754f55b",
-    "configs": "b054626f8d5171e35cb84ba02bfe4347",
-    "defines": "55a67d409181ab3423f03964da755552",
+    "command": "707f6cbd4e7e765351a49a2f80b33603",
+    "configs": "f4450339c2a8d7b7ca9c9f48339ef1ef",
+    "defines": "1a26c21a43b900ad217d29641069a0ac",
     "engines": "3b7d6903c4739c3cf1b56da2a720144d",
     "handler": "99191b6e52700721de004ea446f46388",
     "loggers": "259fef8b66ba41ba6bd7dfeadb32f757",
     "message": "e136df26a9f89fd21fd19f156049f8f7",
     "objects": "742237af0e0ff8f09d08b58e0a547e80",
-    "package": "1341e4a1c19a60601e6f488bf0f8236f",
+    "package": "c3c71b89281c7b0f95cc226528607845",
     "parsers": "8af0b703167b66dd234a3293d06ff598",
-    "persist": "b9ba3def2f71163a28a4a4b69386fe5e",
+    "persist": "7200ecae797892694939b78c29600623",
     "repeats": "b3e2f394fb569e31cf6cf160b5731280",
     "runtime": "ed941e3697f861b0cd3a175f29fcd991",
     "threads": "3fa17f6805fef5256605ae9ed9bd4a72",
-    "utility": "176a5c877eae4dd6c1a63d5330efa239"
+    "utility": "f4ae3966a05c4badc530a9082186f400"
 }
 
 
 MODULES = {
-    "adm": "c3513f1b637da903323565b2fff49a60",
+    "adm": "c50f0c5c459c27b345a31548040f5ed1",
     "cfg": "ce2a7ed8c7e0a15bc641ccfd0ee49628",
     "eml": "a5aff17a2e8cd4e18bbaee9a55777bdf",
     "fnd": "2e3e991c5569b7d81c8165f01ed29791",
-    "irc": "d6c7b0a4f1123053c40e37609455ecf4",
+    "irc": "6456717e6590b0907d79dee95791c500",
     "log": "176c5cfeddc9e2a70588d295db68a310",
     "man": "a8f4d7ac5a3be8ce7ec16db7f670bb8d",
     "mdl": "a9f05bf49c6e2f014dc35781ea7ae8ce",
@@ -79,7 +79,7 @@ MODULES = {
     "req": "6d1faab15fc20cea90aa5a8cff1a2b31",
     "rss": "3af491edc44a7d579d8091511b1beb4b",
     "rst": "b6798332298ddc8a097a2f6c343462cd",
-    "shw": "73cec61455167ca9798452e513ea3ae8",
+    "shw": "67610b7ff3bf5413c5563ac0ff385526",
     "sil": "a74b1967c29b2826b004307e5bb2476e",
     "slg": "aa7d2922aab6d06cef28dff73d93b80d",
     "tdo": "d63774c59afa16d84eb3b1aaae5d214a",

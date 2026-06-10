@@ -29,6 +29,8 @@ Task.bork = True
 Workdir.wdr = Main.wdr
 
 
+
+Mods.add(f"{Main.name}.modules", Utils.moddir())
 Mods.add("modules", Workdir.moddir())
 Mods.add("mods", "mods")
 Mods.add("other", "other")
