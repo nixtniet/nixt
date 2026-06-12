@@ -7,7 +7,7 @@
 import time
 
 
-from nixt.defines import Locate, Object, Time, Workdir
+from bot.defines import Locate, Object, Time, Workdir
 
 
 whitelist = ["fnd"]

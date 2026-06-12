@@ -4,7 +4,7 @@
 "configuration"
 
 
-from nixt.defines import Base, Disk, Object, Mods
+from bot.defines import Base, Disk, Object, Mods
 
 
 whitelist = ['cfg']

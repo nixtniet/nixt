@@ -8,8 +8,8 @@ import threading
 import time
 
 
-from nixt.defines import Broker, Commands, Locate, Main, Md5
-from nixt.defines import Object, Time, Workdir
+from bot.defines import Broker, Commands, Locate, Main, Md5
+from bot.defines import Object, Time, Workdir
 
 
 whitelist = ['cmd', 'fie', 'flt', 'thr', 'upt', 'ver']
