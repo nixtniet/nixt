@@ -134,7 +134,7 @@ class Boot:
             Main.version,
             tme,
             Main.level.upper() or "INFO",
-            Md5.core()
+            cls.core()
         )
         print(txt.replace("  ", " "))
         sys.stdout.flush()
@@ -151,6 +151,16 @@ class Boot:
         Logging.size(len(Main.name))
         Logging.level(Main.level)
         Commands.bork = Main.bork
+        Mods.sums()
+
+    @classmethod
+    def core(cls):
+        "calculate md5 of the statics module."
+        try:
+            from . import statics
+        except (ModuleNotFoundError, ImportError, SyntaxError):
+            return ""
+        return Md5.source(Utils.source(statics))[:7].upper()
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):
@@ -215,7 +225,6 @@ class Boot:
     init = Mods.init
     pid = Workdir.pid
     scanner = Commands.scanner
-    sums = Mods.sums
 
 
 class Scripts:
@@ -226,7 +235,6 @@ class Scripts:
         Boot.daemon(Main.verbose, Main.nochdir)
         Boot.privileges()
         Boot.pid(Main.name)
-        Boot.sums()
         Boot.scanner()
         Boot.init(Main.mods or Main.default)
         Boot.forever()
@@ -239,7 +247,6 @@ class Scripts:
             Boot.banner()
         if Main.all:
             Main.mods = ",".join(Mods.list())
-        Boot.sums()
         Boot.scanner()
         if not Boot.init(Main.mods, Main.wait):
             return
@@ -251,7 +258,6 @@ class Scripts:
     @staticmethod
     def control():
         "cli script."
-        Boot.sums()
         Boot.scanner()
         cli = CLI()
         cli.silent = False
@@ -262,7 +268,6 @@ class Scripts:
         "service script."
         Boot.privileges()
         Boot.pid(Main.name)
-        Boot.sums()
         Boot.scanner()
         Boot.init(Main.mods or Main.default)
         Boot.forever()

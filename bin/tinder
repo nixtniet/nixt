@@ -16,8 +16,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixbot.defines import Buffer, Commands, Engine, Logging, Main, Message, Mods
-from nixbot.defines import Object, Parse, Task, Thread, Time, Utils, Workdir, e
+from bot.defines import Buffer, Commands, Engine, Logging, Main, Message, Mods
+from bot.defines import Object, Parse, Task, Thread, Time, Utils, Workdir, e
 
 
 Main.debug = True
@@ -202,7 +202,7 @@ examples = {
     ],
     "eml": ["", "mbx", "mbx ~/25-1-2013", "eml", "eml root@localhost"],
     "fnd": ["", "fnd log", "fnd todo"],
-    "man": ["", "man nixbot nixtniet@gmail.com Nixt Niet"],
+    "man": ["", "man bot nixtniet@gmail.com Nixt Niet"],
     "mdl": ["", "dis", "now"],
     "pth": ["", "pth"],
     "irc": ["", "pwd", "pwd bla mekker"],
