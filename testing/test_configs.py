@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Main
+from bot.defines import Main
 
 
 class TestConfig(unittest.TestCase):

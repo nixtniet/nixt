@@ -7,7 +7,7 @@
 import unittest
 
 
-import nixt.defines as dev
+import bot.defines as dev
 
 
 class TestDefines(unittest.TestCase):

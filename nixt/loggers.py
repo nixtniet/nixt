@@ -10,7 +10,7 @@ import logging
 class Format(logging.Formatter):
 
     disable = False
-    size = 4
+    size = 3
 
     def format(self, record):
         "logging formatter."
@@ -28,7 +28,7 @@ class Logging:
     @classmethod
     def level(cls, loglevel):
         "set log level."
-        formatter = Format(Logging.format, Logging.datefmt)
+        formatter = Format(cls.format, Logging.datefmt)
         stream = logging.StreamHandler()
         stream.setFormatter(formatter)
         logging.basicConfig(
@@ -40,7 +40,6 @@ class Logging:
     @classmethod
     def size(cls, nr):
         "set text size."
-        Format.size = nr
         index = cls.format.find("-")+1
         newformat = cls.format[:index]
         newformat += str(nr)

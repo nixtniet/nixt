@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Client, Message
+from bot.defines import Client, Message
 
 
 buffer = []
