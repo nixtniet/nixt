@@ -9,14 +9,13 @@ import inspect
 import logging
 import os
 import readline
-import rlcompleter
 import sys
 import time
 import _thread
 
 
-from .defines import Client, Commands, Logging, Main, Message
-from .defines import Mods, Md5, Object, Utils, Workdir, j
+from .defines import Boot, Client, Commands, Logging, Main, Message
+from .defines import Mods, Md5, Object, Utils, Thread, Workdir, j
 
 
 Main.name = Utils.pkgname(Commands)
@@ -59,34 +58,6 @@ class Arguments:
         Object.update(Main, args)
 
 
-class Completer(rlcompleter.Completer):
-
-    def __init__(self, options):
-        super().__init__()
-        self.matches = []
-        self.mod = ""
-        self.options = options
-
-    def complete(self, text, state):
-        "word completion."
-        if state == 0:
-            if text:
-                self.matches = [s for s in Commands.completions if s.startswith(text)]
-            else:
-                self.matches = Commands.completions[:]
-        try:
-            return self.matches[state]
-        except IndexError:
-            return None
-
-    @staticmethod
-    def enable(modlist=""):
-        "enable tab completion."
-        completer = Completer(modlist)
-        readline.set_completer(completer.complete)
-        readline.parse_and_bind("tab: complete")
-
-
 class CLI(Client):
 
     def cmd(self, text):
@@ -123,7 +94,7 @@ class Console(CLI):
         return evt
 
 
-class Boot:
+class Runs(Boot):
 
     @classmethod
     def banner(cls):
@@ -138,29 +109,6 @@ class Boot:
         )
         print(txt.replace("  ", " "))
         sys.stdout.flush()
-
-    @classmethod
-    def configure(cls):
-        "configure program."
-        Workdir.wdr = Main.path or os.path.expanduser(f"~/.{Main.name}")
-        Mods.add(f"{Main.name}.modules", j(Utils.pkgdir(Boot), 'modules'))
-        Mods.add("modules", Workdir.moddir())
-        if Main.user:
-            Mods.add("mods", "mods")
-            Mods.add("other", "other")
-        Logging.size(len(Main.name))
-        Logging.level(Main.level)
-        Commands.bork = Main.bork
-        Mods.sums()
-
-    @classmethod
-    def core(cls):
-        "calculate md5 of the statics module."
-        try:
-            from . import statics
-        except (ModuleNotFoundError, ImportError, SyntaxError):
-            return ""
-        return Md5.source(Utils.source(statics))[:7].upper()
 
     @classmethod
     def daemon(cls, verbose=False, nochdir=False):
@@ -220,11 +168,8 @@ class Boot:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
         if final:
             final()
-        readline.set_completer(None)
 
-    init = Mods.init
     pid = Workdir.pid
-    scanner = Commands.scanner
 
 
 class Scripts:
@@ -232,33 +177,32 @@ class Scripts:
     @staticmethod
     def background():
         "background script."
-        Boot.daemon(Main.verbose, Main.nochdir)
-        Boot.privileges()
-        Boot.pid(Main.name)
-        Boot.scanner()
-        Boot.init(Main.mods or Main.default)
-        Boot.forever()
+        Runs.daemon(Main.verbose, Main.nochdir)
+        Runs.privileges()
+        Runs.pid(Main.name)
+        Runs.scanner()
+        Runs.init(Main.mods or Main.default)
+        Runs.forever()
 
     @staticmethod
     def console():
         "console script."
         readline.redisplay()
         if Main.verbose:
-            Boot.banner()
+            Runs.banner()
         if Main.all:
             Main.mods = ",".join(Mods.list())
-        Boot.scanner()
-        if not Boot.init(Main.mods, Main.wait):
+        Runs.scanner()
+        if not Runs.init(Main.mods, Main.wait):
             return
-        Completer.enable(Commands.completions)
         csl = Console()
         csl.start()
-        Boot.forever()
+        Runs.forever()
 
     @staticmethod
     def control():
         "cli script."
-        Boot.scanner()
+        Runs.scanner()
         cli = CLI()
         cli.silent = False
         cli.cmd(Main.otxt)
@@ -266,25 +210,25 @@ class Scripts:
     @staticmethod
     def service():
         "service script."
-        Boot.privileges()
-        Boot.pid(Main.name)
-        Boot.scanner()
-        Boot.init(Main.mods or Main.default)
-        Boot.forever()
+        Runs.privileges()
+        Runs.pid(Main.name)
+        Runs.scanner()
+        Runs.init(Main.mods or Main.default)
+        Runs.forever()
 
 
 def main():
     "main"
     Arguments.getargs()
-    Boot.configure()
+    Runs.configure()
     if Main.daemon:
-        Boot.wrap(Scripts.background)
+        Runs.wrap(Scripts.background)
     elif Main.console:
-        Boot.wrap(Scripts.console)
+        Runs.wrap(Scripts.console)
     elif Main.service:
-        Boot.wrap(Scripts.service)
+        Runs.wrap(Scripts.service)
     else:
-        Boot.wrap(Scripts.control)
+        Runs.wrap(Scripts.control)
 
 
 if __name__ == "__main__":

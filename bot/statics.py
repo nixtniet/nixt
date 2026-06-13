@@ -5,14 +5,14 @@
 
 
 CORE = {
-    "command": "6f07e4e5a73057fd655b212c3faea46a",
-    "configs": "2e38536c0998ff786e74e6206eb82437",
+    "command": "b1fb81c86324097c6c4e4f615c4cd8b3",
+    "configs": "468b30e83c9aeb633a1244af9324d90d",
     "defines": "13c170d470e580fc3e1b1a203007848d",
-    "package": "1b890ef8c4f77c476d0599e8b83dfe6d",
-    "parsers": "6a4af25abc3263026d828a1128b038d8",
-    "persist": "77898bfc2fce02dcbce4156035e98f8a",
-    "repeats": "6b7b889bc222c74aa2d6f253cd52b7e5",
-    "runtime": "c0ce76561f2555d1de2edc54d1887f33"
+    "package": "5440acf33c6cdbe86c5db36d4b03e9d2",
+    "parsers": "df2e5d6ee21e7652b50010d694daa7f3",
+    "persist": "664846a5b3f2bb0a661fb5176510f093",
+    "repeats": "c125a883fbe0d4d7c38980f17bb8331f",
+    "runtime": "c6a3c7f445c796d79924911fc3ce67ae"
 }
 
 
@@ -29,7 +29,7 @@ MODULES = {
     "req": "6d1faab15fc20cea90aa5a8cff1a2b31",
     "rss": "0221870c1f07e0d879fae8e4d32f4f4b",
     "rst": "35e7ede20d6a4350fc2ec5fbc2519b66",
-    "shw": "2f1723aa3c86b2b0737127c1282d4d6a",
+    "shw": "f6fb00401bf108d395f72c743bd4caed",
     "sil": "880b2f434b31ccd0c369a0e512abd1e7",
     "slg": "3bf6c8bbcfcfcbaa6a08eaa6132e1427",
     "tdo": "ac0a1b422f16420e7bcce295dc85da75",

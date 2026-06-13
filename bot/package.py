@@ -63,23 +63,6 @@ class Mods:
         return cls.modules[name]
 
     @classmethod
-    def init(cls, modlist, wait=False):
-        "call init of modules that have an init function."
-        thrs = []
-        for name in Utils.spl(modlist):
-            mod = cls.get(name)
-            if not mod or "init" not in dir(mod):
-                continue
-            thrs.append(Thread.launch(mod.init))
-        if thrs and wait:
-            for thr in thrs:
-                try:
-                    thr.join()
-                except (KeyboardInterrupt, EOFError):
-                    return False
-        return True
-
-    @classmethod
     def list(cls, ignore=""):
         "comma seperated list of available modules."
         mods = []

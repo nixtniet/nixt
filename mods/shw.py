@@ -17,10 +17,7 @@ whitelist = ['cmd', 'fie', 'flt', 'thr', 'upt', 'ver']
 
 def cmd(event):
     "list available commands."
-    if not event.args:
-        event.reply(",".join(sorted(Commands.commands())))
-    else:
-        event.reply(",".join(sorted(Commands.getcmds(event.args[0]))))
+    event.reply(",".join(sorted(Commands.cmds)))
 
 
 def fie(event):
