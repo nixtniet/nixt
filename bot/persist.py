@@ -12,7 +12,7 @@ import pathlib
 import threading
 
 
-from nixt import Base, Json, Object, Time, Utils, e, j
+from nixt.defines import Base, Json, Object, Time, Utils, e, j
 
 
 class Cache:

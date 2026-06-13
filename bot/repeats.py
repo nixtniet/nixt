@@ -8,7 +8,7 @@ import threading
 import time
 
 
-from nixt import Thread
+from nixt.defines import Thread
 
 
 class Timy(threading.Timer):
