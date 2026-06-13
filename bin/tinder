@@ -16,11 +16,12 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from bot.defines import Buffer, Commands, Engine, Logging, Main, Message, Mods
+from bot.defines import Boot, Buffer, Commands, Engine, Logging, Main, Message, Mods
 from bot.defines import Object, Parse, Task, Thread, Time, Utils, Workdir, e
 
 
 Main.debug = True
+Main.name = "tinder"
 Main.wdr = ".test"
 Main.user = True
 
@@ -35,6 +36,7 @@ Mods.add("other", "other")
 
 
 Logging.level("debug")
+Boot.scanner()
 
 
 class CLI(Engine, Buffer):
@@ -94,6 +96,20 @@ class Runs:
 
     nrs = 0
 
+    @classmethod
+    def banner(cls):
+        "hello"
+        tme = time.ctime(time.time()).replace("  ", " ")
+        txt = "%s %s since %s %s (%s)" % (
+            Main.name.upper(),
+            Main.version,
+            tme,
+            Main.level.upper() or "INFO",
+            Boot.core()
+        )
+        print(txt.replace("  ", " "))
+        sys.stdout.flush()
+
     @staticmethod
     def check(opts):
         "check for command line options."
@@ -111,7 +127,7 @@ class Runs:
             for ex in example:
                 evt = Message()
                 evt.kind = "command"
-                evt.text = f"{cmd}.{ex}"
+                evt.text = f"{cmd} {ex}"
                 Clients.put(evt)
 
     @classmethod
@@ -153,6 +169,7 @@ def final():
 
 
 def main():
+    Runs.banner()
     if e(Main.wdr):
         shutil.rmtree(Main.wdr)
     if Runs.check("v"):
@@ -188,62 +205,63 @@ def main():
 
 
 examples = {
-    "show": [
-        "",
-        "cmd",
-        "flt",
-        "flt 0",
-        "fie",
-        "fie log",
-        "fie todo",
-        'thr',
-        'upt',
-        'ver'
-    ],
-    "eml": ["", "mbx", "mbx ~/25-1-2013", "eml", "eml root@localhost"],
-    "fnd": ["", "fnd log", "fnd todo"],
-    "man": ["", "man bot nixtniet@gmail.com Nixt Niet"],
-    "mdl": ["", "dis", "now"],
-    "pth": ["", "pth"],
-    "irc": ["", "pwd", "pwd bla mekker"],
-    "req": ["", "req"],
-    "rss": ["", "dpl tittle.link", "nme hnrss hn", "res hnrss", ],
-    "sil": ["", "lou", "sil"],
-    "slg": ["", "slg"],
-    "adm": ["", "srv", "tbl"],
+    "cmd": [""],
+    "dis": [""],
+    "dpl": ["", "tittle.link"],
+    "eml": ["", "root@localhost"],
+    "flt": ["", "0"],
+    "fnd": ["", "log", "todo"],
+    "fie": ["", "log", "todo"],
+    "lou": [""],
+    "mbx": ["", "~/25-1-2013"],
+    "man": ["", "nixt nixtniet@gmail.com Nixt Niet"],
+    "nme": ["", "hnrss hn"],
+    "now": [""],
+    "pth": [""],
+    "pwd": ["", "bla mekker"],
+    "req": [""],
+    "res": ["", "hnrss"],
+    "sil": [""],
+    "slg": [""],
+    "srv": [""],
+    "tbl": [""],
+    'thr': [""],
+    'upt': [""],
+    'ver': [""],
 }
 
 
 pre = {
     "cfg": [
         '',
-        'cig main',
-        'cfg irc',
-        'cfg rss',
-        'cfg rst',
-        'cfg udp',
-        'cfg web',
-        'cfg main nick=mekker',
-        'cfg irc nick=mekker',
-        'cfg rss nick=mekker',
-        'cfg rst nick=mekker',
-        'cfg udp nick=mekker',
-        'cfg web nick=mekker'
+        'main',
+        'irc',
+        'rss',
+        'rst',
+        'udp',
+        'web',
+        'main nick=mekker',
+        'irc nick=mekker',
+        'rss nick=mekker',
+        'rst nick=mekker',
+        'udp nick=mekker',
+        'web nick=mekker'
     ],
     "imp": [
         "",
         "testing/opml/feeds.opml",
     ],
-    "log": ["", "log test"],
-    "rss": ["", "rss http://hnrss.org/newest"],
-    "tdo": ["", "tdo test2"],
-    "tmr": ["", "tmr 22:00 test"],
+    "log": ["", "test"],
+    "rss": ["", "http://hnrss.org/newest"],
+    "tdo": ["", "test2"],
+    "tmr": ["", "22:00 test"]
 }
 
 post = {
     "dbg": [""],
-    "tdo": ["done mekker"],
-    "rss": ["exp", "rem hnrss"],
+    "dne": [""," mekker"],
+    "exp": [""],
+    "rem": ["", "rem hnrss"]
 }
 
 
