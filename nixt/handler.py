@@ -30,6 +30,7 @@ class Handler:
             event = self.poll()
             if event is None:
                 break
+            event.orig = repr(self)
             self.handle(event)
         self.idone.set()
 

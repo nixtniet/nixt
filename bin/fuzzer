@@ -2,10 +2,12 @@
 # This file is placed in the Public Domain.
 
 
-"stress test"
+"fuzzer"
 
 
+import logging
 import os
+import queue
 import shutil
 import sys
 import threading
@@ -16,25 +18,23 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Base, Boot, Buffered, Client, Commands, Log, Main, Message
-from nixt.defines import Mods, Object, Parse, Thread, Time, Workdir, e
+from bot.defines import Base, Boot, Buffered, Client, ClientPool, Commands, Logging, Main
+from bot.defines import Message, Mods, Object, Parse, Thread, Time, Workdir, e
 
 
 Main.debug = True
-Main.threaded = True
-Main.wdr = ".test"
+Main.name = "fuzzer"
 Main.user = True
-Mods.add("mods", "mods")
-Mods.add("other", "other")
+Main.wdr = ".test"
+
+
 Workdir.wdr = Main.wdr
-Log.level("debug")
 
 
 class CLI(Buffered):
 
-    def __init__(self):
-        super().__init__()
-        self.register("command", Commands.command)
+    def handle(self, event):
+        Commands.command(event)
 
     def raw(self, text):
         if Main.verbose:
@@ -42,46 +42,23 @@ class CLI(Buffered):
             sys.stdout.flush()
 
 
-class Clients:
-
-    clients = []
-    lock = threading.RLock()
-    last = 0
-    nrevents = 0
-    nrcpu = 1
-
-    @classmethod
-    def add(cls, client):
-        cls.clients.append(client)
-
-    @classmethod
-    def init(cls, client):
-        with cls.lock:
-            cls.nrcpu = os.cpu_count()
-            for _x in range(Clients.nrcpu):
-                clt = client()
-                clt.start()
-                cls.add(clt)
-
-    @classmethod
-    def put(cls, *args):
-        with cls.lock:
-            if cls.last >= cls.nrcpu-1:
-                cls.last = 0
-            cls.clients[cls.last].put(*args)
-            cls.last += 1
-            cls.nrevents += 1
-
-    @classmethod
-    def shutdown(cls):
-        for client in cls.clients[::-1]:
-            client.wait()
-            client.stop()
-
-
 class Run:
 
     nrs = 0
+
+    @classmethod
+    def banner(cls):
+        "hello"
+        tme = time.ctime(time.time()).replace("  ", " ")
+        txt = "%s %s since %s %s (%s)" % (
+            Main.name.upper(),
+            Main.version,
+            tme,
+            Main.level.upper() or "INFO",
+            Boot.core()
+        )
+        print(txt.replace("  ", " "))
+        sys.stdout.flush()
 
     @staticmethod
     def check(opts):
@@ -96,28 +73,57 @@ class Run:
 
     @staticmethod
     def payload():
-        for cmd in Commands.commands():
+        for cmd in Commands.cmds:
             for arg in arguments:
                 evt = Message()
                 evt.kind = "command"
                 evt.text = f"{cmd} {arg}"
-                Clients.put(evt)
+                ClientPool.put(evt)
+
+    @classmethod
+    def wrap(cls, function, *args, dofinal=None):
+        "restore console."
+        import termios
+        oldie = None
+        try:
+            oldie = termios.tcgetattr(sys.stdin.fileno())
+        except termios.error:
+            pass
+        try:
+            function(*args)
+        except (KeyboardInterrupt, EOFError):
+            pass
+        except Exception as exc:
+            logging.exception(exc)
+        if oldie:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, oldie)
+        if dofinal:
+            final()
 
 
 def final():
-    total = len(Commands.commands()) * len(arguments) * Run.nrs
+    total = len(Commands.cmds) * len(arguments) * Run.nrs
     endtime = time.time()
     lap = Time.elapsed(endtime-Time.starttime)
-    percall = (endtime-Time.starttime)/total
-    if Main.verbose:
+    if Main.verbose and total:
+        percall = (endtime-Time.starttime)/total
         print(f"{Object.fmt(Main, skip='otxt,txt')}")
-        print(f"cores: {Clients.nrcpu} events: {total}")
-        print(f"total: {lap} nrs: {Clients.nrevents - total} call: %.6fs" % percall)
-        print(threading.enumerate())
+        print(f"cores: {ClientPool.nrcpu} events: {total}")
+        print(f"total: {lap} nrs: {ClientPool.nrevents - total} call: %.6fs" % percall)
         res = ""
-        for client in Clients.clients:
-            res += str(client.queue.qsize()) + " "
-        print(res.strip())
+        gotcha = False
+        for client in ClientPool.clients:
+            sze = client.iqueue.qsize()
+            if sze:
+                gotcha = True
+            res += str(sze) + " "
+        if gotcha:
+            for client in ClientPool.clients:
+                try:
+                    print(client.iqueue.get_nowait())
+                except queue.Empty:
+                    pass
+        print(threading.enumerate())
 
 
 def main():
@@ -125,16 +131,19 @@ def main():
         shutil.rmtree(Main.wdr)
     if Run.check("v"):
         Main.verbose = True
+        Run.banner()
+    Main.md5 = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
+    Boot.configure()
     Boot.scanner()
-    Clients.init(CLI)
+    ClientPool.init(CLI)
     Run.nrs = Main.index or 1
     thrs = []
     for _x in range(Run.nrs):
         thrs.append(Thread.launch(Run.payload))
     for thr in thrs:
         thr.join()
-    Clients.shutdown()
+    ClientPool.shutdown()
     while 1:
         if len(threading.enumerate()) == 1:
             break
@@ -161,4 +170,4 @@ arguments = [
 
 
 if __name__ == "__main__":
-    Boot.wrap(main, final=final)
+    Run.wrap(main, dofinal=final)

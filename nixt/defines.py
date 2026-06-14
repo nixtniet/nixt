@@ -6,7 +6,7 @@
 
 
 from .brokers import Broker, Clients
-from .clients import Buffer, Buffered, Client, Output
+from .clients import Buffer, Buffered, Client, ClientPool, Output
 from .engines import Engine
 from .handler import Handler, Message
 from .loggers import Logging
@@ -23,6 +23,7 @@ def __dir__():
        'Buffered',
        'Client',
        'Clients',
+       'ClientPool',
        'Engine',
        'Handler',
        'Json',

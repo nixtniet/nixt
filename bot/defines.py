@@ -6,7 +6,7 @@
 
 
 from nixt.brokers import Broker, Clients
-from nixt.clients import Buffer, Buffered, Client, Output
+from nixt.clients import Buffer, Buffered, Client, ClientPool, Output
 from nixt.engines import Engine
 from nixt.handler import Handler, Message
 from nixt.loggers import Logging
@@ -33,6 +33,7 @@ def __dir__():
        'Buffered',
        'Client',
        'Clients',
+       'ClientPool',
        'Commands',
        'Disk',
        'Engine',
