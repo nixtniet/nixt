@@ -8,7 +8,7 @@
 from .brokers import Broker, Clients
 from .clients import Buffer, Buffered, Client, Output
 from .engines import Engine
-from .handler import Handler
+from .handler import Handler, Message
 from .loggers import Logging
 from .objects import Base, Json, Object
 from .threads import Task, Thread

@@ -5,7 +5,6 @@
 
 
 import argparse
-import inspect
 import logging
 import os
 import readline
@@ -14,8 +13,8 @@ import time
 import _thread
 
 
-from .defines import Boot, Client, Commands, Logging, Main, Message
-from .defines import Mods, Md5, Object, Utils, Thread, Workdir, j
+from .defines import Boot, Client, Commands, Main, Message
+from .defines import Mods, Object, Utils, Workdir
 
 
 Main.name = Utils.pkgname(Commands)
@@ -47,9 +46,10 @@ class Arguments:
         optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
         optionparser.add_argument("-p", "--path", default="", help='path to working directory.', metavar="path")
         optparser = theparser.add_argument_group()
-        optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
+        optparser.add_argument("--admin", action="store_true", help=argparse.SUPPRESS)
         optparser.add_argument("--check", action="store_false", help=argparse.SUPPRESS)
         optparser.add_argument("--default", default="irc,rss", help=argparse.SUPPRESS)
+        optparser.add_argument("--md5", action="store_true", help="do a md5 check on available modules.")
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
         optparser.add_argument("--read", action="store_true", help=argparse.SUPPRESS)
         optparser.add_argument("--user", action="store_false", help="use local mods directory.")

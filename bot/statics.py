@@ -5,14 +5,15 @@
 
 
 CORE = {
-    "command": "b1fb81c86324097c6c4e4f615c4cd8b3",
+    "booting": "7f3f17da306eee517b5256fbea0f97aa",
+    "command": "d97c9bac74a90dbfb959ca399fec3732",
     "configs": "468b30e83c9aeb633a1244af9324d90d",
-    "defines": "13c170d470e580fc3e1b1a203007848d",
-    "package": "5440acf33c6cdbe86c5db36d4b03e9d2",
+    "defines": "f9f9d80d317dd93a73b4fd71079004ca",
+    "package": "8de506ff302f62c09699f742e2f835a8",
     "parsers": "df2e5d6ee21e7652b50010d694daa7f3",
     "persist": "664846a5b3f2bb0a661fb5176510f093",
     "repeats": "c125a883fbe0d4d7c38980f17bb8331f",
-    "runtime": "c6a3c7f445c796d79924911fc3ce67ae"
+    "runtime": "3320ae43801009d2215f388354116b3a"
 }
 
 

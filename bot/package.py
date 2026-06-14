@@ -7,7 +7,7 @@
 import logging
 
 
-from nixt.defines import Md5, Thread, Utils, e, j
+from nixt.defines import Md5, Utils, e, j
 
 
 class Mods:

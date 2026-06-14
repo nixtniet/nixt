@@ -30,7 +30,8 @@ class Boot:
         Logging.size(len(Main.name))
         Logging.level(Main.level)
         Commands.bork = Main.bork
-        Mods.sums()
+        if Main.md5:
+            Mods.sums()
 
     @classmethod
     def core(cls):

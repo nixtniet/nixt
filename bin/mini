@@ -11,13 +11,11 @@ import sys
 sys.path.insert(0, os.getcwd())
 
 
-from bot.defines import Boot, Client, Commands, Logging, Message, Mods, Workdir
+from bot.defines import Boot, Client, Commands, Main, Message
 
 
-Logging.level('debug')
-Mods.add("mods", "mods")
-Mods.add('other', 'other')
-Workdir = os.path.expanduser("~/.nixt")
+Main.user = True
+Main.level = "debug"
 
 
 class CLI(Client):
@@ -40,6 +38,7 @@ class CLI(Client):
 
 def main():
     "cli script."
+    Boot.configure()
     Boot.scanner()
     cli = CLI()
     cli.silent = False

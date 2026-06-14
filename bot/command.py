@@ -7,7 +7,6 @@
 import inspect
 
 
-from .package import Mods
 from .parsers import Parse
 
 

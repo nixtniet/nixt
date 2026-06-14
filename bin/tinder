@@ -169,11 +169,11 @@ def final():
 
 
 def main():
-    Runs.banner()
     if e(Main.wdr):
         shutil.rmtree(Main.wdr)
     if Runs.check("v"):
         Main.verbose = True
+        Runs.banner()
     if Runs.check("t"):
         Main.threaded = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
