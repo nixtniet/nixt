@@ -129,54 +129,10 @@ class Client(Handler, Output):
         raise NotImplementedError
 
 
-class ClientPool:
-
-    clients = []
-    lock = threading.RLock()
-    last = 0
-    nrevents = 0
-    nrcpu = 1
-
-    @classmethod
-    def add(cls, client):
-        "add a client to the pool."
-        cls.clients.append(client)
-
-    @classmethod
-    def init(cls, client):
-        "initialize pool with nr_cpu clients."
-        with cls.lock:
-            cls.nrcpu = os.cpu_count()
-            for _x in range(cls.nrcpu):
-                clt = client()
-                clt.start()
-                cls.add(clt)
-
-    @classmethod
-    def put(cls, *args):
-        "put job to the pool."
-        with cls.lock:
-            if cls.last >= cls.nrcpu-1:
-                cls.last = 0
-            cls.clients[cls.last].put(*args)
-            cls.last += 1
-            cls.nrevents += 1
-
-    @classmethod
-    def shutdown(cls):
-        for client in cls.clients:
-            client.wait()
-        time.sleep(0.01)
-        for client in cls.clients:
-            client.stop()
-        time.sleep(0.01)
-
-
 def __dir__():
     return (
         'Buffer',
         'Buffered',
         'Client',
-        'ClientPool',
         'Output'
     )

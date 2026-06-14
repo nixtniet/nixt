@@ -13,9 +13,6 @@ import time
 from bot.defines import Base, Broker, Disk, Locate, Object, Thread, Time
 
 
-whitelist = ['tmr']
-
-
 rand = random.SystemRandom()
 
 

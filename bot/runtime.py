@@ -13,11 +13,11 @@ import time
 import _thread
 
 
-from .defines import Boot, Client, Commands, Main, Message
+from .defines import Boot, Client, Main, Message
 from .defines import Mods, Object, Utils, Workdir
 
 
-Main.name = Utils.pkgname(Commands)
+Main.name = Utils.pkgname(Mods)
 
 
 class Arguments:
@@ -65,7 +65,7 @@ class CLI(Client):
         evt = Message()
         evt.orig = repr(self)
         evt.text = text
-        Commands.command(evt)
+        Mods.command(evt)
         evt.wait()
         return evt
 
@@ -83,7 +83,7 @@ class Console(CLI):
 
     def handle(self, event):
         "handle event."
-        Commands.command(event)
+        Mods.command(event)
 
     def poll(self):
         "return event."

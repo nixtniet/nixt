@@ -4,21 +4,40 @@
 "module management"
 
 
+import inspect
 import logging
 
 
 from nixt.defines import Md5, Utils, e, j
 
 
+from .parsers import Parse
+
+
 class Mods:
 
+    cmds = {}
     core = {}
     dirs = {}
     md5s = {}
     modules = {}
 
     @classmethod
-    def add(cls, pkgname, path):
+    def add(cls, func):
+        cls.cmds[func.__name__] = func
+
+    @classmethod
+    def command(cls, evt):
+        "command callback."
+        Parse.parse(evt, evt.text)
+        func = cls.cmds.get(evt.cmd, None)
+        if func:
+            func(evt)
+            evt.display()
+        evt.ready()
+
+    @classmethod
+    def dir(cls, pkgname, path):
         "add module/patgh."
         cls.dirs[pkgname] = path
 
@@ -71,6 +90,12 @@ class Mods:
                 continue
             mods.extend(Utils.listdir(path, ignore))
         return sorted(set(mods))
+
+    @classmethod
+    def scan(cls, mod):
+        for nme, func in inspect.getmembers(mod, inspect.isfunction):
+            if 'event' in inspect.signature(func).parameters:
+                cls.add(func)
 
     @classmethod
     def sums(cls):

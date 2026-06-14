@@ -208,9 +208,6 @@
     %s is Public Domain."""
 
 
-whitelist = ['man']
-
-
 def man(event):
     args = event.args
     try:

@@ -8,16 +8,13 @@ import threading
 import time
 
 
-from bot.defines import Broker, Commands, Locate, Main, Md5
+from bot.defines import Broker, Locate, Main, Md5, Mods
 from bot.defines import Object, Time, Workdir
-
-
-whitelist = ['cmd', 'fie', 'flt', 'thr', 'upt', 'ver']
 
 
 def cmd(event):
     "list available commands."
-    event.reply(",".join(sorted(Commands.cmds)))
+    event.reply(",".join(sorted(Mods.cmds)))
 
 
 def fie(event):

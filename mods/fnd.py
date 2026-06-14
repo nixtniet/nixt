@@ -10,9 +10,6 @@ import time
 from bot.defines import Locate, Object, Time, Workdir
 
 
-whitelist = ["fnd"]
-
-
 def fnd(event):
     "find objects."
     if not event.rest:

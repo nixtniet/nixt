@@ -7,9 +7,6 @@
 from bot.defines import Broker
 
 
-whitelist = ['lou', 'sil']
-
-
 def lou(event):
     "enable silent mode."
     bot = Broker.get(event.orig)

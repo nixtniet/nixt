@@ -14,11 +14,8 @@ import time
 import _thread
 
 
-from bot.defines import Base, Broker, Buffered, Commands, Disk, Engine
-from bot.defines import Main, Message, Mods, Object, Thread, Utils
-
-
-whitelist = ['pwd']
+from bot.defines import Base, Broker, Buffered, Disk, Engine, Main
+from bot.defines import Message, Mods, Object, Thread, Utils
 
 
 def init():
@@ -600,7 +597,7 @@ def cb_privmsg(evt):
             evt.text = evt.text[0].lower() + evt.text[1:]
         if evt.text:
             name = evt.text and evt.text.split()[0]
-            Thread.launch(Commands.command, evt, name=name)
+            Thread.launch(Mods.command, evt, name=name)
 
 
 def cb_quit(evt):

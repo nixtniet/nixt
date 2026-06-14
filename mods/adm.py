@@ -11,9 +11,6 @@ import os
 from bot.defines import Json, Main, Md5, Mods, d, j
 
 
-whitelist = ['srv', 'tbl']
-
-
 def srv(event):
     "generate systemd service file."
     import getpass
