@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+# This file is placed in the Public DOmain.
+
+
+"run linters"
+
+
+import os
+import sys
+
+
+NAME = "nixt"
+
+
+SKIP = ["--", "Your", "All"]
+
+
+def doskip(line):
+    for x in SKIP:
+        if x in line:
+            return True
+    return False     
+
+
+def popen(txt):
+    for line in os.popen(txt).readlines():
+        line = line.strip()
+        if not line or doskip(line):
+            continue
+        print(line.rstrip())
+        sys.stdout.flush()
+
+
+popen(f"ruff check {NAME} bot bin mods other testing")
+popen(f"pylint {NAME} bot bin mods other testing")
+popen(f"flake8 {NAME} bot bin mods other testing")
+popen("bin/tinder")
+
+
