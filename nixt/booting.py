@@ -5,6 +5,7 @@
 
 
 import os
+import threading
 import time
 import _thread
 
@@ -68,6 +69,14 @@ class Boot:
                 except (KeyboardInterrupt, EOFError):
                     return False
         return True
+
+    @classmethod
+    def wait(cls, nr=1):
+        "wait until nr threads left running."
+        while 1:
+            if len(threading.enumerate()) == nr:
+                break
+            time.sleep(0.01)
 
 
 def __dir__():
