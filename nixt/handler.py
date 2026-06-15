@@ -8,8 +8,6 @@ import queue
 import threading
 
 
-from .brokers import Broker
-from .objects import Base
 from .threads import Thread
 
 
@@ -52,6 +50,7 @@ class Handler:
         "stop polling loop."
         self.istopped.set()
         self.idone.wait()
+
 
 def __dir__():
     return (

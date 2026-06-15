@@ -5,10 +5,8 @@
 
 
 import logging
-import os
 import queue
 import threading
-import time
 import _thread
 
 
@@ -83,7 +81,7 @@ class Buffer(Output):
 
     def stop(self):
         "stop output loop."
-        #self.wait()
+        # self.wait()
         self.ostopped.set()
         self.oqueue.put(None)
 
