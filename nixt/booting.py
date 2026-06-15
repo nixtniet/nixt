@@ -5,6 +5,8 @@
 
 
 import os
+import time
+import _thread
 
 
 from .configs import Main
