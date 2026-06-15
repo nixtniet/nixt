@@ -8,7 +8,7 @@ import time
 import unittest
 
 
-from bot.defines import Utils
+from nixt.defines import Utils
 
 
 class TestUtils(unittest.TestCase):

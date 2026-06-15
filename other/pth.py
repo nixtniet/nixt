@@ -4,7 +4,7 @@
 "show path to website"
 
 
-from bot.defines import d, e, j
+from nixt.defines import d, e, j
 
 
 whitelist = ['pth']

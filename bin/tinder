@@ -16,8 +16,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from bot.defines import Boot, Buffer, Commands, Engine, Logging, Main, Message, Mods
-from bot.defines import Object, Parse, Task, Thread, Time, Utils, Workdir, e
+from nixt.defines import Boot, Buffer, Engine, Logging, Main, Message, Mods, Object
+from nixt.defines import Parse, Task, Thread, Time, Utils, Workdir, e
 
 
 Main.debug = True
@@ -30,13 +30,13 @@ Task.bork = True
 Workdir.wdr = Main.wdr
 
 
-Mods.add("modules", Utils.moddir())
-Mods.add("mods", "mods")
-Mods.add("other", "other")
+Mods.dir("modules", Utils.moddir())
+Mods.dir("mods", "mods")
+Mods.dir("other", "other")
+Mods.scanner()
 
 
 Logging.level("debug")
-Boot.scanner()
 
 
 class CLI(Engine, Buffer):
@@ -44,7 +44,7 @@ class CLI(Engine, Buffer):
     def __init__(self):
         Buffer.__init__(self)
         Engine.__init__(self)
-        self.register("command", Commands.command)
+        self.register("command", Mods.command)
 
     def raw(self, text):
         if Main.verbose:
@@ -99,11 +99,11 @@ class Runs:
     @classmethod
     def banner(cls):
         "hello"
-        tme = time.ctime(time.time()).replace("  ", " ")
+        tmr = time.ctime(time.time()).replace("  ", " ")
         txt = "%s %s since %s %s (%s)" % (
             Main.name.upper(),
             Main.version,
-            tme,
+            tmr,
             Main.level.upper() or "INFO",
             Boot.core()
         )
@@ -259,7 +259,7 @@ pre = {
 
 post = {
     "dbg": [""],
-    "dne": [""," mekker"],
+    "dne": ["", "mekker"],
     "exp": [""],
     "rem": ["", "rem hnrss"]
 }

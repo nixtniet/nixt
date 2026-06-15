@@ -7,12 +7,12 @@
 import os
 
 
-from nixt.defines import Logging, Md5, Task, Thread, Utils, j
-
-
 from .configs import Main
+from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
+from .threads import Task, Thread
+from .utility import Md5, Utils, j
 
 
 class Boot:
@@ -42,6 +42,15 @@ class Boot:
         return Md5.source(Utils.source(statics))[:7].upper()
 
     @classmethod
+    def forever(cls):
+        "run forever until ctrl-c."
+        while True:
+            try:
+                time.sleep(0.01)
+            except (KeyboardInterrupt, EOFError):
+                _thread.interrupt_main()
+
+    @classmethod
     def init(cls, modlist, wait=False):
         "call init of modules that have an init function."
         thrs = []
@@ -57,12 +66,6 @@ class Boot:
                 except (KeyboardInterrupt, EOFError):
                     return False
         return True
-
-    @classmethod
-    def scanner(cls):
-        for name in Mods.list():
-            mod = Mods.get(name)
-            Mods.scan(mod)
 
 
 def __dir__():

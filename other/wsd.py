@@ -10,7 +10,7 @@ import logging
 from random import SystemRandom
 
 
-from bot.defines import Clients, Disk, Locate, Message, Repeater
+from nixt.defines import Clients, Disk, Locate, Message, Repeater
 
 
 whitelist = ['wsd']

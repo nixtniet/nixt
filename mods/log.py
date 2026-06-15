@@ -4,7 +4,7 @@
 "text logging"
 
 
-from bot.defines import Base, Disk
+from nixt.defines import Base, Disk
 
 
 class Log(Base):

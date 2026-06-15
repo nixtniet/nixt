@@ -8,8 +8,8 @@ import threading
 import time
 
 
-from bot.defines import Broker, Locate, Main, Md5, Mods
-from bot.defines import Object, Time, Workdir
+from nixt.defines import Broker, Locate, Main, Md5, Mods
+from nixt.defines import Object, Time, Workdir
 
 
 def cmd(event):

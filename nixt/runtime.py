@@ -133,15 +133,6 @@ class Runs(Boot):
         os.nice(10)
 
     @classmethod
-    def forever(cls):
-        "run forever until ctrl-c."
-        while True:
-            try:
-                time.sleep(0.01)
-            except (KeyboardInterrupt, EOFError):
-                _thread.interrupt_main()
-
-    @classmethod
     def privileges(cls):
         "drop privileges."
         import getpass
@@ -169,7 +160,9 @@ class Runs(Boot):
         if final:
             final()
 
+    forever = Boot.forever
     pid = Workdir.pid
+    scanner = Mods.scanner
 
 
 class Scripts:
