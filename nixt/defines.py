@@ -5,23 +5,23 @@
 "interface"
 
 
-from nixt.brokers import Broker, Clients
-from nixt.clients import Buffer, Buffered, Client, Output
-from nixt.engines import Engine
-from nixt.handler import Handler
-from nixt.loggers import Logging
-from nixt.message import Message
-from nixt.objects import Base, Json, Object
-from nixt.threads import Task, Thread
-from nixt.utility import Md5, Time, Utils, a, d ,e , i, j
-
-
 from .booting import Boot
+from .brokers import Broker, Clients
+from .clients import Buffer, Buffered, Client, Output
 from .configs import Main
+from .engines import Engine
+from .handler import Handler
+from .loggers import Logging
+from .message import Message
+from .objects import Base, Json, Object
 from .package import Mods
 from .parsers import Parse
 from .persist import Disk, Locate, Workdir
 from .repeats import Repeater
+from .threads import Task, Thread
+from .utility import Md5, Time, Utils, a, d ,e , i, j
+
+
 
 
 def __dir__():
