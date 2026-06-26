@@ -26,24 +26,8 @@ CORE = {
 
 
 MODULES = {
-    "adm": "8401272f40f65aaaeba7663d5fc238e1",
     "cfg": "53b9fa4ee87c3ec6b6258da86cfd2985",
-    "eml": "b33f7dc340c0e05d6e99102aeea918c5",
     "fnd": "5f7a6131faa81d80679af8d849f0b2a5",
-    "irc": "709ee4152a4f6c6889df0b3741ce0658",
     "log": "ca552dda4c3f406b3f443f259d7c6aad",
-    "man": "74abb30086a0c70ae638841fd097c817",
-    "mdl": "60cf22e3a8aa79b769bda7903dd76f97",
-    "pth": "37d4cb3e54bbdaf6df75cb268eb21465",
-    "req": "bc1984d2e9de0310dc1b468f25c7ab8c",
-    "rss": "9b6f7a98884a07b9ca62bb87fc1fb48a",
-    "rst": "8d190db67a5296e52a8635a1381a3a5d",
-    "shw": "1febc5dda77d495141f30b3daa2f9cc5",
-    "sil": "16cd3023c444d8b8088c2c9c9a6f41b2",
-    "slg": "e68f11973ddc2e3edeb0de0e16e9fe7a",
-    "tdo": "97381799961d649cc530e8588082d146",
-    "tmr": "23e9082e316fbe4f4ef5eae6a8abb445",
-    "udp": "e95a65139cc57f6af4a161222f74dd2d",
-    "web": "8e73815f1d64d476783465cb8f42a432",
-    "wsd": "a9d4f77c24929ec37b62044b9e83023a"
+    "shw": "1febc5dda77d495141f30b3daa2f9cc5"
 }

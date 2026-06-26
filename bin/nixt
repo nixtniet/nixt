@@ -49,7 +49,8 @@ def main():
     "main"
     Parse.parse(Main, " ".join(sys.argv[1:]))
     Boot.configure()
-    Mods.dir("mods", "mods")
+    if "u" in Main.opts:
+        Mods.dir("mods", "mods")
     Mods.scanner()
     Scripts.control()
 
