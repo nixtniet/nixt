@@ -8,7 +8,7 @@ import inspect
 import os
 
 
-from nixt.defines import Json, Main, Md5, Mods, d, j
+from nixt.defines import Json, Main, Md5, Mods
 
 
 def srv(event):
@@ -31,12 +31,12 @@ def tbl(event):
     for name in Mods.list():
         module = Mods.get(name)
         md5s[name] = Md5.md5(module.__file__)
-    corepath = d(inspect.getsourcefile(Mods))
+    corepath = os.path.dirname(inspect.getsourcefile(Mods))
     for path in os.listdir(corepath):
         if path.startswith("__") or not path.endswith(".py") or "statics" in path:
             continue
         name = path[:-3]
-        core[name] = Md5.md5(j(corepath, path))
+        core[name] = Md5.md5(os.path.join(corepath, path))
     event.reply("# This file is placed in the Public Domain.")
     event.reply("\n")
     event.reply('"static tables"')

@@ -26,7 +26,7 @@ class Logging:
     format = "%(module)-3s %(message)s"
 
     @classmethod
-    def level(cls, loglevel):
+    def level(cls, loglevel, systemd=False):
         "set log level."
         formatter = Format(cls.format, Logging.datefmt)
         stream = logging.StreamHandler()
@@ -47,20 +47,8 @@ class Logging:
         cls.format = newformat
 
 
-LEVELS = {
-    "notset": logging.NOTSET,
-    "debug": logging.DEBUG,
-    "info": logging.INFO,
-    "warning": logging.WARNING,
-    "error": logging.ERROR,
-    "critical": logging.CRITICAL,
-    "fatal": logging.FATAL
-}
-
-
 def __dir__():
     return (
-        'LEVELS',
         'Format',
         'Logging'
     )

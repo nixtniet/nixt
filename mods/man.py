@@ -169,8 +169,6 @@
     %s has it's user modules in the ~/.%s/mods directory, for a hello world
     command you would edit a file in ~/.%s/mods/hello.py and add the following
 
-        whitelist = ["hello"]
-
         def hello(event):
             event.reply("hello world !!")
 

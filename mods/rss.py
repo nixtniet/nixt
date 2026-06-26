@@ -8,6 +8,7 @@ import html
 import html.parser
 import http.client
 import logging
+import os
 import queue
 import re
 import threading
@@ -23,7 +24,7 @@ from urllib.parse import quote_plus, urlencode
 
 
 from nixt.defines import Base, Clients, Disk, Locate, Main, Object
-from nixt.defines import Repeater, Thread, Utils, i
+from nixt.defines import Repeater, Thread, Utils
 
 
 def init():
@@ -108,8 +109,7 @@ class Fetcher:
         oid = Disk.ident(State.modified)
         State.modifiedfn = Locate.last(State.modified) or oid
         if repeat:
-            repeater = Repeater(Config.polltime, self.run)
-            repeater.start()
+            Repeater.add(Config.polltime, self.run)
 
     def stop(self):
         "sto prss fetcher."
@@ -618,7 +618,7 @@ def imp(event):
         event.iface("<filename>")
         return
     fnm = event.args[0]
-    if not i(fnm):
+    if not os.path.isfile(fnm):
         event.reply(f"no {fnm} file found.")
         return
     with Run.importlock:

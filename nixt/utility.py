@@ -21,8 +21,8 @@ j = os.path.join
 
 class Md5:
 
-    @staticmethod
-    def md5(path):
+    @classmethod
+    def md5(cls, path):
         "calculate md5sum of a file."
         import hashlib
         md5 = hashlib.md5()
@@ -39,8 +39,8 @@ class Md5:
             return ""
         return cls.source(Utils.source(statics))[:7].upper()
 
-    @staticmethod
-    def dir(path, md5):
+    @classmethod
+    def dir(cls, path, md5):
         "create a md5 for a directory."
         for fnm in os.listdir(path):
             if not fnm.endswith(".py"):
@@ -49,8 +49,8 @@ class Md5:
             with open(mpath, "r", encoding="utf-8") as file:
                 md5.update(file.read().encode("utf-8"))
 
-    @staticmethod
-    def source(src):
+    @classmethod
+    def source(cls, src):
         "determine md5 of source code."
         import hashlib
         md5 = hashlib.md5()
@@ -61,19 +61,32 @@ class Md5:
 class Time:
 
     starttime = time.time()
+    times = [
+        "%a, %d %b %Y %H:%M:%S %z",
+        "%a, %d %b %Y %H:%M:%S",
+        "%a, %d %b %Y %T %z",
+        "%a, %d %b %Y %T",
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%d %H:%M",
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%d",
+        "%d-%m-%Y",
+        "%d-%m",
+        "%m-%d"
+    ]
 
-    @staticmethod
-    def date(daystr):
+    @classmethod
+    def date(cls, daystr):
         "date from string."
         daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
-        for fmat in TIMES:
+        for fmat in cls.times:
             try:
                 return time.mktime(time.strptime(daystr, fmat))
             except ValueError:
                 pass
 
-    @staticmethod
-    def elapsed(seconds, short=True):
+    @classmethod
+    def elapsed(cls, seconds, short=True):
         "seconds to string."
         txt = ""
         nsec = float(seconds)
@@ -113,8 +126,8 @@ class Time:
         txt = txt.strip()
         return txt
 
-    @staticmethod
-    def extract(daystr):
+    @classmethod
+    def extract(cls, daystr):
         "extract date/time from string."
         daystr = str(daystr)
         res = None
@@ -124,17 +137,17 @@ class Time:
                     return int(word[1:]) + time.time()
                 except (ValueError, IndexError):
                     continue
-            res = Time.date(word.strip())
+            res = cls.date(word.strip())
             if not res:
                 date = datetime.date.fromtimestamp(time.time())
                 word = f"{date.year}-{date.month}-{date.day}" + " " + word
-                res = Time.date(word.strip())
+                res = cls.date(word.strip())
             if res:
                 break
         return res
 
-    @staticmethod
-    def fntime(daystr):
+    @classmethod
+    def fntime(cls, daystr):
         "time from path."
         datestr = " ".join(daystr.split(os.sep)[-2:])
         datestr = datestr.replace("_", " ")
@@ -147,18 +160,18 @@ class Time:
             timd += float("." + rest)
         return float(timd)
 
-    @staticmethod
-    def timed(datestr):
+    @classmethod
+    def timed(cls, datestr):
         "return time from string."
         if not datestr:
             return time.time()
-        tme = Time.date(datestr)
+        tme = cls.date(datestr)
         if not tme:
             tme = time.time()
         return tme
 
-    @staticmethod
-    def today():
+    @classmethod
+    def today(cls):
         "start of the day."
         return str(datetime.datetime.today()).split()[0]
 
@@ -192,16 +205,12 @@ class Utils:
 
     @staticmethod
     def clsname(obj):
-        "reutrn classname of an object."
+        "return classname of an object."
         return obj.__class__.__name__
 
     @staticmethod
-    def html(text):
-        "wrap text as html."
-        return """<!doctype html>\n<html>   %s\n</html>""" % text
-
-    @staticmethod
     def listdir(path, ignore=""):
+        "list modules in a directory."
         return [
                 x[:-3] for x in os.listdir(path)
                 if x.endswith(".py") and
@@ -221,6 +230,7 @@ class Utils:
 
     @staticmethod
     def pkgdir(obj):
+        "return directory in which a module is defined."
         return d(inspect.getfile(obj))
 
     @staticmethod
@@ -253,6 +263,7 @@ class Utils:
 
     @staticmethod
     def source(module):
+        "return the source of a module."
         return module.__loader__.get_source(module.__name__)
 
     @staticmethod
@@ -271,37 +282,21 @@ class Utils:
         return os.path.dirname(inspect.getfile(obj))
 
     @staticmethod
-    def wrapped(func):
+    def wrapped(func, *args):
         "wrap function in a try/except, silence ctrl-c/ctrl-d."
         try:
-            func()
+            func(*args)
         except (KeyboardInterrupt, EOFError):
             pass
-
-
-TIMES = [
-    "%a, %d %b %Y %H:%M:%S %z",
-    "%a, %d %b %Y %H:%M:%S",
-    "%a, %d %b %Y %T %z",
-    "%a, %d %b %Y %T",
-    "%Y-%m-%d %H:%M:%S",
-    "%Y-%m-%d %H:%M",
-    "%Y-%m-%d %H:%M:%S",
-    "%Y-%m-%d",
-    "%d-%m-%Y",
-    "%d-%m",
-    "%m-%d"
-]
+        except Exception as ex:
+            logging.exception(ex)
+            return False
+        return True
 
 
 def __dir__():
     return (
-        'Times',
         'Md5',
         'Time',
-        'Utils',
-        'a',
-        'd',
-        'e',
-        'j'
+        'Utils'
     )

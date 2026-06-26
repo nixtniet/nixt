@@ -27,7 +27,14 @@ def init():
     except (KeyboardInterrupt, EOFError):
         _thread.interrupt_main()
     if irc.events.joined.is_set():
-        logging.warning("%s", Object.fmt(irc.cfg, skip=["ignore", "word"]))
+        logging.warning("%s", Object.fmt(irc.cfg, skip=[
+            "ignore",
+            "xname",
+            "realname",
+            "username",
+            "word"
+            ]
+        ))
     else:
         irc.stop()
     return irc
@@ -402,7 +409,7 @@ class IRC(Engine, Buffered):
             txt = self.buffer.pop(0)
         except IndexError:
             txt = ""
-        return self.event(txt)
+        self.iqueue.put(self.event(txt))
 
     def raw(self, text):
         "raw output to the server."
@@ -613,7 +620,7 @@ def cb_quit(evt):
 def pwd(event):
     "generate sasl password."
     if len(event.args) != 2:
-        event.iface("pwd <nick> <password>")
+        event.iface("<nick> <password>")
         return
     import base64
     arg1 = event.args[0]

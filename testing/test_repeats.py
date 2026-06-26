@@ -17,5 +17,5 @@ def hello(event):
 class TestRepeater(unittest.TestCase):
 
     def test_construct(self):
-        rpt = Repeater(60, hello)
-        self.assertTrue(rpt)
+        Repeater.add(60, hello)
+        self.assertTrue(Repeater.todo)

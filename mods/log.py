@@ -17,7 +17,7 @@ class Log(Base):
 def log(event):
     "log text."
     if len(event.args) == 0:
-        event.iface("add <txt>")
+        event.iface("<txt>")
         return
     obj = Log()
     obj.txt = event.rest

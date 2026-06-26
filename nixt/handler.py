@@ -4,8 +4,11 @@
 "event handler"
 
 
+import logging
+import os
 import queue
 import threading
+import _thread
 
 
 from .threads import Thread
@@ -25,19 +28,27 @@ class Handler:
     def poller(self):
         "polling loop."
         while not self.istopped.is_set():
-            event = self.poll()
+            self.poll()
+            event = self.iqueue.get()
             if event is None:
+                self.iqueue.task_done()
                 break
             event.orig = repr(self)
-            event._thr = Thread.launch(self.handle, event)
+            try:
+                self.handle(event)
+                self.iqueue.task_done()
+            except (KeyboardInterrupt, EOFError):
+                _thread.interrupt_main()
+            except Exception as ex:
+                logging.exception(ex)
+                os._exit(1)
         self.idone.set()
 
     def poll(self):
-        "return event."
-        return self.iqueue.get()
+        "create event and put it on the iqueue."
 
     def put(self, event):
-        "put event on queue."
+        "put event on iqueue."
         self.iqueue.put(event)
 
     def start(self, daemon=True):
@@ -48,8 +59,16 @@ class Handler:
 
     def stop(self):
         "stop polling loop."
-        # self.istopped.set()
-        # self.idone.wait()
+        self.istopped.set()
+        self.iqueue.put(None)
+        self.idone.wait()
+
+    def wait(self):
+        "wait for handler to finish."
+        try:
+            self.iqueue.join()
+        except Exception:
+            _thread.interrupt_main()
 
 
 def __dir__():

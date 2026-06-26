@@ -4,6 +4,7 @@
 "persist tests"
 
 
+import os
 import sys
 import unittest
 
@@ -11,7 +12,7 @@ import unittest
 sys.path.insert(0, ".")
 
 
-from nixt.defines import Disk, Main, Object, Workdir, e, j
+from nixt.defines import Disk, Main, Object, Workdir
 
 
 Workdir.wdr = '.test'
@@ -27,9 +28,9 @@ class TestPersist(unittest.TestCase):
     def test_save(self):
         obj = Object()
         opath = Disk.write(obj)
-        self.assertTrue(e(j(Workdir.wdr, "store", opath)))
+        self.assertTrue(os.path.exists(os.path.join(Workdir.wdr, "store", opath)))
 
     def test_writecfg(self):
         Main.a = "b"
         Disk.write(Main, "main", "config")
-        self.assertTrue(e(j(Workdir.wdr, "config", "main")))
+        self.assertTrue(os.path.exists(os.path.join(Workdir.wdr, "config", "main")))

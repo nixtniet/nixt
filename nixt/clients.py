@@ -46,9 +46,6 @@ class Output:
         "say text in channel."
         self.raw(text)
 
-    def wait(self):
-        "bogus wait."
-
 
 class Buffer(Output):
 
@@ -81,13 +78,11 @@ class Buffer(Output):
 
     def stop(self):
         "stop output loop."
-        # self.wait()
         self.ostopped.set()
         self.oqueue.put(None)
 
     def wait(self):
         "wait for output to finish."
-        print(f"wait {str(self)}")
         try:
             self.oqueue.join()
         except Exception as ex:
@@ -112,8 +107,8 @@ class Buffered(Handler, Buffer):
 
     def stop(self):
         "stop output loop."
-        Handler.stop(self)
         Buffer.stop(self)
+        Handler.stop(self)
 
 
 class Client(Handler, Output):

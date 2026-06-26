@@ -4,7 +4,6 @@
 "in the beginning"
 
 
-import os
 import threading
 import time
 import _thread
@@ -14,26 +13,37 @@ from .configs import Main
 from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
-from .threads import Task, Thread
-from .utility import Md5, Utils, j
+from .threads import Thread
+from .utility import Md5, Utils
 
 
 class Boot:
 
     @classmethod
+    def banner(cls):
+        "hello."
+        tmr = time.ctime(time.time()).replace("  ", " ")
+        txt = "%s %s since %s %s (%s)" % (
+            Main.name.upper(),
+            Main.version,
+            tmr,
+            Main.level.upper() or "WARNING",
+            cls.core()
+        )
+        return txt.replace("  ", " ")
+
+    @classmethod
     def configure(cls):
         "configure program."
-        Workdir.wdr = Main.path or os.path.expanduser(f"~/.{Main.name}")
-        Mods.dir(f"{Main.name}.modules", j(Utils.pkgdir(Boot), 'modules'))
+        Workdir.wdr = Main.path or Workdir.home(Main.name)
+        Mods.dir(f"{Main.name}.modules", Main.moddir or Utils.moddir())
         Mods.dir("modules", Workdir.moddir())
         if Main.user:
             Mods.dir("mods", "mods")
             Mods.dir("other", "other")
         Logging.size(len(Main.name))
-        Logging.level(Main.level)
-        Task.bork = Main.bork
-        if Main.md5:
-            Mods.sums()
+        Logging.level(Main.level or "warning")
+        Mods.sums()
 
     @classmethod
     def core(cls):
@@ -49,7 +59,7 @@ class Boot:
         "run forever until ctrl-c."
         while True:
             try:
-                time.sleep(0.01)
+                time.sleep(1.0)
             except (KeyboardInterrupt, EOFError):
                 _thread.interrupt_main()
 
@@ -69,6 +79,8 @@ class Boot:
                 except (KeyboardInterrupt, EOFError):
                     return False
         return True
+
+    scanner = Mods.scanner
 
     @classmethod
     def wait(cls, nr=1):

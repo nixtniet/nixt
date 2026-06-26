@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"message"
+"only the message"
 
 
 import threading
@@ -22,7 +22,7 @@ class Message(Base):
         self.cmd = ""
         self.mod = ""
         self.index = 0
-        self.kind = "event"
+        self.kind = "message"
         self.orig = ""
         self.result = []
         self.text = ""

@@ -13,13 +13,13 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from nixt.defines import Base, Main, Thread, Utils, e, j
+from nixt.defines import Base, Main, Thread, Utils
 
 
 def init():
     "initialize web server."
     path = Utils.pkgname(Base)
-    if not e(j(path, "network", 'index.html')):
+    if not os.path.exists(os.path.join(path, "network", 'index.html')):
         logging.warning("no index.html")
         return
     try:
@@ -78,7 +78,7 @@ class HTTPHandler(BaseHTTPRequestHandler):
     def setup(self):
         "setup handler."
         BaseHTTPRequestHandler.setup(self)
-        self._path = j(Utils.where(Base), "network")
+        self._path = os.path.join(Utils.where(Base), "network")
         self._size = 0
         self._ip = self.client_address[0]
 
@@ -113,7 +113,7 @@ class HTTPHandler(BaseHTTPRequestHandler):
             self.path = "index.html"
         path = self._path + os.sep + self.path
         ext = path[-3]
-        if not e(path):
+        if not os.path.exists(path):
             self.write_header("text/html")
             self.send_response(404)
             self.end_headers()

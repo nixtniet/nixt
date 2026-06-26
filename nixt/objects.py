@@ -87,67 +87,52 @@ class Json:
 
 class Object:
 
-    @staticmethod
-    def clear(obj):
+    @classmethod
+    def clear(cls, obj):
         "remove all items from the object."
         obj.__dict__.clear()
 
-    @staticmethod
-    def cls(obj):
+    @classmethod
+    def clz(cls, obj):
         "return class name of an object."
-        return Object.fqn(obj).split(".")[-1]
+        return cls.fqn(obj).split(".")[-1]
 
-    @staticmethod
-    def construct(obj, *args, **kwargs):
+    @classmethod
+    def construct(cls, obj, *args, **kwargs):
         "object contructor."
         if args:
             val = args[0]
             if isinstance(val, zip):
-                Object.update(obj, dict(val))
+                cls.update(obj, dict(val))
             elif isinstance(val, dict):
-                Object.update(obj, val)
+                cls.update(obj, val)
             else:
-                Object.update(obj, vars(val))
+                cls.update(obj, vars(val))
         if kwargs:
-            Object.update(obj, kwargs)
+            cls.update(obj, kwargs)
 
-    @staticmethod
-    def copy(obj):
+    @classmethod
+    def copy(cls, obj):
         "return shallow copy of the object."
         oobj = type(obj)()
-        Object.update(oobj, obj.__dict__.copy())
+        cls.update(oobj, obj.__dict__.copy())
         return oobj
 
-    @staticmethod
-    def deleted(obj):
+    @classmethod
+    def deleted(cls, obj):
         "check whether obj had deleted flag set."
         return "__deleted__" in dir(obj) and obj.__deleted__
 
-    @staticmethod
-    def difference(obj, *others):
-        "return a new object with elements that are not in the others."
-        raise NotImplementedError
-
-    @staticmethod
-    def difference_update(obj, *others):
-        "update the object, removing elements found in others."
-        raise NotImplementedError
-
-    @staticmethod
-    def discard(obj):
-        "remove an element from a object if it is a member."
-        raise NotImplementedError
-
-    @staticmethod
-    def edit(obj, setter={}, skip=False):
+    @classmethod
+    def edit(cls, obj, setter={}, skip=False):
         "update object with dict."
-        for key, val in Object.items(setter):
+        for key, val in cls.items(setter):
             if skip and val == "":
                 continue
-            Object.typed(obj, key, val)
+            cls.typed(obj, key, val)
 
-    @staticmethod
-    def fmt(obj, args=[], skip=[], plain=False, empty=False):
+    @classmethod
+    def fmt(cls, obj, args=[], skip=[], plain=False, empty=False):
         "format object info printable string."
         if args == []:
             args = list(obj.__dict__.keys())
@@ -171,56 +156,31 @@ class Object:
             elif isinstance(value, str):
                 txt += f'{key}="{value}" '
             else:
-                txt += f"{key}={Object.cls(value)}({str(value)}) "
+                txt += f"{key}={cls.clz(value)}({str(value)}) "
         if txt == "":
             txt = "{}"
         return txt.strip()
 
-    @staticmethod
-    def fqn(obj):
+    @classmethod
+    def fqn(cls, obj):
         "full qualified name."
         kin = str(type(obj)).split()[-1][1:-2]
         if kin == "type":
             kin = f"{obj.__module__}.{obj.__name__}"
         return kin
 
-    @staticmethod
-    def fromkeys(obj, keyz, value=None):
+    @classmethod
+    def fromkeys(cls, obj, keyz, value=None):
         "create a new object with keys from iterable and values set to value."
         return obj.__dict__.fromkeys(keyz, value)
 
-    @staticmethod
-    def get(obj, key, default=None):
+    @classmethod
+    def get(cls, obj, key, default=None):
         "return value for key if key is in the object, otherwise return default."
         return obj.__dict__.get(key, default)
 
-    @staticmethod
-    def intersection(obj, *others):
-        "return a new object with elements common to all others."
-        raise NotImplementedError
-
-    @staticmethod
-    def intersection_update(obj, *others):
-        "update the object, keeping only elements found in it and all others."
-        raise NotImplementedError
-
-    @staticmethod
-    def isdisjoint(obj, other):
-        "return True if two objects have a null intersection."
-        raise NotImplementedError
-
-    @staticmethod
-    def isubset(obj, other):
-        "report whether another object contains this object's keys."
-        raise NotImplementedError
-
-    @staticmethod
-    def isuperset(obj, other):
-        "report whether this object contains another object's keys."
-        raise NotImplementedError
-
-    @staticmethod
-    def items(obj):
+    @classmethod
+    def items(cls, obj):
         "object's key,value pairs."
         if isinstance(obj, type):
             return [(x, getattr(obj, x)) for x in dir(obj) if not x.startswith("_")]
@@ -230,8 +190,8 @@ class Object:
             return obj.items()
         return obj.__dict__.items()
 
-    @staticmethod
-    def keys(obj):
+    @classmethod
+    def keys(cls, obj):
         "object's keys."
         if isinstance(obj, dict):
             return obj.keys()
@@ -239,52 +199,47 @@ class Object:
             return obj.keys()
         return obj.__dict__.keys()
 
-    @staticmethod
-    def merge(obj, obj2):
+    @classmethod
+    def merge(cls, obj, obj2):
         "skip emoty values."
-        for key, value in Object.items(obj2):
+        for key, value in cls.items(obj2):
             if not value and getattr(obj, key, False):
                 continue
             setattr(obj, key, value)
 
-    @staticmethod
-    def notset(obj, obj2):
+    @classmethod
+    def notset(cls, obj, obj2):
         "only set if not set."
-        for key, value in Object.items(obj2):
+        for key, value in cls.items(obj2):
             if getattr(obj, key, False):
                 continue
             if value:
                 setattr(obj, key, value)
 
-    @staticmethod
-    def pop(obj, key, default=None):
+    @classmethod
+    def pop(cls, obj, key, default=None):
         "remove key from object and return it's value. return default or KeyError."
         return obj.__dict__.pop(key, default)
 
-    @staticmethod
-    def popitem(obj):
+    @classmethod
+    def popitem(cls, obj):
         "remove and return (key, value) pair."
         return obj.__dict__.popitem()
 
-    @staticmethod
-    def reduce(obj):
+    @classmethod
+    def reduce(cls, obj):
         "return dict with values setted attributes."
         result = {}
-        for key, value in Object.items(obj):
+        for key, value in cls.items(obj):
             if value:
                 result[key] = value
         return result
 
-    @staticmethod
-    def remove(obj, other):
-        "remove an element from an object."
-        raise NotImplementedError
-
-    @staticmethod
-    def search(obj, selector={}, matching=False):
+    @classmethod
+    def search(cls, obj, selector={}, matching=False):
         "check whether object matches search criteria."
         res = False
-        for key, value in Object.items(selector):
+        for key, value in cls.items(selector):
             val = getattr(obj, key, None)
             if not val:
                 res = False
@@ -298,11 +253,11 @@ class Object:
             res = True
         return res
 
-    @staticmethod
-    def skip(obj, chars="_"):
+    @classmethod
+    def skip(cls, obj, chars="_"):
         "skip keys containing chars."
         res = Base()
-        for key, value in Object.items(obj):
+        for key, value in cls.items(obj):
             if isinstance(value, types.MethodType):
                 continue
             donext = False
@@ -314,18 +269,8 @@ class Object:
             setattr(res, key, value)
         return res
 
-    @staticmethod
-    def symmetric_difference(obj, other):
-        "return a new  object with elements in either the object or other but not both."
-        raise NotImplementedError
-
-    @staticmethod
-    def symmetric_difference_update(obj, other):
-        "update the object, keeping only elements found in either object, but not in both."
-        raise NotImplementedError
-
-    @staticmethod
-    def typed(obj, key, val):
+    @classmethod
+    def typed(cls, obj, key, val):
         "assign proper types."
         if not val:
             return
@@ -343,13 +288,8 @@ class Object:
             pass
         setattr(obj, key, val)
 
-    @staticmethod
-    def union(obj, *others):
-        "return a new object with elements from the object and all others."
-        raise NotImplementedError
-
-    @staticmethod
-    def update(obj, data, empty=True):
+    @classmethod
+    def update(cls, obj, data, empty=True):
         "update object,"
         if isinstance(obj, type):
             if isinstance(data, type):
@@ -375,8 +315,8 @@ class Object:
         else:
             obj.__dict__.update(data.__dict__)
 
-    @staticmethod
-    def values(obj):
+    @classmethod
+    def values(cls, obj):
         "object's values."
         if isinstance(obj, type):
             return [getattr(obj, x) for x in dir(obj) if not x.startswith("_")]

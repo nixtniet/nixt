@@ -64,11 +64,7 @@ def thr(event):
             uptime = time.time() - thread.starttime
         else:
             uptime = time.time() - Time.starttime
-        if "." in thread.name:
-            name = thread.name.split('.')[-1]
-        else:
-            name = thread.name
-        result.append((uptime, name))
+        result.append((uptime, thread.name))
     res = []
     for uptime, txt in sorted(result, key=lambda x: x[0]):
         lap = Time.elapsed(uptime)
