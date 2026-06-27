@@ -19,15 +19,7 @@ CORE = {
     "parsers": "8af0b703167b66dd234a3293d06ff598",
     "persist": "2ce08171a7328d2fa90fd136dfb711da",
     "repeats": "771cffbbb00eb3e3eab9a9e46d6c8468",
-    "runtime": "f07bd8b5659d0d702a1203ed39fc534c",
+    "runtime": "5b59267595dea28dc5f2ee5cdf3c4f42",
     "threads": "ba7e8c7a6371a84d9f9081f98daaec2d",
     "utility": "dce273808f58d6ab73944261956be6ac"
-}
-
-
-MODULES = {
-    "cfg": "53b9fa4ee87c3ec6b6258da86cfd2985",
-    "fnd": "5f7a6131faa81d80679af8d849f0b2a5",
-    "log": "ca552dda4c3f406b3f443f259d7c6aad",
-    "shw": "1febc5dda77d495141f30b3daa2f9cc5"
 }

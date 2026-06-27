@@ -21,7 +21,6 @@ from nixt.defines import Utils, Workdir
 class CLI(Client):
 
     def cmd(self, text):
-        "do command."
         evt = Message()
         evt.orig = repr(self)
         evt.text = text
@@ -30,7 +29,6 @@ class CLI(Client):
         return evt
 
     def raw(self, text):
-        "write to console."
         print(text.encode('utf-8', 'replace').decode("utf-8"))
         sys.stdout.flush()
 
@@ -39,14 +37,12 @@ class Scripts:
 
     @staticmethod
     def control():
-        "cli script."
         cli = CLI()
         cli.silent = False
         cli.cmd(Main.otxt)
 
 
 def main():
-    "main"
     Parse.parse(Main, " ".join(sys.argv[1:]))
     Boot.configure()
     if "u" in Main.opts:
