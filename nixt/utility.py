@@ -12,13 +12,6 @@ import pathlib
 import time
 
 
-a = os.path.abspath
-d = os.path.dirname
-e = os.path.exists
-i = os.path.isfile
-j = os.path.join
-
-
 class Md5:
 
     @classmethod
@@ -181,17 +174,17 @@ class Utils:
     @staticmethod
     def cdir(path):
         "create directory."
-        if e(path):
+        if os.path.exists(path):
             return
         pth = pathlib.Path(path)
-        if not e(pth.parent):
+        if not os.path.exists(pth.parent):
             pth.parent.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
     def check(path, md5s):
         "check for md5sums in a given path."
         ok = True
-        if not e(path):
+        if not os.path.exists(path):
             return False
         for pth in os.listdir(path):
             if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
@@ -221,7 +214,7 @@ class Utils:
     @staticmethod
     def moddir():
         "return modules directory."
-        return j(os.path.dirname(__spec__.loader.path), "modules")
+        return os.path.join(os.path.dirname(__spec__.loader.path), "modules")
 
     @staticmethod
     def modname(obj):

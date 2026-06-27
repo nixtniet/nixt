@@ -6,10 +6,11 @@
 
 import inspect
 import logging
+import os
 
 
 from .parsers import Parse
-from .utility import Md5, Utils, e, j
+from .utility import Md5, Utils
 
 
 class Mods:
@@ -48,8 +49,8 @@ class Mods:
             mod = cls.modules.get(modname, None)
             if mod:
                 return mod
-            fnm = j(path, name + ".py")
-            if not e(fnm):
+            fnm = os.path.join(path, name + ".py")
+            if not os.path.exists(fnm):
                 continue
             if cls.md5s:
                 md5 = Md5.md5(fnm)
@@ -83,7 +84,7 @@ class Mods:
         "comma seperated list of available modules."
         mods = []
         for pkgname, path in cls.dirs.items():
-            if not e(path):
+            if not os.path.exists(path):
                 continue
             mods.extend(Utils.listdir(path, ignore))
         return sorted(set(mods))
