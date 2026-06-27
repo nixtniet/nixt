@@ -18,14 +18,14 @@ class Message(Base):
         self._ready = threading.Event()
         self._thr = None
         self.args = []
-        self.channel = ""
-        self.cmd = ""
-        self.mod = ""
         self.index = 0
         self.kind = "message"
-        self.orig = ""
         self.result = []
-        self.text = ""
+
+    def __getattr__(self, key):
+        if key in dir(self):
+            return self.__getattribute__(self, key)
+        return ""
 
     def display(self):
         "print results."

@@ -15,3 +15,10 @@ class TestConfig(unittest.TestCase):
     def test_construct(self):
         config = Main()
         self.assertTrue(config)
+
+    def test_main(self):
+        Main.a = "b"
+        self.assertEqual(Main.a, "b")
+
+    def test_missing(self):
+        self.assertFalse(Main.b)
