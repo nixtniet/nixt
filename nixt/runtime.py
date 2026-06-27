@@ -6,16 +6,14 @@
 
 
 import os
-import readline
 import sys
-import time
 
 
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Main, Message, Mods, Object, Parse
-from nixt.defines import Utils, Workdir
+from nixt.defines import Boot, Client, Main, Message, Mods, Parse
+from nixt.defines import Utils
 
 
 class CLI(Client):

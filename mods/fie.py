@@ -6,6 +6,7 @@
 
 from nixt.defines import Locate, Workdir
 
+
 def fie(event):
     "show fields of a type."
     if not event.rest:

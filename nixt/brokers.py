@@ -4,9 +4,6 @@
 "an object for a string"
 
 
-import time
-
-
 class Broker:
 
     objects = {}
@@ -41,27 +38,7 @@ class Broker:
                 yield obj
 
 
-class Clients:
-
-    @staticmethod
-    def announce(txt):
-        "announce text on all clients."
-        for obj in Broker.objs("announce"):
-            obj.announce(txt)
-
-    @staticmethod
-    def shutdown():
-        "call stop on clients."
-        for client in Broker.objs("wait"):
-            client.wait()
-        time.sleep(0.01)
-        for client in Broker.objs("stop"):
-            client.stop()
-        time.sleep(0.01)
-
-
 def __dir__():
     return (
         'Broker',
-        'Clients'
     )
