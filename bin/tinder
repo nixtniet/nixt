@@ -17,7 +17,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Boot, Buffer, Engine, Logging, Main, Message, Mods, Object
-from nixt.defines import Parse, Task, Thread, Time, Utils, Workdir, e
+from nixt.defines import Parse, Task, Thread, Time, Utils, Workdir
 
 
 Main.debug = True
@@ -169,7 +169,7 @@ def final():
 
 
 def main():
-    if e(Main.wdr):
+    if os.path.exists(Main.wdr):
         shutil.rmtree(Main.wdr)
     if Runs.check("v"):
         Main.verbose = True
