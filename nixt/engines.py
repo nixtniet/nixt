@@ -19,6 +19,9 @@ class Engine:
         self.stopped = threading.Event()
         self.done = threading.Event()
 
+    def after(self, event):
+        "called after callback."
+
     def callback(self, event):
         "run callback function with event."
         func = self.cbs.get(event.kind, None)
@@ -31,14 +34,19 @@ class Engine:
     def loop(self):
         "callback loop."
         while not self.stopped.is_set():
+            self.poll()
             event = self.queue.get()
             if event is None:
                 self.queue.task_done()
                 break
             event.orig = repr(self)
             self.callback(event)
+            self.after(event)
             self.queue.task_done()
         self.done.set()
+
+    def poll(self):
+        "pre queue fetch."
 
     def put(self, event):
         "put event on queue."

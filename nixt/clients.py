@@ -12,7 +12,7 @@ import _thread
 
 
 from .brokers import Broker
-from .handler import Handler
+from .engines import Engine
 from .threads import Thread
 
 
@@ -23,6 +23,7 @@ class Output:
         self.olock = threading.RLock()
         self.silent = False
         Broker.add(self)
+        print("yo!")
 
     def announce(self, text):
         "announce text to all channels."
@@ -51,7 +52,7 @@ class Output:
 class Buffer(Output):
 
     def __init__(self):
-        super().__init__()
+        Output.__init__(self)
         self.oqueue = queue.Queue()
         self.ostopped = threading.Event()
 
@@ -91,31 +92,17 @@ class Buffer(Output):
             _thread.interrupt_main()
 
 
-class Buffered(Handler, Buffer):
+class Buffered(Engine, Buffer):
 
     def __init__(self):
-        Handler.__init__(self)
+        Engine.__init__(self)
         Buffer.__init__(self)
 
-    def raw(self, text):
-        "raw output."
-        raise NotImplementedError
 
-    def start(self, daemon=True):
-        "start output loop."
-        Handler.start(self)
-        Buffer.start(self, daemon=daemon)
-
-    def stop(self):
-        "stop output loop."
-        Buffer.stop(self)
-        Handler.stop(self)
-
-
-class Client(Handler, Output):
+class Client(Engine, Output):
 
     def __init__(self):
-        Handler.__init__(self)
+        Engine.__init__(self)
         Output.__init__(self)
 
     def raw(self, text):

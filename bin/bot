@@ -56,6 +56,14 @@ class Arguments:
 
 class CLI(Client):
 
+    def __init__(self):
+        super().__init__()
+        self.register("command", Mods.command)
+
+    def after(self, event):
+        "wait for event to finish"
+        event.wait()
+
     def cmd(self, text):
         "do command."
         evt = Message()

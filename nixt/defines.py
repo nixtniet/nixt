@@ -9,11 +9,11 @@ from .booting import Boot
 from .brokers import Broker
 from .clients import Buffer, Buffered, Client, Clients, Output
 from .configs import Main
+from .encoder import Json
 from .engines import Engine
-from .handler import Handler
 from .loggers import Logging
 from .message import Message
-from .objects import Base, Json, Object
+from .objects import Base, Object
 from .package import Mods
 from .parsers import Parse
 from .persist import Disk, Locate, Workdir
@@ -33,7 +33,6 @@ def __dir__():
        'Clients',
        'Disk',
        'Engine',
-       'Handler',
        'Json',
        'Locate',
        'Logging',
