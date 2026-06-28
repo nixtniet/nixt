@@ -13,18 +13,19 @@ from nixt.defines import Client, Message
 buffer = []
 
 
-class MyClient(Client):
-
-    def handle(self, event):
-        hello(event)
-
-    def raw(self, text):
-        buffer.append(text)
-
-
 def hello(event):
     event.reply(event.text)
     event.ready()
+
+
+class MyClient(Client):
+
+    def __init__(self):
+        Client.__init__(self)
+        self.register("hello", hello)
+
+    def raw(self, text):
+        buffer.append(text)
 
 
 class TestClient(unittest.TestCase):

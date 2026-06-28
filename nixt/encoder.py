@@ -9,6 +9,9 @@ import types
 import threading
 
 
+from .objects import Object
+
+
 class Encoder(json.JSONEncoder):
 
     lock = threading.RLock()

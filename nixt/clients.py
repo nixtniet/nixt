@@ -23,7 +23,6 @@ class Output:
         self.olock = threading.RLock()
         self.silent = False
         Broker.add(self)
-        print("yo!")
 
     def announce(self, text):
         "announce text to all channels."
