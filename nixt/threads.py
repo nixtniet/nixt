@@ -14,6 +14,8 @@ import _thread
 
 class Task(threading.Thread):
 
+    block = threading.Event()
+
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
         self.event = None
@@ -40,6 +42,8 @@ class Task(threading.Thread):
     def run(self):
         "run function."
         func, args = self.queue.get()
+        if self.block.is_set():
+            return
         try:
             self.result = func(*args)
         except (KeyboardInterrupt, EOFError):

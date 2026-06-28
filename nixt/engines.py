@@ -4,9 +4,9 @@
 "callback engine"
 
 
-import os
 import queue
 import threading
+import _thread
 
 
 from .threads import Thread

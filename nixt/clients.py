@@ -18,6 +18,8 @@ from .threads import Thread
 
 class Output:
 
+    block = threading.Event()
+
     def __init__(self):
         super().__init__()
         self.olock = threading.RLock()
@@ -33,6 +35,8 @@ class Output:
         "display event results."
         with self.olock:
             for txt in event.result:
+                if self.block.is_set():
+                    return
                 self.dosay(event.channel, txt)
 
     def dosay(self, channel, text):
@@ -130,12 +134,14 @@ class Clients:
     @staticmethod
     def shutdown():
         "call stop on clients."
+        Output.block.set()
         for client in Broker.objs("stop"):
             client.stop()
         time.sleep(0.01)
         for client in Broker.objs("wait"):
             client.wait()
         time.sleep(0.01)
+
 
 def __dir__():
     return (

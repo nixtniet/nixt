@@ -46,7 +46,7 @@ class CLI(Engine, Buffer):
         self.register("command", Mods.command)
 
     def raw(self, text):
-        if Main.verbose:
+        if Main.verbose and not self.block.is_set():
             print(text.encode('utf-8', 'replace').decode("utf-8"))
             sys.stdout.flush()
 
