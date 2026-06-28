@@ -6,10 +6,10 @@
 
 import inspect
 import logging
+import os
 import queue
 import threading
 import time
-import _thread
 
 
 class Task(threading.Thread):
@@ -35,7 +35,7 @@ class Task(threading.Thread):
             super().join(timeout or None)
             return self.result
         except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
+            os._exit(1)
 
     def run(self):
         "run function."
@@ -43,7 +43,7 @@ class Task(threading.Thread):
         try:
             self.result = func(*args)
         except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
+            _threwad.interrupt_main()
         except Exception as ex:
             logging.exception(ex)
             _thread.interrupt_main()

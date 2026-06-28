@@ -118,16 +118,6 @@ class Client(Engine, Output):
         "raw output."
         raise NotImplementedError
 
-    def start(self):
-        "start client."
-        Engine.start(self)
-        Output.start(self)
-
-    def stop(self):
-        "stop client."
-        Engine.stop(self)
-        Output.stop(self)
-
 
 class Clients:
 

@@ -26,5 +26,5 @@ class Main(metaclass=MainConfig):
 
 def __dir__():
     return (
-        'Main'
+        'Main',
     )

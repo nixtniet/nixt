@@ -4,6 +4,7 @@
 "callback engine"
 
 
+import os
 import queue
 import threading
 
@@ -70,7 +71,10 @@ class Engine:
 
     def wait(self):
         "wait for all events to finish,"
-        self.queue.join()
+        try:
+            self.queue.join()
+        except (KeyboardInterrupt, EOFError):
+            os._exit(1)
 
 
 def __dir__():
