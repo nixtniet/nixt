@@ -7,13 +7,13 @@
 import unittest
 
 
-from nixt.defines import Base, Object
+from nixt.defines import Object, Method
 
 
-class TestObject(unittest.TestCase):
+class TestMethod(unittest.TestCase):
 
     def test_clear(self):
-        obj = Base()
+        obj = Object()
         obj.a = "b"
-        Object.clear(obj)
+        Method.clear(obj)
         self.assertEqual(str(obj), "{}")

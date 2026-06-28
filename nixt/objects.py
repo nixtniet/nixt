@@ -8,10 +8,10 @@ import threading
 import types
 
 
-class Base:
+class Object:
 
     def __init__(self, *args, **kwargs):
-        Object.construct(self, *args, **kwargs)
+        Method.construct(self, *args, **kwargs)
 
     def __contains__(self, key):
         return key in dir(self)
@@ -35,7 +35,7 @@ class Base:
         return str(self.__dict__)
 
 
-class Object:
+class Method:
 
     @classmethod
     def clear(cls, obj):
@@ -206,7 +206,7 @@ class Object:
     @classmethod
     def skip(cls, obj, chars="_"):
         "skip keys containing chars."
-        res = Base()
+        res = Object()
         for key, value in cls.items(obj):
             if isinstance(value, types.MethodType):
                 continue
@@ -250,7 +250,7 @@ class Object:
                     if value:
                         setattr(obj, key, value)
             else:
-                for key, value in Object.items(data):
+                for key, value in Method.items(data):
                     setattr(obj, key, value)
         elif isinstance(obj, dict):
             if isinstance(data, dict):
@@ -282,6 +282,6 @@ class Object:
 
 def __dir__():
     return (
-        'Base',
-        'Object'
+        'Object',
+        'Method'
     )

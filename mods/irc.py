@@ -14,8 +14,8 @@ import time
 import _thread
 
 
-from nixt.defines import Base, Broker, Buffered, Disk, Engine, Main
-from nixt.defines import Message, Mods, Object, Thread, Utils
+from nixt.defines import Object, Broker, Buffered, Disk, Engine, Main
+from nixt.defines import Message, Mods, Method, Thread, Utils
 
 
 def init():
@@ -27,7 +27,7 @@ def init():
     except (KeyboardInterrupt, EOFError):
         _thread.interrupt_main()
     if irc.events.joined.is_set():
-        logging.warning("%s", Object.fmt(irc.cfg, skip=[
+        logging.warning("%s", Method.fmt(irc.cfg, skip=[
             "ignore",
             "xname",
             "realname",
@@ -46,7 +46,7 @@ def shutdown():
         bot.stop()
 
 
-class Config(Base):
+class Config(Object):
 
     name = Main.name or Utils.pkgname(Mods)
     channel = f"#{name}"
@@ -105,7 +105,7 @@ class IRC(Buffered):
         self.buffer = []
         self.cfg = Config()
         self.channels = []
-        self.events = Base()
+        self.events = Object()
         self.events.authed = threading.Event()
         self.events.connected = threading.Event()
         self.events.joined = threading.Event()
@@ -115,7 +115,7 @@ class IRC(Buffered):
         self.noflood = True
         self.silent = False
         self.sock = None
-        self.state = Base()
+        self.state = Object()
         self.state.error = ""
         self.state.keeprunning = False
         self.state.last = time.time()
@@ -533,7 +533,7 @@ def cb_error(evt):
     bot = Broker.get(evt.orig)
     bot.state.nrerror += 1
     bot.state.error = evt.text
-    logging.debug(Object.fmt(evt))
+    logging.debug(Method.fmt(evt))
 
 
 def cb_h903(evt):

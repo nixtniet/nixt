@@ -9,7 +9,7 @@ import types
 import threading
 
 
-from .objects import Object
+from .objects import Method
 
 
 class Encoder(json.JSONEncoder):
@@ -20,7 +20,7 @@ class Encoder(json.JSONEncoder):
         "generate serializable versions."
         with Encoder.lock:
             if isinstance(o, type):
-                return Object.skip(o)
+                return Method.skip(o)
             if isinstance(o, dict):
                 return o.items()
             if isinstance(o, list):

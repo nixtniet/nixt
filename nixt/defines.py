@@ -13,7 +13,7 @@ from .encoder import Json
 from .engines import Engine
 from .loggers import Logging
 from .message import Message
-from .objects import Base, Object
+from .objects import Object, Method
 from .package import Mods
 from .parsers import Parse
 from .persist import Disk, Locate, Workdir
@@ -24,7 +24,7 @@ from .utility import Md5, Time, Utils
 
 def __dir__():
     return (
-       'Base',
+       'Object',
        'Boot',
        'Broker',
        'Buffer',
@@ -40,7 +40,7 @@ def __dir__():
        'Md5',
        'Message',
        'Mods',
-       'Object',
+       'Method',
        'Output',
        'Parse',
        'Repeater',

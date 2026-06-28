@@ -7,13 +7,13 @@
 import unittest
 
 
-from nixt.defines import Base, Parse
+from nixt.defines import Object, Parse
 
 
 class TestParse(unittest.TestCase):
 
     def test_parse(self):
-        obj = Base()
+        obj = Object()
         obj.cmd = ""
         Parse.parse(obj, "cmd")
         print(obj)

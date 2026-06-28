@@ -4,10 +4,10 @@
 "todo"
 
 
-from nixt.defines import Base, Disk, Locate
+from nixt.defines import Object, Disk, Locate
 
 
-class Todo(Base):
+class Todo(Object):
 
     def __init__(self):
         super().__init__()

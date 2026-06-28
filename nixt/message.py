@@ -8,10 +8,10 @@ import threading
 
 
 from .brokers import Broker
-from .objects import Base
+from .objects import Object
 
 
-class Message(Base):
+class Message(Object):
 
     def __init__(self):
         super().__init__()

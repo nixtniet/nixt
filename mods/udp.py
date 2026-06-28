@@ -12,7 +12,7 @@ import threading
 import time
 
 
-from nixt.defines import Base, Clients, Disk, Main, Thread
+from nixt.defines import Object, Clients, Disk, Main, Thread
 
 
 def init():
@@ -23,13 +23,13 @@ def init():
     return relay
 
 
-class Config(Base):
+class Config(Object):
 
     host = "localhost"
     port = 5500
 
 
-class UDP(Base):
+class UDP(Object):
 
     def __init__(self):
         super().__init__()

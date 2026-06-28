@@ -4,7 +4,7 @@
 "option parsing"
 
 
-from .objects import Base, Object
+from .objects import Object, Method
 
 
 class Parse:
@@ -15,15 +15,15 @@ class Parse:
         data = {
             "args": [],
             "cmd": "",
-            "gets": Base(),
+            "gets": Object(),
             "index": None,
             "init": "",
             "mod": "",
             "opts": "",
             "otxt": text,
             "rest": "",
-            "silent": Base(),
-            "sets": Base(),
+            "silent": Object(),
+            "sets": Object(),
             "text": text
         }
         for k, v in data.items():
@@ -42,16 +42,16 @@ class Parse:
                 continue
             if "-=" in spli:
                 key, value = spli.split("-=", maxsplit=1)
-                Object.typed(obj.silent, key, value)
-                Object.typed(obj.gets, key, value)
+                Method.typed(obj.silent, key, value)
+                Method.typed(obj.gets, key, value)
                 continue
             if "==" in spli:
                 key, value = spli.split("==", maxsplit=1)
-                Object.typed(obj.gets, key, value)
+                Method.typed(obj.gets, key, value)
                 continue
             if "=" in spli:
                 key, value = spli.split("=", maxsplit=1)
-                Object.typed(obj.sets, key, value)
+                Method.typed(obj.sets, key, value)
                 continue
             nr += 1
             if nr == 0:
@@ -68,7 +68,7 @@ class Parse:
             obj.text = obj.text + " " + obj.rest
         else:
             obj.text = obj.mod + " " + obj.cmd
-        Object.notset(obj, obj.sets)
+        Method.notset(obj, obj.sets)
 
 
 def __dir__():

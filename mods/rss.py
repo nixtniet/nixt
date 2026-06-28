@@ -23,7 +23,7 @@ from urllib.error import HTTPError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.defines import Base, Clients, Disk, Locate, Main, Object
+from nixt.defines import Object, Clients, Disk, Locate, Main, Method
 from nixt.defines import Repeater, Thread, Utils
 
 
@@ -43,28 +43,28 @@ def shutdown():
     Run.fetcher.stop()
 
 
-class Config(Base):
+class Config(Object):
 
     polltime = 300
 
 
-class Feed(Base):
+class Feed(Object):
 
     link = ""
     skip = False
 
 
-class Modified(Base):
+class Modified(Object):
 
     pass
 
 
-class Urls(Base):
+class Urls(Object):
 
     pass
 
 
-class Rss(Base):
+class Rss(Object):
 
     def __init__(self):
         super().__init__()
@@ -95,7 +95,7 @@ class Fetcher:
     def run(self, silent=False):
         "do a fetch run of all feeds."
         nrs = 0
-        for fnm, feed in Locate.find(Object.fqn(Rss)):
+        for fnm, feed in Locate.find(Method.fqn(Rss)):
             if "skip" in feed and feed.skip:
                 continue
             Runners.put((fnm, feed, silent))
@@ -167,8 +167,8 @@ class Runner:
                     continue
                 counter += 1
                 fed = Feed()
-                Object.update(fed, obj)
-                Object.update(fed, feed)
+                Method.update(fed, obj)
+                Method.update(fed, feed)
                 url = urllib.parse.urlparse(fed.link)
                 if url.path and not url.path == "/":
                     uurl = f"{url.scheme}://{url.netloc}/{url.path}"
@@ -366,7 +366,7 @@ class Helpers:
     @staticmethod
     def attrs(obj, txt):
         "parse attribute into an object."
-        Object.update(obj, *list(OPML.parse(txt)))
+        Method.update(obj, *list(OPML.parse(txt)))
 
     @staticmethod
     def cdata(line):
@@ -519,7 +519,7 @@ def atr(event):
     if not event.rest:
         event.iface("<stringinurl>")
         return
-    for _fnm, obj in Locate.find(Object.fqn(Rss), {'rss': event.rest}):
+    for _fnm, obj in Locate.find(Method.fqn(Rss), {'rss': event.rest}):
         request = None
         try:
             request = Helpers.geturl(obj.rss, True)
@@ -560,9 +560,9 @@ def dpl(event):
         event.iface("<stringinurl> <item1,item2>")
         return
     setter = {"display_list": event.args[1]}
-    for fnm, feed in Locate.find(Object.fqn(Rss), {"rss": event.args[0]}):
+    for fnm, feed in Locate.find(Method.fqn(Rss), {"rss": event.args[0]}):
         if feed:
-            Object.update(feed, setter)
+            Method.update(feed, setter)
             Disk.write(feed, fnm)
     event.reply("ok")
 
@@ -571,7 +571,7 @@ def err(event):
     "show errors of a feed."
     nre = 0
     nrs = 0
-    for fnm, obj in Locate.find(Object.fqn(Rss), event.gets):
+    for fnm, obj in Locate.find(Method.fqn(Rss), event.gets):
         if "error" not in obj:
             continue
         if not obj.error:
@@ -579,14 +579,14 @@ def err(event):
         if event.rest and event.rest in obj.error:
             nre += 1
             feed = Rss()
-            Object.update(feed, obj)
+            Method.update(feed, obj)
             feed.__deleted__ = False
             feed.error = ""
             Disk.write(feed, fnm)
             continue
         if not event.rest:
             nrs += 1
-            event.reply(f"{nrs} {Object.fmt(obj)}")
+            event.reply(f"{nrs} {Method.fmt(obj)}")
     if not nrs:
         event.reply("no feed errors.")
     else:
@@ -598,10 +598,10 @@ def exp(event):
     with Run.importlock:
         event.reply(TEMPLATE)
         nrs = 0
-        for _fn, ooo in Locate.find(Object.fqn(Rss)):
+        for _fn, ooo in Locate.find(Method.fqn(Rss)):
             nrs += 1
             obj = Rss()
-            Object.update(obj, ooo)
+            Method.update(obj, ooo)
             name = f"url{nrs}"
             dipl = obj.display_list
             url = obj.rss
@@ -635,7 +635,7 @@ def imp(event):
             if not url.startswith("http"):
                 continue
             has = list(Locate.find(
-                                   Object.fqn(Rss),
+                                   Method.fqn(Rss),
                                    {"rss": url},
                                    matching=True
                                   ))
@@ -646,7 +646,7 @@ def imp(event):
             feed = Rss()
             feed.rss = obj["xmlUrl"]
             del obj["xmlUrl"]
-            Object.update(feed, obj)
+            Method.update(feed, obj)
             uri = urllib.parse.urlparse(feed.rss)
             if uri.netloc.count(".") >= 2:
                 feed.name = ".".join(uri.netloc.split('.')[1:-1])
@@ -672,11 +672,11 @@ def nme(event):
         return
     selector = {"rss": event.args[0]}
     for fnm, fed in Locate.find(
-                                Object.fqn(Rss),
+                                Method.fqn(Rss),
                                 selector
                                ):
         feed = Rss()
-        Object.update(feed, fed)
+        Method.update(feed, fed)
         if feed:
             feed.name = name
             Disk.write(feed, fnm)
@@ -688,9 +688,9 @@ def rem(event):
     if len(event.args) != 1:
         event.iface("<stringinurl>")
         return
-    for fnm, fed in Locate.find(Object.fqn(Rss)):
+    for fnm, fed in Locate.find(Method.fqn(Rss)):
         feed = Rss()
-        Object.update(feed, fed)
+        Method.update(feed, fed)
         if event.args[0] not in feed.rss:
             continue
         if feed:
@@ -707,11 +707,11 @@ def res(event):
         return
     nrs = 0
     for fnm, fed in Locate.find(
-                                Object.fqn(Rss),
+                                Method.fqn(Rss),
                                 removed=True
                                ):
         feed = Rss()
-        Object.update(feed, fed)
+        Method.update(feed, fed)
         if event.args[0] not in feed.rss:
             continue
         nrs += 1
@@ -730,7 +730,7 @@ def rss(event):
         event.reply("i need an url")
         return
     for fnm, result in Locate.find(
-                                   Object.fqn(Rss),
+                                   Method.fqn(Rss),
                                    {"rss": url}
                                   ):
         if result:

@@ -4,7 +4,7 @@
 "locate objects"
 
 
-from nixt.defines import Broker, Object
+from nixt.defines import Broker, Method
 
 
 def flt(event):
@@ -18,7 +18,7 @@ def flt(event):
         event.reply("no clients")
         return
     if index is None:
-        event.reply(' | '.join([Object.fqn(o).split(".")[-1] for o in clts]))
+        event.reply(' | '.join([Method.fqn(o).split(".")[-1] for o in clts]))
         return
     if index < len(clts):
         event.reply(str(clts[index]))

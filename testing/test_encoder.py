@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Base, Json, Object
+from nixt.defines import Object, Json, Method
 
 
 VALIDJSON = '{"test": "bla"}'
@@ -16,7 +16,7 @@ VALIDJSON = '{"test": "bla"}'
 class TestEncoder(unittest.TestCase):
 
     def test_dumps(self):
-        obj = Base()
+        obj = Object()
         obj.test = "bla"
         self.assertEqual(Json.dumps(obj), VALIDJSON)
 
@@ -24,7 +24,7 @@ class TestEncoder(unittest.TestCase):
 class TestDecoder(unittest.TestCase):
 
     def test_loads(self):
-        obj = Base()
+        obj = Object()
         obj.test = "bla"
         oobj = Json.loads(Json.dumps(obj))
         self.assertEqual(oobj["test"], "bla")
@@ -57,8 +57,8 @@ class TestTypes(unittest.TestCase):
         self.assertEqual(obj, False)
 
     def test_object(self):
-        ooo = Base()
+        ooo = Object()
         ooo.a = "b"
-        obj = Base()
-        Object.update(obj, Json.loads(Json.dumps(ooo)))
+        obj = Object()
+        Method.update(obj, Json.loads(Json.dumps(ooo)))
         self.assertEqual(obj.a, "b")

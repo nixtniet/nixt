@@ -9,10 +9,10 @@ import os
 import time
 
 
-from nixt.defines import Base, Disk, Locate, Object, Time
+from nixt.defines import Object, Disk, Locate, Method, Time
 
 
-class Email(Base):
+class Email(Object):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -25,7 +25,7 @@ def eml(event):
     args = ["From", "Subject"]
     args.extend(event.args)
     if event.gets:
-        args.extend(Object.keys(event.gets))
+        args.extend(Method.keys(event.gets))
     for key in event.silent:
         if key in args:
             args.remove(key)
@@ -40,14 +40,14 @@ def eml(event):
             obj = obj[-1]
             tme = getattr(obj, "Date", "")
             diff = time.time = Time.timed(tme)
-            txt = Object.fmt(obj, args, plain=True)
+            txt = Method.fmt(obj, args, plain=True)
             event.reply(f'{event.index} {txt} {Time.elapsed(diff)}')
     else:
         for _fn, obj in result:
             nrs += 1
             tme = getattr(obj, "Date", "")
             diff = time.time - Time.timed(tme)
-            txt = Object.fmt(obj, args, plain=True)
+            txt = Method.fmt(obj, args, plain=True)
             event.reply(f'{nrs} {txt} {Time.elapsed(diff)}')
     if not result:
         event.reply("no emails found.")
@@ -77,7 +77,7 @@ def mbx(event):
     try:
         for mail in thing:
             obj = Email()
-            Object.update(obj, dict(mail._headers))
+            Method.update(obj, dict(mail._headers))
             obj.text = ""
             for payload in mail.walk():
                 if payload.get_content_type() == 'text/plain':
