@@ -16,7 +16,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Buffer, Engine, Logging, Main, Message, Mods, Object
+from nixt.defines import Boot, Buffer, Engine, Logging, Main, Message, Mods, Method
 from nixt.defines import Parse, Task, Thread, Time, Utils, Workdir
 
 
@@ -31,7 +31,6 @@ Workdir.wdr = Main.wdr
 
 
 Mods.dir("modules", Utils.moddir())
-Mods.dir("mods", "mods")
 Mods.scanner()
 
 
@@ -157,7 +156,7 @@ def final():
     endtime = time.time()
     lap = Time.elapsed(endtime-Time.starttime)
     percall = (endtime-Time.starttime)/total
-    print(f"{Object.fmt(Main, skip='otxt,txt')}")
+    print(f"{Method.fmt(Main, skip='otxt,txt')}")
     print(f"cores: {Clients.nrcpu} events: {total}")
     print(f"total: {lap} nrs: {Clients.nrevents - total} call: %.6fs" % percall)
     res = ""

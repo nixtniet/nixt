@@ -35,6 +35,7 @@ class Encoder(json.JSONEncoder):
                 except TypeError:
                     return repr(o)
 
+
 class Json:
 
     @staticmethod

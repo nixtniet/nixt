@@ -38,7 +38,7 @@ class Md5:
         for fnm in os.listdir(path):
             if not fnm.endswith(".py"):
                 continue
-            mpath = j(path, fnm)
+            mpath = os.path.join(path, fnm)
             with open(mpath, "r", encoding="utf-8") as file:
                 md5.update(file.read().encode("utf-8"))
 
@@ -190,7 +190,7 @@ class Utils:
             if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
                 continue
             name = pth[:-3]
-            modpath = j(path, pth)
+            modpath = os.path.join(path, pth)
             if Md5.md5(modpath) != md5s.get(name):
                 logging.warning("mismatch %s", name)
                 ok = False
@@ -224,7 +224,7 @@ class Utils:
     @staticmethod
     def pkgdir(obj):
         "return directory in which a module is defined."
-        return d(inspect.getfile(obj))
+        return os.path.dirname((inspect.getfile(obj)))
 
     @staticmethod
     def pkgname(obj):

@@ -4,7 +4,6 @@
 "a clean namespace"
 
 
-import threading
 import types
 
 

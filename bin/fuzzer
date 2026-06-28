@@ -18,8 +18,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Base, Boot, Buffered, Client, Logging, Main, Message
-from nixt.defines import Mods, Object, Parse, Task, Thread, Time, Workdir
+from nixt.defines import Object, Boot, Buffered, Client, Logging, Main, Message
+from nixt.defines import Mods, Method, Parse, Task, Thread, Time, Workdir
 
 
 Main.debug = True
@@ -151,7 +151,7 @@ def final():
     lap = Time.elapsed(endtime-Time.starttime)
     if Main.verbose and total:
         percall = (endtime-Time.starttime)/total
-        print(f"{Object.fmt(Main, skip='otxt,txt')}")
+        print(f"{Method.fmt(Main, skip='otxt,txt')}")
         print(f"cores: {ClientPool.nrcpu} events: {total}")
         print(f"total: {lap} nrs: {ClientPool.nrevents - total} call: %.6fs" % percall)
         res = ""
@@ -206,8 +206,8 @@ arguments = [
              "nixt nixtniet@gmail.com Nixt Niet",
              '10',
              10,
-             Base,
-             Base()
+             Object,
+             Object()
             ]
 
 

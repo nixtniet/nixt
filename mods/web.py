@@ -10,7 +10,7 @@ import sys
 import time
 
 
-from http.server import HTTPServer, ObjectHTTPRequestHandler
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from nixt.defines import Object, Main, Thread, Utils
@@ -73,11 +73,11 @@ class HTTP(HTTPServer, Object):
         logging.exception(exc)
 
 
-class HTTPHandler(ObjectHTTPRequestHandler):
+class HTTPHandler(BaseHTTPRequestHandler):
 
     def setup(self):
         "setup handler."
-        ObjectHTTPRequestHandler.setup(self)
+        BaseHTTPRequestHandler.setup(self)
         self._path = os.path.join(Utils.where(Object), "network")
         self._size = 0
         self._ip = self.client_address[0]

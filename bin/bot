@@ -15,7 +15,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Main, Message, Mods, Object, Utils, Workdir
+from nixt.defines import Boot, Client, Main, Message, Mods, Method, Utils, Workdir
 
 
 class Arguments:
@@ -50,7 +50,7 @@ class Arguments:
         optparser.add_argument("--user", action="store_false", help="use local mods directory.")
         args, arguments = theparser.parse_known_args()
         Main.otxt = " ".join(arguments)
-        Object.update(Main, args)
+        Method.update(Main, args)
         Main.name = Main.name or Utils.pkgname(Mods)
 
 

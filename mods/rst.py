@@ -10,7 +10,7 @@ import sys
 import time
 
 
-from http.server import HTTPServer, ObjectHTTPRequestHandler
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 from nixt.defines import Object, Locate, Main, Thread, Workdir
@@ -69,7 +69,7 @@ class REST(HTTPServer, Object):
         Thread.launch(self.serve_forever)
 
 
-class RESTHandler(ObjectHTTPRequestHandler):
+class RESTHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         "handle get request."
@@ -121,7 +121,7 @@ class RESTHandler(ObjectHTTPRequestHandler):
         "log some."
 
     def setup(self):
-        ObjectHTTPRequestHandler.setup(self)
+        BaseHTTPRequestHandler.setup(self)
         self._ip = self.client_address[0]
         self._size = 0
 
