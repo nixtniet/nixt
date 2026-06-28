@@ -10,6 +10,7 @@ import logging
 import os
 import pathlib
 import time
+import _thread
 
 
 class Md5:
@@ -280,11 +281,10 @@ class Utils:
         try:
             func(*args)
         except (KeyboardInterrupt, EOFError):
-            pass
+            _thread.interrupt_main()
         except Exception as ex:
             logging.exception(ex)
-            return False
-        return True
+            _thread.interrupt_main()
 
 
 def __dir__():

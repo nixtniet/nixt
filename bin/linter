@@ -34,5 +34,3 @@ def popen(txt):
 popen(f"ruff check {NAME} bin mods testing")
 popen(f"pylint {NAME} bin mods testing")
 popen(f"flake8 {NAME} bin mods testing")
-
-

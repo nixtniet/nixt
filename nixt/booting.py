@@ -60,7 +60,7 @@ class Boot:
             try:
                 time.sleep(1.0)
             except (KeyboardInterrupt, EOFError):
-                _thread.interrupt_main()
+                break
 
     @classmethod
     def init(cls, modlist, wait=False):

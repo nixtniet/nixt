@@ -74,7 +74,7 @@ class Engine:
         try:
             self.queue.join()
         except (KeyboardInterrupt, EOFError):
-            os._exit(1)
+            _thread.interrupt_main()
 
 
 def __dir__():
