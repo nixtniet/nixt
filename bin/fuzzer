@@ -24,9 +24,7 @@ from nixt.defines import Mods, Object, Parse, Task, Thread, Time, Workdir
 
 Main.debug = True
 Main.name = "fuzzer"
-Main.user = True
 Main.wdr = ".test"
-Task.bork = True
 
 
 Workdir.wdr = Main.wdr
@@ -182,6 +180,7 @@ def main():
     Main.md5 = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
     Boot.configure()
+    Mods.dir("mods", "mods")
     Mods.scanner()
     ClientPool.init(CLI)
     Run.nrs = Main.index or 1
@@ -191,10 +190,6 @@ def main():
     for thr in thrs:
         thr.join()
     ClientPool.shutdown()
-    #while 1:
-    #    if len(threading.enumerate()) == ClientPool.nrcpu + 1:
-    #        break
-    #    time.sleep(0.01)
 
 
 arguments = [

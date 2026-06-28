@@ -38,9 +38,6 @@ class Boot:
         Workdir.wdr = Main.path or Workdir.home(Main.name)
         Mods.dir(f"{Main.name}.modules", Main.moddir or Utils.moddir())
         Mods.dir("modules", Workdir.moddir())
-        if Main.user:
-            Mods.dir("mods", "mods")
-            Mods.dir("other", "other")
         Logging.size(len(Main.name))
         Logging.level(Main.level or "warning")
         Mods.sums()

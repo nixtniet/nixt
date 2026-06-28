@@ -32,7 +32,6 @@ Workdir.wdr = Main.wdr
 
 Mods.dir("modules", Utils.moddir())
 Mods.dir("mods", "mods")
-Mods.dir("other", "other")
 Mods.scanner()
 
 

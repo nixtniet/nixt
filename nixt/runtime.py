@@ -1,19 +1,14 @@
-#!/usr/bin/env python3
 # This file is placed in the Public Domain.
 
 
 "main"
 
 
-import os
 import sys
 
 
-sys.path.insert(0, os.getcwd())
-
-
-from nixt.defines import Boot, Client, Main, Message, Mods, Parse
-from nixt.defines import Utils
+from .defines import Boot, Client, Main, Message, Mods, Parse
+from .defines import Utils
 
 
 class CLI(Client):
