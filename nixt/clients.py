@@ -97,6 +97,16 @@ class Buffered(Engine, Buffer):
         Engine.__init__(self)
         Buffer.__init__(self)
 
+    def start(self):
+        "start buffered client."
+        Engine.start(self)
+        Buffer.start(self)
+
+    def stop(self):
+        "stop buffered client."
+        Engine.stop(self)
+        Buffer.stop(self)
+
 
 class Client(Engine, Output):
 
@@ -107,6 +117,16 @@ class Client(Engine, Output):
     def raw(self, text):
         "raw output."
         raise NotImplementedError
+
+    def start(self):
+        "start client."
+        Engine.start(self)
+        Output.start(self)
+
+    def stop(self):
+        "stop client."
+        Engine.stop(self)
+        Output.stop(self)
 
 
 class Clients:
