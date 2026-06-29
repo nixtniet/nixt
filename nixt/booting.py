@@ -45,6 +45,7 @@ class Boot:
         Logging.size(len(Main.name))
         Logging.level(Main.level or "warning")
         Mods.sums()
+        Md5.check(Mods.core)
 
     @classmethod
     def forever(cls):
