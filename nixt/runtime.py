@@ -15,7 +15,6 @@ class CLI(Client):
     def raw(self, text):
         "output to console."
         print(text.encode('utf-8', 'replace').decode("utf-8"))
-        sys.stdout.flush()
 
 
 def main():

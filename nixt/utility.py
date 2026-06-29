@@ -10,7 +10,6 @@ import logging
 import os
 import pathlib
 import time
-import _thread
 
 
 class Md5:
