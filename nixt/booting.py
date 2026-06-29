@@ -6,13 +6,15 @@
 
 import threading
 import time
+import _thread
 
 
+from .clients import Output
 from .configs import Main
 from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
-from .threads import Thread
+from .threads import Task, Thread
 from .utility import Md5, Utils
 
 
@@ -87,6 +89,19 @@ class Boot:
             if len(threading.enumerate()) == nr:
                 break
             time.sleep(0.01)
+
+    @classmethod
+    def wrapped(cls, func, *args):
+        "wrap function in a try/except, silence ctrl-c/ctrl-d."
+        try:
+            func(*args)
+        except (KeyboardInterrupt, EOFError):
+            Output.block.set()
+            Task.block.set()
+            _thread.interrupt_main()
+        except Exception as ex:
+            logging.exception(ex)
+            _thread.interrupt_main()
 
 
 def __dir__():

@@ -16,8 +16,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Buffer, Engine, Logging, Main, Message, Mods, Method
-from nixt.defines import Parse, Task, Thread, Time, Utils, Workdir
+from nixt.defines import Boot, Buffer, Clients, Engine, Logging, Main, Message
+from nixt.defines import Mods, Method, Parse, Task, Thread, Time, Utils, Workdir
 
 
 Main.debug = True
@@ -51,7 +51,7 @@ class CLI(Engine, Buffer):
             sys.stdout.flush()
 
 
-class Clients:
+class Pool:
 
     clients = []
     lock = threading.RLock()
@@ -67,7 +67,7 @@ class Clients:
     def init(cls, nr, client):
         with cls.lock:
             cls.nrcpu = nr
-            for _x in range(Clients.nrcpu):
+            for _x in range(Pool.nrcpu):
                 clt = client()
                 clt.start()
                 cls.add(clt)
@@ -127,7 +127,7 @@ class Runs:
                 evt = Message()
                 evt.kind = "command"
                 evt.text = f"{cmd} {ex}"
-                Clients.put(evt)
+                Pool.put(evt)
 
     @classmethod
     def wrap(cls, function, *args, dofinal=None):
@@ -139,11 +139,9 @@ class Runs:
         except termios.error:
             pass
         try:
-            function(*args)
+            Boot.wrapped(function, *args)
         except (KeyboardInterrupt, EOFError):
             pass
-        except Exception as exc:
-            logging.exception(exc)
         if oldie:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, oldie)
         if dofinal:
@@ -153,15 +151,15 @@ class Runs:
 def final():
     if not Main.verbose:
         return
-    total = Clients.nrevents
+    total = Pool.nrevents
     endtime = time.time()
     lap = Time.elapsed(endtime-Time.starttime)
     percall = (endtime-Time.starttime)/total
     print(f"{Method.fmt(Main, skip='otxt,txt')}")
-    print(f"cores: {Clients.nrcpu} events: {total}")
-    print(f"total: {lap} nrs: {Clients.nrevents - total} call: %.6fs" % percall)
+    print(f"cores: {Pool.nrcpu} events: {total}")
+    print(f"total: {lap} nrs: {Pool.nrevents - total} call: %.6fs" % percall)
     res = ""
-    for client in Clients.clients:
+    for client in Pool.clients:
         res += str(client.queue.qsize()) + " "
     print(res.strip())
     print(threading.enumerate())
@@ -177,9 +175,9 @@ def main():
         Main.threaded = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
     if Main.threaded:
-        Clients.init(os.cpu_count(), CLI)
+        Pool.init(os.cpu_count(), CLI)
     else:
-        Clients.init(1, CLI)
+        Pool.init(1, CLI)
     Runs.nrs = Main.index or 1
     thrs = []
     for _x in range(Runs.nrs):

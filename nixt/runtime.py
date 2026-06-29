@@ -7,18 +7,19 @@
 import sys
 
 
-from .defines import Boot, Client, Main, Message, Mods, Parse
-from .defines import Utils
+from .defines import Boot, Client, Main, Message, Mods, Parse, Utils
 
 
 class CLI(Client):
 
     def raw(self, text):
+        "output to console."
         print(text.encode('utf-8', 'replace').decode("utf-8"))
         sys.stdout.flush()
 
 
 def main():
+    "cli."
     Parse.parse(Main, " ".join(sys.argv[1:]))
     Boot.configure()
     Mods.scanner()

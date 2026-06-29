@@ -134,12 +134,13 @@ class Clients:
     @staticmethod
     def shutdown():
         "call stop on clients."
-        Output.block.set()
-        for client in Broker.objs("stop"):
-            client.stop()
-        time.sleep(0.01)
+        #Output.block.set()
+        #Thread.block.set()
         for client in Broker.objs("wait"):
             client.wait()
+        time.sleep(0.01)
+        for client in Broker.objs("stop"):
+            client.stop()
         time.sleep(0.01)
 
 

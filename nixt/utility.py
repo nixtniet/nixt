@@ -13,6 +13,8 @@ import time
 import _thread
 
 
+
+
 class Md5:
 
     @classmethod
@@ -274,17 +276,6 @@ class Utils:
     def where(obj):
         "path where object is defined."
         return os.path.dirname(inspect.getfile(obj))
-
-    @staticmethod
-    def wrapped(func, *args):
-        "wrap function in a try/except, silence ctrl-c/ctrl-d."
-        try:
-            func(*args)
-        except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
-        except Exception as ex:
-            logging.exception(ex)
-            _thread.interrupt_main()
 
 
 def __dir__():
