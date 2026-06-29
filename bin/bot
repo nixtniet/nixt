@@ -157,7 +157,7 @@ class Kernel(Boot):
             old = termios.tcgetattr(sys.stdin.fileno())
         except termios.error:
             old = False
-        Utils.wrapped(func, *args)
+        Kernel.wrapped(func, *args)
         if old:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
         if dofinal:
