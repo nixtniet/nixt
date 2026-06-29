@@ -106,11 +106,15 @@ class Mods:
     def sums(cls):
         "read table,"
         try:
-            from .statics import CORE, MODULES
-            cls.md5s.update(MODULES)
+            from .statics import CORE
             cls.core.update(CORE)
         except (ImportError, SyntaxError, ValueError):
-            logging.debug("can't load md5")
+            pass
+        try:
+            from .statics import MODULES
+            cls.md5s.update(MODULES)
+        except (ImportError, SyntaxError, ValueError):
+            pass
 
 
 def __dir__():

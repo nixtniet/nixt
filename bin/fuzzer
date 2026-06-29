@@ -18,8 +18,9 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Object, Boot, Buffered, Client, Logging, Main, Message
-from nixt.defines import Mods, Method, Parse, Task, Thread, Time, Workdir
+from nixt.defines import Object, Boot, Buffered, Client, Logging, Main, Md5
+from nixt.defines import Message, Mods, Method, Parse, Task, Thread, Time
+from nixt.defines import Workdir
 
 
 Main.debug = True
@@ -101,7 +102,7 @@ class Run:
             Main.version,
             tme,
             Main.level.upper() or "INFO",
-            Boot.core()
+            Md5.core()
         )
         print(txt.replace("  ", " "))
         sys.stdout.flush()
@@ -136,11 +137,9 @@ class Run:
         except termios.error:
             pass
         try:
-            function(*args)
+            Boot.wrapped(function, *args)
         except (KeyboardInterrupt, EOFError):
             pass
-        except Exception as exc:
-            logging.exception(exc)
         if oldie:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, oldie)
         if dofinal:

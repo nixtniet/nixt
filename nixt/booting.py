@@ -1,9 +1,10 @@
-# This file is placed in the Public Domain.
+#  This file is placed in the Public Domain.
 
 
 "in the beginning"
 
 
+import logging
 import threading
 import time
 import _thread
@@ -29,7 +30,7 @@ class Boot:
             Main.version,
             tmr,
             Main.level.upper() or "WARNING",
-            cls.core()
+            Md5.core()
         )
         return txt.replace("  ", " ")
 
@@ -44,15 +45,6 @@ class Boot:
         Logging.size(len(Main.name))
         Logging.level(Main.level or "warning")
         Mods.sums()
-
-    @classmethod
-    def core(cls):
-        "calculate md5 of the statics module."
-        try:
-            from . import statics
-        except (ModuleNotFoundError, ImportError, SyntaxError):
-            return ""
-        return Md5.source(Utils.source(statics))[:7].upper()
 
     @classmethod
     def forever(cls):

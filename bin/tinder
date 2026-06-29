@@ -16,7 +16,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Buffer, Clients, Engine, Logging, Main, Message
+from nixt.defines import Boot, Buffer, Clients, Engine, Logging, Main, Md5, Message
 from nixt.defines import Mods, Method, Parse, Task, Thread, Time, Utils, Workdir
 
 
@@ -104,7 +104,7 @@ class Runs:
             Main.version,
             tmr,
             Main.level.upper() or "INFO",
-            Boot.core()
+            Md5.core()
         )
         print(txt.replace("  ", " "))
         sys.stdout.flush()
