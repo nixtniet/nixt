@@ -7,7 +7,7 @@
 import sys
 
 
-from .defines import Boot, Client, Main, Message, Mods, Parse, Utils
+from .defines import Boot, Client, Main, Message, Mods, Parse
 
 
 class CLI(Client):
@@ -20,6 +20,7 @@ class CLI(Client):
 def main():
     "cli."
     Parse.parse(Main, " ".join(sys.argv[1:]))
+    Main.user = True
     Boot.configure()
     Mods.scanner()
     cli = CLI()
@@ -30,4 +31,4 @@ def main():
 
 
 if __name__ == "__main__":
-    Utils.wrapped(main)
+    Boot.wrapped(main)
