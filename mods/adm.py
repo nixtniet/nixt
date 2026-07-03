@@ -28,6 +28,7 @@ def tbl(event):
     "create table."
     core = {}
     md5s = {}
+    Mods.core = {}
     for name in Mods.list():
         module = Mods.get(name)
         md5s[name] = Md5.md5(module.__file__)

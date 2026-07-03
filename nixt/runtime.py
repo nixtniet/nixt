@@ -28,7 +28,3 @@ def main():
     evt.orig = repr(cli)
     evt.text = Main.otxt
     Mods.command(evt)
-
-
-if __name__ == "__main__":
-    Boot.wrapped(main)

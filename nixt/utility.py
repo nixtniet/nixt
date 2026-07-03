@@ -26,7 +26,7 @@ class Md5:
                 continue
             name = pth[:-3]
             modpath = os.path.join(path, pth)
-            if Md5.md5(modpath) != md5s.get(name):
+            if md5s and Md5.md5(modpath) != md5s.get(name):
                 logging.warning("mismatch %s", name)
                 ok = False
         return ok
