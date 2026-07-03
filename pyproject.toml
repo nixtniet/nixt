@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 
 [project]
-version = "453"
+version = "500"
 name = "nixt"
 authors = [
     {name = "Nixt Niet", email = "nixtniet@gmail.com" },
@@ -40,6 +40,11 @@ packages = [
     'nixt.modules',
     'nixt.numbers'
 ]
+include-package-data = true
+
+
+[tool.setuptools.package-data]
+"example" = ["*"]
 
 
 [tool.pylint."messages control"]

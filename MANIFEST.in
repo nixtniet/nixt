@@ -1,2 +1,2 @@
 include bin/nixt
-recursive-include mods *.py
+recursive-include example *.py
