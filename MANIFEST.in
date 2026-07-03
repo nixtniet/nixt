@@ -1,4 +1,2 @@
-include bin/clean
 include bin/nixt
-include bin/bot
 recursive-include mods *.py

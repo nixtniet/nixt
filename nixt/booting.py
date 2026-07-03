@@ -46,6 +46,7 @@ class Boot:
         Logging.level(Main.level or "warning")
         Mods.sums()
         Md5.check(Mods.core)
+        Workdir.skel()
 
     @classmethod
     def forever(cls):

@@ -10,7 +10,6 @@ import os
 
 
 from .parsers import Parse
-from .persist import Workdir
 from .utility import Md5, Utils
 
 
@@ -23,9 +22,10 @@ class Mods:
     modules = {}
 
     @classmethod
-    def add(cls, func):
+    def add(cls, *funcs):
         "register a command."
-        cls.cmds[func.__name__] = func
+        for func in funcs:
+            cls.cmds[func.__name__] = func
 
     @classmethod
     def command(cls, evt):

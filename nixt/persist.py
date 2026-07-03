@@ -12,7 +12,6 @@ import pathlib
 import threading
 
 
-from .configs import Main
 from .encoder import Json
 from .objects import Object, Method
 from .utility import Time, Utils
