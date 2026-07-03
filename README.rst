@@ -3,7 +3,7 @@
 
 ::
 
-    ``nixt`` - program your own commands
+    nixt - program your own commands.
 
 
 **SYNOPSIS**
@@ -11,7 +11,7 @@
 
 ::
 
-    ``nixt [cmd] [arg=val] [arg==val]``
+    nixt [cmd] [arg=val] [arg==val]
 
 
 **DESCRIPTION**
@@ -19,7 +19,7 @@
 
 ::
 
-    ``nixt`` has it's modules in the ~/.nixt/mods directory so for a
+    nixt has it's modules in the ~/.nixt/mods directory so for a
     hello world command you would  edit a file in ~/.nixt/mods/hello.py
     and add the following
 
@@ -56,4 +56,4 @@
 
 ::
 
-    ``nixt`` is Public Domain.
+    nixt is Public Domain.
