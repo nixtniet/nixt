@@ -23,3 +23,9 @@ CORE = {
     "threads": "114d11abe25dd85f13a8b0fa574c7a97",
     "utility": "7f8e2d95c52f316396283d8b37016b20"
 }
+
+
+MODULES = {
+    "cfg": "3ab59836ef8384957e576167dc9c5bbd",
+    "fnd": "c13df8fd240810d7a949fd95b79a89d8"
+}
