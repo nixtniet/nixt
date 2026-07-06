@@ -16,17 +16,17 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Buffer, Clients, Engine, Logging, Main, Md5, Message
-from nixt.defines import Mods, Method, Parse, Task, Thread, Time, Utils, Workdir
+from nixt.defines import Boot, Buffer, Clients, Commands, Engine, Logging, Main
+from nixt.defines import Md5, Message, Mods, Method, Parse, Task, Thread, Time
+from nixt.defines import Utils, Workdir
 
 
 Main.debug = True
 Main.name = "tinder"
 Main.wdr = ".test"
-Main.user = True
+Main.sets.user = True
 
 
-Task.bork = True
 Workdir.wdr = Main.wdr
 
 
@@ -43,7 +43,7 @@ class CLI(Engine, Buffer):
     def __init__(self):
         Buffer.__init__(self)
         Engine.__init__(self)
-        self.register("command", Mods.command)
+        self.register("command", Commands.command)
 
     def raw(self, text):
         if Main.verbose and not self.block.is_set():

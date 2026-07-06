@@ -40,7 +40,7 @@ class Boot:
         Workdir.wdr = Main.path or Workdir.home(Main.name)
         Mods.dir(f"{Main.name}.modules", Main.moddir or Utils.moddir())
         Mods.dir("modules", Workdir.moddir())
-        if Main.user:
+        if Main.sets.user:
             Mods.dir("mods", "mods")
         Logging.size(len(Main.name))
         Logging.level(Main.level or "warning")
@@ -73,8 +73,6 @@ class Boot:
                 except (KeyboardInterrupt, EOFError):
                     return False
         return True
-
-    scanner = Mods.scanner
 
     @classmethod
     def wait(cls, nr=1):

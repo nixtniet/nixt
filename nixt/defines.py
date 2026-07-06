@@ -14,7 +14,7 @@ from .engines import Engine
 from .loggers import Logging
 from .message import Message
 from .objects import Object, Method
-from .package import Mods
+from .package import Commands, Mods
 from .parsers import Parse
 from .persist import Disk, Locate, Workdir
 from .repeats import Repeater
@@ -30,6 +30,7 @@ def __dir__():
        'Buffered',
        'Client',
        'Clients',
+       'Commands',
        'Disk',
        'Engine',
        'Json',

@@ -18,14 +18,14 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Object, Boot, Buffered, Client, Logging, Main, Md5
-from nixt.defines import Message, Mods, Method, Parse, Task, Thread, Time
-from nixt.defines import Workdir
+from nixt.defines import Object, Boot, Buffered, Client, Commands, Logging
+from nixt.defines import Main, Md5, Message, Mods, Method, Parse, Task
+from nixt.defines import Thread, Time,  Workdir
 
 
 Main.debug = True
 Main.name = "fuzzer"
-Main.user = True
+Main.sets.user = True
 Workdir.wdr = Main.path = ".test"
 
 
@@ -33,7 +33,7 @@ class CLI(Buffered):
 
     def __init__(self):
         Buffered.__init__(self)
-        self.register("command", Mods.command)
+        self.register("command", Commands.command)
 
     def post(self, event):
         event.wait()
@@ -120,7 +120,7 @@ class Run:
 
     @staticmethod
     def payload():
-        for cmd in Mods.cmds:
+        for cmd in Commands.cmds:
             for arg in arguments:
                 evt = Message()
                 evt.kind = "command"
@@ -147,7 +147,7 @@ class Run:
 
 
 def final():
-    total = len(Mods.cmds) * len(arguments) * Run.nrs
+    total = len(Commands.cmds) * len(arguments) * Run.nrs
     endtime = time.time()
     lap = Time.elapsed(endtime-Time.starttime)
     if Main.verbose and total:

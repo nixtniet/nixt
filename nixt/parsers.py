@@ -4,7 +4,7 @@
 "option parsing"
 
 
-from .objects import Object, Method
+from .objects import Default, Method
 
 
 class Parse:
@@ -15,15 +15,15 @@ class Parse:
         data = {
             "args": [],
             "cmd": "",
-            "gets": Object(),
+            "gets": Default(),
             "index": None,
             "init": "",
             "mod": "",
             "opts": "",
             "otxt": text,
             "rest": "",
-            "silent": Object(),
-            "sets": Object(),
+            "silent": Default(),
+            "sets": Default(),
             "text": text
         }
         for k, v in data.items():
@@ -68,7 +68,7 @@ class Parse:
             obj.text = obj.text + " " + obj.rest
         else:
             obj.text = obj.mod + " " + obj.cmd
-        Method.notset(obj, obj.sets)
+        # Method.notset(obj, obj.sets)
 
 
 def __dir__():

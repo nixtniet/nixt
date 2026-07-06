@@ -7,7 +7,7 @@
 import sys
 
 
-from .defines import Boot, Client, Main, Message, Md5, Mods, Parse
+from .defines import Boot, Client, Commands, Main, Message, Md5, Mods, Parse
 
 
 class CLI(Client):
@@ -19,7 +19,7 @@ class CLI(Client):
 
 def cmd(event):
     "list available commands."
-    event.reply(",".join(sorted(Mods.cmds)))
+    event.reply(",".join(sorted(Commands.cmds)))
 
 
 def ver(event):
@@ -32,9 +32,9 @@ def main():
     Parse.parse(Main, " ".join(sys.argv[1:]))
     Boot.configure()
     Mods.scanner()
-    Mods.add(cmd, ver)
+    Commands.add(cmd, ver)
     cli = CLI()
     evt = Message()
     evt.orig = repr(cli)
     evt.text = Main.otxt
-    Mods.command(evt)
+    Commands.command(evt)

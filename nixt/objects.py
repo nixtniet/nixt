@@ -34,6 +34,14 @@ class Object:
         return str(self.__dict__)
 
 
+class Default(Object):
+
+    def __getattr__(self, key):
+        if key in dir(self):
+            return self.__getattribute__(self, key)
+        return ""
+
+
 class Method:
 
     @classmethod

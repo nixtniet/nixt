@@ -13,13 +13,9 @@ from .parsers import Parse
 from .utility import Md5, Utils
 
 
-class Mods:
+class Commands:
 
     cmds = {}
-    core = {}
-    dirs = {}
-    md5s = {}
-    modules = {}
 
     @classmethod
     def add(cls, *funcs):
@@ -36,6 +32,21 @@ class Mods:
             func(evt)
             evt.display()
         evt.ready()
+
+    @classmethod
+    def scan(cls, mod):
+        "scan module for commands."
+        for nme, func in inspect.getmembers(mod, inspect.isfunction):
+            if 'event' in inspect.signature(func).parameters:
+                cls.add(func)
+
+
+class Mods:
+
+    core = {}
+    dirs = {}
+    md5s = {}
+    modules = {}
 
     @classmethod
     def dir(cls, pkgname, path):
@@ -91,17 +102,10 @@ class Mods:
         return sorted(set(mods))
 
     @classmethod
-    def scan(cls, mod):
-        "scan module for commands."
-        for nme, func in inspect.getmembers(mod, inspect.isfunction):
-            if 'event' in inspect.signature(func).parameters:
-                cls.add(func)
-
-    @classmethod
     def scanner(cls):
         "scan all modules."
         for name in cls.list():
-            cls.scan(cls.get(name))
+            Commands.scan(cls.get(name))
 
     @classmethod
     def sums(cls):
@@ -120,5 +124,6 @@ class Mods:
 
 def __dir__():
     return (
-        'Mods',
+        "Commands",
+        'Mods'
     )

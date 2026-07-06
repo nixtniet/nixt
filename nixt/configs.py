@@ -4,7 +4,7 @@
 "one config to rule them all"
 
 
-from .objects import Method
+from .objects import Default, Method
 from .utility import Utils
 
 
@@ -21,7 +21,9 @@ class MainConfig(type):
 
 class Main(metaclass=MainConfig):
 
+    gets = Default()
     name = Utils.pkgname(Method)
+    sets = Default()
 
 
 def __dir__():
