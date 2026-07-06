@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"administrator"
+"create static tables"
 
 
 import inspect
@@ -11,21 +11,8 @@ import os
 from nixt.defines import Json, Main, Md5, Mods
 
 
-def srv(event):
-    "generate systemd service file."
-    import getpass
-    name = getpass.getuser()
-    event.reply(SYSTEMD % (
-                           Main.name.upper(),
-                           name,
-                           name,
-                           name,
-                           Main.name
-                          ))
-
-
 def tbl(event):
-    "create table."
+    "create static table."
     core = {}
     md5s = {}
     Mods.core = {}
@@ -43,19 +30,6 @@ def tbl(event):
     event.reply('"static tables"')
     event.reply("\n")
     event.reply(f"CORE = {Json.dumps(core, indent=4, sort_keys=True)}")
-    event.reply("\n")
-    event.reply(f"MODULES = {Json.dumps(md5s, indent=4, sort_keys=True)}")
-
-
-SYSTEMD = """[Unit]
-Description=%s
-After=multi-user.target
-
-[Service]
-Type=simple
-User=%s
-Group=%s
-ExecStart=/home/%s/.local/bin/%s -s
-
-[Install]
-WantedBy=multi-user.target"""
+    if Main.admin:
+        event.reply("\n")
+        event.reply(f"MODULES = {Json.dumps(md5s, indent=4, sort_keys=True)}")
