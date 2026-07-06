@@ -3,7 +3,7 @@
 
 ::
 
-    nixt - program your own commands.
+    nixt - write your own commands
 
 
 **SYNOPSIS**
@@ -49,7 +49,7 @@
 
 ::
 
-    Nixt Niet <``nietniet@gmail.com``>
+    Nixt Niet <``nixtniet@gmail.com``>
 
 
 **COPYRIGHT**

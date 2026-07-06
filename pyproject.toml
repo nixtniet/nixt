@@ -12,7 +12,7 @@ name = "nixt"
 authors = [
     {name = "Nixt Niet", email = "nixtniet@gmail.com" },
 ]
-description = "NIXT"
+description = "write your own commands"
 readme = "README.rst"
 license = "Unlicense"
 classifiers = [
@@ -40,11 +40,6 @@ packages = [
     'nixt.modules',
     'nixt.numbers'
 ]
-include-package-data = true
-
-
-[tool.setuptools.package-data]
-"example" = ["*"]
 
 
 [tool.pylint."messages control"]

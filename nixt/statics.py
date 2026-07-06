@@ -9,7 +9,7 @@ CORE = {
     "brokers": "ba7f144f1598b37bdfda200070cc9298",
     "clients": "1a5cb5478cf36ab9a5a4568df3c338eb",
     "configs": "e75d136d5d124be46e305e108af67f9c",
-    "defines": "d688b47a832ddaf16276e4f37277e248",
+    "defines": "49c0fbaa876ab7c7bd4d03b52de1b0a7",
     "encoder": "442b637a07a3611696a06d1f2c8211f5",
     "engines": "f9950d5c51f1382ebb251fbadcb1de9f",
     "loggers": "0c75c9b5df26dc5f023257711f140754",
@@ -21,11 +21,5 @@ CORE = {
     "repeats": "5f6ee691ff3dd90df68d34805b229298",
     "runtime": "dd000164dcbe7945aa0e0fbba03625eb",
     "threads": "114d11abe25dd85f13a8b0fa574c7a97",
-    "utility": "7f8e2d95c52f316396283d8b37016b20"
-}
-
-
-MODULES = {
-    "cfg": "3ab59836ef8384957e576167dc9c5bbd",
-    "fnd": "c13df8fd240810d7a949fd95b79a89d8"
+    "utility": "24346357eab2e46d05dc7a188937eaa8"
 }
