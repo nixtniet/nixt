@@ -24,7 +24,6 @@ from .utility import Md5, Time, Utils
 
 def __dir__():
     return (
-       'Object',
        'Boot',
        'Broker',
        'Buffer',
@@ -41,6 +40,7 @@ def __dir__():
        'Message',
        'Mods',
        'Method',
+       'Object',
        'Output',
        'Parse',
        'Repeater',
