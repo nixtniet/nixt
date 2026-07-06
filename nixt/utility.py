@@ -265,7 +265,7 @@ class Utils:
 
     @staticmethod
     def skipped(obj):
-        "yield without underscore values."
+        "yield values without underscored keys."
         for key in dir(obj):
             if key.startswith("_"):
                 continue
