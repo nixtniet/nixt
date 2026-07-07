@@ -8,10 +8,10 @@ import threading
 
 
 from .brokers import Broker
-from .objects import Object
+from .objects import Default
 
 
-class Message(Object):
+class Message(Default):
 
     def __init__(self):
         super().__init__()
@@ -21,11 +21,6 @@ class Message(Object):
         self.index = 0
         self.kind = "message"
         self.result = []
-
-    def __getattr__(self, key):
-        if key in dir(self):
-            return self.__getattribute__(self, key)
-        return ""
 
     def display(self):
         "print results."

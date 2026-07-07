@@ -15,7 +15,6 @@ from .threads import Thread
 class Repeater:
 
     counter = 0
-    fnm = ""
     running = threading.Event()
     stopped = threading.Event()
     todo = Object()

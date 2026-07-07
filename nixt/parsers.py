@@ -68,7 +68,6 @@ class Parse:
             obj.text = obj.text + " " + obj.rest
         else:
             obj.text = obj.mod + " " + obj.cmd
-        # Method.notset(obj, obj.sets)
 
 
 def __dir__():
