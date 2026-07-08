@@ -24,7 +24,10 @@ classifiers = [
 
 
 [project.scripts]
-"nixt" = "nixt.runtime:main"
+"nixtctl" = "nixt.runtime:control"
+"nixtd" = "nixt.runtime:background"
+"nixt" = "nixt.runtime:console"
+"nixts" = "nixt.runtime:service"
 
 
 [project.urls]

@@ -9,8 +9,22 @@ import logging
 import os
 
 
+from .configs import Main
 from .parsers import Parse
 from .utility import Md5, Utils
+
+
+class Cmd:
+
+    @classmethod
+    def cmd(cls, event):
+        "list available commands."
+        event.reply(",".join(sorted(Commands.cmds)))
+
+    @classmethod
+    def ver(cls, event):
+        "show verson."
+        event.reply(f"{Main.name.upper()} {Md5.core()}")
 
 
 class Commands:
@@ -124,6 +138,7 @@ class Mods:
 
 def __dir__():
     return (
+        "Cmd",
         "Commands",
         'Mods'
     )

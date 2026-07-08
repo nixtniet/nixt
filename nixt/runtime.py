@@ -1,13 +1,16 @@
-# This file is placed in the Public Domain.
+#!/usr/bin/env python3
 
 
 "main"
 
 
+import os
+import readline
 import sys
 
 
-from .defines import Boot, Client, Commands, Main, Message, Md5, Mods, Parse
+from .defines import Boot, Client, Cmd, Commands, Main, Message
+from .defines import Mods, Parse, Workdir
 
 
 class CLI(Client):
@@ -17,22 +20,12 @@ class CLI(Client):
         print(text.encode('utf-8', 'replace').decode("utf-8"))
 
 
-def cmd(event):
-    "list available commands."
-    event.reply(",".join(sorted(Commands.cmds)))
-
-
-def ver(event):
-    "show verson."
-    event.reply(f"{Main.name.upper()} {Md5.core()}")
-
-
 def main():
-    "cli."
+    "cli script."
     Parse.parse(Main, " ".join(sys.argv[1:]))
     Boot.configure()
     Mods.scanner()
-    Commands.add(cmd, ver)
+    Commands.add(Cmd.cmd, Cmd.ver)
     cli = CLI()
     evt = Message()
     evt.orig = repr(cli)
