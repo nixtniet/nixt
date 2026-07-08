@@ -4,13 +4,11 @@
 "main"
 
 
-import os
-import readline
 import sys
 
 
 from .defines import Boot, Client, Cmd, Commands, Main, Message
-from .defines import Mods, Parse, Workdir
+from .defines import Mods, Parse
 
 
 class CLI(Client):
