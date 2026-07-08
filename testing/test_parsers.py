@@ -16,5 +16,4 @@ class TestParse(unittest.TestCase):
         obj = Object()
         obj.cmd = ""
         Parse.parse(obj, "cmd")
-        print(obj)
         self.assertEqual(obj.cmd, "cmd")

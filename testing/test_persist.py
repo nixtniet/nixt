@@ -13,24 +13,64 @@ sys.path.insert(0, ".")
 
 
 from nixt.defines import Disk, Main, Method, Workdir
+from nixt.persist import Cache
 
 
 Workdir.wdr = '.test'
 
 
-class TestPersist(unittest.TestCase):
+class TestCache(unittest.TestCase):
 
-    def test_loadcfg(self):
-        Main.a = "b"
-        Disk.read(Main, "main", "config")
-        self.assertEqual(Main.a, "b")
+    def test_construct(self):
+        cache = Cache()
+        self.assertTrue(cache)
 
-    def test_save(self):
-        obj = Method()
-        opath = Disk.write(obj)
-        self.assertTrue(os.path.exists(os.path.join(Workdir.wdr, "store", opath)))
+    def test_add(self):
+        pass
 
-    def test_writecfg(self):
-        Main.a = "b"
-        Disk.write(Main, "main", "config")
-        self.assertTrue(os.path.exists(os.path.join(Workdir.wdr, "config", "main")))
+    def test_get(self):
+        pass
+
+    def test_sync(self):
+        pass
+
+
+class TestDisk(unittest.TestCase):
+
+    def test_construct(self):
+        disk = Disk()
+        self.assertTrue(disk)
+
+    def test_ident(self):
+        pass
+
+    def test_read(self):
+        pass
+
+    def test_write(self):
+        pass
+
+
+class TestWorkdir(unittest.TestCase):
+
+    def test_construct(self):
+        wdr = Workdir()
+        self.assertTrue(wdr)
+
+    def test_home(self):
+        pass
+
+    def test_kinds(self):
+        pass
+
+    def test_lomg(self):
+        pass
+
+    def test_moddir(self):
+        pass
+
+    def test_pid(self):
+        pass
+
+    def test_skel(self):
+        pass

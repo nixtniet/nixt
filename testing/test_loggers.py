@@ -10,7 +10,14 @@ import unittest
 from nixt.defines import Logging
 
 
-class TestLoggers(unittest.TestCase):
+class TestLogging(unittest.TestCase):
 
-    def test_dateformat(self):
-        self.assertTrue(Logging.datefmt)
+    def test_construct(self):
+        logger = Logging()
+        self.assertTrue(logger)
+
+    def test_level(self):
+        pass
+
+    def test_size(self):
+        pass

@@ -62,3 +62,24 @@ class TestClient(unittest.TestCase):
         self.clt.put(evt)
         evt.wait()
         self.assertTrue("hi world" in evt.result)
+
+    def test_raw(self):
+        pass
+    
+    def test_say(self):
+        pass
+
+    def start(self):
+        pass
+
+    def stop(self):
+        pass
+
+
+class TestBuffered(unittest.TestCase):
+
+    def start(self):
+        pass
+
+    def stop(self):
+        pass

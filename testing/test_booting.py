@@ -9,20 +9,20 @@ import unittest
 
 class TestRuntime(unittest.TestCase):
 
-    def test_daemon(self):
+    def test_banner(self):
+        pass
+
+    def test_configure(self):
+        pass
+
+    def test_forever(self):
         pass
 
     def test_init(self):
         pass
 
-    def test_privileges(self):
+    def test_wait(self):
         pass
 
-    def test_scanner(self):
-        pass
-
-    def test_shutdown(self):
-        pass
-
-    def test_wrap(self):
+    def test_wrapper(self):
         pass

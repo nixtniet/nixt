@@ -7,11 +7,27 @@
 import unittest
 
 
-from nixt.defines import Broker
+from nixt.defines import Broker, Object
 
 
 class TestBroker(unittest.TestCase):
 
-    def test_construct(self):
-        broker = Broker()
-        self.assertEqual(broker.objects, {})
+    def setUp(self):
+        self.broker = Broker()
+
+    def test_add(self):
+        obj = Object()
+        self.broker.add(obj)
+        self.assertTrue(repr(obj) in self.broker.objects)
+
+    def test_get(self):
+        pass
+    
+    def test_has(self):
+        pass
+
+    def test_like(self):
+        pass
+    
+    def test_objs(self):
+        pass
