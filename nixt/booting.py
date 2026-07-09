@@ -11,6 +11,7 @@ import _thread
 
 
 from .clients import Output
+from .configs import Main
 from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
@@ -37,6 +38,8 @@ class Boot:
         "configure program."
         Workdir.wdr = Workdir.home(name)
         Workdir.skel()
+        Main.level = level
+        Main.name = name
         Mods.dir("modules", Workdir.moddir())
         Logging.size(len(name))
         Logging.level(level or "warning")
