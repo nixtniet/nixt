@@ -2,7 +2,7 @@
 # This file is placed in the Public Domain.
 
 
-"stub"
+"main"
 
 
 import os
@@ -12,7 +12,28 @@ import sys
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.runtime import main
+from nixt.defines import Boot, Client, Cmd, Commands, Main, Message
+from nixt.defines import Mods, Parse
+
+
+class CLI(Client):
+
+    def raw(self, text):
+        "output to console."
+        print(text.encode('utf-8', 'replace').decode("utf-8"))
+
+
+def main():
+    "cli script."
+    Parse.parse(Main, " ".join(sys.argv[1:]))
+    Boot.configure("info", "nixt")
+    Mods.scanner()
+    Commands.add(Cmd.cmd)
+    cli = CLI()
+    evt = Message()
+    evt.orig = repr(cli)
+    evt.text = Main.otxt
+    Commands.command(evt)
 
 
 if __name__ == "__main__":

@@ -21,11 +21,6 @@ class Cmd:
         "list available commands."
         event.reply(",".join(sorted(Commands.cmds)))
 
-    @classmethod
-    def ver(cls, event):
-        "show verson."
-        event.reply(f"{Main.name.upper()} {Md5.core()}")
-
 
 class Commands:
 

@@ -11,7 +11,6 @@ import _thread
 
 
 from .clients import Output
-from .configs import Main
 from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
@@ -22,31 +21,27 @@ from .utility import Md5, Utils
 class Boot:
 
     @classmethod
-    def banner(cls):
+    def banner(cls, level, name):
         "hello."
         tmr = time.ctime(time.time()).replace("  ", " ")
-        txt = "%s %s since %s %s (%s)" % (
-            Main.name.upper(),
-            Main.version,
+        txt = "%s since %s %s (%s)" % (
+            name.upper(),
             tmr,
-            Main.level.upper() or "WARNING",
+            level.upper() or "WARNING",
             Md5.core()
         )
         return txt.replace("  ", " ")
 
     @classmethod
-    def configure(cls):
+    def configure(cls, level, name):
         "configure program."
-        Workdir.wdr = Main.path or Workdir.home(Main.name)
-        Mods.dir(f"{Main.name}.modules", Main.moddir or Utils.moddir())
+        Workdir.wdr = Workdir.home(name)
+        Workdir.skel()
         Mods.dir("modules", Workdir.moddir())
-        if Main.sets.user:
-            Mods.dir("mods", "mods")
-        Logging.size(len(Main.name))
-        Logging.level(Main.level or "warning")
+        Logging.size(len(name))
+        Logging.level(level or "warning")
         Mods.sums()
         Md5.check(Mods.core)
-        Workdir.skel()
 
     @classmethod
     def forever(cls):
