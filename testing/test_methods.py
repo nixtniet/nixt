@@ -29,7 +29,7 @@ class TestMethod(unittest.TestCase):
 
     def test_deleted(self):
         pass
-    
+
     def test_edit(self):
         pass
 
@@ -80,4 +80,5 @@ class TestMethod(unittest.TestCase):
 
     def test_values(self):
         pass
+
  

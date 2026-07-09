@@ -22,12 +22,12 @@ class TestBroker(unittest.TestCase):
 
     def test_get(self):
         pass
-    
+
     def test_has(self):
         pass
 
     def test_like(self):
         pass
-    
+
     def test_objs(self):
         pass

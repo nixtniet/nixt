@@ -4,7 +4,6 @@
 "persist tests"
 
 
-import os
 import sys
 import unittest
 
@@ -12,7 +11,7 @@ import unittest
 sys.path.insert(0, ".")
 
 
-from nixt.defines import Disk, Main, Method, Workdir
+from nixt.defines import Disk, Workdir
 from nixt.persist import Cache
 
 

@@ -5,7 +5,6 @@
 
 
 from .objects import Method
-from .utility import Utils
 
 
 class MainConfig(type):

@@ -65,7 +65,7 @@ class TestClient(unittest.TestCase):
 
     def test_raw(self):
         pass
-    
+
     def test_say(self):
         pass
 

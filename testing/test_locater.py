@@ -7,9 +7,6 @@
 import unittest
 
 
-from nixt.defines import Locate
-
-
 class TestLocater(unittest.TestCase):
 
     def test_attrs(self):

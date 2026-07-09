@@ -15,8 +15,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Main, Md5, Message, Mods, Method
-from nixt.defines import Utils, Workdir
+from nixt.defines import Boot, Client, Cmd, Commands, Main, Md5, Message
+from nixt.defines import Mods, Method, Utils, Workdir
 
 
 class Arguments:
@@ -59,7 +59,7 @@ class CLI(Client):
 
     def __init__(self):
         super().__init__()
-        self.register("command", Mods.command)
+        self.register("command", Commands.command)
 
     def after(self, event):
         "wait for event to finish"
@@ -70,7 +70,7 @@ class CLI(Client):
         evt = Message()
         evt.orig = repr(self)
         evt.text = text
-        Mods.command(evt)
+        Commands.command(evt)
         evt.wait()
         return evt
 
@@ -151,6 +151,7 @@ class Kernel(Boot):
             dofinal()
 
     pid = Workdir.pid
+    scanner = Mods.scanner
 
 
 class Scripts:
@@ -204,7 +205,8 @@ class Scripts:
 def main():
     "main"
     Arguments.getargs()
-    Kernel.configure()
+    Kernel.configure("info", "nixt")
+    Commands.add(Cmd.cmd)
     if Main.daemon:
         Kernel.wrap(Scripts.background)
     elif Main.console:

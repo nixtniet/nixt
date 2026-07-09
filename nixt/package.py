@@ -9,7 +9,6 @@ import logging
 import os
 
 
-from .configs import Main
 from .parsers import Parse
 from .utility import Md5, Utils
 

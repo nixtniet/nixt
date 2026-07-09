@@ -7,9 +7,6 @@
 import unittest
 
 
-from nixt.defines import Object, Parse
-
-
 class TestCommands(unittest.TestCase):
 
     def test_add(self):

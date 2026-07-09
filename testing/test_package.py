@@ -7,9 +7,6 @@
 import unittest
 
 
-from nixt.defines import Object, Parse
-
-
 class TestPackage(unittest.TestCase):
 
     def test_dir(self):

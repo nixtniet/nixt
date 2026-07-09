@@ -10,7 +10,7 @@ import unittest
 import nixt.defines as dev
 
 
-interface =  (
+interface = (
        'Boot',
        'Broker',
        'Buffer',
@@ -41,11 +41,10 @@ interface =  (
     )
 
 
-
 class TestDefines(unittest.TestCase):
 
     def test_dir(self):
         self.assertTrue(len(dir(dev)), 22)
-    
+
     def test_interface(self):
         self.assertTrue(dir(dev), interface)
