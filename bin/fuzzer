@@ -25,7 +25,6 @@ from nixt.defines import Thread, Time,  Workdir
 
 Main.debug = True
 Main.name = "fuzzer"
-Main.sets.user = True
 Workdir.wdr = Main.path = ".test"
 
 
@@ -180,7 +179,7 @@ def main():
         Run.banner()
     Main.md5 = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
-    Boot.configure()
+    Boot.configure("info", "nixt")
     Mods.dir("mods", "mods")
     Mods.scanner()
     ClientPool.init(CLI)

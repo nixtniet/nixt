@@ -23,11 +23,8 @@ from nixt.defines import Utils, Workdir
 
 Main.debug = True
 Main.name = "tinder"
-Main.wdr = ".test"
-Main.sets.user = True
-
-
-Workdir.wdr = Main.wdr
+Main.path = ".test"
+Workdir.wdr = Main.path
 
 
 Mods.dir("modules", Utils.moddir())

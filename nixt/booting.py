@@ -36,7 +36,8 @@ class Boot:
     @classmethod
     def configure(cls, level, name):
         "configure program."
-        Workdir.wdr = Workdir.home(name)
+        assert name
+        Workdir.wdr = Workdir.wdr or Workdir.home(name)
         Workdir.skel()
         Main.level = level
         Main.name = name

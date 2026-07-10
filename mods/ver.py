@@ -7,6 +7,6 @@
 from nixt.defines import Main, Md5
 
 
-def ver(cls, event):
+def ver(event):
     "show verson."
     event.reply(f"{Main.name.upper()} {Md5.core()}")
