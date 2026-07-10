@@ -22,28 +22,25 @@ from .utility import Md5, Utils
 class Boot:
 
     @classmethod
-    def banner(cls, level, name):
+    def banner(cls):
         "hello."
         tmr = time.ctime(time.time()).replace("  ", " ")
         txt = "%s since %s %s (%s)" % (
-            name.upper(),
+            Main.name.upper(),
             tmr,
-            level.upper() or "WARNING",
+            Nain.level.upper() or "WARNING",
             Md5.core()
         )
         return txt.replace("  ", " ")
 
     @classmethod
-    def configure(cls, level, name):
+    def configure(cls):
         "configure program."
-        assert name
-        Workdir.wdr = Workdir.wdr or Workdir.home(name)
+        Workdir.wdr = Workdir.wdr or Workdir.home(Main.name)
         Workdir.skel()
-        Main.level = level
-        Main.name = name
         Mods.dir("modules", Workdir.moddir())
-        Logging.size(len(name))
-        Logging.level(level or "warning")
+        Logging.size(len(Main.name))
+        Logging.level(Main.level or "warning")
         Mods.sums()
         Md5.check(Mods.core)
 

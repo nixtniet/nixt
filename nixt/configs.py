@@ -5,6 +5,7 @@
 
 
 from .objects import Method
+from .utility import Utils
 
 
 class MainConfig(type):
@@ -20,7 +21,7 @@ class MainConfig(type):
 
 class Main(metaclass=MainConfig):
 
-    pass
+    name = Utils.pkgname(Method)
 
 
 def __dir__():

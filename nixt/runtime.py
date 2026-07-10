@@ -1,4 +1,31 @@
 # This file is placed in the Public Domain.
 
 
-"put your runtime here"
+"main"
+
+
+import sys
+
+
+from .defines import Boot, Client, Cmd, Commands, Main, Message
+from .defines import Mods, Parse
+
+
+class CLI(Client):
+
+    def raw(self, text):
+        "output to console."
+        print(text.encode('utf-8', 'replace').decode("utf-8"))
+
+
+def main():
+    "cli script."
+    Parse.parse(Main, " ".join(sys.argv[1:]))
+    Boot.configure()
+    Mods.scanner()
+    Commands.add(Cmd.cmd)
+    cli = CLI()
+    evt = Message()
+    evt.orig = repr(cli)
+    evt.text = Main.otxt
+    Commands.command(evt)
