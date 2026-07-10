@@ -13,7 +13,7 @@ from .encoder import Json
 from .engines import Engine
 from .loggers import Logging
 from .message import Message
-from .objects import Object, Method
+from .objects import Default, Object, Method
 from .package import Cmd, Commands, Mods
 from .parsers import Parse
 from .persist import Disk, Locate, Workdir
@@ -32,6 +32,7 @@ def __dir__():
        'Clients',
        'Cmd',
        'Commands',
+       'Default',
        'Disk',
        'Engine',
        'Json',

@@ -5,7 +5,7 @@
 
 
 CORE = {
-    "booting": "3aa9212250f6e7579bcbb002dbc354ad",
+    "booting": "6075fd240980c3c62ad06205b0939969",
     "brokers": "ba7f144f1598b37bdfda200070cc9298",
     "clients": "1a5cb5478cf36ab9a5a4568df3c338eb",
     "configs": "e75d136d5d124be46e305e108af67f9c",

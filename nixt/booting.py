@@ -28,7 +28,7 @@ class Boot:
         txt = "%s since %s %s (%s)" % (
             Main.name.upper(),
             tmr,
-            Nain.level.upper() or "WARNING",
+            Main.level.upper() or "WARNING",
             Md5.core()
         )
         return txt.replace("  ", " ")

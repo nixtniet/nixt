@@ -9,10 +9,10 @@ import os
 import time
 
 
-from nixt.defines import Object, Disk, Locate, Method, Time
+from nixt.defines import Default, Disk, Locate, Method, Time
 
 
-class Email(Object):
+class Email(Default):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -34,19 +34,19 @@ def eml(event):
                     Locate.find("email", event.gets),
                     key=lambda x: Time.timed(x[1].Date)
                    )
-    if event.index:
+    if event.index not in ["", None]:
         obj = result[event.index]
         if obj:
             obj = obj[-1]
             tme = getattr(obj, "Date", "")
-            diff = time.time = Time.timed(tme)
+            diff = time.time() - Time.timed(tme)
             txt = Method.fmt(obj, args, plain=True)
             event.reply(f'{event.index} {txt} {Time.elapsed(diff)}')
     else:
         for _fn, obj in result:
             nrs += 1
             tme = getattr(obj, "Date", "")
-            diff = time.time - Time.timed(tme)
+            diff = time.time() - Time.timed(tme)
             txt = Method.fmt(obj, args, plain=True)
             event.reply(f'{nrs} {txt} {Time.elapsed(diff)}')
     if not result:
