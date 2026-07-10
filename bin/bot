@@ -205,7 +205,7 @@ class Scripts:
 def main():
     "main"
     Arguments.getargs()
-    Kernel.configure("info", "nixt")
+    Kernel.configure()
     Commands.add(Cmd.cmd)
     if Main.daemon:
         Kernel.wrap(Scripts.background)
