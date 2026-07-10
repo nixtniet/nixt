@@ -13,7 +13,7 @@ import threading
 
 
 from .encoder import Json
-from .objects import Default, Object, Method
+from .objects import Default, Method
 from .utility import Time, Utils
 
 
