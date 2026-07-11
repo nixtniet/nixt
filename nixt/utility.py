@@ -54,7 +54,7 @@ class Md5:
     def md5(cls, path):
         "calculate md5sum of a file."
         import hashlib
-        md5 = hashlib.md5(usedforsecurity=False)
+        md5 = hashlib.md5()
         with open(path, "r", encoding="utf-8") as file:
             md5.update(file.read().encode("utf-8"))
         return str(md5.hexdigest())
@@ -63,7 +63,7 @@ class Md5:
     def source(cls, src):
         "determine md5 of source code."
         import hashlib
-        md5 = hashlib.md5(usedforsecurity=False)
+        md5 = hashlib.md5()
         md5.update(src.encode("utf-8"))
         return str(md5.hexdigest())
 
