@@ -65,15 +65,6 @@ class CLI(Client):
         "wait for event to finish"
         event.wait()
 
-    def cmd(self, text):
-        "do command."
-        evt = Message()
-        evt.orig = repr(self)
-        evt.text = text
-        Commands.command(evt)
-        evt.wait()
-        return evt
-
     def raw(self, text):
         "write to console."
         print(text.encode('utf-8', 'replace').decode("utf-8"))
@@ -188,7 +179,10 @@ class Scripts:
         Kernel.scanner()
         cli = CLI()
         cli.silent = False
-        cli.cmd(Main.otxt)
+        evt = Message()
+        evt.orig = repr(cli)
+        evt.text = Main.otxt
+        Commands.command(evt)
 
     @staticmethod
     def service():
