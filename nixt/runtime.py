@@ -6,15 +6,14 @@
 
 import logging
 import os
-
 import sys
 import threading
 import time
 import _thread
 
 
-from .defines import Client, Cmd, Commands, Main, Message, Output
-from .defines import Logging, Md5, Mods, Parse, Task, Thread, Utils, Workdir
+from .defines import Client, Cmd, Commands, Logging, Main, Message, Output
+from .defines import Md5, Mods, Parse, Task, Thread, Utils, Workdir
 
 
 class Kernel:
@@ -31,7 +30,7 @@ class Kernel:
         txt = "%s since %s %s (%s)" % (
             Main.name.upper(),
             tmr,
-            Main.level.upper() or "WARNING",
+            Main.sets.level.upper() or "WARNING",
             Md5.core()
         )
         return txt.replace("  ", " ")
@@ -43,7 +42,7 @@ class Kernel:
         Workdir.skel()
         Mods.dir("modules", Workdir.moddir())
         Logging.size(len(Main.name))
-        Logging.level(Main.level or "warning")
+        Logging.level(Main.sets.level or "warning")
         Mods.sums()
         Md5.check(Mods.core)
 
@@ -57,7 +56,7 @@ class Kernel:
         pid2 = os.fork()
         if pid2 != 0:
             os._exit(0)
-        if not Main.verbose:
+        if not Main.sets.verbose:
             cls.null(sys.stdin)
             cls.null(sys.stdout)
             cls.null(sys.stderr)
@@ -79,12 +78,12 @@ class Kernel:
     def init(cls):
         "call init of modules that have an init function."
         thrs = []
-        for name in Utils.spl(Main.mods or Main.default):
+        for name in Utils.spl(Main.sets.mods or Main.sets.default):
             mod = Mods.get(name)
             if not mod or "init" not in dir(mod):
                 continue
             thrs.append(Thread.launch(mod.init))
-        if thrs and Main.wait:
+        if thrs and Main.sets.wait:
             for thr in thrs:
                 try:
                     thr.join()
@@ -153,14 +152,16 @@ class CLI(Client):
 class Scripts:
 
     @staticmethod
-    def background():
+    def daemon():
         "background script."
-        if not Main.service:
+        Kernel.parse(Main, " ".join(sys.argv[1:]))
+        print(Main.sets)
+        if not Main.sets.service:
             Kernel.daemon()
         Kernel.privileges()
         Kernel.configure()
-        Kernel.pid()
-        if Main.verbose:
+        Kernel.pid(Main.name)
+        if Main.sets.verbose:
             Kernel.banner()
         Kernel.scanner()
         Kernel.init()
@@ -182,7 +183,7 @@ class Scripts:
 
 
 def main():
-    Kernel.wrapped(Scripts.control)    
+    Kernel.wrapped(Scripts.control)
 
 
 if __name__ == "__main__":

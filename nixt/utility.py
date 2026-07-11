@@ -27,7 +27,7 @@ class Md5:
             name = pth[:-3]
             modpath = os.path.join(path, pth)
             if md5s and Md5.md5(modpath) != md5s.get(name):
-                logging.warning("mismatch %s", name)
+                logging.info("mismatch %s", name)
                 ok = False
         return ok
 
@@ -199,22 +199,6 @@ class Utils:
         pth = pathlib.Path(path)
         if not os.path.exists(pth.parent):
             pth.parent.mkdir(parents=True, exist_ok=True)
-
-    @staticmethod
-    def check(path, md5s):
-        "check for md5sums in a given path."
-        ok = True
-        if not os.path.exists(path):
-            return False
-        for pth in os.listdir(path):
-            if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
-                continue
-            name = pth[:-3]
-            modpath = os.path.join(path, pth)
-            if Md5.md5(modpath) != md5s.get(name):
-                logging.warning("mismatch %s", name)
-                ok = False
-        return ok
 
     @staticmethod
     def clsname(obj):
