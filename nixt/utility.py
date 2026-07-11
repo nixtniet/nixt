@@ -53,10 +53,7 @@ class Md5:
     @classmethod
     def gethash(cls):
         import hashlib
-        try:
-            return hashlib.md5(usedforsecurity=False)
-        except TypeError:
-            return hashlib.md5()
+        return hashlib.md5()
 
     @classmethod
     def md5(cls, path):
