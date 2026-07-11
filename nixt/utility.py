@@ -51,10 +51,17 @@ class Md5:
                 md5.update(file.read().encode("utf-8"))
 
     @classmethod
+    def gethash(cls):
+        import hashlib
+        try:
+            return hashlib.md5(usedforsecurity=False)
+        except TypeError:
+            return hashlib.md5()
+
+    @classmethod
     def md5(cls, path):
         "calculate md5sum of a file."
-        import hashlib
-        md5 = hashlib.md5()
+        md5 = cls.gethash()
         with open(path, "r", encoding="utf-8") as file:
             md5.update(file.read().encode("utf-8"))
         return str(md5.hexdigest())
@@ -62,8 +69,7 @@ class Md5:
     @classmethod
     def source(cls, src):
         "determine md5 of source code."
-        import hashlib
-        md5 = hashlib.md5()
+        md5 = cls.gethash()
         md5.update(src.encode("utf-8"))
         return str(md5.hexdigest())
 
