@@ -5,7 +5,6 @@
 "interface"
 
 
-from .booting import Boot
 from .brokers import Broker
 from .clients import Buffer, Buffered, Client, Clients, Output
 from .configs import Main
@@ -24,7 +23,6 @@ from .utility import Md5, Time, Utils
 
 def __dir__():
     return (
-       'Boot',
        'Broker',
        'Buffer',
        'Buffered',
