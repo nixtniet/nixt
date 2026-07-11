@@ -17,7 +17,7 @@ CORE = {
     "objects": "8ff9c08a27bb5134051745d98916cf6e",
     "package": "545d0b054550cec0a30bcdac7548f061",
     "parsers": "26b6cdda224d077e9b5812afcefffc2c",
-    "persist": "b4c64cdd8592d61ec6f0263d8d5e927f",
+    "persist": "64b8f3bfc96dd87ae3fa197eade922fb",
     "repeats": "0b115950db95d55173dc1fbefeab32a2",
     "runtime": "26abcb239b96f519e6af6492da27f3e9",
     "threads": "114d11abe25dd85f13a8b0fa574c7a97",
