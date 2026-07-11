@@ -5,18 +5,23 @@
 
 
 import logging
+import os
+
 import sys
+import threading
+import time
 import _thread
 
 
-from .defines import Client, Cmd, Commands, Main, Message
-from .defines import Logging, Md5, Mods, Parse, Workdir
+from .defines import Client, Cmd, Commands, Main, Message, Output
+from .defines import Logging, Md5, Mods, Parse, Task, Thread, Utils, Workdir
 
 
 class Kernel:
 
     command = Commands.command
     parse = Parse.parse
+    pid = Workdir.pid
     scanner = Mods.scanner
 
     @classmethod
@@ -52,7 +57,7 @@ class Kernel:
         pid2 = os.fork()
         if pid2 != 0:
             os._exit(0)
-        if not Nain.verbose:
+        if not Main.verbose:
             cls.null(sys.stdin)
             cls.null(sys.stdout)
             cls.null(sys.stderr)
@@ -155,6 +160,8 @@ class Scripts:
         Kernel.privileges()
         Kernel.configure()
         Kernel.pid()
+        if Main.verbose:
+            Kernel.banner()
         Kernel.scanner()
         Kernel.init()
         Kernel.forever()
@@ -175,8 +182,8 @@ class Scripts:
 
 
 def main():
-     Kernel.wrapped(Scripts.control)    
+    Kernel.wrapped(Scripts.control)    
 
 
 if __name__ == "__main__":
-     main()
+    main()

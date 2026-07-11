@@ -25,6 +25,7 @@ classifiers = [
 
 [project.scripts]
 "nixt" =  "nixt.runtime:main"
+"nixtd" = "nixt.runtime:backgroud"
 
 
 [project.urls]
