@@ -24,7 +24,6 @@ class Boot:
 
     command = Commands.command
     parse = Parse.parse
-    pid = Workdir.pid
     scanner = Mods.scanner
 
     @classmethod

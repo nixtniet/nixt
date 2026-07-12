@@ -8,8 +8,7 @@ import os
 import sys
 
 
-from .defines import Boot, Client, Cmd, Commands, Main, Message
-from .defines import Workdir
+from .defines import Boot, Client, Cmd, Commands, Main, Message, Workdir
 
 
 class Kernel(Boot):
@@ -78,7 +77,6 @@ class Scripts:
     def daemon():
         "background script."
         Kernel.parse(Main, " ".join(sys.argv[1:]))
-        print(Main.sets)
         if not Main.sets.service:
             Kernel.daemon()
         Kernel.privileges()
@@ -103,11 +101,3 @@ class Scripts:
         evt.text = Main.otxt
         Commands.add(Cmd.cmd)
         Kernel.command(evt)
-
-
-def main():
-    Kernel.wrapped(Scripts.control)
-
-
-if __name__ == "__main__":
-    main()

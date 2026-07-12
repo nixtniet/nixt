@@ -24,7 +24,7 @@ classifiers = [
 
 
 [project.scripts]
-"nixt" =  "nixt.runtime:main"
+"nixt" =  "nixt.runtime:control"
 "nixtd" = "nixt.runtime:backgroud"
 
 
