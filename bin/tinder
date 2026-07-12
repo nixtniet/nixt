@@ -16,9 +16,9 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Buffer, Clients, Commands, Engine, Logging, Main
-from nixt.defines import Md5, Message, Mods, Method, Parse, Task, Thread, Time
-from nixt.defines import Utils, Workdir
+from nixt.defines import Boot, Buffer, Clients, Commands, Engine, Logging
+from nixt.defines import Main, Md5, Message, Mods, Method, Parse, Task
+from nixt.defines import Thread, Time, Utils, Workdir
 
 
 Main.debug = True
@@ -88,22 +88,13 @@ class Pool:
         time.sleep(0.01)
 
 
-class Runs:
+class Kernel(Boot):
 
     nrs = 0
 
     @classmethod
     def banner(cls):
-        "hello"
-        tmr = time.ctime(time.time()).replace("  ", " ")
-        txt = "%s %s since %s %s (%s)" % (
-            Main.name.upper(),
-            Main.version,
-            tmr,
-            Main.level.upper() or "INFO",
-            Md5.core()
-        )
-        print(txt.replace("  ", " "))
+        print(Boot.banner())
         sys.stdout.flush()
 
     @staticmethod
@@ -136,7 +127,7 @@ class Runs:
         except termios.error:
             pass
         try:
-            Boot.wrapped(function, *args)
+            cls.wrapped(function, *args)
         except (KeyboardInterrupt, EOFError):
             pass
         if oldie:
@@ -165,30 +156,30 @@ def final():
 def main():
     if os.path.exists(Main.wdr):
         shutil.rmtree(Main.wdr)
-    if Runs.check("v"):
+    if Kernel.check("v"):
         Main.verbose = True
-        Runs.banner()
-    if Runs.check("t"):
+        Kernel.banner()
+    if Kernel.check("t"):
         Main.threaded = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
     if Main.threaded:
         Pool.init(os.cpu_count(), CLI)
     else:
         Pool.init(1, CLI)
-    Runs.nrs = Main.index or 1
+    Kernel.nrs = Main.index or 1
     thrs = []
-    for _x in range(Runs.nrs):
-        thrs.append(Thread.launch(Runs.payload, pre))
+    for _x in range(Kernel.nrs):
+        thrs.append(Thread.launch(Kernel.payload, pre))
     for thr in thrs:
         thr.join()
     thrs = []
-    for _x in range(Runs.nrs):
-        thrs.append(Thread.launch(Runs.payload, examples))
+    for _x in range(Kernel.nrs):
+        thrs.append(Thread.launch(Kernel.payload, examples))
     for thr in thrs:
         thr.join()
     thrs = []
-    for _x in range(Runs.nrs):
-        thrs.append(Thread.launch(Runs.payload, post))
+    for _x in range(Kernel.nrs):
+        thrs.append(Thread.launch(Kernel.payload, post))
     for thr in thrs:
         thr.join()
     Clients.shutdown()
@@ -260,4 +251,4 @@ post = {
 
 
 if __name__ == "__main__":
-    Runs.wrap(main, dofinal=final)
+    Kernel.wrap(main, dofinal=final)

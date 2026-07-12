@@ -25,6 +25,7 @@ class Main(metaclass=MainConfig):
     name = Utils.pkgname(Method)
     sets = Default()
 
+
 def __dir__():
     return (
         'Main',

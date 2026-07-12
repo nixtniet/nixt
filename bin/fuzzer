@@ -87,23 +87,13 @@ class ClientPool:
         time.sleep(0.01)
 
 
-
-class Run:
+class Kernel(Boot):
 
     nrs = 0
 
     @classmethod
     def banner(cls):
-        "hello"
-        tme = time.ctime(time.time()).replace("  ", " ")
-        txt = "%s %s since %s %s (%s)" % (
-            Main.name.upper(),
-            Main.version,
-            tme,
-            Main.level.upper() or "INFO",
-            Md5.core()
-        )
-        print(txt.replace("  ", " "))
+        print(Boot.banner())
         sys.stdout.flush()
 
     @staticmethod
@@ -146,7 +136,7 @@ class Run:
 
 
 def final():
-    total = len(Commands.cmds) * len(arguments) * Run.nrs
+    total = len(Commands.cmds) * len(arguments) * Kernel.nrs
     endtime = time.time()
     lap = Time.elapsed(endtime-Time.starttime)
     if Main.verbose and total:
@@ -174,19 +164,19 @@ def final():
 def main():
     if os.path.exists(Main.wdr):
         shutil.rmtree(Main.wdr)
-    if Run.check("v"):
+    if Kernel.check("v"):
         Main.verbose = True
-        Run.banner()
+        Kernel.banner()
     Main.md5 = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
-    Boot.configure("info", "nixt")
+    Kernel.configure()
     Mods.dir("mods", "mods")
     Mods.scanner()
     ClientPool.init(CLI)
-    Run.nrs = Main.index or 1
+    Kernel.nrs = Main.index or 1
     thrs = []
-    for _x in range(Run.nrs):
-        thrs.append(Thread.launch(Run.payload))
+    for _x in range(Kernel.nrs):
+        thrs.append(Thread.launch(Kernel.payload))
     for thr in thrs:
         thr.join()
     ClientPool.shutdown()
@@ -217,4 +207,4 @@ arguments = [
 
 
 if __name__ == "__main__":
-    Run.wrap(main, dofinal=final)
+    Kernel.wrap(main, dofinal=final)
