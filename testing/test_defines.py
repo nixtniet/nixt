@@ -25,7 +25,6 @@ interface = (
        'Locate',
        'Logging',
        'Main',
-       'Md5',
        'Message',
        'Mods',
        'Method',

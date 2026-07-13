@@ -8,29 +8,7 @@ import time
 import unittest
 
 
-from nixt.defines import Md5, Time, Utils
-
-
-class TestMd5(unittest.TestCase):
-
-    def test_construct(self):
-        md5 = Md5()
-        self.assertTrue(md5)
-
-    def test_check(self):
-        pass
-
-    def test_core(self):
-        pass
-
-    def test_dir(self):
-        pass
-
-    def test_md5(self):
-        pass
-
-    def test_source(self):
-        pass
+from nixt.defines import Time, Utils
 
 
 class TestTime(unittest.TestCase):

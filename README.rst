@@ -3,7 +3,7 @@
 
 ::
 
-    nixt - write your own commands
+    nixt - write your own commands.
 
 
 **SYNOPSIS**
@@ -21,18 +21,18 @@
 
     nixt has it's modules in the ~/.nixt/mods directory so for a
     hello world command you would  edit a file in ~/.nixt/mods/hello.py
-    and add the following
+    and add the following:
 
 
-    def hello(event):
-        event.reply("hello world !!")
+        def hello(event):
+            event.reply("hello world !!")
 
 
-    typing the hello command would result into a nice hello world !!
+    typing the hello command would result into a nice hello world !!:
 
 
-    $ nixt hello
-    hello world !!
+        $ nixt hello
+        hello world !!
 
 
 **FILES**

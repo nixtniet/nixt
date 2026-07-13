@@ -17,7 +17,7 @@ from .package import Commands, Mods
 from .parsers import Parse
 from .persist import Workdir
 from .threads import Task, Thread
-from .utility import Md5, Utils
+from .utility import Utils
 
 
 class Boot:
@@ -30,11 +30,10 @@ class Boot:
     def banner(cls):
         "hello."
         tmr = time.ctime(time.time()).replace("  ", " ")
-        txt = "%s since %s %s (%s)" % (
+        txt = "%s since %s %s" % (
             Main.name.upper(),
             tmr,
             Main.sets.level.upper() or "WARNING",
-            Md5.core()
         )
         return txt.replace("  ", " ")
 
@@ -46,8 +45,6 @@ class Boot:
         Mods.dir("modules", Workdir.moddir())
         Logging.size(len(Main.name))
         Logging.level(Main.sets.level or "warning")
-        Mods.sums()
-        Md5.check(Mods.core)
 
     @classmethod
     def forever(cls):

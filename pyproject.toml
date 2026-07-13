@@ -24,8 +24,7 @@ classifiers = [
 
 
 [project.scripts]
-"nixt" =  "nixt.runtime:control"
-"nixtd" = "nixt.runtime:backgroud"
+"nixt" =  "nixt.runtime:Wrap.wrapped"
 
 
 [project.urls]

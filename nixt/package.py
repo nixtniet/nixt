@@ -5,20 +5,11 @@
 
 
 import inspect
-import logging
 import os
 
 
 from .parsers import Parse
-from .utility import Md5, Utils
-
-
-class Cmd:
-
-    @classmethod
-    def cmd(cls, event):
-        "list available commands."
-        event.reply(",".join(sorted(Commands.cmds)))
+from .utility import Utils
 
 
 class Commands:
@@ -72,11 +63,6 @@ class Mods:
             fnm = os.path.join(path, name + ".py")
             if not os.path.exists(fnm):
                 continue
-            if cls.md5s:
-                md5 = Md5.md5(fnm)
-                md5s = cls.md5s.get(name)
-                if md5s and md5 != md5s:
-                    logging.info("mismatch %s", modname)
             return cls.importer(modname, fnm)
 
     @classmethod
@@ -115,24 +101,9 @@ class Mods:
         for name in cls.list():
             Commands.scan(cls.get(name))
 
-    @classmethod
-    def sums(cls):
-        "read table,"
-        try:
-            from .statics import CORE
-            cls.core.update(CORE)
-        except (ImportError, SyntaxError, ValueError):
-            pass
-        try:
-            from .statics import MODULES
-            cls.md5s.update(MODULES)
-        except (ImportError, SyntaxError, ValueError):
-            pass
-
 
 def __dir__():
     return (
-        "Cmd",
         "Commands",
         'Mods'
     )

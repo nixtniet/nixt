@@ -19,7 +19,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Object, Boot, Buffered, Client, Commands, Logging
-from nixt.defines import Main, Md5, Message, Mods, Method, Parse, Task
+from nixt.defines import Main, Message, Mods, Method, Parse, Task
 from nixt.defines import Thread, Time,  Workdir
 
 
