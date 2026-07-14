@@ -63,5 +63,5 @@ class Clients:
 def __dir__():
     return (
         'Broker',
-        'Client'
+        'Clients'
     )

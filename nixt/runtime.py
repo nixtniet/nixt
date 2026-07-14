@@ -33,12 +33,12 @@ class Wrap:
         "restore console."
         import termios
         try:
-           old = termios.tcgetattr(sys.stdin.fileno())
+            old = termios.tcgetattr(sys.stdin.fileno())
         except termios.error:
             old = False
         Boot.wrapped(func, *args)
         if old:
-           termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
     @staticmethod
     def wrapped():

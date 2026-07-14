@@ -55,6 +55,14 @@ class Arguments:
         Main.name = Main.name or Utils.pkgname(Mods)
 
 
+class Cmd:
+
+    @classmethod
+    def cmd(cls, event):
+        "list available commands."
+        event.reply(",".join(sorted(Commands.cmds)))
+
+
 class CLI(Client):
 
     def __init__(self):
