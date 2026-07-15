@@ -9,7 +9,7 @@ import os
 
 
 from .parsers import Parse
-from .utility import Utils
+from .utility import Md5, Utils
 
 
 class Cmd:
@@ -71,6 +71,11 @@ class Mods:
             fnm = os.path.join(path, name + ".py")
             if not os.path.exists(fnm):
                 continue
+            if cls.md5s:
+                md5 = Md5.md5(fnm)
+                md5s = cls.md5s.get(name)
+                if md5s and md5 != md5s:
+                    logging.warn("mismatch %s", modname)
             return cls.importer(modname, fnm)
 
     @classmethod
