@@ -7,8 +7,7 @@
 import sys
 
 
-from .defines import Boot, Client, Commands
-from .defines import Main, Message
+from .defines import Boot, Client, Cmd, Commands, Main, Message
 
 
 class CLI(Client):
@@ -16,14 +15,6 @@ class CLI(Client):
     def raw(self, text):
         "output to console."
         print(text.encode('utf-8', 'replace').decode("utf-8"))
-
-
-class Cmd:
-
-    @classmethod
-    def cmd(cls, event):
-        "list available commands."
-        event.reply(",".join(sorted(Commands.cmds)))
 
 
 class Wrap:
@@ -42,6 +33,7 @@ class Wrap:
 
     @staticmethod
     def wrapped():
+        "wrap main."
         Wrap.wrap(main)
 
 

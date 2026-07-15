@@ -12,6 +12,14 @@ from .parsers import Parse
 from .utility import Utils
 
 
+class Cmd:
+
+    @classmethod
+    def cmd(cls, event):
+        "list available commands."
+        event.reply(",".join(sorted(Commands.cmds)))
+
+
 class Commands:
 
     cmds = {}
@@ -104,6 +112,7 @@ class Mods:
 
 def __dir__():
     return (
+        "Cmd",
         "Commands",
         'Mods'
     )

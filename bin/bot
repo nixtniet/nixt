@@ -162,7 +162,7 @@ class Scripts:
         Kernel.privileges()
         Kernel.pid(Main.name)
         Kernel.scanner()
-        Kernel.init(Main.mods or Main.default)
+        Kernel.init()
         Kernel.forever()
 
     @staticmethod
@@ -175,7 +175,7 @@ class Scripts:
         if Main.all:
             Main.mods = ",".join(Mods.list())
         Kernel.scanner()
-        if not Kernel.init(Main.mods, Main.wait):
+        if not Kernel.init():
             return
         csl = Console()
         csl.start()
@@ -200,7 +200,7 @@ class Scripts:
         print(Kernel.banner())
         sys.stdout.flush()
         Kernel.scanner()
-        Kernel.init(Main.mods or Main.default)
+        Kernel.init()
         Kernel.forever()
 
 
