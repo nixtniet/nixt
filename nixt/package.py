@@ -109,6 +109,20 @@ class Mods:
         for name in cls.list():
             Commands.scan(cls.get(name))
 
+    @classmethod
+    def sums(cls):
+        "read table,"
+        try:
+            from .statics import CORE
+            cls.core.update(CORE)
+        except (ImportError, SyntaxError, ValueError):
+            pass
+        try:
+            from .statics import MODULES
+            cls.md5s.update(MODULES)
+        except (ImportError, SyntaxError, ValueError):
+            pass
+
 
 def __dir__():
     return (

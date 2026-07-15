@@ -17,7 +17,7 @@ from .package import Commands, Mods
 from .parsers import Parse
 from .persist import Workdir
 from .threads import Task, Thread
-from .utility import Utils
+from .utility import Md5, Utils
 
 
 class Boot:
@@ -30,10 +30,11 @@ class Boot:
     def banner(cls):
         "hello."
         tmr = time.ctime(time.time()).replace("  ", " ")
-        txt = "%s since %s %s" % (
+        txt = "%s since %s %s (%s)" % (
             Main.name.upper(),
             tmr,
             Main.sets.level.upper() or "WARNING",
+            Md5.core()
         )
         return txt.replace("  ", " ")
 
