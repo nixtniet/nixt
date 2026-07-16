@@ -7,7 +7,7 @@
 import threading
 
 
-from .brokers import Broker
+from .clients import Broker
 from .objects import Default
 
 

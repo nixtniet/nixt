@@ -278,6 +278,8 @@ class Utils:
 
 def __dir__():
     return (
+        'Format',
+        'Logging'
         'Md5',
         'Time',
         'Utils'

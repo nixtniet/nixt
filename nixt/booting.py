@@ -13,8 +13,7 @@ import _thread
 from .clients import Client
 from .configs import Main
 from .loggers import Logging
-from .package import Commands, Mods
-from .parsers import Parse
+from .package import Commands, Mods, Parse
 from .persist import Workdir
 from .utility import Md5, Utils
 

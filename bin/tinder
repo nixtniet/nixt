@@ -16,9 +16,9 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Buffer, Clients, Commands, Engine, Logging
-from nixt.defines import Main, Message, Mods, Method, Parse, Task
-from nixt.defines import Thread, Time, Utils, Workdir
+from nixt.defines import Boot, Client, Clients, Commands, Logging
+from nixt.defines import Main, Message, Mods, Method, Parse
+from nixt.defines import Time, Utils, Workdir
 
 
 Main.debug = True
@@ -35,12 +35,10 @@ Mods.scanner()
 Logging.level("debug")
 
 
-class CLI(Engine, Buffer):
+class CLI(Client):
 
     def __init__(self):
-        Buffer.__init__(self)
-        Engine.__init__(self)
-        self.register("command", Commands.command)
+        Client.__init__(self)
 
     def raw(self, text):
         if Main.verbose and not self.block.is_set():
@@ -48,44 +46,7 @@ class CLI(Engine, Buffer):
             sys.stdout.flush()
 
 
-class Pool:
-
-    clients = []
-    lock = threading.RLock()
-    last = 0
-    nrevents = 0
-    nrcpu = 1
-
-    @classmethod
-    def add(cls, client):
-        cls.clients.append(client)
-
-    @classmethod
-    def init(cls, nr, client):
-        with cls.lock:
-            cls.nrcpu = nr
-            for _x in range(Pool.nrcpu):
-                clt = client()
-                clt.start()
-                cls.add(clt)
-
-    @classmethod
-    def put(cls, *args):
-        with cls.lock:
-            if cls.last >= cls.nrcpu:
-                cls.last = 0
-            cls.clients[cls.last].put(*args)
-            cls.last += 1
-            cls.nrevents += 1
-
-    @classmethod
-    def shutdown(cls):
-        for client in cls.clients:
-            client.wait()
-        time.sleep(0.01)
-        for client in cls.clients:
-            client.stop()
-        time.sleep(0.01)
+cli = CLI()
 
 
 class Kernel(Boot):
@@ -114,11 +75,12 @@ class Kernel(Boot):
             for ex in example:
                 evt = Message()
                 evt.kind = "command"
+                evt.orig = repr(cli)
                 evt.text = f"{cmd} {ex}"
-                Pool.put(evt)
+                Commands.command(evt)
 
     @classmethod
-    def wrap(cls, function, *args, dofinal=None):
+    def wrap(cls, function, *args):
         "restore console."
         import termios
         oldie = None
@@ -132,25 +94,6 @@ class Kernel(Boot):
             pass
         if oldie:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, oldie)
-        if dofinal:
-            final()
-
-
-def final():
-    if not Main.verbose:
-        return
-    total = Pool.nrevents
-    endtime = time.time()
-    lap = Time.elapsed(endtime-Time.starttime)
-    percall = (endtime-Time.starttime)/total
-    print(f"{Method.fmt(Main, skip='otxt,txt')}")
-    print(f"cores: {Pool.nrcpu} events: {total}")
-    print(f"total: {lap} nrs: {Pool.nrevents - total} call: %.6fs" % percall)
-    res = ""
-    for client in Pool.clients:
-        res += str(client.queue.qsize()) + " "
-    print(res.strip())
-    print(threading.enumerate())
 
 
 def main():
@@ -162,31 +105,15 @@ def main():
     if Kernel.check("t"):
         Main.threaded = True
     Parse.parse(Main, " ".join(sys.argv[1:]))
-    if Main.threaded:
-        Pool.init(os.cpu_count(), CLI)
-    else:
-        Pool.init(1, CLI)
     Kernel.nrs = Main.index or 1
+    for _x in range(Kernel.nrs):
+        Kernel.payload(pre)
     thrs = []
     for _x in range(Kernel.nrs):
-        thrs.append(Thread.launch(Kernel.payload, pre))
-    for thr in thrs:
-        thr.join()
+        Kernel.payload(examples)
     thrs = []
     for _x in range(Kernel.nrs):
-        thrs.append(Thread.launch(Kernel.payload, examples))
-    for thr in thrs:
-        thr.join()
-    thrs = []
-    for _x in range(Kernel.nrs):
-        thrs.append(Thread.launch(Kernel.payload, post))
-    for thr in thrs:
-        thr.join()
-    Clients.shutdown()
-    while 1:
-        if len(threading.enumerate()) == 1:
-            break
-        time.sleep(0.01)
+        Kernel.payload(post)
 
 
 examples = {
@@ -251,4 +178,4 @@ post = {
 
 
 if __name__ == "__main__":
-    Kernel.wrap(main, dofinal=final)
+    Kernel.wrap(main)
