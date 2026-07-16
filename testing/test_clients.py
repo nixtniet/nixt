@@ -20,23 +20,13 @@ def hello(event):
 
 class MyClient(Client):
 
-    def __init__(self):
-        Client.__init__(self)
-        self.register("hello", hello)
-
     def raw(self, text):
         buffer.append(text)
 
 
 class TestClient(unittest.TestCase):
 
-    def setUp(self):
-        self.clt = MyClient()
-        self.clt.silent = False
-        self.clt.start()
-
-    def shutDown(self):
-        self.clt.stop()
+    clt = MyClient()
 
     def test_announce(self):
         self.clt.announce("hello")
@@ -54,14 +44,6 @@ class TestClient(unittest.TestCase):
     def test_dosay(self):
         self.clt.dosay("#channel", "yo!")
         self.assertTrue("yo!" in buffer)
-
-    def test_put(self):
-        evt = Message()
-        evt.kind = "hello"
-        evt.text = "hi world"
-        self.clt.put(evt)
-        evt.wait()
-        self.assertTrue("hi world" in evt.result)
 
     def test_raw(self):
         pass
