@@ -9,8 +9,10 @@ import logging
 import os
 
 
+from .configs import Main
 from .objects import Default, Method
-from .utility import Md5, Utils
+from .persist import Workdir
+from .utility import Logging, Md5, Utils
 
 
 class Cmd:
@@ -38,7 +40,6 @@ class Commands:
         func = cls.cmds.get(evt.cmd, None)
         if func:
             func(evt)
-            evt.display()
         evt.ready()
 
     @classmethod
@@ -55,6 +56,17 @@ class Mods:
     dirs = {}
     md5s = {}
     modules = {}
+
+    @classmethod
+    def configure(cls):
+        "configure program."
+        Workdir.wdr = Workdir.wdr or Workdir.home(Main.name)
+        Workdir.skel()
+        cls.dir("modules", Workdir.moddir())
+        Logging.size(len(Main.name))
+        Logging.level(Main.sets.level or "warning")
+        cls.sums()
+        Md5.check(cls.core)
 
     @classmethod
     def dir(cls, pkgname, path):

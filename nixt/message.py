@@ -7,7 +7,6 @@
 import threading
 
 
-from .clients import Broker
 from .objects import Default
 
 
@@ -21,12 +20,6 @@ class Message(Default):
         self.index = 0
         self.kind = "message"
         self.result = []
-
-    def display(self):
-        "print results."
-        bot = Broker.get(self.orig)
-        if bot:
-            bot.display(self)
 
     def iface(self, txt):
         "show interface."
