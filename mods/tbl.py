@@ -8,7 +8,9 @@ import inspect
 import os
 
 
-from nixt.defines import Json, Md5, Mods
+from nixt.objects import Json
+from nixt.package import Mods
+from nixt.utility import Md5
 
 
 def tbl(event):
