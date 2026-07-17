@@ -48,7 +48,7 @@ class Arguments:
         optparser.add_argument("--default", default="irc,mdl,rss,wsd", help=argparse.SUPPRESS)
         optparser.add_argument("--moddir", default=Utils.moddir(), help="set modules directory.")
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
-        optparser.add_argument("--user", action="store_false", help="use local mods directory.")
+        optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
         args, arguments = theparser.parse_known_args()
         Main.otxt = " ".join(arguments)
         Method.update(Main.sets, args)
@@ -81,7 +81,7 @@ class Console(CLI):
 
     def handle(self, event):
         "handle event."
-        Mods.command(event)
+        Commands.command(event)
 
     def poll(self):
         "return event."
@@ -109,10 +109,10 @@ class Scripts:
     def console():
         "console script."
         readline.redisplay()
-        if Main.verbose:
+        if Main.sets.verbose:
             print(Kernel.banner())
             sys.stdout.flush()
-        if Main.all:
+        if Main.sets.all:
             Main.sets.mods = ",".join(Mods.list())
         Kernel.scanner()
         if not Kernel.init():
@@ -125,6 +125,8 @@ class Scripts:
     def control():
         "cli script."
         Kernel.scanner()
+        if Main.sets.admin:
+            Commands.add(Cmd.srv, Cmd.tbl)
         cli = CLI()
         cli.silent = False
         evt = Message()

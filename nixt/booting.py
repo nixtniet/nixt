@@ -5,13 +5,16 @@
 
 
 import logging
+import os
 import sys
 import time
 import _thread
 
 
-from .engines import Thread 
-from .package import Main, Mods
+from .clients import Client
+from .configs import Main
+from .engines import Task, Thread
+from .package import Mods
 from .persist import Workdir
 from .utility import Md5, Utils
 
@@ -79,7 +82,6 @@ class Kernel:
                     return False
         return True
 
-
     @classmethod
     def null(cls, io):
         "route to dev/null."
@@ -101,13 +103,12 @@ class Kernel:
         try:
             func(*args)
         except (KeyboardInterrupt, EOFError):
-            Output.block.set()
+            Client.block.set()
             Task.block.set()
             _thread.interrupt_main()
         except Exception as ex:
             logging.exception(ex)
             _thread.interrupt_main()
-
 
     @classmethod
     def wrap(cls, func, *args, dofinal=None):

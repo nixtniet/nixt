@@ -312,10 +312,6 @@ class IRC(Engine, Client):
         self.direct(f"NICK {nck}")
         self.direct(f"USER {nck} {server} {server} {nck}")
 
-    def oput(self, event):
-        "put event onto output queue."
-        self.oqueue.put_nowait(event)
-
     def parsing(self, txt):
         "parse text into an event."
         rawstr = str(txt)
@@ -463,10 +459,6 @@ class IRC(Engine, Client):
     def say(self, channel, text):
         "say text in the channel."
         self.dosay(channel, text)
-        # event = Event()
-        # event.channel = channel
-        # event.reply(text)
-        # self.oput(event)
 
     def some(self):
         "read some text from the socket."
