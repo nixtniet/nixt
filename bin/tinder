@@ -16,104 +16,62 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Clients, Commands, Logging
-from nixt.defines import Main, Message, Mods, Method, Parse
-from nixt.defines import Time, Utils, Workdir
+from nixt.message import Message
+from nixt.objects import Method
+from nixt.package import Commands, Mods, Parse
+from nixt.persist import Workdir
+from nixt.utility import Logging, Time, Utils
 
 
-Main.debug = True
-Main.name = "tinder"
-Main.path = ".test"
-Workdir.wdr = Main.path
-
-
-Mods.dir("modules", Utils.moddir())
+Workdir.wdr = ".test"
 Mods.dir("mods", "mods")
-Mods.scanner()
+Mods.configure("nixt")
+print(Workdir.wdr)
+
+verbose = False
 
 
-Logging.level("debug")
-
-
-class CLI(Client):
-
-    def __init__(self):
-        Client.__init__(self)
-
-    def raw(self, text):
-        if Main.verbose and not self.block.is_set():
-            print(text.encode('utf-8', 'replace').decode("utf-8"))
-            sys.stdout.flush()
-
-
-cli = CLI()
-
-
-class Kernel(Boot):
-
-    nrs = 0
-
-    @classmethod
-    def banner(cls):
-        print(Boot.banner())
+def raw(text):
+    if verbose:
+        print(text.encode('utf-8', 'replace').decode("utf-8"))
         sys.stdout.flush()
 
-    @staticmethod
-    def check(opts):
-        "check for command line options."
-        for arg in sys.argv:
-            if not arg.startswith("-"):
-                continue
-            for opt in opts:
-                if opt in arg:
-                    return True
-        return False
 
-    @staticmethod
-    def payload(todo):
-        for cmd, example in todo.items():
-            for ex in example:
-                evt = Message()
-                evt.kind = "command"
-                evt.orig = repr(cli)
-                evt.text = f"{cmd} {ex}"
-                Commands.command(evt)
+def check(opts):
+    "check for command line options."
+    for arg in sys.argv:
+        if not arg.startswith("-"):
+            continue
+        for opt in opts:
+            if opt in arg:
+                return True
+    return False
 
-    @classmethod
-    def wrap(cls, function, *args):
-        "restore console."
-        import termios
-        oldie = None
-        try:
-            oldie = termios.tcgetattr(sys.stdin.fileno())
-        except termios.error:
-            pass
-        try:
-            cls.wrapped(function, *args)
-        except (KeyboardInterrupt, EOFError):
-            pass
-        if oldie:
-            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, oldie)
+
+def payload(todo):
+    for cmd, example in todo.items():
+        for ex in example:
+            evt = Message()
+            evt.text = f"{cmd} {ex}"
+            Commands.command(evt)
+            for text in evt.result:
+                raw(text)
 
 
 def main():
-    if os.path.exists(Main.wdr):
-        shutil.rmtree(Main.wdr)
-    if Kernel.check("v"):
-        Main.verbose = True
-        Kernel.banner()
-    if Kernel.check("t"):
-        Main.threaded = True
-    Parse.parse(Main, " ".join(sys.argv[1:]))
-    Kernel.nrs = Main.index or 1
-    for _x in range(Kernel.nrs):
-        Kernel.payload(pre)
+    if os.path.exists(Workdir.wdr):
+        shutil.rmtree(Workdir.wdr)
+    if check("v"):
+        verbose = True
+    nrs = 1
+    for _x in range(nrs):
+        payload(pre)
     thrs = []
-    for _x in range(Kernel.nrs):
-        Kernel.payload(examples)
+    for _x in range(nrs):
+        payload(examples)
     thrs = []
-    for _x in range(Kernel.nrs):
-        Kernel.payload(post)
+    for _x in range(nrs):
+        payload(post)
 
 
 examples = {
@@ -178,4 +136,4 @@ post = {
 
 
 if __name__ == "__main__":
-    Kernel.wrap(main)
+    main()
