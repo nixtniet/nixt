@@ -5,14 +5,14 @@
 
 
 CORE = {
-    "booting": "06c4e99da904f4e8763b95f82b90e9c7",
-    "clients": "d5467230f186135c121ce77b93ebdf35",
+    "booting": "616c61dc9ab4d5d84150fa08a6faa42f",
+    "clients": "20ee5abddf83a8829df788b2f8ddf167",
     "configs": "0dada49fa81092c3f22783eee620e603",
     "defines": "fdabd5f0b1ba40d465a93fe46130bbb6",
     "engines": "bceec182412fc8b3c96b4f124934321f",
     "message": "e8732b08af0edccbbae0543f445cfa74",
     "objects": "67a1bb711018d43af33c49cb15792c26",
-    "package": "22a1ecc65d71340adbaf8d3d7d768244",
+    "package": "da654d76714392420b180cb15ba6c8e4",
     "persist": "fb0779b501b02464badf10dc82173346",
     "runtime": "5b59267595dea28dc5f2ee5cdf3c4f42",
     "utility": "4fd6534e081de6ebfe23d209531b8d81"
@@ -20,14 +20,13 @@ CORE = {
 
 
 MODULES = {
-    "adm": "27fed68284f7e73343bfc06070bffd69",
     "cfg": "7fd2407f70f938d99fc797064b99a87e",
     "cmd": "1a0c2cbb22e3636101105ccbc3559328",
     "eml": "f109afc8b6c5d46706a737ff94e1756a",
     "fie": "e0612b0410a5530381ca49692a74b091",
     "flt": "c40a68583139d18206d885959c0ece30",
     "fnd": "103ad8d13cdafc229b1b1e5e099951db",
-    "irc": "ef8080eaaf4bdf9a84583ccd5b6cba02",
+    "irc": "8870f97dc923204b9faefb2d25445492",
     "log": "078aea11abb982ff947b74a016954902",
     "man": "920599410f7739c9503e0eea9e4e5885",
     "mdl": "0ea87138ce166ce9a904514ab8bc4b48",

@@ -150,11 +150,11 @@ def main():
     "main"
     Arguments.getargs()
     Kernel.configure(Main.name)
-    if Main.daemon:
+    if Main.sets.daemon:
         Kernel.wrap(Scripts.background)
-    elif Main.console:
+    elif Main.sets.console:
         Kernel.wrap(Scripts.console)
-    elif Main.service:
+    elif Main.sets.service:
         Kernel.wrap(Scripts.service)
     else:
         Kernel.wrap(Scripts.control)
