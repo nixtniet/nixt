@@ -23,7 +23,6 @@ def raw(text):
 
 def main():
     "cli script."
-    Commands.add(Cmd.cmd)
     Mods.configure("nixt")
     Mods.scanner()
     evt = Message()

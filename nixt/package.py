@@ -9,27 +9,46 @@ import logging
 import os
 
 
-from .objects import Default, Json, Method
+from .objects import Config, Default, Json, Method
 from .persist import Workdir
 from .utility import Logging, Md5, Utils
 
 
-class MainConfig(type):
-
-    def __getattr__(cls, key):
-        if key in dir(cls):
-            return cls.__getattribute__(cls, key)
-        return ""
-
-    def __str__(cls):
-        return str(Method.skip(cls.__dict__))
-
-
-class Main(metaclass=MainConfig):
+class Main(metaclass=Config):
 
     gets = Default()
     name = Utils.pkgname(Method)
     sets = Default()
+
+
+class Cmd:
+
+    @classmethod
+    def cmd(cls, event):
+        "list available commands."
+        event.reply(",".join(sorted(Commands.cmds)))
+
+    @classmethod
+    def tbl(cls, event):
+        "create table."
+        core = {}
+        md5s = {}
+        for name in Mods.list():
+            module = Mods.get(name)
+            md5s[name] = Md5.md5(module.__file__)
+        corepath = os.path.dirname(inspect.getsourcefile(Mods))
+        for path in os.listdir(corepath):
+            if path.startswith("__") or not path.endswith(".py") or "statics" in path:
+                continue
+            name = path[:-3]
+            core[name] = Md5.md5(os.path.join(corepath, path))
+        event.reply("# This file is placed in the Public Domain.")
+        event.reply("\n")
+        event.reply('"static tables"')
+        event.reply("\n")
+        event.reply(f"CORE = {Json.dumps(core, indent=4, sort_keys=True)}")
+        event.reply("\n")
+        event.reply(f"MODULES = {Json.dumps(md5s, indent=4, sort_keys=True)}")
 
 
 class Commands:
@@ -76,6 +95,7 @@ class Mods:
         Logging.level(level)
         cls.sums()
         Md5.check(cls.core)
+        Commands.add(Cmd.cmd)
 
     @classmethod
     def dir(cls, pkgname, path):
@@ -212,36 +232,6 @@ class Parse:
             obj.text = obj.text + " " + obj.rest
         else:
             obj.text = obj.mod + " " + obj.cmd
-
-
-class Cmd:
-
-    @classmethod
-    def cmd(cls, event):
-        "list available commands."
-        event.reply(",".join(sorted(Commands.cmds)))
-
-    @classmethod
-    def tbl(cls, event):
-        "create table."
-        core = {}
-        md5s = {}
-        for name in Mods.list():
-            module = Mods.get(name)
-            md5s[name] = Md5.md5(module.__file__)
-        corepath = os.path.dirname(inspect.getsourcefile(Mods))
-        for path in os.listdir(corepath):
-            if path.startswith("__") or not path.endswith(".py") or "statics" in path:
-                continue
-            name = path[:-3]
-            core[name] = Md5.md5(os.path.join(corepath, path))
-        event.reply("# This file is placed in the Public Domain.")
-        event.reply("\n")
-        event.reply('"static tables"')
-        event.reply("\n")
-        event.reply(f"CORE = {Json.dumps(core, indent=4, sort_keys=True)}")
-        event.reply("\n")
-        event.reply(f"MODULES = {Json.dumps(md5s, indent=4, sort_keys=True)}")
         
 
 def __dir__():
