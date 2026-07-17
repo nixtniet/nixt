@@ -5,47 +5,27 @@
 "stress test"
 
 
-import logging
 import os
 import shutil
 import sys
-import threading
-import time
 
 
 sys.path.insert(0, os.getcwd())
 
 
 from nixt.message import Message
-from nixt.objects import Method
-from nixt.package import Commands, Mods, Parse
+from nixt.package import Commands, Main, Mods, Parse
 from nixt.persist import Workdir
-from nixt.utility import Logging, Time, Utils
 
 
 Workdir.wdr = ".test"
 Mods.dir("mods", "mods")
-Mods.configure("nixt")
-print(Workdir.wdr)
-
-verbose = False
 
 
 def raw(text):
-    if verbose:
+    if Main.verbose:
         print(text.encode('utf-8', 'replace').decode("utf-8"))
         sys.stdout.flush()
-
-
-def check(opts):
-    "check for command line options."
-    for arg in sys.argv:
-        if not arg.startswith("-"):
-            continue
-        for opt in opts:
-            if opt in arg:
-                return True
-    return False
 
 
 def payload(todo):
@@ -59,17 +39,18 @@ def payload(todo):
 
 
 def main():
+    Parse.parse(Main, " ".join(sys.argv[1:]))
+    Mods.configure("nixt")
+    Mods.scanner()
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
-    if check("v"):
-        verbose = True
-    nrs = 1
+    if "v" in Main.opts:
+        Main.verbose = True
+    nrs = Main.index or 1
     for _x in range(nrs):
         payload(pre)
-    thrs = []
     for _x in range(nrs):
         payload(examples)
-    thrs = []
     for _x in range(nrs):
         payload(post)
 

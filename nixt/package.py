@@ -14,6 +14,24 @@ from .persist import Workdir
 from .utility import Logging, Md5, Utils
 
 
+class MainConfig(type):
+
+    def __getattr__(cls, key):
+        if key in dir(cls):
+            return cls.__getattribute__(cls, key)
+        return ""
+
+    def __str__(cls):
+        return str(Method.skip(cls.__dict__))
+
+
+class Main(metaclass=MainConfig):
+
+    gets = Default()
+    name = Utils.pkgname(Method)
+    sets = Default()
+
+
 class Commands:
 
     cmds = {}
@@ -230,6 +248,7 @@ def __dir__():
     return (
         "Cmd",
         "Commands",
+        "Main",
         'Mods',
         'Parse'
     )
