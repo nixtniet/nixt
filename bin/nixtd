@@ -15,4 +15,4 @@ sys.path.insert(0, os.getcwd())
 from nixt.runtime import Kernel, Scripts
 
 
-Kernel.wrapped(Scripts.daemon)
+Kernel.wrap(Scripts.daemon)
