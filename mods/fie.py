@@ -4,7 +4,7 @@
 "show fields on an object"
 
 
-from nixt.defines import Locate, Workdir
+from nixt.persist import Locate, Workdir
 
 
 def fie(event):

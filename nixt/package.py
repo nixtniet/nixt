@@ -203,7 +203,8 @@ class Cmd:
         "list available commands."
         event.reply(",".join(sorted(Commands.cmds)))
 
-    def tbl(event):
+    @classmethod
+    def tbl(cls, event):
         "create table."
         core = {}
         md5s = {}
@@ -225,7 +226,6 @@ class Cmd:
         event.reply(f"MODULES = {Json.dumps(md5s, indent=4, sort_keys=True)}")
         
 
-
 def __dir__():
     return (
         "Cmd",
@@ -233,4 +233,3 @@ def __dir__():
         'Mods',
         'Parse'
     )
-

@@ -4,7 +4,8 @@
 "todo"
 
 
-from nixt.defines import Object, Disk, Locate
+from nixt.objects import Object
+from nixt.persist import Disk, Locate
 
 
 class Todo(Object):

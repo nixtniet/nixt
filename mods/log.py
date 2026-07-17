@@ -4,7 +4,8 @@
 "text logging"
 
 
-from nixt.defines import Object, Disk
+from nixt.objects import Object
+from nixt.persist import Disk
 
 
 class Log(Object):

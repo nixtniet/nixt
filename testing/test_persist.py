@@ -11,8 +11,7 @@ import unittest
 sys.path.insert(0, ".")
 
 
-from nixt.defines import Disk, Workdir
-from nixt.persist import Cache
+from nixt.persist import Cache, Disk, Workdir
 
 
 Workdir.wdr = '.test'

@@ -12,7 +12,7 @@ name = "nixt"
 authors = [
     {name = "Nixt Niet", email = "nixtniet@gmail.com" },
 ]
-description = "write your own commands"
+description = "write your own commands."
 readme = "README.rst"
 license = "Unlicense"
 classifiers = [

@@ -8,7 +8,7 @@ import time
 import unittest
 
 
-from nixt.defines import Time, Utils
+from nixt.utility import Time, Utils
 
 
 class TestTime(unittest.TestCase):

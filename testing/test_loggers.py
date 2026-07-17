@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Logging
+from nixt.utility import Logging
 
 
 class TestLogging(unittest.TestCase):

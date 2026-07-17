@@ -7,7 +7,8 @@
 import unittest
 
 
-from nixt.defines import Object, Disk, Method
+from nixt.objects import Object, Method
+from nixt.persist import Disk
 
 
 class TestMethod(unittest.TestCase):
