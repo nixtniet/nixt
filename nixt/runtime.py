@@ -24,7 +24,6 @@ class CLI(Client):
 
 def main():
     "cli script."
-    # Parse.parse(Main, " ".join(sys.argv[1:]))
     Commands.add(Cmd.srv, Cmd.tbl)
     Mods.configure()
     cli = CLI()
