@@ -52,8 +52,6 @@ class Arguments:
         args, arguments = theparser.parse_known_args()
         Main.otxt = " ".join(arguments)
         Method.update(Main.sets, args)
-        Main.name = Main.name or Utils.pkgname(Mods)
-
 
 
 class CLI(Client, Engine):
@@ -79,10 +77,6 @@ class Console(CLI):
         CLI.__init__(self)
         self.silent = True
 
-    def handle(self, event):
-        "handle event."
-        Commands.command(event)
-
     def poll(self):
         "return event."
         evt = Message()
@@ -96,12 +90,16 @@ class Console(CLI):
 class Scripts:
 
     @staticmethod
+    def banner():
+        print(Kernel.banner())
+        sys.stdout.flush()
+
+    @staticmethod
     def background():
         "background script."
         Kernel.daemon(Main.verbose, Main.nochdir)
         Kernel.privileges()
-        Kernel.pid(Main.name)
-        Kernel.scanner()
+        Kernel.pid()
         Kernel.init()
         Kernel.forever()
 
@@ -110,13 +108,10 @@ class Scripts:
         "console script."
         readline.redisplay()
         if Main.sets.verbose:
-            print(Kernel.banner())
-            sys.stdout.flush()
+            Scripts.banner()
         if Main.sets.all:
             Main.sets.mods = ",".join(Mods.list())
-        Kernel.scanner()
-        if not Kernel.init():
-            return
+        Kernel.init(True)
         csl = Console()
         csl.start()
         Kernel.forever()
@@ -124,7 +119,6 @@ class Scripts:
     @staticmethod
     def control():
         "cli script."
-        Kernel.scanner()
         if Main.sets.admin:
             Commands.add(Cmd.srv, Cmd.tbl)
         cli = CLI()
@@ -138,10 +132,8 @@ class Scripts:
     def service():
         "service script."
         Kernel.privileges()
-        Kernel.pid(Main.name)
-        print(Kernel.banner())
-        sys.stdout.flush()
-        Kernel.scanner()
+        Kernel.pid()
+        Scripts.banner()
         Kernel.init()
         Kernel.forever()
 
@@ -149,7 +141,7 @@ class Scripts:
 def main():
     "main"
     Arguments.getargs()
-    Kernel.configure(Main.name)
+    Kernel.configure()
     if Main.sets.daemon:
         Kernel.wrap(Scripts.background)
     elif Main.sets.console:

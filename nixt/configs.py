@@ -22,6 +22,7 @@ class Config(type):
 class Main(metaclass=Config):
 
     gets = Default()
+    level = "warning"
     name = Utils.pkgname(Method)
     sets = Default()
 

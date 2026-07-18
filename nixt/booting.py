@@ -66,10 +66,14 @@ class Kernel:
                 break
 
     @classmethod
-    def init(cls):
+    def init(cls, blank=False):
         "call init of modules that have an init function."
         thrs = []
-        for name in Utils.spl(Main.sets.mods or Main.sets.default):
+        if not Main.sets.mods and blank:
+            names = ""
+        else:
+            names = Main.sets.mods or Main.sets.default
+        for name in Utils.spl(names):
             mod = Mods.get(name)
             if not mod or "init" not in dir(mod):
                 continue

@@ -12,6 +12,7 @@ import pathlib
 import threading
 
 
+from .configs import Main
 from .objects import Default, Json, Method
 from .utility import Time, Utils
 
@@ -178,6 +179,8 @@ class Workdir:
     @classmethod
     def kinds(cls):
         "show kind on objects in cache."
+        if not cls.wdr:
+            cls.wdr = cls.home(Main.name)
         path = os.path.join(cls.wdr, "store")
         if not os.path.exists(path):
             cls.skel()
@@ -202,9 +205,11 @@ class Workdir:
         return os.path.join(cls.wdr, "mods")
 
     @classmethod
-    def pid(cls, name):
+    def pid(cls):
         "write pidfile."
-        filename = os.path.join(cls.wdr, f"{name}.pid")
+        if not cls.wdr:
+            cls.wdr = cls.home(Main.name)
+        filename = os.path.join(cls.wdr, f"{Main.name}.pid")
         if os.path.exists(filename):
             os.unlink(filename)
         path2 = pathlib.Path(filename)
@@ -215,6 +220,8 @@ class Workdir:
     @classmethod
     def skel(cls):
         "create directories."
+        if not cls.wdr:
+            cls.wdr = cls.home(Main.name)
         if not os.path.exists(cls.wdr):
             Utils.cdir(cls.wdr)
         path = os.path.abspath(cls.wdr)

@@ -12,7 +12,17 @@ import sys
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.runtime import Kernel, Scripts
+from nixt.defines import Kernel, Main
 
 
-Kernel.wrap(Scripts.daemon)
+def daemon():
+    Main.sets.default = "irc,rss"
+    Kernel.daemon(Main.verbose, Main.nochdir)
+    Kernel.privileges()
+    Kernel.configure(Main.name)
+    Kernel.pid(Main.name)
+    Kernel.init()
+    Kernel.forever()
+
+
+Kernel.wrap(daemon)

@@ -5,16 +5,16 @@
 
 
 CORE = {
-    "booting": "616c61dc9ab4d5d84150fa08a6faa42f",
+    "booting": "5e9e6dc9e4b20dbb1327f201a980ceab",
     "clients": "20ee5abddf83a8829df788b2f8ddf167",
-    "configs": "0dada49fa81092c3f22783eee620e603",
+    "configs": "8d6fd1c295af5e8d906803dcd0dad611",
     "defines": "fdabd5f0b1ba40d465a93fe46130bbb6",
     "engines": "bceec182412fc8b3c96b4f124934321f",
     "message": "e8732b08af0edccbbae0543f445cfa74",
     "objects": "67a1bb711018d43af33c49cb15792c26",
-    "package": "da654d76714392420b180cb15ba6c8e4",
-    "persist": "fb0779b501b02464badf10dc82173346",
-    "runtime": "5b59267595dea28dc5f2ee5cdf3c4f42",
+    "package": "573994b69dac9f4731e74a8b15fba39d",
+    "persist": "ffc20efe30eb55e81ed8b94371a0cd2f",
+    "runtime": "aba2f6f1cef39114c0d89d3c503bc1b0",
     "utility": "4fd6534e081de6ebfe23d209531b8d81"
 }
 
@@ -44,4 +44,45 @@ MODULES = {
     "ver": "be405e2a3d958c3ae704adb3d3fb3c6d",
     "web": "918b093ec022c3ab17a4773963415c07",
     "wsd": "a9d4f77c24929ec37b62044b9e83023a"
+}
+
+
+NAMES = {
+    "atr": "rss",
+    "cfg": "cfg",
+    "cmd": "cmd",
+    "dis": "mdl",
+    "dne": "tdo",
+    "dpl": "rss",
+    "eml": "eml",
+    "err": "rss",
+    "exp": "rss",
+    "fie": "fie",
+    "flt": "flt",
+    "fnd": "fnd",
+    "imp": "rss",
+    "log": "log",
+    "lou": "sil",
+    "man": "man",
+    "mbx": "eml",
+    "nme": "rss",
+    "now": "mdl",
+    "pth": "pth",
+    "pwd": "irc",
+    "rem": "rss",
+    "req": "req",
+    "res": "rss",
+    "rss": "rss",
+    "sil": "sil",
+    "slg": "slg",
+    "srv": "package",
+    "syn": "rss",
+    "tbl": "package",
+    "tdo": "tdo",
+    "thr": "thr",
+    "tmr": "tmr",
+    "udp": "udp",
+    "upt": "upt",
+    "ver": "ver",
+    "wsd": "wsd"
 }

@@ -16,21 +16,77 @@ from .persist import Workdir
 from .utility import Logging, Md5, Utils
 
 
+class Cmd:
+
+    @classmethod
+    def cmd(cls, event):
+        "list available commands."
+        event.reply(",".join(sorted(Commands.names or Commands.cmds)))
+
+    @staticmethod
+    def srv(event):
+        "generate systemd service file."
+        import getpass
+        name = getpass.getuser()
+        event.reply(SYSTEMD % (
+                               Main.name.upper(),
+                               name,
+                               name,
+                               name,
+                               Main.name
+                              ))
+
+    @classmethod
+    def tbl(cls, event):
+        "create table."
+        core = {}
+        md5s = {}
+        for name in Mods.list():
+            module = Mods.get(name)
+            md5s[name] = Md5.md5(module.__file__)
+            Commands.scan(module)
+        corepath = os.path.dirname(inspect.getsourcefile(Mods))
+        for path in os.listdir(corepath):
+            if path.startswith("__") or not path.endswith(".py") or "statics" in path:
+                continue
+            name = path[:-3]
+            core[name] = Md5.md5(os.path.join(corepath, path))
+        event.reply("# This file is placed in the Public Domain.")
+        event.reply("\n")
+        event.reply('"static tables"')
+        event.reply("\n")
+        event.reply(f"CORE = {Json.dumps(core, indent=4, sort_keys=True)}")
+        event.reply("\n")
+        event.reply(f"MODULES = {Json.dumps(md5s, indent=4, sort_keys=True)}")
+        event.reply("\n")
+        event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4, sort_keys=True)}")
+
+
 class Commands:
 
     cmds = {}
+    names = {}
 
     @classmethod
     def add(cls, *funcs):
         "register a command."
         for func in funcs:
             cls.cmds[func.__name__] = func
+            cls.names[func.__name__] = func.__module__.split(".")[-1]
 
     @classmethod
     def command(cls, evt):
         "command callback."
         Parse.parse(evt, evt.text)
         func = cls.cmds.get(evt.cmd, None)
+        if not func:
+            modname = cls.names.get(evt.cmd, None)
+            if modname:
+                mod = Mods.get(modname)
+                if mod:
+                    logging.debug(f"load {modname}")
+                    cls.scan(mod)
+            func = cls.cmds.get(evt.cmd, None)
         if func:
             func(evt)
             Clients.display(evt)
@@ -43,6 +99,15 @@ class Commands:
             if 'event' in inspect.signature(func).parameters:
                 cls.add(func)
 
+    @classmethod
+    def table(cls):
+        "read table,"
+        try:
+            from .statics import NAMES
+            cls.names.update(NAMES)
+        except (ImportError, SyntaxError, ValueError):
+            pass
+
 
 class Mods:
 
@@ -52,16 +117,17 @@ class Mods:
     modules = {}
 
     @classmethod
-    def configure(cls, name, level="warn"):
+    def configure(cls):
         "configure program."
-        Workdir.wdr = Workdir.wdr or Workdir.home(name)
+        Workdir.wdr = Workdir.wdr or Workdir.home(Main.name)
         Workdir.skel()
         cls.dir("modules", Workdir.moddir())
         cls.dir("mods", "mods")
-        Logging.size(len(name))
-        Logging.level(level)
+        Logging.size(len(Main.name))
+        Logging.level(Main.level)
         cls.sums()
         Md5.check(cls.core)
+        Commands.table()
         Commands.add(Cmd.cmd)
 
     @classmethod
@@ -84,7 +150,7 @@ class Mods:
                 md5 = Md5.md5(fnm)
                 md5s = cls.md5s.get(name)
                 if md5s and md5 != md5s:
-                    logging.warn("mismatch %s", modname)
+                    logging.warning("mismatch %s", modname)
             return cls.importer(modname, fnm)
 
     @classmethod
@@ -199,49 +265,6 @@ class Parse:
             obj.text = obj.text + " " + obj.rest
         else:
             obj.text = obj.mod + " " + obj.cmd
-        
-
-class Cmd:
-
-    @classmethod
-    def cmd(cls, event):
-        "list available commands."
-        event.reply(",".join(sorted(Commands.cmds)))
-
-    @staticmethod
-    def srv(event):
-        "generate systemd service file."
-        import getpass
-        name = getpass.getuser()
-        event.reply(SYSTEMD % (
-                               Main.name.upper(),
-                               name,
-                               name,
-                               name,
-                               Main.name
-                              ))
-
-    @classmethod
-    def tbl(cls, event):
-        "create table."
-        core = {}
-        md5s = {}
-        for name in Mods.list():
-            module = Mods.get(name)
-            md5s[name] = Md5.md5(module.__file__)
-        corepath = os.path.dirname(inspect.getsourcefile(Mods))
-        for path in os.listdir(corepath):
-            if path.startswith("__") or not path.endswith(".py") or "statics" in path:
-                continue
-            name = path[:-3]
-            core[name] = Md5.md5(os.path.join(corepath, path))
-        event.reply("# This file is placed in the Public Domain.")
-        event.reply("\n")
-        event.reply('"static tables"')
-        event.reply("\n")
-        event.reply(f"CORE = {Json.dumps(core, indent=4, sort_keys=True)}")
-        event.reply("\n")
-        event.reply(f"MODULES = {Json.dumps(md5s, indent=4, sort_keys=True)}")
 
 
 SYSTEMD = """[Unit]

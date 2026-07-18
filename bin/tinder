@@ -40,7 +40,7 @@ def payload(todo):
 
 def main():
     Parse.parse(Main, " ".join(sys.argv[1:]))
-    Mods.configure("nixt")
+    Mods.configure()
     Mods.scanner()
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
