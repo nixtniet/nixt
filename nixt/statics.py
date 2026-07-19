@@ -7,14 +7,14 @@
 CORE = {
     "booting": "7db8bc05f25babc5c899f3e93c2286c4",
     "clients": "20ee5abddf83a8829df788b2f8ddf167",
+    "command": "e5212ac8a40645adde67c7b0e3168edc",
     "configs": "8d6fd1c295af5e8d906803dcd0dad611",
-    "defines": "fdabd5f0b1ba40d465a93fe46130bbb6",
-    "engines": "bceec182412fc8b3c96b4f124934321f",
-    "message": "e8732b08af0edccbbae0543f445cfa74",
-    "objects": "67a1bb711018d43af33c49cb15792c26",
-    "package": "cd79154190fea5cdced59e7c61e2926e",
+    "defines": "60ddabc30c01575ef9511203400782f7",
+    "engines": "53aa03d473673bbb2b8b9be392bcd536",
+    "objects": "184acd75d5411ef4662041b1df018526",
+    "package": "54e7462b0d5a338dcd315fbf5568c0c4",
     "persist": "ffc20efe30eb55e81ed8b94371a0cd2f",
-    "runtime": "549b0c04ae464b981f4ef71b9a2b6783",
+    "runtime": "efe4761f1bbea0e8e32d915cf215b1b5",
     "utility": "4fd6534e081de6ebfe23d209531b8d81"
 }
 
@@ -75,8 +75,9 @@ NAMES = {
     "rss": "rss",
     "sil": "sil",
     "slg": "slg",
+    "srv": "command",
     "syn": "rss",
-    "tbl": "package",
+    "tbl": "command",
     "tdo": "tdo",
     "thr": "thr",
     "tmr": "tmr",
