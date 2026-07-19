@@ -13,9 +13,7 @@ import sys
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.message import Message
-from nixt.package import Commands, Main, Mods, Parse
-from nixt.persist import Workdir
+from nixt.defines import Commands, Main, Message, Mods, Parse, Workdir
 
 
 Workdir.wdr = ".test"

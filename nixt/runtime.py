@@ -5,14 +5,12 @@
 
 
 import argparse
-import os
 import readline
 import sys
-import time
 
 
 from .defines import Client, Cmd, Commands, Engine, Kernel, Main, Message
-from .defines import Md5, Mods, Method, Utils, Workdir
+from .defines import Mods, Method, Utils
 
 
 class Arguments:
@@ -93,6 +91,7 @@ class Scripts:
         "background script."
         Main.sets.default = "irc,rss"
         Kernel.daemon()
+        Commands.add(Cmd.cmd)
         Kernel.configure()
         Kernel.privileges()
         Kernel.pid()
@@ -104,6 +103,7 @@ class Scripts:
         "console script."
         readline.redisplay()
         Arguments.getargs()
+        Commands.add(Cmd.cmd)
         Kernel.configure()
         Scripts.banner()
         if Main.sets.all:
@@ -117,6 +117,7 @@ class Scripts:
     def control():
         "cli script."
         Arguments.getargs()
+        Commands.add(Cmd.cmd, Cmd.srv, Cmd.tbl)
         Kernel.configure()
         cli = CLI()
         cli.silent = False
@@ -129,6 +130,7 @@ class Scripts:
     def service():
         "service script."
         Arguments.getargs()
+        Commands.add(Cmd.cmd)
         Kernel.configure()
         Kernel.privileges()
         Kernel.pid()
@@ -140,5 +142,5 @@ class Scripts:
 def main():
     if "-s" in sys.argv:
         Kernel.wrap(Scripts.service)
-    else:    
+    else:
         Kernel.wrap(Scripts.console)

@@ -11,17 +11,9 @@ import os
 
 from .clients import Clients
 from .configs import Main
-from .objects import Default, Json, Method
+from .objects import Default, Method
 from .persist import Workdir
 from .utility import Logging, Md5, Utils
-
-
-class Cmd:
-
-    @staticmethod
-    def cmd(event):
-        "list available commands."
-        event.reply(",".join(sorted(Commands.names or Commands.cmds)))
 
 
 class Commands:
@@ -84,13 +76,13 @@ class Mods:
         Workdir.wdr = Workdir.wdr or Workdir.home(Main.name)
         Workdir.skel()
         cls.dir("modules", Workdir.moddir())
+        cls.dir("modulez", Utils.moddir())
         cls.dir("mods", "mods")
         Logging.size(len(Main.name))
         Logging.level(Main.level)
         cls.sums()
         Md5.check(cls.core)
         Commands.table()
-        Commands.add(Cmd.cmd)
 
     @classmethod
     def dir(cls, pkgname, path):
@@ -231,7 +223,6 @@ class Parse:
 
 def __dir__():
     return (
-        "Cmd",
         "Commands",
         'Mods',
         'Parse'
