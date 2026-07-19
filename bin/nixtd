@@ -19,8 +19,8 @@ def daemon():
     Main.sets.default = "irc,rss"
     Kernel.daemon(Main.verbose, Main.nochdir)
     Kernel.privileges()
-    Kernel.configure(Main.name)
-    Kernel.pid(Main.name)
+    Kernel.configure()
+    Kernel.pid()
     Kernel.init()
     Kernel.forever()
 

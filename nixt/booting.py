@@ -38,7 +38,7 @@ class Kernel:
         return txt.replace("  ", " ")
 
     @classmethod
-    def daemon(cls, verbose=False, nochdir=False):
+    def daemon(cls):
         "run in the background."
         pid = os.fork()
         if pid != 0:
@@ -47,12 +47,12 @@ class Kernel:
         pid2 = os.fork()
         if pid2 != 0:
             os._exit(0)
-        if not verbose:
+        if not Main.verbose:
             cls.null(sys.stdin)
             cls.null(sys.stdout)
             cls.null(sys.stderr)
         os.umask(0)
-        if not nochdir:
+        if not Main.nochdir:
             os.chdir("/")
         os.nice(10)
 

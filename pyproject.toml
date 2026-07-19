@@ -22,6 +22,11 @@ classifiers = [
     "Topic :: Utilities"
 ]
 
+[project.scripts]
+"nixt" = "nixt.runtime:main"
+"nixtctl" = "nixt.runtime:Scripts.control"
+"nixtd" = "nixt.runtime:Scripts.background"
+
 
 [project.urls]
 "home" = "https://pypi.org/project/nixt"
@@ -32,6 +37,8 @@ classifiers = [
 [tool.setuptools]
 packages = [
     'nixt',
+    'nixt.modules',
+    'nixt.numbers'
 ]
 
 

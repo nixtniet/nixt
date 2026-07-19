@@ -97,7 +97,7 @@ class Scripts:
     @staticmethod
     def background():
         "background script."
-        Kernel.daemon(Main.verbose, Main.nochdir)
+        Kernel.daemon()
         Kernel.privileges()
         Kernel.pid()
         Kernel.init()

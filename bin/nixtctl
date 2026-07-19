@@ -24,7 +24,7 @@ def raw(text):
 def main():
     "cli script."
     Commands.add(Cmd.cmd, Cmd.tbl)
-    Mods.configure("nixt")
+    Mods.configure()
     Mods.scanner()
     evt = Message()
     evt.text = " ".join(sys.argv[1:])

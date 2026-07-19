@@ -5,7 +5,7 @@
 
 
 CORE = {
-    "booting": "5e9e6dc9e4b20dbb1327f201a980ceab",
+    "booting": "7db8bc05f25babc5c899f3e93c2286c4",
     "clients": "20ee5abddf83a8829df788b2f8ddf167",
     "configs": "8d6fd1c295af5e8d906803dcd0dad611",
     "defines": "fdabd5f0b1ba40d465a93fe46130bbb6",
@@ -14,7 +14,7 @@ CORE = {
     "objects": "67a1bb711018d43af33c49cb15792c26",
     "package": "cd79154190fea5cdced59e7c61e2926e",
     "persist": "ffc20efe30eb55e81ed8b94371a0cd2f",
-    "runtime": "9633033c5f42449888f1dc9f0a19224a",
+    "runtime": "549b0c04ae464b981f4ef71b9a2b6783",
     "utility": "4fd6534e081de6ebfe23d209531b8d81"
 }
 
@@ -75,7 +75,6 @@ NAMES = {
     "rss": "rss",
     "sil": "sil",
     "slg": "slg",
-    "srv": "package",
     "syn": "rss",
     "tbl": "package",
     "tdo": "tdo",

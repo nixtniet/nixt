@@ -341,6 +341,6 @@ class Json:
 def __dir__():
     return (
         'Json',
-        'Object',
-        'Method'
+        'Method',
+        'Object'
     )
