@@ -129,7 +129,7 @@ class Mods:
     def scanner(cls):
         "scan all modules."
         for name in cls.list():
-            Commands.scan(cls.get(name))
+            cls.scan(cls.get(name))
 
     @classmethod
     def statics(cls):

@@ -8,20 +8,29 @@
 import os
 import shutil
 import sys
+import threading
+import time
 
 
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Commands, Main, Message, Mods, Parse, Workdir
+from nixt.defines import Boot, Main, Message, Method, Mods
+from nixt.defines import Parse, Time, Workdir
 
 
 Workdir.wdr = ".test"
 Mods.dir("mods", "mods")
 
 
+class Vars:
+
+    nrevents = 0
+    starttime = 0
+
+
 def raw(text):
-    if Main.verbose:
+    if "v" in Main.opts:
         print(text.encode('utf-8', 'replace').decode("utf-8"))
         sys.stdout.flush()
 
@@ -29,11 +38,24 @@ def raw(text):
 def payload(todo):
     for cmd, example in todo.items():
         for ex in example:
+            Vars.nrevents += 1
             evt = Message()
             evt.text = f"{cmd} {ex}"
-            Commands.command(evt)
+            Mods.command(evt)
             for text in evt.result:
                 raw(text)
+
+def final():
+    if "v" not in Main.opts:
+        return
+    total = Vars.nrevents
+    endtime = time.time()
+    lap = Time.elapsed(endtime-Vars.starttime)
+    percall = (endtime-Vars.starttime)/total
+    print(f"{Method.fmt(Main, skip='otxt,txt')}")
+    print(f"events: {total}")
+    print(f"total: {lap} nrs: {Vars.nrevents} call: %.6fs" % percall)
+    print(threading.enumerate())
 
 
 def main():
@@ -42,8 +64,7 @@ def main():
     Mods.scanner()
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
-    if "v" in Main.opts:
-        Main.verbose = True
+    Vars.starttime = time.time()
     nrs = Main.index or 1
     for _x in range(nrs):
         payload(pre)
@@ -115,4 +136,4 @@ post = {
 
 
 if __name__ == "__main__":
-    main()
+    Boot.wrap(main, dofinal=final)

@@ -94,7 +94,7 @@ class Scripts:
         evt = Message()
         evt.orig = repr(cli)
         evt.text = Main.otxt
-        Mods.command(evt)
+        Kernel.command(evt)
 
     @staticmethod
     def service():

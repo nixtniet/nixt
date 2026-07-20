@@ -22,6 +22,7 @@ from .utility import Md5, Utils
 class Boot:
 
     add = Mods.add
+    command = Mods.command
     configure = Mods.configure
     parse = Parse.parse
     pid = Workdir.pid
