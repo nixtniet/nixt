@@ -16,9 +16,13 @@ from .persist import Workdir
 from .utility import Logging, Md5, Utils
 
 
-class Commands:
+class Mods:
 
     cmds = {}
+    core = {}
+    dirs = {}
+    md5s = {}
+    modules = {}
     names = {}
 
     @classmethod
@@ -47,42 +51,18 @@ class Commands:
         evt.ready()
 
     @classmethod
-    def scan(cls, mod):
-        "scan module for commands."
-        for nme, func in inspect.getmembers(mod, inspect.isfunction):
-            if 'event' in inspect.signature(func).parameters:
-                cls.add(func)
-
-    @classmethod
-    def table(cls):
-        "read table,"
-        try:
-            from .statics import NAMES
-            cls.names.update(NAMES)
-        except (ImportError, SyntaxError, ValueError):
-            pass
-
-
-class Mods:
-
-    core = {}
-    dirs = {}
-    md5s = {}
-    modules = {}
-
-    @classmethod
     def configure(cls):
         "configure program."
         Workdir.wdr = Workdir.wdr or Workdir.home(Main.name)
         Workdir.skel()
         cls.dir("modules", Workdir.moddir())
         cls.dir("modulez", Utils.moddir())
-        cls.dir("mods", "mods")
+        if "u" in Main.opts:
+            cls.dir("mods", "mods")
         Logging.size(len(Main.name))
         Logging.level(Main.level)
-        cls.sums()
+        cls.statics()
         Md5.check(cls.core)
-        Commands.table()
 
     @classmethod
     def dir(cls, pkgname, path):
@@ -138,13 +118,21 @@ class Mods:
         return sorted(set(mods))
 
     @classmethod
+    def scan(cls, mod):
+        "scan module for commands."
+        for nme, func in inspect.getmembers(mod, inspect.isfunction):
+            if 'event' in inspect.signature(func).parameters:
+                cls.add(func)
+
+
+    @classmethod
     def scanner(cls):
         "scan all modules."
         for name in cls.list():
             Commands.scan(cls.get(name))
 
     @classmethod
-    def sums(cls):
+    def statics(cls):
         "read table,"
         try:
             from .statics import CORE
@@ -154,6 +142,11 @@ class Mods:
         try:
             from .statics import MODULES
             cls.md5s.update(MODULES)
+        except (ImportError, SyntaxError, ValueError):
+            pass
+        try:
+            from .statics import NAMES
+            cls.names.update(NAMES)
         except (ImportError, SyntaxError, ValueError):
             pass
 

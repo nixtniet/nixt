@@ -10,7 +10,7 @@ import os
 
 from .configs import Main
 from .objects import Json
-from .package import Commands, Mods
+from .package import Mods
 from .utility import Md5
 
 
@@ -19,7 +19,7 @@ class Cmd:
     @staticmethod
     def cmd(event):
         "list available commands."
-        event.reply(",".join(sorted(Commands.names or Commands.cmds)))
+        event.reply(",".join(sorted(Mods.names or Mods.cmds)))
 
     @staticmethod
     def srv(event):
@@ -42,7 +42,7 @@ class Cmd:
         for name in Mods.list():
             module = Mods.get(name)
             md5s[name] = Md5.md5(module.__file__)
-            Commands.scan(module)
+            Mods.scan(module)
         corepath = os.path.dirname(inspect.getsourcefile(Mods))
         for path in os.listdir(corepath):
             if path.startswith("__") or not path.endswith(".py") or "statics" in path:
@@ -57,7 +57,7 @@ class Cmd:
         event.reply("\n")
         event.reply(f"MODULES = {Json.dumps(md5s, indent=4, sort_keys=True)}")
         event.reply("\n")
-        event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4, sort_keys=True)}")
+        event.reply(f"NAMES = {Json.dumps(Mods.names, indent=4, sort_keys=True)}")
 
 
 SYSTEMD = """[Unit]

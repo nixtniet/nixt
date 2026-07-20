@@ -14,14 +14,16 @@ import _thread
 from .clients import Client
 from .configs import Main
 from .engines import Task, Thread
-from .package import Mods
+from .package import Mods, Parse
 from .persist import Workdir
 from .utility import Md5, Utils
 
 
-class Kernel:
+class Boot:
 
+    add = Mods.add
     configure = Mods.configure
+    parse = Parse.parse
     pid = Workdir.pid
     scanner = Mods.scanner
 
@@ -47,12 +49,12 @@ class Kernel:
         pid2 = os.fork()
         if pid2 != 0:
             os._exit(0)
-        if not Main.verbose:
+        if "v" in Main.opts:
             cls.null(sys.stdin)
             cls.null(sys.stdout)
             cls.null(sys.stderr)
         os.umask(0)
-        if not Main.nochdir:
+        if "n" in  Main.opts:
             os.chdir("/")
         os.nice(10)
 
@@ -78,7 +80,7 @@ class Kernel:
             if not mod or "init" not in dir(mod):
                 continue
             thrs.append(Thread.launch(mod.init))
-        if thrs and Main.sets.wait:
+        if thrs and "w" in Main.opts:
             for thr in thrs:
                 try:
                     thr.join()
@@ -102,19 +104,6 @@ class Kernel:
         os.setuid(pwnam2.pw_uid)
 
     @classmethod
-    def wrapped(cls, func, *args):
-        "wrap function in a try/except, silence ctrl-c/ctrl-d."
-        try:
-            func(*args)
-        except (KeyboardInterrupt, EOFError):
-            Client.block.set()
-            Task.block.set()
-            _thread.interrupt_main()
-        except Exception as ex:
-            logging.exception(ex)
-            _thread.interrupt_main()
-
-    @classmethod
     def wrap(cls, func, *args, dofinal=None):
         "restore console."
         import termios
@@ -128,8 +117,22 @@ class Kernel:
         if dofinal:
             dofinal()
 
+    @classmethod
+    def wrapped(cls, func, *args):
+        "wrap function in a try/except, silence ctrl-c/ctrl-d."
+        try:
+            func(*args)
+        except (KeyboardInterrupt, EOFError):
+            Client.block.set()
+            Task.block.set()
+            _thread.interrupt_main()
+        except Exception as ex:
+            logging.exception(ex)
+            _thread.interrupt_main()
+
+
 
 def __dir__():
     return (
-        'Kernel',
+        'Boot',
     )

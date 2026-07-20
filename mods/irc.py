@@ -14,8 +14,8 @@ import time
 import _thread
 
 
-from nixt.defines import Object, Broker, Client, Commands, Disk, Engine, Main
-from nixt.defines import Message, Mods, Method, Thread, Utils
+from nixt.defines import Broker, Client, Disk, Engine, Main, Message
+from nixt.defines import Mods, Method, Object, Thread, Utils
 
 
 def init():
@@ -591,7 +591,7 @@ def cb_privmsg(evt):
             evt.text = evt.text[0].lower() + evt.text[1:]
         if evt.text:
             name = evt.text and evt.text.split()[0]
-            Thread.launch(Commands.command, evt, name=name)
+            Thread.launch(Mods.command, evt, name=name)
 
 
 def cb_quit(evt):

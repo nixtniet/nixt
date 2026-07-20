@@ -9,41 +9,8 @@ import readline
 import sys
 
 
-from .defines import Client, Cmd, Commands, Engine, Kernel, Main, Message
-from .defines import Mods, Method, Utils
-
-
-class Arguments:
-
-    @classmethod
-    def getargs(cls):
-        "parse commandline arguments."
-        Main.name = Main.name or Utils.pkgname(Main)
-        theparser = argparse.ArgumentParser(
-            prog=Main.name,
-            description=f'{Main.name.upper()}',
-            epilog='use "%(prog)s cmd" for a list of commands.',
-            formatter_class=argparse.RawDescriptionHelpFormatter,
-            usage='''%(prog)s    [-h|-s] [-a] [-v] [-w] [-l level] [-m m1,m2] [-p path]\n       %(prog)sctl [cmd] [key=val] [key==val]\n       %(prog)sd'''
-        )
-        group = theparser.add_mutually_exclusive_group()
-        group.add_argument("-s", "--service", action="store_true", help="run as service.")
-        parser = theparser.add_argument_group()
-        parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
-        parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
-        parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
-        optionparser = theparser.add_argument_group()
-        optionparser.add_argument("-l", "--level", default="warning", help='set loglevel.', metavar="level")
-        optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
-        optionparser.add_argument("-p", "--path", default="", help='path to working directory.', metavar="path")
-        optparser = theparser.add_argument_group()
-        optparser.add_argument("--default", default="irc,mdl,rss,wsd", help=argparse.SUPPRESS)
-        optparser.add_argument("--moddir", default=Utils.moddir(), help="set modules directory.")
-        optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
-        optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
-        args, arguments = theparser.parse_known_args()
-        Main.otxt = " ".join(arguments)
-        Method.update(Main.sets, args)
+from .defines import Boot, Client, Cmd, Engine, Main, Message
+from .defines import Mods, Method, Parse, Utils
 
 
 class CLI(Client, Engine):
@@ -51,7 +18,7 @@ class CLI(Client, Engine):
     def __init__(self):
         Client.__init__(self)
         Engine.__init__(self)
-        self.register("command", Commands.command)
+        self.register("command", Mods.command)
 
     def after(self, event):
         "wait for event to finish"
@@ -79,19 +46,22 @@ class Console(CLI):
         return evt
 
 
-class Scripts:
+class Kernel(Boot):
 
-    @staticmethod
-    def banner():
-        print(Kernel.banner())
+    @classmethod
+    def banner(cls):
+        print(Boot.banner())
         sys.stdout.flush()
+
+
+class Scripts:
 
     @staticmethod
     def background():
         "background script."
         Main.sets.default = "irc,rss"
         Kernel.daemon()
-        Commands.add(Cmd.cmd)
+        Kernel.add(Cmd.cmd)
         Kernel.configure()
         Kernel.privileges()
         Kernel.pid()
@@ -102,11 +72,11 @@ class Scripts:
     def console():
         "console script."
         readline.redisplay()
-        Arguments.getargs()
-        Commands.add(Cmd.cmd)
+        Kernel.parse(Main, " ".join(sys.argv[1:]))
+        Kernel.add(Cmd.cmd)
         Kernel.configure()
-        Scripts.banner()
-        if Main.sets.all:
+        Kernel.banner()
+        if "a" in Main.opts:
             Main.sets.mods = ",".join(Mods.list())
         Kernel.init(True)
         csl = Console()
@@ -116,25 +86,25 @@ class Scripts:
     @staticmethod
     def control():
         "cli script."
-        Arguments.getargs()
-        Commands.add(Cmd.cmd, Cmd.srv, Cmd.tbl)
+        Kernel.parse(Main, " ".join(sys.argv[1:]))
+        Kernel.add(Cmd.cmd, Cmd.srv, Cmd.tbl)
         Kernel.configure()
         cli = CLI()
         cli.silent = False
         evt = Message()
         evt.orig = repr(cli)
         evt.text = Main.otxt
-        Commands.command(evt)
+        Mods.command(evt)
 
     @staticmethod
     def service():
         "service script."
-        Arguments.getargs()
-        Commands.add(Cmd.cmd)
+        Kernel.parse(Main, " ".join(sys.argv[1:]))
+        Kernel.add(Cmd.cmd)
         Kernel.configure()
         Kernel.privileges()
         Kernel.pid()
-        Scripts.banner()
+        Kernel.banner()
         Kernel.init()
         Kernel.forever()
 
