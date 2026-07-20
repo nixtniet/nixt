@@ -22,7 +22,7 @@ class Mods:
     core = {}
     dirs = {}
     md5s = {}
-    modules = {}
+    mods = {}
     names = {}
 
     @classmethod
@@ -74,7 +74,7 @@ class Mods:
         "return module from cache or import module."
         for pkgname, path in cls.dirs.items():
             modname = f"{pkgname}.{name}"
-            mod = cls.modules.get(modname, None)
+            mod = cls.mods.get(modname, None)
             if mod:
                 return mod
             fnm = os.path.join(path, name + ".py")
@@ -103,9 +103,9 @@ class Mods:
         "import module by path."
         import importlib.util
         spec = importlib.util.spec_from_file_location(name, pth)
-        cls.modules[name] = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(cls.modules[name])
-        return cls.modules[name]
+        cls.mods[name] = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.mods[name])
+        return cls.mods[name]
 
     @classmethod
     def list(cls, ignore=""):
