@@ -61,7 +61,7 @@ class Mods:
         if "u" in Main.opts:
             cls.dir("mods", "mods")
         Logging.size(len(Main.name))
-        Logging.level(Main.level)
+        Logging.level(Main.sets.level or "warning")
         cls.statics()
         Md5.check(cls.core)
 

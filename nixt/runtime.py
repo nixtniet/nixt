@@ -37,7 +37,6 @@ class Console(CLI):
 
     def poll(self):
         "return event."
-        print(self.silent)
         evt = Message()
         evt.orig = repr(self)
         evt.text = input("> ")

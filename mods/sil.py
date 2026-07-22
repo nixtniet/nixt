@@ -13,7 +13,6 @@ def lou(event):
     if not bot:
         event.reply("no bot in fleet.")
         return
-    print(bot)
     bot.silent = False
     event.reply("ok")
 

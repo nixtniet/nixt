@@ -133,7 +133,6 @@ class Clients:
     def announce(txt):
         "announce text on all clients."
         for obj in Broker.objs("announce"):
-            print(obj)
             obj.announce(txt)
 
     @staticmethod
