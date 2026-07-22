@@ -8,8 +8,7 @@ import readline
 import sys
 
 
-from .defines import Boot, Client, Cmd, Engine, Main, Message
-from .defines import Mods
+from .defines import Boot, Client, Cmd, Engine, Main, Message, Mods
 
 
 class CLI(Engine, Client):
@@ -99,9 +98,10 @@ class Scripts:
     def service():
         "service script."
         Kernel.parse(Main, " ".join(sys.argv[1:]))
+        Main.sets.default = "irc,mdl,rss,wsd"
         Kernel.add(Cmd.cmd)
-        Kernel.configure()
         Kernel.privileges()
+        Kernel.configure()
         Kernel.pid()
         Kernel.banner()
         Kernel.init()
