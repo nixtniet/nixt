@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.engines import Message
+from nixt.message import Message
 
 
 class TestMessage(unittest.TestCase):
