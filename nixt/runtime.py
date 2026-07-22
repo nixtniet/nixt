@@ -4,20 +4,19 @@
 "main"
 
 
-import argparse
 import readline
 import sys
 
 
 from .defines import Boot, Client, Cmd, Engine, Main, Message
-from .defines import Mods, Method, Parse, Utils
+from .defines import Mods
 
 
-class CLI(Client, Engine):
+class CLI(Engine, Client):
 
     def __init__(self):
-        Client.__init__(self)
         Engine.__init__(self)
+        Client.__init__(self)
         self.register("command", Mods.command)
 
     def after(self, event):
@@ -38,6 +37,7 @@ class Console(CLI):
 
     def poll(self):
         "return event."
+        print(self.silent)
         evt = Message()
         evt.orig = repr(self)
         evt.text = input("> ")

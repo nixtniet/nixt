@@ -4,8 +4,14 @@
 "clients"
 
 
+import logging
+import queue
 import threading
 import time
+import _thread
+
+
+from .threads import Thread
 
 
 class Broker:
@@ -78,12 +84,56 @@ class Client:
         self.raw(text)
 
 
+class Buffer(Client):
+
+    def __init__(self):
+        Client.__init__(self)
+        self.oqueue = queue.Queue()
+        self.ostopped = threading.Event()
+
+    def output(self):
+        "output loop."
+        while not self.ostopped.is_set():
+            try:
+                event = self.oqueue.get()
+            except (KeyboardInterrupt, EOFError):
+                _thread.interrupt_main()
+            if event is None:
+                self.oqueue.task_done()
+                break
+            self.display(event)
+            self.oqueue.task_done()
+
+    def raw(self, text):
+        "raw output."
+        raise NotImplementedError
+
+    def start(self, daemon=True):
+        "start output loop."
+        self.ostopped.clear()
+        Thread.launch(self.output, daemon=daemon)
+
+    def stop(self):
+        "stop output loop."
+        self.ostopped.set()
+        self.oqueue.put(None)
+
+    def wait(self):
+        "wait for output to finish."
+        try:
+            self.oqueue.join()
+        except Exception as ex:
+            logging.exception(ex)
+            _thread.interrupt_main()
+
+
 class Clients:
 
     @staticmethod
     def announce(txt):
         "announce text on all clients."
         for obj in Broker.objs("announce"):
+            print(obj)
             obj.announce(txt)
 
     @staticmethod

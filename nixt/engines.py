@@ -4,15 +4,12 @@
 "callback engine"
 
 
-import inspect
-import logging
 import queue
 import threading
-import time
 import _thread
 
 
-from .objects import Default, Object
+from .threads import Thread
 
 
 class Engine:
@@ -80,160 +77,7 @@ class Engine:
             _thread.interrupt_main()
 
 
-class Repeater:
-
-    counter = 0
-    running = threading.Event()
-    stopped = threading.Event()
-    todo = Object()
-
-    @classmethod
-    def add(cls, sleep, func, *args, **kwargs):
-        "add a repeater."
-        if not cls.running.is_set():
-            cls.start()
-        sleep = str(sleep)
-        if sleep not in cls.todo:
-            cls.todo[sleep] = []
-        cls.todo[sleep].append((func, args, kwargs))
-
-    @classmethod
-    def loop(cls):
-        "repeater loop."
-        while not cls.stopped.is_set():
-            time.sleep(1.0)
-            cls.counter += 1
-            for sleep in cls.todo:
-                slept = float(sleep)
-                if cls.counter % slept != 0:
-                    continue
-                for func, args, kwargs in cls.todo[sleep]:
-                    Thread.launch(func, *args, **kwargs)
-
-    @classmethod
-    def start(cls):
-        "start repeater loop."
-        cls.running.set()
-        cls.stopped.clear()
-        Thread.launch(cls.loop, name="Repeater.loop")
-
-    @classmethod
-    def stop(cls):
-        "stop repeater loop."
-        cls.stopped.set()
-
-
-class Task(threading.Thread):
-
-    block = threading.Event()
-
-    def __init__(self, func, *args, daemon=True, **kwargs):
-        super().__init__(None, self.run, None, (), daemon=daemon)
-        self.event = None
-        self.name = kwargs.get("name", Thread.name(func))
-        self.queue = queue.Queue()
-        self.result = None
-        self.starttime = time.time()
-        self.queue.put((func, args))
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        yield from dir(self)
-
-    def join(self, timeout=0.0):
-        "join thread and return result."
-        try:
-            super().join(timeout or None)
-            return self.result
-        except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
-
-    def run(self):
-        "run function."
-        func, args = self.queue.get()
-        if self.block.is_set():
-            return
-        try:
-            self.result = func(*args)
-        except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
-        except Exception as ex:
-            logging.exception(ex)
-            _thread.interrupt_main()
-
-
-class Thread:
-
-    lock = threading.RLock()
-
-    @classmethod
-    def launch(cls, func, *args, **kwargs):
-        "start a new thread running function with arguments."
-        with cls.lock:
-            "run function in a thread."
-            task = Task(func, *args, **kwargs)
-            task.start()
-            return task
-
-    @classmethod
-    def clsname(cls, obj):
-        "class name of an object."
-        if "__self__" in dir(obj):
-            return obj.__self__.__class__.__name__
-        return obj.__class__.__name_
-
-    @classmethod
-    def name(cls, obj):
-        "string of function/method."
-        if inspect.ismethod(obj):
-            return f"{cls.clsname(obj)}.{obj.__name__}"
-        if inspect.isfunction(obj):
-            return repr(obj).split()[1]
-        return repr(obj)
-
-
-class Message(Default):
-
-    def __init__(self):
-        super().__init__()
-        self._ready = threading.Event()
-        self._thr = None
-        self.args = []
-        self.index = 0
-        self.kind = "message"
-        self.result = []
-
-    def iface(self, txt):
-        "show interface."
-        txt = f"{self.cmd} {txt}"
-        self.reply(txt)
-
-    def ok(self, txt=""):
-        "print ok response."
-        self.reply(f"ok {txt}".strip())
-
-    def ready(self):
-        "flag message as ready."
-        self._ready.set()
-
-    def reply(self, text):
-        "add text to result."
-        self.result.append(text)
-
-    def wait(self, timeout=0.0):
-        "wait for completion."
-        self._ready.wait(timeout or None)
-        if self._thr:
-            self._thr.join(timeout or None)
-
-
 def __dir__():
     return (
         'Engine',
-        'Message',
-        'Repeater',
-        'Task',
-        'Thread'
     )

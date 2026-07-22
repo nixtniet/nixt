@@ -14,8 +14,8 @@ import time
 import _thread
 
 
-from nixt.defines import Broker, Client, Disk, Engine, Main, Message
-from nixt.defines import Mods, Method, Object, Thread, Utils
+from nixt.defines import Object, Broker, Buffer, Disk, Engine, Main, Message
+from nixt.defines import Mods, Method, Thread, Utils
 
 
 def init():
@@ -98,11 +98,11 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-class IRC(Engine, Client):
+class IRC(Engine, Buffer):
 
     def __init__(self):
         Engine.__init__(self)
-        Client.__init__(self)
+        Buffer.__init__(self)
         self.buffer = []
         self.cfg = Config()
         self.channels = []
@@ -312,6 +312,10 @@ class IRC(Engine, Client):
         self.direct(f"NICK {nck}")
         self.direct(f"USER {nck} {server} {server} {nck}")
 
+    def oput(self, event):
+        "put event onto output queue."
+        self.oqueue.put_nowait(event)
+
     def parsing(self, txt):
         "parse text into an event."
         rawstr = str(txt)
@@ -458,7 +462,10 @@ class IRC(Engine, Client):
 
     def say(self, channel, text):
         "say text in the channel."
-        self.dosay(channel, text)
+        event = Event()
+        event.channel = channel
+        event.reply(text)
+        self.oput(event)
 
     def some(self):
         "read some text from the socket."
@@ -484,6 +491,7 @@ class IRC(Engine, Client):
         self.events.connected.clear()
         self.events.joined.clear()
         Engine.start(self)
+        Buffer.start(self)
         if not self.state.keeprunning:
             Thread.launch(self.keep, daemon=daemon)
         Thread.launch(
@@ -498,6 +506,7 @@ class IRC(Engine, Client):
         "stop client."
         self.state.stopkeep = True
         Engine.stop(self)
+        Buffer.stop(self)
 
     def wait(self):
         "wait for client to join."

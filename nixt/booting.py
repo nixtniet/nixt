@@ -13,8 +13,9 @@ import _thread
 
 from .clients import Client
 from .configs import Main
-from .engines import Task, Thread
-from .package import Mods, Parse
+from .threads import Task, Thread
+from .package import Mods
+from .parsers import Parse
 from .persist import Workdir
 from .utility import Md5, Utils
 

@@ -13,7 +13,8 @@ import threading
 
 
 from .configs import Main
-from .objects import Default, Json, Method
+from .encoder import Json
+from .objects import Default, Method
 from .utility import Time, Utils
 
 

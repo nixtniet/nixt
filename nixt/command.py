@@ -9,7 +9,7 @@ import os
 
 
 from .configs import Main
-from .objects import Json
+from .encoder import Json
 from .package import Mods
 from .utility import Md5
 

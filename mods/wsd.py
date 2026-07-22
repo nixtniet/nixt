@@ -56,6 +56,7 @@ def wsd(event):
         state.seen = []
         txt = "* reset"
     state.dump()
+    print(txt)
     Clients.announce(txt.strip()[2:])
 
 
