@@ -45,6 +45,7 @@ def payload(todo):
             for text in evt.result:
                 raw(text)
 
+
 def final():
     if "v" not in Main.opts:
         return

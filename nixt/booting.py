@@ -56,7 +56,7 @@ class Boot:
             cls.null(sys.stdout)
             cls.null(sys.stderr)
         os.umask(0)
-        if "n" in  Main.opts:
+        if "n" in Main.opts:
             os.chdir("/")
         os.nice(10)
 
@@ -131,7 +131,6 @@ class Boot:
         except Exception as ex:
             logging.exception(ex)
             _thread.interrupt_main()
-
 
 
 def __dir__():
