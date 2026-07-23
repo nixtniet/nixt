@@ -137,6 +137,7 @@ class Clients:
 
     @staticmethod
     def display(evt):
+        "display results."
         bot = Broker.get(evt.orig)
         if bot:
             bot.display(evt)
