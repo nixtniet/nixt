@@ -15,31 +15,10 @@ from .clients import Client
 from .configs import Main
 from .threads import Task, Thread
 from .package import Mods
-from .parsers import Parse
-from .persist import Workdir
-from .utility import Md5, Utils
+from .utility import Utils
 
 
 class Boot:
-
-    add = Mods.add
-    command = Mods.command
-    configure = Mods.configure
-    parse = Parse.parse
-    pid = Workdir.pid
-    scanner = Mods.scanner
-
-    @classmethod
-    def banner(cls):
-        "hello."
-        tmr = time.ctime(time.time()).replace("  ", " ")
-        txt = "%s since %s %s (%s)" % (
-            Main.name.upper(),
-            tmr,
-            Main.sets.level.upper() or "WARNING",
-            Md5.core()
-        )
-        return txt.replace("  ", " ")
 
     @classmethod
     def daemon(cls):
@@ -51,7 +30,7 @@ class Boot:
         pid2 = os.fork()
         if pid2 != 0:
             os._exit(0)
-        if "v" in Main.opts:
+        if "v" not in Main.opts:
             cls.null(sys.stdin)
             cls.null(sys.stdout)
             cls.null(sys.stderr)

@@ -40,6 +40,9 @@ class Parse:
                 except ValueError:
                     obj.opts += spli[1:]
                 continue
+            if spli.startswith("--"):
+                obj.opts += spli[2:]
+                continue
             if "-=" in spli:
                 key, value = spli.split("-=", maxsplit=1)
                 Method.typed(obj.silent, key, value)

@@ -156,6 +156,7 @@ class Clients:
 def __dir__():
     return (
         'Broker',
+        'Buffer',
         'Client',
         'Clients'
     )

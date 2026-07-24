@@ -57,5 +57,5 @@ class Repeater:
 
 def __dir__():
     return (
-        'Message',
+        'Repeater',
     )
