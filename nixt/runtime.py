@@ -10,8 +10,7 @@ import sys
 import time
 
 
-from .defines import Boot, Client, Cmd, Engine, Main, Md5, Message
-from .defines import Mods, Workdir
+from .defines import Boot, Client, Cmd, Engine, Main, Md5, Message, Mods
 
 
 class Kernel(Boot):

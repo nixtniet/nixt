@@ -29,7 +29,6 @@ class Vars:
     starttime = 0
 
 
-
 class Kernel(Boot):
 
     @classmethod
@@ -146,6 +145,7 @@ pre = {
     "tmr": ["", "22:00 test"]
 }
 
+
 post = {
     "dbg": [""],
     "dne": ["", "mekker"],
@@ -155,4 +155,4 @@ post = {
 
 
 if __name__ == "__main__":
-     Kernel.wrap(main, dofinal=final)
+    Kernel.wrap(main, dofinal=final)
