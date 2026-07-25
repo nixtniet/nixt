@@ -51,7 +51,7 @@ class Boot:
             if not mod or "init" not in dir(mod):
                 continue
             thrs.append(Thread.launch(mod.init))
-        if thrs and "wait" in Main.opts:
+        if thrs and Main.sets.wait:
             for thr in thrs:
                 try:
                     thr.join()

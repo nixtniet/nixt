@@ -68,7 +68,7 @@ class Mods:
         Workdir.skel()
         cls.dir("modules", Workdir.moddir())
         cls.dir(f"{Main.name}.modules", Utils.moddir())
-        if "user" in Main.opts:
+        if Main.sets.user:
             cls.dir("mods", "mods")
         Logging.size(len(Main.name))
         Logging.level(Main.sets.level or "warning")
