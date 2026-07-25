@@ -4,24 +4,17 @@
 "main"
 
 
+import os
 import readline
 import sys
 import time
 
 
 from .defines import Boot, Client, Cmd, Engine, Main, Md5, Message
-from .defines import Mods, Parse, Workdir
+from .defines import Mods, Workdir
 
 
 class Kernel(Boot):
-
-    add = Mods.add
-    command = Mods.command
-    configure = Mods.configure
-    parse = Parse.parse
-    pid = Workdir.pid
-    scanner = Mods.scanner
-    table = Mods.table
 
     @classmethod
     def banner(cls):

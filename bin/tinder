@@ -16,7 +16,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Boot, Main, Message, Method, Mods
-from nixt.defines import Parse, Time, Workdir
+from nixt.defines import Time, Workdir
 
 
 Workdir.wdr = ".test"
@@ -27,6 +27,24 @@ class Vars:
 
     nrevents = 0
     starttime = 0
+
+
+
+class Kernel(Boot):
+
+    @classmethod
+    def wrap(cls, func, *args, dofinal=None):
+        "restore console."
+        import termios
+        try:
+            old = termios.tcgetattr(sys.stdin.fileno())
+        except termios.error:
+            old = False
+        cls.wrapped(func, *args)
+        if old:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+        if dofinal:
+            dofinal()
 
 
 def raw(text):
@@ -60,9 +78,9 @@ def final():
 
 
 def main():
-    Parse.parse(Main, " ".join(sys.argv[1:]))
-    Mods.configure()
-    Mods.scanner()
+    Kernel.parse(Main, " ".join(sys.argv[1:]))
+    Kernel.configure()
+    Kernel.scanner()
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
     Vars.starttime = time.time()
@@ -137,4 +155,4 @@ post = {
 
 
 if __name__ == "__main__":
-    Boot.wrap(main, dofinal=final)
+     Kernel.wrap(main, dofinal=final)

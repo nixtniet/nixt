@@ -14,10 +14,20 @@ from .clients import Client
 from .configs import Main
 from .threads import Task, Thread
 from .package import Mods
+from .parsers import Parse
+from .persist import Workdir
 from .utility import Utils
 
 
 class Boot:
+
+    add = Mods.add
+    command = Mods.command
+    configure = Mods.configure
+    parse = Parse.parse
+    pid = Workdir.pid
+    scanner = Mods.scanner
+    table = Mods.table
 
     @classmethod
     def forever(cls):
