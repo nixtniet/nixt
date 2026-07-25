@@ -44,6 +44,39 @@ class Kernel(Boot):
         cls.table()
         Mods.add(Cmd.cmd)
 
+    @classmethod
+    def daemon(cls):
+        "run in the background."
+        pid = os.fork()
+        if pid != 0:
+            os._exit(0)
+        os.setsid()
+        pid2 = os.fork()
+        if pid2 != 0:
+            os._exit(0)
+        if "v" not in Main.opts:
+            cls.null(sys.stdin)
+            cls.null(sys.stdout)
+            cls.null(sys.stderr)
+        os.umask(0)
+        if "n" in Main.opts:
+            os.chdir("/")
+        os.nice(10)
+
+    @classmethod
+    def wrap(cls, func, *args, dofinal=None):
+        "restore console."
+        import termios
+        try:
+            old = termios.tcgetattr(sys.stdin.fileno())
+        except termios.error:
+            old = False
+        cls.wrapped(func, *args)
+        if old:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+        if dofinal:
+            dofinal()
+
 
 class CLI(Engine, Client):
 
@@ -97,7 +130,7 @@ class Scripts:
         readline.redisplay()
         Kernel.parse(Main, " ".join(sys.argv[1:]))
         Kernel.boot()
-        if "a" in Main.opts:
+        if "all" in Main.opts:
             Main.sets.mods = ",".join(Mods.list())
         Kernel.init(True)
         csl = Console()

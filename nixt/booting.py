@@ -6,7 +6,6 @@
 
 import logging
 import os
-import sys
 import time
 import _thread
 
@@ -19,25 +18,6 @@ from .utility import Utils
 
 
 class Boot:
-
-    @classmethod
-    def daemon(cls):
-        "run in the background."
-        pid = os.fork()
-        if pid != 0:
-            os._exit(0)
-        os.setsid()
-        pid2 = os.fork()
-        if pid2 != 0:
-            os._exit(0)
-        if "v" not in Main.opts:
-            cls.null(sys.stdin)
-            cls.null(sys.stdout)
-            cls.null(sys.stderr)
-        os.umask(0)
-        if "n" in Main.opts:
-            os.chdir("/")
-        os.nice(10)
 
     @classmethod
     def forever(cls):
@@ -61,7 +41,7 @@ class Boot:
             if not mod or "init" not in dir(mod):
                 continue
             thrs.append(Thread.launch(mod.init))
-        if thrs and "w" in Main.opts:
+        if thrs and "wait" in Main.opts:
             for thr in thrs:
                 try:
                     thr.join()
@@ -83,20 +63,6 @@ class Boot:
         pwnam2 = pwd.getpwnam(getpass.getuser())
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
-
-    @classmethod
-    def wrap(cls, func, *args, dofinal=None):
-        "restore console."
-        import termios
-        try:
-            old = termios.tcgetattr(sys.stdin.fileno())
-        except termios.error:
-            old = False
-        cls.wrapped(func, *args)
-        if old:
-            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
-        if dofinal:
-            dofinal()
 
     @classmethod
     def wrapped(cls, func, *args):
