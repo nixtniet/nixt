@@ -10,7 +10,7 @@ import time
 import _thread
 
 
-from .clients import Client
+from .clients import Client, Clients
 from .configs import Main
 from .threads import Task, Thread
 from .package import Mods
@@ -27,6 +27,7 @@ class Boot:
     parse = Parse.parse
     pid = Workdir.pid
     scanner = Mods.scanner
+    shutdown = Clients.shutdown
     table = Mods.table
 
     @classmethod

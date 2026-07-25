@@ -88,6 +88,6 @@ def mbx(event):
             Disk.write(obj)
             nrs += 1
         if nrs:
-            event.reply("ok %s" % nrs)
+            event.ok(nrs)
     except FileNotFoundError as ex:
         event.reply(str(ex))

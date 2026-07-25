@@ -15,8 +15,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Main, Message, Method, Mods
-from nixt.defines import Time, Workdir
+from nixt.defines import Boot, Client, Engine, Main, Message, Method
+from nixt.defines import Mods, Time, Workdir
 
 
 Workdir.wdr = ".test"
@@ -46,6 +46,53 @@ class Kernel(Boot):
             dofinal()
 
 
+class CLI(Engine, Client):
+
+    def __init__(self):
+        Engine.__init__(self)
+        Client.__init__(self)
+        self.register("command", Mods.command)
+
+    def raw(self, text):
+        "write to console."
+        print(text.encode('utf-8', 'replace').decode("utf-8"))
+        sys.stdout.flush()
+
+
+class Runners:
+
+    runners = []
+    lock = threading.RLock()
+    nrcpu = 1
+    nrlast = 0
+
+    @staticmethod
+    def add(client):
+        "add a runner."
+        Runners.runners.append(client)
+
+    @staticmethod
+    def init(nrcpu, cls):
+        "initialize a runner."
+        Runners.nrcpu = nrcpu
+        for _x in range(Runners.nrcpu):
+            clt = cls()
+            clt.start()
+            Runners.add(clt)
+
+    @staticmethod
+    def put(*args):
+        "push job to a runner."
+        if not Runners.runners:
+            Runners.init(Runners.nrcpu, Runner)
+        with Runners.lock:
+            if Runners.nrlast >= Runners.nrcpu-1:
+                Runners.nrlast = 0
+            clt = Runners.runners[Runners.nrlast]
+            clt.put(*args)
+            Runners.nrlast += 1
+
+
 def raw(text):
     if "v" in Main.opts:
         print(text.encode('utf-8', 'replace').decode("utf-8"))
@@ -57,10 +104,9 @@ def payload(todo):
         for ex in example:
             Vars.nrevents += 1
             evt = Message()
+            evt.kind = "command"
             evt.text = f"{cmd} {ex}"
-            Mods.command(evt)
-            for text in evt.result:
-                raw(text)
+            Runners.put(evt)
 
 
 def final():
@@ -79,9 +125,14 @@ def final():
 def main():
     Kernel.parse(Main, " ".join(sys.argv[1:]))
     Kernel.configure()
-    Kernel.scanner()
+    Kernel.table()
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
+    if "-t" in sys.argv:
+        nrcpu = os.cpu_count()
+    else:
+        nrcpu = 1
+    Runners.init(nrcpu, CLI)
     Vars.starttime = time.time()
     nrs = Main.index or 1
     for _x in range(nrs):
@@ -90,7 +141,7 @@ def main():
         payload(examples)
     for _x in range(nrs):
         payload(post)
-
+    Kernel.shutdown()
 
 examples = {
     "cmd": [""],

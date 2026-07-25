@@ -23,4 +23,4 @@ def log(event):
     obj = Log()
     obj.txt = event.rest
     Disk.write(obj)
-    event.reply("ok")
+    event.ok()

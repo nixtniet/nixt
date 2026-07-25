@@ -564,7 +564,7 @@ def dpl(event):
         if feed:
             Method.update(feed, setter)
             Disk.write(feed, fnm)
-    event.reply("ok")
+    event.ok()
 
 
 def err(event):
@@ -680,7 +680,7 @@ def nme(event):
         if feed:
             feed.name = name
             Disk.write(feed, fnm)
-    event.reply("ok")
+    event.ok()
 
 
 def rem(event):
@@ -696,7 +696,7 @@ def rem(event):
         if feed:
             feed.__deleted__ = True
             Disk.write(feed, fnm)
-            event.reply("ok")
+            event.ok()
             break
 
 
@@ -739,7 +739,7 @@ def rss(event):
     feed = Rss()
     feed.rss = event.args[0]
     Disk.write(feed)
-    event.reply("ok")
+    event.ok()
 
 
 def syn(event):
