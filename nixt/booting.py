@@ -10,7 +10,8 @@ import time
 import _thread
 
 
-from .clients import Client, Clients
+from .brokers import Clients
+from .clients import Client
 from .configs import Main
 from .threads import Task, Thread
 from .package import Mods
