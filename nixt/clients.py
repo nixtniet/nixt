@@ -11,44 +11,11 @@ import time
 import _thread
 
 
+from .engines import Engine
 from .threads import Thread
 
 
-class Broker:
-
-    objects = {}
-
-    @classmethod
-    def add(cls, obj):
-        "add object to the broker, key is repr(obj)."
-        cls.objects[repr(obj)] = obj
-
-    @classmethod
-    def get(cls, origin):
-        "object by repr(obj)."
-        return cls.objects.get(origin)
-
-    @classmethod
-    def has(cls, obj):
-        "whether the Broker has object."
-        return repr(obj) in cls.objects
-
-    @classmethod
-    def like(cls, txt):
-        "all keys with a substring in their key."
-        for orig in cls.objects:
-            if txt in orig.split()[0]:
-                yield orig, cls.get(orig)
-
-    @classmethod
-    def objs(cls, attr):
-        "objects with a certain attribute."
-        for obj in cls.objects.values():
-            if attr in dir(obj):
-                yield obj
-
-
-class Client:
+class Output:
 
     block = threading.Event()
 
@@ -84,10 +51,10 @@ class Client:
         self.raw(text)
 
 
-class Buffer(Client):
+class Buffer(Output):
 
     def __init__(self):
-        Client.__init__(self)
+        Output.__init__(self)
         self.oqueue = queue.Queue()
         self.ostopped = threading.Event()
 
@@ -127,6 +94,72 @@ class Buffer(Client):
             _thread.interrupt_main()
 
 
+class Buffered(Engine, Buffer):
+
+    def __init__(self):
+        Engine.__init__(self)
+        Buffer.__init__(self)
+
+    def raw(self, text):
+        "raw output."
+        raise NotImplementedError
+
+    def start(self, daemon=True):
+        "start output loop."
+        Engine.start(self)
+        Buffer.start(self, daemon=daemon)
+
+    def stop(self):
+        "stop output loop."
+        Engine.stop(self)
+        Buffer.stop(self)
+
+
+class Client(Engine, Output):
+
+    def __init__(self):
+        Engine.__init__(self)
+        Output.__init__(self)
+
+    def raw(self, text):
+        "raw output."
+        raise NotImplementedError
+        
+
+class Broker:
+
+    objects = {}
+
+    @classmethod
+    def add(cls, obj):
+        "add object to the broker, key is repr(obj)."
+        cls.objects[repr(obj)] = obj
+
+    @classmethod
+    def get(cls, origin):
+        "object by repr(obj)."
+        return cls.objects.get(origin)
+
+    @classmethod
+    def has(cls, obj):
+        "whether the Broker has object."
+        return repr(obj) in cls.objects
+
+    @classmethod
+    def like(cls, txt):
+        "all keys with a substring in their key."
+        for orig in cls.objects:
+            if txt in orig.split()[0]:
+                yield orig, cls.get(orig)
+
+    @classmethod
+    def objs(cls, attr):
+        "objects with a certain attribute."
+        for obj in cls.objects.values():
+            if attr in dir(obj):
+                yield obj
+
+
 class Clients:
 
     @staticmethod
@@ -157,6 +190,8 @@ def __dir__():
     return (
         'Broker',
         'Buffer',
+        'Buffered',
         'Client',
-        'Clients'
+        'Clients',
+        'Output'
     )

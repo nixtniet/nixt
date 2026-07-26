@@ -109,10 +109,9 @@ class Kernel(Boot):
             dofinal()
 
 
-class CLI(Engine, Client):
+class CLI(Client):
 
     def __init__(self):
-        Engine.__init__(self)
         Client.__init__(self)
         self.register("command", Mods.command)
 

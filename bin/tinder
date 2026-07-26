@@ -15,7 +15,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Engine, Main, Message, Method
+from nixt.defines import Boot, Client, Main, Message, Method
 from nixt.defines import Mods, Time, Workdir
 
 
@@ -46,17 +46,17 @@ class Kernel(Boot):
             dofinal()
 
 
-class CLI(Engine, Client):
+class CLI(Client):
 
     def __init__(self):
-        Engine.__init__(self)
         Client.__init__(self)
         self.register("command", Mods.command)
 
     def raw(self, text):
         "write to console."
-        print(text.encode('utf-8', 'replace').decode("utf-8"))
-        sys.stdout.flush()
+        if "-v" in sys.argv:
+            print(text.encode('utf-8', 'replace').decode("utf-8"))
+            sys.stdout.flush()
 
 
 class Runners:
