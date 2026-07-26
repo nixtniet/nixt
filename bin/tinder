@@ -84,7 +84,7 @@ class Runners:
     def put(*args):
         "push job to a runner."
         if not Runners.runners:
-            Runners.init(Runners.nrcpu, Runner)
+            Runners.init(Runners.nrcpu, CLI)
         with Runners.lock:
             if Runners.nrlast >= Runners.nrcpu-1:
                 Runners.nrlast = 0
@@ -142,6 +142,11 @@ def main():
     for _x in range(nrs):
         payload(post)
     Kernel.shutdown()
+    while True:
+        if len(threading.enumerate()) == 1:
+            break
+        time.sleep(1.0)
+
 
 examples = {
     "cmd": [""],
