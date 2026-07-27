@@ -40,7 +40,6 @@ packages = [
     'nixt.numbers'
 ]
 
-
 [tool.pylint."messages control"]
 disable = ["C,R,W,E0401,E0402"]
 
