@@ -1,31 +1,17 @@
 # This file is placed in the Public Domain.
 
 
-"modules management tests"
+"module management"
 
 
 import unittest
 
 
+from nixt.defines import Mods
+
+
 class TestPackage(unittest.TestCase):
 
     def test_dir(self):
-        pass
-
-    def test_get(self):
-        pass
-
-    def test_has(self):
-        pass
-
-    def test_importer(self):
-        pass
-
-    def test_list(self):
-        pass
-
-    def test_scanner(self):
-        pass
-
-    def test_sums(self):
-        pass
+        Mods.dir("mods", "mods")
+        self.assertTrue("mods" in Mods.dirs)
