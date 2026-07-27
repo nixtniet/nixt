@@ -10,9 +10,8 @@ import time
 import _thread
 
 
-from .clients import Clients
+from .clients import Client, Clients
 from .configs import Main
-from .engines import Client
 from .threads import Task, Thread
 from .package import Mods
 from .parsers import Parse
