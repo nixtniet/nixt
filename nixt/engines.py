@@ -9,6 +9,7 @@ import threading
 import _thread
 
 
+from .clients import Buffer, Output
 from .threads import Thread
 
 
@@ -75,6 +76,38 @@ class Engine:
             self.queue.join()
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
+
+
+class Buffered(Engine, Buffer):
+
+    def __init__(self):
+        Engine.__init__(self)
+        Buffer.__init__(self)
+
+    def raw(self, text):
+        "raw output."
+        raise NotImplementedError
+
+    def start(self, daemon=True):
+        "start output loop."
+        Engine.start(self)
+        Buffer.start(self, daemon=daemon)
+
+    def stop(self):
+        "stop output loop."
+        Engine.stop(self)
+        Buffer.stop(self)
+
+
+class Client(Engine, Output):
+
+    def __init__(self):
+        Engine.__init__(self)
+        Output.__init__(self)
+
+    def raw(self, text):
+        "raw output."
+        raise NotImplementedError
 
 
 def __dir__():

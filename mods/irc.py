@@ -14,8 +14,8 @@ import time
 import _thread
 
 
-from nixt.defines import Object, Broker, Buffer, Disk, Engine, Main, Message
-from nixt.defines import Mods, Method, Thread, Utils
+from nixt.defines import Object, Broker, Buffered, Disk, Engine, Main
+from nixt.defines import Message, Mods, Method, Thread, Utils
 
 
 def init():
@@ -98,11 +98,10 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-class IRC(Engine, Buffer):
+class IRC(Buffered):
 
     def __init__(self):
-        Engine.__init__(self)
-        Buffer.__init__(self)
+        Buffered.__init__(self)
         self.buffer = []
         self.cfg = Config()
         self.channels = []
@@ -490,8 +489,7 @@ class IRC(Engine, Buffer):
         self.events.ready.clear()
         self.events.connected.clear()
         self.events.joined.clear()
-        Engine.start(self)
-        Buffer.start(self)
+        Buffered.start(self)
         if not self.state.keeprunning:
             Thread.launch(self.keep, daemon=daemon)
         Thread.launch(
@@ -505,8 +503,7 @@ class IRC(Engine, Buffer):
     def stop(self):
         "stop client."
         self.state.stopkeep = True
-        Engine.stop(self)
-        Buffer.stop(self)
+        Buffered.stop(self)
 
     def wait(self):
         "wait for client to join."
