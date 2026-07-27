@@ -39,7 +39,10 @@ class Kernel(Boot):
             old = termios.tcgetattr(sys.stdin.fileno())
         except termios.error:
             old = False
-        cls.wrapped(func, *args)
+        try:
+            cls.wrapped(func, *args)
+        except (KeyboardInterrupt, EOFError):
+            pass
         if old:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
         if dofinal:
@@ -54,7 +57,7 @@ class CLI(Client):
 
     def raw(self, text):
         "write to console."
-        if "-v" in sys.argv:
+        if "v" in Main.opts:
             print(text.encode('utf-8', 'replace').decode("utf-8"))
             sys.stdout.flush()
 
@@ -128,7 +131,7 @@ def main():
     Kernel.table()
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
-    if "-t" in sys.argv:
+    if "t" in Main.opts:
         nrcpu = os.cpu_count()
     else:
         nrcpu = 1

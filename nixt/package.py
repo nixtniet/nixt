@@ -4,6 +4,7 @@
 "module management"
 
 
+import gc
 import inspect
 import logging
 import os
@@ -34,7 +35,7 @@ class Mods:
     md5s = {}
     mods = {}
     names = {}
-
+    
     @classmethod
     def add(cls, *funcs):
         "register a command."
