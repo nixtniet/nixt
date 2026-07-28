@@ -193,7 +193,7 @@ pre = {
         "testing/opml/feeds.opml",
     ],
     "log": ["", "test"],
-    "rss": ["", "http://hnrss.org/newest"],
+    "rss": ["", "http://hnrss.org/newest", "https://www.icc-cpi.int/rss/records/all"],
     "tdo": ["", "test2"],
     "tmr": ["", "22:00 test"]
 }
