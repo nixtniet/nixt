@@ -43,5 +43,5 @@ class Client(Engine, Output):
 def __dir__():
     return (
         'Buffered',
-        'Client',
+        'Client'
     )
