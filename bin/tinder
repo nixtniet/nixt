@@ -144,11 +144,6 @@ def main():
     for _x in range(nrs):
         payload(post)
     Kernel.shutdown()
-    while True:
-        if len(threading.enumerate()) == 1:
-            break
-        time.sleep(1.0)
-
 
 examples = {
     "cmd": [""],

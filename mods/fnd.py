@@ -7,9 +7,7 @@
 import time
 
 
-from nixt.objects import Method
-from nixt.persist import Locate, Workdir
-from nixt.utility import Time
+from nixt.defines import Locate, Method, Time, Workdir
 
 
 def fnd(event):

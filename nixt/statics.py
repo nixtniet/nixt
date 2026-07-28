@@ -5,32 +5,38 @@
 
 
 CORE = {
-    "booting": "4e7701087d3666f2768fd1e67d9eee51",
-    "clients": "b347f9190baff29663329e1e40fd40a5",
+    "booting": "2d25b8e83c023cd44849e9c77869a419",
+    "brokers": "a23170edb9320f4a4ea79c1e1d5189d6",
+    "caching": "754319f232a3b2330ba61d7684b6e5ee",
+    "clients": "e09056324aafbd98cd6bb1e373bee1dd",
     "configs": "8d6fd1c295af5e8d906803dcd0dad611",
-    "defines": "2918bb791dc3b2ef03084f49743dac40",
+    "defines": "76ecf4600ea22506e03071131af94537",
     "encoder": "442b637a07a3611696a06d1f2c8211f5",
     "engines": "767e741a9e84f56cdb1b68c979a6b584",
     "hashing": "02f9d78a7aef9d72a230dac7c666d351",
+    "locater": "70ddffd6f82417fcd977be6df2d7cf76",
     "loggers": "575e865d11c848de2a53c185a3fb0afc",
     "message": "e8732b08af0edccbbae0543f445cfa74",
     "objects": "d1719008f8c1211790f8fcd0880dbfeb",
-    "package": "d49abb13a91db98bf48b085b0d7ec8ff",
+    "outputs": "b7edddf1249f1be8b9e568379479948f",
+    "package": "e8d25f34bc16f843aea52bd8d19ebb47",
     "parsers": "e72d2ad41806637fae85d96fc13a6dfd",
-    "persist": "e0aeb11a054b39944f92a8ce7d959e99",
+    "persist": "2cf17fd37e5431f73504178f2e1d640c",
     "repeats": "1d3ead9599a5ebd6aa58344ba9bd8218",
-    "runtime": "f50f8de427ff05f0521a3d2c0ce6f4d3",
+    "runtime": "adc75768464d3782cb67fa80030d9bf6",
     "threads": "2fcb5ceb0fa336dd7208297fc23e17b0",
-    "utility": "878e30f0246f21f052665fade6484a31"
+    "timings": "e251da81acc15a4064c0134890e16014",
+    "utility": "9308cb1a982b010a6e3ac7a60ccfa32b",
+    "workdir": "fe031886cbf07b2a12af8b0c32cfd2c9"
 }
 
 
 MODULES = {
     "cfg": "7fd2407f70f938d99fc797064b99a87e",
-    "eml": "9a9593c29338e29a926edbcda9c59901",
-    "fie": "e0612b0410a5530381ca49692a74b091",
+    "eml": "8f1d592b5b1c25d6da488e315cc29319",
+    "fie": "0eb10b5104e76831e1295ff9a91a0e8d",
     "flt": "c40a68583139d18206d885959c0ece30",
-    "fnd": "103ad8d13cdafc229b1b1e5e099951db",
+    "fnd": "c13df8fd240810d7a949fd95b79a89d8",
     "irc": "5c94204f186914b192d6663bc3d36632",
     "log": "9ff9812a6823c4636d9259370465a610",
     "man": "920599410f7739c9503e0eea9e4e5885",
@@ -41,7 +47,7 @@ MODULES = {
     "rst": "39b1e1c5fe013f6a19aa3d378a383cf7",
     "sil": "6409941fa5f1f20a23f37774ec0c6a7d",
     "slg": "e68f11973ddc2e3edeb0de0e16e9fe7a",
-    "tdo": "a20886caab2a71e763cd5fa1665e22c4",
+    "tdo": "734baf117bde28e7a979bdec82528c14",
     "thr": "6ae37c096264d246cb4de07cfd687222",
     "tmr": "f3d6df1887dae91a3023350749f4217a",
     "udp": "dceb7ac06569d8ac001c1c320db8f9e1",

@@ -11,7 +11,7 @@ import sys
 import time
 
 
-from .defines import Boot, Client, Cmd, Main, Md5, Message
+from .defines import Boot, Client, Main, Md5, Message
 from .defines import Method, Mods, Utils
 
 

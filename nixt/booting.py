@@ -6,19 +6,20 @@
 
 import logging
 import os
+import pathlib
 import threading
 import time
 import _thread
 
 
-from .clients import Broker, Client, Clients
+from .brokers import Broker
+from .clients import Client
 from .configs import Main
 from .loggers import Logging
 from .threads import Task, Thread
 from .package import Cmd, Mods
-from .parsers import Parse
-from .persist import Workdir
 from .utility import Utils
+from .workdir import Workdir
 
 
 class Boot:
@@ -107,7 +108,7 @@ class Boot:
         while True:
             if len(threading.enumerate()) == 1:
                 break
-            time.sleep(1.0)
+            time.sleep(0.1)
 
     @classmethod
     def wrapped(cls, func, *args):
