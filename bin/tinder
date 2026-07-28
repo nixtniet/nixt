@@ -16,7 +16,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Boot, Client, Main, Message, Method
-from nixt.defines import Mods, Time, Workdir
+from nixt.defines import Mods, Parse, Time, Workdir
 
 
 Workdir.wdr = ".test"
@@ -126,9 +126,8 @@ def final():
 
 
 def main():
-    Kernel.parse(Main, " ".join(sys.argv[1:]))
+    Parse.parse(Main, " ".join(sys.argv[1:]))
     Kernel.configure()
-    Kernel.table()
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
     if "t" in Main.opts:

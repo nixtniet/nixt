@@ -73,6 +73,7 @@ class Mods:
             cls.dir("mods", "mods")
         Logging.size(len(Main.name))
         Logging.level(Main.sets.level or "warning")
+        cls.table()
         cls.add(Cmd.cmd)
 
     @classmethod

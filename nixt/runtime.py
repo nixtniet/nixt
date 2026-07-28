@@ -69,11 +69,9 @@ class Kernel(Boot):
 
     @classmethod
     def boot(cls, banner=True):
-        cls.configure()
         if banner:
             cls.banner()
-        cls.table()
-        Mods.add(Cmd.cmd)
+        cls.configure()
 
     @classmethod
     def daemon(cls):
@@ -178,7 +176,7 @@ class Scripts:
         if Main.sets.admin:
             mod = Mods.get("adm")
             Mods.scan(mod)
-        Kernel.command(evt)
+        Mods.command(evt)
 
     @staticmethod
     def service():
