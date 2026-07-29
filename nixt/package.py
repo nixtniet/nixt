@@ -11,10 +11,10 @@ import os
 
 from .brokers import Clients
 from .configs import Main
-from .hashing import Md5
+from .loggers import Logging
 from .parsers import Parse
 from .persist import Workdir
-from .utility import Logging, Utils
+from .utility import Md5, Utils
 
 
 class Cmd:

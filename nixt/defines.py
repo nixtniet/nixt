@@ -11,7 +11,7 @@ from .clients import Buffer, Buffered, Client, Output
 from .configs import Config, Main
 from .encoder import Json
 from .engines import Engine
-from .hashing import Md5
+from .loggers import Logging
 from .message import Message
 from .objects import Default, Method, Object
 from .package import Cmd, Mods
@@ -19,7 +19,7 @@ from .parsers import Parse
 from .persist import Disk, Locate, Workdir
 from .repeats import Repeater
 from .threads import Task, Thread
-from .utility import Logging, Time, Utils
+from .utility import Md5, Time, Utils
 
 
 def __dir__():

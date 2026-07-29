@@ -289,6 +289,7 @@ class Method:
 
 def __dir__():
     return (
+        'Default',
         'Method',
         'Object'
     )

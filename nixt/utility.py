@@ -12,44 +12,60 @@ import pathlib
 import time
 
 
-class Format(logging.Formatter):
-
-    disable = False
-    size = 3
-
-    def format(self, record):
-        "logging formatter."
-        if not Format.disable:
-            record.module = record.module.upper()
-            record.module = record.module[:Format.size]
-        return logging.Formatter.format(self, record)
-
-
-class Logging:
-
-    datefmt = "%H:%M:%S"
-    format = "%(module)-3s %(message)s"
+class Md5:
 
     @classmethod
-    def level(cls, loglevel, systemd=False):
-        "set log level."
-        formatter = Format(cls.format, Logging.datefmt)
-        stream = logging.StreamHandler()
-        stream.setFormatter(formatter)
-        logging.basicConfig(
-            level=loglevel.upper(),
-            handlers=[stream,],
-            force=True
-        )
+    def check(cls, md5s):
+        "check for md5sums in a given path."
+        ok = True
+        path = os.path.dirname(__spec__.origin)
+        if not os.path.exists(path):
+            return False
+        for pth in os.listdir(path):
+            if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
+                continue
+            name = pth[:-3]
+            modpath = os.path.join(path, pth)
+            if md5s and Md5.md5(modpath) != md5s.get(name):
+                logging.warning("mismatch %s", name)
+                ok = False
+        return ok
 
     @classmethod
-    def size(cls, nr):
-        "set text size."
-        index = cls.format.find("-")+1
-        newformat = cls.format[:index]
-        newformat += str(nr)
-        newformat += cls.format[index+1:]
-        cls.format = newformat
+    def core(cls):
+        "calculate md5 of the statics module."
+        try:
+            from . import statics
+        except (ModuleNotFoundError, ImportError, SyntaxError):
+            return ""
+        return cls.source(Utils.source(statics))[:7].upper()
+
+    @classmethod
+    def dir(cls, path, md5):
+        "create a md5 for a directory."
+        for fnm in os.listdir(path):
+            if not fnm.endswith(".py"):
+                continue
+            mpath = os.path.join(path, fnm)
+            with open(mpath, "r", encoding="utf-8") as file:
+                md5.update(file.read().encode("utf-8"))
+
+    @classmethod
+    def md5(cls, path):
+        "calculate md5sum of a file."
+        import hashlib
+        md5 = hashlib.md5()
+        with open(path, "r", encoding="utf-8") as file:
+            md5.update(file.read().encode("utf-8"))
+        return str(md5.hexdigest())
+
+    @classmethod
+    def source(cls, src):
+        "determine md5 of source code."
+        import hashlib
+        md5 = hashlib.md5()
+        md5.update(src.encode("utf-8"))
+        return str(md5.hexdigest())
 
 
 class Time:
@@ -267,7 +283,7 @@ class Utils:
 
 def __dir__():
     return (
-        'Logging',
+        'Md5',
         'Time',
         'Utils'
     )
