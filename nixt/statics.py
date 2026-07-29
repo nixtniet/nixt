@@ -5,29 +5,23 @@
 
 
 CORE = {
-    "booting": "2d25b8e83c023cd44849e9c77869a419",
+    "booting": "b8a9bfa389bf75f8540afc6db28c6553",
     "brokers": "a23170edb9320f4a4ea79c1e1d5189d6",
-    "caching": "754319f232a3b2330ba61d7684b6e5ee",
-    "clients": "e09056324aafbd98cd6bb1e373bee1dd",
+    "clients": "bfa324933e6c82774ab17a5cf9393600",
     "configs": "8d6fd1c295af5e8d906803dcd0dad611",
-    "defines": "76ecf4600ea22506e03071131af94537",
+    "defines": "378ebd4bec46b28ed43569ed3b8c8be2",
     "encoder": "442b637a07a3611696a06d1f2c8211f5",
     "engines": "767e741a9e84f56cdb1b68c979a6b584",
     "hashing": "02f9d78a7aef9d72a230dac7c666d351",
-    "locater": "70ddffd6f82417fcd977be6df2d7cf76",
-    "loggers": "575e865d11c848de2a53c185a3fb0afc",
     "message": "e8732b08af0edccbbae0543f445cfa74",
     "objects": "d1719008f8c1211790f8fcd0880dbfeb",
-    "outputs": "b7edddf1249f1be8b9e568379479948f",
-    "package": "e8d25f34bc16f843aea52bd8d19ebb47",
+    "package": "cffa8d80ad1cd3536b7351c2f397cb38",
     "parsers": "e72d2ad41806637fae85d96fc13a6dfd",
-    "persist": "2cf17fd37e5431f73504178f2e1d640c",
+    "persist": "5a612bc7e7e39dc5317fc9081bd9ddce",
     "repeats": "1d3ead9599a5ebd6aa58344ba9bd8218",
     "runtime": "adc75768464d3782cb67fa80030d9bf6",
     "threads": "2fcb5ceb0fa336dd7208297fc23e17b0",
-    "timings": "e251da81acc15a4064c0134890e16014",
-    "utility": "9308cb1a982b010a6e3ac7a60ccfa32b",
-    "workdir": "fe031886cbf07b2a12af8b0c32cfd2c9"
+    "utility": "dfe4d4a3f3c742528a723e0bae2b8e55"
 }
 
 
