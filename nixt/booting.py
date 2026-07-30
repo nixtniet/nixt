@@ -17,7 +17,7 @@ from .clients import Client
 from .configs import Main
 from .loggers import Logging
 from .threads import Task, Thread
-from .package import Cmd, Mods
+from .package import Mods
 from .persist import Workdir
 from .utility import Utils
 
@@ -38,7 +38,6 @@ class Boot:
         if Main.sets.all:
             Main.sets.mods = ",".join(Mods.list())
         Mods.table()
-        Mods.add(Cmd.cmd)
 
     @classmethod
     def forever(cls):

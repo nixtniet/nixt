@@ -72,6 +72,7 @@ class Kernel(Boot):
         if banner:
             cls.banner()
         cls.configure()
+        Mods.add(Cmd.cmd)
 
     @classmethod
     def daemon(cls):
@@ -137,6 +138,14 @@ class Console(CLI):
         evt.kind = "command"
         self.put(evt)
         return evt
+
+
+class Cmd:
+
+    @staticmethod
+    def cmd(event):
+        "list available commands."
+        event.reply(",".join(sorted(Mods.names or Mods.cmds)))
 
 
 class Scripts:
