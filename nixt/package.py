@@ -61,20 +61,6 @@ class Mods:
         evt.ready()
 
     @classmethod
-    def configure(cls):
-        "configure program."
-        Workdir.wdr = Workdir.wdr or Workdir.home(Main.name)
-        Workdir.skel()
-        cls.dir("modules", Workdir.moddir())
-        cls.dir(f"{Main.name}.modules", Utils.moddir())
-        if Main.sets.user:
-            cls.dir("mods", "mods")
-        Logging.size(len(Main.name))
-        Logging.level(Main.sets.level or "warning")
-        cls.table()
-        cls.add(Cmd.cmd)
-
-    @classmethod
     def dir(cls, pkgname, path):
         "add module/patgh."
         cls.dirs[pkgname] = path

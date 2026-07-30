@@ -206,6 +206,12 @@ class Workdir:
         return os.path.join(cls.wdr, "mods")
 
     @classmethod
+    def pid():
+        if not Workdir.wdr:
+            Workdir.wdr = Workdir.home(Main.name)
+        return os.path.join(Workdir.wdr, f"{Main.name}.pid")
+
+    @classmethod
     def skel(cls):
         "create directories."
         if not cls.wdr:

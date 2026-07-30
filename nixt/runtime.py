@@ -26,27 +26,27 @@ class Arguments:
             description=f'{Main.name.upper()}',
             epilog='use "%(prog)s cmd" for a list of commands.',
             formatter_class=argparse.RawDescriptionHelpFormatter,
-
+            usage="%(prog)s [-h] [--console|--daemon|--service] [--admin] [--user] [--all]\n            [--verbose] [--wait] [--level level] [--mods m1,m2] [--path path]"
         )
         group = theparser.add_mutually_exclusive_group()
         group.add_argument("--console", action="store_true", help="run as console.")
         group.add_argument("--daemon", action="store_true", help="run as background daemon.")
         group.add_argument("--service", action="store_true", help="run as service.")
-        parser = theparser.add_argument_group()
-        parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
-        parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
-        parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
         optparser = theparser.add_argument_group()
-        optionparser = theparser.add_argument_group()
-        optionparser.add_argument("-l", "--level", default=Main.level, help='set loglevel.', metavar="level")
-        optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
-        optionparser.add_argument("-p", "--path", default="", help='path to working directory.', metavar="path")
         optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
         optparser.add_argument("--check", action="store_false", help=argparse.SUPPRESS)
         optparser.add_argument("--default", default="irc,rss", help=argparse.SUPPRESS)
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
         optparser.add_argument("--read", action="store_true", help=argparse.SUPPRESS)
-        optparser.add_argument("-u", "--user", action="store_true", help="use local mods directory.")
+        optparser.add_argument("--user", action="store_true", help="use local mods directory.")
+        parser = theparser.add_argument_group()
+        parser.add_argument("--all", action="store_true", help="load all modules.")
+        parser.add_argument("--verbose", action='store_true', help='enable verbose.')
+        parser.add_argument("--wait", action='store_true', help='wait for services to start.')
+        optionparser = theparser.add_argument_group()
+        optionparser.add_argument("--level", default=Main.level, help='set loglevel.', metavar="level")
+        optionparser.add_argument("--mods", default="", help='modules to load.', metavar="m1,m2")
+        optionparser.add_argument("--path", default="", help='path to working directory.', metavar="path")
         args, arguments = theparser.parse_known_args()
         Main.otxt = " ".join(arguments)
         Method.update(Main.sets, args)
@@ -157,8 +157,6 @@ class Scripts:
         "console script."
         readline.redisplay()
         Kernel.boot()
-        if Main.sets.all:
-            Main.sets.mods = ",".join(Mods.list())
         Kernel.init(True)
         csl = Console()
         csl.start()

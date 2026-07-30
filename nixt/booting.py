@@ -12,7 +12,7 @@ import time
 import _thread
 
 
-from .brokers import Broker
+from .brokers import Broker, Clients
 from .clients import Client
 from .configs import Main
 from .loggers import Logging
@@ -31,10 +31,12 @@ class Boot:
         Workdir.skel()
         Mods.dir("modules", Workdir.moddir())
         Mods.dir(f"{Main.name}.modules", Utils.moddir())
-        if Main.sets.user:
-            Mods.dir("mods", "mods")
         Logging.size(len(Main.name))
         Logging.level(Main.sets.level or "warning")
+        if Main.sets.user:
+            Mods.dir("mods", "mods")
+        if Main.sets.all:
+            Main.sets.mods = ",".join(Mods.list())
         Mods.table()
         Mods.add(Cmd.cmd)
 
@@ -77,9 +79,7 @@ class Boot:
     @classmethod
     def pid(cls):
         "write pidfile."
-        if not Workdir.wdr:
-            Workdir.wdr = Workdir.home(Main.name)
-        filename = os.path.join(Workdir.wdr, f"{Main.name}.pid")
+        filename = Workdir.pid()
         if os.path.exists(filename):
             os.unlink(filename)
         path2 = pathlib.Path(filename)
@@ -99,12 +99,7 @@ class Boot:
     @classmethod
     def shutdown(cls):
         "call stop on clients."
-        for client in Broker.objs("wait"):
-            client.wait()
-        time.sleep(0.01)
-        for client in Broker.objs("stop"):
-            client.stop()
-        time.sleep(0.01)
+        Clients.shutdown()
         while True:
             if len(threading.enumerate()) == 1:
                 break
