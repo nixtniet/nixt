@@ -5,7 +5,7 @@
 
 
 CORE = {
-    "booting": "cafb15cc0866b2e62ec8ea7a22028a55",
+    "booting": "aa2bbaecae34c27ee5e58694be5459af",
     "brokers": "a23170edb9320f4a4ea79c1e1d5189d6",
     "clients": "04e78280804354fe91541e6c6e4d7bf0",
     "configs": "8d6fd1c295af5e8d906803dcd0dad611",
@@ -15,7 +15,7 @@ CORE = {
     "loggers": "0c75c9b5df26dc5f023257711f140754",
     "message": "e8732b08af0edccbbae0543f445cfa74",
     "objects": "43974134fa9d0803a4670e89ddfae099",
-    "package": "30c265fb879eb99f9d0129e4c918a948",
+    "package": "e3926ea3c99163ffde1ff26814c83e9b",
     "parsers": "e72d2ad41806637fae85d96fc13a6dfd",
     "persist": "2dc5be3e2f9833f964cade87850cc6d3",
     "repeats": "1d3ead9599a5ebd6aa58344ba9bd8218",

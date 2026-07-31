@@ -44,7 +44,7 @@ class Boot:
         "run forever until ctrl-c."
         while True:
             try:
-                time.sleep(1.0)
+                time.sleep(0.1)
             except (KeyboardInterrupt, EOFError):
                 break
 
