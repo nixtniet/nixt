@@ -12,7 +12,7 @@ import time
 import _thread
 
 
-from .brokers import Broker, Clients
+from .brokers import Clients
 from .clients import Client
 from .configs import Main
 from .loggers import Logging
