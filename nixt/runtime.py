@@ -69,6 +69,7 @@ class Kernel(Boot):
 
     @classmethod
     def boot(cls, banner=True):
+        "starting."
         if banner:
             cls.banner()
         cls.configure()
@@ -115,7 +116,7 @@ class CLI(Client):
         self.register("command", Mods.command)
 
     def after(self, event):
-        "wait for event to finish"
+        "wait for event to finish."
         event.wait()
 
     def raw(self, text):
