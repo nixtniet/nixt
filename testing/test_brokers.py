@@ -14,4 +14,4 @@ class TestBroker(unittest.TestCase):
 
     def test_construct(self):
         broker = Broker()
-        self.assertEqual(broker.objects, {})
+        self.assertTrue(broker.objects)

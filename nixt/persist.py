@@ -206,7 +206,8 @@ class Workdir:
         return os.path.join(cls.wdr, "mods")
 
     @classmethod
-    def pid():
+    def pid(cls):
+        "return path to pid file."
         if not Workdir.wdr:
             Workdir.wdr = Workdir.home(Main.name)
         return os.path.join(Workdir.wdr, f"{Main.name}.pid")
