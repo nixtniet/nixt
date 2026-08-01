@@ -14,7 +14,7 @@ from .engines import Engine
 from .loggers import Logging
 from .message import Message
 from .objects import Default, Method, Object
-from .package import Mods
+from .package import Cmd, Mods
 from .parsers import Parse
 from .persist import Disk, Locate, Workdir
 from .repeats import Repeater
@@ -30,6 +30,7 @@ def __dir__():
        'Buffered',
        'Client',
        'Clients',
+       'Cmd',
        'Config',
        'Default',
        'Disk',

@@ -11,7 +11,7 @@ import sys
 import time
 
 
-from .defines import Boot, Client, Main, Md5, Message
+from .defines import Boot, Client, Cmd, Main, Md5, Message
 from .defines import Method, Mods, Utils
 
 
@@ -26,7 +26,6 @@ class Arguments:
             description=f'{Main.name.upper()}',
             epilog='use "%(prog)s cmd" for a list of commands.',
             formatter_class=argparse.RawDescriptionHelpFormatter,
-            usage="%(prog)s [-h] [--console|--daemon|--service] [--admin] [--user] [--all]\n            [--verbose] [--wait] [--level level] [--mods m1,m2] [--path path]"
         )
         group = theparser.add_mutually_exclusive_group()
         group.add_argument("--console", action="store_true", help="run as console.")
@@ -139,14 +138,6 @@ class Console(CLI):
         evt.kind = "command"
         self.put(evt)
         return evt
-
-
-class Cmd:
-
-    @staticmethod
-    def cmd(event):
-        "list available commands."
-        event.reply(",".join(sorted(Mods.names or Mods.cmds)))
 
 
 class Scripts:
