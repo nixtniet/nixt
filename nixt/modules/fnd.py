@@ -7,7 +7,7 @@
 import time
 
 
-from nixbot.defines import Locate, Method, Time, Workdir
+from nixt import Locate, Method, Time, Workdir
 
 
 def fnd(event):

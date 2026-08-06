@@ -14,8 +14,8 @@ import time
 import _thread
 
 
-from nixbot.defines import Object, Broker, Buffered, Disk, Main
-from nixbot.defines import Message, Mods, Method, Thread, Utils
+from nixt import Object, Broker, Buffered, Disk, Main
+from nixt import Message, Mods, Method, Thread, Utils
 
 
 def init():

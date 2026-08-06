@@ -4,7 +4,7 @@
 "locate objects"
 
 
-from nixbot.defines import Broker, Method
+from nixt import Broker, Method
 
 
 def flt(event):

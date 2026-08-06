@@ -8,7 +8,7 @@ import inspect
 import os
 
 
-from nixbot.defines import Json, Main, Mods, Md5
+from nixt import Json, Main, Mods, Md5
 
 
 def srv(event):

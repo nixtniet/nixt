@@ -4,7 +4,7 @@
 "todo"
 
 
-from nixbot.defines import Disk, Locate, Object
+from nixt import Disk, Locate, Object
 
 
 class Todo(Object):

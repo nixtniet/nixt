@@ -7,7 +7,7 @@
 import time
 
 
-from nixbot.defines import Time
+from nixt import Time
 
 
 def upt(event):

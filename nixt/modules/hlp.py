@@ -4,7 +4,7 @@
 "help"
 
 
-from nixbot.defines import Main
+from nixt import Main
 
 
 TXT = """usage: %s <cmd> [name=value] [name==value]

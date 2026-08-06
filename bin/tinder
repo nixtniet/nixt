@@ -15,12 +15,12 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Main, Message, Method
-from nixt.defines import Mods, Parse, Time, Workdir
+from nixt import Boot, Client, Main, Message, Method
+from nixt import Mods, Parse, Time, Workdir
 
 
 Workdir.wdr = ".test"
-Mods.dir("mods", "mods")
+#
 
 
 class Vars:
@@ -127,6 +127,8 @@ def final():
 
 def main():
     Parse.parse(Main, " ".join(sys.argv[1:]))
+    Workdir.configure(Main.name)
+    Mods.configure(Main.name)
     Kernel.configure()
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
@@ -156,7 +158,7 @@ examples = {
     "fie": ["", "log", "todo"],
     "lou": [""],
     "mbx": ["", "~/25-1-2013"],
-    "man": ["", "nixt nixtniet@gmail.com Nixt Niet"],
+    "man": ["", "nixbot nixtniet@gmail.com Nixt Niet"],
     "nme": ["", "hnrss hn"],
     "now": [""],
     "pth": [""],

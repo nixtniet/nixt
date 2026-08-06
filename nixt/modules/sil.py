@@ -4,7 +4,7 @@
 "silence"
 
 
-from nixbot.defines import Broker
+from nixt import Broker
 
 
 def lou(event):

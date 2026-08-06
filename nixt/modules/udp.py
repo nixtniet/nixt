@@ -12,7 +12,7 @@ import threading
 import time
 
 
-from nixbot.defines import Object, Clients, Disk, Main, Thread
+from nixt import Object, Clients, Disk, Main, Thread
 
 
 def init():

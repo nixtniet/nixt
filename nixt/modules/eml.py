@@ -9,7 +9,7 @@ import os
 import time
 
 
-from nixbot.defines import Default, Disk, Locate, Method, Time
+from nixt import Default, Disk, Locate, Method, Time
 
 
 class Email(Default):

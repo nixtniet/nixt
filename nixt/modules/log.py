@@ -4,7 +4,7 @@
 "text logging"
 
 
-from nixbot.defines import Disk, Object
+from nixt import Disk, Object
 
 
 class Log(Object):

@@ -10,7 +10,7 @@ import threading
 import time
 
 
-from nixbot.defines import Object, Broker, Disk, Locate, Method, Thread, Time
+from nixt import Object, Broker, Disk, Locate, Method, Thread, Time
 
 
 rand = random.SystemRandom()
