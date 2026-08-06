@@ -167,7 +167,6 @@ class Mods:
         "read static tables."
         cls.statics()
         if not cls.names:
-            print(cls.names)
             cls.scanner()
         if cls.core:
             Md5.check(cls.core)
@@ -196,7 +195,7 @@ class Md5:
     def core(cls):
         "calculate md5 of the statics module."
         try:
-            from .. import statics
+            from . import statics
         except (ModuleNotFoundError, ImportError, SyntaxError):
             return ""
         return cls.source(Utils.source(statics))[:7].upper()

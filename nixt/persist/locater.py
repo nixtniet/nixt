@@ -9,7 +9,7 @@ import threading
 import time
 
 
-from ..objects import Default, Method
+from nixt.objects import Default, Method
 
 
 from .storage import Cache, Disk

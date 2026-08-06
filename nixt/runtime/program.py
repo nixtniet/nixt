@@ -51,11 +51,11 @@ class Kernel(Boot):
     def boot(cls, banner=True):
         "starting."
         Workdir.configure(Main.name)
-        Mods.configure(Main.name)
-        cls.configure()
-        Mods.add(Cmd.cmd)
         if banner:
             cls.banner()
+        cls.configure()
+        Mods.configure(Main.name)
+        Mods.add(Cmd.cmd)
 
     @classmethod
     def cmd(cls, txt):

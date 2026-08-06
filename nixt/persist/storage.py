@@ -12,7 +12,7 @@ import pathlib
 import threading
 
 
-from ..objects import Json, Method
+from nixt.objects import Json, Method
 
 
 from .workdir import Workdir
