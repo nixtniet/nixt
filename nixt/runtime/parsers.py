@@ -4,7 +4,7 @@
 "command parsing"
 
 
-from .objects import Default, Method
+from ..objects import Default, Method
 
 
 class Parse:
@@ -34,14 +34,14 @@ class Parse:
         args = []
         nr = -1
         for spli in text.split():
+            if spli.startswith("--"):
+                obj.opts += f",{spli[2:]}"
+                continue
             if spli.startswith("-"):
                 try:
                     obj.index = int(spli[1:])
                 except ValueError:
                     obj.opts += spli[1:]
-                continue
-            if spli.startswith("--"):
-                obj.opts += spli[2:]
                 continue
             if "-=" in spli:
                 key, value = spli.split("-=", maxsplit=1)
@@ -58,10 +58,7 @@ class Parse:
                 continue
             nr += 1
             if nr == 0:
-                try:
-                    obj.mod, obj.cmd = spli.split(".")
-                except ValueError:
-                    obj.cmd = spli
+                obj.cmd = spli
                 continue
             args.append(spli)
         if args:

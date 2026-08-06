@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"encoder/decoder"
+"a clean namespace"
 
 
 import json
@@ -9,7 +9,36 @@ import types
 import threading
 
 
-from .objects import Method
+class Object:
+
+    def __contains__(self, key):
+        return key in dir(self)
+
+    def __delitem__(self, key):
+        del self.__dict__[key]
+
+    def __getitem__(self, key):
+        return self.__dict__.get(key)
+
+    def __iter__(self):
+        return iter(self.__dict__)
+
+    def __len__(self):
+        return len(self.__dict__)
+
+    def __setitem__(self, key, value):
+        self.__dict__[key] = value
+
+    def __str__(self):
+        return str(self.__dict__)
+
+
+class Default(Object):
+
+    def __getattr__(self, key):
+        if key in dir(self):
+            return self.__getattribute__(self, key)
+        return ""
 
 
 class Encoder(json.JSONEncoder):
@@ -61,7 +90,13 @@ class Json:
         return json.loads(s, *args, **kw)
 
 
+from .methods import Method 
+
+
 def __dir__():
     return (
+        'Default',
         'Json',
+        'Method',
+        'Object'
     )

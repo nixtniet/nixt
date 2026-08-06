@@ -8,7 +8,6 @@ import threading
 import time
 
 
-from .objects import Object
 from .threads import Thread
 
 
@@ -17,7 +16,7 @@ class Repeater:
     counter = 0
     running = threading.Event()
     stopped = threading.Event()
-    todo = Object()
+    todo = {}
 
     @classmethod
     def add(cls, sleep, func, *args, **kwargs):

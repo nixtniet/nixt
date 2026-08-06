@@ -4,54 +4,35 @@
 "main"
 
 
-import argparse
 import os
 import readline
 import sys
 import time
 
 
-from .defines import Boot, Client, Cmd, Main, Md5, Message
-from .defines import Method, Mods, Utils
+from ..library import Client
+from ..persist import Workdir
 
 
-class Arguments:
-
-    @classmethod
-    def getargs(cls):
-        "parse commandline arguments."
-        Main.name = Main.name or Utils.pkgname(Main)
-        theparser = argparse.ArgumentParser(
-            prog=Main.name,
-            description=f'{Main.name.upper()}',
-            epilog='use "%(prog)s cmd" for a list of commands.',
-            formatter_class=argparse.RawDescriptionHelpFormatter,
-        )
-        group = theparser.add_mutually_exclusive_group()
-        group.add_argument("--console", action="store_true", help="run as console.")
-        group.add_argument("--daemon", action="store_true", help="run as background daemon.")
-        group.add_argument("--service", action="store_true", help="run as service.")
-        optparser = theparser.add_argument_group()
-        optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
-        optparser.add_argument("--check", action="store_false", help=argparse.SUPPRESS)
-        optparser.add_argument("--default", default="irc,rss", help=argparse.SUPPRESS)
-        optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
-        optparser.add_argument("--read", action="store_true", help=argparse.SUPPRESS)
-        optparser.add_argument("--user", action="store_true", help="use local mods directory.")
-        parser = theparser.add_argument_group()
-        parser.add_argument("--all", action="store_true", help="load all modules.")
-        parser.add_argument("--verbose", action='store_true', help='enable verbose.')
-        parser.add_argument("--wait", action='store_true', help='wait for services to start.')
-        optionparser = theparser.add_argument_group()
-        optionparser.add_argument("--level", default=Main.level, help='set loglevel.', metavar="level")
-        optionparser.add_argument("--mods", default="", help='modules to load.', metavar="m1,m2")
-        optionparser.add_argument("--path", default="", help='path to working directory.', metavar="path")
-        args, arguments = theparser.parse_known_args()
-        Main.otxt = " ".join(arguments)
-        Method.update(Main.sets, args)
+from .booting import Boot
+from .configs import Main
+from .message import Message
+from .package import Cmd, Md5, Mods
+from .parsers import Parse
 
 
 class Kernel(Boot):
+
+    pid = Workdir.pid
+
+    @classmethod
+    def admin(cls):
+        if Kernel.check("admin"):
+            mod = Mods.get("adm")
+            Mods.scan(mod)
+            cls.cmd(Main.otxt)
+            return True
+        return False
 
     @classmethod
     def banner(cls):
@@ -69,10 +50,21 @@ class Kernel(Boot):
     @classmethod
     def boot(cls, banner=True):
         "starting."
-        if banner:
-            cls.banner()
+        Workdir.configure(Main.name)
+        Mods.configure(Main.name)
         cls.configure()
         Mods.add(Cmd.cmd)
+        if banner:
+            cls.banner()
+
+    @classmethod
+    def cmd(cls, txt):
+        cli = CLI()
+        cli.silent = False
+        evt = Message()
+        evt.orig = repr(cli)
+        evt.text = txt
+        Mods.command(evt)
 
     @classmethod
     def daemon(cls):
@@ -92,6 +84,15 @@ class Kernel(Boot):
         if Main.sets.nochdir:
             os.chdir("/")
         os.nice(10)
+
+    @classmethod
+    def help(cls):
+        if Kernel.check("h,help"):
+            mod = Mods.get("hlp")
+            Mods.scan(mod)
+            cls.cmd("hlp")
+            return True
+        return False
 
     @classmethod
     def wrap(cls, func, *args, dofinal=None):
@@ -137,7 +138,6 @@ class Console(CLI):
         evt.text = input("> ")
         evt.kind = "command"
         self.put(evt)
-        return evt
 
 
 class Scripts:
@@ -167,15 +167,11 @@ class Scripts:
     def control():
         "cli script."
         Kernel.boot(False)
-        cli = CLI()
-        cli.silent = False
-        evt = Message()
-        evt.orig = repr(cli)
-        evt.text = Main.otxt
-        if Main.sets.admin:
-            mod = Mods.get("adm")
-            Mods.scan(mod)
-        Mods.command(evt)
+        if Kernel.help():
+            return
+        if Kernel.admin():
+            return
+        Kernel.cmd(Main.otxt)
 
     @staticmethod
     def service():
@@ -189,12 +185,12 @@ class Scripts:
 
 
 def main():
-    Arguments.getargs()
-    if Main.sets.service:
+    Parse.parse(Main, " ".join(sys.argv[1:]))
+    if Kernel.check("service"):
         Kernel.wrap(Scripts.service)
-    elif Main.sets.console:
+    elif Kernel.check("console"):
         Kernel.wrap(Scripts.console)
-    elif Main.sets.daemon:
+    elif Kernel.check("daemon"):
         Kernel.wrap(Scripts.background)
     else:
         Kernel.wrap(Scripts.control)
