@@ -26,19 +26,9 @@ class Utils:
                ]
 
     @staticmethod
-    def moddir():
-        "return modules directory."
-        return os.path.join(os.path.dirname(os.path.dirname(__spec__.loader.path)), "modules")
-
-    @staticmethod
     def modname(obj):
         "return package name of an object."
         return obj.__module__.split(".")[-1]
-
-    @staticmethod
-    def pkgdir(obj):
-        "return directory in which a module is defined."
-        return os.path.dirname((inspect.getfile(obj)))
 
     @staticmethod
     def pkgname(obj):

@@ -9,11 +9,15 @@ import logging
 import os
 
 
-from ..library import Clients
+from nixt.library import Clients
 
 
 from .parsers import Parse
 from .utility import Utils
+
+
+j = os.path.join
+d = os.path.dirname
 
 
 class Cmd:
@@ -62,7 +66,7 @@ class Mods:
 
     @classmethod
     def configure(cls, name):
-        cls.dir(f"{name}.modules", cls.moddir())
+        cls.dir(f"{name}.modules", j(d(Utils.where(Mods)), "modules"))
         cls.table()
 
     @classmethod
@@ -163,6 +167,7 @@ class Mods:
         "read static tables."
         cls.statics()
         if not cls.names:
+            print(cls.names)
             cls.scanner()
         if cls.core:
             Md5.check(cls.core)

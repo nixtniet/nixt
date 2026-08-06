@@ -11,7 +11,7 @@ import time
 import _thread
 
 
-from ..library import Client, Clients, Task, Thread
+from nixt.library import Client, Clients, Task, Thread
 
 
 from .configs import Main

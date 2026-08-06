@@ -4,7 +4,7 @@
 "one config to rule them all"
 
 
-from ..objects import Default, Method
+from nixt.objects import Default, Method
 
 
 from .utility import Utils

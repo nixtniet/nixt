@@ -4,7 +4,7 @@
 "command parsing"
 
 
-from ..objects import Default, Method
+from nixt.objects import Default, Method
 
 
 class Parse:

@@ -7,7 +7,7 @@
 import threading
 
 
-from ..objects import Default
+from nixt.objects import Default
 
 
 class Message(Default):

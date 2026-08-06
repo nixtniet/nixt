@@ -10,8 +10,8 @@ import sys
 import time
 
 
-from ..library import Client
-from ..persist import Workdir
+from nixt.library import Client
+from nixt.persist import Workdir
 
 
 from .booting import Boot
