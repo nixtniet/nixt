@@ -90,7 +90,7 @@ class Json:
         return json.loads(s, *args, **kw)
 
 
-from .methods import Method 
+from .methods import Method
 
 
 def __dir__():

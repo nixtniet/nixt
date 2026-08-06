@@ -12,7 +12,7 @@ import unittest
 sys.path.insert(0, ".")
 
 
-from nixt.defines import Disk, Main, Method, Workdir
+from nixt import Disk, Main, Method, Workdir
 
 
 Workdir.wdr = '.test'

@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Object, Method
+from nixt import Object, Method
 
 
 class TestMethod(unittest.TestCase):

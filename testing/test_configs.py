@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Main
+from nixt import Main
 
 
 class TestConfig(unittest.TestCase):

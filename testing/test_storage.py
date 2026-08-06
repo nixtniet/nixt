@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Disk
+from nixt import Disk
 
 
 class TestStorage(unittest.TestCase):

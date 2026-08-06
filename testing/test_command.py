@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Engine, Message, Mods
+from nixt import Engine, Message, Mods
 
 
 def cmnd(event):

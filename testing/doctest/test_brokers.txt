@@ -4,7 +4,7 @@
 "brokers"
 
 """
->>> from nixt.defines import Broker, Object
+>>> from nixt import Broker, Object
 >>> b = Broker()
 >>> o = Object()
 >>> repr(o) # doctest: +ELLIPSIS

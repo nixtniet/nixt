@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Repeater
+from nixt import Repeater
 
 
 def hello(event):

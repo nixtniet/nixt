@@ -148,7 +148,7 @@ class Scripts:
         Main.sets.default = "irc,rss"
         Kernel.daemon()
         Kernel.privileges()
-        Kernel.pid()
+        Kernel.pid(Main.name)
         Kernel.boot(False)
         Kernel.init()
         Kernel.forever()
@@ -179,7 +179,7 @@ class Scripts:
         Main.sets.default = "irc,mdl,rss,wsd"
         Kernel.boot()
         Kernel.privileges()
-        Kernel.pid()
+        Kernel.pid(Main.name)
         Kernel.init()
         Kernel.forever()
 
