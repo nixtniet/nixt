@@ -8,7 +8,7 @@ import inspect
 import os
 
 
-from nixt import Json, Main, Mods, Md5
+from nixt.defines import Json, Main, Mods, Md5
 
 
 def srv(event):
@@ -49,10 +49,8 @@ def tbl(event):
             if cmd in ["srv", "tbl"]:
                 continue
             Mods.names[cmd.__name__] = cmd.__module__.split(".")[-1]
-    corepath = os.path.dirname(os.path.dirname(inspect.getsourcefile(Mods)))
-    for path in corelist:
-        pth = os.path.join(corepath, path)
-        createmd5(pth, core)
+    corepath = os.path.dirname(inspect.getsourcefile(Mods))
+    createmd5(corepath, core)
     event.reply("# This file is placed in the Public Domain.")
     event.reply("\n")
     event.reply('"static tables"')

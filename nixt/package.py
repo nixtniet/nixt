@@ -10,7 +10,7 @@ import os
 
 
 from .brokers import Clients
-from .parsers import Parse
+from .methods import Parse
 from .utility import Utils
 
 
@@ -64,7 +64,8 @@ class Mods:
 
     @classmethod
     def configure(cls, name):
-        cls.dir(f"{name}.modules", j(d(Utils.where(Mods)), "modules"))
+        cls.dir("modules", j(Utils.home(name), "mods"))
+        cls.dir("mods", "mods")
         cls.table()
 
     @classmethod

@@ -4,7 +4,7 @@
 "configuration"
 
 
-from nixt import Disk, Method, Mods, Object
+from nixt.defines import Disk, Method, Mods, Object
 
 
 def cfg(event):

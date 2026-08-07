@@ -4,7 +4,7 @@
 "show version"
 
 
-from nixt import Main, Md5
+from nixt.defines import Main, Md5
 
 
 def ver(event):

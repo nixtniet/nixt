@@ -21,9 +21,8 @@ class Kernel:
 
     @classmethod
     def configure(cls, name):
-        Parse.parse(Main, " ".join(sys.argv[1:]))
-        Workdir.configure(Main.name)
-        Mods.configure(Main.name)
+        Workdir.configure(name)
+        Mods.configure(name)
         Mods.add(Cmd.cmd)
 
 
@@ -45,13 +44,12 @@ class CLI(Client):
 
 def main():
     "cli script."
-    txt = " ".join(sys.argv[1:])
     Kernel.configure("nixt")
     cli = CLI()
     cli.silent = False
     evt = Message()
     evt.orig = repr(cli)
-    evt.text = txt
+    evt.text = " ".join(sys.argv[1:])
     Mods.command(evt)
 
 

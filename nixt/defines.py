@@ -9,11 +9,12 @@ from .brokers import Broker, Clients
 from .clients import Buffer, Buffered, Client, Output
 from .configs import Main
 from .engines import Engine, Message
+from .methods import Method, Parse
 from .objects import Default, Json, Object
 from .package import Cmd, Md5, Mods
-from .parsers import Parse
 from .persist import Disk, Locate, Workdir
 from .threads import Task, Thread
+from .utility import Time, Utils
 
 
 def __dir__():
@@ -31,11 +32,14 @@ def __dir__():
        'Main',
        'Md5',
        'Message',
+       'Method',
        'Mods',
        'Output',
        'Parse',
        'Task',
        'Thread',
+       'Time',
+       'Utils',
        'Workdir'
     )
 
