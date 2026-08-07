@@ -4,9 +4,7 @@
 "one config to rule them all"
 
 
-from nixt.objects import Default, Method
-
-
+from .objects import Default
 from .utility import Utils
 
 
@@ -18,14 +16,14 @@ class Config(type):
         return ""
 
     def __str__(cls):
-        return str(Method.skip(cls.__dict__))
+        return str(Utils.skip(cls.__dict__))
 
 
 class Main(metaclass=Config):
 
     gets = Default()
     level = "warning"
-    name = Utils.pkgname(Method)
+    name = Utils.pkgname(Default)
     sets = Default()
 
 
