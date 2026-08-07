@@ -19,8 +19,27 @@ from nixt.defines import Client, Cmd, Main, Message, Md5, Mods, Parse, Workdir
 
 class Kernel:
 
-    @staticmethod
-    def configure(name):
+    @classmethod
+    def admin(cls):
+        if "--admin" in sys.argv:
+            mod = Mods.get("adm")
+            Mods.scan(mod)
+            cls.cmd(Main.otxt)
+            return True
+        return False
+
+    @classmethod
+    def cmd(cls, txt):
+        cli = CLI()
+        cli.silent = False
+        evt = Message()
+        evt.orig = repr(cli)
+        evt.text = txt
+        Mods.command(evt)
+
+    @classmethod
+    def configure(cls, name):
+        Parse.parse(Main, " ".join(sys.argv[1:]))
         Workdir.configure(name)
         Mods.configure(name)
         Mods.add(Cmd.cmd)
@@ -45,12 +64,9 @@ class CLI(Client):
 def main():
     "cli script."
     Kernel.configure("nixt")
-    cli = CLI()
-    cli.silent = False
-    evt = Message()
-    evt.orig = repr(cli)
-    evt.text = " ".join(sys.argv[1:])
-    Mods.command(evt)
+    if Kernel.admin():
+         return
+    Kernel.cmd(Main.otxt)
 
 
 if __name__ == "__main__":
