@@ -15,8 +15,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt import Boot, Client, Main, Message, Method
-from nixt import Mods, Parse, Time, Workdir
+from nixt.defines import Client, Cmd, Main, Message, Method
+from nixt.defines import Mods, Parse, Time, Workdir
 
 
 Workdir.wdr = ".test"
@@ -29,24 +29,13 @@ class Vars:
     starttime = 0
 
 
-class Kernel(Boot):
+class Kernel:
 
     @classmethod
-    def wrap(cls, func, *args, dofinal=None):
-        "restore console."
-        import termios
-        try:
-            old = termios.tcgetattr(sys.stdin.fileno())
-        except termios.error:
-            old = False
-        try:
-            cls.wrapped(func, *args)
-        except (KeyboardInterrupt, EOFError):
-            pass
-        if old:
-            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
-        if dofinal:
-            dofinal()
+    def configure(cls, name):
+        Workdir.configure(name)
+        Mods.configure(name)
+        Mods.add(Cmd.cmd)
 
 
 class CLI(Client):
@@ -126,10 +115,7 @@ def final():
 
 
 def main():
-    Parse.parse(Main, " ".join(sys.argv[1:]))
-    Workdir.configure(Main.name)
-    Mods.configure(Main.name)
-    Kernel.configure()
+    Kernel.configure("nixt")
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
     if "t" in Main.opts:
@@ -145,7 +131,6 @@ def main():
         payload(examples)
     for _x in range(nrs):
         payload(post)
-    Kernel.shutdown()
 
 
 examples = {
@@ -211,4 +196,4 @@ post = {
 
 
 if __name__ == "__main__":
-    Kernel.wrap(main, dofinal=final)
+    main()
