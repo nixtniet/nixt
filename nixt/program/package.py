@@ -9,7 +9,7 @@ import logging
 import os
 
 
-from nixt.library import Clients
+from nixt.runtime import Clients
 
 
 from .parsers import Parse

@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.runtime.statics import CORE
+from nixt.program.statics import CORE
 
 
 class TestStatic(unittest.TestCase):

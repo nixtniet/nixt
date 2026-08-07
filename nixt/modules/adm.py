@@ -24,7 +24,7 @@ def srv(event):
                           ))
 
 
-corelist = ["library",  "objects",  "persist", "runtime"]
+corelist = ["objects",  "persist", "program", "runtime"]
 
 
 def createmd5(path, data):
