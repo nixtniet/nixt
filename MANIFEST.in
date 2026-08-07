@@ -1,3 +1,0 @@
-include bin/nixt
-include bin/clean
-recursive-include mods *.py

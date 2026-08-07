@@ -10,15 +10,7 @@ import sys
 import time
 
 
-from nixt.library import Client
-from nixt.persist import Workdir
-
-
-from .booting import Boot
-from .configs import Main
-from .message import Message
-from .package import Cmd, Md5, Mods
-from .parsers import Parse
+from nixt import Boot, Client, Cmd, Main, Message, Md5, Mods, Parse, Workdir
 
 
 class Kernel(Boot):
@@ -53,8 +45,8 @@ class Kernel(Boot):
         Workdir.configure(Main.name)
         if banner:
             cls.banner()
-        cls.configure()
         Mods.configure(Main.name)
+        cls.configure()
         Mods.add(Cmd.cmd)
 
     @classmethod
@@ -194,3 +186,7 @@ def main():
         Kernel.wrap(Scripts.background)
     else:
         Kernel.wrap(Scripts.control)
+
+
+if __name__ == "__main__":
+    main()

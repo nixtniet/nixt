@@ -16,7 +16,6 @@ CORE = {
     "methods": "05468c908e330ae813f5e88cecde757b",
     "package": "c8e190720ac3742ba2b6d0d066127a79",
     "parsers": "fab125bb07a285d404f7c696d9f4c4bb",
-    "program": "7b7d857c4d621db3a3e1674d5ffef791",
     "repeats": "eaec4feccb68aea97288b5729d710454",
     "storage": "9042593fe2908f9d9101486809cc8ad1",
     "threads": "2fcb5ceb0fa336dd7208297fc23e17b0",
@@ -28,7 +27,6 @@ CORE = {
 
 MODULES = {
     "cfg": "432ea1aca5ae761d745182af23d36d8c",
-    "eml": "8defa9fc8e4f32f8ff5a76448f4862c4",
     "fie": "6898ddafc1bbc73e67e5dcb17f54ad6a",
     "flt": "4aab0885c61d4ca0c83f5065c97b044a",
     "fnd": "c057a5c82724f610fe88fa85272bf3d8",
@@ -37,15 +35,12 @@ MODULES = {
     "log": "1217db110d0ef089859ddee2681b2676",
     "man": "920599410f7739c9503e0eea9e4e5885",
     "rss": "3ea5fffbcb42259c561e70f68bc90fd0",
-    "rst": "474389fab0ef39e0204a6ecec6081b4d",
     "sil": "7b89accb7dd5c7fff66b86e2b3dd6819",
     "tdo": "8740af17d180569230c29e5dd1bc458d",
     "thr": "b4e7435a8b7047b3b1732f50dea8680e",
     "tmr": "b1b90c43976da6e64852fbd066c73bfe",
-    "udp": "ac5df6e8e34ba524e4c8c5f324702291",
     "upt": "944aa125a5323e4242a57a2623aa1ce2",
-    "ver": "f8d18bda672da931b055ff3a495cfcd4",
-    "web": "6e5e62c5fee1bb3d014faabf1792ed31"
+    "ver": "f8d18bda672da931b055ff3a495cfcd4"
 }
 
 
@@ -54,7 +49,6 @@ NAMES = {
     "cfg": "cfg",
     "dne": "tdo",
     "dpl": "rss",
-    "eml": "eml",
     "err": "rss",
     "exp": "rss",
     "fie": "fie",
@@ -65,7 +59,6 @@ NAMES = {
     "log": "log",
     "lou": "sil",
     "man": "man",
-    "mbx": "eml",
     "nme": "rss",
     "pwd": "irc",
     "rem": "rss",
@@ -76,7 +69,6 @@ NAMES = {
     "tdo": "tdo",
     "thr": "thr",
     "tmr": "tmr",
-    "udp": "udp",
     "upt": "upt",
     "ver": "ver"
 }
