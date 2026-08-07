@@ -16,11 +16,15 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from nixt import Object, Main, Thread, Utils
 
 
+d = os.path.dirname
+e = os.path.exists
+j = os.path.join
+
+
 def init():
     "initialize web server."
-    path = os.path.dirname(Utils.where(Object))
-    print(path)
-    if not os.path.exists(os.path.join(path, "numbers", 'index.html')):
+    path = d(Utils.where(Object))
+    if not e(j(path, "payload", 'index.html')):
         logging.warning("no index.html")
         return
     try:
@@ -79,7 +83,7 @@ class HTTPHandler(BaseHTTPRequestHandler):
     def setup(self):
         "setup handler."
         BaseHTTPRequestHandler.setup(self)
-        self._path = os.path.join(os.path.dirname(Utils.pkgdir(Main)), "numbers")
+        self._path = j(d(Utils.where(Main)), "payload")
         self._size = 0
         self._ip = self.client_address[0]
 
