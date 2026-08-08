@@ -63,7 +63,7 @@ def main():
     "cli script."
     Kernel.configure("nixt")
     if Kernel.admin():
-         return
+        return
     Kernel.cmd(Main.otxt)
 
 

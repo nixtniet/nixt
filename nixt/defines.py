@@ -10,16 +10,16 @@ from .clients import Buffer, Buffered, Client, Output
 from .configs import Main
 from .encoder import Json
 from .engines import Engine
-from .locater import Locate
+from .md5sums import Md5
 from .message import Message
 from .methods import Method
 from .objects import Default, Object
 from .package import Cmd, Mods
 from .parsers import Parse
-from .persist import Disk
+from .persist import Disk, Locate, Workdir
+from .repeats import Repeater
 from .threads import Task, Thread
-from .utility import Md5, Time, Utils
-from .workdir import Workdir
+from .utility import Logging, Time, Utils
 
 
 def __dir__():
@@ -34,6 +34,7 @@ def __dir__():
        'Engine',
        'Json',
        'Locate',
+       'Logging',
        'Main',
        'Md5',
        'Message',
@@ -41,6 +42,7 @@ def __dir__():
        'Mods',
        'Output',
        'Parse',
+       'Repeater',
        'Task',
        'Thread',
        'Time',

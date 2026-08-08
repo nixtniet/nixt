@@ -4,8 +4,6 @@
 "a clean namespace"
 
 
-
-
 from .objects import Default
 
 
@@ -70,7 +68,6 @@ class Parse:
             obj.text = obj.text + " " + obj.rest
         else:
             obj.text = obj.mod + " " + obj.cmd
-
 
     @classmethod
     def typed(cls, obj, key, val):

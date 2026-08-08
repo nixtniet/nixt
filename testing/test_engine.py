@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt import Message, Engine
+from nixt.defines import Message, Engine
 
 
 buffer = []

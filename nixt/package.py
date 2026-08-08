@@ -10,8 +10,9 @@ import os
 
 
 from .brokers import Clients
+from .md5sums import Md5
 from .parsers import Parse
-from .utility import Md5, Utils
+from .utility import Utils
 
 
 j = os.path.join

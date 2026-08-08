@@ -7,6 +7,9 @@
 import types
 
 
+from .objects import Object
+
+
 class Method:
 
     @classmethod
@@ -178,7 +181,7 @@ class Method:
     @classmethod
     def skip(cls, obj, chars="_"):
         "skip class keys containing chars."
-        res = {}
+        res = Object()
         for key, value in cls.items(obj):
             if isinstance(value, types.MethodType):
                 continue
@@ -188,7 +191,7 @@ class Method:
                     donext = True
             if donext:
                 continue
-            res[key] = value
+            setattr(res, key, value)
         return res
 
     @classmethod
