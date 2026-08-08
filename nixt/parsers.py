@@ -4,7 +4,6 @@
 "a clean namespace"
 
 
-import types
 
 
 from .objects import Default
@@ -12,8 +11,8 @@ from .objects import Default
 
 class Parse:
 
-    @staticmethod
-    def parse(obj, text, clean=False):
+    @classmethod
+    def parse(cls, obj, text, clean=False):
         "parse text for command and arguments."
         data = {
             "args": [],

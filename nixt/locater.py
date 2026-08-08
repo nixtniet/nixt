@@ -4,7 +4,15 @@
 "find objects in store"
 
 
+import os
 import threading
+import time
+
+
+from .methods import Method
+from .objects import Default
+from .persist import Cache, Disk
+from .workdir import Workdir
 
 
 class Locate:

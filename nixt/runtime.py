@@ -6,15 +6,13 @@
 
 
 import os
-import readline
 import sys
-import time
 
 
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Client, Cmd, Main, Message, Md5, Mods, Parse, Workdir
+from nixt.defines import Client, Cmd, Main, Message, Mods, Parse, Workdir
 
 
 class Kernel:

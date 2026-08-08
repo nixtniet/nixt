@@ -20,7 +20,6 @@ from nixt.defines import Mods, Parse, Time, Workdir
 
 
 Workdir.wdr = ".test"
-#
 
 
 class Vars:
