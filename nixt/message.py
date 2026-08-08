@@ -7,10 +7,10 @@
 import threading
 
 
-from .objects import Default
+from .objects import Data
 
 
-class Message(Default):
+class Message(Data):
 
     def __init__(self):
         super().__init__()

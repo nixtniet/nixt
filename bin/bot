@@ -6,17 +6,19 @@
 
 
 import argparse
+import logging
 import os
 import readline
 import sys
 import time
+import _thread
 
 
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Client, Cmd, Commands, Engine, Kernel, Main, Message
-from nixt.defines import Md5, Mods, Method, Utils, Workdir
+from nixt.defines import Client, Cmd, Engine, Logging, Main, Message, Md5, Mods
+from nixt.defines import Method, Thread, Utils, Workdir
 
 
 class Arguments:
@@ -33,20 +35,20 @@ class Arguments:
             usage='''%(prog)s [-c|-d|-h|-s] [-a] [-v] [-w] [-l level] [-m m1,m2] [-p path]\n       %(prog)s [cmd] [key=val] [key==val]'''
         )
         group = theparser.add_mutually_exclusive_group()
-        group.add_argument("-c", "--console", action="store_true", help="run as console.")
-        group.add_argument("-d", "--daemon", action="store_true", help="run as background daemon.")
-        group.add_argument("-s", "--service", action="store_true", help="run as service.")
+        group.add_argument("--console", action="store_true", help="run as console.")
+        group.add_argument("--daemon", action="store_true", help="run as background daemon.")
+        group.add_argument("--service", action="store_true", help="run as service.")
         parser = theparser.add_argument_group()
-        parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
-        parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
-        parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
+        parser.add_argument("--all", action="store_true", help="load all modules.")
+        parser.add_argument("--verbose", action='store_true', help='enable verbose.')
+        parser.add_argument("--wait", action='store_true', help='wait for services to start.')
         optionparser = theparser.add_argument_group()
-        optionparser.add_argument("-l", "--level", default="warning", help='set loglevel.', metavar="level")
-        optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
-        optionparser.add_argument("-p", "--path", default="", help='path to working directory.', metavar="path")
+        optionparser.add_argument("--level", default="warning", help='set loglevel.', metavar="level")
+        optionparser.add_argument("--mods", default="", help='modules to load.', metavar="m1,m2")
+        optionparser.add_argument("--path", default="", help='path to working directory.', metavar="path")
         optparser = theparser.add_argument_group()
         optparser.add_argument("--default", default="irc,mdl,rss,wsd", help=argparse.SUPPRESS)
-        optparser.add_argument("--moddir", default=Utils.moddir(), help="set modules directory.")
+        optparser.add_argument("--moddir", default=Workdir.moddir(), help="set modules directory.")
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
         optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
         args, arguments = theparser.parse_known_args()
@@ -54,12 +56,172 @@ class Arguments:
         Method.update(Main.sets, args)
 
 
+class Kernel:
+
+    @classmethod
+    def admin(cls):
+        if Main.sets.admin:
+            mod = Mods.get("adm")
+            Mods.scan(mod)
+            cls.cmd(Main.otxt)
+            return True
+        return False
+
+    @classmethod
+    def banner(cls):
+        "hello."
+        tmr = time.ctime(time.time()).replace("  ", " ")
+        txt = "%s since %s %s (%s)" % (
+            Main.name.upper(),
+            tmr,
+            Main.sets.level.upper() or "WARNING",
+            Md5.core()
+        )
+        print(txt.replace("  ", " "))
+        sys.stdout.flush()
+
+    @classmethod
+    def boot(cls, name, banner=True):
+        "starting."
+        Logging.size(len(name))
+        Logging.level(Main.sets.level or "warning")
+        Workdir.configure(name)
+        if Main.sets.verbose:
+            cls.banner()
+        Mods.configure(name)
+        if Main.sets.path:
+            Mods.dir("modz", Main.sets.path)
+        Mods.add(Cmd.cmd)
+
+    @classmethod
+    def cmd(cls, txt):
+        cli = CLI()
+        cli.silent = False
+        evt = Message()
+        evt.orig = repr(cli)
+        evt.text = txt
+        Mods.command(evt)
+
+    @classmethod
+    def daemon(cls):
+        "run in the background."
+        pid = os.fork()
+        if pid != 0:
+            os._exit(0)
+        os.setsid()
+        pid2 = os.fork()
+        if pid2 != 0:
+            os._exit(0)
+        if Main.sets.verhose:
+            cls.null(sys.stdin)
+            cls.null(sys.stdout)
+            cls.null(sys.stderr)
+        os.umask(0)
+        if Main.sets.nochdir:
+            os.chdir("/")
+        os.nice(10)
+
+    @classmethod
+    def forever(cls):
+        "run forever until ctrl-c."
+        while True:
+            try:
+                time.sleep(0.1)
+            except (KeyboardInterrupt, EOFError):
+                break
+
+    @classmethod
+    def init(cls, blank=False):
+        "call init of modules that have an init function."
+        thrs = []
+        if not Main.sets.mods and blank:
+            names = ""
+        else:
+            names = Main.sets.mods or Main.sets.default
+        for name in Utils.spl(names):
+            mod = Mods.get(name)
+            if not mod or "init" not in dir(mod):
+                continue
+            thrs.append(Thread.launch(mod.init))
+        if thrs and Main.sets.wait:
+            for thr in thrs:
+                try:
+                    thr.join()
+                except (KeyboardInterrupt, EOFError):
+                    return False
+        return True
+
+    @classmethod
+    def null(cls, io):
+        "route to dev/null."
+        with open('/dev/null', 'r', encoding="utf-8") as sis:
+            os.dup2(sis.fileno(), io.fileno())
+
+    @classmethod
+    def privileges(cls):
+        "drop privileges."
+        import getpass
+        import pwd
+        pwnam2 = pwd.getpwnam(getpass.getuser())
+        os.setgid(pwnam2.pw_gid)
+        os.setuid(pwnam2.pw_uid)
+
+    @classmethod
+    def shutdown(cls):
+        "call stop on clients."
+        Clients.shutdown()
+        while True:
+            if len(threading.enumerate()) == 1:
+                break
+            time.sleep(0.1)
+
+    @classmethod
+    def pid(cls, name):
+        "return path to pid file."
+        if not cls.wdr:
+            return
+        filename = os.path.join(cls.wdr, f"{name}.pid")
+        if os.path.exists(filename):
+            os.unlink(filename)
+        path2 = pathlib.Path(filename)
+        path2.parent.mkdir(parents=True, exist_ok=True)
+        with open(filename, "w", encoding="utf-8") as fds:
+            fds.write(str(os.getpid()))
+
+    @classmethod
+    def wrap(cls, func, *args, dofinal=None):
+        "restore console."
+        import termios
+        try:
+            old = termios.tcgetattr(sys.stdin.fileno())
+        except termios.error:
+            old = False
+        cls.wrapped(func, *args)
+        if old:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+        if dofinal:
+            dofinal()
+
+    @classmethod
+    def wrapped(cls, func, *args):
+        "wrap function in a try/except, silence ctrl-c/ctrl-d."
+        try:
+            func(*args)
+        except (KeyboardInterrupt, EOFError):
+            Client.block.set()
+            Task.block.set()
+            _thread.interrupt_main()
+        except Exception as ex:
+            logging.exception(ex)
+            _thread.interrupt_main()
+
+
 class CLI(Client, Engine):
 
     def __init__(self):
         Client.__init__(self)
         Engine.__init__(self)
-        self.register("command", Commands.command)
+        self.register("command", Mods.command)
 
     def after(self, event):
         "wait for event to finish"
@@ -107,8 +269,6 @@ class Scripts:
     def console():
         "console script."
         readline.redisplay()
-        if Main.sets.verbose:
-            Scripts.banner()
         if Main.sets.all:
             Main.sets.mods = ",".join(Mods.list())
         Kernel.init(True)
@@ -119,14 +279,14 @@ class Scripts:
     @staticmethod
     def control():
         "cli script."
-        if Main.sets.admin:
-            Commands.add(Cmd.srv, Cmd.tbl)
+        if Kernel.admin():
+            return
         cli = CLI()
         cli.silent = False
         evt = Message()
         evt.orig = repr(cli)
         evt.text = Main.otxt
-        Commands.command(evt)
+        Mods.command(evt)
 
     @staticmethod
     def service():
@@ -141,7 +301,7 @@ class Scripts:
 def main():
     "main"
     Arguments.getargs()
-    Kernel.configure()
+    Kernel.boot(Main.name)
     if Main.sets.daemon:
         Kernel.wrap(Scripts.background)
     elif Main.sets.console:

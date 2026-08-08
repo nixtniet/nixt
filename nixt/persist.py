@@ -15,7 +15,7 @@ import time
 
 from .encoder import Json
 from .methods import Method
-from .objects import Default
+from .objects import Data
 
 
 class Cache:
@@ -117,7 +117,7 @@ class Locate:
             for pth in cls.fns(Workdir.long(kind)):
                 obj = Cache.get(pth)
                 if obj is None:
-                    obj = Default()
+                    obj = Data()
                     Disk.read(obj, pth)
                     Cache.add(pth, obj)
                 if not removed and Method.deleted(obj):

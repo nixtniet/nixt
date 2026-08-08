@@ -4,7 +4,7 @@
 "a clean namespace"
 
 
-from .objects import Default
+from .objects import Data
 
 
 class Parse:
@@ -15,15 +15,15 @@ class Parse:
         data = {
             "args": [],
             "cmd": "",
-            "gets": Default(),
+            "gets": Data(),
             "index": None,
             "init": "",
             "mod": "",
             "opts": "",
             "otxt": text,
             "rest": "",
-            "silent": Default(),
-            "sets": Default(),
+            "silent": Data(),
+            "sets": Data(),
             "text": text
         }
         for k, v in data.items():
