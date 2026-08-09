@@ -14,7 +14,7 @@ from .engines import Engine
 from .message import Message
 from .methods import Method
 from .objects import Data, Object
-from .package import Cmd, Mods
+from .package import Cmd, Commands, Mods
 from .parsers import Parse
 from .persist import Disk, Locate, Workdir
 from .repeats import Repeater
@@ -31,6 +31,7 @@ def __dir__():
        'Client',
        'Clients',
        'Cmd',
+       'Commands',
        'Data',
        'Disk',
        'Engine',

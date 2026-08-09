@@ -38,6 +38,6 @@ class Data(Object):
 
 def __dir__():
     return (
-        'Default',
+        'Data',
         'Object'
     )

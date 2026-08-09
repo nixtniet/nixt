@@ -17,8 +17,9 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Client, Cmd, Data, Engine, Logging, Main, Message
-from nixt.defines import Md5, Mods, Method, Thread, Utils, Workdir
+from nixt.defines import Boot, Client, Cmd, Commands, Data, Engine, Logging
+from nixt.defines import Main, Md5, Message, Mods, Method, Thread, Utils
+from nixt.defines import Workdir
 
 
 class Arguments:
@@ -34,17 +35,17 @@ class Arguments:
             formatter_class=argparse.RawDescriptionHelpFormatter,
         )
         group = theparser.add_mutually_exclusive_group()
-        group.add_argument("--console", action="store_true", help="run as console.")
-        group.add_argument("--daemon", action="store_true", help="run as background daemon.")
-        group.add_argument("--service", action="store_true", help="run as service.")
+        group.add_argument("-c", "--console", action="store_true", help="run as console.")
+        group.add_argument("-d", "--daemon", action="store_true", help="run as background daemon.")
+        group.add_argument("-s", "--service", action="store_true", help="run as service.")
         parser = theparser.add_argument_group()
-        parser.add_argument("--all", action="store_true", help="load all modules.")
-        parser.add_argument("--verbose", action='store_true', help='enable verbose.')
-        parser.add_argument("--wait", action='store_true', help='wait for services to start.')
+        parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
+        parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
+        parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
         optionparser = theparser.add_argument_group()
-        optionparser.add_argument("--level", default="warning", help='set loglevel.', metavar="level")
-        optionparser.add_argument("--mods", default="", help='modules to load.', metavar="m1,m2")
-        optionparser.add_argument("--path", default="", help='path to working directory.', metavar="path")
+        optionparser.add_argument("-l", "--level", default="warning", help='set loglevel.', metavar="level")
+        optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
+        optionparser.add_argument("-p", "--path", default="", help='path to working directory.', metavar="path")
         optparser = theparser.add_argument_group()
         optparser.add_argument("--default", default="irc,mdl,rss,wsd", help=argparse.SUPPRESS)
         optparser.add_argument("--moddir", default=Workdir.moddir(), help="set modules directory.")
@@ -58,17 +59,21 @@ class Arguments:
         Method.update(Main.sets, args)
 
 
-class Kernel:
+class Kernel(Boot):
+
+    pid = Workdir.pid
 
     @classmethod
     def admin(cls):
         if Main.sets.admin:
             mod = Mods.get("adm")
-            Mods.scan(mod)
+            Commands.scan(mod)
 
     @classmethod
-    def banner(cls):
+    def banner(cls, force=False):
         "hello."
+        if not force and not Main.sets.verbose:
+            return
         tmr = time.ctime(time.time()).replace("  ", " ")
         txt = "%s since %s %s (%s)" % (
             Main.name.upper(),
@@ -80,17 +85,13 @@ class Kernel:
         sys.stdout.flush()
 
     @classmethod
-    def boot(cls, name, banner=True):
+    def boot(cls):
         "starting."
-        Logging.size(len(name))
-        Logging.level(Main.sets.level or "warning")
-        Workdir.configure(name)
-        if Main.sets.verbose:
-            cls.banner()
-        Mods.configure(name)
+        Arguments.getargs()
+        cls.configure(Main.name, Main.sets.level)
         if Main.sets.path:
             Mods.dir("modz", Main.sets.path)
-        Mods.add(Cmd.cmd)
+        Commands.add(Cmd.cmd)
 
     @classmethod
     def cmd(cls, txt):
@@ -99,7 +100,7 @@ class Kernel:
         evt = Message()
         evt.orig = repr(cli)
         evt.text = txt
-        Mods.command(evt)
+        Commands.command(evt)
 
     @classmethod
     def daemon(cls):
@@ -121,53 +122,10 @@ class Kernel:
         os.nice(10)
 
     @classmethod
-    def forever(cls):
-        "run forever until ctrl-c."
-        while True:
-            try:
-                time.sleep(0.1)
-            except (KeyboardInterrupt, EOFError):
-                break
-
-    @classmethod
-    def init(cls, blank=False):
-        "call init of modules that have an init function."
-        thrs = []
-        if not Main.sets.mods and blank:
-            names = ""
-        else:
-            names = Main.sets.mods or Main.sets.default
-        for name in Utils.spl(names):
-            mod = Mods.get(name)
-            if not mod or "init" not in dir(mod):
-                continue
-            thrs.append(Thread.launch(mod.init))
-        if thrs and Main.sets.wait:
-            for thr in thrs:
-                try:
-                    thr.join()
-                except (KeyboardInterrupt, EOFError):
-                    return False
-        return True
-
-    @classmethod
     def null(cls, io):
         "route to dev/null."
         with open('/dev/null', 'r', encoding="utf-8") as sis:
             os.dup2(sis.fileno(), io.fileno())
-
-    @classmethod
-    def pid(cls, name):
-        "return path to pid file."
-        if not cls.wdr:
-            return
-        filename = os.path.join(cls.wdr, f"{name}.pid")
-        if os.path.exists(filename):
-            os.unlink(filename)
-        path2 = pathlib.Path(filename)
-        path2.parent.mkdir(parents=True, exist_ok=True)
-        with open(filename, "w", encoding="utf-8") as fds:
-            fds.write(str(os.getpid()))
 
     @classmethod
     def privileges(cls):
@@ -177,15 +135,6 @@ class Kernel:
         pwnam2 = pwd.getpwnam(getpass.getuser())
         os.setgid(pwnam2.pw_gid)
         os.setuid(pwnam2.pw_uid)
-
-    @classmethod
-    def shutdown(cls):
-        "call stop on clients."
-        Clients.shutdown()
-        while True:
-            if len(threading.enumerate()) == 1:
-                break
-            time.sleep(0.1)
 
     @classmethod
     def wrap(cls, func, *args, dofinal=None):
@@ -201,26 +150,13 @@ class Kernel:
         if dofinal:
             dofinal()
 
-    @classmethod
-    def wrapped(cls, func, *args):
-        "wrap function in a try/except, silence ctrl-c/ctrl-d."
-        try:
-            func(*args)
-        except (KeyboardInterrupt, EOFError):
-            Client.block.set()
-            Task.block.set()
-            _thread.interrupt_main()
-        except Exception as ex:
-            logging.exception(ex)
-            _thread.interrupt_main()
-
 
 class CLI(Client, Engine):
 
     def __init__(self):
         Client.__init__(self)
         Engine.__init__(self)
-        self.register("command", Mods.command)
+        self.register("command", Commands.command)
 
     def after(self, event):
         "wait for event to finish"
@@ -265,7 +201,7 @@ class Scripts:
         readline.redisplay()
         if Main.sets.all:
             Main.sets.mods = ",".join(Mods.list())
-        Kernel.init(True)
+        Kernel.init(Main.sets.mods, Main.sets.wait)
         csl = Console()
         csl.start()
         Kernel.forever()
@@ -281,15 +217,15 @@ class Scripts:
         "service script."
         Kernel.privileges()
         Kernel.pid()
-        Kernel.banner()
+        if not Main.sets.verbose:
+            Kernel.banner(True)
         Kernel.init()
         Kernel.forever()
 
 
 def main():
     "main"
-    Arguments.getargs()
-    Kernel.boot(Main.name)
+    Kernel.boot()
     if Main.sets.daemon:
         Kernel.wrap(Scripts.background)
     elif Main.sets.console:

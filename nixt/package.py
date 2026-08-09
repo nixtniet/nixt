@@ -23,18 +23,12 @@ class Cmd:
     @staticmethod
     def cmd(event):
         "list available commands."
-        event.reply(",".join(sorted(Mods.names or Mods.cmds)))
+        event.reply(",".join(sorted(Mods.names or Commands.cmds)))
 
 
-class Mods:
+class Commands:
 
     cmds = {}
-
-    core = {}
-    dirs = {}
-    md5s = {}
-    mods = {}
-    names = {}
 
     @classmethod
     def add(cls, *funcs):
@@ -48,7 +42,7 @@ class Mods:
         Parse.parse(evt, evt.text)
         func = cls.cmds.get(evt.cmd, None)
         if not func:
-            modname = cls.names.get(evt.cmd, None)
+            modname = Mods.names.get(evt.cmd, None)
             if not modname:
                 return evt.ready()
             mod = Mods.get(modname)
@@ -61,6 +55,25 @@ class Mods:
             func(evt)
             Clients.display(evt)
         evt.ready()
+
+    @classmethod
+    def scan(cls, mod):
+        "scan module for commands."
+        result = []
+        for nme, func in inspect.getmembers(mod, inspect.isfunction):
+            if 'event' in inspect.signature(func).parameters:
+                cls.add(func)
+                result.append(func)
+        return result
+
+
+class Mods:
+
+    core = {}
+    dirs = {}
+    md5s = {}
+    mods = {}
+    names = {}
 
     @classmethod
     def configure(cls, name):
@@ -127,20 +140,10 @@ class Mods:
         return sorted(set(mods))
 
     @classmethod
-    def scan(cls, mod):
-        "scan module for commands."
-        result = []
-        for nme, func in inspect.getmembers(mod, inspect.isfunction):
-            if 'event' in inspect.signature(func).parameters:
-                cls.add(func)
-                result.append(func)
-        return result
-
-    @classmethod
     def scanner(cls):
         "scan all modules."
         for name in cls.list():
-            cls.scan(cls.get(name))
+            Commands.scan(cls.get(name))
 
     @classmethod
     def statics(cls):
@@ -174,5 +177,6 @@ class Mods:
 def __dir__():
     return (
         'Cmd',
+        'Commands',
         'Mods'
     )

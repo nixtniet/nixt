@@ -47,5 +47,5 @@ class Message(Data):
 
 def __dir__():
     return (
-        'Message'
+        'Message',
     )

@@ -59,3 +59,9 @@ class Json:
     def loads(s, *args, **kw):
         "load object from string."
         return json.loads(s, *args, **kw)
+
+
+def __dir__():
+    return (
+        'Json',
+    )

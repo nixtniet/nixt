@@ -201,15 +201,6 @@ class Workdir:
         cls.skel()
 
     @classmethod
-    def cdir(cls, path):
-        "create directory."
-        if os.path.exists(path):
-            return
-        pth = pathlib.Path(path)
-        if not os.path.exists(pth.parent):
-            pth.parent.mkdir(parents=True, exist_ok=True)
-
-    @classmethod
     def home(cls, name):
         "return home working directory."
         return os.path.expanduser(f"~/.{name}")
@@ -243,12 +234,25 @@ class Workdir:
         return os.path.join(cls.wdr, "mods")
 
     @classmethod
+    def pid(cls, name):
+        "return path to pid file."
+        if not cls.wdr:
+            return
+        filename = os.path.join(cls.wdr, f"{name}.pid")
+        if os.path.exists(filename):
+            os.unlink(filename)
+        path2 = pathlib.Path(filename)
+        path2.parent.mkdir(parents=True, exist_ok=True)
+        with open(filename, "w", encoding="utf-8") as fds:
+            fds.write(str(os.getpid()))
+
+    @classmethod
     def skel(cls):
         "create directories."
         if not cls.wdr:
             return
         if not os.path.exists(cls.wdr):
-            cls.cdir(cls.wdr)
+            Disk.cdir(cls.wdr)
         path = os.path.abspath(cls.wdr)
         for wpth in ["config", "mods", "store"]:
             pth = pathlib.Path(os.path.join(path, wpth))
