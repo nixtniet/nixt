@@ -7,10 +7,7 @@
 import sys
 
 
-from nixt.defines import Boot, Client, Main, Message, Mods, Parse
-
-
-TXT = " ".join(sys.argv[1:])
+from nixt.defines import Boot, Client, Main, Message, Mods
 
 
 class CLI(Client):
@@ -18,6 +15,17 @@ class CLI(Client):
     def __init__(self):
         Client.__init__(self)
         self.register("command", Mods.command)
+
+    def admin(self):
+        if "--admin" in sys.argv:
+            mod = Mods.get("adm")
+            Mods.scan(mod)
+
+    def cmd(self, txt):
+        evt = Message()
+        evt.orig = repr(self)
+        evt.text = txt
+        Mods.command(evt)
 
     def raw(self, text):
         "write to console."
@@ -27,15 +35,11 @@ class CLI(Client):
 
 def main():
     "cli script."
-    Boot.boot("nixt", TXT)
-    if "--admin" in sys.argv:
-        mod = Mods.get("adm")
-        Mods.scan(mod)
+    txt = " ".join(sys.argv[1:])
+    Boot.boot("nixt", txt)
     cli = CLI()
-    evt = Message()
-    evt.orig = repr(cli)
-    evt.text = Main.otxt
-    Mods.command(evt)
+    cli.admin()
+    cli.cmd(txt)
 
 
 if __name__ == "__main__":

@@ -11,7 +11,6 @@ import os
 
 from .brokers import Clients
 from .parsers import Parse
-from .persist import Workdir
 from .utility import Md5, Utils
 
 
