@@ -8,15 +8,18 @@ from .configs import Main
 from .package import Cmd, Mods
 from .parsers import Parse
 from .persist import Workdir
+from .utility import logging
 
 
 class Boot:
 
     @classmethod
-    def boot(cls, name, args):
+    def boot(cls, name, level=None):
         Main.name = name
-        Parse.parse(Main, " ".join(args))
         Workdir.configure(name)
+        if level is not None:
+            Logging.size(len(name))
+            Logging.level(level)
         Mods.configure(name)
         Mods.add(Cmd.cmd)
 

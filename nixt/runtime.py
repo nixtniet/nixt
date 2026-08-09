@@ -35,12 +35,10 @@ class CLI(Client):
 
 def main():
     "cli script."
-    txt = " ".join(sys.argv[1:])
-    Boot.boot("nixt", txt)
+    Boot.boot("nixt")
     cli = CLI()
     cli.admin()
-    cli.cmd(txt)
-
+    cli.cmd(" ".join(sys.argv[1:]))
 
 if __name__ == "__main__":
     main()
