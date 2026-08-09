@@ -62,9 +62,6 @@ class Kernel:
         if Main.sets.admin:
             mod = Mods.get("adm")
             Mods.scan(mod)
-            cls.cmd(Main.otxt)
-            return True
-        return False
 
     @classmethod
     def banner(cls):
@@ -187,7 +184,6 @@ class Kernel:
                 break
             time.sleep(0.1)
 
-
     @classmethod
     def wrap(cls, func, *args, dofinal=None):
         "restore console."
@@ -252,11 +248,6 @@ class Console(CLI):
 class Scripts:
 
     @staticmethod
-    def banner():
-        print(Kernel.banner())
-        sys.stdout.flush()
-
-    @staticmethod
     def background():
         "background script."
         Kernel.daemon()
@@ -279,21 +270,15 @@ class Scripts:
     @staticmethod
     def control():
         "cli script."
-        if Kernel.admin():
-            return
-        cli = CLI()
-        cli.silent = False
-        evt = Message()
-        evt.orig = repr(cli)
-        evt.text = Main.otxt
-        Mods.command(evt)
+        Kernel.admin()
+        Kernel.cmd(Main.otxt)
 
     @staticmethod
     def service():
         "service script."
         Kernel.privileges()
         Kernel.pid()
-        Scripts.banner()
+        Kernel.banner()
         Kernel.init()
         Kernel.forever()
 

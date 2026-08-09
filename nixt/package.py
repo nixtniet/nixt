@@ -11,6 +11,7 @@ import os
 
 from .brokers import Clients
 from .parsers import Parse
+from .persist import Workdir
 from .utility import Md5, Utils
 
 
@@ -63,10 +64,15 @@ class Mods:
         evt.ready()
 
     @classmethod
-    def configure(cls, name):
+    def configure(cls, name, admin=False):
+        Workdir.configure(name)
         cls.dir("modules", j(Utils.home(name), "mods"))
         cls.dir("mods", "mods")
         cls.table()
+        cls.add(Cmd.cmd)
+        if admin:
+            mod = cls.get("adm")
+            cls.scan(mod)
 
     @classmethod
     def dir(cls, pkgname, path):
