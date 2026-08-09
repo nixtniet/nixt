@@ -7,7 +7,10 @@
 import sys
 
 
-from nixt.defines import Client, Cmd, Main, Message, Mods, Parse, Workdir
+from nixt.defines import Boot, Client, Main, Message, Mods, Parse
+
+
+TXT = " ".join(sys.argv[1:])
 
 
 class CLI(Client):
@@ -24,10 +27,11 @@ class CLI(Client):
 
 def main():
     "cli script."
-    Parse.parse(Main, " ".join(sys.argv[1:]))
-    Mods.configure(Main.name, "--admin" in sys.argv)
+    Boot.boot("nixt", TXT)
+    if "--admin" in sys.argv:
+        mod = Mods.get("adm")
+        Mods.scan(mod)
     cli = CLI()
-    cli.silent = False
     evt = Message()
     evt.orig = repr(cli)
     evt.text = Main.otxt
