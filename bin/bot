@@ -32,7 +32,6 @@ class Arguments:
             description=f'{Main.name.upper()}',
             epilog='use "%(prog)s cmd" for a list of commands.',
             formatter_class=argparse.RawDescriptionHelpFormatter,
-            usage='''%(prog)s [-c|-d|-h|-s] [-a] [-v] [-w] [-l level] [-m m1,m2] [-p path]\n       %(prog)s [cmd] [key=val] [key==val]'''
         )
         group = theparser.add_mutually_exclusive_group()
         group.add_argument("--console", action="store_true", help="run as console.")
@@ -158,6 +157,19 @@ class Kernel:
             os.dup2(sis.fileno(), io.fileno())
 
     @classmethod
+    def pid(cls, name):
+        "return path to pid file."
+        if not cls.wdr:
+            return
+        filename = os.path.join(cls.wdr, f"{name}.pid")
+        if os.path.exists(filename):
+            os.unlink(filename)
+        path2 = pathlib.Path(filename)
+        path2.parent.mkdir(parents=True, exist_ok=True)
+        with open(filename, "w", encoding="utf-8") as fds:
+            fds.write(str(os.getpid()))
+
+    @classmethod
     def privileges(cls):
         "drop privileges."
         import getpass
@@ -175,18 +187,6 @@ class Kernel:
                 break
             time.sleep(0.1)
 
-    @classmethod
-    def pid(cls, name):
-        "return path to pid file."
-        if not cls.wdr:
-            return
-        filename = os.path.join(cls.wdr, f"{name}.pid")
-        if os.path.exists(filename):
-            os.unlink(filename)
-        path2 = pathlib.Path(filename)
-        path2.parent.mkdir(parents=True, exist_ok=True)
-        with open(filename, "w", encoding="utf-8") as fds:
-            fds.write(str(os.getpid()))
 
     @classmethod
     def wrap(cls, func, *args, dofinal=None):
