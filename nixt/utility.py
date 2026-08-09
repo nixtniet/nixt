@@ -250,7 +250,7 @@ class Utils:
 
     @staticmethod
     def skip(obj):
-        "skip underscore keys."
+        "skip underscored keys."
         result = []
         for x in dir(obj):
             if x.startswith("_"):

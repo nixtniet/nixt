@@ -4,8 +4,7 @@
 "one config to rule them all"
 
 
-from .objects import Data
-from .utility import Utils
+from .methods import Method
 
 
 class Config(type):
@@ -16,15 +15,12 @@ class Config(type):
         return ""
 
     def __str__(cls):
-        return str(Utils.skip(cls.__dict__))
+        return str(Method.skip(cls.__dict__))
 
 
 class Main(metaclass=Config):
 
-    gets = Data()
-    level = "warning"
-    name = Utils.pkgname(Data)
-    sets = Data()
+    pass
 
 
 def __dir__():

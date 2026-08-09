@@ -6,7 +6,6 @@
 
 from .configs import Main
 from .package import Cmd, Mods
-from .parsers import Parse
 from .persist import Workdir
 from .utility import logging
 

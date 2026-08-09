@@ -23,7 +23,7 @@ classifiers = [
 ]
 
 [project.scripts]
-"nixt" = "nixt.__main__:main"
+"nixt" = "nixt.runtime:main"
 
 
 [project.urls]
@@ -35,10 +35,6 @@ classifiers = [
 [tool.setuptools]
 packages = [
     'nixt',
-    'nixt.objects',
-    'nixt.persist',
-    'nixt.program',
-    'nixt.runtime'
 ]
 
 [tool.pylint."messages control"]

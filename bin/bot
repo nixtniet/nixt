@@ -17,8 +17,8 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Client, Cmd, Engine, Logging, Main, Message, Md5, Mods
-from nixt.defines import Method, Thread, Utils, Workdir
+from nixt.defines import Client, Cmd, Data, Engine, Logging, Main, Message
+from nixt.defines import Md5, Mods, Method, Thread, Utils, Workdir
 
 
 class Arguments:
@@ -51,7 +51,10 @@ class Arguments:
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
         optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
         args, arguments = theparser.parse_known_args()
+        Main.level = "warning"
         Main.otxt = " ".join(arguments)
+        Main.gets = Data()
+        Main.sets = Data()
         Method.update(Main.sets, args)
 
 

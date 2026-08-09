@@ -39,6 +39,3 @@ def main():
     cli = CLI()
     cli.admin()
     cli.cmd(" ".join(sys.argv[1:]))
-
-if __name__ == "__main__":
-    main()
