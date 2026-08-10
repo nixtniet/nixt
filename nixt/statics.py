@@ -1,3 +1,4 @@
+{'examples': 'examples'}
 # This file is placed in the Public Domain.
 
 
@@ -5,7 +6,7 @@
 
 
 CORE = {
-    "booting": "a9ee18f53db8d66be30c9fa8298889e8",
+    "booting": "a42657726a594ab350f93b497d5ac5d0",
     "brokers": "bf614fd92d3268216c853bbb08a57b03",
     "clients": "04e78280804354fe91541e6c6e4d7bf0",
     "configs": "7024a6c0226b5e54a7814b211e693c00",
@@ -15,11 +16,11 @@ CORE = {
     "message": "6c2322224bbca893fd5899bda65df43e",
     "methods": "2fcabf971a42df9df2f7417a6a4b941f",
     "objects": "529a55e137b6f5bd5908fdcdd1049d86",
-    "package": "633e473edac72e10f7e705709a80b9b6",
+    "package": "eb758aff61fbd5246bf37e929688d145",
     "parsers": "324904450920284db9334d32c047d174",
-    "persist": "dbcfa752a2cd63f8e027b14bbab285b7",
+    "persist": "80054191ed5e86cbe8d619e857f9f582",
     "repeats": "eaec4feccb68aea97288b5729d710454",
-    "runtime": "23b88de91d896fc533ba8ad58a651678",
+    "runtime": "1a0206ae481aca07a66a5e0683405eaa",
     "threads": "2fcb5ceb0fa336dd7208297fc23e17b0",
     "utility": "7f4b8971985a050f98af5098a8925d10"
 }

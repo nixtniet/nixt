@@ -26,15 +26,12 @@ class Boot:
         "greetings."
 
     @classmethod
-    def configure(cls, name, level=None):
-        "configure package."
-        Main.name = name
-        Workdir.configure(name)
-        if level is not None:
-            Logging.size(len(name))
-            Logging.level(level or "warning")
-        Mods.configure(name)
-        cls.banner()
+    def configure(cls, cfg):
+        "now"
+        Workdir.wdr = cfg.sets.wdr or Workdir.home(cfg.name)
+        Mods.dir(cfg.sets.path or Workdir.moddir())
+        Mods.table()
+        Logging.level(cfg.sets.level or "warning")
 
     @classmethod
     def forever(cls):

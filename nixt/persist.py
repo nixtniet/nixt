@@ -87,8 +87,6 @@ class Disk:
             if path == "":
                 path = cls.ident(obj)
             pth = j(Workdir.wdr, base, path)
-            if not e(pth):
-                Workdir.skel()
             cls.cdir(pth)
             with open(pth, "w", encoding="utf-8") as fpt:
                 Json.dump(obj, fpt, indent=4)
@@ -200,11 +198,6 @@ class Workdir:
     wdr = ""
 
     @classmethod
-    def configure(cls, name):
-        cls.wdr = cls.wdr or cls.home(name)
-        cls.skel()
-
-    @classmethod
     def home(cls, name):
         "return home working directory."
         return os.path.expanduser(f"~/.{name}")
@@ -212,8 +205,6 @@ class Workdir:
     @classmethod
     def kinds(cls):
         "show kind on objects in cache."
-        if not cls.wdr:
-            return []
         path = j(cls.wdr, "store")
         if not e(path):
             cls.skel()
@@ -258,7 +249,7 @@ class Workdir:
         if not e(cls.wdr):
             Disk.cdir(cls.wdr)
         path = os.path.abspath(cls.wdr)
-        for wpth in ["config", "mods", "store"]:
+        for wpth in ["config", "logs", "mods", "store"]:
             pth = pathlib.Path(j(path, wpth))
             pth.mkdir(parents=True, exist_ok=True)
 

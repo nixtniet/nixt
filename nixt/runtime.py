@@ -4,10 +4,27 @@
 "main"
 
 
+import argparse
 import sys
 
 
-from nixt.defines import Boot, Client, Cmd, Commands, Message, Mods
+from nixt.defines import Boot, Client, Cmd, Commands, Data, Main, Message
+from nixt.defines import Method, Mods, Parse, Utils, Workdir
+
+
+class Kernel(Boot):
+
+    @classmethod
+    def admin(self):
+        if "--admin" in sys.argv:
+            mod = Mods.get("adm")
+            Commands.scan(mod)
+
+    @classmethod
+    def boot(cls):
+        Parse.parse(Main, " ".join(sys.argv[1:]))
+        Boot.configure(Main)
+        Commands.add(Cmd.cmd)
 
 
 class CLI(Client):
@@ -15,11 +32,6 @@ class CLI(Client):
     def __init__(self):
         Client.__init__(self)
         self.register("command", Commands.command)
-
-    def admin(self):
-        if "--admin" in sys.argv:
-            mod = Mods.get("adm")
-            Commands.scan(mod)
 
     def cmd(self, txt):
         evt = Message()
@@ -35,8 +47,6 @@ class CLI(Client):
 
 def main():
     "cli script."
-    Boot.configure("nixt", "warning")
-    Commands.add(Cmd.cmd)
+    Kernel.boot()
     cli = CLI()
-    cli.admin()
     cli.cmd(" ".join(sys.argv[1:]))

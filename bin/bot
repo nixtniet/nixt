@@ -15,7 +15,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Cmd, Commands, Data, Main, Md5
+from nixt.defines import Boot, Client, Cmd, Commands, Data, Logging, Main, Md5
 from nixt.defines import Message, Mods, Method, Utils, Workdir
 
 
@@ -42,10 +42,10 @@ class Arguments:
         optionparser = theparser.add_argument_group()
         optionparser.add_argument("-l", "--level", default="warning", help='set loglevel.', metavar="level")
         optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
-        optionparser.add_argument("-p", "--path", default="", help='path to working directory.', metavar="path")
+        optionparser.add_argument("-p", "--path", default=Workdir.moddir(), help='path to working directory.', metavar="path")
         optparser = theparser.add_argument_group()
         optparser.add_argument("--default", default="irc,mdl,rss,wsd", help=argparse.SUPPRESS)
-        optparser.add_argument("--moddir", default=Workdir.moddir(), help="set modules directory.")
+        optparser.add_argument("--wdr", default=Workdir.moddir(), help="set modules directory.")
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
         optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
         args, arguments = theparser.parse_known_args()
@@ -54,6 +54,10 @@ class Arguments:
         Main.gets = Data()
         Main.sets = Data()
         Method.update(Main.sets, args)
+        Mods.dir(Main.sets.path)
+        Workdir.wdr = Main.sets.wdr
+        Mods.table()
+        Logging.level(Main.sets.level or "warning")
 
 
 class Kernel(Boot):
@@ -83,9 +87,8 @@ class Kernel(Boot):
     def boot(cls):
         "starting."
         Arguments.getargs()
-        cls.configure(Main.name, Main.sets.level)
         if Main.sets.path:
-            Mods.dir("modz", Main.sets.path)
+            Mods.dir(Main.sets.path)
         Commands.add(Cmd.cmd)
 
     @classmethod
@@ -197,6 +200,8 @@ class Scripts:
     def console():
         "console script."
         readline.redisplay()
+        if Main.sets.verbose:
+            Kernel.banner()
         if Main.sets.all:
             Main.sets.mods = ",".join(Mods.list())
         Kernel.init(Main.sets.mods, Main.sets.wait)

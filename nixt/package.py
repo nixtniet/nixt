@@ -76,13 +76,6 @@ class Mods:
     names = {}
 
     @classmethod
-    def configure(cls, name):
-        cls.dir(f"{name}.modules", cls.moddir())
-        cls.dir("modules", j(Utils.home(name), "mods"))
-        cls.dir("mods", "mods")
-        cls.table()
-
-    @classmethod
     def dir(cls, pkgname, path=None):
         "add module/patgh."
         if path is None:

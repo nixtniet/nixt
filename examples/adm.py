@@ -8,7 +8,7 @@ import inspect
 import os
 
 
-from nixt.defines import Json, Main, Mods, Md5
+from nixt.defines import Commands, Json, Main, Mods, Md5
 
 
 def srv(event):
@@ -45,7 +45,7 @@ def tbl(event):
             continue
         module = Mods.get(name)
         md5s[name] = Md5.md5(module.__file__)
-        for cmd in Mods.scan(module):
+        for cmd in Commands.scan(module):
             if cmd in ["srv", "tbl"]:
                 continue
             Mods.names[cmd.__name__] = cmd.__module__.split(".")[-1]
