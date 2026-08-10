@@ -77,6 +77,7 @@ class Mods:
 
     @classmethod
     def configure(cls, name):
+        cls.dir(f"{name}.modules", cls.moddir())
         cls.dir("modules", j(Utils.home(name), "mods"))
         cls.dir("mods", "mods")
         cls.table()
@@ -100,7 +101,6 @@ class Mods:
             if not os.path.exists(fnm):
                 continue
             if cls.md5s:
-                print(name, fnm)
                 md5 = Md5.md5(fnm)
                 md5s = cls.md5s.get(name)
                 if md5s and md5 != md5s:
@@ -130,7 +130,7 @@ class Mods:
     @classmethod
     def moddir(cls):
         "return modules directory."
-        return os.path.join(os.path.dirname(os.path.dirname(__spec__.loader.path)), "modules")
+        return j(d(__spec__.loader.path), "modules")
 
     @classmethod
     def list(cls, ignore=""):
