@@ -82,8 +82,10 @@ class Mods:
         cls.table()
 
     @classmethod
-    def dir(cls, pkgname, path):
+    def dir(cls, pkgname, path=None):
         "add module/patgh."
+        if path is None:
+            path = pkgname.split(os.sep)[-1]
         cls.dirs[pkgname] = path
 
     @classmethod
@@ -98,6 +100,7 @@ class Mods:
             if not os.path.exists(fnm):
                 continue
             if cls.md5s:
+                print(name, fnm)
                 md5 = Md5.md5(fnm)
                 md5s = cls.md5s.get(name)
                 if md5s and md5 != md5s:

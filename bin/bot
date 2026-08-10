@@ -6,19 +6,17 @@
 
 
 import argparse
-import logging
 import os
 import readline
 import sys
 import time
-import _thread
 
 
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Cmd, Commands, Data, Engine, Logging
-from nixt.defines import Main, Md5, Message, Mods, Method, Thread, Utils
+from nixt.defines import Boot, Client, Cmd, Commands, Data, Engine
+from nixt.defines import Main, Md5, Message, Mods, Method, Utils
 from nixt.defines import Workdir
 
 
@@ -60,8 +58,6 @@ class Arguments:
 
 
 class Kernel(Boot):
-
-    pid = Workdir.pid
 
     @classmethod
     def admin(cls):
@@ -128,6 +124,10 @@ class Kernel(Boot):
             os.dup2(sis.fileno(), io.fileno())
 
     @classmethod
+    def pid(cls):
+        Workdir.pid(Main.name)
+
+    @classmethod
     def privileges(cls):
         "drop privileges."
         import getpass
@@ -151,11 +151,10 @@ class Kernel(Boot):
             dofinal()
 
 
-class CLI(Client, Engine):
+class CLI(Client):
 
     def __init__(self):
         Client.__init__(self)
-        Engine.__init__(self)
         self.register("command", Commands.command)
 
     def after(self, event):
@@ -192,7 +191,7 @@ class Scripts:
         Kernel.daemon()
         Kernel.privileges()
         Kernel.pid()
-        Kernel.init()
+        Kernel.init(Main.sets.mods)
         Kernel.forever()
 
     @staticmethod
@@ -219,7 +218,7 @@ class Scripts:
         Kernel.pid()
         if not Main.sets.verbose:
             Kernel.banner(True)
-        Kernel.init()
+        Kernel.init(Main.sets.mods)
         Kernel.forever()
 
 

@@ -5,7 +5,7 @@
 
 
 CORE = {
-    "booting": "12f49ae76b79672524f8f54cbd2c2181",
+    "booting": "fbbfa18c889b05fe3189831576cc0890",
     "brokers": "bf614fd92d3268216c853bbb08a57b03",
     "clients": "04e78280804354fe91541e6c6e4d7bf0",
     "configs": "7024a6c0226b5e54a7814b211e693c00",
@@ -15,7 +15,7 @@ CORE = {
     "message": "6c2322224bbca893fd5899bda65df43e",
     "methods": "2fcabf971a42df9df2f7417a6a4b941f",
     "objects": "529a55e137b6f5bd5908fdcdd1049d86",
-    "package": "39bd0e59a717ad86e6a8879884c25c96",
+    "package": "5b79741157ef57eab8a7b640eb61c9d0",
     "parsers": "324904450920284db9334d32c047d174",
     "persist": "8f031e9070439e38ecae129ba74d5295",
     "repeats": "eaec4feccb68aea97288b5729d710454",
@@ -29,7 +29,7 @@ MODULES = {
     "cfg": "83bd7e9b313fb55fc46c7bf797a70f77",
     "fie": "0eb10b5104e76831e1295ff9a91a0e8d",
     "flt": "c40a68583139d18206d885959c0ece30",
-    "fnd": "de16eca3ee25ffd940562b3d192081b2",
+    "fnd": "d8c272c7912b46a1ef678d63b0895d45",
     "hlp": "0e3fe796350fb7707e218e4a94f440b8",
     "irc": "3348e444a45621370e8a267a30fedc60",
     "log": "5d11a098f0c298fe773f8d9bfbb21d11",
@@ -58,7 +58,7 @@ NAMES = {
     "dpl": "rss",
     "err": "rss",
     "exp": "rss",
-    "fie": "fie",
+    "fie": "fnd",
     "flt": "flt",
     "fnd": "fnd",
     "hlp": "hlp",

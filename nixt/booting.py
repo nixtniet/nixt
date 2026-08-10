@@ -32,9 +32,9 @@ class Boot:
         Workdir.configure(name)
         if level is not None:
             Logging.size(len(name))
-            Logging.level(level)
-        cls.banner()
+            Logging.level(level or "warning")
         Mods.configure(name)
+        cls.banner()
 
     @classmethod
     def forever(cls):

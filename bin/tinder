@@ -15,8 +15,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Client, Cmd, Main, Message, Method
-from nixt.defines import Mods, Time, Workdir
+from nixt.defines import Boot, Client, Cmd, Commands, Main, Message
+from nixt.defines import Method, Mods, Parse, Time, Workdir
 
 
 Workdir.wdr = ".test"
@@ -28,20 +28,36 @@ class Vars:
     starttime = 0
 
 
-class Kernel:
+class Kernel(Boot):
 
     @classmethod
-    def configure(cls, name):
-        Workdir.configure(name)
-        Mods.configure(name)
-        Mods.add(Cmd.cmd)
+    def boot(cls):
+        Parse.parse(Main, " ".join(sys.argv[1:]))
+        Mods.dir("examples", "examples")
+        cls.configure("nixt", Main.sets.level)
+        if os.path.exists(Workdir.wdr):
+            shutil.rmtree(Workdir.wdr)
+
+    @classmethod
+    def wrap(cls, func, *args, dofinal=None):
+        "restore console."
+        import termios
+        try:
+            old = termios.tcgetattr(sys.stdin.fileno())
+        except termios.error:
+            old = False
+        cls.wrapped(func, *args)
+        if old:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+        if dofinal:
+            dofinal()
 
 
 class CLI(Client):
 
     def __init__(self):
         Client.__init__(self)
-        self.register("command", Mods.command)
+        self.register("command", Commands.command)
 
     def raw(self, text):
         "write to console."
@@ -84,12 +100,6 @@ class Runners:
             Runners.nrlast += 1
 
 
-def raw(text):
-    if "v" in Main.opts:
-        print(text.encode('utf-8', 'replace').decode("utf-8"))
-        sys.stdout.flush()
-
-
 def payload(todo):
     for cmd, example in todo.items():
         for ex in example:
@@ -114,9 +124,7 @@ def final():
 
 
 def main():
-    Kernel.configure("nixt")
-    if os.path.exists(Workdir.wdr):
-        shutil.rmtree(Workdir.wdr)
+    Kernel.boot()
     if "t" in Main.opts:
         nrcpu = os.cpu_count()
     else:
@@ -130,6 +138,7 @@ def main():
         payload(examples)
     for _x in range(nrs):
         payload(post)
+    Kernel.shutdown()
 
 
 examples = {
@@ -195,4 +204,4 @@ post = {
 
 
 if __name__ == "__main__":
-    main()
+    Kernel.wrap(main, dofinal=final)
