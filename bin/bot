@@ -15,9 +15,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Cmd, Commands, Data, Engine
-from nixt.defines import Main, Md5, Message, Mods, Method, Utils
-from nixt.defines import Workdir
+from nixt.defines import Boot, Client, Cmd, Commands, Data, Main, Md5
+from nixt.defines import Message, Mods, Method, Utils, Workdir
 
 
 class Arguments:
