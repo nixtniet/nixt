@@ -1,4 +1,3 @@
-{'examples': 'examples'}
 # This file is placed in the Public Domain.
 
 
@@ -6,7 +5,7 @@
 
 
 CORE = {
-    "booting": "a42657726a594ab350f93b497d5ac5d0",
+    "booting": "ffdbcd56dde3602868850ae68203054d",
     "brokers": "bf614fd92d3268216c853bbb08a57b03",
     "clients": "04e78280804354fe91541e6c6e4d7bf0",
     "configs": "7024a6c0226b5e54a7814b211e693c00",
@@ -20,7 +19,7 @@ CORE = {
     "parsers": "324904450920284db9334d32c047d174",
     "persist": "80054191ed5e86cbe8d619e857f9f582",
     "repeats": "eaec4feccb68aea97288b5729d710454",
-    "runtime": "1a0206ae481aca07a66a5e0683405eaa",
+    "runtime": "d0bed55ac309aed97759be3a98411826",
     "threads": "2fcb5ceb0fa336dd7208297fc23e17b0",
     "utility": "7f4b8971985a050f98af5098a8925d10"
 }

@@ -4,12 +4,11 @@
 "main"
 
 
-import argparse
 import sys
 
 
-from nixt.defines import Boot, Client, Cmd, Commands, Data, Main, Message
-from nixt.defines import Method, Mods, Parse, Utils, Workdir
+from nixt.defines import Boot, Client, Cmd, Commands, Main, Message
+from nixt.defines import Mods, Parse
 
 
 class Kernel(Boot):
@@ -23,7 +22,8 @@ class Kernel(Boot):
     @classmethod
     def boot(cls):
         Parse.parse(Main, " ".join(sys.argv[1:]))
-        Boot.configure(Main)
+        Boot.configure()
+        cls.admin()
         Commands.add(Cmd.cmd)
 
 

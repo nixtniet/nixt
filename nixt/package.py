@@ -47,9 +47,10 @@ class Commands:
                 return evt.ready()
             mod = Mods.get(modname)
             if not mod:
-                return evt.ready()
-            logging.debug(f"load {modname}")
-            cls.scan(mod)
+                Mods.scanner()
+            else:
+                logging.debug(f"load {modname}")
+                cls.scan(mod)
             func = cls.cmds.get(evt.cmd, None)
         if func:
             func(evt)
