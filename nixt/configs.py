@@ -20,7 +20,7 @@ class Config(type):
 
 class Main(metaclass=Config):
 
-    pass
+    name = Method.pkgname(Config)
 
 
 def __dir__():

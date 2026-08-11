@@ -34,7 +34,7 @@ class Kernel(Boot):
     def boot(cls):
         Parse.parse(Main, " ".join(sys.argv[1:]))
         Mods.dir("examples", "examples")
-        cls.configure("nixt", Main.sets.level)
+        cls.configure()
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
 

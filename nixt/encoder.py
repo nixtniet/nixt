@@ -9,9 +9,6 @@ import threading
 import types
 
 
-from .methods import Method
-
-
 class Encoder(json.JSONEncoder):
 
     lock = threading.RLock()
@@ -20,7 +17,7 @@ class Encoder(json.JSONEncoder):
         "generate serializable versions."
         with Encoder.lock:
             if isinstance(o, type):
-                return Method.skip(o)
+                return self.skip(o)
             if isinstance(o, dict):
                 return o.items()
             if isinstance(o, list):
@@ -34,6 +31,13 @@ class Encoder(json.JSONEncoder):
                     return vars(o)
                 except TypeError:
                     return repr(o)
+
+    def skipped(self, obj):
+        "yield values without underscored keys."
+        for key in dir(obj):
+            if key.startswith("_"):
+                continue
+            yield getattr(obj, key)
 
 
 class Json:

@@ -18,14 +18,6 @@ j = os.path.join
 d = os.path.dirname
 
 
-class Cmd:
-
-    @staticmethod
-    def cmd(event):
-        "list available commands."
-        event.reply(",".join(sorted(Mods.names or Commands.cmds)))
-
-
 class Commands:
 
     cmds = {}
@@ -47,10 +39,9 @@ class Commands:
                 return evt.ready()
             mod = Mods.get(modname)
             if not mod:
-                Mods.scanner()
-            else:
-                logging.debug(f"load {modname}")
-                cls.scan(mod)
+                evt.ready()
+            logging.debug(f"load {modname}")
+            cls.scan(mod)
             func = cls.cmds.get(evt.cmd, None)
         if func:
             func(evt)
@@ -58,12 +49,13 @@ class Commands:
         evt.ready()
 
     @classmethod
-    def scan(cls, mod):
+    def scan(cls, mod, skip=False):
         "scan module for commands."
         result = []
         for nme, func in inspect.getmembers(mod, inspect.isfunction):
             if 'event' in inspect.signature(func).parameters:
-                cls.add(func)
+                if not skip:
+                    cls.add(func)
                 result.append(func)
         return result
 
@@ -80,7 +72,8 @@ class Mods:
     def dir(cls, pkgname, path=None):
         "add module/patgh."
         if path is None:
-            path = pkgname.split(os.sep)[-1]
+            path = pkgname
+            pkgname = pkgname.split(os.sep)[-1]
         cls.dirs[pkgname] = path
 
     @classmethod
@@ -117,9 +110,19 @@ class Mods:
         "import module by path."
         import importlib.util
         spec = importlib.util.spec_from_file_location(name, pth)
+        if not spec or not spec.loader:
+            return None
         cls.mods[name] = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(cls.mods[name])
         return cls.mods[name]
+
+    @classmethod
+    def listcmds(cls):
+        result = []
+        for modname in cls.list():
+            mod = Mods.get(modname)
+            result.extend([x.__name__ for x in Commands.scan(mod, True) if x])
+        return result
 
     @classmethod
     def moddir(cls):

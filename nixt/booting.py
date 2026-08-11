@@ -12,10 +12,11 @@ import _thread
 
 from .brokers import Clients
 from .clients import Client
+from .configs import Main
 from .package import Mods
 from .persist import Workdir
 from .threads import Task, Thread
-from .utility import Utils
+from .utility import Logging, Utils
 
 
 class Boot:
@@ -27,8 +28,11 @@ class Boot:
     @classmethod
     def configure(cls):
         "now"
-        Workdir.wdr = Workdir.home(Main.name)
+        Logging.level(Main.level or "warning")
+        Workdir.wdr = Workdir.wdr or Workdir.home(Main.name)
+        Workdir.skel()
         Mods.dir(Workdir.moddir())
+        Mods.dir(Mods.moddir())
         Mods.table()
 
     @classmethod

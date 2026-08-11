@@ -7,7 +7,7 @@
 import sys
 
 
-from nixt.defines import Boot, Client, Cmd, Commands, Main, Message
+from nixt.defines import Boot, Client, Commands, Main, Message
 from nixt.defines import Mods, Parse
 
 
@@ -18,13 +18,14 @@ class Kernel(Boot):
         if "--admin" in sys.argv:
             mod = Mods.get("adm")
             Commands.scan(mod)
+        if "--scanner" in sys.argv:
+            Mods.scanner()
 
     @classmethod
     def boot(cls):
         Parse.parse(Main, " ".join(sys.argv[1:]))
         Boot.configure()
         cls.admin()
-        Commands.add(Cmd.cmd)
 
 
 class CLI(Client):

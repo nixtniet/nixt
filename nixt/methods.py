@@ -133,6 +133,11 @@ class Method:
             setattr(obj, key, value)
 
     @classmethod
+    def modname(cls, obj):
+        "return package name of an object."
+        return obj.__module__.split(".")[-1]
+
+    @classmethod
     def notset(cls, obj, obj2):
         "only set if not set."
         for key, value in cls.items(obj2):
@@ -140,6 +145,11 @@ class Method:
                 continue
             if value:
                 setattr(obj, key, value)
+
+    @classmethod
+    def pkgname(cls, obj):
+        "return package name of an object."
+        return obj.__module__.split(".", maxsplit=1)[0]
 
     @classmethod
     def pop(cls, obj, key, default=None):

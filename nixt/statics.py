@@ -5,81 +5,38 @@
 
 
 CORE = {
-    "booting": "ffdbcd56dde3602868850ae68203054d",
+    "booting": "98c4be8358dfe2024b28324ecba29796",
     "brokers": "bf614fd92d3268216c853bbb08a57b03",
     "clients": "04e78280804354fe91541e6c6e4d7bf0",
-    "configs": "7024a6c0226b5e54a7814b211e693c00",
-    "defines": "0430dec7350ddf8ae4950f36a39201bf",
-    "encoder": "81a27e98f88e3247cae9ad856ef00fa0",
+    "configs": "55373ef42c73f1df77f0a29755fe6027",
+    "defines": "1e3a8da013e5dc33a41a8a61acac232c",
+    "encoder": "d39fe1f413dacb90f9f5ce4462d681e0",
     "engines": "767e741a9e84f56cdb1b68c979a6b584",
     "message": "6c2322224bbca893fd5899bda65df43e",
-    "methods": "2fcabf971a42df9df2f7417a6a4b941f",
+    "methods": "dc4c2e41f7a6cf82584e8119ee6725fa",
     "objects": "529a55e137b6f5bd5908fdcdd1049d86",
-    "package": "eb758aff61fbd5246bf37e929688d145",
+    "package": "fa91419188383aceeaf4fce2bddb0de3",
     "parsers": "324904450920284db9334d32c047d174",
     "persist": "80054191ed5e86cbe8d619e857f9f582",
     "repeats": "eaec4feccb68aea97288b5729d710454",
-    "runtime": "d0bed55ac309aed97759be3a98411826",
+    "runtime": "5ba5e4f5ce64ac00c9140d5f254d6a42",
     "threads": "2fcb5ceb0fa336dd7208297fc23e17b0",
-    "utility": "7f4b8971985a050f98af5098a8925d10"
+    "utility": "e5e431324ce76bc26ea225ceb15521c3"
 }
 
 
 MODULES = {
-    "cfg": "83bd7e9b313fb55fc46c7bf797a70f77",
-    "fie": "0eb10b5104e76831e1295ff9a91a0e8d",
-    "flt": "c40a68583139d18206d885959c0ece30",
+    "cmd": "543a8fccfef4106cd26244384847d796",
+    "dbg": "00f50c2cc7c2c89280fb32d39edeb9f6",
     "fnd": "d8c272c7912b46a1ef678d63b0895d45",
-    "hlp": "0e3fe796350fb7707e218e4a94f440b8",
-    "irc": "3348e444a45621370e8a267a30fedc60",
-    "log": "5d11a098f0c298fe773f8d9bfbb21d11",
-    "man": "920599410f7739c9503e0eea9e4e5885",
-    "mdl": "0ea87138ce166ce9a904514ab8bc4b48",
-    "req": "bc1984d2e9de0310dc1b468f25c7ab8c",
-    "rss": "dba26a0bc060ffb5c805e0ad286b3ebc",
-    "rst": "39b1e1c5fe013f6a19aa3d378a383cf7",
-    "sil": "6409941fa5f1f20a23f37774ec0c6a7d",
-    "slg": "e68f11973ddc2e3edeb0de0e16e9fe7a",
-    "tdo": "734baf117bde28e7a979bdec82528c14",
-    "thr": "6ae37c096264d246cb4de07cfd687222",
-    "tmr": "f3d6df1887dae91a3023350749f4217a",
-    "upt": "d7f456e017f217289720a0ddda3aa24d",
-    "ver": "be405e2a3d958c3ae704adb3d3fb3c6d",
-    "web": "7475c9f4381aa9126c4ea3889e8ce4e8",
-    "wsd": "a9d4f77c24929ec37b62044b9e83023a"
+    "log": "5d11a098f0c298fe773f8d9bfbb21d11"
 }
 
 
 NAMES = {
-    "atr": "rss",
-    "cfg": "cfg",
-    "dis": "mdl",
-    "dne": "tdo",
-    "dpl": "rss",
-    "err": "rss",
-    "exp": "rss",
+    "cmd": "cmd",
+    "dbg": "dbg",
     "fie": "fnd",
-    "flt": "flt",
     "fnd": "fnd",
-    "hlp": "hlp",
-    "imp": "rss",
-    "log": "log",
-    "lou": "sil",
-    "man": "man",
-    "nme": "rss",
-    "now": "mdl",
-    "pwd": "irc",
-    "rem": "rss",
-    "req": "req",
-    "res": "rss",
-    "rss": "rss",
-    "sil": "sil",
-    "slg": "slg",
-    "syn": "rss",
-    "tdo": "tdo",
-    "thr": "thr",
-    "tmr": "tmr",
-    "upt": "upt",
-    "ver": "ver",
-    "wsd": "wsd"
+    "log": "log"
 }

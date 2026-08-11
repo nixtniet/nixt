@@ -24,9 +24,6 @@ def srv(event):
                           ))
 
 
-corelist = ["objects",  "persist", "program", "runtime"]
-
-
 def createmd5(path, data):
     for pth in os.listdir(path):
         if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:

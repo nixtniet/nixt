@@ -234,16 +234,6 @@ class Utils:
                ]
 
     @staticmethod
-    def modname(obj):
-        "return package name of an object."
-        return obj.__module__.split(".")[-1]
-
-    @staticmethod
-    def pkgname(obj):
-        "return package name of an object."
-        return obj.__module__.split(".", maxsplit=1)[0]
-
-    @staticmethod
     def pipxdir(name):
         "return examples directory."
         return f"~/.local/share/pipx/venvs/{name}/share/{name}/"
