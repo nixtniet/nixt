@@ -136,6 +136,10 @@ class Mods:
         return result
 
     @classmethod
+    def minimal(cls):
+        return j(d(__spec__.loader.path), "minimal")
+        
+    @classmethod
     def moddir(cls):
         "return modules directory."
         return j(d(__spec__.loader.path), "modules")

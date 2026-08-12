@@ -9,7 +9,7 @@ import sys
 
 
 from nixt.defines import Boot, Client, Cmd, Commands, Data, Main, Message
-from nixt.defines import Method, Mods, Parse
+from nixt.defines import Method, Mods, Parse, Utils
 
 
 class Arguments:
@@ -24,7 +24,6 @@ class Arguments:
             epilog='use "%(prog)s cmd" for a list of commands.',
             formatter_class=argparse.RawDescriptionHelpFormatter,
         )
-        parser = theparser.add_argument_group()
         optionparser = theparser.add_argument_group()
         optionparser.add_argument("-l", "--level", default="warning", help='set loglevel.', metavar="level")
         optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
@@ -47,8 +46,8 @@ class Kernel(Boot):
     def admin(self):
         Mods.ignore = "adm"
         if Main.sets.admin:
-            import nixt.modules.adm
-            Commands.scan(nixt.modules.adm)
+            import nixt.minimal.adm
+            Commands.scan(nixt.minimal.adm)
         if Main.sets.scanner:
             Mods.scanner()
 
