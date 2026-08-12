@@ -33,6 +33,7 @@ class Boot:
         Workdir.skel()
         Mods.dir(Workdir.moddir())
         Mods.dir(Mods.moddir())
+        Mods.dir(Main.sets.path)
         Mods.table()
 
     @classmethod

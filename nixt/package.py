@@ -71,6 +71,8 @@ class Mods:
     @classmethod
     def dir(cls, pkgname, path=None):
         "add module/patgh."
+        if not pkgname:
+            return 
         if path is None:
             path = pkgname
             pkgname = pkgname.split(os.sep)[-1]
