@@ -40,24 +40,6 @@ class Arguments:
         Commands.add(Cmd.cmd)
 
 
-class Kernel(Boot):
-
-    @classmethod
-    def admin(self):
-        Mods.ignore = "adm"
-        if Main.sets.admin:
-            import nixt.minimal.adm
-            Commands.scan(nixt.minimal.adm)
-        if Main.sets.scanner:
-            Mods.scanner()
-
-    @classmethod
-    def boot(cls):
-        Parse.parse(Main, " ".join(sys.argv[1:]))
-        Boot.configure()
-        cls.admin()
-
-
 class CLI(Client):
 
     def __init__(self):
@@ -79,6 +61,6 @@ class CLI(Client):
 def main():
     "cli script."
     Arguments.getargs()
-    Kernel.boot()
+    Boot.configure()
     cli = CLI()
     cli.cmd(" ".join(sys.argv[1:]))

@@ -13,7 +13,7 @@ import _thread
 from .brokers import Clients
 from .clients import Client
 from .configs import Main
-from .package import Mods
+from .package import Commands, Mods
 from .persist import Workdir
 from .threads import Task, Thread
 from .utility import Logging, Utils
@@ -28,13 +28,19 @@ class Boot:
     @classmethod
     def configure(cls):
         "now"
-        Logging.level(Main.level or "warning")
-        Workdir.wdr = Workdir.wdr or Workdir.home(Main.name)
+        Logging.level(Main.sets.level or "warning")
+        Workdir.wdr = Main.sets.wdr or Workdir.wdr or Workdir.home(Main.name)
         Workdir.skel()
         Mods.dir(Workdir.moddir())
         Mods.dir(Mods.moddir())
         Mods.dir(Main.sets.path)
-        Mods.table()
+        if Main.sets.admin:
+            from .minimal import adm
+            Commands.scan(adm)
+        if Main.sets.scanner or Main.sets.all:
+            Mods.scanner()
+        else:
+            Mods.table()
 
     @classmethod
     def forever(cls):

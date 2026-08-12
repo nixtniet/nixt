@@ -41,6 +41,7 @@ class Encoder(json.JSONEncoder):
             o[key] = getattr(obj, key)
         return o
 
+
 class Json:
 
     @staticmethod
