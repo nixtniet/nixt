@@ -18,6 +18,14 @@ j = os.path.join
 d = os.path.dirname
 
 
+class Cmd:
+
+    @staticmethod
+    def cmd(event):
+        "show commands."
+        event.reply(",".join(Commands.cmds))
+
+
 class Commands:
 
     cmds = {}
@@ -64,6 +72,7 @@ class Mods:
 
     core = {}
     dirs = {}
+    ignore = ""
     md5s = {}
     mods = {}
     names = {}
@@ -105,7 +114,7 @@ class Mods:
             if not getattr(mod, attr, False):
                 continue
             result.append(mod.__name__.split(".")[-1])
-        return ",".join(result)
+        return ",".jokin(result)
 
     @classmethod
     def importer(cls, name, pth=""):
@@ -119,9 +128,9 @@ class Mods:
         return cls.mods[name]
 
     @classmethod
-    def listcmds(cls):
+    def listcmds(cls, ignore=""):
         result = []
-        for modname in cls.list():
+        for modname in cls.list(ignore):
             mod = Mods.get(modname)
             result.extend([x.__name__ for x in Commands.scan(mod, True) if x])
         return result

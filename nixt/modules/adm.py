@@ -38,13 +38,9 @@ def tbl(event):
     md5s = {}
     Mods.names = {}
     for name in Mods.list():
-        if name in ["adm"]:
-            continue
         module = Mods.get(name)
         md5s[name] = Md5.md5(module.__file__)
         for cmd in Commands.scan(module):
-            if cmd in ["srv", "tbl"]:
-                continue
             Mods.names[cmd.__name__] = cmd.__module__.split(".")[-1]
     corepath = os.path.dirname(inspect.getsourcefile(Mods))
     createmd5(corepath, core)

@@ -9,4 +9,4 @@ from nixt.defines import Mods
 
 def cmd(event):
     "show commands."
-    event.reply(",".join(Mods.listcmds()))
+    event.reply(",".join(Coomands.cmds))
