@@ -64,7 +64,7 @@ class Disk:
         return j(Method.fqn(obj), *str(datetime.datetime.now()).split())
 
     @classmethod
-    def read(cls, obj, path, base="store", error=True):
+    def read(cls, obj, path, base="store"):
         "read object from path."
         with cls.lock:
             pth = j(Workdir.wdr, base, path)
@@ -75,9 +75,7 @@ class Disk:
                     Method.update(obj, Json.load(fpt))
                 except json.decoder.JSONDecodeError as ex:
                     logging.error("failed read at %s: %s", pth, str(ex))
-                    if error:
-                        raise
-                    return False
+                    raise
             return True
 
     @classmethod

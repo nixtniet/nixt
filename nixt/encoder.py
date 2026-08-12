@@ -32,13 +32,14 @@ class Encoder(json.JSONEncoder):
                 except TypeError:
                     return repr(o)
 
-    def skipped(self, obj):
+    def skip(self, obj):
         "yield values without underscored keys."
+        o = {}
         for key in dir(obj):
             if key.startswith("_"):
                 continue
-            yield getattr(obj, key)
-
+            o[key] = getattr(obj, key)
+        return o
 
 class Json:
 
