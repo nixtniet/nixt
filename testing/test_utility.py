@@ -8,8 +8,6 @@ import time
 import unittest
 
 
-
-
 class TestUtils(unittest.TestCase):
 
     def test_strptime(self):

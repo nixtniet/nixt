@@ -9,7 +9,7 @@ import sys
 
 
 from nixt.defines import Boot, Client, Cmd, Commands, Data, Main, Message
-from nixt.defines import Method, Mods, Parse, Utils
+from nixt.defines import Method
 
 
 class Arguments:
@@ -17,7 +17,7 @@ class Arguments:
     @classmethod
     def getargs(cls):
         "parse commandline arguments."
-        Main.name = Main.name or Utils.pkgname(Main)
+        Main.name = Main.name or Method.pkgname(Main)
         theparser = argparse.ArgumentParser(
             prog=Main.name,
             description=f'{Main.name.upper()}',

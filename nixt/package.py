@@ -81,7 +81,7 @@ class Mods:
     def dir(cls, pkgname, path=None):
         "add module/patgh."
         if not pkgname:
-            return 
+            return
         if path is None:
             path = pkgname
             pkgname = pkgname.split(os.sep)[-1]
@@ -114,7 +114,7 @@ class Mods:
             if not getattr(mod, attr, False):
                 continue
             result.append(mod.__name__.split(".")[-1])
-        return ",".jokin(result)
+        return ",".join(result)
 
     @classmethod
     def importer(cls, name, pth=""):
