@@ -8,8 +8,8 @@ import argparse
 import sys
 
 
-from nixt.defines import Boot, Client, Cmd, Commands, Data, Main, Message
-from nixt.defines import Method
+from nixt.defines import Boot, Client, Commands, Data, Main, Message
+from nixt.defines import Logging, Method, Mods, Workdir
 
 
 class Arguments:
@@ -37,7 +37,27 @@ class Arguments:
         Main.sets = Data()
         Method.update(Main.sets, args)
         Main.otxt = " ".join(arguments)
-        Commands.add(Cmd.cmd)
+
+
+class Kernel(Boot):
+
+    @classmethod
+    def configure(cls):
+        "now"
+        Logging.level(Main.sets.level or "warning")
+        Workdir.wdr = Main.sets.wdr or Workdir.wdr or Workdir.home(Main.name)
+        Workdir.skel()
+        Mods.dir(Workdir.moddir())
+        Mods.dir(Mods.moddir())
+        Mods.dir(Mods.minimal())
+        Mods.dir(Main.sets.path)
+        if Main.sets.admin:
+            from .minimal import adm
+            Commands.scan(adm)
+        if Main.sets.scanner or Main.sets.all:
+            Mods.scanner()
+        else:
+            Mods.table()
 
 
 class CLI(Client):
@@ -61,6 +81,6 @@ class CLI(Client):
 def main():
     "cli script."
     Arguments.getargs()
-    Boot.configure()
+    Kernel.configure()
     cli = CLI()
     cli.cmd(" ".join(sys.argv[1:]))

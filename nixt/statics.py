@@ -5,27 +5,34 @@
 
 
 CORE = {
-    "booting": "29e2790eec205b1544e97fff8f2649c9",
+    "booting": "e9720ef88349e9a2372063c081903014",
     "brokers": "bf614fd92d3268216c853bbb08a57b03",
     "clients": "04e78280804354fe91541e6c6e4d7bf0",
     "configs": "55373ef42c73f1df77f0a29755fe6027",
-    "defines": "0430dec7350ddf8ae4950f36a39201bf",
+    "defines": "1e3a8da013e5dc33a41a8a61acac232c",
     "encoder": "7c7f68bbcdc0bd9955c0acf70a9b4d7c",
     "engines": "767e741a9e84f56cdb1b68c979a6b584",
     "message": "6c2322224bbca893fd5899bda65df43e",
     "methods": "dc4c2e41f7a6cf82584e8119ee6725fa",
-    "objects": "d0fc2ddb5a9ef8c9a45e19d49c7e49e0",
-    "package": "dcb408ed7118870c299d25ff840d7e0a",
-    "parsers": "324904450920284db9334d32c047d174",
+    "objects": "529a55e137b6f5bd5908fdcdd1049d86",
+    "package": "724e7b10063b6b91445799d3281c433a",
+    "parsers": "cc9923d5e2e0aab885247a530ac0970c",
     "persist": "f8e56081d32a5b6308400b733b53da98",
     "repeats": "eaec4feccb68aea97288b5729d710454",
-    "runtime": "3fb909e2a14802e26a2e54e063fbaef7",
+    "runtime": "de1ca4300ea6b3b8723e3aae3da238dc",
     "threads": "2fcb5ceb0fa336dd7208297fc23e17b0",
     "utility": "e5e431324ce76bc26ea225ceb15521c3"
 }
 
 
-MODULES = {}
+MODULES = {
+    "adm": "918220bf49d4738b9979d450c1d48262",
+    "cmd": "f96e80af6080045631bf21b14c9f5539"
+}
 
 
-NAMES = {}
+NAMES = {
+    "cmd": "cmd",
+    "srv": "adm",
+    "tbl": "adm"
+}

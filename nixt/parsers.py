@@ -4,6 +4,7 @@
 "a clean namespace"
 
 
+from .methods import Method
 from .objects import Data
 
 
@@ -45,16 +46,16 @@ class Parse:
                 continue
             if "-=" in spli:
                 key, value = spli.split("-=", maxsplit=1)
-                cls.typed(obj.silent, key, value)
-                cls.typed(obj.gets, key, value)
+                Method.typed(obj.silent, key, value)
+                Method.typed(obj.gets, key, value)
                 continue
             if "==" in spli:
                 key, value = spli.split("==", maxsplit=1)
-                cls.typed(obj.gets, key, value)
+                Method.typed(obj.gets, key, value)
                 continue
             if "=" in spli:
                 key, value = spli.split("=", maxsplit=1)
-                cls.typed(obj.sets, key, value)
+                Method.typed(obj.sets, key, value)
                 continue
             nr += 1
             if nr == 0:
@@ -68,25 +69,6 @@ class Parse:
             obj.text = obj.text + " " + obj.rest
         else:
             obj.text = obj.mod + " " + obj.cmd
-
-    @classmethod
-    def typed(cls, obj, key, val):
-        "assign proper types."
-        if not val:
-            return
-        if val in ["True", "true", True]:
-            return setattr(obj, key, True)
-        if val in ["False", "false", False]:
-            return setattr(obj, key, False)
-        try:
-            return setattr(obj, key, int(val))
-        except ValueError:
-            pass
-        try:
-            return setattr(obj, key, float(val))
-        except ValueError:
-            pass
-        setattr(obj, key, val)
 
 
 def __dir__():

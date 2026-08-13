@@ -18,14 +18,6 @@ j = os.path.join
 d = os.path.dirname
 
 
-class Cmd:
-
-    @staticmethod
-    def cmd(event):
-        "show commands."
-        event.reply(",".join(Commands.cmds))
-
-
 class Commands:
 
     cmds = {}
@@ -191,7 +183,6 @@ class Mods:
 
 def __dir__():
     return (
-        'Cmd',
         'Commands',
         'Mods'
     )

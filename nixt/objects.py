@@ -39,5 +39,5 @@ class Data(Object):
 def __dir__():
     return (
         'Data',
-        'Json'
+        'Object'
     )

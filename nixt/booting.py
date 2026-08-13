@@ -26,23 +26,6 @@ class Boot:
         "greetings."
 
     @classmethod
-    def configure(cls):
-        "now"
-        Logging.level(Main.sets.level or "warning")
-        Workdir.wdr = Main.sets.wdr or Workdir.wdr or Workdir.home(Main.name)
-        Workdir.skel()
-        Mods.dir(Workdir.moddir())
-        Mods.dir(Mods.moddir())
-        Mods.dir(Main.sets.path)
-        if Main.sets.admin:
-            from .minimal import adm
-            Commands.scan(adm)
-        if Main.sets.scanner or Main.sets.all:
-            Mods.scanner()
-        else:
-            Mods.table()
-
-    @classmethod
     def forever(cls):
         "run forever until ctrl-c."
         while True:
