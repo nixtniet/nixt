@@ -5,7 +5,7 @@
 
 
 CORE = {
-    "booting": "9a14981e830b4b96933760908fc67a52",
+    "booting": "d1e0f53f8500ca30fcdd91aa3b11c3a0",
     "brokers": "bf614fd92d3268216c853bbb08a57b03",
     "clients": "04e78280804354fe91541e6c6e4d7bf0",
     "command": "f3acf3ac09061f0139c245716a24e90e",
@@ -15,7 +15,7 @@ CORE = {
     "message": "6c2322224bbca893fd5899bda65df43e",
     "methods": "dc4c2e41f7a6cf82584e8119ee6725fa",
     "objects": "609d5c0a121b2d92ac2e4c5a8f1eab47",
-    "package": "724e7b10063b6b91445799d3281c433a",
+    "package": "a8da5a44c3563896480f0255927f592e",
     "parsers": "cc9923d5e2e0aab885247a530ac0970c",
     "persist": "ccd30c236415b64c85d7dee89a2cecca",
     "repeats": "eaec4feccb68aea97288b5729d710454",
@@ -25,7 +25,22 @@ CORE = {
 }
 
 
-MODULES = {}
+MODULES = {
+    "irc": "3348e444a45621370e8a267a30fedc60",
+    "rss": "dba26a0bc060ffb5c805e0ad286b3ebc"
+}
 
 
-NAMES = {}
+NAMES = {
+    "atr": "rss",
+    "dpl": "rss",
+    "err": "rss",
+    "exp": "rss",
+    "imp": "rss",
+    "nme": "rss",
+    "pwd": "irc",
+    "rem": "rss",
+    "res": "rss",
+    "rss": "rss",
+    "syn": "rss"
+}

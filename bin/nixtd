@@ -42,7 +42,7 @@ class Arguments:
         optionparser = theparser.add_argument_group()
         optionparser.add_argument("-l", "--level", default="warning", help='set loglevel.', metavar="level")
         optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
-        optionparser.add_argument("-p", "--path", default=Workdir.moddir(), help='path to working directory.', metavar="path")
+        optionparser.add_argument("-p", "--path", default='', help='path to working directory.', metavar="path")
         optparser = theparser.add_argument_group()
         optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
         optparser.add_argument("--default", default="irc,mdl,rss,wsd", help=argparse.SUPPRESS)
@@ -91,13 +91,12 @@ class Kernel(Boot):
         pid2 = os.fork()
         if pid2 != 0:
             os._exit(0)
-        if Main.sets.verhose:
+        if not Main.sets.verbose:
             cls.null(sys.stdin)
             cls.null(sys.stdout)
             cls.null(sys.stderr)
         os.umask(0)
-        if Main.sets.nochdir:
-            os.chdir("/")
+        os.chdir("/")
         os.nice(10)
 
     @classmethod
@@ -174,6 +173,7 @@ class Scripts:
         Kernel.daemon()
         Kernel.privileges()
         Kernel.pid()
+        Main.sets.mods = ",".join(Mods.list())
         Kernel.init(Main.sets.mods)
         Kernel.forever()
 
@@ -183,8 +183,6 @@ class Scripts:
         readline.redisplay()
         if Main.sets.verbose:
             Kernel.banner()
-        if Main.sets.all:
-            Main.sets.mods = ",".join(Mods.list())
         Kernel.init(Main.sets.mods, Main.sets.wait)
         csl = Console()
         csl.start()
@@ -211,6 +209,7 @@ def main():
         Kernel.wrap(Scripts.service)
     else:
         Kernel.wrap(Scripts.background)
+        
 
 if __name__ == "__main__":
     main()

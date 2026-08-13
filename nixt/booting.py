@@ -32,14 +32,14 @@ class Boot:
         Logging.level(Main.sets.level or "warning")
         Workdir.wdr = Main.sets.wdr or Workdir.wdr or Workdir.home(Main.name)
         Workdir.skel()
-        Mods.dir(Workdir.moddir())
+        Mods.dir("mods", Workdir.moddir())
         Mods.dir(Main.sets.path)
         Commands.add(Cmd.cmd)
         if Main.sets.all:
             Main.sets.mods = ",".join(Mods.list())
         if Main.sets.admin:
             Commands.add(Cmd.tbl)
-        if Main.sets.scanner:
+        if Main.sets.scanner or Main.sets.all:
             Mods.scanner()
         else:
             Mods.table()

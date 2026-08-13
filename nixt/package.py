@@ -74,10 +74,11 @@ class Mods:
         "add module/patgh."
         if not pkgname:
             return
+        pkgn = pkgname
         if path is None:
             path = pkgname
-            pkgname = pkgname.split(os.sep)[-1]
-        cls.dirs[pkgname] = path
+            pkgn = pkgname.split(os.sep)[-1]
+        cls.dirs[pkgn] = path
 
     @classmethod
     def get(cls, name):
