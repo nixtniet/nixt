@@ -15,7 +15,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Cmd, Commands, Data, Logging, Main, Md5
+from nixt.defines import Boot, Client, Commands, Data, Logging, Main, Md5
 from nixt.defines import Message, Mods, Method, Workdir
 
 
@@ -49,15 +49,9 @@ class Arguments:
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
         optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
         args, arguments = theparser.parse_known_args()
-        Main.level = "warning"
-        Main.otxt = " ".join(arguments)
-        Main.gets = Data()
         Main.sets = Data()
         Method.update(Main.sets, args)
-        Mods.dir(Main.sets.path)
-        Workdir.wdr = Main.sets.wdr
-        Mods.table()
-        Logging.level(Main.sets.level or "warning")
+        Main.otxt = " ".join(arguments)
 
 
 class Kernel(Boot):
@@ -84,14 +78,6 @@ class Kernel(Boot):
         sys.stdout.flush()
 
     @classmethod
-    def boot(cls):
-        "starting."
-        Arguments.getargs()
-        if Main.sets.path:
-            Mods.dir(Main.sets.path)
-        Commands.add(Cmd.cmd)
-
-    @classmethod
     def cmd(cls, txt):
         cli = CLI()
         cli.silent = False
@@ -99,6 +85,25 @@ class Kernel(Boot):
         evt.orig = repr(cli)
         evt.text = txt
         Commands.command(evt)
+
+    @classmethod
+    def configure(cls):
+        "now"
+        Logging.size(len(Main.name))
+        Logging.level(Main.sets.level or "warning")
+        Workdir.wdr = Main.sets.wdr or Workdir.wdr or Workdir.home(Main.name)
+        Workdir.skel()
+        Mods.dir(Workdir.moddir())
+        Mods.dir(Mods.moddir())
+        Mods.dir(Mods.minimal())
+        Mods.dir(Main.sets.path)
+        if Main.sets.admin:
+            from .minimal import adm
+            Commands.scan(adm)
+        if Main.sets.scanner or Main.sets.all:
+            Mods.scanner()
+        else:
+            Mods.table()
 
     @classmethod
     def daemon(cls):
@@ -228,7 +233,8 @@ class Scripts:
 
 def main():
     "main"
-    Kernel.boot()
+    Arguments.getargs()
+    Kernel.configure()
     if Main.sets.daemon:
         Kernel.wrap(Scripts.background)
     elif Main.sets.console:
