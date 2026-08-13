@@ -195,6 +195,7 @@ class Scripts:
         Kernel.pid()
         if not Main.sets.verbose:
             Kernel.banner(True)
+        Main.sets.mods = ",".join(Mods.list())
         Kernel.init(Main.sets.mods)
         Kernel.forever()
 

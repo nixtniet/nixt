@@ -1,3 +1,4 @@
+{'mods': '/home/bart/.nixt/mods'}
 # This file is placed in the Public Domain.
 
 
@@ -5,10 +6,10 @@
 
 
 CORE = {
-    "booting": "d1e0f53f8500ca30fcdd91aa3b11c3a0",
+    "booting": "37b87f5ace1ca8afbc0bbfa499da7da6",
     "brokers": "bf614fd92d3268216c853bbb08a57b03",
     "clients": "04e78280804354fe91541e6c6e4d7bf0",
-    "command": "f3acf3ac09061f0139c245716a24e90e",
+    "command": "fef45e6a1287647705ed0bfb0af4d072",
     "configs": "55373ef42c73f1df77f0a29755fe6027",
     "defines": "9d8ffe1e1d02171cca9c6f9281218812",
     "engines": "767e741a9e84f56cdb1b68c979a6b584",
@@ -26,6 +27,7 @@ CORE = {
 
 
 MODULES = {
+    "fnd": "d8c272c7912b46a1ef678d63b0895d45",
     "irc": "3348e444a45621370e8a267a30fedc60",
     "rss": "dba26a0bc060ffb5c805e0ad286b3ebc"
 }
@@ -36,6 +38,8 @@ NAMES = {
     "dpl": "rss",
     "err": "rss",
     "exp": "rss",
+    "fie": "fnd",
+    "fnd": "fnd",
     "imp": "rss",
     "nme": "rss",
     "pwd": "irc",
