@@ -44,10 +44,11 @@ class Arguments:
         optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
         optionparser.add_argument("-p", "--path", default=Workdir.moddir(), help='path to working directory.', metavar="path")
         optparser = theparser.add_argument_group()
-        optparser.add_argument("--default", default="irc,mdl,rss,wsd", help=argparse.SUPPRESS)
-        optparser.add_argument("--wdr", default=Workdir.moddir(), help="set modules directory.")
-        optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
         optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
+        optparser.add_argument("--default", default="irc,mdl,rss,wsd", help=argparse.SUPPRESS)
+        optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
+        optparser.add_argument("--scanner", action="store_true", help="do full modules scan on boot.")
+        optparser.add_argument("--wdr", default="", help="set modules directory.")
         args, arguments = theparser.parse_known_args()
         Main.sets = Data()
         Method.update(Main.sets, args)
@@ -55,12 +56,6 @@ class Arguments:
 
 
 class Kernel(Boot):
-
-    @classmethod
-    def admin(cls):
-        if Main.sets.admin:
-            mod = Mods.get("adm")
-            Commands.scan(mod)
 
     @classmethod
     def banner(cls, force=False):
