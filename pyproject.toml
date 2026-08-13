@@ -22,10 +22,6 @@ classifiers = [
     "Topic :: Utilities"
 ]
 
-[project.scripts]
-"nixt" = "nixt.runtime:main"
-
-
 [project.urls]
 "home" = "https://github.com/nixtniet/nixt"
 "bugs" = "https://github.com/nixtniet/nixt/issues"
@@ -35,9 +31,6 @@ classifiers = [
 [tool.setuptools]
 packages = [
     'nixt',
-    'nixt.mirrors',
-    'nixt.modules',
-    'nixt.numbers'
 ]
 
 [tool.pylint."messages control"]

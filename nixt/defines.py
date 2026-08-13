@@ -8,12 +8,12 @@
 from .booting import Boot
 from .brokers import Broker, Clients
 from .clients import Buffer, Buffered, Client, Output
+from .command import Cmd
 from .configs import Main
-from .encoder import Json
 from .engines import Engine
 from .message import Message
 from .methods import Method
-from .objects import Data, Object
+from .objects import Data, Json, Object
 from .package import Commands, Mods
 from .parsers import Parse
 from .persist import Disk, Locate, Workdir
@@ -30,6 +30,7 @@ def __dir__():
        'Buffered',
        'Client',
        'Clients',
+       'Cmd',
        'Commands',
        'Data',
        'Disk',

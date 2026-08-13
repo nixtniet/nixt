@@ -12,9 +12,12 @@ import _thread
 
 from .brokers import Clients
 from .clients import Client
-from .package import Mods
+from .command import Cmd
+from .configs import Main
+from .package import Commands, Mods
+from .persist import Workdir
 from .threads import Task, Thread
-from .utility import Utils
+from .utility import Logging, Utils
 
 
 class Boot:
@@ -22,6 +25,24 @@ class Boot:
     @classmethod
     def banner(cls):
         "greetings."
+
+    @classmethod
+    def configure(cls):
+        "now"
+        Logging.level(Main.sets.level or "warning")
+        Workdir.wdr = Main.sets.wdr or Workdir.wdr or Workdir.home(Main.name)
+        Workdir.skel()
+        Mods.dir(Workdir.moddir())
+        Mods.dir(Main.sets.path)
+        Commands.add(Cmd.cmd)
+        if Main.sets.all:
+            Main.sets.mods = ",".join(Mods.list())
+        if Main.sets.admin:
+            Commands.add(Cmd.tbl)
+        if Main.sets.scanner:
+            Mods.scanner()
+        else:
+            Mods.table()
 
     @classmethod
     def forever(cls):

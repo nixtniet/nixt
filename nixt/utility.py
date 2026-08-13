@@ -80,6 +80,14 @@ class Md5:
         return cls.source(Utils.source(statics))[:7].upper()
 
     @classmethod
+    def createmd5(cls, path, data):
+        for pth in os.listdir(path):
+            if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
+                continue
+            name = pth[:-3]
+            data[name] = cls.md5(os.path.join(path, pth))
+
+    @classmethod
     def dir(cls, path, md5):
         "create a md5 for a directory."
         for fnm in os.listdir(path):
