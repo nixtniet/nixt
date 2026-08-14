@@ -43,7 +43,6 @@ class Boot:
             Mods.scanner()
         else:
             Mods.table()
-        print(Mods.dirs)
 
     @classmethod
     def forever(cls):

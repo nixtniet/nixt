@@ -22,20 +22,20 @@ from nixt.defines import Method, Mods, Parse, Time, Workdir
 Workdir.wdr = ".test"
 
 
-class Vars:
+class Kernel(Boot):
 
     nrevents = 0
     starttime = 0
 
-
-class Kernel(Boot):
-
     @classmethod
     def boot(cls):
         Parse.parse(Main, " ".join(sys.argv[1:]))
+        cls.configure()
         Mods.dir("examples", "examples")
+        Mods.scanner()
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
+        
 
     @classmethod
     def wrap(cls, func, *args, dofinal=None):
@@ -102,7 +102,7 @@ class Runners:
 def payload(todo):
     for cmd, example in todo.items():
         for ex in example:
-            Vars.nrevents += 1
+            Kernel.nrevents += 1
             evt = Message()
             evt.kind = "command"
             evt.text = f"{cmd} {ex}"
@@ -112,13 +112,13 @@ def payload(todo):
 def final():
     if "v" not in Main.opts:
         return
-    total = Vars.nrevents
+    total = Kernel.nrevents
     endtime = time.time()
-    lap = Time.elapsed(endtime-Vars.starttime)
-    percall = (endtime-Vars.starttime)/total
+    lap = Time.elapsed(endtime-Kernel.starttime)
+    percall = (endtime-Kernel.starttime)/total
     print(f"{Method.fmt(Main, skip='otxt,txt')}")
     print(f"events: {total}")
-    print(f"total: {lap} nrs: {Vars.nrevents} call: %.6fs" % percall)
+    print(f"total: {lap} nrs: {Kernel.nrevents} call: %.6fs" % percall)
     print(threading.enumerate())
 
 
@@ -129,7 +129,7 @@ def main():
     else:
         nrcpu = 1
     Runners.init(nrcpu, CLI)
-    Vars.starttime = time.time()
+    Kernel.starttime = time.time()
     nrs = Main.index or 1
     for _x in range(nrs):
         payload(pre)

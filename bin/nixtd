@@ -15,7 +15,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Data, Main, Md5
+from nixt.defines import Boot, Client, Cmd, Commands, Data, Main, Md5
 from nixt.defines import Message, Mods, Method, Workdir
 
 
@@ -71,6 +71,21 @@ class Kernel(Boot):
         )
         print(txt.replace("  ", " "))
         sys.stdout.flush()
+
+    @classmethod
+    def boot(cls):
+        Arguments.getargs()
+        cls.configure()
+        Commands.add(Cmd.cmd)
+        if Main.sets.all:
+            Main.sets.mods = ",".join(Mods.list())
+        if Main.sets.admin:
+            Commands.add(Cmd.tbl)
+        if Main.sets.scanner or Main.sets.all:
+            Mods.scanner()
+        else:
+            Mods.table()
+
 
     @classmethod
     def cmd(cls, txt):
@@ -202,8 +217,7 @@ class Scripts:
 
 def main():
     "main"
-    Arguments.getargs()
-    Kernel.configure()
+    Kernel.boot()
     if Main.sets.console:
         Kernel.wrap(Scripts.console)
     elif Main.sets.service:

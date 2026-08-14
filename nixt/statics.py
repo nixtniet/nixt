@@ -1,4 +1,3 @@
-{'mods': '/home/bart/.nixt/mods'}
 # This file is placed in the Public Domain.
 
 
@@ -6,7 +5,7 @@
 
 
 CORE = {
-    "booting": "37b87f5ace1ca8afbc0bbfa499da7da6",
+    "booting": "473e2ae4bdbd8b5a3029c44e9860e5c9",
     "brokers": "bf614fd92d3268216c853bbb08a57b03",
     "clients": "04e78280804354fe91541e6c6e4d7bf0",
     "command": "fef45e6a1287647705ed0bfb0af4d072",
