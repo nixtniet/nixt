@@ -76,6 +76,7 @@ class Kernel(Boot):
     def boot(cls):
         Arguments.getargs()
         cls.configure()
+        Mods.dir("modules", Workdir.moddir())
         if Main.sets.all:
             Main.sets.mods = ",".join(Mods.list())
         if Main.sets.scanner or Main.sets.all:

@@ -26,13 +26,12 @@ class Boot:
         "greetings."
 
     @classmethod
-    def configure(cls):
-        "now"
-        Logging.level(Main.sets.level or "warning")
-        Workdir.wdr = Main.sets.wdr or Workdir.wdr or Workdir.home(Main.name)
+    def configure(cls, cfg):
+        "setup basic variables"
+        Logging.level(cfg.level or "warning")
+        Workdir.wdr = cfg.wdr or Workdir.wdr or Workdir.home(Main.name)
         Workdir.skel()
-        Mods.dir("mods", Workdir.moddir())
-        Mods.dir(Main.sets.path)
+        Mods.dir(cfg.path)
 
     @classmethod
     def forever(cls):

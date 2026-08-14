@@ -13,8 +13,8 @@ import sys
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Data
-from nixt.defines import Main, Message, Method, Mods
+from nixt.defines import Boot, Client, Cmd, Commands, Data, Main, Message
+from nixt.defines import Method, Mods, Workdir
 
 
 class Arguments:
@@ -32,6 +32,7 @@ class Arguments:
         optionparser = theparser.add_argument_group()
         optionparser.add_argument("-l", "--level", default="warning", help='set loglevel.', metavar="level")
         optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
+        optionparser.add_argument("-n", "--name", default="nixt", help="name of the program.")
         optionparser.add_argument("-p", "--path", default="", help='path to working directory.', metavar="path")
         optionparser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
         optparser = theparser.add_argument_group()
@@ -49,11 +50,13 @@ class Kernel(Boot):
     @classmethod
     def boot(cls):
         Arguments.getargs()
-        cls.configure()
+        cls.configure(Main.sets)
+        if not Main.sets.admin:
+            Mods.dir("modules", Workdir.moddir())
         if Main.sets.all:
             Main.sets.mods = ",".join(Mods.list())
-        if not Main.sets.admin:
-            Mods.ignore +=  ",tbl"
+        if Main.sets.admin:
+            Commands.add(Cmd.tbl)
         if Main.sets.scanner or Main.sets.all:
             Mods.scanner()
         else:
