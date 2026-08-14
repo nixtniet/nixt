@@ -51,6 +51,7 @@ class Kernel(Boot):
     def boot(cls):
         Arguments.getargs()
         cls.configure(Main.sets)
+        Commands.add(Cmd.cmd)
         if not Main.sets.admin:
             Mods.dir("modules", Workdir.moddir())
         if Main.sets.all:
