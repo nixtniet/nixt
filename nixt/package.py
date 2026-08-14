@@ -122,6 +122,7 @@ class Mods:
 
     @classmethod
     def listcmds(cls, ignore=""):
+        "scan for a list of all commands."
         result = []
         for modname in cls.list(ignore):
             mod = Mods.get(modname)
@@ -130,6 +131,7 @@ class Mods:
 
     @classmethod
     def minimal(cls):
+        "return path to minimal."
         return j(d(__spec__.loader.path), "minimal")
         
     @classmethod
