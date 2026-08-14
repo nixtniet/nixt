@@ -13,7 +13,7 @@ import sys
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Cmd, Commands, Data
+from nixt.defines import Boot, Client, Commands, Data
 from nixt.defines import Main, Message, Method, Mods
 
 
@@ -50,11 +50,10 @@ class Kernel(Boot):
     def boot(cls):
         Arguments.getargs()
         cls.configure()
-        Commands.add(Cmd.cmd)
         if Main.sets.all:
             Main.sets.mods = ",".join(Mods.list())
-        if Main.sets.admin:
-            Commands.add(Cmd.tbl)
+        if not Main.sets.admin:
+            Mods.ignore +=  ",tbl"
         if Main.sets.scanner or Main.sets.all:
             Mods.scanner()
         else:

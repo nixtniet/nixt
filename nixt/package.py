@@ -138,13 +138,13 @@ class Mods:
         return j(d(__spec__.loader.path), "modules")
 
     @classmethod
-    def list(cls, ignore=""):
+    def list(cls):
         "comma seperated list of available modules."
         mods = []
         for pkgname, path in cls.dirs.items():
             if not os.path.exists(path):
                 continue
-            mods.extend(Utils.listdir(path, ignore))
+            mods.extend(Utils.listdir(path, cls.ignore))
         return sorted(set(mods))
 
     @classmethod

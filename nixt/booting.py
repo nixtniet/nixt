@@ -12,7 +12,6 @@ import _thread
 
 from .brokers import Clients
 from .clients import Client
-from .command import Cmd
 from .configs import Main
 from .package import Commands, Mods
 from .persist import Workdir
@@ -34,15 +33,6 @@ class Boot:
         Workdir.skel()
         Mods.dir("mods", Workdir.moddir())
         Mods.dir(Main.sets.path)
-        Commands.add(Cmd.cmd)
-        if Main.sets.all:
-            Main.sets.mods = ",".join(Mods.list())
-        if Main.sets.admin:
-            Commands.add(Cmd.tbl)
-        if Main.sets.scanner or Main.sets.all:
-            Mods.scanner()
-        else:
-            Mods.table()
 
     @classmethod
     def forever(cls):

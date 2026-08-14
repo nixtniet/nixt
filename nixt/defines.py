@@ -8,7 +8,6 @@
 from .booting import Boot
 from .brokers import Broker, Clients
 from .clients import Buffer, Buffered, Client, Output
-from .command import Cmd
 from .configs import Main
 from .engines import Engine
 from .message import Message
@@ -30,7 +29,6 @@ def __dir__():
        'Buffered',
        'Client',
        'Clients',
-       'Cmd',
        'Commands',
        'Data',
        'Disk',
