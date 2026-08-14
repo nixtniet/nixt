@@ -8,6 +8,7 @@ import inspect
 import os
 
 
+from nixt.configs import Main
 from nixt.encoder import Json
 from nixt.package import Commands, Mods
 from nixt.utility import Md5
@@ -15,6 +16,9 @@ from nixt.utility import Md5
 
 def tbl(event):
     "create table."
+    if not Main.sets.admin:
+        event.reply("creating tables needs --admin")
+        return
     core = {}
     md5s = {}
     Mods.names = {}
