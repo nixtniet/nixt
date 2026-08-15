@@ -4,7 +4,7 @@
 "one config to rule them all"
 
 
-from .methods import Method
+from .objects import Method
 
 
 class Config(type):

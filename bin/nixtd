@@ -80,9 +80,10 @@ class Kernel(Boot):
         if Main.sets.all:
             Main.sets.mods = ",".join(Mods.list())
         if Main.sets.scanner or Main.sets.all:
-            Mods.scanner()
+            Commands.scanner()
         else:
-            Mods.table()
+            Commands.table()
+        Mods.table()
 
     @classmethod
     def cmd(cls, txt):

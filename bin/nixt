@@ -59,9 +59,10 @@ class Kernel(Boot):
         if Main.sets.admin:
             Commands.add(Cmd.tbl)
         if Main.sets.scanner or Main.sets.all:
-            Mods.scanner()
+            Commands.scanner()
         else:
-            Mods.table()
+            Commands.table()
+        Mods.table()
 
 
 class CLI(Client):

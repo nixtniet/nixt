@@ -12,8 +12,9 @@ import _thread
 
 from .brokers import Clients
 from .clients import Client
+from .command import Commands 
 from .configs import Main
-from .package import Commands, Mods
+from .package import Mods
 from .persist import Workdir
 from .threads import Task, Thread
 from .utility import Logging, Utils

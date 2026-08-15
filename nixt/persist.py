@@ -13,8 +13,8 @@ import threading
 import time
 
 
-from .methods import Method
-from .objects import Data, Json
+from .encoder import Json
+from .objects import Data, Method
 
 
 e = os.path.exists

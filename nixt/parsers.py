@@ -4,8 +4,7 @@
 "a clean namespace"
 
 
-from .methods import Method
-from .objects import Data
+from .objects import Data, Method
 
 
 class Parse:
