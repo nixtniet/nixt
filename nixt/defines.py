@@ -8,19 +8,24 @@
 from .booting import Boot
 from .brokers import Broker, Clients
 from .clients import Buffer, Buffered, Client, Output
-from .command import Cmd, Commands
+from .command import Commands
 from .configs import Main
 from .encoder import Json
 from .engines import Engine
+from .loggers import Logging
+from .md5sums import Md5
 from .message import Message
-from .objects import Data, Method, Object
+from .methods import Method
+from .objects import Data, Object
 from .package import Mods
 from .parsers import Parse
-from .persist import Disk, Locate, Workdir
+from .persist import Disk, Locate
 from .repeats import Repeater
+from .tabling import Tbl
 from .threads import Task, Thread
-from .utility import Logging, Md5, Time, Utils
-
+from .timings import Time
+from .utility import Utils
+from .workdir import Workdir
 
 def __dir__():
     return (
@@ -47,6 +52,7 @@ def __dir__():
        'Parse',
        'Repeater',
        'Task',
+       'Tbl',
        'Thread',
        'Time',
        'Utils',

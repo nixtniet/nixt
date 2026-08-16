@@ -11,12 +11,14 @@ import os
 
 from .brokers import Clients
 from .encoder import Json
+from .md5sums import Md5
 from .parsers import Parse
-from .utility import Md5, Utils
+from .utility import Utils
 
 
 j = os.path.join
 d = os.path.dirname
+e = os.path.exists
 
 
 class Mods:
@@ -46,7 +48,7 @@ class Mods:
             if mod:
                 return mod
             fnm = os.path.join(path, name + ".py")
-            if not os.path.exists(fnm):
+            if not e(fnm):
                 continue
             if cls.md5s:
                 md5 = Md5.md5(fnm)
@@ -82,7 +84,7 @@ class Mods:
         "comma seperated list of available modules."
         mods = []
         for pkgname, path in cls.dirs.items():
-            if not os.path.exists(path):
+            if not e(path):
                 continue
             mods.extend(Utils.listdir(path))
         return sorted(set(mods))
