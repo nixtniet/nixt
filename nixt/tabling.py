@@ -26,7 +26,7 @@ class Tbl:
             module = Mods.get(name)
             md5s[name] = Md5.md5(module.__file__)
             for cmd in Commands.scan(module):
-                Mods.names[cmd.__name__] = cmd.__module__.split(".")[-1]
+                Commands.names[cmd.__name__] = cmd.__module__.split(".")[-1]
         corepath = os.path.dirname(inspect.getsourcefile(Mods))
         Md5.createmd5(corepath, core)
         event.reply("# This file is placed in the Public Domain.")

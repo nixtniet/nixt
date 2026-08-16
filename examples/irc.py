@@ -15,7 +15,7 @@ import _thread
 
 
 from nixt.defines import Object, Broker, Buffered, Commands, Disk, Main
-from nixt.defines import Message, Mods, Method, Thread, Utils
+from nixt.defines import Message, Mods, Method, Thread
 
 
 def init():
@@ -48,7 +48,7 @@ def shutdown():
 
 class Config(Object):
 
-    name = Main.name or Utils.pkgname(Mods)
+    name = Main.name or Method.pkgname(Mods)
     channel = f"#{name}"
     commands = True
     control = "!"
