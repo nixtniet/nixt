@@ -8,7 +8,6 @@ import datetime
 import json
 import logging
 import os
-import pathlib
 import threading
 import time
 
@@ -16,6 +15,7 @@ import time
 from .encoder import Json
 from .methods import Method
 from .objects import Data
+from .utility import Utils
 from .workdir import Workdir
 
 
@@ -51,15 +51,6 @@ class Disk:
     lock = threading.RLock()
 
     @classmethod
-    def cdir(cls, path):
-        "create directory."
-        if e(path):
-            return
-        pth = pathlib.Path(path)
-        if not e(pth.parent):
-            pth.parent.mkdir(parents=True, exist_ok=True)
-
-    @classmethod
     def ident(cls, obj):
         "return ident string for object."
         return j(Method.fqn(obj), *str(datetime.datetime.now()).split())
@@ -86,7 +77,7 @@ class Disk:
             if path == "":
                 path = cls.ident(obj)
             pth = j(Workdir.wdr, base, path)
-            cls.cdir(pth)
+            Utils.cdir(pth)
             with open(pth, "w", encoding="utf-8") as fpt:
                 Json.dump(obj, fpt, indent=4)
             Cache.sync(path, obj)

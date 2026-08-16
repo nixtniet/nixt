@@ -4,10 +4,24 @@
 "usefulness"
 
 
+import inspect
 import os
+import pathlib
+
+
+e = os.path.exists
 
 
 class Utils:
+
+    @classmethod
+    def cdir(cls, path):
+        "create directory."
+        if e(path):
+            return
+        pth = pathlib.Path(path)
+        if not e(pth.parent):
+            pth.parent.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
     def clsname(obj):

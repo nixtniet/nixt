@@ -8,6 +8,9 @@ import logging
 import os
 
 
+from .utility import Utils
+
+
 class Md5:
 
     @classmethod

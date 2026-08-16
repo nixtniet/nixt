@@ -8,6 +8,9 @@ import os
 import pathlib
 
 
+from .utility import Utils
+
+
 e = os.path.exists
 j = os.path.join
 
@@ -66,7 +69,7 @@ class Workdir:
         if not cls.wdr:
             return
         if not e(cls.wdr):
-            Disk.cdir(cls.wdr)
+            Utils.cdir(cls.wdr)
         path = os.path.abspath(cls.wdr)
         for wpth in ["config", "logs", "mods", "store"]:
             pth = pathlib.Path(j(path, wpth))

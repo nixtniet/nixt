@@ -5,21 +5,18 @@
 
 
 import inspect
-import logging
 import os
 
 
-from .brokers import Clients
 from .command import Commands
 from .encoder import Json
 from .md5sums import Md5
 from .package import Mods
-from .parsers import Parse
-from .utility import Utils
 
 
 class Tbl:
 
+    @staticmethod
     def tbl(event):
         "create table."
         core = {}

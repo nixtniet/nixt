@@ -75,7 +75,7 @@ class Kernel(Boot):
     @classmethod
     def boot(cls):
         Arguments.getargs()
-        cls.configure()
+        cls.configure(Main.sets)
         Mods.dir("modules", Workdir.moddir())
         if Main.sets.all:
             Main.sets.mods = ",".join(Mods.list())

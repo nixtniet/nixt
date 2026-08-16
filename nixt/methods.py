@@ -7,6 +7,9 @@
 import types
 
 
+from .objects import Object
+
+
 class Method:
 
     @classmethod
