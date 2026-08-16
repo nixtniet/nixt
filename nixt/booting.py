@@ -29,6 +29,7 @@ class Boot:
     @classmethod
     def configure(cls, cfg):
         "setup basic variables"
+        Logging.size(len(cfg.name))
         Logging.level(cfg.level or "warning")
         Workdir.wdr = cfg.wdr or Workdir.wdr or Workdir.home(Main.name)
         Workdir.skel()
