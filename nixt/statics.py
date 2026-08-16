@@ -5,7 +5,7 @@
 
 
 CORE = {
-    "booting": "2740128ace90f3ba9d6bcf24dfdfa6a5",
+    "booting": "355c49b87b11ce230f1c2c10df26b7eb",
     "brokers": "bf614fd92d3268216c853bbb08a57b03",
     "clients": "04e78280804354fe91541e6c6e4d7bf0",
     "command": "43b77118d52b6017f1f714dcfc8fcd72",
@@ -38,7 +38,7 @@ MODULES = {
     "flt": "c40a68583139d18206d885959c0ece30",
     "fnd": "d8c272c7912b46a1ef678d63b0895d45",
     "hlp": "0e3fe796350fb7707e218e4a94f440b8",
-    "irc": "3348e444a45621370e8a267a30fedc60",
+    "irc": "c332ea54145a98f2b0983b40292a1e13",
     "log": "5d11a098f0c298fe773f8d9bfbb21d11",
     "man": "920599410f7739c9503e0eea9e4e5885",
     "mdl": "0ea87138ce166ce9a904514ab8bc4b48",
@@ -52,9 +52,10 @@ MODULES = {
     "tdo": "734baf117bde28e7a979bdec82528c14",
     "thr": "6ae37c096264d246cb4de07cfd687222",
     "tmr": "f3d6df1887dae91a3023350749f4217a",
+    "udp": "abc7949f82db4990c2d569fa4325dba9",
     "upt": "d7f456e017f217289720a0ddda3aa24d",
     "ver": "be405e2a3d958c3ae704adb3d3fb3c6d",
-    "web": "7475c9f4381aa9126c4ea3889e8ce4e8",
+    "web": "fedf1a525e75f1a7e16c2503a700f03a",
     "wsd": "a9d4f77c24929ec37b62044b9e83023a"
 }
 
@@ -91,6 +92,7 @@ NAMES = {
     "tdo": "tdo",
     "thr": "thr",
     "tmr": "tmr",
+    "udp": "udp",
     "upt": "upt",
     "ver": "ver",
     "wsd": "wsd"
