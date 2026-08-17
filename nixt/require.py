@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"program your own commands"
+"required commands"
 
 
 import inspect
@@ -10,11 +10,11 @@ import os
 
 from .command import Commands
 from .encoder import Json
-from .md5sums import Md5
+from .hashing import Md5
 from .package import Mods
 
 
-class Tbl:
+class Cmd:
 
     @staticmethod
     def tbl(event):
@@ -42,5 +42,5 @@ class Tbl:
 
 def __dir__():
     return (
-        'Tbl',
+        'Cmd',
     )

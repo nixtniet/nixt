@@ -8,7 +8,7 @@ import logging
 import os
 
 
-from .md5sums import Md5
+from .hashing import Md5
 from .utility import Utils
 
 

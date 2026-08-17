@@ -12,8 +12,8 @@ from .command import Commands
 from .configs import Main
 from .encoder import Json
 from .engines import Engine
+from .hashing import Md5
 from .loggers import Logging
-from .md5sums import Md5
 from .message import Message
 from .methods import Method
 from .objects import Data, Object
@@ -22,7 +22,7 @@ from .package import Mods
 from .parsers import Parse
 from .persist import Disk, Locate, Workdir
 from .repeats import Repeater
-from .tabling import Tbl
+from .require import Cmd
 from .threads import Task, Thread
 from .timings import Time
 from .utility import Utils
@@ -36,6 +36,7 @@ def __dir__():
        'Buffered',
        'Client',
        'Clients',
+       'Vmd',
        'Commands',
        'Data',
        'Disk',
@@ -52,7 +53,6 @@ def __dir__():
        'Parse',
        'Repeater',
        'Task',
-       'Tbl',
        'Thread',
        'Time',
        'Utils',
