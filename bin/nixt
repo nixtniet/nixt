@@ -52,6 +52,7 @@ class Kernel(Boot):
         Arguments.getargs()
         cls.configure(Main.sets)
         Mods.dir("modules", Workdir.moddir())
+        Commands.add(Cmd.cmd)
         if Main.sets.all:
             Main.sets.mods = ",".join(Mods.list())
         if Main.sets.admin:

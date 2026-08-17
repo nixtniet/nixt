@@ -15,7 +15,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Data, Main, Md5
+from nixt.defines import Boot, Client, Cmd, Commands, Data, Main, Md5
 from nixt.defines import Message, Mods, Method, Workdir
 
 
@@ -77,6 +77,7 @@ class Kernel(Boot):
         Arguments.getargs()
         cls.configure(Main.sets)
         Mods.dir("modules", Workdir.moddir())
+        Commands.add(Cmd.cmd)
         if Main.sets.all:
             Main.sets.mods = ",".join(Mods.list())
         if Main.sets.scanner or Main.sets.all:

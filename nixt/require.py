@@ -17,6 +17,11 @@ from .package import Mods
 class Cmd:
 
     @staticmethod
+    def cmd(event):
+        "show commands."
+        event.reply(",".join(sorted(Commands.names or Commands.cmds)))
+
+    @staticmethod
     def tbl(event):
         "create table."
         core = {}

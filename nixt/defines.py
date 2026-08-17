@@ -36,7 +36,7 @@ def __dir__():
        'Buffered',
        'Client',
        'Clients',
-       'Vmd',
+       'Cmd',
        'Commands',
        'Data',
        'Disk',

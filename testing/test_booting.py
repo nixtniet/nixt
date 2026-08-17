@@ -9,7 +9,6 @@ import unittest
 
 class TestRuntime(unittest.TestCase):
 
-
     def test_banner(self):
         pass
 

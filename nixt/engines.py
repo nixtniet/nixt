@@ -9,7 +9,6 @@ import threading
 import _thread
 
 
-from .objects import Data
 from .threads import Thread
 
 
