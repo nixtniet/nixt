@@ -7,10 +7,10 @@
 CORE = {
     "booting": "355c49b87b11ce230f1c2c10df26b7eb",
     "brokers": "bf614fd92d3268216c853bbb08a57b03",
-    "clients": "04e78280804354fe91541e6c6e4d7bf0",
+    "clients": "9bd824df44ceeeaf73134e38f8177669",
     "command": "43b77118d52b6017f1f714dcfc8fcd72",
     "configs": "55373ef42c73f1df77f0a29755fe6027",
-    "defines": "90e3dafb5c29413a5b95324d79842d6e",
+    "defines": "1143f23675c873ccae15089157bc1410",
     "encoder": "7c7f68bbcdc0bd9955c0acf70a9b4d7c",
     "engines": "dfee5fbb8fbdbe626fd46ca78b62d80a",
     "loggers": "0c75c9b5df26dc5f023257711f140754",
@@ -18,16 +18,16 @@ CORE = {
     "message": "6c2322224bbca893fd5899bda65df43e",
     "methods": "dc4c2e41f7a6cf82584e8119ee6725fa",
     "objects": "529a55e137b6f5bd5908fdcdd1049d86",
+    "outputs": "c50a79361446655ad97701b1b8d57dfb",
     "package": "9aaf9d7d3bd5fc7940caf1dbaf1c597a",
     "parsers": "cc9923d5e2e0aab885247a530ac0970c",
-    "persist": "c886c5aa3c28037f8ec95e1cce25175a",
+    "persist": "df29c06ef562810c67e9b29e84124801",
     "repeats": "eaec4feccb68aea97288b5729d710454",
     "runtime": "ed941e3697f861b0cd3a175f29fcd991",
     "tabling": "5aa8cf556b40de065686f69d5381d6b1",
     "threads": "2fcb5ceb0fa336dd7208297fc23e17b0",
     "timings": "3779158dd2a2f280d403717c7ea75886",
-    "utility": "913dcf4fefccdb30d2afb60cdcf96a64",
-    "workdir": "f9c63119b2212b3a0821b9900e519b6a"
+    "utility": "913dcf4fefccdb30d2afb60cdcf96a64"
 }
 
 
