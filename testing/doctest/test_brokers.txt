@@ -1,9 +1,13 @@
 # This file is placed in the Public Domain.
 # doctest: +ELLIPSIS
 
+
 "brokers"
 
-"""
+
+# test adding on object to the broker
+
+
 >>> from nixt.defines import Broker, Object
 >>> b = Broker()
 >>> o = Object()
@@ -15,5 +19,3 @@
 >>> obj = b.get(id)
 >>> repr(obj) == id
 True
-
-"""
