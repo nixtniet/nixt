@@ -10,9 +10,9 @@ CORE = {
     "clients": "9bd824df44ceeeaf73134e38f8177669",
     "command": "2e9fc0aaa8dde0d8caccea26b3feb066",
     "configs": "55373ef42c73f1df77f0a29755fe6027",
-    "defines": "6a7964c059a1879202d921e505da59f4",
+    "defines": "36401acdf41a9fde255e2b9d3afbe078",
     "encoder": "7c7f68bbcdc0bd9955c0acf70a9b4d7c",
-    "engines": "deb79d9a895ace45c76e7d2d2ec08f9f",
+    "engines": "d9361c864385c66a8698c2711e1884cc",
     "hashing": "1b7cb34eaff614661f28ad870299ba98",
     "loggers": "0c75c9b5df26dc5f023257711f140754",
     "message": "6c2322224bbca893fd5899bda65df43e",
@@ -23,7 +23,7 @@ CORE = {
     "parsers": "cc9923d5e2e0aab885247a530ac0970c",
     "persist": "df29c06ef562810c67e9b29e84124801",
     "repeats": "eaec4feccb68aea97288b5729d710454",
-    "require": "5dea798ed326fdf92996b0e2aab17357",
+    "require": "09d0258fecc51ac2ad4eba8a3f85b8d6",
     "runtime": "ed941e3697f861b0cd3a175f29fcd991",
     "threads": "2fcb5ceb0fa336dd7208297fc23e17b0",
     "timings": "3779158dd2a2f280d403717c7ea75886",
@@ -33,7 +33,6 @@ CORE = {
 
 MODULES = {
     "cfg": "83bd7e9b313fb55fc46c7bf797a70f77",
-    "cmd": "7bb9b998ba3fe9b625cb6dd60af60f2a",
     "fie": "0eb10b5104e76831e1295ff9a91a0e8d",
     "flt": "c40a68583139d18206d885959c0ece30",
     "fnd": "d8c272c7912b46a1ef678d63b0895d45",
@@ -63,7 +62,6 @@ MODULES = {
 NAMES = {
     "atr": "rss",
     "cfg": "cfg",
-    "cmd": "cmd",
     "dis": "mdl",
     "dne": "tdo",
     "dpl": "rss",

@@ -42,7 +42,7 @@ class Arguments:
         optionparser = theparser.add_argument_group()
         optionparser.add_argument("-l", "--level", default="warning", help='set loglevel.', metavar="level")
         optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
-        optionparser.add_argument("-p", "--path", default='', help='path to working directory.', metavar="path")
+        optionparser.add_argument("-p", "--path", default='', help='path to modules directory.', metavar="path")
         optparser = theparser.add_argument_group()
         optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
         optparser.add_argument("--default", default="irc,mdl,rss,wsd", help=argparse.SUPPRESS)
