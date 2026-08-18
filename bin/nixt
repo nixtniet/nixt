@@ -69,13 +69,6 @@ class CLI(Client):
     def __init__(self):
         Client.__init__(self)
 
-    def cmd(self, txt):
-        evt = Message()
-        evt.orig = repr(self)
-        evt.text = txt
-        Commands.command(evt)
-        evt.wait()
-
     def raw(self, text):
         "write to console."
         print(text.encode('utf-8', 'replace').decode("utf-8"))
@@ -86,7 +79,11 @@ def main():
     "cli script."
     Kernel.boot()
     cli = CLI()
-    cli.cmd(" ".join(sys.argv[1:]))
+    evt = Message()
+    evt.orig = repr(cli)
+    evt.text = " ".join(sys.argv[1:])
+    Commands.command(evt)
+    evt.wait()
 
 
 if __name__ == "__main__":

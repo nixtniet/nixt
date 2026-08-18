@@ -36,13 +36,20 @@ class Cmd:
         Md5.createmd5(corepath, core)
         event.reply("# This file is placed in the Public Domain.")
         event.reply("\n")
-        event.reply('"static tables"')
+        event.reply('"tables"')
         event.reply("\n")
         event.reply(f"CORE = {Json.dumps(core, indent=4, sort_keys=True)}")
         event.reply("\n")
         event.reply(f"MODULES = {Json.dumps(md5s, indent=4, sort_keys=True)}")
         event.reply("\n")
         event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4, sort_keys=True)}")
+        event.reply("\n")
+        event.reply("def __dir__():")
+        event.reply("    return (")
+        event.reply("        'CORE',")
+        event.reply("        'MODULES',")
+        event.reply("        'NAMES'")
+        event.reply("    )")
 
 
 def __dir__():

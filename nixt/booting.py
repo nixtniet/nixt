@@ -12,7 +12,6 @@ import _thread
 
 from .brokers import Clients
 from .clients import Client
-from .configs import Main
 from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
@@ -31,7 +30,7 @@ class Boot:
         "setup basic variables"
         Logging.size(len(cfg.name))
         Logging.level(cfg.level or "warning")
-        Workdir.wdr = cfg.wdr or Workdir.wdr or Workdir.home(Main.name)
+        Workdir.wdr = cfg.wdr or Workdir.wdr or Workdir.home(cfg.name)
         Workdir.skel()
         Mods.dir(cfg.path)
 

@@ -1,29 +1,29 @@
 # This file is placed in the Public Domain.
 
 
-"static tables"
+"tables"
 
 
 CORE = {
-    "booting": "355c49b87b11ce230f1c2c10df26b7eb",
+    "booting": "ec553321d38a4361a20a11956f116e0c",
     "brokers": "bf614fd92d3268216c853bbb08a57b03",
     "clients": "9bd824df44ceeeaf73134e38f8177669",
     "command": "2e9fc0aaa8dde0d8caccea26b3feb066",
     "configs": "55373ef42c73f1df77f0a29755fe6027",
     "defines": "36401acdf41a9fde255e2b9d3afbe078",
     "encoder": "7c7f68bbcdc0bd9955c0acf70a9b4d7c",
-    "engines": "d9361c864385c66a8698c2711e1884cc",
+    "engines": "767e741a9e84f56cdb1b68c979a6b584",
     "hashing": "1b7cb34eaff614661f28ad870299ba98",
     "loggers": "0c75c9b5df26dc5f023257711f140754",
     "message": "6c2322224bbca893fd5899bda65df43e",
     "methods": "dc4c2e41f7a6cf82584e8119ee6725fa",
     "objects": "529a55e137b6f5bd5908fdcdd1049d86",
     "outputs": "b7edddf1249f1be8b9e568379479948f",
-    "package": "e85bece4b029d5a2dec6534a02755cce",
+    "package": "9d94c9c55f2046ac1cd00e1a6f58d5eb",
     "parsers": "cc9923d5e2e0aab885247a530ac0970c",
-    "persist": "df29c06ef562810c67e9b29e84124801",
+    "persist": "f2df58dc427d14784488d27941491c73",
     "repeats": "eaec4feccb68aea97288b5729d710454",
-    "require": "09d0258fecc51ac2ad4eba8a3f85b8d6",
+    "require": "53ae8d308fceff8dab77fc89f86f7eef",
     "runtime": "ed941e3697f861b0cd3a175f29fcd991",
     "threads": "2fcb5ceb0fa336dd7208297fc23e17b0",
     "timings": "3779158dd2a2f280d403717c7ea75886",
@@ -95,3 +95,11 @@ NAMES = {
     "ver": "ver",
     "wsd": "wsd"
 }
+
+
+def __dir__():
+    return (
+        'CORE',
+        'MODULES',
+        'NAMES'
+    )

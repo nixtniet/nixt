@@ -12,11 +12,6 @@ from .hashing import Md5
 from .utility import Utils
 
 
-j = os.path.join
-d = os.path.dirname
-e = os.path.exists
-
-
 class Mods:
 
     core = {}
@@ -44,7 +39,7 @@ class Mods:
             if mod:
                 return mod
             fnm = os.path.join(path, name + ".py")
-            if not e(fnm):
+            if not os.path.exists(fnm):
                 continue
             if cls.md5s:
                 md5 = Md5.md5(fnm)
@@ -80,7 +75,7 @@ class Mods:
         "comma seperated list of available modules."
         mods = []
         for pkgname, path in cls.dirs.items():
-            if not e(path):
+            if not os.path.exists(path):
                 continue
             mods.extend(Utils.listdir(path))
         return sorted(set(mods))
