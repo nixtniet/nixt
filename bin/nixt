@@ -50,7 +50,7 @@ class Kernel(Boot):
     @classmethod
     def boot(cls):
         Arguments.getargs()
-        cls.configure(Main.sets)
+        cls.configure(Main)
         Mods.dir("modules", Workdir.moddir())
         Commands.add(Cmd.cmd)
         if Main.sets.all:

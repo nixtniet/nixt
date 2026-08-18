@@ -29,10 +29,10 @@ class Boot:
     def configure(cls, cfg):
         "setup basic variables"
         Logging.size(len(cfg.name))
-        Logging.level(cfg.level or "warning")
-        Workdir.wdr = cfg.wdr or Workdir.wdr or Workdir.home(cfg.name)
+        Logging.level(cfg.sets.level or "warning")
+        Workdir.wdr = cfg.sets.wdr or Workdir.wdr or Workdir.home(cfg.name)
         Workdir.skel()
-        Mods.dir(cfg.path)
+        Mods.dir(cfg.sets.path)
 
     @classmethod
     def forever(cls):

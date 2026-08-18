@@ -9,18 +9,15 @@ import os
 import pathlib
 
 
-e = os.path.exists
-
-
 class Utils:
 
     @classmethod
     def cdir(cls, path):
         "create directory."
-        if e(path):
+        if os.path.exists(path):
             return
         pth = pathlib.Path(path)
-        if not e(pth.parent):
+        if not os.path.exists(pth.parent):
             pth.parent.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
