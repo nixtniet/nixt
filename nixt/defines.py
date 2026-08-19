@@ -13,7 +13,6 @@ from .configs import Main
 from .encoder import Json
 from .engines import Engine
 from .hashing import Md5
-from .loggers import Logging
 from .message import Message
 from .methods import Method
 from .objects import Data, Object
@@ -25,7 +24,7 @@ from .repeats import Repeater
 from .require import Cmd
 from .threads import Task, Thread
 from .timings import Time
-from .utility import Utils
+from .utility import Logging, Utils
 
 
 def __dir__():

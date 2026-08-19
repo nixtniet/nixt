@@ -31,6 +31,6 @@ def popen(txt):
         sys.stdout.flush()
 
 
-popen(f"ruff check {NAME} examples bin/nixt bin/nixtd  bin/tinder testing")
-popen(f"pylint {NAME} examples bin/nixt bin/nixtd bin/tinder testing")
-popen(f"flake8 {NAME} examples bin/nixt bin/nixtd bin/tinder testing")
+popen(f"ruff check {NAME} bin/tinder testing")
+popen(f"pylint {NAME} bin/tinder testing")
+popen(f"flake8 {NAME} bin/tinder testing")

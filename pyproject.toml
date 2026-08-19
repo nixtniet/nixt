@@ -22,6 +22,11 @@ classifiers = [
     "Topic :: Utilities"
 ]
 
+[project.scripts]
+"nixt" = "nixt.runtime:main"
+"nixtd" = "nixt.daemons:main"
+
+
 [project.urls]
 "home" = "https://github.com/nixtniet/nixt"
 "bugs" = "https://github.com/nixtniet/nixt/issues"
@@ -31,7 +36,12 @@ classifiers = [
 [tool.setuptools]
 packages = [
     'nixt',
+    'nixt.minimal',
+    'nixt.modules',
+    'nixt.network',
+    'nixt.numbers'
 ]
+
 
 [tool.pylint."messages control"]
 disable = ["C,R,W,E0401,E0402"]

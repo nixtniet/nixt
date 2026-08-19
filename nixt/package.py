@@ -81,6 +81,11 @@ class Mods:
         return sorted(set(mods))
 
     @classmethod
+    def moddir(cls):
+        "return package modules path."
+        return os.path.join(Utils.where(Mods), "modules")
+
+    @classmethod
     def statics(cls):
         "read table,"
         try:

@@ -30,8 +30,8 @@ class Kernel(Boot):
     @classmethod
     def boot(cls):
         Parse.parse(Main, " ".join(sys.argv[1:]))
-        cls.configure(Main.sets)
-        Mods.dir("examples", "examples")
+        cls.configure(Main)
+        Mods.dir(Mods.moddir())
         Commands.scanner()
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
