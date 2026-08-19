@@ -41,11 +41,6 @@ class Utils:
                ]
 
     @staticmethod
-    def pipxdir(name):
-        "return examples directory."
-        return f"~/.local/share/pipx/venvs/{name}/share/{name}/"
-
-    @staticmethod
     def skip(obj):
         "skip underscored keys."
         result = []

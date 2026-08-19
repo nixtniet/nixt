@@ -243,6 +243,6 @@ class Workdir:
 def __dir__():
     return (
         'Disk',
-        'Locater',
+        'Locate',
         'Workdir'
     )
