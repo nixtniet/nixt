@@ -87,15 +87,6 @@ class Kernel(Boot):
         Mods.table()
 
     @classmethod
-    def cmd(cls, txt):
-        cli = CLI()
-        cli.silent = False
-        evt = Message()
-        evt.orig = repr(cli)
-        evt.text = txt
-        Commands.command(evt)
-
-    @classmethod
     def daemon(cls):
         "run in the background."
         pid = os.fork()
@@ -217,7 +208,6 @@ class Scripts:
 def main():
     "main"
     Kernel.boot()
-    print(Mods.dirs)
     if Main.sets.console:
         Kernel.wrap(Scripts.console)
     elif Main.sets.service:
