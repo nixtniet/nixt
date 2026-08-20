@@ -9,7 +9,7 @@ import sys
 
 
 from .defines import Boot, Client, Cmd, Commands, Data, Main, Message
-from .defines import Method, Mods
+from .defines import Method, Mods, Workdir
 
 
 class Arguments:
@@ -47,6 +47,7 @@ class Kernel(Boot):
         Arguments.getargs()
         cls.configure(Main)
         Mods.dir(Mods.moddir())
+        Mods.dir(Workdir.moddir())
         Commands.add(Cmd.cmd)
         if Main.sets.all:
             Main.sets.mods = ",".join(Mods.list())
