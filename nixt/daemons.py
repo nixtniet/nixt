@@ -6,13 +6,12 @@
 
 import argparse
 import os
-import readline
 import sys
 import time
 
 
 from .defines import Boot, Client, Cmd, Commands, Data, Main, Md5
-from .defines import Message, Mods, Method, Workdir
+from .defines import Mods, Method, Workdir
 
 
 class Arguments:
