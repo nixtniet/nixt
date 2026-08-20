@@ -1,4 +1,0 @@
-include bin/clean
-include bin/nixt
-include bin/nixtd
-recursive-include examples *

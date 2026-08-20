@@ -28,7 +28,6 @@ class Arguments:
             formatter_class=argparse.RawDescriptionHelpFormatter,
         )
         group = theparser.add_mutually_exclusive_group()
-        group.add_argument("-c", "--console", action="store_true", help="run as console.")
         group.add_argument("-d", "--daemon", action="store_true", help="run as background daemon.")
         group.add_argument("-s", "--service", action="store_true", help="run as service.")
         parser = theparser.add_argument_group()
@@ -150,22 +149,6 @@ class CLI(Client):
         sys.stdout.flush()
 
 
-class Console(CLI):
-
-    def __init__(self):
-        CLI.__init__(self)
-        self.silent = True
-
-    def poll(self):
-        "return event."
-        evt = Message()
-        evt.orig = repr(self)
-        evt.text = input("> ")
-        evt.kind = "command"
-        self.put(evt)
-        return evt
-
-
 class Scripts:
 
     @staticmethod
@@ -176,17 +159,6 @@ class Scripts:
         Kernel.pid()
         Main.sets.mods = ",".join(Mods.list())
         Kernel.init(Main.sets.mods)
-        Kernel.forever()
-
-    @staticmethod
-    def console():
-        "console script."
-        readline.redisplay()
-        if Main.sets.verbose:
-            Kernel.banner()
-        Kernel.init(Main.sets.mods, Main.sets.wait)
-        csl = Console()
-        csl.start()
         Kernel.forever()
 
     @staticmethod
@@ -204,9 +176,7 @@ class Scripts:
 def main():
     "main"
     Kernel.boot()
-    if Main.sets.console:
-        Kernel.wrap(Scripts.console)
-    elif Main.sets.service:
+    if Main.sets.service:
         Kernel.wrap(Scripts.service)
     else:
         Kernel.wrap(Scripts.background)
