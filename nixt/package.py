@@ -44,8 +44,10 @@ class Mods:
             if cls.md5s:
                 md5 = Md5.md5(fnm)
                 md5s = cls.md5s.get(name)
-                if md5s and md5 != md5s:
-                    logging.warning("mismatch %s", modname)
+                if not md5s:
+                    logging.info("missing %s md5sum", modname)
+                elif md5 != md5s:
+                    logging.info("mismatch %s", modname)
             return cls.importer(modname, fnm)
 
     @classmethod

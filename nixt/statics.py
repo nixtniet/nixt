@@ -19,7 +19,7 @@ CORE = {
     "methods": "dc4c2e41f7a6cf82584e8119ee6725fa",
     "objects": "529a55e137b6f5bd5908fdcdd1049d86",
     "outputs": "b7edddf1249f1be8b9e568379479948f",
-    "package": "2b018b9d8d40aff51bea4e5ddd46c2bd",
+    "package": "9f9cdb835d0f58a50daca0dd750df137",
     "parsers": "cc9923d5e2e0aab885247a530ac0970c",
     "persist": "49e11f383821f99816f40c5bf2e304d6",
     "repeats": "eaec4feccb68aea97288b5729d710454",
