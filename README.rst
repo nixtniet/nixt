@@ -20,7 +20,7 @@
 ::
 
     nixt has it's modules in the ~/.nixt/mods directory so for a
-    hello world command you would  edit a file in ~/.nixt/mods/hello.py
+    hello world command you would edit a file in ~/.nixt/mods/hello.py
     and add the following:
 
 
@@ -28,7 +28,7 @@
             event.reply("hello world !!")
 
 
-    typing the hello command would result into a nice hello world !!:
+    typing the hello command would result into a hello world !!:
 
 
         $ nixt hello

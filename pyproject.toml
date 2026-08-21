@@ -24,7 +24,6 @@ classifiers = [
 
 [project.scripts]
 "nixt" = "nixt.runtime:main"
-"nixtd" = "nixt.daemons:main"
 
 
 [project.urls]
@@ -36,10 +35,6 @@ classifiers = [
 [tool.setuptools]
 packages = [
     'nixt',
-    'nixt.minimal',
-    'nixt.modules',
-    'nixt.network',
-    'nixt.numbers'
 ]
 
 
