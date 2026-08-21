@@ -32,6 +32,7 @@ class Arguments:
         optionparser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
         optparser = theparser.add_argument_group()
         optparser.add_argument("--admin", action='store_true', help="enable admin mode.")
+        optparser.add_argument("--docs", default="", help="set docs directory.")
         optparser.add_argument("--scanner", action="store_true", help="do full modules scan on boot.")
         optparser.add_argument("--wdr", default="", help="set modules directory.")
         args, arguments = theparser.parse_known_args()
