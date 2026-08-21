@@ -5,16 +5,16 @@
 
 
 CORE = {
-    "booting": "2edf1cefde5ab25d23687d22459016cd",
+    "booting": "4465f93752a9a1e8e31f7c9d8140bebe",
     "brokers": "bf614fd92d3268216c853bbb08a57b03",
     "clients": "9bd824df44ceeeaf73134e38f8177669",
     "command": "2e9fc0aaa8dde0d8caccea26b3feb066",
     "configs": "55373ef42c73f1df77f0a29755fe6027",
-    "daemons": "0dcae4f5981af9fa1f9fff5e9f282317",
-    "defines": "01e3c2c92e91f3c02428ef5a03d87fcd",
+    "defines": "36401acdf41a9fde255e2b9d3afbe078",
     "encoder": "7c7f68bbcdc0bd9955c0acf70a9b4d7c",
     "engines": "767e741a9e84f56cdb1b68c979a6b584",
     "hashing": "1b7cb34eaff614661f28ad870299ba98",
+    "loggers": "575e865d11c848de2a53c185a3fb0afc",
     "message": "6c2322224bbca893fd5899bda65df43e",
     "methods": "dc4c2e41f7a6cf82584e8119ee6725fa",
     "objects": "529a55e137b6f5bd5908fdcdd1049d86",
@@ -27,7 +27,7 @@ CORE = {
     "runtime": "363b5fd8e3c8ce349fbd5ef1374310fc",
     "threads": "2fcb5ceb0fa336dd7208297fc23e17b0",
     "timings": "3779158dd2a2f280d403717c7ea75886",
-    "utility": "d82b587076939dcb7895f08db6788b0c"
+    "utility": "b4056efbd9dbab2d4748de65ebed0d0f"
 }
 
 
