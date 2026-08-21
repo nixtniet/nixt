@@ -24,7 +24,7 @@ CORE = {
     "persist": "49e11f383821f99816f40c5bf2e304d6",
     "repeats": "eaec4feccb68aea97288b5729d710454",
     "require": "53ae8d308fceff8dab77fc89f86f7eef",
-    "runtime": "363b5fd8e3c8ce349fbd5ef1374310fc",
+    "runtime": "bc87df2fc0fbf842828569c4c8231a1e",
     "threads": "2fcb5ceb0fa336dd7208297fc23e17b0",
     "timings": "3779158dd2a2f280d403717c7ea75886",
     "utility": "b4056efbd9dbab2d4748de65ebed0d0f"

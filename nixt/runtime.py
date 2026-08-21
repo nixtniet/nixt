@@ -77,7 +77,7 @@ def main():
     cli = CLI()
     evt = Message()
     evt.orig = repr(cli)
-    evt.text = " ".join(sys.argv[1:])
+    evt.text = Main.otxt
     Commands.command(evt)
     evt.wait()
 
