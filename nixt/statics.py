@@ -31,12 +31,10 @@ CORE = {
 }
 
 
-MODULES = {
-}
+MODULES = {}
 
 
-NAMES = {
-}
+NAMES = {}
 
 
 def __dir__():
