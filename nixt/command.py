@@ -35,10 +35,10 @@ class Commands:
         evt.ready()
 
     @classmethod
-    def list(cls, ignore=""):
+    def list(cls):
         "scan for a list of all commands."
         result = []
-        for modname in Mods.list(ignore):
+        for modname in Mods.list():
             mod = Mods.get(modname)
             result.extend([x.__name__ for x in Commands.scan(mod, True) if x])
         return result
