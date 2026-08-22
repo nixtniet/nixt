@@ -14,6 +14,18 @@
     nixt [cmd] [arg=val] [arg==val]
 
 
+**INSTALL**
+
+
+::
+
+    due to lacking access to my pypi account, use the latest from github
+
+        $ git clone ssh://git@github.com/nixtniet/nixt
+        $ cd nixt
+        $ pipx install . --force
+
+
 **DESCRIPTION**
 
 
@@ -33,18 +45,6 @@
 
         $ nixt hello
         hello world !!
-
-
-**INSTALL**
-
-
-::
-
-    due to lacking access to my pypi account, use the latest from github
-
-        $ git clone ssh://git@github.com/nixtniet/nixt
-        $ cd nixt
-        $ pipx install . --force
 
 
 **FILES**
