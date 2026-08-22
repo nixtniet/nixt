@@ -14,7 +14,7 @@
     nixt [cmd] [arg=val] [arg==val]
 
 
-**INSTALL^^
+**INSTALL**
 
 
 ::
