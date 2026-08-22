@@ -3,7 +3,7 @@
 
 ::
 
-    nixt - write your own commands.
+    NIXT - write your own commands.
 
 
 **SYNOPSIS**
@@ -14,12 +14,24 @@
     nixt [cmd] [arg=val] [arg==val]
 
 
+**INSTALL^^
+
+
+::
+
+    due to lacking access to my pypi account, use the latest from github
+
+        $ git clone ssh://git@github.com/nixtniet/nixt
+        $ cd nixt
+        $ pipx install . --force
+
+
 **DESCRIPTION**
 
 
 ::
 
-    nixt has it's modules in the ~/.nixt/mods directory so for a
+    NIXT has it's modules in the ~/.nixt/mods directory so for a
     hello world command you would edit a file in ~/.nixt/mods/hello.py
     and add the following:
 
@@ -56,4 +68,4 @@
 
 ::
 
-    nixt is Public Domain.
+    NIXT is Public Domain.
