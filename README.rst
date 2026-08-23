@@ -61,7 +61,7 @@
 
 ::
 
-    Nixt Niet <``nixtniet@gmail.com``>
+    Nixt Niet <nixtniet@gmail.com>
 
 
 **COPYRIGHT**
