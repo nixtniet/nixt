@@ -11,7 +11,7 @@
 
 ::
 
-    nixt [cmd] [arg=val] [arg==val]
+    nixt [cmd] [arg=val] [arg==val] [arg-=val]
 
 
 **INSTALL**
