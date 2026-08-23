@@ -19,9 +19,9 @@
 
 ::
 
-    due to lacking access to my pypi account, use the latest from github
+    due to lost access to my pypi account, use the latest from github
 
-        $ git clone ssh://git@github.com/nixtniet/nixt
+        $ git clone https://github.com/nixtniet/nixt
         $ cd nixt
         $ pipx install . --force
 
