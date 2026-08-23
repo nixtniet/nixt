@@ -3,7 +3,7 @@
 
 ::
 
-    NIXT - write your own commands.
+    NIXT - write your own commands
 
 
 **SYNOPSIS**
