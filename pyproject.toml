@@ -24,6 +24,7 @@ classifiers = [
 
 [project.scripts]
 "nixt" = "nixt.runtime:main"
+"nixtd" = "nixt.daemons:main"
 
 
 [project.urls]

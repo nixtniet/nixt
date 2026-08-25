@@ -1,8 +1,7 @@
-#!/usr/bin/env python3
 # This file is placed in the Public Domain.
 
 
-"main"
+"long time background running processes"
 
 
 import argparse
@@ -11,11 +10,8 @@ import sys
 import time
 
 
-sys.path.insert(0, os.getcwd())
-
-
-from nixt.defines import Boot, Client, Cmd, Commands, Data, Main, Md5
-from nixt.defines import Mods, Method, Workdir
+from .defines import Boot, Client, Cmd, Commands, Data, Main, Md5
+from .defines import Mods, Method, Workdir
 
 
 class Arguments:
@@ -179,11 +175,18 @@ class Scripts:
 def main():
     "main"
     Kernel.boot()
+    sys.argv[0] = Main.name
     if Main.sets.service:
         Kernel.wrap(Scripts.service)
     else:
         Kernel.wrap(Scripts.background)
-        
 
-if __name__ == "__main__":
-    main()
+
+def __dir__():
+    return (
+        'Arguments',
+        'CLI',
+        'Kernel',
+        'Scripts',
+        'main'
+    )

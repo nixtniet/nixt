@@ -51,7 +51,6 @@ class Config(Object):
 class Feed(Object):
 
     link = ""
-    skip = False
 
 
 class Modified(Object):
@@ -96,8 +95,6 @@ class Fetcher:
         "do a fetch run of all feeds."
         nrs = 0
         for fnm, feed in Locate.find(Method.fqn(Rss)):
-            if "skip" in feed and feed.skip:
-                continue
             Runners.put((fnm, feed, silent))
             nrs += 1
         return nrs
@@ -352,17 +349,6 @@ class OPML:
 
 class Helpers:
 
-    skip = [
-        '403',
-        '404',
-        '410',
-        '500',
-        '503',
-        'not valid',
-        'not known',
-        'failed'
-    ]
-
     @staticmethod
     def attrs(obj, txt):
         "parse attribute into an object."
@@ -377,14 +363,6 @@ class Helpers:
             lne = lne[1:-1]
             return lne
         return line
-
-    @staticmethod
-    def doskip(errs):
-        "check whether to log."
-        for error in Helpers.skip:
-            if error in errs:
-                return True
-        return False
 
     @staticmethod
     def getfeed(fnm, feed, items):
@@ -433,10 +411,6 @@ class Helpers:
                 return result
             feed.error = str(ex)
             logging.debug("%s %s", feed.rss, feed.error)
-            if Helpers.doskip(feed.error):
-                feed.skip = True
-                Disk.write(feed, fnm)
-                logging.error("removed %s %s", feed.rss, ex)
         return result
 
     @staticmethod
@@ -565,32 +539,6 @@ def dpl(event):
             Method.update(feed, setter)
             Disk.write(feed, fnm)
     event.ok()
-
-
-def err(event):
-    "show errors of a feed."
-    nre = 0
-    nrs = 0
-    for fnm, obj in Locate.find(Method.fqn(Rss), event.gets):
-        if "error" not in obj:
-            continue
-        if not obj.error:
-            continue
-        if event.rest and event.rest in obj.error:
-            nre += 1
-            feed = Rss()
-            Method.update(feed, obj)
-            feed.__deleted__ = False
-            feed.error = ""
-            Disk.write(feed, fnm)
-            continue
-        if not event.rest:
-            nrs += 1
-            event.reply(f"{nrs} {Method.fmt(obj)}")
-    if not nrs:
-        event.reply("no feed errors.")
-    else:
-        event.reply(f'{nre} feeds reset.')
 
 
 def exp(event):
