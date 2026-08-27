@@ -9,6 +9,7 @@ import os
 
 
 from .command import Commands
+from .configs import Main
 from .encoder import Json
 from .hashing import Md5
 from .package import Mods
@@ -50,6 +51,11 @@ class Cmd:
         event.reply("        'MODULES',")
         event.reply("        'NAMES'")
         event.reply("    )")
+
+    @staticmethod
+    def ver(event):
+        "show verson."
+        event.reply(f"{Main.name.upper()} {Md5.core()}")
 
 
 def __dir__():

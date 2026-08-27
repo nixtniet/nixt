@@ -83,6 +83,11 @@ class Mods:
         return sorted(set(mods))
 
     @classmethod
+    def minimal(cls):
+        "return package minimal path."
+        return os.path.join(Utils.where(Mods), "minimal")
+
+    @classmethod
     def moddir(cls):
         "return package modules path."
         return os.path.join(Utils.where(Mods), "modules")
