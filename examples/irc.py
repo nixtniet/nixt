@@ -29,7 +29,7 @@ def init():
     if irc.events.joined.is_set():
         logging.warning("%s", Method.fmt(irc.cfg, skip=[
             "ignore",
-            "xname",
+            "name",
             "realname",
             "username",
             "word"
@@ -252,6 +252,7 @@ class IRC(Buffered):
         txt = str(text).replace("\n", "")
         txt = txt.replace("  ", " ")
         self.docommand("PRIVMSG", channel, txt)
+        del txt
 
     def event(self, txt):
         "parse text into an event."

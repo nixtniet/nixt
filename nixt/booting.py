@@ -29,8 +29,7 @@ class Boot:
         "setup basic variables"
         Workdir.wdr = cfg.sets.wdr or Workdir.wdr or Workdir.home(cfg.name)
         Workdir.skel()
-        #Logging.size(len(cfg.name))
-        Logging.logdir = Workdir.logdir()
+        Logging.size(len(cfg.name))
         Logging.level(cfg.sets.level or "warning")
         Mods.dir(cfg.sets.path)
 

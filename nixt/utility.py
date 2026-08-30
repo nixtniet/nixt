@@ -18,7 +18,7 @@ j = os.path.join
 
 class Format(logging.Formatter):
 
-    disable = True
+    disable = False
     size = 3
 
     def format(self, record):
@@ -32,14 +32,13 @@ class Format(logging.Formatter):
 class Logging:
 
     datefmt = "%H:%M:%S"
-    format = "%(message)s"
-    logdir = ""
+    format = "%(module)-3s %(message)s"
+    formats = "%(message)s"
     
     @classmethod
     def level(cls, loglevel, systemd=False):
         "set log level."
-        assert cls.logdir
-        formatter = Format(cls.format, Logging.datefmt)
+        formatter = Format(cls.format, cls.datefmt)
         stream = logging.StreamHandler()
         stream.setFormatter(formatter)
         logging.basicConfig(

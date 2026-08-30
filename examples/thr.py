@@ -17,7 +17,7 @@ def thr(event):
     for thread in sorted(threading.enumerate(), key=lambda x: x.name):
         if str(thread).startswith("<_"):
             continue
-        if getattr(thread, "state", None) and getattr(thread, "sleep", None):
+        if getattr(thread, "sleep", None):
             uptime = thread.sleep - int(time.time() - thread.state["latest"])
         elif getattr(thread, "starttime", None):
             uptime = time.time() - thread.starttime

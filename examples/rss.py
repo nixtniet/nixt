@@ -4,6 +4,7 @@
 "rich site syndicate"
 
 
+import gc
 import html
 import html.parser
 import http.client
@@ -23,12 +24,25 @@ from urllib.error import HTTPError
 from urllib.parse import quote_plus, urlencode
 
 
-from nixt.defines import Object, Clients, Disk, Locate, Main, Method
-from nixt.defines import Repeater, Thread, Utils
+from nixt.defines import Object, Clients, Disk, Format, JSONL, Locate
+from nixt.defines import Logging, Main, Method, Repeater, Thread, Utils, Workdir
+
+
+j = os.path.join
+logger = logging.getLogger("rss")
 
 
 def init():
     "initialize rss module."
+    logdir = Workdir.logdir("rss")
+    path = j(logdir, "rss.log")
+    if not os.path.exists(path):
+        Utils.cdir(path)
+    formatter = Format(Logging.formats, Logging.datefmt)
+    logger.setLevel(Main.sets.level.upper() or "INFO")
+    filehandler = logging.handlers.TimedRotatingFileHandler(path, 'midnight')
+    filehandler.setFormatter(formatter)
+    logger.addHandler(filehandler)
     Runners.init(1, Runner)
     Run.fetcher.start()
     nrs = Locate.count("rss")
@@ -125,10 +139,10 @@ class Runner:
         self.running = threading.Event()
         self.todo = queue.Queue()
 
-    def display(self, obj):
+    def display(self, obj, name=None):
         "display feed."
         displaylist = ""
-        result = ""
+        result = (name and f"[{name}] ") or ""
         try:
             displaylist = obj.display_list or "title,link"
         except AttributeError:
@@ -162,6 +176,8 @@ class Runner:
             for obj in Helpers.getfeed(fnm, feed, feed.display_list):
                 if obj is None:
                     continue
+                if Method.isempty(obj):
+                    continue
                 counter += 1
                 fed = Feed()
                 Method.update(fed, obj)
@@ -174,9 +190,9 @@ class Runner:
                 urls.append(uurl)
                 if uurl in see:
                     continue
-                if self.dosave:
-                    Disk.write(fed)
                 result.append(fed)
+                if self.dosave:
+                    logger.info(JSONL.logtxt(fed))
             if urls:
                 setattr(State.seen, feed.rss, urls)
             if silent:
@@ -184,12 +200,10 @@ class Runner:
             if not State.seenfn:
                 State.seenfn = Disk.ident(State.seen)
             Disk.write(State.seen, State.seenfn)
-        txt = ""
-        feedname = getattr(feed, "name", None)
-        if feedname:
-            txt = f"[{feedname}] "
         for obj in result:
-            Clients.announce(txt + self.display(obj))
+            Clients.announce(self.display(obj, getattr(feed, "name", None)))
+        del result
+        gc.collect()
         return counter
 
     def put(self, args):
@@ -211,7 +225,7 @@ class Runners:
 
     runners = []
     lock = threading.RLock()
-    nrcpu = 1
+    nrcpu = 6
     nrlast = 0
 
     @staticmethod
@@ -596,10 +610,7 @@ def imp(event):
             del obj["xmlUrl"]
             Method.update(feed, obj)
             uri = urllib.parse.urlparse(feed.rss)
-            if uri.netloc.count(".") >= 2:
-                feed.name = ".".join(uri.netloc.split('.')[1:-1])
-            else:
-                feed.name = '.'.join(uri.netloc.split('.')[:-1])
+            feed.name = max(uri.netloc.split("."), key=len)
             feed.insertid = insertid
             Disk.write(feed)
             nrs += 1
