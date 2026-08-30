@@ -24,7 +24,8 @@ from .persist import Disk, Workdir
 from .repeats import Repeater
 from .require import Cmd
 from .threads import Task, Thread
-from .utility import Format, Logging, Time, Utils
+from .timings import Time
+from .utility import Format, Logging, Utils
 
 
 def __dir__():
