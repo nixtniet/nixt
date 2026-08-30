@@ -10,7 +10,7 @@ import os
 
 from .command import Commands
 from .configs import Main
-from .encoder import Json
+from .encoder import JSON
 from .hashing import Md5
 from .package import Mods
 
@@ -39,11 +39,11 @@ class Cmd:
         event.reply("\n")
         event.reply('"tables"')
         event.reply("\n")
-        event.reply(f"CORE = {Json.dumps(core, indent=4, sort_keys=True)}")
+        event.reply(f"CORE = {JSON.dumps(core, indent=4, sort_keys=True)}")
         event.reply("\n")
-        event.reply(f"MODULES = {Json.dumps(md5s, indent=4, sort_keys=True)}")
+        event.reply(f"MODULES = {JSON.dumps(md5s, indent=4, sort_keys=True)}")
         event.reply("\n")
-        event.reply(f"NAMES = {Json.dumps(Commands.names, indent=4, sort_keys=True)}")
+        event.reply(f"NAMES = {JSON.dumps(Commands.names, indent=4, sort_keys=True)}")
         event.reply("\n")
         event.reply("def __dir__():")
         event.reply("    return (")

@@ -27,10 +27,11 @@ class Boot:
     @classmethod
     def configure(cls, cfg):
         "setup basic variables"
-        Logging.size(len(cfg.name))
-        Logging.level(cfg.sets.level or "warning")
         Workdir.wdr = cfg.sets.wdr or Workdir.wdr or Workdir.home(cfg.name)
         Workdir.skel()
+        #Logging.size(len(cfg.name))
+        Logging.logdir = Workdir.logdir()
+        Logging.level(cfg.sets.level or "warning")
         Mods.dir(cfg.sets.path)
 
     @classmethod
@@ -56,7 +57,7 @@ class Boot:
                 try:
                     thr.join()
                 except (KeyboardInterrupt, EOFError):
-                    return False
+                    _thread.interrupt_main()
         return True
 
     @classmethod

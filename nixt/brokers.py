@@ -62,10 +62,16 @@ class Clients:
     def shutdown():
         "call stop on clients."
         for client in Broker.objs("wait"):
-            client.wait()
+            try:
+                client.wait()
+            except (KeyboardInterrupt, EOFError):
+                pass
         time.sleep(0.01)
         for client in Broker.objs("stop"):
-            client.stop()
+            try:
+                client.stop()
+            except (KeyboardInterrupt, EOFError):
+                pass
         time.sleep(0.01)
 
 

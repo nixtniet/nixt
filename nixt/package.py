@@ -21,13 +21,13 @@ class Mods:
 
     @classmethod
     def dir(cls, pkgname, path=None):
-        "add module/patgh."
+        "add module/path."
         if not pkgname:
             return
         pkgn = pkgname
         if path is None:
             path = pkgname
-            pkgn = pkgname.split(os.sep)[-1]
+            pkgn = ".".join(pkgname.split(os.sep)[-2:])
         cls.dirs[pkgn] = path
 
     @classmethod

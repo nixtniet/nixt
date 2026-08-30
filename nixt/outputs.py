@@ -14,7 +14,7 @@ from .brokers import Broker
 from .threads import Thread
 
 
-class Output:
+class Display:
 
     block = threading.Event()
 
@@ -36,6 +36,7 @@ class Output:
                 if self.block.is_set():
                     return
                 self.dosay(event.channel, txt)
+            del event
 
     def dosay(self, channel, text):
         "say called by display."
@@ -50,12 +51,14 @@ class Output:
         self.raw(text)
 
 
-class Buffer(Output):
+class Output:
 
     def __init__(self):
-        Output.__init__(self)
         self.oqueue = queue.Queue()
         self.ostopped = threading.Event()
+
+    def display(self, event):
+        "do actual display."
 
     def output(self):
         "output loop."
@@ -95,6 +98,6 @@ class Buffer(Output):
 
 def __dir__():
     return (
-        'Buffer',
+        'Display',
         'Output'
     )

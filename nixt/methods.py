@@ -102,7 +102,18 @@ class Method:
     @classmethod
     def get(cls, obj, key, default=None):
         "return value for key if key is in the object, otherwise return default."
-        return obj.__dict__.get(key, default)
+        try:
+            return obj.__dict__.get(key, default)
+        except AttributeError:
+            return obj.get(key, default)
+
+    @classmethod
+    def isempty(cls, obj):
+        "check if all keys heve empty value."
+        for key in cls.keys(obj):
+            if cls.get(obj, key):
+                return False
+        return True
 
     @classmethod
     def items(cls, obj):

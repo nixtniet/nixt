@@ -5,14 +5,25 @@
 
 
 from .engines import Engine
-from .outputs import Buffer, Output
+from .outputs import Display, Output
 
 
-class Buffered(Engine, Buffer):
+class Client(Engine, Display):
 
     def __init__(self):
         Engine.__init__(self)
-        Buffer.__init__(self)
+        Display.__init__(self)
+
+    def raw(self, text):
+        "raw output."
+        raise NotImplementedError
+
+
+class Buffered(Client, Output):
+
+    def __init__(self):
+        Client.__init__(self)
+        Output.__init__(self)
 
     def raw(self, text):
         "raw output."
@@ -20,24 +31,13 @@ class Buffered(Engine, Buffer):
 
     def start(self, daemon=True):
         "start output loop."
-        Engine.start(self)
-        Buffer.start(self, daemon=daemon)
+        Client.start(self)
+        Output.start(self, daemon=daemon)
 
     def stop(self):
         "stop output loop."
-        Engine.stop(self)
-        Buffer.stop(self)
-
-
-class Client(Engine, Output):
-
-    def __init__(self):
-        Engine.__init__(self)
-        Output.__init__(self)
-
-    def raw(self, text):
-        "raw output."
-        raise NotImplementedError
+        Client.stop(self)
+        Output.stop(self)
 
 
 def __dir__():
