@@ -4,6 +4,7 @@
 "output"
 
 
+import gc
 import logging
 import queue
 import threading
@@ -36,7 +37,8 @@ class Display:
                 if self.block.is_set():
                     return
                 self.dosay(event.channel, txt)
-            del event
+        del event
+        gc.collect()
 
     def dosay(self, channel, text):
         "say called by display."

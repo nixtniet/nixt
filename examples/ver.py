@@ -4,9 +4,9 @@
 "show version"
 
 
-from nixt.defines import Main, Md5
+from nixt.defines import Main, MD5
 
 
 def ver(event):
     "show verson."
-    event.reply(f"{Main.name.upper()} {Md5.core()}")
+    event.reply(f"{Main.name.upper()} {MD5.core()}")

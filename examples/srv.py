@@ -9,8 +9,7 @@ from nixt.defines import Main
 
 def srv(event):
     "generate systemd service file."
-    if not Main.sets.admin:
-        event.reply("creating service files needs --admin")
+    if not Main.admin:
         return
     import getpass
     name = getpass.getuser()
@@ -31,7 +30,7 @@ After=multi-user.target
 Type=simple
 User=%s
 Group=%s
-ExecStart=/home/%s/.local/bin/%sd --service
+ExecStart=/home/%s/.local/bin/%s -s
 
 [Install]
 WantedBy=multi-user.target"""

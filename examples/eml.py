@@ -9,7 +9,7 @@ import os
 import time
 
 
-from nixt.defines import Data, Disk, Locate, Method, Time
+from nixt.defines import Data, Disk, Locater, Method, Time
 
 
 class Email(Data):
@@ -31,7 +31,7 @@ def eml(event):
             args.remove(key)
     args = set(args)
     result = sorted(
-                    Locate.find("email", event.gets),
+                    Locater.find("email", event.gets),
                     key=lambda x: Time.timed(x[1].Date)
                    )
     if event.index not in ["", None]:

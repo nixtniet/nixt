@@ -1,17 +1,16 @@
 # This file is placed in the Public Domain.
 
 
-"hashing"
+"integrity"
 
 
-import logging
 import os
 
 
 from .utility import Utils
 
 
-class Md5:
+class MD5:
 
     @classmethod
     def check(cls, md5s):
@@ -25,8 +24,7 @@ class Md5:
                 continue
             name = pth[:-3]
             modpath = os.path.join(path, pth)
-            if md5s and Md5.md5(modpath) != md5s.get(name):
-                logging.warning("mismatch %s", name)
+            if md5s and cls.md5(modpath) != md5s.get(name):
                 ok = False
         return ok
 
@@ -77,5 +75,5 @@ class Md5:
 
 def __dir__():
     return (
-        'Md5',
+        'MD5',
     )

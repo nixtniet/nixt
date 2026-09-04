@@ -5,79 +5,54 @@
 
 
 import gc
-import html
-import html.parser
-import http.client
 import logging
 import os
+import pathlib
 import queue
 import re
 import threading
-import urllib
-import urllib.parse
-import urllib.request
-import uuid
 import _thread
 
 
-from urllib.error import HTTPError
-from urllib.parse import quote_plus, urlencode
+from nixt.defines import Clients, Disk, Fetcher, Format, JSONL, Locater
+from nixt.defines import Logging, Main, MD5, Method, Object, Repeater
+from nixt.defines import Thread, Utils, Watcher, Workdir
 
 
-from nixt.defines import Object, Clients, Disk, Format, JSONL, Locate
-from nixt.defines import Logging, Main, Method, Repeater, Thread, Utils, Workdir
+logger = logging.getLogger("rss")
+watcher = Watcher()
 
 
 j = os.path.join
-logger = logging.getLogger("rss")
-
-
-def init():
-    "initialize rss module."
-    logdir = Workdir.logdir("rss")
-    path = j(logdir, "rss.log")
-    if not os.path.exists(path):
-        Utils.cdir(path)
-    formatter = Format(Logging.formats, Logging.datefmt)
-    logger.setLevel(Main.sets.level.upper() or "INFO")
-    filehandler = logging.handlers.TimedRotatingFileHandler(path, 'midnight')
-    filehandler.setFormatter(formatter)
-    logger.addHandler(filehandler)
-    Runners.init(1, Runner)
-    Run.fetcher.start()
-    nrs = Locate.count("rss")
-    txt = f"{nrs} feeds"
-    if nrs == 1:
-        txt = txt[:-1]
-    logging.warning(txt)
-
-
-def shutdown():
-    "shutdown rss module."
-    Run.fetcher.stop()
 
 
 class Config(Object):
 
+    "rss config"
+
     polltime = 300
+    save = False
 
 
-class Feed(Object):
+def init():
+    "initialize rss module."
+    Disk.read(Config, "rss", "config")
+    Run.start()
+    nrs = Locater.count("rss")
+    txt = f"{nrs} feeds index {State.index}"
+    if nrs == 1:
+        txt = txt[:-1]
+    logging.info(txt)
 
-    link = ""
 
-
-class Modified(Object):
-
-    pass
-
-
-class Urls(Object):
-
-    pass
+def shutdown():
+    "shutdown rss module."
+    Run.stop()
 
 
 class Rss(Object):
+
+    "rss item"
 
     def __init__(self):
         super().__init__()
@@ -87,76 +62,174 @@ class Rss(Object):
         self.rss = ""
 
 
-class State:
+class State(Object):
 
+    "module state"
+
+    index = 0
+
+
+class Locks:
+
+    "locks"
+
+    fetchlock = _thread.allocate_lock()
+    importlock = _thread.allocate_lock()
+
+
+class Run:
+
+    "runtime"
+
+    path = ""
+    file = None
+    lock = threading.RLock()
+    matching = []
     configfn = ""
-    modified = Modified()
     modifiedfn = ""
-    seenfn = ""
-    seen = Urls()
-    skipped = []
+    statefn = ""
+    index = 0
 
+    @classmethod
+    def callback(cls):
+        with cls.lock:
+            cls.file.seek(State.index, 0)
+            while True:
+                line = cls.file.readline()
+                if not line:
+                    break
+                Clients.announce(cls.display(JSONL.loads(line.strip())))
+            State.index = cls.file.tell()
+        Disk.write(State, cls.statefn)
+        gc.collect(0)
 
-class Fetcher:
-
-    def __init__(self):
-        self.dosave = False
-        self.runner = Runner()
-        self.stopped = threading.Event()
-        self.todo = queue.Queue()
-
-    def run(self, silent=False):
-        "do a fetch run of all feeds."
-        nrs = 0
-        for fnm, feed in Locate.find(Method.fqn(Rss)):
-            Runners.put((fnm, feed, silent))
-            nrs += 1
-        return nrs
-
-    def start(self, repeat=True):
-        "start rss fetcher."
-        Disk.read(Config, "rss", "config")
-        State.seenfn = Locate.last(State.seen) or Disk.ident(State.seen)
-        oid = Disk.ident(State.modified)
-        State.modifiedfn = Locate.last(State.modified) or oid
-        if repeat:
-            Repeater.add(Config.polltime, self.run)
-
-    def stop(self):
-        "sto prss fetcher."
-        logging.debug("stopped fetcher")
-        if State.modified:
-            Disk.write(State.modified, State.modifiedfn)
-        self.stopped.set()
-
-
-class Runner:
-
-    def __init__(self):
-        self.dosave = False
-        self.fetchlock = threading.RLock()
-        self.queue = queue.Queue()
-        self.running = threading.Event()
-        self.todo = queue.Queue()
-
-    def display(self, obj, name=None):
+    @classmethod
+    def display(cls, obj, name=None):
         "display feed."
         displaylist = ""
-        result = (name and f"[{name}] ") or ""
+        if name in obj:
+            result = f"[{obj.name}] "
+        else:
+            result = ""
         try:
-            displaylist = obj.display_list or "title,link"
+            displaylist = Method.get(obj, "display_list") or "title,link"
         except AttributeError:
             displaylist = "title,link,author"
         for key in displaylist.split(","):
             if not key:
                 continue
-            data = getattr(obj, key, None)
+            data = Method.get(obj, key, None)
             if not data:
                 continue
-            stripped = Helpers.striphtml(data.replace("\n", " ").rstrip())
-            result += Helpers.unescape(stripped)
+            stripped = Utils.striphtml(data.replace("\n", " ").rstrip())
+            result += Utils.unescape(stripped)
             result += " - "
         return result[:-2].rstrip()
+
+    @classmethod
+    def enable(cls, path):
+        "enabke module logger."
+        formatter = Format(Logging.formats, Logging.datefmt)
+        filehandler = logging.handlers.TimedRotatingFileHandler(path, 'midnight')
+        filehandler.setFormatter(formatter)
+        if logger.handlers:
+            for handler in logger.handlers:
+                logger.removeHandler(handler)
+        logger.addHandler(filehandler)
+        logger.propagate = False
+        logger.setLevel("DEBUG")
+
+    @classmethod
+    def log(cls, txt):
+        "log to file."
+        md5 = MD5.source(txt)[:7]
+        if md5 in cls.matching:
+            return
+        cls.matching.append(md5)
+        logger.debug(txt)
+
+    @classmethod
+    def run(cls, silent=False):
+        "do a fetch run of all feeds."
+        nrs = 0
+        for fnm, feed in Locater.find(Method.fqn(Rss)):
+            if feed.skip:
+                continue
+            Runners.put(fnm, feed, silent)
+            nrs += 1
+        return nrs
+
+    @classmethod
+    def start(cls, once=False):
+        "initialise module."
+        if Config.save:
+            cls.path = j(Workdir.logdir("rss"), 'rss.log')
+            Utils.cdir(cls.path)
+            pathlib.Path(cls.path).touch()
+            cls.file = open(cls.path, "a+", encoding="utf-8")
+            cls.enable(cls.path)
+            watcher.add(cls.path, cls.callback)
+            watcher.start()
+        cls.statefn = Locater.last(State) or Disk.ident(State)
+        if not once:
+            Repeater.add(Config.polltime, cls.run)
+        
+    @classmethod
+    def stop(cls):
+        "shutdown."
+        watcher.stop()
+
+    @classmethod
+    def sync(cls):
+        "sync state to disk."
+        if cls.index > State.index:
+            State.index = cls.index
+            Disk.write(State, cls.statefn)
+
+
+class Runner:
+
+    "feed fetcher"
+
+    def __init__(self):
+        self.dosave = True
+        self.queue = queue.Queue()
+        self.running = threading.Event()
+        self.todo = queue.Queue()
+
+    def fetch(self, fnm, feed, silent=False):
+        "fetch a feed."
+        counter = 0
+        for obj in self.getfeed(fnm, feed, feed.display_list):
+            if obj is None:
+                continue
+            if Method.isempty(obj):
+                continue
+            fed = Object()
+            Method.update(fed, obj)
+            Method.update(fed, feed)
+            if Config.save:
+                Run.log(JSONL.logtxt(fed))
+            else:
+                Clients.announce(Run.display(fed))
+            counter += 1
+        Run.sync()
+        return counter
+
+    def getfeed(self, fnm, feed, items):
+        "fetch a feed."
+        result = [None,]
+        response = Fetcher.geturl(feed.rss)
+        if response.error or not response.data:
+            logging.debug("skip %s", feed.rss)
+            return result
+        if "link" not in items:
+            items += ",link"
+        yield from RSS.parse(
+                             str(response.data, "utf-8", errors='ignore'),
+                             (feed.rss.endswith("atom") and "entry") or "item",
+                             items
+                            ) or []
 
     def loop(self):
         "loop to handle fetch jobs."
@@ -166,47 +239,7 @@ class Runner:
                 break
             self.fetch(*job)
 
-    def fetch(self, fnm, feed, silent=False):
-        "fetch a feed."
-        with Run.fetchlock:
-            result = []
-            see = getattr(State.seen, feed.rss, [])
-            urls = []
-            counter = 0
-            for obj in Helpers.getfeed(fnm, feed, feed.display_list):
-                if obj is None:
-                    continue
-                if Method.isempty(obj):
-                    continue
-                counter += 1
-                fed = Feed()
-                Method.update(fed, obj)
-                Method.update(fed, feed)
-                url = urllib.parse.urlparse(fed.link)
-                if url.path and not url.path == "/":
-                    uurl = f"{url.scheme}://{url.netloc}/{url.path}"
-                else:
-                    uurl = fed.link
-                urls.append(uurl)
-                if uurl in see:
-                    continue
-                result.append(fed)
-                if self.dosave:
-                    logger.info(JSONL.logtxt(fed))
-            if urls:
-                setattr(State.seen, feed.rss, urls)
-            if silent:
-                return counter
-            if not State.seenfn:
-                State.seenfn = Disk.ident(State.seen)
-            Disk.write(State.seen, State.seenfn)
-        for obj in result:
-            Clients.announce(self.display(obj, getattr(feed, "name", None)))
-        del result
-        gc.collect()
-        return counter
-
-    def put(self, args):
+    def put(self, *args):
         "put jobs on queue."
         self.queue.put(args)
 
@@ -223,42 +256,49 @@ class Runner:
 
 class Runners:
 
-    runners = []
-    lock = threading.RLock()
-    nrcpu = 6
+    "pool of runners"
+
+    runners = {}
+    max = os.cpu_count()
+    nrcpu = 1
     nrlast = 0
 
-    @staticmethod
-    def add(client):
+    @classmethod
+    def add(cls, client):
         "add a runner."
-        Runners.runners.append(client)
+        cls.runners[repr(client)] = client
 
-    @staticmethod
-    def init(nrcpu, cls):
-        "initialize a runner."
-        Runners.nrcpu = nrcpu
-        for _x in range(Runners.nrcpu):
-            clt = cls()
-            clt.start()
-            Runners.add(clt)
+    @classmethod
+    def get(cls, orig):
+        "return client by origin."
+        return cls.runners.get(orig)
 
-    @staticmethod
-    def put(*args):
+    @classmethod
+    def init(cls, nr):
+        "initialze a number of runners."
+        for x in range(nr):
+            runner = Runner()
+            runner.start()
+            cls.add(runner)
+
+    @classmethod
+    def put(cls, *args):
         "push job to a runner."
-        if not Runners.runners:
-            Runners.init(Runners.nrcpu, Runner)
-        with Runners.lock:
-            if Runners.nrlast >= Runners.nrcpu-1:
-                Runners.nrlast = 0
-            clt = Runners.runners[Runners.nrlast]
-            clt.put(*args)
-            Runners.nrlast += 1
+        if not cls.runners:
+            cls.init(1)
+        if cls.nrlast > cls.nrcpu-1:
+            cls.nrlast = 0
+        clt = list(cls.runners.values())[cls.nrlast]
+        clt.put(*args)
+        cls.nrlast += 1
 
 
-class Parser:
+class RSS:
 
-    @staticmethod
-    def getitem(line, item):
+    "RSS parser"
+
+    @classmethod
+    def getitem(cls, line, item):
         "return item from line."
         lne = ""
         index1 = line.find(f"<{item}>")
@@ -268,10 +308,10 @@ class Parser:
         index2 = line.find(f"</{item}>", index1)
         if index2 == -1:
             return lne
-        return Helpers.cdata(line[index1:index2]).strip()
+        return Utils.cdata(line[index1:index2]).strip()
 
-    @staticmethod
-    def getitems(text, token, nrs=None):
+    @classmethod
+    def getitems(cls, text, token, nrs=None):
         "get items from text."
         index = 0
         end = len(text)
@@ -291,215 +331,18 @@ class Parser:
                 break
             yield text[index1:index2]
 
-    @staticmethod
-    def parse(txt, toke="item", items="title,link"):
+    @classmethod
+    def parse(cls, txt, toke="item", items="title,link"):
         "parse feed."
-        for line in Parser.getitems(txt, toke):
+        for line in cls.getitems(txt, toke):
             line = line.strip()
             obj = {}
             for itm in Utils.spl(items):
-                val = Parser.getitem(line, itm)
+                val = cls.getitem(line, itm)
                 if val:
-                    escaped = Helpers.unescape(val.strip())
-                    obj[itm] = Helpers.striphtml(escaped).replace("\n", "")
+                    escaped = Utils.unescape(val.strip())
+                    obj[itm] = Utils.striphtml(escaped).replace("\n", "")
             yield obj
-
-
-class OPML:
-
-    @staticmethod
-    def getnames(line):
-        "get names from line."
-        return [x.split('="')[0] for x in line.split()]
-
-    @staticmethod
-    def getvalue(line, attr):
-        "get value from line."
-        lne = ""
-        index1 = line.find(f'{attr}="')
-        if index1 == -1:
-            return lne
-        index1 += len(attr) + 2
-        index2 = line.find('"', index1)
-        if index2 == -1:
-            index2 = line.find("/>", index1)
-        if index2 == -1:
-            return lne
-        return Helpers.cdata(line[index1:index2])
-
-    @staticmethod
-    def getattrs(line, token):
-        "get attributes from line."
-        index = 0
-        result = []
-        stop = False
-        while not stop:
-            index1 = line.find(f"<{token} ", index)
-            if index1 == -1:
-                return result
-            index1 += len(token) + 2
-            index2 = line.find("/>", index1)
-            if index2 == -1:
-                return result
-            result.append(line[index1:index2])
-            index = index2
-        return result
-
-    @staticmethod
-    def parse(txt, toke="outline", itemz=None):
-        "parse opml from text."
-        if itemz is None:
-            itemz = ",".join(OPML.getnames(txt))
-        for attrz in OPML.getattrs(txt, toke):
-            if not attrz:
-                continue
-            obj = {}
-            for itm in Utils.spl(itemz):
-                if itm == "link":
-                    itm = "href"
-                obj[itm] = OPML.getvalue(attrz, itm)
-            yield obj
-
-
-class Helpers:
-
-    @staticmethod
-    def attrs(obj, txt):
-        "parse attribute into an object."
-        Method.update(obj, *list(OPML.parse(txt)))
-
-    @staticmethod
-    def cdata(line):
-        "scrape CDATA block."
-        if "CDATA" in line:
-            lne = line.replace("![CDATA[", "")
-            lne = lne.replace("]]", "")
-            lne = lne[1:-1]
-            return lne
-        return line
-
-    @staticmethod
-    def getfeed(fnm, feed, items):
-        "fetch a feed."
-        result = [None,]
-        try:
-            response = Helpers.geturl(feed.rss)
-            if not response or not response.data:
-                return result
-            if "link" not in items:
-                items += ",link"
-            if feed.rss.endswith("atom"):
-                yield from Parser.parse(
-                                        str(
-                                            response.data,
-                                            "utf-8",
-                                            errors='ignore'
-                                           ),
-                                        "entry",
-                                        items
-                                       ) or []
-            else:
-                yield from Parser.parse(
-                                        str(
-                                            response.data,
-                                            "utf-8",
-                                            errors='ignore'
-                                           ),
-                                        "item",
-                                        items
-                                       ) or []
-            if "error" in feed and feed.error:
-                feed.error = ""
-                Disk.write(feed, fnm)
-        except TimeoutError:
-            return result
-        except (
-                urllib.error.URLError,
-                http.client.HTTPException,
-                ValueError,
-                HTTPError,
-                UnicodeDecodeError,
-                ConnectionResetError
-        ) as ex:
-            if '304' in str(ex):
-                return result
-            feed.error = str(ex)
-            logging.debug("%s %s", feed.rss, feed.error)
-        return result
-
-    @staticmethod
-    def gettinyurl(url):
-        "query tinyurl for a link."
-        postarray = [
-            ("submit", "submit"),
-            ("url", url),
-        ]
-        postdata = urlencode(postarray, quote_via=quote_plus)
-        req = urllib.request.Request(
-            "http://tinyurl.com/create.php", data=bytes(postdata, "UTF-8")
-        )
-        req.add_header("User-agent", Helpers.useragent("rss fetcher"))
-        with urllib.request.urlopen(req) as htm:  # nosec
-            for txt in htm.readlines():
-                line = txt.decode("UTF-8").strip()
-                ii = re.search('data-clipboard-text="(.*?)"', line, re.M)
-                if ii:
-                    return ii.groups()
-        return []
-
-    @staticmethod
-    def geturl(url, force=False):
-        "fetch an url."
-        if Main.debug:
-            return
-        url = urllib.parse.urlunparse(urllib.parse.urlparse(url))
-        req = urllib.request.Request(str(url))
-        req.add_header("User-Agent", Helpers.useragent("RSS Fetcher"))
-        if not force:
-            since = getattr(State.modified, url, "")
-            if since:
-                req.add_header('If-Modified-Since', since)
-        logging.debug("fetching %s %s", url, req.headers)
-        with urllib.request.urlopen(req, timeout=10.0) as response:  # nosec
-            modi = response.headers.get('Last-Modified', "")
-            if modi:
-                setattr(State.modified, url, modi)
-            response.data = response.read()
-            return response
-
-    @staticmethod
-    def shortid():
-        "return a shortid."
-        return str(uuid.uuid4())[:8]
-
-    @staticmethod
-    def striphtml(text):
-        "strip html."
-        clean = re.compile("<.*?>")
-        return re.sub(clean, "", text)
-
-    @staticmethod
-    def unescape(text):
-        "unescape html."
-        txt = re.sub(r"\s+", " ", text)
-        return html.unescape(txt)
-
-    @staticmethod
-    def unquote(url):
-        "unquote an url."
-        return urllib.parse.unquote(url, errors='ignore')
-
-    @staticmethod
-    def useragent(txt):
-        "produce useragent string."
-        return "Mozilla/5.0 (X11; Linux x86_64) " + txt
-
-
-class Run:
-
-    fetcher = Fetcher()
-    fetchlock = _thread.allocate_lock()
-    importlock = _thread.allocate_lock()
 
 
 def atr(event):
@@ -507,34 +350,27 @@ def atr(event):
     if not event.rest:
         event.iface("<stringinurl>")
         return
-    for _fnm, obj in Locate.find(Method.fqn(Rss), {'rss': event.rest}):
+    for _fnm, obj in Locater.find(Method.fqn(Rss), {'rss': event.rest}):
         request = None
         try:
-            request = Helpers.geturl(obj.rss, True)
+            request = Fetcher.geturl(obj.rss, True)
         except Exception as ex:
             event.reply(str(ex))
             return
         if not request:
             continue
         if obj.rss.endswith('atom'):
-            result = list(Parser.getitems(
-                                          str(
-                                              request.data,
-                                              'utf-8',
-                                              errors='ignore'
-                                             ),
-                                          'entry',
-                                          1
-                                         ))
+            result = list(RSS.getitems(
+                                       str(request.data, 'utf-8', errors='ignore'),
+                                       'entry',
+                                       1
+                                      ))
         else:
-            result = list(Parser.getitems(
-                                          str(
-                                              request.data,
-                                              'utf-8',
-                                              errors='ignore'),
-                                          'item',
-                                          1
-                                         ))
+            result = list(RSS.getitems(
+                                       str(request.data, 'utf-8', errors='ignore'),
+                                       'item',
+                                       1
+                                      ))
         resulting = []
         for x in re.findall('<.*?>', result[0]):
             if x[1] == '/' and len(x) > 4:
@@ -548,76 +384,11 @@ def dpl(event):
         event.iface("<stringinurl> <item1,item2>")
         return
     setter = {"display_list": event.args[1]}
-    for fnm, feed in Locate.find(Method.fqn(Rss), {"rss": event.args[0]}):
+    for fnm, feed in Locater.find(Method.fqn(Rss), {"rss": event.args[0]}):
         if feed:
             Method.update(feed, setter)
             Disk.write(feed, fnm)
     event.ok()
-
-
-def exp(event):
-    "export opml."
-    with Run.importlock:
-        event.reply(TEMPLATE)
-        nrs = 0
-        for _fn, ooo in Locate.find(Method.fqn(Rss)):
-            nrs += 1
-            obj = Rss()
-            Method.update(obj, ooo)
-            name = f"url{nrs}"
-            dipl = obj.display_list
-            url = obj.rss
-            txt = f'<outline name="{name}" display_list="{dipl}" xmlUrl="{url}"/>'
-            event.reply(" " * 12 + txt)
-        event.reply(" " * 8 + "</outline>")
-        event.reply("    <body>")
-        event.reply("</opml>")
-
-
-def imp(event):
-    "import opml."
-    if not event.args:
-        event.iface("<filename>")
-        return
-    fnm = event.args[0]
-    if not os.path.isfile(fnm):
-        event.reply(f"no {fnm} file found.")
-        return
-    with Run.importlock:
-        with open(fnm, "r", encoding="utf-8") as file:
-            txt = file.read()
-        prs = OPML()
-        nrs = 0
-        nrskip = 0
-        insertid = Helpers.shortid()
-        for obj in prs.parse(txt, "outline", "name,xmlUrl"):
-            url = obj["xmlUrl"]
-            if url in State.skipped:
-                continue
-            if not url.startswith("http"):
-                continue
-            has = list(Locate.find(
-                                   Method.fqn(Rss),
-                                   {"rss": url},
-                                   matching=True
-                                  ))
-            if has:
-                State.skipped.append(url)
-                nrskip += 1
-                continue
-            feed = Rss()
-            feed.rss = obj["xmlUrl"]
-            del obj["xmlUrl"]
-            Method.update(feed, obj)
-            uri = urllib.parse.urlparse(feed.rss)
-            feed.name = max(uri.netloc.split("."), key=len)
-            feed.insertid = insertid
-            Disk.write(feed)
-            nrs += 1
-    if nrskip:
-        event.reply(f"skipped {nrskip} urls.")
-    if nrs:
-        event.reply(f"added {nrs} urls.")
 
 
 def nme(event):
@@ -630,7 +401,7 @@ def nme(event):
         event.iface("<stringinurl> <name>")
         return
     selector = {"rss": event.args[0]}
-    for fnm, fed in Locate.find(
+    for fnm, fed in Locater.find(
                                 Method.fqn(Rss),
                                 selector
                                ):
@@ -647,7 +418,7 @@ def rem(event):
     if len(event.args) != 1:
         event.iface("<stringinurl>")
         return
-    for fnm, fed in Locate.find(Method.fqn(Rss)):
+    for fnm, fed in Locater.find(Method.fqn(Rss)):
         feed = Rss()
         Method.update(feed, fed)
         if event.args[0] not in feed.rss:
@@ -665,7 +436,7 @@ def res(event):
         event.iface("<stringinurl>")
         return
     nrs = 0
-    for fnm, fed in Locate.find(
+    for fnm, fed in Locater.find(
                                 Method.fqn(Rss),
                                 removed=True
                                ):
@@ -688,7 +459,7 @@ def rss(event):
     if "http://" not in url and "https://" not in url:
         event.reply("i need an url")
         return
-    for fnm, result in Locate.find(
+    for fnm, result in Locater.find(
                                    Method.fqn(Rss),
                                    {"rss": url}
                                   ):
@@ -705,15 +476,5 @@ def syn(event):
     "synchronize a feed."
     if Main.debug:
         return
-    fetcher = Fetcher()
-    fetcher.start(False)
-    nrs = fetcher.run(True)
+    nrs = Run.run(True)
     event.reply(f"{nrs} feeds synced")
-
-
-TEMPLATE = """<opml version="1.0">
-    <head>
-        <title>OPML</title>
-    </head>
-    <body>
-        <outline title="opml" text="rss feeds">"""

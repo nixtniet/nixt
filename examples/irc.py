@@ -27,29 +27,16 @@ def init():
     except (KeyboardInterrupt, EOFError):
         _thread.interrupt_main()
     if irc.events.joined.is_set():
-        logging.warning("%s", Method.fmt(irc.cfg, skip=[
-            "ignore",
-            "name",
-            "realname",
-            "username",
-            "word"
-            ]
-        ))
+        logging.info("%s", Method.fmt(irc.cfg, ["nick", "channel", "server", "port"]))
     else:
         irc.stop()
     return irc
 
 
-def shutdown():
-    "shutdown irc module."
-    for name, bot in Broker.like("irc"):
-        bot.stop()
-
-
 class Config(Object):
 
     name = Main.name or Method.pkgname(Mods)
-    channel = f"#{name}"
+    channel = Main.channel or f"#{name}"
     commands = True
     control = "!"
     ignore = ["PING", "PONG", "PRIVMSG"]

@@ -10,7 +10,7 @@ import threading
 import time
 
 
-from nixt.defines import Object, Broker, Disk, Locate, Method, Thread, Time
+from nixt.defines import Object, Broker, Disk, Locater, Method, Thread, Time
 
 
 rand = random.SystemRandom()
@@ -19,7 +19,7 @@ rand = random.SystemRandom()
 def init():
     "intialize the timer module."
     TimerLoop.start()
-    logging.warning("%s timers" , len(TimerLoop.timers))
+    logging.info("%s timers" , len(TimerLoop.timers))
 
 
 def shutdown():
@@ -79,7 +79,7 @@ class TimerLoop:
     @classmethod
     def start(cls):
         "start timers."
-        cls.path = Locate.first(cls.timers) or Disk.ident(cls.timers)
+        cls.path = Locater.first(cls.timers) or Disk.ident(cls.timers)
         cls.running.set()
         Thread.launch(cls.loop, name="Timers.loop")
 

@@ -10,7 +10,7 @@ import logging
 from random import SystemRandom
 
 
-from nixt.defines import Clients, Disk, Locate, Message, Repeater
+from nixt.defines import Clients, Disk, Locater, Message, Repeater
 
 
 rand = SystemRandom()
@@ -20,7 +20,7 @@ def init():
     state.load()
     event = Message()
     Repeater.add(3600,  wsd, event)
-    logging.warning("%s wise", len(TXTLIST))
+    logging.info("%s wise", len(TXTLIST))
 
 
 class State:
@@ -31,11 +31,11 @@ class State:
 
     def dump(self):
         if not self.fnm:
-            self.fnm = Locate.first(self) or Disk.ident(self)
+            self.fnm = Locater.first(self) or Disk.ident(self)
         Disk.write(self, self.fnm)
 
     def load(self):
-        Locate.first(self)
+        Locater.first(self)
 
 
 state = State()

@@ -17,7 +17,7 @@ j = os.path.join
 
 def pth(event):
     "create and show path to website."
-    path = j(a(Main.sets.docs), "index.html")
+    path = j(a(Main.docs), "index.html")
     if e(path):
         event.reply(f"file://{path}")
     else:

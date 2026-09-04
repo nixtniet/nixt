@@ -8,7 +8,7 @@ from .methods import Method
 from .objects import Data
 
 
-class Parse:
+class Parser:
 
     @classmethod
     def parse(cls, obj, text, clean=False):
@@ -73,5 +73,5 @@ class Parse:
 
 def __dir__():
     return (
-        'Parse',
+        'Parser',
     )

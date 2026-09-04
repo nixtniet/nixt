@@ -5,12 +5,11 @@
 
 
 import inspect
-import logging
 
 
-from .brokers import Clients
-from .package import Mods
-from .parsers import Parse
+from .clients import Clients
+from .package import MisMatch, Mods
+from .parsers import Parser
 
 
 class Commands:
@@ -27,7 +26,7 @@ class Commands:
     @classmethod
     def command(cls, evt):
         "command callback."
-        Parse.parse(evt, evt.text)
+        Parser.parse(evt, evt.text)
         func = cls.cmds.get(evt.cmd, cls.ondemand(evt.cmd))
         if func:
             func(evt)
@@ -49,10 +48,12 @@ class Commands:
         modname = cls.names.get(name, None)
         if not modname:
             return
-        mod = Mods.get(modname)
+        try:
+            mod = Mods.get(modname)
+        except MisMatch:
+            return
         if not mod:
             return
-        logging.debug(f"load {modname}")
         cls.scan(mod)
         return cls.cmds.get(name, None)
 
@@ -71,7 +72,10 @@ class Commands:
     def scanner(cls):
         "scan all modules."
         for name in Mods.list():
-            cls.scan(Mods.get(name))
+            try:
+                cls.scan(Mods.get(name))
+            except MisMatch:
+                pass
 
     @classmethod
     def statics(cls):

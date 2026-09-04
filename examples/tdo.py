@@ -4,7 +4,7 @@
 "todo"
 
 
-from nixt.defines import Disk, Locate, Object
+from nixt.defines import Disk, Locater, Object
 
 
 class Todo(Object):
@@ -21,7 +21,7 @@ def dne(event):
         return
     selector = {'txt': event.args[0]}
     nmr = 0
-    for fnm, obj in Locate.find('todo', selector):
+    for fnm, obj in Locater.find('todo', selector):
         nmr += 1
         obj.__deleted__ = True
         Disk.write(obj, fnm)

@@ -89,7 +89,10 @@ class Method:
     @classmethod
     def fqn(cls, obj):
         "full qualified name."
-        kin = str(type(obj)).split()[-1][1:-2]
+        if "__qualname__" in dir(obj):
+            kin = obj.__qualname__
+        else:
+            kin = str(type(obj)).split()[-1][1:-2]
         if kin == "type":
             kin = f"{obj.__module__}.{obj.__name__}"
         return kin

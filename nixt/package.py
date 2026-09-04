@@ -4,12 +4,16 @@
 "module management"
 
 
-import logging
 import os
 
 
-from .hashing import Md5
+from .hashing import MD5
 from .utility import Utils
+
+
+class MisMatch(Exception):
+
+    "md5 sums don't match."
 
 
 class Mods:
@@ -31,23 +35,19 @@ class Mods:
         cls.dirs[pkgn] = path
 
     @classmethod
-    def get(cls, name):
+    def get(cls, name, force=False):
         "return module from cache or import module."
         for pkgname, path in cls.dirs.items():
             modname = f"{pkgname}.{name}"
-            mod = cls.mods.get(modname, None)
+            try:
+                mod = cls.mods.get(modname, None)
+            except MisMatch:
+                continue
             if mod:
                 return mod
             fnm = os.path.join(path, name + ".py")
             if not os.path.exists(fnm):
                 continue
-            if cls.md5s:
-                md5 = Md5.md5(fnm)
-                md5s = cls.md5s.get(name)
-                if not md5s:
-                    logging.info("missing %s md5sum", modname)
-                elif md5 != md5s:
-                    logging.info("mismatch %s", modname)
             return cls.importer(modname, fnm)
 
     @classmethod
@@ -111,7 +111,7 @@ class Mods:
         "read static tables."
         cls.statics()
         if cls.core:
-            Md5.check(cls.core)
+            MD5.check(cls.core)
 
 
 def __dir__():

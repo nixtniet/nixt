@@ -11,7 +11,7 @@ import os
 from .command import Commands
 from .configs import Main
 from .encoder import JSON
-from .hashing import Md5
+from .hashing import MD5
 from .package import Mods
 
 
@@ -20,7 +20,8 @@ class Cmd:
     @staticmethod
     def cmd(event):
         "show commands."
-        event.reply(",".join(sorted(Commands.names or Commands.cmds)))
+        check = len(Commands.cmds) > len(Commands.names)
+        event.reply(",".join(sorted((check and Commands.cmds) or Commands.names)))
 
     @staticmethod
     def tbl(event):
@@ -29,12 +30,12 @@ class Cmd:
         md5s = {}
         Commands.names = {}
         for name in Mods.list():
-            module = Mods.get(name)
-            md5s[name] = Md5.md5(module.__file__)
+            module = Mods.get(name, True)
+            md5s[name] = MD5.md5(module.__file__)
             for cmd in Commands.scan(module):
                 Commands.names[cmd.__name__] = cmd.__module__.split(".")[-1]
         corepath = os.path.dirname(inspect.getsourcefile(Mods))
-        Md5.createmd5(corepath, core)
+        MD5.createmd5(corepath, core)
         event.reply("# This file is placed in the Public Domain.")
         event.reply("\n")
         event.reply('"tables"')
@@ -55,7 +56,7 @@ class Cmd:
     @staticmethod
     def ver(event):
         "show verson."
-        event.reply(f"{Main.name.upper()} {Md5.core()}")
+        event.reply(f"{Main.name.upper()} {MD5.core()}")
 
 
 def __dir__():

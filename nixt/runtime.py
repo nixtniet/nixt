@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"long time background running processes"
+"background processes"
 
 
 import argparse
@@ -10,7 +10,7 @@ import sys
 import time
 
 
-from .defines import Boot, Client, Cmd, Commands, Data, Main, Md5
+from .defines import Boot, Client, Cmd, Commands, Main, MD5
 from .defines import Message, Mods, Method, Workdir
 
 
@@ -40,13 +40,15 @@ class Arguments:
         optionparser.add_argument("-p", "--path", default='', help='path to modules directory.', metavar="path")
         optparser = theparser.add_argument_group()
         optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
+        optparser.add_argument("--channel", default="", help="channel to join")
         optparser.add_argument("--default", default="irc,mdl,rss,wsd", help=argparse.SUPPRESS)
+        optparser.add_argument("--local", action="store_true", help="user local mods dir.")
         optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
+        optparser.add_argument("--nodisk", action="store_true", help="memory only.")
         optparser.add_argument("--scanner", action="store_true", help="do full modules scan on boot.")
         optparser.add_argument("--wdr", default="", help="set modules directory.")
         args, arguments = theparser.parse_known_args()
-        Main.sets = Data()
-        Method.update(Main.sets, args)
+        Method.update(Main, args)
         Main.otxt = " ".join(arguments)
 
 
@@ -62,7 +64,7 @@ class Daemon:
         pid2 = os.fork()
         if pid2 != 0:
             os._exit(0)
-        if not Main.sets.verbose:
+        if not Main.verbose:
             cls.null(sys.stdin)
             cls.null(sys.stdout)
             cls.null(sys.stderr)
@@ -95,14 +97,14 @@ class Kernel(Boot, Daemon):
     @classmethod
     def banner(cls, force=False):
         "hello."
-        if not force and not Main.sets.verbose:
+        if not force and not Main.verbose:
             return
         tmr = time.ctime(time.time()).replace("  ", " ")
         txt = "%s since %s %s (%s)" % (
             Main.name.upper(),
             tmr,
-            Main.sets.level.upper() or "WARNING",
-            Md5.core()
+            Main.level.upper() or "WARNING",
+            MD5.core()
         )
         print(txt.replace("  ", " "))
         sys.stdout.flush()
@@ -112,16 +114,14 @@ class Kernel(Boot, Daemon):
         cls.configure(Main)
         Mods.dir(Workdir.moddir())
         Mods.dir(Mods.moddir())
-        Commands.add(Cmd.cmd)
-        if Main.sets.admin:
-            Commands.add(Cmd.tbl)
-        if Main.sets.all:
-            Main.sets.mods = ",".join(Mods.list())
-        if Main.sets.scanner or Main.sets.all:
-            Commands.scanner()
-        else:
-            Commands.table()
+        if Main.local:
+            Mods.dir("mods", "mods")
+        if Main.all:
+            Main.mods = ",".join(Mods.list())
+        Commands.table()
         Mods.table()
+        if Main.scanner or Main.local:
+            Commands.scanner()
 
     @classmethod
     def wrap(cls, func, *args, dofinal=None):
@@ -182,8 +182,8 @@ class Scripts:
         Kernel.daemon()
         Kernel.privileges()
         Kernel.pid()
-        Main.sets.mods = ",".join(Mods.list())
-        Kernel.init(Main.sets.mods)
+        Main.mods = ",".join(Mods.list())
+        Kernel.init(Main.mods)
         Kernel.forever()
 
     @staticmethod
@@ -192,9 +192,10 @@ class Scripts:
         import readline
         readline.redisplay()
         Kernel.boot()
-        if Main.sets.verbose:
+        Commands.add(Cmd.cmd)
+        if Main.verbose:
             Kernel.banner()
-        Kernel.init(Main.sets.mods, Main.sets.wait)
+        Kernel.init(Main.mods, Main.wait)
         csl = Console()
         csl.start()
         Kernel.forever()
@@ -203,6 +204,9 @@ class Scripts:
     def control():
         "cli script."
         Kernel.boot()
+        Commands.add(Cmd.cmd)
+        if Main.admin:
+            Commands.add(Cmd.tbl)
         cli = CLI()
         evt = Message()
         evt.orig = repr(cli)
@@ -211,26 +215,43 @@ class Scripts:
         evt.wait()
 
     @staticmethod
+    def nodisk():
+        Kernel.boot()
+        Commands.add(Cmd.cmd)
+        if Main.verbose:
+            Kernel.banner(True)
+        if Main.console:
+            import readline
+            readline.redisplay()
+            csl = Console()
+            csl.start()
+        Kernel.init(Main.mods)
+        Kernel.forever()
+
+    @staticmethod
     def service():
         "service script."
         Kernel.boot()
         Kernel.privileges()
         Kernel.pid()
-        if not Main.sets.verbose:
+        Commands.add(Cmd.cmd)
+        if not Main.verbose:
             Kernel.banner(True)
-        Main.sets.mods = ",".join(Mods.list())
-        Kernel.init(Main.sets.mods)
+        Main.mods = ",".join(Mods.list())
+        Kernel.init(Main.mods)
         Kernel.forever()
 
 
 def main():
     "main"
     Arguments.getargs()
-    if Main.sets.console:
+    if Main.nodisk:
+        Kernel.wrap(Scripts.nodisk)
+    elif Main.console:
         Kernel.wrap(Scripts.console)
-    elif Main.sets.service:
+    elif Main.service:
         Kernel.wrap(Scripts.service)
-    elif Main.sets.daemon:
+    elif Main.daemon:
         Kernel.wrap(Scripts.background)
     else:
         Kernel.wrap(Scripts.control)

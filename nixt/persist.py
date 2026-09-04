@@ -6,16 +6,26 @@
 
 import datetime
 import json
-import logging
 import os
 import pathlib
 import threading
+import time
 
 
 from .encoder import JSON
 from .methods import Method
 from .objects import Data
 from .utility import Utils
+
+
+class NoDisk(Exception):
+
+    "disk is disabled."
+
+
+class DecodeError(Exception):
+
+    "could not parse input."
 
 
 class Cache:
@@ -43,6 +53,7 @@ class Cache:
 
 class Disk:
 
+    disable = False
     lock = threading.RLock()
 
     @classmethod
@@ -65,6 +76,8 @@ class Disk:
     @classmethod
     def read(cls, obj, path, base="store"):
         "read object from path."
+        if cls.disable:
+            raise NoDisk
         with cls.lock:
             pth = os.path.join(Workdir.wdr, base, path)
             if not os.path.exists(pth):
@@ -73,14 +86,15 @@ class Disk:
                 try:
                     Method.update(obj, JSON.load(fpt))
                 except json.decoder.JSONDecodeError as ex:
-                    logging.error("failed read at %s: %s", pth, str(ex))
-                    raise
+                    raise DecodeError(Utils.strip(pth)) from ex
             Cache.add(pth, obj)
             return True
 
     @classmethod
     def write(cls, obj, path="", base="store", skip=False):
         "write object to disk."
+        if cls.disable:
+            raise NoDisk
         with cls.lock:
             if path == "":
                 path = cls.ident(obj)
@@ -90,6 +104,104 @@ class Disk:
                 JSON.dump(obj, fpt, indent=4)
             Cache.sync(path, obj)
             return path
+
+
+class Locater:
+
+    lock = threading.RLock()
+
+    @classmethod
+    def attrs(cls, kind):
+        "show attributes for kind of objects."
+        result = []
+        for pth, obj in cls.find(kind, nritems=1):
+            result.extend(Method.keys(obj))
+        return set(result)
+
+    @classmethod
+    def count(cls, kind):
+        "count kinds of objects."
+        return len(list(cls.find(kind)))
+
+    @classmethod
+    def find(cls, kind, selector={}, removed=False, matching=False, nritems=None):
+        "locate objects by matching atributes."
+        with cls.lock:
+            nrs = 0
+            for pth in cls.fns(Workdir.long(kind)):
+                obj = Disk.cached(pth)
+                if not removed and Method.deleted(obj):
+                    continue
+                if selector and not Method.search(obj, selector, matching):
+                    continue
+                if nritems and nrs >= nritems:
+                    break
+                nrs += 1
+                yield pth, obj
+            else:
+                return None, None
+
+    @classmethod
+    def first(cls, obj, selector={}):
+        "return first object of a kind."
+        result = sorted(
+                        cls.find(Method.fqn(obj), selector),
+                        key=lambda x: cls.fntime(x[0])
+                       )
+        res = ""
+        if result:
+            inp = result[0]
+            Method.update(obj, inp[-1])
+            res = inp[0]
+        return res
+
+    @classmethod
+    def fns(cls, kind):
+        "file names by kind of object."
+        path = os.path.join(Workdir.wdr, "store", kind)
+        for rootdir, dirs, _files in os.walk(path, topdown=True):
+            for dname in dirs:
+                if dname.count("-") != 2:
+                    continue
+                ddd = os.path.join(rootdir, dname)
+                for fll in os.listdir(ddd):
+                    yield cls.strip(os.path.join(ddd, fll))
+
+    @classmethod
+    def fntime(cls, daystr):
+        "time from path."
+        datestr = " ".join(daystr.split(os.sep)[-2:])
+        datestr = datestr.replace("_", " ")
+        if "." in datestr:
+            datestr, rest = datestr.rsplit(".", 1)
+        else:
+            rest = ""
+        timd = time.mktime(time.strptime(datestr, "%Y-%m-%d %H:%M:%S"))
+        if rest:
+            try:
+                timd += float("." + rest)
+            except ValueError:
+                pass
+        return float(timd)
+
+    @classmethod
+    def last(cls, obj, selector={}):
+        "last saved version."
+        result = sorted(
+                        cls.find(Method.fqn(obj), selector),
+                        key=lambda x: cls.fntime(x[0])
+                       )
+        res = ""
+        if result:
+            inp = result[-1]
+            Method.update(obj, inp[-1])
+            res = inp[0]
+        return res
+
+    @classmethod
+    def strip(cls, path):
+        "strip filename from path."
+        return path.split('store')[-1][1:]
 
 
 class Workdir:
@@ -162,5 +274,6 @@ class Workdir:
 def __dir__():
     return (
         'Disk',
+        'Locater',
         'Workdir'
     )

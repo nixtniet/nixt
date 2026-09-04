@@ -4,7 +4,7 @@
 "show fields on an object"
 
 
-from nixt.defines import Locate, Workdir
+from nixt.defines import Locater, Workdir
 
 
 def fie(event):
@@ -16,7 +16,7 @@ def fie(event):
         else:
             event.reply("no types")
         return
-    itms = Locate.attrs(event.args[0])
+    itms = Locater.attrs(event.args[0])
     if not itms:
         event.reply("no attributes")
     else:

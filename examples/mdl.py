@@ -24,7 +24,7 @@ def init():
             sec = seconds(val)
             name = aliases.get(key)
             Repeater.add(sec, cbstats, evt, name=name)
-            logging.warning(Time.elapsed(time.time()-STARTTIME))
+            logging.info(Time.elapsed(time.time()-STARTTIME))
 
 
 DAY = 24*60*60
