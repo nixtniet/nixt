@@ -33,7 +33,7 @@ class TestEngine(unittest.TestCase):
         evt = Message()
         evt.kind = "hello"
         evt.text = "hello"
-        self.hdl.callback(evt)
+        self.hdl.handle(evt)
         evt.wait()
         self.assertTrue("hello" in evt.result)
 

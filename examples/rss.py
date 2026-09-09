@@ -8,30 +8,22 @@ import gc
 import logging
 import os
 import pathlib
-import queue
 import re
 import threading
 import _thread
 
 
-from nixt.defines import Clients, Disk, Fetcher, Format, JSONL, Locater
-from nixt.defines import Logging, Main, MD5, Method, Object, Repeater
-from nixt.defines import Thread, Utils, Watcher, Workdir
+from nixt.defines import Clients, Data, Disk, Fetcher, Format, JSONL, Locater
+from nixt.defines import Logging, Main, MD5, Method, Object, Pool, Repeater
+from nixt.defines import Runner, Utils, Watcher, Workdir
 
 
 logger = logging.getLogger("rss")
+repeater = Repeater()
 watcher = Watcher()
 
 
 j = os.path.join
-
-
-class Config(Object):
-
-    "rss config"
-
-    polltime = 300
-    save = False
 
 
 def init():
@@ -39,7 +31,7 @@ def init():
     Disk.read(Config, "rss", "config")
     Run.start()
     nrs = Locater.count("rss")
-    txt = f"{nrs} feeds index {State.index}"
+    txt = f"{nrs} feeds"
     if nrs == 1:
         txt = txt[:-1]
     logging.info(txt)
@@ -50,9 +42,13 @@ def shutdown():
     Run.stop()
 
 
-class Rss(Object):
+class Config(Object):
 
-    "rss item"
+    polltime = 300
+    save = False
+
+
+class Rss(Data):
 
     def __init__(self):
         super().__init__()
@@ -60,26 +56,22 @@ class Rss(Object):
         self.insertid = None
         self.name = ""
         self.rss = ""
+        self.seen = []
+        self.size = 0
 
 
 class State(Object):
-
-    "module state"
 
     index = 0
 
 
 class Locks:
 
-    "locks"
-
     fetchlock = _thread.allocate_lock()
     importlock = _thread.allocate_lock()
 
 
 class Run:
-
-    "runtime"
 
     path = ""
     file = None
@@ -92,16 +84,32 @@ class Run:
 
     @classmethod
     def callback(cls):
+        "monitor log file."
         with cls.lock:
             cls.file.seek(State.index, 0)
             while True:
                 line = cls.file.readline()
                 if not line:
                     break
-                Clients.announce(cls.display(JSONL.loads(line.strip())))
+                feed = JSONL.loads(line.strip())
+                txt = cls.display(feed)
+                if not Run.got(txt, feed):
+                    Clients.announce(txt)
             State.index = cls.file.tell()
         Disk.write(State, cls.statefn)
         gc.collect(0)
+
+    @classmethod
+    def clear(cls):
+        "retry all failed feeds."
+        counter = 0
+        for fnm, feed in Locater.find(Method.fqn(Rss)):
+            if feed.skip:
+                feed.skip = False
+                Disk.write(feed, fnm)
+                counter += 1
+        logging.debug("clear %s", counter)
+        return counter
 
     @classmethod
     def display(cls, obj, name=None):
@@ -121,8 +129,8 @@ class Run:
             data = Method.get(obj, key, None)
             if not data:
                 continue
-            stripped = Utils.striphtml(data.replace("\n", " ").rstrip())
-            result += Utils.unescape(stripped)
+            stripped = Fetcher.striphtml(data.replace("\n", " ").rstrip())
+            result += Fetcher.unescape(stripped)
             result += " - "
         return result[:-2].rstrip()
 
@@ -140,22 +148,31 @@ class Run:
         logger.setLevel("DEBUG")
 
     @classmethod
+    def got(cls, txt, feed):
+        "verify whether text has already been seen."
+        md5 = MD5.source(txt)[:7]
+        if md5 in feed.seen:
+            return True
+        feed.seen.insert(0, md5)
+        return False
+
+    @classmethod
     def log(cls, txt):
         "log to file."
-        md5 = MD5.source(txt)[:7]
-        if md5 in cls.matching:
-            return
-        cls.matching.append(md5)
         logger.debug(txt)
 
     @classmethod
     def run(cls, silent=False):
         "do a fetch run of all feeds."
         nrs = 0
+        if pool.busy():
+            logging.debug("next!")
+            return 0
+        logging.debug("starting run")
         for fnm, feed in Locater.find(Method.fqn(Rss)):
             if feed.skip:
                 continue
-            Runners.put(fnm, feed, silent)
+            pool.put((fnm, feed, silent))
             nrs += 1
         return nrs
 
@@ -171,9 +188,11 @@ class Run:
             watcher.add(cls.path, cls.callback)
             watcher.start()
         cls.statefn = Locater.last(State) or Disk.ident(State)
+        pool.init(1)
         if not once:
-            Repeater.add(Config.polltime, cls.run)
-        
+            repeater.add(Config.polltime, cls.run)
+            repeater.add(7200, cls.clear)
+
     @classmethod
     def stop(cls):
         "shutdown."
@@ -187,42 +206,30 @@ class Run:
             Disk.write(State, cls.statefn)
 
 
-class Runner:
-
-    "feed fetcher"
+class Fetching(Runner):
 
     def __init__(self):
-        self.dosave = True
-        self.queue = queue.Queue()
-        self.running = threading.Event()
-        self.todo = queue.Queue()
+        Runner.__init__(self)
 
-    def fetch(self, fnm, feed, silent=False):
-        "fetch a feed."
-        counter = 0
-        for obj in self.getfeed(fnm, feed, feed.display_list):
-            if obj is None:
-                continue
-            if Method.isempty(obj):
-                continue
-            fed = Object()
-            Method.update(fed, obj)
-            Method.update(fed, feed)
-            if Config.save:
-                Run.log(JSONL.logtxt(fed))
-            else:
-                Clients.announce(Run.display(fed))
-            counter += 1
-        Run.sync()
-        return counter
+    def doskip(self, errs):
+        "check whether to log."
+        if errs not in [200, 304]:
+            return True
+        return False
 
     def getfeed(self, fnm, feed, items):
         "fetch a feed."
         result = [None,]
         response = Fetcher.geturl(feed.rss)
-        if response.error or not response.data:
-            logging.debug("skip %s", feed.rss)
+        if not response.data:
+            if response.status and self.doskip(response.status):
+                feed.status = response.status
+                feed.error = response.error
+                feed.skip = True
+                Disk.write(feed, fnm)
+                logging.debug("skipt %s %s %s", feed.rss, response.status, response.reason)
             return result
+        logging.debug("fetch %s", feed.rss)
         if "link" not in items:
             items += ",link"
         yield from RSS.parse(
@@ -231,66 +238,40 @@ class Runner:
                              items
                             ) or []
 
-    def loop(self):
-        "loop to handle fetch jobs."
-        while self.running.is_set():
-            job = self.queue.get()
-            if job is None:
-                break
-            self.fetch(*job)
-
-    def put(self, *args):
-        "put jobs on queue."
-        self.queue.put(args)
-
-    def start(self, daemon=True):
-        "start runner."
-        self.running.set()
-        Thread.launch(self.loop, daemon=daemon)
-
-    def stop(self):
-        "stop runner."
-        self.running.clear()
-        self.queue.put(None)
-
-
-class Runners:
-
-    "pool of runners"
-
-    runners = {}
-    max = os.cpu_count()
-    nrcpu = 1
-    nrlast = 0
-
-    @classmethod
-    def add(cls, client):
-        "add a runner."
-        cls.runners[repr(client)] = client
-
-    @classmethod
-    def get(cls, orig):
-        "return client by origin."
-        return cls.runners.get(orig)
-
-    @classmethod
-    def init(cls, nr):
-        "initialze a number of runners."
-        for x in range(nr):
-            runner = Runner()
-            runner.start()
-            cls.add(runner)
-
-    @classmethod
-    def put(cls, *args):
-        "push job to a runner."
-        if not cls.runners:
-            cls.init(1)
-        if cls.nrlast > cls.nrcpu-1:
-            cls.nrlast = 0
-        clt = list(cls.runners.values())[cls.nrlast]
-        clt.put(*args)
-        cls.nrlast += 1
+    def run(self, *args, **kwargs):
+        "poll all feeds."
+        counter = 0
+        try:
+            fnm, feed, silent = args
+        except ValueError:
+            return counter
+        if not feed.seen:
+            feed.seen = []
+        has = False
+        for obj in self.getfeed(fnm, feed, feed.display_list):
+            counter += 1
+            if obj is None:
+                continue
+            if Method.isempty(obj):
+                continue
+            fed = Data()
+            Method.update(fed, obj)
+            Method.update(fed, feed)
+            if Config.save:
+                Run.log(JSONL.logtxt(fed))
+            if not silent:
+                txt = Run.display(fed)
+                if not Run.got(txt, feed):
+                    Clients.announce(txt)
+                    has = True
+            del obj
+        if has:
+            feed.seen = feed.seen[:counter]
+            Disk.write(feed, fnm)
+            logging.debug("write %s", fnm)
+        if counter:
+            gc.collect(0)
+        return counter
 
 
 class RSS:
@@ -308,7 +289,7 @@ class RSS:
         index2 = line.find(f"</{item}>", index1)
         if index2 == -1:
             return lne
-        return Utils.cdata(line[index1:index2]).strip()
+        return Fetcher.cdata(line[index1:index2]).strip()
 
     @classmethod
     def getitems(cls, text, token, nrs=None):
@@ -336,13 +317,16 @@ class RSS:
         "parse feed."
         for line in cls.getitems(txt, toke):
             line = line.strip()
-            obj = {}
+            obj = Data()
             for itm in Utils.spl(items):
                 val = cls.getitem(line, itm)
                 if val:
-                    escaped = Utils.unescape(val.strip())
-                    obj[itm] = Utils.striphtml(escaped).replace("\n", "")
+                    escaped = Fetcher.unescape(val.strip())
+                    obj[itm] = Fetcher.striphtml(escaped).replace("\n", "")
             yield obj
+
+
+pool = Pool(Fetching)
 
 
 def atr(event):
@@ -477,4 +461,5 @@ def syn(event):
     if Main.debug:
         return
     nrs = Run.run(True)
-    event.reply(f"{nrs} feeds synced")
+    cleared = Run.clear()
+    event.reply(f"{nrs} feeds synced {cleared} cleared")

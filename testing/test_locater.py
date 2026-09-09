@@ -7,11 +7,11 @@
 import unittest
 
 
-from nixt.defines import Locate
+from nixt.defines import Locater
 
 
 class TestLocater(unittest.TestCase):
 
     def test_construct(self):
-        lct = Locate()
+        lct = Locater()
         self.assertTrue(lct)

@@ -14,12 +14,13 @@ from nixt.defines import Clients, Disk, Locater, Message, Repeater
 
 
 rand = SystemRandom()
+repeater = Repeater()
 
 
 def init():
     state.load()
     event = Message()
-    Repeater.add(3600,  wsd, event)
+    repeater.add(3600,  wsd, event)
     logging.info("%s wise", len(TXTLIST))
 
 
