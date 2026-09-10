@@ -22,10 +22,12 @@ j = os.path.join
 
 class DecodeError(Exception):
 
-    "could not parse input."
+    "could not parse input"
 
 
 class Cache:
+
+    "path object cache"
 
     paths = {}
 
@@ -49,6 +51,8 @@ class Cache:
 
 
 class Disk:
+
+    "read/write disk"
 
     lock = threading.RLock()
 
@@ -86,6 +90,8 @@ class Disk:
 
 
 class Locater:
+
+    "find objects"
 
     lock = threading.RLock()
 
@@ -188,6 +194,8 @@ class Locater:
 
 
 class Workdir:
+
+    "the store everything directory"
 
     wdr = ""
 

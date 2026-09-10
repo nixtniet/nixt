@@ -13,6 +13,8 @@ from .threads import Thread
 
 class Runner(Loop):
 
+    "run job."
+
     def run(self, *args, **kwargs):
         "fetch a feed."
         raise NotImplementedError
@@ -34,39 +36,46 @@ class Runner(Loop):
 
 class Pool:
 
-    def __init__(self, clazz=None):
-        self.clazz = clazz or Runner
-        self.runners = []
-        self.max = os.cpu_count()
-        self.nrcpu = 1
-        self.nrlast = 0
+    "multiple runners."
 
-    def add(self, client):
+    clazz = Runner
+    runners = []
+    max = os.cpu_count()
+    nrcpu = 1
+    nrlast = 0
+
+    @classmethod
+    def add(cls, client):
         "add a runner."
-        self.runners.append(client)
+        cls.runners.append(client)
 
-    def busy(self):
-        for runner in self.runners:
-            if runner.queue.qsize():
+    @classmethod
+    def busy(cls):
+        for runner in cls.runners:
+            if cls.queue.qsize():
                 return True
         return False
 
-    def init(self, nr):
+    @classmethod
+    def init(cls, nr, clz=None):
         "initialze a number of runners."
+        if clz:
+            cls.clazz = clz
         for x in range(nr):
-            runner = self.clazz()
+            runner = cls.clazz()
             runner.start()
-            self.add(runner)
+            cls.add(runner)
 
-    def put(self, *args):
+    @classmethod
+    def put(cls, *args):
         "push job to a runner."
-        if not self.runners:
+        if not cls.runners:
             return
-        if self.nrlast > self.nrcpu-1:
-            self.nrlast = 0
-        clt = self.runners[self.nrlast]
+        if cls.nrlast > cls.nrcpu-1:
+            cls.nrlast = 0
+        clt = cls.runners[cls.nrlast]
         clt.put(*args)
-        self.nrlast += 1
+        cls.nrlast += 1
 
 
 def __dir__():

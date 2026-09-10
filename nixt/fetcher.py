@@ -17,6 +17,8 @@ from .objects import Data, Method
 
 class Fetcher:
 
+    "fetch urls"
+ 
     modified = {}
 
     @classmethod

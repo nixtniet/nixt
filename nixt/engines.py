@@ -14,12 +14,11 @@ from .threads import Thread
 
 class Engine(Loop):
 
+    "run callbacks"
+
     def __init__(self):
         Loop.__init__(self)
         self.cbs = {}
-        self.queue = queue.Queue()
-        self.stopped = threading.Event()
-        self.done = threading.Event()
 
     def handle(self, event):
         "run callback function with event."

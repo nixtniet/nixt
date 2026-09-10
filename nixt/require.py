@@ -16,6 +16,8 @@ from .package import MD5, Mods
 
 class Cmd:
 
+    "necessary commands."
+
     @staticmethod
     def cmd(event):
         "show commands."

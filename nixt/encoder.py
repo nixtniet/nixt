@@ -11,6 +11,8 @@ import types
 
 class Encoder(json.JSONEncoder):
 
+    "object to string"
+
     lock = threading.RLock()
 
     def default(self, o):
@@ -44,6 +46,8 @@ class Encoder(json.JSONEncoder):
 
 class JSON:
 
+    "json wrapper"
+
     @classmethod
     def dump(cls, *args, **kw):
         "dump object to disk."
@@ -68,6 +72,8 @@ class JSON:
 
 
 class JSONL(JSON):
+
+    "line oriented"
 
     @classmethod
     def log(cls, *args, **kw):

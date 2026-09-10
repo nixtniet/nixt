@@ -9,6 +9,8 @@ from .objects import Data, Method
 
 class Parser:
 
+    "parsing for commands"
+
     @classmethod
     def parse(cls, obj, text, clean=False):
         "parse text for command and arguments."

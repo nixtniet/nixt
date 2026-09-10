@@ -11,6 +11,8 @@ import types
 
 class Object:
 
+    "inheritence without the methods"
+
     def __contains__(self, key):
         return key in dir(self)
 
@@ -35,6 +37,8 @@ class Object:
 
 class Data(Object):
 
+    "defaulting to string"
+
     def __getattr__(self, key):
         if key in dir(self):
             return self.__getattribute__(self, key)
@@ -43,10 +47,17 @@ class Data(Object):
 
 class Method:
 
+    "functions with an object as the first argument"
+
     @classmethod
     def clear(cls, obj):
         "remove all items from the object."
         obj.__dict__.clear()
+
+    @classmethod
+    def clz(cls, obj):
+        "return class name of an object."
+        return cls.fqn(obj).split(".")[-1]
 
     @classmethod
     def construct(cls, obj, *args, **kwargs):

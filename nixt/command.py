@@ -14,6 +14,8 @@ from .parsers import Parser
 
 class Commands:
 
+    "command dispatch"
+
     cmds = {}
     names = {}
 

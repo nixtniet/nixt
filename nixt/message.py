@@ -12,6 +12,8 @@ from .objects import Data
 
 class Message(Data):
 
+    "message as an event"
+
     def __init__(self):
         super().__init__()
         self._ready = threading.Event()

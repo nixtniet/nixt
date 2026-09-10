@@ -14,10 +14,12 @@ from .utility import Utils
 
 class MisMatch(Exception):
 
-    "md5 sums don't match."
+    "md5 sums don't match"
 
 
 class Mods:
+
+    "modules"
 
     core = {}
     dirs = {}
@@ -118,6 +120,8 @@ class Mods:
 
 
 class MD5:
+
+    "module md5sums"
 
     @classmethod
     def check(cls, md5s):

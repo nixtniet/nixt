@@ -14,6 +14,8 @@ import uuid
 
 class Format(logging.Formatter):
 
+    "logging format."
+
     disable = False
     size = 3
 
@@ -26,6 +28,8 @@ class Format(logging.Formatter):
 
 
 class Logging:
+
+    "logging."
 
     datefmt = "%H:%M:%S"
     format = "%(module)-3s %(message)s"
@@ -57,6 +61,8 @@ class Logging:
 
 
 class Time:
+
+    "time related utilities."
 
     starttime = time.time()
     times = [
@@ -161,6 +167,8 @@ class Time:
 
 
 class Utils:
+
+    "useful functions"
 
     @staticmethod
     def cdir(path):

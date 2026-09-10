@@ -6,6 +6,9 @@
 
 class Broker:
 
+
+    "map repr(obj) to obj"
+
     objects = {}
 
     @classmethod

@@ -12,80 +12,52 @@ import _thread
 
 
 from .brokers import Broker
-from .handler import Handler
+from .engines import Engine
+from .looping import Loop
 from .threads import Thread
-
-
-class Clients:
-
-    @staticmethod
-    def announce(txt):
-        "announce text on all clients."
-        for obj in Broker.objs("announce"):
-            obj.announce(txt)
-
-    @staticmethod
-    def display(evt):
-        "display results."
-        bot = Broker.get(evt.orig)
-        if bot:
-            bot.display(evt)
-
-    @staticmethod
-    def shutdown():
-        "call stop on clients."
-        for client in Broker.objs("wait"):
-            try:
-                client.wait()
-            except (KeyboardInterrupt, EOFError):
-                pass
-        time.sleep(0.01)
-        for client in Broker.objs("stop"):
-            try:
-                client.stop()
-            except (KeyboardInterrupt, EOFError):
-                pass
-        time.sleep(0.01)
 
 
 class Display:
 
+    "unit of display"
+
     block = threading.Event()
 
     def __init__(self):
-        super().__init__()
         self.olock = threading.RLock()
         self.silent = False
-        Broker.add(self)
-
+        
     def announce(self, text):
-        "announce text to all channels."
+        "announce text to all channels"
         if not self.silent:
             self.raw(text)
 
     def display(self, event):
-        "display event results."
+        "display event results"
         with self.olock:
             for txt in event.result:
                 if self.block.is_set():
                     return
                 self.dosay(event.channel, txt)
+                del txt
         del event
 
     def dosay(self, channel, text):
-        "say called by display."
+        "say called by display"
         self.say(channel, text)
 
     def raw(self, text):
-        "raw output."
+        "raw output"
         raise NotImplementedError
 
     def say(self, channel, text):
-        "say text in channel."
+        "say text in channel"
         self.raw(text)
 
 
 class Output:
+
+    "dedicated output loop"
 
     def __init__(self):
         self.oqueue = queue.Queue()
@@ -130,21 +102,26 @@ class Output:
             _thread.interrupt_main()
 
 
-class Screen(Handler, Display):
+class Screen(Engine, Display):
+
+    "display wit coupled handler"
 
     def __init__(self):
-        Handler.__init__(self)
+        Engine.__init__(self)
         Display.__init__(self)
+        Broker.add(self)
 
     def raw(self, text):
         "raw output."
         raise NotImplementedError
 
 
-class Buffer(Screen, Output):
+class Buffer(Engine, Output):
+
+    "buffered output"
 
     def __init__(self):
-        Screen.__init__(self)
+        Engine.__init__(self)
         Output.__init__(self)
 
     def raw(self, text):
@@ -153,13 +130,49 @@ class Buffer(Screen, Output):
 
     def start(self, daemon=True):
         "start output loop."
-        Screen.start(self)
+        Engine.start(self)
         Output.start(self, daemon=daemon)
 
     def stop(self):
         "stop output loop."
-        Screen.stop(self)
+        Engine.stop(self)
         Output.stop(self)
+
+
+class Clients:
+
+    "collection of clients"
+
+    @staticmethod
+    def announce(txt):
+        "announce text on all clients."
+        for obj in Broker.objs("announce"):
+            obj.announce(txt)
+
+    @staticmethod
+    def display(evt):
+        "display results."
+        bot = Broker.get(evt.orig)
+        if bot:
+            bot.display(evt)
+
+    @staticmethod
+    def shutdown():
+        "call stop on clients."
+        for client in Broker.objs("wait"):
+            logging.debug("wait %s", client)
+            try:
+                client.wait()
+            except (KeyboardInterrupt, EOFError):
+                pass
+        time.sleep(0.01)
+        for client in Broker.objs("stop"):
+            logging.debug("stop %s", client)
+            try:
+                client.stop()
+            except (KeyboardInterrupt, EOFError):
+                pass
+        time.sleep(0.01)
 
 
 def __dir__():

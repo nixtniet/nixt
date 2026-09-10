@@ -17,6 +17,8 @@ from .defines import Method, MisMatch, Mods, Screen, Workdir
 
 class Arguments:
 
+    "comamnd line arguments."
+
     @classmethod
     def getargs(cls):
         "parse commandline arguments."
@@ -53,6 +55,8 @@ class Arguments:
 
 
 class Booting(Boot):
+
+    "at first."
 
     @classmethod
     def banner(cls, force=False):
@@ -107,6 +111,8 @@ class Booting(Boot):
 
 class Daemon:
 
+    "detach from console."
+
     @classmethod
     def daemon(cls):
         "run in the background."
@@ -147,10 +153,12 @@ class Daemon:
 
 class Kernel(Booting, Daemon):
 
-    pass
+    "center of believing."
 
 
 class CLI(Screen):
+
+    "Command Line Interface/"
 
     def __init__(self):
         Screen.__init__(self)
@@ -168,6 +176,8 @@ class CLI(Screen):
 
 class Console(CLI):
 
+    "prompt."
+
     def __init__(self):
         CLI.__init__(self)
         self.silent = True
@@ -183,6 +193,8 @@ class Console(CLI):
 
 
 class Scripts:
+
+    "actual runtime."
 
     @staticmethod
     def background():
@@ -236,7 +248,7 @@ class Scripts:
 
 
 def main():
-    "main"
+    "dispatch to runtime."
     Arguments.getargs()
     if Main.console:
         Kernel.wrap(Scripts.console)

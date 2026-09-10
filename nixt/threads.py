@@ -14,6 +14,8 @@ import _thread
 
 class Thr(threading.Thread):
 
+    "unit of thread."
+
     block = threading.Event()
 
     def __init__(self, func, *args, daemon=True, **kwargs):
@@ -54,6 +56,8 @@ class Thr(threading.Thread):
 
 
 class Thread:
+
+    "helper class."
 
     lock = threading.RLock()
 

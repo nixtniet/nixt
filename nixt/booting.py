@@ -13,11 +13,16 @@ import _thread
 from .clients import Clients, Screen
 from .package import Mods
 from .persist import Workdir
+from .repeats import Repeater
 from .threads import Thr, Thread
 from .utility import Logging, Utils
+from .watcher import Watcher
 
 
 class Boot:
+
+
+    "at startup"
 
     @classmethod
     def banner(cls):
@@ -32,6 +37,7 @@ class Boot:
         Logging.size(len(cfg.name))
         Logging.level(cfg.level or "info")
         Mods.dir(cfg.path)
+        Repeater.start()
 
     @classmethod
     def forever(cls):
@@ -62,11 +68,12 @@ class Boot:
     @classmethod
     def shutdown(cls):
         "call stop on clients."
+        logging.debug("shutdown")
         Clients.shutdown()
         while True:
-            if len(threading.enumerate()) == 1:
+            if len(threading.enumerate()) <= 2:
                 break
-            time.sleep(0.1)
+            time.sleep(0.01)
 
     @classmethod
     def wrapped(cls, func, *args):

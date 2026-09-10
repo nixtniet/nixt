@@ -5,45 +5,60 @@
 
 
 import os
+import threading
 import time
-
-
-from .looping import Loop
 
 
 e = os.path.exists
 
 
-class Watcher(Loop):
+class Watcher:
 
     sleep = 1.0
     cbs = {}
+    stopped = threading.Event()
     times = {}
 
-    def add(self, path, callback):
+    @classmethod
+    def add(cls, path, callback):
         "add callback"
         if not e(path):
             return
-        self.cbs[path] = callback
+        cls.cbs[path] = callback
 
-    def init(self, times={}):
+    @classmethod
+    def init(cls, times={}):
         "read timestamps."
-        for path in self.cbs:
+        for path in cls.cbs:
             if not e(path):
                 continue
-            self.times[path] = times.get(path, os.stat(path).st_mtime)
+            cls.times[path] = times.get(path, os.stat(path).st_mtime)
 
-    def loop(self):
+    @classmethod
+    def loop(cls):
         "loop select."
-        while not self.stopped.isSet():
-            for path in self.cbs:
+        while not cls.stopped.isSet():
+            for path in cls.cbs:
                 if not e(path):
                     continue
                 mtime = os.stat(path).st_mtime
-                if mtime > self.times[path]:
-                    self.cbs[path]()
-                self.times[path] = mtime
-            time.sleep(self.sleep)
+                if mtime > cls.times[path]:
+                    cls.cbs[path]()
+                cls.times[path] = mtime
+            time.sleep(cls.sleep)
+
+    @classmethod
+    def start(cls, daemon=True):
+        "start callback loop."
+        if not cls.stopped.is_set():
+            return
+        Thread.launch(cls.loop, daemon=daemon)
+
+    @classmethod
+    def stop(cls):
+        "stop xallback loop."
+        cls.stopped.set()
+
 
 
 def __dir__():

@@ -12,9 +12,6 @@ import time
 from nixt.defines import Object, Clients, Message, Method, Repeater, Time
 
 
-repeater = Repeater()
-
-
 def init():
     for key in Method.keys(oorzaken):
         if "Psych" not in key:
@@ -26,7 +23,7 @@ def init():
             evt.rest = key
             sec = seconds(val)
             name = aliases.get(key)
-            repeater.add(sec, cbstats, evt, name=name)
+            Repeater.add(sec, cbstats, evt, name=name)
             logging.info(Time.elapsed(time.time()-STARTTIME))
 
 

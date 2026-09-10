@@ -1,5 +1,4 @@
 # This file is placed in the Public Domain.
-# flake8: noqa: F401
 
 
 "interface"
@@ -13,7 +12,6 @@ from .configs import Main
 from .encoder import JSON, JSONL
 from .engines import Engine
 from .fetcher import Fetcher
-from .handler import Handler
 from .looping import Loop
 from .message import Message
 from .objects import Data, Object, Method

@@ -9,6 +9,8 @@ from .objects import Method
 
 class Config(type):
 
+    "config meta class"
+
     def __getattr__(cls, key):
         if key in dir(cls):
             return cls.__getattribute__(cls, key)
@@ -19,6 +21,8 @@ class Config(type):
 
 
 class Main(metaclass=Config):
+
+    "main config"
 
     name = Method.pkgname(Config)
 

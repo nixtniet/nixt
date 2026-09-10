@@ -19,7 +19,6 @@ from nixt.defines import Runner, Utils, Watcher, Workdir
 
 
 logger = logging.getLogger("rss")
-repeater = Repeater()
 watcher = Watcher()
 
 
@@ -168,12 +167,12 @@ class Run:
         if pool.busy():
             logging.debug("next!")
             return 0
-        logging.debug("starting run")
         for fnm, feed in Locater.find(Method.fqn(Rss)):
             if feed.skip:
                 continue
             pool.put((fnm, feed, silent))
             nrs += 1
+        logging.debug("fetch %s", nrs)
         return nrs
 
     @classmethod
@@ -190,8 +189,8 @@ class Run:
         cls.statefn = Locater.last(State) or Disk.ident(State)
         pool.init(1)
         if not once:
-            repeater.add(Config.polltime, cls.run)
-            repeater.add(7200, cls.clear)
+            Repeater.add(Config.polltime, cls.run)
+            Repeater.add(7200, cls.clear)
 
     @classmethod
     def stop(cls):
@@ -214,6 +213,7 @@ class Fetching(Runner):
     def doskip(self, errs):
         "check whether to log."
         if errs not in [200, 304]:
+            print("304")
             return True
         return False
 
@@ -326,7 +326,7 @@ class RSS:
             yield obj
 
 
-pool = Pool(Fetching)
+Pool.clazz = Fetching
 
 
 def atr(event):

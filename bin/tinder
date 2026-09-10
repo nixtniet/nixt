@@ -15,8 +15,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Main, Message
-from nixt.defines import Method, Mods, Parse, Time, Workdir
+from nixt.defines import Boot, Broker, Commands, Main, Message, Method, Mods
+from nixt.defines import Parser, Pool, Screen, Thread, Time, Workdir
 
 
 Workdir.wdr = ".test"
@@ -24,19 +24,44 @@ Workdir.wdr = ".test"
 
 class Kernel(Boot):
 
+    "at first."
+
     nrevents = 0
-    starttime = 0
+
+    @classmethod
+    def banner(cls, force=False):
+        "hello."
+        if not force and not Main.verbose:
+            return
+        tmr = time.ctime(time.time()).replace("  ", " ")
+        txt = "%s since %s %s (%s)" % (
+            Main.name.upper(),
+            tmr,
+            Main.level.upper() or "INFO",
+            MD5.core()
+        )
+        print(txt.replace("  ", " "))
+        sys.stdout.flush()
 
     @classmethod
     def boot(cls):
-        Parse.parse(Main, " ".join(sys.argv[1:]))
         cls.configure(Main)
-        Mods.dir("examples")
+        Mods.dir(Workdir.moddir())
         Mods.dir(Mods.moddir())
-        Commands.scanner()
-        if os.path.exists(Workdir.wdr):
-            shutil.rmtree(Workdir.wdr)
-        
+        Mods.dir("examples")
+        if Main.local:
+            Mods.dir("mods", "mods")
+        if Main.all:
+            Main.mods = ",".join(Mods.list())
+        if Main.verbose:
+            cls.banner()
+        Commands.table()
+        Mods.table()
+        if Main.scanner or Main.local:
+            Commands.scanner()
+        print(Commands.cmds)
+        print(Broker.objects)
+
     @classmethod
     def wrap(cls, func, *args, dofinal=None):
         "restore console."
@@ -45,17 +70,20 @@ class Kernel(Boot):
             old = termios.tcgetattr(sys.stdin.fileno())
         except termios.error:
             old = False
-        cls.wrapped(func, *args)
+        try:
+            cls.wrapped(func, *args)
+        except (KeyboardInterrupt, EOFError):
+            pass
         if old:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
-        if dofinal:
-            dofinal()
+        if final:
+            final()
 
 
-class CLI(Client):
+class CLI(Screen):
 
     def __init__(self):
-        Client.__init__(self)
+        Screen.__init__(self)
         self.register("command", Commands.command)
 
     def raw(self, text):
@@ -65,40 +93,6 @@ class CLI(Client):
             sys.stdout.flush()
 
 
-class Runners:
-
-    runners = []
-    lock = threading.RLock()
-    nrcpu = 1
-    nrlast = 0
-
-    @staticmethod
-    def add(client):
-        "add a runner."
-        Runners.runners.append(client)
-
-    @staticmethod
-    def init(nrcpu, cls):
-        "initialize a runner."
-        Runners.nrcpu = nrcpu
-        for _x in range(Runners.nrcpu):
-            clt = cls()
-            clt.start()
-            Runners.add(clt)
-
-    @staticmethod
-    def put(*args):
-        "push job to a runner."
-        if not Runners.runners:
-            Runners.init(Runners.nrcpu, CLI)
-        with Runners.lock:
-            if Runners.nrlast >= Runners.nrcpu-1:
-                Runners.nrlast = 0
-            clt = Runners.runners[Runners.nrlast]
-            clt.put(*args)
-            Runners.nrlast += 1
-
-
 def payload(todo):
     for cmd, example in todo.items():
         for ex in example:
@@ -106,7 +100,7 @@ def payload(todo):
             evt = Message()
             evt.kind = "command"
             evt.text = f"{cmd} {ex}"
-            Runners.put(evt)
+            Pool.put(evt)
 
 
 def final():
@@ -123,20 +117,27 @@ def final():
 
 
 def main():
+    Parser.parse(Main, " ".join(sys.argv[1:]))
     Kernel.boot()
+    Commands.scanner()
+    if os.path.exists(Workdir.wdr):
+        shutil.rmtree(Workdir.wdr)
     if "t" in Main.opts:
         nrcpu = os.cpu_count()
     else:
         nrcpu = 1
-    Runners.init(nrcpu, CLI)
+    Pool.init(nrcpu, CLI)
     Kernel.starttime = time.time()
     nrs = Main.index or 1
+    thrs = []
     for _x in range(nrs):
-        payload(pre)
+        thrs.append(Thread.launch(payload, pre))
     for _x in range(nrs):
-        payload(examples)
+        thrs.append(Thread.launch(payload, examples))
     for _x in range(nrs):
-        payload(post)
+        thrs.append(Thread.launch(payload, post))
+    for thr in thrs:
+        thr.join()
     Kernel.shutdown()
 
 
@@ -150,7 +151,7 @@ examples = {
     "fie": ["", "log", "todo"],
     "lou": [""],
     "mbx": ["", "~/25-1-2013"],
-    "man": ["", "nixbot nixtniet@gmail.com Nixt Niet"],
+    "man": ["", "nixt nixtniet@gmail.com Nixt Niet"],
     "nme": ["", "hnrss hn"],
     "now": [""],
     "pth": [""],
@@ -173,15 +174,9 @@ pre = {
         'main',
         'irc',
         'rss',
-        'rst',
-        'udp',
-        'web',
         'main nick=mekker',
         'irc nick=mekker',
         'rss nick=mekker',
-        'rst nick=mekker',
-        'udp nick=mekker',
-        'web nick=mekker'
     ],
     "imp": [
         "",

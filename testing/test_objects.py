@@ -38,7 +38,7 @@ class TestMethod(unittest.TestCase):
 
     def test_doc(self):
         obj = Object()
-        self.assertEqual(obj.__doc__, None)
+        self.assertEqual(obj.__doc__, "inheritence without the methods")
 
     def test_format(self):
         obj = Object()
