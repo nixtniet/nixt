@@ -22,7 +22,6 @@ from .watcher import Watcher
 
 class Boot:
 
-
     "at startup"
 
     @classmethod
@@ -38,7 +37,6 @@ class Boot:
         Logging.size(len(cfg.name))
         Logging.level(cfg.level or "info")
         Mods.dir(cfg.path)
-        Repeater.start()
 
     @classmethod
     def forever(cls):

@@ -13,15 +13,15 @@ from .encoder import JSON, JSONL
 from .engines import Engine
 from .fetcher import Fetcher
 from .loggers import Format, Logging
-from .looping import Loop
+from .looping import Loop, Runner
 from .message import Message
 from .objects import Data, Object, Method
-from .package import MD5, MisMatch, Mods
+from .package import MD5, Mods
 from .parsers import Parser
 from .persist import Disk, Locater, Workdir
+from .pooling import Pool
 from .require import Cmd
 from .repeats import Repeater
-from .runners import Pool, Runner
 from .threads import Thr, Thread
 from .utility import Time, Utils
 from .watcher import Watcher
@@ -50,7 +50,6 @@ def __dir__():
        'MD5',
        'Message',
        'Method',
-       'MisMatch',
        'Mods',
        'Output',
        'Parser',

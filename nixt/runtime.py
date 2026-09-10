@@ -12,7 +12,7 @@ import time
 
 
 from .defines import Boot, Cmd, Commands, Main, MD5, Message
-from .defines import Method, MisMatch, Mods, Screen, Workdir
+from .defines import Method, Mods, Screen, Workdir
 
 
 class Arguments:
@@ -158,7 +158,7 @@ class Kernel(Booting, Daemon):
 
 class CLI(Screen):
 
-    "Command Line Interface/"
+    "Command Line Interface"
 
     def __init__(self):
         Screen.__init__(self)

@@ -59,8 +59,6 @@ class Kernel(Boot):
         Mods.table()
         if Main.scanner or Main.local:
             Commands.scanner()
-        print(Commands.cmds)
-        print(Broker.objects)
 
     @classmethod
     def wrap(cls, func, *args, dofinal=None):

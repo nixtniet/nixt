@@ -8,7 +8,6 @@ import threading
 import time
 
 
-from .looping import Loop
 from .threads import Thread
 
 

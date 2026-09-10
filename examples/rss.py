@@ -19,7 +19,6 @@ from nixt.defines import Runner, Utils, Watcher, Workdir
 
 
 logger = logging.getLogger("rss")
-watcher = Watcher()
 
 
 j = os.path.join
@@ -172,7 +171,6 @@ class Run:
                 continue
             Pool.put((fnm, feed, silent))
             nrs += 1
-        logging.debug("fetch %s", nrs)
         return nrs
 
     @classmethod
@@ -184,18 +182,19 @@ class Run:
             pathlib.Path(cls.path).touch()
             cls.file = open(cls.path, "a+", encoding="utf-8")
             cls.enable(cls.path)
-            watcher.add(cls.path, cls.callback)
-            watcher.start()
+            Watcher.add(cls.path, cls.callback)
+            Watcher.start()
         cls.statefn = Locater.last(State) or Disk.ident(State)
         Pool.init(2, Fetching)
         if not once:
             Repeater.add(Config.polltime, cls.run)
             Repeater.add(7200, cls.clear)
+            Repeater.start()
 
     @classmethod
     def stop(cls):
         "shutdown."
-        watcher.stop()
+        Watcher.stop()
 
     @classmethod
     def sync(cls):

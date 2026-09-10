@@ -63,7 +63,6 @@ class Watcher:
         cls.stopped.set()
 
 
-
 def __dir__():
     return (
         'Watcher',

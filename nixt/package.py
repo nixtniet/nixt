@@ -12,11 +12,6 @@ from .objects import Method
 from .utility import Utils
 
 
-class MisMatch(Exception):
-
-    "md5 sums don't match"
-
-
 class Mods:
 
     "modules"
