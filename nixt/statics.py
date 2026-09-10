@@ -5,36 +5,95 @@
 
 
 CORE = {
-    "booting": "def885abdadfe41261e7e5e168c099cd",
+    "booting": "46cbaac114e7f403ed339758ac05360b",
     "brokers": "7b538e39c4cbf771cfc7aa7af9ee6b0b",
-    "clients": "8b14f34d69064187e1033b23e43b1ce5",
+    "clients": "76dbf2500f53dd1f2d0dbc50c9edf35b",
     "command": "ffcc1f6594f913efef6628294b9de515",
     "configs": "a76957a9575874a43e19d348e61ac6f6",
-    "defines": "8345ccdaa4dd3f0500daebb89ec49b89",
+    "defines": "6b928082ff98c777d7cfe8d43b4fd9af",
     "encoder": "92d40ef5ae50cafba6cc88b0e260b012",
-    "engines": "38ed74c37d6d9cff97c9905307d9649f",
+    "engines": "6e08062628b324ff8ead4aaacdcadb32",
     "fetcher": "350fdb8ddc37c23fbad9685bc8f5a0fe",
-    "handler": "b16f3bce8f4c1443279e3181f8d63e38",
-    "looping": "cb529f2a7b24b4ca6ee308c01296f4c7",
+    "loggers": "bff3f83a7436a45814853a34ca069251",
+    "looping": "e0b6d152b613ea919b7fbd007112a029",
     "message": "a4095faea9fabfeb87f9abe05da599f1",
-    "objects": "86392cb677eb105c126cb8dcd342d77b",
+    "objects": "7b4de5cab301c4bb56c153a4854e09a3",
     "package": "fa5afe7479d58da7eb684199cf3484e5",
     "parsers": "bbb1a0183c61bd9fea612ec00eedeb33",
     "persist": "dd76d5cc15d3c16372ea34e51fa4a1f7",
-    "repeats": "4fa3ec718505166076ec09ee76fbf761",
+    "repeats": "a763097e265ccccd7aab7b35742a69b2",
     "require": "bc38ac96f2f7a6d338df77c860839989",
-    "runners": "5c57f2fe792372410d4999f0509c4ea6",
+    "runners": "d32c54ea6b876b1620c1ed16175e7156",
     "runtime": "4b037fead1eb7cbbf10c0c4d8c76c0dc",
     "threads": "bf204b132a637089383f407e58b553db",
-    "utility": "93fd892204fb0a855ed9b895be7310f9",
-    "watcher": "7b3804682e9a36e038f6311b9188fc62"
+    "utility": "7736fb6aa8e951c0630531f1aa2d596c",
+    "watcher": "c1e5eca3aa9400a1fa355dada3afbfa2"
 }
 
 
-MODULES = {}
+MODULES = {
+    "cfg": "83bd7e9b313fb55fc46c7bf797a70f77",
+    "eml": "d1aa1a59b40a4c3d1fadcbf2424b8880",
+    "fie": "bc9361e18eefa2a97be4fa806021e53b",
+    "flt": "c40a68583139d18206d885959c0ece30",
+    "fnd": "bf337a3d5b00f942441638e450553030",
+    "hlp": "0e3fe796350fb7707e218e4a94f440b8",
+    "irc": "398a8520c899ad463066d8cac84b521a",
+    "log": "5d11a098f0c298fe773f8d9bfbb21d11",
+    "man": "920599410f7739c9503e0eea9e4e5885",
+    "mdl": "fdd0773090bb067ae0efdd611d64f0b1",
+    "opm": "758a02ce54aff5a0580702865454858f",
+    "pth": "1b7e056a0f4e258dde8dc80e31cbd17a",
+    "req": "bc1984d2e9de0310dc1b468f25c7ab8c",
+    "rss": "77aafcbc2802278190538a089c91f121",
+    "sil": "6409941fa5f1f20a23f37774ec0c6a7d",
+    "slg": "e68f11973ddc2e3edeb0de0e16e9fe7a",
+    "srv": "0c6cf401023c4b0fd13a06271ae3ddcb",
+    "tdo": "e472d38368e3a278581caeeff08be558",
+    "thr": "a9ab22cec2f1e919e09c243af21f306c",
+    "tmr": "61c1044f61d778f3ecaf33ed25202acd",
+    "upt": "d7f456e017f217289720a0ddda3aa24d",
+    "ver": "34380fe0a4bacc6379593e99a3633054",
+    "wsd": "577b9cbf15e731bcab8458e2343125a5"
+}
 
 
-NAMES = {}
+NAMES = {
+    "atr": "rss",
+    "cfg": "cfg",
+    "dis": "mdl",
+    "dne": "tdo",
+    "dpl": "rss",
+    "eml": "eml",
+    "exp": "opm",
+    "fie": "fie",
+    "flt": "flt",
+    "fnd": "fnd",
+    "hlp": "hlp",
+    "imp": "opm",
+    "log": "log",
+    "lou": "sil",
+    "man": "man",
+    "mbx": "eml",
+    "nme": "rss",
+    "now": "mdl",
+    "pth": "pth",
+    "pwd": "irc",
+    "rem": "rss",
+    "req": "req",
+    "res": "rss",
+    "rss": "rss",
+    "sil": "sil",
+    "slg": "slg",
+    "srv": "srv",
+    "syn": "rss",
+    "tdo": "tdo",
+    "thr": "thr",
+    "tmr": "tmr",
+    "upt": "upt",
+    "ver": "ver",
+    "wsd": "wsd"
+}
 
 
 def __dir__():

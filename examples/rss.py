@@ -164,13 +164,13 @@ class Run:
     def run(cls, silent=False):
         "do a fetch run of all feeds."
         nrs = 0
-        if pool.busy():
+        if Pool.busy():
             logging.debug("next!")
             return 0
         for fnm, feed in Locater.find(Method.fqn(Rss)):
             if feed.skip:
                 continue
-            pool.put((fnm, feed, silent))
+            Pool.put((fnm, feed, silent))
             nrs += 1
         logging.debug("fetch %s", nrs)
         return nrs
@@ -187,7 +187,7 @@ class Run:
             watcher.add(cls.path, cls.callback)
             watcher.start()
         cls.statefn = Locater.last(State) or Disk.ident(State)
-        pool.init(1)
+        Pool.init(2, Fetching)
         if not once:
             Repeater.add(Config.polltime, cls.run)
             Repeater.add(7200, cls.clear)
@@ -324,9 +324,6 @@ class RSS:
                     escaped = Fetcher.unescape(val.strip())
                     obj[itm] = Fetcher.striphtml(escaped).replace("\n", "")
             yield obj
-
-
-Pool.clazz = Fetching
 
 
 def atr(event):

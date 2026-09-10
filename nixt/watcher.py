@@ -9,6 +9,9 @@ import threading
 import time
 
 
+from .threads import Thread
+
+
 e = os.path.exists
 
 

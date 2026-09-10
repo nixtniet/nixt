@@ -123,6 +123,7 @@ class Buffer(Engine, Output):
     def __init__(self):
         Engine.__init__(self)
         Output.__init__(self)
+        Broker.add(self)
 
     def raw(self, text):
         "raw output."

@@ -52,7 +52,7 @@ class Pool:
     @classmethod
     def busy(cls):
         for runner in cls.runners:
-            if cls.queue.qsize():
+            if runner.queue.qsize():
                 return True
         return False
 

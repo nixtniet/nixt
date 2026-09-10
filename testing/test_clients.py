@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Handler, Message, Screen
+from nixt.defines import Message, Screen
 
 
 buffer = []
@@ -18,10 +18,9 @@ def hello(event):
     event.ready()
 
 
-class MyClient(Screen, Handler):
+class MyClient(Screen):
 
     def __init__(self):
-        Handler.__init__(self)
         Screen.__init__(self)
         self.register("hello", hello)
 

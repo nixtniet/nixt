@@ -15,8 +15,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Broker, Commands, Main, Message, Method, Mods
-from nixt.defines import Parser, Pool, Screen, Thread, Time, Workdir
+from nixt.defines import Boot, Broker, Commands, Main, MD5, Message, Method
+from nixt.defines import Mods, Parser, Pool, Screen, Thread, Time, Workdir
 
 
 Workdir.wdr = ".test"

@@ -11,11 +11,12 @@ import _thread
 
 
 from .clients import Clients, Screen
+from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
 from .repeats import Repeater
 from .threads import Thr, Thread
-from .utility import Logging, Utils
+from .utility import Utils
 from .watcher import Watcher
 
 

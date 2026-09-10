@@ -33,4 +33,3 @@ def popen(txt):
 
 popen(f"ruff check {NAME} bin/tinder testing")
 popen(f"pylint {NAME} bin/tinder testing")
-popen(f"flake8 {NAME} bin/tinder testing")
