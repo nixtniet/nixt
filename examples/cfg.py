@@ -11,8 +11,7 @@ def cfg(event):
     "configure modules."
     if not event.args:
         mods = f"{'main,' + Mods.has('Config')}"
-        if mods.endswith(","):
-            mods = mods[:-1]
+        mods = mods.removesuffix(mods)
         event.iface(f"<{mods}>")
         return
     name = event.args[0]

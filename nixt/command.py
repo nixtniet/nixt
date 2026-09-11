@@ -7,6 +7,10 @@
 import inspect
 
 
+from collections.abc import Callable
+from typing import ClassVar
+
+
 from .clients import Clients
 from .package import Mods
 from .parsers import Parser
@@ -16,8 +20,8 @@ class Commands:
 
     "command dispatch"
 
-    cmds = {}
-    names = {}
+    cmds: ClassVar[dict[str, Callable]] = {}
+    names: ClassVar[dict[str, str]] = {}
 
     @classmethod
     def add(cls, *funcs):

@@ -12,6 +12,9 @@ import urllib.parse
 import urllib.request
 
 
+from typing import ClassVar
+
+
 from .objects import Data, Method
 
 
@@ -19,7 +22,7 @@ class Fetcher:
 
     "fetch urls"
  
-    modified = {}
+    modified: ClassVar[dict[str,str]] = {}
 
     @classmethod
     def cdata(cls, line):
@@ -44,7 +47,7 @@ class Fetcher:
         response.reason = ""
         try:
             Method.update(response, cls.request(req))
-        except Exception as ex:
+        except ValueError as ex:
             response.data = b""
             try:
                 response.reason = ex.reason

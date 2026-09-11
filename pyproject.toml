@@ -35,10 +35,6 @@ classifiers = [
 [tool.setuptools]
 packages = [
     'nixt',
-    'nixt.minimal',
-    'nixt.mirrors',
-    'nixt.modules',
-    'nixt.numbers'
 ]
 
 
@@ -47,4 +43,5 @@ disable = ["C,R,W,E0401,E0402"]
 
 
 [tool.ruff.lint]
-ignore = ["ALL"]
+ignore = ["I001", "SIM905", "UP031", "UP041", "UP024"]
+#ignore = ["ALL"]

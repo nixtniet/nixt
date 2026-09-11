@@ -86,20 +86,24 @@ class Method:
         return "__deleted__" in dir(obj) and obj.__deleted__
 
     @classmethod
-    def edit(cls, obj, setter={}, skip=False):
+    def edit(cls, obj, setter=None, skip=False):
         "update object with dict."
+        if setter is None:
+            setter = {}
         for key, val in cls.items(setter):
             if skip and val == "":
                 continue
             cls.typed(obj, key, val)
 
     @classmethod
-    def fmt(cls, obj, args=[], skip=[], plain=False, empty=False):
+    def fmt(cls, obj, args=None, skip=None, plain=False, empty=False):
         "format object info printable string."
-        if args == []:
+        if args is None:
             args = list(obj.__dict__.keys())
         if args == []:
             args = [x for x in dir(obj) if not x.startswith("_")]
+        if skip is None:
+            skip = []
         txt = ""
         for key in args:
             if key.startswith("__"):
@@ -118,7 +122,7 @@ class Method:
             elif isinstance(value, str):
                 txt += f'{key}="{value}" '
             else:
-                txt += f"{key}={cls.clz(value)}({str(value)}) "
+                txt += f"{key}={cls.clz(value)}({value!s}) "
         if txt == "":
             txt = "{}"
         return txt.strip()
@@ -222,8 +226,10 @@ class Method:
         return result
 
     @classmethod
-    def search(cls, obj, selector={}, matching=False):
+    def search(cls, obj, selector=None, matching=False):
         "check whether object matches search criteria."
+        if selector is None:
+            selector = {}
         res = False
         for key, value in cls.items(selector):
             val = getattr(obj, key, None)

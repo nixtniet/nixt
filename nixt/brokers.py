@@ -4,12 +4,15 @@
 "an object for a string"
 
 
+from typing import ClassVar
+
+
 class Broker:
 
 
     "map repr(obj) to obj"
 
-    objects = {}
+    objects: ClassVar[dict[str, object]] = {}
 
     @classmethod
     def add(cls, obj):

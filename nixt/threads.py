@@ -12,6 +12,9 @@ import time
 import _thread
 
 
+logger = logging.getLogger(__name__)
+
+
 class Thr(threading.Thread):
 
     "unit of thread."
@@ -50,8 +53,8 @@ class Thr(threading.Thread):
             self.result = func(*args)
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
-        except Exception as ex:
-            logging.exception(ex)
+        except Exception:
+            logger.exception()
             _thread.interrupt_main()
 
 

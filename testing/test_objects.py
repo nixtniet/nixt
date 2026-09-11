@@ -71,7 +71,7 @@ class TestMethod(unittest.TestCase):
     def test_getattr(self):
         obj = Object()
         obj.key = "value"
-        self.assertEqual(getattr(obj, "key"), "value")
+        self.assertEqual(obj.key, "value")
 
     def test_keys(self):
         obj = Object()
@@ -94,11 +94,6 @@ class TestMethod(unittest.TestCase):
         Method.update(res, obj)
         self.assertEqual(res, {})
 
-    def test_register(self):
-        obj = Object()
-        setattr(obj, "key", "value")
-        self.assertEqual(obj.key, "value")
-
     def test_repr(self):
         self.assertTrue(
                         repr(Method.update(Object(), {"key": "value"})),
@@ -107,7 +102,7 @@ class TestMethod(unittest.TestCase):
 
     def test_setattr(self):
         obj = Object()
-        setattr(obj, "key", "value")
+        obj.key = "value"
         self.assertTrue(obj.key, "value")
 
     def test_str(self):

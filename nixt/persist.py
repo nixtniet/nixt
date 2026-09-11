@@ -12,6 +12,9 @@ import threading
 import time
 
 
+from typing import ClassVar
+
+
 from .encoder import JSON
 from .objects import Data, Method
 from .utility import Utils
@@ -29,7 +32,7 @@ class Cache:
 
     "path object cache"
 
-    paths = {}
+    paths: ClassVar[dict[str, object]] = {}
 
     @classmethod
     def add(cls, path, obj):
@@ -59,7 +62,7 @@ class Disk:
     @classmethod
     def ident(cls, obj):
         "return ident string for object."
-        return os.path.join(Method.fqn(obj), *str(datetime.datetime.now()).split())
+        return os.path.join(Method.fqn(obj), *str(datetime.datetime.now(tz="")).split())
 
     @classmethod
     def read(cls, obj, path, base="store"):
@@ -109,9 +112,11 @@ class Locater:
         return len(list(cls.find(kind)))
 
     @classmethod
-    def find(cls, kind, selector={}, removed=False, matching=False, nritems=None):
+    def find(cls, kind, selector=None, removed=False, matching=False, nritems=None):
         "locate objects by matching atributes."
         with cls.lock:
+            if selector is None:
+                selector = {}
             nrs = 0
             for pth in cls.fns(Workdir.long(kind)):
                 obj = Cache.get(pth)
@@ -131,8 +136,10 @@ class Locater:
                 return None, None
 
     @classmethod
-    def first(cls, obj, selector={}):
+    def first(cls, obj, selector=None):
         "return first object of a kind."
+        if selector is None:
+            selector = {}
         result = sorted(
                         cls.find(Method.fqn(obj), selector),
                         key=lambda x: cls.fntime(x[0])
@@ -174,8 +181,10 @@ class Locater:
         return float(timd)
 
     @classmethod
-    def last(cls, obj, selector={}):
+    def last(cls, obj, selector=None):
         "last saved version."
+        if selector is None:
+            selector = {}
         result = sorted(
                         cls.find(Method.fqn(obj), selector),
                         key=lambda x: cls.fntime(x[0])

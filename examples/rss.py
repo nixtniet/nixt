@@ -18,7 +18,7 @@ from nixt.defines import Logging, Main, MD5, Method, Object, Pool, Repeater
 from nixt.defines import Runner, Utils, Watcher, Workdir
 
 
-logger = logging.getLogger("rss")
+logger = logging.getLogger(__name__)
 
 
 j = os.path.join
@@ -32,7 +32,7 @@ def init():
     txt = f"{nrs} feeds"
     if nrs == 1:
         txt = txt[:-1]
-    logging.info(txt)
+    logger.info(txt)
 
 
 def shutdown():
@@ -74,7 +74,6 @@ class Run:
     path = ""
     file = None
     lock = threading.RLock()
-    matching = []
     configfn = ""
     modifiedfn = ""
     statefn = ""
@@ -106,7 +105,7 @@ class Run:
                 feed.skip = False
                 Disk.write(feed, fnm)
                 counter += 1
-        logging.debug("clear %s", counter)
+        logger.debug("clear %s", counter)
         return counter
 
     @classmethod
@@ -164,7 +163,7 @@ class Run:
         "do a fetch run of all feeds."
         nrs = 0
         if Pool.busy():
-            logging.debug("next!")
+            logger.debug("next!")
             return 0
         for fnm, feed in Locater.find(Method.fqn(Rss)):
             if feed.skip:
@@ -180,7 +179,7 @@ class Run:
             cls.path = j(Workdir.logdir("rss"), 'rss.log')
             Utils.cdir(cls.path)
             pathlib.Path(cls.path).touch()
-            cls.file = open(cls.path, "a+", encoding="utf-8")
+            cls.file = open(cls.path, "a+", encoding="utf-8") # noqa: SIM115 
             cls.enable(cls.path)
             Watcher.add(cls.path, cls.callback)
             Watcher.start()
@@ -226,9 +225,9 @@ class Fetching(Runner):
                 feed.error = response.error
                 feed.skip = True
                 Disk.write(feed, fnm)
-                logging.debug("skipt %s %s %s", feed.rss, response.status, response.reason)
+                logger.debug("skipt %s %s %s", feed.rss, response.status, response.reason)
             return result
-        logging.debug("fetch %s", feed.rss)
+        logger.debug("fetch %s", feed.rss)
         if "link" not in items:
             items += ",link"
         yield from RSS.parse(
@@ -267,7 +266,7 @@ class Fetching(Runner):
         if has:
             feed.seen = feed.seen[:counter]
             Disk.write(feed, fnm)
-            logging.debug("write %s", fnm)
+            logger.debug("write %s", fnm)
         if counter:
             gc.collect(0)
         return counter
@@ -332,11 +331,7 @@ def atr(event):
         return
     for _fnm, obj in Locater.find(Method.fqn(Rss), {'rss': event.rest}):
         request = None
-        try:
-            request = Fetcher.geturl(obj.rss, True)
-        except Exception as ex:
-            event.reply(str(ex))
-            return
+        request = Fetcher.geturl(obj.rss, True)
         if not request:
             continue
         if obj.rss.endswith('atom'):

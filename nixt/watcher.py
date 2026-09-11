@@ -9,6 +9,10 @@ import threading
 import time
 
 
+from collections.abc import Callable
+from typing import ClassVar
+
+
 from .threads import Thread
 
 
@@ -18,9 +22,9 @@ e = os.path.exists
 class Watcher:
 
     sleep = 1.0
-    cbs = {}
+    cbs: ClassVar[dict[str, Callable]] = {}
     stopped = threading.Event()
-    times = {}
+    times: ClassVar[dict[str, float]] = {}
 
     @classmethod
     def add(cls, path, callback):
@@ -30,8 +34,10 @@ class Watcher:
         cls.cbs[path] = callback
 
     @classmethod
-    def init(cls, times={}):
+    def init(cls, times=None):
         "read timestamps."
+        if times is None:
+            times= {}
         for path in cls.cbs:
             if not e(path):
                 continue

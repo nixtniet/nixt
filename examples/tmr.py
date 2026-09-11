@@ -13,13 +13,14 @@ import time
 from nixt.defines import Object, Broker, Disk, Locater, Method, Thread, Time
 
 
+logger = logging.getLogger(__name__)
 rand = random.SystemRandom()
 
 
 def init():
     "intialize the timer module."
     TimerLoop.start()
-    logging.info("%s timers" , len(TimerLoop.timers))
+    logger.info("%s timers" , len(TimerLoop.timers))
 
 
 def shutdown():

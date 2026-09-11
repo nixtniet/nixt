@@ -7,8 +7,10 @@
 import os
 
 
+from typing import ClassVar
+
+
 from .looping import Runner
-from .threads import Thread
 
 
 class Pool:
@@ -16,7 +18,7 @@ class Pool:
     "multiple runners."
 
     clazz = Runner
-    runners = []
+    runners: ClassVar[list[Runner]] = []
     max = os.cpu_count()
     nrcpu = 1
     nrlast = 0

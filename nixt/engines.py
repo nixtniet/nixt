@@ -4,10 +4,6 @@
 "handling"
 
 
-import queue
-import threading
-
-
 from .looping import Loop
 from .threads import Thread
 

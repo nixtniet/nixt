@@ -14,8 +14,14 @@ import time
 import _thread
 
 
+from typing import ClassVar
+
+
 from nixt.defines import Broker, Buffer, Commands, Disk, Main, Object
 from nixt.defines import Message, Mods, Method, Thread
+
+
+logger = logging.getLogger(__name__)
 
 
 def init():
@@ -27,7 +33,7 @@ def init():
     except (KeyboardInterrupt, EOFError):
         _thread.interrupt_main()
     if irc.events.joined.is_set():
-        logging.info("%s", Method.fmt(irc.cfg, ["nick", "channel", "server", "port"]))
+        logger.info("%s", Method.fmt(irc.cfg, ["nick", "channel", "server", "port"]))
     else:
         irc.stop()
     return irc
@@ -39,7 +45,7 @@ class Config(Object):
     channel = Main.channel or f"#{name}"
     commands = True
     control = "!"
-    ignore = ["PING", "PONG", "PRIVMSG"]
+    ignore: ClassVar[list[str]] = ["PING", "PONG", "PRIVMSG"]
     nick = name
     word = ""
     port = 6667
@@ -138,7 +144,7 @@ class IRC(Buffer):
         self.events.connected.clear()
         self.events.joined.clear()
         if self.cfg.word or self.cfg.word:
-            logging.debug("using SASL")
+            logger.debug("using SASL")
             self.cfg.sasl = True
             self.cfg.port = "6697"
             ctx = ssl.SSLContext(ssl.PROTOCOL_TLS)
@@ -158,7 +164,7 @@ class IRC(Buffer):
             self.sock.setblocking(True)
             self.sock.settimeout(180.0)
             self.events.connected.set()
-            logging.debug(
+            logger.debug(
                           "connected %s:%s channel %s",
                           self.cfg.server,
                           self.cfg.port,
@@ -222,6 +228,7 @@ class IRC(Buffer):
             except (KeyboardInterrupt, EOFError):
                 _thread.interrupt_main()
             except (
+                    TimeoutError,
                     socket.error,
                     socket.timeout,
                     ssl.SSLError,
@@ -230,7 +237,7 @@ class IRC(Buffer):
                    ) as ex:
                 self.events.joined.set()
                 self.state.error = str(ex)
-                logging.debug("%s", str(type(ex)) + " " + str(ex))
+                logger.debug("%s", str(type(ex)) + " " + str(ex))
             time.sleep(self.cfg.sleep)
 
     def dosay(self, channel, text):
@@ -375,6 +382,7 @@ class IRC(Buffer):
                 time.sleep(1.0)
                 return self.event(str(ex))
             except (
+                TimeoutError,
                 OSError,
                 socket.timeout,
                 ssl.SSLError,
@@ -384,7 +392,7 @@ class IRC(Buffer):
             ) as ex:
                 self.state.nrerror += 1
                 self.state.error = str(type(ex)) + " " + str(ex)
-                logging.debug(self.state.error)
+                logger.debug(self.state.error)
                 self.state.pongcheck = True
                 self.stop()
                 return None
@@ -405,14 +413,15 @@ class IRC(Buffer):
             try:
                 self.sock.send(text)
             except (
+                TimeoutError,
                 OSError,
                 ssl.SSLError,
                 ssl.SSLZeroReturnError,
                 ConnectionResetError,
                 BrokenPipeError,
-                socket.timeout,
+                socket.timeout
             ) as ex:
-                logging.debug("%s", str(type(ex)) + " " + str(ex))
+                logger.debug("%s", str(type(ex)) + " " + str(ex))
                 self.events.joined.set()
                 self.state.nrerror += 1
                 self.state.error = str(ex)
@@ -424,7 +433,7 @@ class IRC(Buffer):
 
     def reconnect(self):
         "reconnect to server."
-        logging.debug("reconnecting %s:%s", self.cfg.server, self.cfg.port)
+        logger.debug("reconnecting %s:%s", self.cfg.server, self.cfg.port)
         self.disconnect()
         self.events.connected.clear()
         self.events.joined.clear()
@@ -432,7 +441,7 @@ class IRC(Buffer):
 
     def restart(self):
         "restart client."
-        logging.debug("restart")
+        logger.debug("restart")
         self.events.joined.set()
         self.state.pongcheck = False
         self.state.keeprunning = False
@@ -445,7 +454,7 @@ class IRC(Buffer):
         for ign in Config.ignore:
             if ign in str(txt):
                 return
-        logging.debug(txt)
+        logger.debug(txt)
 
     def say(self, channel, text):
         "say text in the channel."
@@ -521,7 +530,7 @@ def cb_error(evt):
     bot = Broker.get(evt.orig)
     bot.state.nrerror += 1
     bot.state.error = evt.text
-    logging.debug(Method.fmt(evt))
+    logger.debug(Method.fmt(evt))
 
 
 def cb_h903(evt):
@@ -591,7 +600,7 @@ def cb_privmsg(evt):
 def cb_quit(evt):
     "qiot callback."
     bot = Broker.get(evt.orig)
-    logging.debug("quit from %s", bot.cfg.server)
+    logger.debug("quit from %s", bot.cfg.server)
     bot.state.nrerror += 1
     bot.state.error = evt.text
     if evt.orig and evt.orig in bot.zelf:

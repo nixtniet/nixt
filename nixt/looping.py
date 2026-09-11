@@ -9,7 +9,6 @@ import threading
 import _thread
 
 
-from .brokers import Broker
 from .threads import Thread
 
 

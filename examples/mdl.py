@@ -12,6 +12,9 @@ import time
 from nixt.defines import Object, Clients, Message, Method, Repeater, Time
 
 
+logger = logging.getLogger(__name__)
+
+
 def init():
     for key in Method.keys(oorzaken):
         if "Psych" not in key:
@@ -24,7 +27,7 @@ def init():
             sec = seconds(val)
             name = aliases.get(key)
             Repeater.add(sec, cbstats, evt, name=name)
-            logging.info(Time.elapsed(time.time()-STARTTIME))
+            logger.info(Time.elapsed(time.time()-STARTTIME))
 
 
 DAY = 24*60*60
@@ -81,7 +84,7 @@ def getalias(txt):
 
 def getday():
     "get midnite timestamp."
-    day = datetime.datetime.now()
+    day = datetime.datetime.now(tz="")
     day = day.replace(hour=0, minute=0, second=0, microsecond=0)
     return day.timestamp()
 
@@ -407,8 +410,7 @@ def boot():
         _nr += 1
         if _nr == 0:
             continue
-        if key.startswith('"'):
-            key = key[1:]
+        key = key.removeprefix('"')
         lines = key.split("/")
         if len(lines) > 1 and not lines[1].startswith("Totaal"):
             continue

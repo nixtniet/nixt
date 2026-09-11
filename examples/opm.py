@@ -81,8 +81,8 @@ def exp(event):
     with Locks.importlock:
         event.reply(TEMPLATE)
         nrs = 0
-        for _fn, ooo in Locater.find(Method.fqn(OPML)):
-            nrs += 1
+        res = Locater.find(Method.fqn(OPML))
+        for nr, _fn, ooo in enumerate(res):
             obj = Rss()
             Method.update(obj, ooo)
             name = f"url{nrs}"

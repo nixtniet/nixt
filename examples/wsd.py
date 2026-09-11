@@ -13,6 +13,7 @@ from random import SystemRandom
 from nixt.defines import Clients, Disk, Locater, Message, Repeater
 
 
+logger = logging.getLogger(__name__)
 rand = SystemRandom()
 
 
@@ -20,7 +21,7 @@ def init():
     state.load()
     event = Message()
     Repeater.add(3600,  wsd, event)
-    logging.info("%s wise", len(TXTLIST))
+    logger.info("%s wise", len(TXTLIST))
 
 
 class State:

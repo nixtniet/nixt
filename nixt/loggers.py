@@ -4,12 +4,7 @@
 "usefullness"
 
 
-import datetime
 import logging
-import os
-import pathlib
-import time
-import uuid
 
 
 class Format(logging.Formatter):
@@ -58,6 +53,7 @@ class Logging:
         newformat += str(nr)
         newformat += cls.format[index+1:]
         cls.format = newformat
+
 
 def __dir__():
     return (

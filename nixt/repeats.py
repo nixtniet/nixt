@@ -8,6 +8,10 @@ import threading
 import time
 
 
+from collections.abc import Callable
+from typing import ClassVar
+
+
 from .threads import Thread
 
 
@@ -19,7 +23,7 @@ class Repeater:
     stopped = threading.Event()
     counter = 0
     sleeptime = 0.1
-    todo = {}
+    todo: ClassVar[dict[int, Callable]] = {}
 
     @classmethod
     def add(cls, sleep, func, *args, **kwargs):

@@ -5,7 +5,6 @@
 
 
 import argparse
-import logging
 import os
 import sys
 import time
@@ -60,17 +59,11 @@ class Booting(Boot):
 
     @classmethod
     def banner(cls, force=False):
-        "hello."
+        "helo."
         if not force and not Main.verbose:
             return
         tmr = time.ctime(time.time()).replace("  ", " ")
-        txt = "%s since %s %s (%s)" % (
-            Main.name.upper(),
-            tmr,
-            Main.level.upper() or "INFO",
-            MD5.core()
-        )
-        print(txt.replace("  ", " "))
+        print(f"{Main.name.upper()} {tmr} {Main.level.upper() or 'INFO'} {MD5.core()}")
         sys.stdout.flush()
 
     @classmethod
@@ -99,8 +92,6 @@ class Booting(Boot):
             old = False
         try:
             cls.wrapped(func, *args)
-        except MisMatch as ex:
-            logging.error("mismatch %s", ex)
         except (KeyboardInterrupt, EOFError):
             pass
         if old:

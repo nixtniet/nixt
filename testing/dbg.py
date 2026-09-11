@@ -4,5 +4,9 @@
 "debug"
 
 
+class Test(Exception):
+
+    pass
+
 def dbg(event):
-    raise Exception("yo!")
+    raise Test("yo!")

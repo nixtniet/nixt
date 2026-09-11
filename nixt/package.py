@@ -8,18 +8,25 @@ import logging
 import os
 
 
+from types import ModuleType
+from typing import ClassVar
+
+
 from .objects import Method
 from .utility import Utils
+
+
+logger = logging.getLogger(__name__)
 
 
 class Mods:
 
     "modules"
 
-    core = {}
-    dirs = {}
-    md5s = {}
-    mods = {}
+    core: ClassVar[dict[str, str]] = {}
+    dirs: ClassVar[dict[str, str]] = {}
+    md5s: ClassVar[dict[str, str]] = {}
+    mods: ClassVar[dict[str, ModuleType]] = {}
 
     @classmethod
     def dir(cls, pkgname, path=None):
@@ -47,7 +54,7 @@ class Mods:
                 md5 = MD5.md5(fnm)
                 md5s = cls.md5s.get(name)
                 if md5s and md5 != md5s:
-                    logging.warn("mismatch %s", modname)
+                    logger.warning("mismatch %s", modname)
             return cls.importer(modname, fnm)
 
     @classmethod
@@ -62,9 +69,11 @@ class Mods:
         return ",".join(result)
 
     @classmethod
-    def importer(cls, name, pth=""):
+    def importer(cls, name, pth=None):
         "import module by path."
         import importlib.util
+        if pth is None:
+            pth = ""
         spec = importlib.util.spec_from_file_location(name, pth)
         if not spec or not spec.loader:
             return None
@@ -76,7 +85,7 @@ class Mods:
     def list(cls):
         "comma seperated list of available modules."
         mods = []
-        for pkgname, path in cls.dirs.items():
+        for path in cls.dirs.values():
             if not os.path.exists(path):
                 continue
             mods.extend(Utils.listdir(path))
@@ -131,7 +140,7 @@ class MD5:
             name = pth[:-3]
             modpath = os.path.join(path, pth)
             if md5s and cls.md5(modpath) != md5s.get(name):
-                logging.warning("mismatch %s", name)
+                logger.warning("mismatch %s", name)
                 ok = False
         return ok
 

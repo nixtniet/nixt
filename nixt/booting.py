@@ -5,19 +5,22 @@
 
 
 import logging
+import os
 import threading
 import time
 import _thread
 
 
-from .clients import Clients, Screen
+from .clients import Clients
+from .display import Screen
 from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
-from .repeats import Repeater
 from .threads import Thr, Thread
 from .utility import Utils
-from .watcher import Watcher
+
+
+logger = logging.getLogger(__name__)
 
 
 class Boot:
@@ -36,7 +39,8 @@ class Boot:
             Workdir.skel()
         Logging.size(len(cfg.name))
         Logging.level(cfg.level or "info")
-        Mods.dir(cfg.path)
+        pkgname = cfg.path.split(os.sep)[-1]
+        Mods.dir(cfg.path, pkgname)
 
     @classmethod
     def forever(cls):
@@ -67,7 +71,7 @@ class Boot:
     @classmethod
     def shutdown(cls):
         "call stop on clients."
-        logging.debug("shutdown")
+        logger.debug("shutdown")
         Clients.shutdown()
         while True:
             if len(threading.enumerate()) <= 2:
@@ -83,8 +87,8 @@ class Boot:
             Screen.block.set()
             Thr.block.set()
             _thread.interrupt_main()
-        except Exception as ex:
-            logging.exception(ex)
+        except Exception:
+            logger.exception()
             _thread.interrupt_main()
 
 

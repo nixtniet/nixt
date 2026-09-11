@@ -7,7 +7,7 @@
 import os
 
 
-from nixt.defines import Main, Utils
+from nixt.defines import Main
 
 
 a = os.path.abspath
