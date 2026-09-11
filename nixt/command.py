@@ -8,7 +8,7 @@ import inspect
 
 
 from collections.abc import Callable
-from typing import ClassVar
+from typing          import ClassVar
 
 
 from .clients import Clients

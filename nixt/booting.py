@@ -39,6 +39,7 @@ class Boot:
             Workdir.skel()
         Logging.size(len(cfg.name))
         Logging.level(cfg.level or "info")
+        cfg.path = os.path.normpath(cfg.path)
         pkgname = cfg.path.split(os.sep)[-1]
         Mods.dir(cfg.path, pkgname)
 
