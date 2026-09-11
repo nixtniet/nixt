@@ -47,12 +47,12 @@ class Watcher:
     def loop(cls):
         "loop select."
         while not cls.stopped.is_set():
-            for path in cls.cbs:
+            for path, callback in cls.cbs.items():
                 if not e(path):
                     continue
                 mtime = os.stat(path).st_mtime
                 if mtime > cls.times[path]:
-                    cls.cbs[path]()
+                    callback()
                 cls.times[path] = mtime
             time.sleep(cls.sleep)
 

@@ -15,7 +15,7 @@ class Encoder(json.JSONEncoder):
 
     lock = threading.RLock()
 
-    def default(self, o):
+    def default(self, o): # pylint: disable=R0911
         "generate serializable versions."
         with Encoder.lock:
             if isinstance(o, type):

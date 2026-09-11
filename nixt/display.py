@@ -20,7 +20,7 @@ class Display:
     def __init__(self):
         self.olock = threading.RLock()
         self.silent = False
-        
+
     def announce(self, text):
         "announce text to all channels"
         if not self.silent:

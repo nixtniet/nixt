@@ -29,7 +29,7 @@ class Logging:
     datefmt = "%H:%M:%S"
     format = "%(module)-3s %(message)s"
     formats = "%(message)s"
-    
+
     @classmethod
     def level(cls, loglevel):
         "set log level."

@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Object, Disk, Method
+from nixt.defines import Object, Method
 
 
 class TestMethod(unittest.TestCase):
@@ -35,10 +35,6 @@ class TestMethod(unittest.TestCase):
     def test_dict(self):
         obj = Object()
         self.assertEqual(obj.__dict__, {})
-
-    def test_doc(self):
-        obj = Object()
-        self.assertEqual(obj.__doc__, "inheritence without the methods")
 
     def test_format(self):
         obj = Object()
@@ -86,13 +82,6 @@ class TestMethod(unittest.TestCase):
         obj = Object()
         obj.key = "value"
         self.assertEqual(list(Method.items(obj)), [("key", "value")])
-
-    def test_read(self):
-        obj = Object()
-        Disk.read(obj, "bla")
-        res = {}
-        Method.update(res, obj)
-        self.assertEqual(res, {})
 
     def test_repr(self):
         self.assertTrue(

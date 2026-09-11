@@ -242,7 +242,7 @@ class Method:
     def typed(cls, obj, key, val):
         "assign proper types."
         if not val:
-            return
+            return None
         if val in ["True", "true", True]:
             return setattr(obj, key, True)
         if val in ["False", "false", False]:
@@ -255,7 +255,7 @@ class Method:
             return setattr(obj, key, float(val))
         except ValueError:
             pass
-        setattr(obj, key, val)
+        return setattr(obj, key, val)
 
     @classmethod
     def update(cls, obj, data):

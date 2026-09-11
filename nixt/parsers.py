@@ -4,7 +4,8 @@
 "cli parser"
 
 
-from .objects import Data, Method
+from .methods import Method
+from .objects import Data
 
 
 class Parser:
@@ -12,8 +13,7 @@ class Parser:
     "parsing for commands"
 
     @classmethod
-    def parse(cls, obj, text, clean=False):
-        "parse text for command and arguments."
+    def init(cls, obj, text, clean):
         data = {
             "args": [],
             "cmd": "",
@@ -33,6 +33,11 @@ class Parser:
                 setattr(obj, k, getattr(obj, k, v) or v)
             else:
                 setattr(obj, k, v)
+
+    @classmethod
+    def parse(cls, obj, text, clean=False):
+        "parse text for command and arguments."
+        cls.init(obj, text, clean)
         args = []
         nr = -1
         for spli in text.split():

@@ -39,7 +39,7 @@ packages = [
 
 
 [tool.pylint."messages control"]
-disable = ["C,R,W0212,W0718,E0401,E0402"]
+disable = ["C0103,C0115,C0116,C0301,C0413,C0415,R0903,R0904,R0912,R0913,R0917,W0212,W0718,E0401,E0402"]
 
 
 [tool.ruff.lint]

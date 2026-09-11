@@ -39,9 +39,10 @@ class Time:
                 return time.mktime(time.strptime(daystr, fmat))
             except ValueError:
                 pass
+        return None
 
     @classmethod
-    def elapsed(cls, seconds, short=True):
+    def elapsed(cls, seconds, short=True): # pylint: disable=R0914
         "seconds to string."
         txt = ""
         nsec = float(seconds)

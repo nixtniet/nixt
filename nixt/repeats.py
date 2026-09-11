@@ -39,11 +39,11 @@ class Repeater:
         while not cls.stopped.is_set():
             time.sleep(1.0)
             cls.counter += 1
-            for sleep in cls.todo:
+            for sleep, arguments in cls.todo.items():
                 slept = int(sleep)
                 if cls.counter % slept != 0:
                     continue
-                for func, args, kwargs in cls.todo[sleep]:
+                for func, args, kwargs in arguments:
                     Thread.launch(func, *args, **kwargs)
 
     @classmethod
@@ -56,7 +56,7 @@ class Repeater:
     def stop(cls):
         "stop loop"
         cls.stopped.set()
-        
+
     @classmethod
     def wait(cls):
         "wait for loop to stop."

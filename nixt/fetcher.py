@@ -15,13 +15,14 @@ import urllib.request
 from typing import ClassVar
 
 
-from .objects import Data, Method
+from .methods import Method
+from .objects import Data
 
 
 class Fetcher:
 
     "fetch urls"
- 
+
     modified: ClassVar[dict[str,str]] = {}
 
     @classmethod

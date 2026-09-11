@@ -53,10 +53,10 @@ class Commands:
         "ondemand loading of commands."
         modname = cls.names.get(name, None)
         if not modname:
-            return
+            return None
         mod = Mods.get(modname)
         if not mod:
-            return
+            return None
         cls.scan(mod)
         return cls.cmds.get(name, None)
 

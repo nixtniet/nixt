@@ -16,7 +16,8 @@ from typing import ClassVar
 
 
 from .encoder import JSON
-from .objects import Data, Method
+from .methods import Method
+from .objects import Data
 from .utility import Utils
 
 
@@ -112,7 +113,7 @@ class Locater:
         return len(list(cls.find(kind)))
 
     @classmethod
-    def find(cls, kind, selector=None, removed=False, matching=False, nritems=None):
+    def find(cls, kind, selector=None, removed=False, matching=False, nritems=None): # pylint: disable=R0913,R0917
         "locate objects by matching atributes."
         with cls.lock:
             if selector is None:

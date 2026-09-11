@@ -22,12 +22,7 @@ class Arguments:
     def getargs(cls):
         "parse commandline arguments."
         Main.name = Main.name or Method.pkgname(Main)
-        theparser = argparse.ArgumentParser(
-            prog=Main.name,
-            description=f'{Main.name.upper()}',
-            epilog='use "%(prog)s cmd" for a list of commands.',
-            formatter_class=argparse.RawDescriptionHelpFormatter,
-        )
+        theparser = cls.getparser()
         group = theparser.add_mutually_exclusive_group()
         group.add_argument("-c", "--console", action="store_true", help="start a console.")
         group.add_argument("-d", "--daemon", action="store_true", help="run as background daemon.")
@@ -51,6 +46,15 @@ class Arguments:
         args, arguments = theparser.parse_known_args()
         Method.update(Main, args)
         Main.otxt = " ".join(arguments)
+
+    @classmethod
+    def getparser(cls):
+        return argparse.ArgumentParser(
+            prog=Main.name,
+            description=f'{Main.name.upper()}',
+            epilog='use "%(prog)s cmd" for a list of commands.',
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+        )
 
 
 class Booting(Boot):

@@ -33,14 +33,8 @@ class Kernel(Boot):
         "hello."
         if not force and not Main.verbose:
             return
-        tmr = time.ctime(time.time()).replace("  ", " ")
-        txt = "%s since %s %s (%s)" % (
-            Main.name.upper(),
-            tmr,
-            Main.level.upper() or "INFO",
-            MD5.core()
-        )
-        print(txt.replace("  ", " "))
+        timr = time.ctime(time.time()).replace("  ", " ")
+        print(f"{Main.name.upper()} {timr} {Main.level.upper() or 'INFO'} {MD5.core()}")
         sys.stdout.flush()
 
     @classmethod
@@ -49,15 +43,15 @@ class Kernel(Boot):
         Mods.dir(Workdir.moddir())
         Mods.dir(Mods.moddir())
         Mods.dir("examples")
-        if Main.local:
+        if "local" in Main.opts:
             Mods.dir("mods", "mods")
-        if Main.all:
+        if "all" in Main.opts:
             Main.mods = ",".join(Mods.list())
-        if Main.verbose:
+        if "verbose" in Main.verbose:
             cls.banner()
         Commands.table()
         Mods.table()
-        if Main.scanner or Main.local:
+        if Main.scanner:
             Commands.scanner()
 
     @classmethod
@@ -65,15 +59,15 @@ class Kernel(Boot):
         "restore console."
         import termios
         try:
-            old = termios.tcgetattr(sys.stdin.fileno())
+            olt = termios.tcgetattr(sys.stdin.fileno())
         except termios.error:
-            old = False
+            olt = False
         try:
             cls.wrapped(func, *args)
         except (KeyboardInterrupt, EOFError):
             pass
-        if old:
-            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+        if olt:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, olt)
         if dofinal:
             final()
 

@@ -10,7 +10,7 @@ import os
 from typing import ClassVar
 
 
-from .looping import Runner
+from .runners import Runner
 
 
 class Pool:

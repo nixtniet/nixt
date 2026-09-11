@@ -5,11 +5,11 @@
 
 
 import os
-import sys
+#import sys
 import unittest
 
 
-sys.path.insert(0, ".")
+# sys.path.insert(0, ".")
 
 
 from nixt.defines import Disk, Main, Method, Workdir
