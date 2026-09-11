@@ -62,7 +62,7 @@ class Disk:
     @classmethod
     def ident(cls, obj):
         "return ident string for object."
-        return os.path.join(Method.fqn(obj), *str(datetime.datetime.now(tz="")).split())
+        return os.path.join(Method.fqn(obj), *str(datetime.datetime.now(tz=None)).split())
 
     @classmethod
     def read(cls, obj, path, base="store"):

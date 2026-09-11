@@ -24,7 +24,6 @@ def doskip(line):
 
 def popen(txt):
     for line in os.popen(txt).readlines():
-        line = line.strip()
         if not line or doskip(line):
             continue
         print(line.rstrip())

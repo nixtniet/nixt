@@ -19,7 +19,7 @@ from .encoder import JSONL as JSONL
 from .engines import Engine as Engine
 from .fetcher import Fetcher as Fetcher
 from .loggers import Format as Format
-from .loggerd import Logging as Logging
+from .loggers import Logging as Logging
 from .looping import Loop as Loop
 from .message import Message as Message
 from .methods import Method as Method
@@ -37,8 +37,8 @@ from .runners import Runner as Runner
 from .sources import MD5 as MD5
 from .threads import Thr as Thr
 from .threads import Thread as Thread
-from .utility import Time as Time
-from .otility import Utils as Utils
+from .timings import Time as Time
+from .utility import Utils as Utils
 from .watcher import Watcher as Watcher
 
 
