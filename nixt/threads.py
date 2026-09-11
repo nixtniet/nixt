@@ -68,7 +68,6 @@ class Thread:
     def launch(cls, func, *args, **kwargs):
         "start a new thread running function with arguments."
         with cls.lock:
-            "run function in a thread."
             thr = Thr(func, *args, **kwargs)
             thr.start()
             return thr

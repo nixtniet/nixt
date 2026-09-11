@@ -60,7 +60,7 @@ class Output:
         "wait for output to finish."
         try:
             self.oqueue.join()
-        except Exception:
+        except (KeyboardInterrupt, EOFError):
             logger.exception()
             _thread.interrupt_main()
 

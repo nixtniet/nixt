@@ -35,7 +35,7 @@ class Fetcher:
         return line
 
     @classmethod
-    def geturl(cls, url, force=False):
+    def geturl(cls, url):
         "fetch an url."
         url = urllib.parse.urlunparse(urllib.parse.urlparse(url))
         req = urllib.request.Request(str(url))

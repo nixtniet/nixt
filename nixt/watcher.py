@@ -46,7 +46,7 @@ class Watcher:
     @classmethod
     def loop(cls):
         "loop select."
-        while not cls.stopped.isSet():
+        while not cls.stopped.is_set():
             for path in cls.cbs:
                 if not e(path):
                     continue

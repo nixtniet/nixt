@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"a clean namespace"
+"a function with an object as the first argument"
 
 
 import inspect
@@ -9,40 +9,7 @@ import os
 import types
 
 
-class Object:
-
-    "inheritence without the methods"
-
-    def __contains__(self, key):
-        return key in dir(self)
-
-    def __delitem__(self, key):
-        del self.__dict__[key]
-
-    def __getitem__(self, key):
-        return self.__dict__.get(key)
-
-    def __iter__(self):
-        return iter(self.__dict__)
-
-    def __len__(self):
-        return len(self.__dict__)
-
-    def __setitem__(self, key, value):
-        self.__dict__[key] = value
-
-    def __str__(self):
-        return str(self.__dict__)
-
-
-class Data(Object):
-
-    "defaulting to string"
-
-    def __getattr__(self, key):
-        if key in dir(self):
-            return self.__getattribute__(self, key)
-        return ""
+from .objects import Object
 
 
 class Method:
@@ -291,7 +258,7 @@ class Method:
         setattr(obj, key, val)
 
     @classmethod
-    def update(cls, obj, data, empty=True):
+    def update(cls, obj, data):
         "update object,"
         if isinstance(obj, type):
             if isinstance(data, type):
@@ -339,7 +306,5 @@ class Method:
 
 def __dir__():
     return (
-        'Data',
-        'Object',
-        'Method'
+        'Method',
     )

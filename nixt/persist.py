@@ -79,7 +79,7 @@ class Disk:
             return True
 
     @classmethod
-    def write(cls, obj, path="", base="store", skip=False):
+    def write(cls, obj, path="", base="store"):
         "write object to disk."
         with cls.lock:
             if path == "":
@@ -102,7 +102,7 @@ class Locater:
     def attrs(cls, kind):
         "show attributes for kind of objects."
         result = []
-        for pth, obj in cls.find(kind, nritems=1):
+        for _pth, obj in cls.find(kind, nritems=1):
             result.extend(Method.keys(obj))
         return set(result)
 

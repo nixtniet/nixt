@@ -39,9 +39,8 @@ packages = [
 
 
 [tool.pylint."messages control"]
-disable = ["C,R,W,E0401,E0402"]
+disable = ["C,R,W0212,W0718,E0401,E0402"]
 
 
 [tool.ruff.lint]
 ignore = ["I001", "SIM905", "UP031", "UP041", "UP024", "DTZ005"]
-#ignore = ["ALL"]

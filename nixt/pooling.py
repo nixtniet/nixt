@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"you'd  better run"
+"you'd better run"
 
 
 import os
@@ -40,7 +40,7 @@ class Pool:
         "initialze a number of runners."
         if clz:
             cls.clazz = clz
-        for x in range(nr):
+        for _x in range(nr):
             runner = cls.clazz()
             runner.start()
             cls.add(runner)

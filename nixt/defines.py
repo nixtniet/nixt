@@ -66,6 +66,7 @@ def __dir__():
        'Message',
        'Method',
        'Mods',
+       'Object',
        'Output',
        'Parser',
        'Pool',

@@ -64,7 +64,7 @@ class Commands:
     def scan(cls, mod, skip=False):
         "scan module for commands."
         result = []
-        for nme, func in inspect.getmembers(mod, inspect.isfunction):
+        for _nme, func in inspect.getmembers(mod, inspect.isfunction):
             if 'event' in inspect.signature(func).parameters:
                 if not skip:
                     cls.add(func)

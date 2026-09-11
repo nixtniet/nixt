@@ -44,7 +44,7 @@ class Display:
         "raw output"
         raise NotImplementedError
 
-    def say(self, channel, text):
+    def say(self, channel, text): # pylint: disable=W0613
         "say text in channel"
         self.raw(text)
 
