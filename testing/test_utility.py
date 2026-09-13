@@ -13,7 +13,7 @@ from nixt.defines import Utils
 
 class TestUtils(unittest.TestCase):
 
-    def test_construct():
+    def test_construct(self):
         utils = Utils()
         self.assertTrue(type(utils), Utils)
 
