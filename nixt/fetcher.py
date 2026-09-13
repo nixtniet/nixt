@@ -48,7 +48,7 @@ class Fetcher:
         response.reason = ""
         try:
             Method.update(response, cls.request(req))
-        except ValueError as ex:
+        except Exception as ex:
             response.data = b""
             try:
                 response.reason = ex.reason

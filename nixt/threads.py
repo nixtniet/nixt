@@ -55,7 +55,7 @@ class Thr(threading.Thread):
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
         except Exception:
-            logger.exception()
+            logger.exception(str(func))
             _thread.interrupt_main()
 
 
