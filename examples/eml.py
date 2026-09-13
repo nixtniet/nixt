@@ -62,7 +62,7 @@ def mbx(event):
     if not os.path.exists(fnm):
         event.iface("<path>")
         return
-    event.reply("reading from %s" % fnm)
+    event.reply(f"reading from {fnm}")
     if os.path.isdir(fnm):
         thing = mailbox.Maildir(fnm, create=False)
     elif os.path.isfile(fnm):

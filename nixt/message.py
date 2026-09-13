@@ -21,6 +21,7 @@ class Message(Data):
         self.args = []
         self.index = 0
         self.kind = "message"
+        self.orig = ""
         self.result = []
 
     def iface(self, txt):

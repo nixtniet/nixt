@@ -358,19 +358,8 @@ class IRC(Buffer):
             obj.channel = todo
         else:
             obj.channel = obj.nick
-        if not obj.text:
-            obj.text = rawstr.split(":", 2)[-1]
-        if not obj.text and len(arguments) == 1:
-            obj.text = arguments[1]
-        splitted = obj.text.split()
-        if len(splitted) > 1:
-            obj.args = splitted[1:]
-        if obj.args:
-            obj.rest = " ".join(obj.args)
-        obj.orig = object.__repr__(self)
-        obj.text = obj.text.strip()
-        obj.kind = obj.command
-        return obj
+        return self.post(obj, rawstr, arguments)
+
 
     def poll(self):
         "poll on the socket for an event."
@@ -401,6 +390,23 @@ class IRC(Buffer):
         except IndexError:
             txt = ""
         self.put(self.event(txt))
+        return None
+
+    def post(self, obj, rawstr, arguments):
+        "post parsing."
+        if not obj.text:
+            obj.text = rawstr.split(":", 2)[-1]
+        if not obj.text and len(arguments) == 1:
+            obj.text = arguments[1]
+        splitted = obj.text.split()
+        if len(splitted) > 1:
+            obj.args = splitted[1:]
+        if obj.args:
+            obj.rest = " ".join(obj.args)
+        obj.orig = object.__repr__(self)
+        obj.text = obj.text.strip()
+        obj.kind = obj.command
+        return obj
 
     def raw(self, text):
         "raw output to the server."

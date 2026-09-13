@@ -29,6 +29,7 @@ class State:
     def __init__(self):
         super().__init__()
         self.fnm = ""
+        self.seen = []
 
     def dump(self):
         if not self.fnm:
@@ -45,8 +46,6 @@ state = State()
 def wsd(event):
     "show a wisdom quote."
     txt = ""
-    if 'seen' not in dir(state):
-        state.seen = []
     for nrs in range(len(TXTLIST)):
         txt = rand.choice(TXTLIST)
         if txt in state.seen:

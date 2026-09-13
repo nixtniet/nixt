@@ -50,6 +50,7 @@ class Rss(Data):
 
     def __init__(self):
         super().__init__()
+        self.__deleted__ = False
         self.display_list = "title,link,author"
         self.insertid = None
         self.name = ""
@@ -179,7 +180,8 @@ class Run:
             cls.path = j(Workdir.logdir("rss"), 'rss.log')
             Utils.cdir(cls.path)
             pathlib.Path(cls.path).touch()
-            cls.file = open(cls.path, "a+", encoding="utf-8") # noqa: SIM115 
+            with open(cls.path, "a+", encoding="utf-8") as file:
+                cls.file = file
             cls.enable(cls.path)
             Watcher.add(cls.path, cls.callback)
             Watcher.start()
@@ -215,7 +217,7 @@ class Fetching(Runner):
             return True
         return False
 
-    def getfeed(self, fnm, feed, items):
+    def getfeed(self, fnm, feed, items): # pylint: disable=R1710
         "fetch a feed."
         result = [None,]
         response = Fetcher.geturl(feed.rss)
@@ -331,7 +333,7 @@ def atr(event):
         return
     for _fnm, obj in Locater.find(Method.fqn(Rss), {'rss': event.rest}):
         request = None
-        request = Fetcher.geturl(obj.rss, True)
+        request = Fetcher.geturl(obj.rss, True) # pylint: disable=E1121
         if not request:
             continue
         if obj.rss.endswith('atom'):

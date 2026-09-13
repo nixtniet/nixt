@@ -151,17 +151,10 @@ def cbstats(evt):
         nrtimes = int(delta/needed)
         nryear = int(YEAR/needed)
         nrday = int(DAY/needed)
-        delta2 = time.time() - getday()
-        thisday = int(delta2/needed)
-        txt = "%s %s #%s (%s/%s/%s) every %s" % (
-            Time.elapsed(delta),
-            getalias(nme).upper(),
-            nrtimes,
-            thisday,
-            nrday,
-            nryear,
-            Time.elapsed(needed)
-        )
+        elapsed = Time.elapsed(delta)
+        alias = getalias(nme).upper()
+        need = Time.elapsed(needed)
+        txt = f"{elapsed} {alias} ({nrtimes}/{nrday}/{nryear}) every {need}"
         Clients.announce(txt)
 
 
@@ -189,16 +182,10 @@ def now(event):
         nrtimes = int(delta/needed)
         nryear = int(YEAR/needed)
         nrday = int(DAY/needed)
-        thisday = int(DAY % needed)
-        txt = "%s %s #%s (%s/%s/%s) every %s" % (
-            Time.elapsed(delta),
-            getalias(nme).upper(),
-            nrtimes,
-            thisday,
-            nrday,
-            nryear,
-            Time.elapsed(needed)
-        )
+        elapsed = Time.elapsed(delta)
+        alias = getalias(nme).upper()
+        need = Time.elapsed(needed)
+        txt = f"{elapsed} {alias} ({nrtimes}/{nrday}/{nryear}) every {need}"
         event.reply(txt)
 
 
