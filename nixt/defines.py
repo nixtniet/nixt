@@ -11,7 +11,7 @@ from .buffers import Buffer
 from .buffers import Output
 from .clients import Clients
 from .command import Commands
-from .configs import Main
+from .configs import Config, Main
 from .display import Display
 from .display import Screen
 from .encoder import JSON
@@ -50,6 +50,7 @@ def __dir__():
        'Clients',
        'Cmd',
        'Commands',
+       'Config',
        'Data',
        'Disk',
        'Display',

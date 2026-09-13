@@ -8,7 +8,14 @@ import time
 import unittest
 
 
+from nixt.defines import Utils
+
+
 class TestUtils(unittest.TestCase):
+
+    def test_construct():
+        utils = Utils()
+        self.assertTrue(type(utils), Utils)
 
     def test_strptime(self):
         date = time.strptime("2019-3-4 22:22", "%Y-%m-%d %H:%M")

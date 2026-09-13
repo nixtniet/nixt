@@ -10,7 +10,11 @@ import unittest
 from nixt.defines import Mods
 
 
-class TestPackage(unittest.TestCase):
+class TestMods(unittest.TestCase):
+
+    def test_construct(self):
+        mods = Mods()
+        self.assertTrue(type(mods), Mods)
 
     def test_dir(self):
         Mods.dir("mods", "mods")

@@ -12,5 +12,9 @@ from nixt.defines import Time
 
 class TestTime(unittest.TestCase):
 
+    def construct(self):
+        time = Time()
+        self.assertTrue(type(time), Time)
+
     def test_times(self):
         self.assertTrue(Time.times)

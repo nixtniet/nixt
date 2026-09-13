@@ -14,7 +14,7 @@ from .objects import Object
 
 class Method:
 
-    "functions with an object as the first argument"
+    "yeah"
 
     @classmethod
     def clear(cls, obj):

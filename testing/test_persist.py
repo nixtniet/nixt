@@ -5,20 +5,28 @@
 
 
 import os
-#import sys
 import unittest
 
 
-# sys.path.insert(0, ".")
-
-
-from nixt.defines import Disk, Main, Method, Workdir
+from nixt.defines import Disk, Main, Locater, Method, Workdir
+from nixt.persist import Cache
 
 
 Workdir.wdr = '.test'
 
 
-class TestPersist(unittest.TestCase):
+class TestCache(unittest.TestCase):
+
+    def test_construct(self):
+        cache = Cache()
+        self.assertTrue(type(cache), Cache)
+
+
+class TestDisk(unittest.TestCase):
+
+    def test_construct(self):
+        disk = Disk()
+        self.assertTrue(type(disk), Disk)
 
     def test_loadcfg(self):
         Main.a = "b"
@@ -34,3 +42,17 @@ class TestPersist(unittest.TestCase):
         Main.a = "b"
         Disk.write(Main, "main", "config")
         self.assertTrue(os.path.exists(os.path.join(Workdir.wdr, "config", "main")))
+
+
+class TestLocater(unittest.TestCase):
+
+    def test_construct(self):
+        locater = Locater()
+        self.assertTrue(type(locater), Locater)
+
+
+class TestWorkdir(unittest.TestCase):
+
+    def test_construct(self):
+        workdir = Workdir()
+        self.assertTrue(type(workdir), Workdir)

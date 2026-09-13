@@ -7,7 +7,14 @@
 import unittest
 
 
-from nixt.loggers import Logging
+from nixt.loggers import Format, Logging
+
+
+class TestFormat(unittest.TestCase):
+
+    def test_construct(self):
+        format = Format()
+        self.assertTrue(type(format), Format)
 
 
 class TestLogging(unittest.TestCase):

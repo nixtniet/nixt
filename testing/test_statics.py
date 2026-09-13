@@ -7,10 +7,16 @@
 import unittest
 
 
-from nixt.statics import CORE
+from nixt.statics import CORE, MODULES, NAMES
 
 
-class TestStatic(unittest.TestCase):
+class TestStatics(unittest.TestCase):
+
+    def test_core(self):
+        self.assertTrue(CORE)
+
+    def test_modules(self):
+        self.assertFalse(MODULES)
 
     def test_names(self):
-        self.assertTrue(CORE)
+        self.assertFalse(NAMES)
