@@ -13,8 +13,8 @@ from nixt.loggers import Format, Logging
 class TestFormat(unittest.TestCase):
 
     def test_construct(self):
-        format = Format()
-        self.assertTrue(type(format), Format)
+        fmt = Format()
+        self.assertTrue(type(fmt), Format)
 
 
 class TestLogging(unittest.TestCase):
