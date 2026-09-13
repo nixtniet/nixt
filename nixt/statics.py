@@ -15,7 +15,7 @@ CORE = {
     "display": "77dee5627098b842b990fb98c7fa94b1",
     "encoder": "e64bb590aa201a93b1cf3ff6dcfb9ac3",
     "engines": "4abf7eb332eda759f4535c0cec99a373",
-    "fetcher": "b2574f9f2ee4ba088c0f788e0811aedc",
+    "fetcher": "f8df5e5e97f875a758d1c020cc31eafb",
     "loggers": "91c35ad6b6220cb2aa2a489c485c2a6d",
     "looping": "249bc3a3b83e19854aab39fd81140c83",
     "message": "de0cf8e940ba9658393ff4274e1d8af9",
@@ -30,7 +30,7 @@ CORE = {
     "runners": "39b79d95d34697d27ef29ab9290807d3",
     "runtime": "dd23b2fa4faddf41bae8461704f60f93",
     "sources": "35079ee4b29586d5613b54ec96f421ab",
-    "threads": "9b5d8ab1d0de793983c22c2c546d8e88",
+    "threads": "29fafd82f39df88ceea6b7e4f60a102d",
     "timings": "16221274db36421c2e0ad645b0722cd7",
     "utility": "97e79df99ed36ce00d51ff6f252b13b8",
     "watcher": "6736542ecb1dd1acb2eb8b77f644bd24"
