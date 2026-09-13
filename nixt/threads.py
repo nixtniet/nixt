@@ -54,8 +54,8 @@ class Thr(threading.Thread):
             self.result = func(*args)
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
-        except Exception as ex:
-            logger.exception(ex)
+        except Exception:
+            logger.exception()
             _thread.interrupt_main()
 
 
