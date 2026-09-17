@@ -15,10 +15,11 @@ class Message(Data):
     "message as an event"
 
     def __init__(self):
-        super().__init__()
+        Data.__init__(self)
         self._ready = threading.Event()
         self._thr = None
         self.args = []
+        self.cmd = ""
         self.index = 0
         self.kind = "message"
         self.orig = ""

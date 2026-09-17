@@ -24,6 +24,6 @@ class TestMessage(unittest.TestCase):
 
     def test_wait(self):
         msg = Message()
-        msg.ready()  # pylint: disable=E1102
+        msg.ready() # pylint: disable=E1102
         msg.wait()
         self.assertTrue(msg._ready.is_set())

@@ -10,7 +10,7 @@ import time
 
 
 from collections.abc import Callable
-from typing import ClassVar
+from typing          import ClassVar
 
 
 from .threads import Thread

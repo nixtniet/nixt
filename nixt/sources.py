@@ -46,6 +46,7 @@ class MD5:
 
     @classmethod
     def createmd5(cls, path, data):
+        "create md5s for file in a directory."
         for pth in os.listdir(path):
             if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
                 continue

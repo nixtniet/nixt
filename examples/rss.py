@@ -217,7 +217,7 @@ class Fetching(Runner):
             return True
         return False
 
-    def getfeed(self, fnm, feed, items): # pylint: disable=R1710
+    def getfeed(self, fnm, feed, items):
         "fetch a feed."
         result = [None,]
         response = Fetcher.geturl(feed.rss)
@@ -332,8 +332,7 @@ def atr(event):
         event.iface("<stringinurl>")
         return
     for _fnm, obj in Locater.find(Method.fqn(Rss), {'rss': event.rest}):
-        request = None
-        request = Fetcher.geturl(obj.rss, True) # pylint: disable=E1121
+        request = Fetcher.geturl(obj.rss)
         if not request:
             continue
         if obj.rss.endswith('atom'):

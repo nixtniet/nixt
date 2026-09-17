@@ -42,7 +42,7 @@ class Time:
         return None
 
     @classmethod
-    def elapsed(cls, seconds, short=True): # pylint: disable=R0914
+    def elapsed(cls, seconds, short=True):
         "seconds to string."
         txt = ""
         nsec = float(seconds)
@@ -111,7 +111,6 @@ class Time:
         if not tme:
             tme = time.time()
         return tme
-
 
 
 def __dir__():
