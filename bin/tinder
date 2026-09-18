@@ -40,9 +40,9 @@ class Kernel(Boot):
     @classmethod
     def boot(cls):
         cls.configure(Main)
-        Mods.dir(Workdir.moddir())
-        Mods.dir(Mods.moddir())
-        Mods.dir("examples")
+        Mods.dir("mods", Workdir.moddir())
+        Mods.dir("module", Mods.moddir())
+        Mods.dir("examples", "examples")
         if "local" in Main.opts:
             Mods.dir("mods", "mods")
         if "all" in Main.opts:

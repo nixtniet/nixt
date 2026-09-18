@@ -88,8 +88,8 @@ class Boot:
             Screen.block.set()
             Thr.block.set()
             _thread.interrupt_main()
-        except Exception:
-            logger.exception()
+        except Exception as ex:
+            logger.exception(ex)
             _thread.interrupt_main()
 
 

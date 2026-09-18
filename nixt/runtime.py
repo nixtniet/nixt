@@ -23,8 +23,6 @@ class Arguments:
         "parse commandline arguments."
         Main.name = Main.name or Method.pkgname(Main)
         theparser = cls.getparser()
-        args = theparser.add_argument("cmd", nargs="*", help="comamnd")
-        args = theparser.add_argument("args", nargs="*", help="arguments")
         group = theparser.add_mutually_exclusive_group()
         group.add_argument("-c", "--console", action="store_true", help="start a console.")
         group.add_argument("-d", "--daemon", action="store_true", help="run as background daemon.")
@@ -76,8 +74,8 @@ class Booting(Boot):
     @classmethod
     def boot(cls):
         cls.configure(Main)
-        Mods.dir(Workdir.moddir())
-        Mods.dir(Mods.moddir())
+        Mods.dir("mods", Workdir.moddir())
+        Mods.dir("modules", Mods.moddir())
         if Main.local:
             Mods.dir("mods", "mods")
         if Main.all:
@@ -151,7 +149,7 @@ class Daemon:
 
 class Kernel(Booting, Daemon):
 
-    "center of believing."
+    "center of believe."
 
 
 class CLI(Screen):
@@ -226,6 +224,7 @@ class Scripts:
             Commands.add(Cmd.tbl)
         cli = CLI()
         evt = Message()
+        evt.kind = "command"
         evt.orig = repr(cli)
         evt.text = Main.otxt
         Commands.command(evt)

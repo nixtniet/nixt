@@ -30,15 +30,9 @@ class Mods:
     mods: ClassVar[dict[str, ModuleType]] = {}
 
     @classmethod
-    def dir(cls, pkgname, path=None):
+    def dir(cls, pkgname, path):
         "add module/path."
-        if not pkgname:
-            return
-        pkgn = pkgname
-        if path is None:
-            path = pkgname
-            pkgn = ".".join(pkgname.split(os.sep)[-2:])
-        cls.dirs[pkgn] = path
+        cls.dirs[pkgname] = path
 
     @classmethod
     def get(cls, name, force=False):

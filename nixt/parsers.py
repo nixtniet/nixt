@@ -8,31 +8,6 @@ from .methods import Method
 from .objects import Data
 
 
-from typing import ClassVar
-
-
-class Options:
-
-    options: ClassVar[dict[str,str]] = {
-        "help": "show this help message and exit",
-        "console": "start a console.",
-        "daemon": "run as background daemon.",
-        "service": "run as service.",
-        "all": "load all modules.",
-        "verbose": "enable verbose.",
-        "wait" : "wait for services to start.",
-        "level": "level  set loglevel.",
-    }
-
-    values: ClassVar[dict[str,str]]  = {
-        "mods": "modules to load.",
-        "path": "path to modules directory.",
-        "admin": "enable admin mode.",
-        "scanner": "do full modules scan on boot.",
-        "wdr": "set modules directory."
-    }
-
-
 class Parser:
 
     "parsing for commands"
