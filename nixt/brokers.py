@@ -9,7 +9,6 @@ from typing import ClassVar
 
 class Broker:
 
-
     "map repr(obj) to obj"
 
     objects: ClassVar[dict[str, object]] = {}

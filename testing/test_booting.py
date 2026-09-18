@@ -7,8 +7,20 @@
 import unittest
 
 
+from nixt.defines import Boot
+
+
 class TestRuntime(unittest.TestCase):
 
+    def setUp(self):
+        self.boot = Boot()
+    
+    def shutDown(self):
+        self.boot.shutdown()
+
+    def test_construct(self):
+        self.assertTrue(type(self.boot), Boot)
+        
     def test_banner(self):
         pass
 

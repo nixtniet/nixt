@@ -23,7 +23,7 @@ class Arguments:
         "parse commandline arguments."
         Main.name = Main.name or Method.pkgname(Main)
         theparser = cls.getparser()
-        args = theparser.add_argument("cmd", nargs=1, help="comamnd")
+        args = theparser.add_argument("cmd", nargs="*", help="comamnd")
         args = theparser.add_argument("args", nargs="*", help="arguments")
         group = theparser.add_mutually_exclusive_group()
         group.add_argument("-c", "--console", action="store_true", help="start a console.")
@@ -56,6 +56,7 @@ class Arguments:
             description=f'{Main.name.upper()}',
             epilog='use "%(prog)s cmd" for a list of commands.',
             formatter_class=argparse.RawDescriptionHelpFormatter,
+            usage="%(prog)s [options] [cmd] [key=val] [key==val] [key-=val] [arguments]"
         )
 
 
