@@ -27,6 +27,9 @@ class Boot:
 
     "at startup"
 
+    running = threading.Event()
+    stopped = threading.Event()
+
     @classmethod
     def banner(cls):
         "greetings."
@@ -46,11 +49,13 @@ class Boot:
     @classmethod
     def forever(cls):
         "run forever until ctrl-c."
-        while True:
+        cls.running.set()
+        while cls.running.is_set():
             try:
                 time.sleep(0.1)
             except (KeyboardInterrupt, EOFError):
                 break
+        cls.stopped.set()
 
     @classmethod
     def init(cls, names, wait=False):
@@ -63,10 +68,11 @@ class Boot:
             thrs.append(Thread.launch(mod.init))
         if thrs and wait:
             for thr in thrs:
-                try:
-                    thr.join()
-                except (KeyboardInterrupt, EOFError):
-                    _thread.interrupt_main()
+                thr.join()
+#                try:
+#                    thr.join()
+#                except (KeyboardInterrupt, EOFError):
+#                    _thread.interrupt_main()
         return True
 
     @classmethod
@@ -74,10 +80,11 @@ class Boot:
         "call stop on clients."
         logger.debug("shutdown")
         Clients.shutdown()
-        while True:
+        while self.running.is_set():
             if len(threading.enumerate()) <= 2:
                 break
             time.sleep(0.01)
+        cls.stopped.set()
 
     @classmethod
     def wrapped(cls, func, *args):

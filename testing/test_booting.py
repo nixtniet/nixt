@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Boot
+from nixt.defines import Boot, Main, Thread
 
 
 class TestRuntime(unittest.TestCase):
@@ -19,22 +19,27 @@ class TestRuntime(unittest.TestCase):
         self.boot.shutdown()
 
     def test_construct(self):
-        self.assertTrue(type(self.boot), Boot)
+        self.assertEqual(type(self.boot), Boot)
         
     def test_banner(self):
-        pass
+        self.assertEqual(self.boot.banner(), None)
 
     def test_configure(self):
-        pass
+        self.assertEqual(self.boot.configure(Main), None)
 
     def test_forever(self):
-        pass
+        thr = Thread.launch(self.boot.forever)
+        self.boot.running.clear()
+        thr.join()
+        self.assertEqual(self.boot.stopped.is_set(), True)
 
     def test_init(self):
-        pass
+        self.assertEqual(self.boot.init(""), True)
 
     def test_shutdown(self):
-        pass
+        thr = Thread.launch(self.boot.shutdown)
+        thr.join()
+        self.assertTrue(self.boot.stopped.is_set())
 
     def test_wrapped(self):
-        pass
+        self.assertFalse(self.boot.wrapped(print, "hello world"))
