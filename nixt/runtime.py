@@ -16,7 +16,7 @@ from .defines import Method, Mods, Screen, Workdir
 
 class Arguments:
 
-    "comamnd line arguments."
+    "comamnd line arguments"
 
     @classmethod
     def getargs(cls):
@@ -49,6 +49,7 @@ class Arguments:
 
     @classmethod
     def getparser(cls):
+        "create parser."
         return argparse.ArgumentParser(
             prog=Main.name,
             description=f'{Main.name.upper()}',
@@ -60,7 +61,7 @@ class Arguments:
 
 class Booting(Boot):
 
-    "at first."
+    "at first"
 
     @classmethod
     def banner(cls, force=False):
@@ -107,7 +108,7 @@ class Booting(Boot):
 
 class Daemon:
 
-    "detach from console."
+    "detach from console"
 
     @classmethod
     def daemon(cls):
@@ -149,7 +150,7 @@ class Daemon:
 
 class Kernel(Booting, Daemon):
 
-    "center of believe."
+    "center of believing"
 
 
 class CLI(Screen):
@@ -172,7 +173,7 @@ class CLI(Screen):
 
 class Console(CLI):
 
-    "prompt."
+    "prompt"
 
     def __init__(self):
         CLI.__init__(self)
@@ -190,7 +191,7 @@ class Console(CLI):
 
 class Scripts:
 
-    "actual runtime."
+    "actual runtime"
 
     @staticmethod
     def background():
