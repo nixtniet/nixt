@@ -42,7 +42,7 @@ class Thr(threading.Thread):
             super().join(timeout or None)
             return self.result
         except (KeyboardInterrupt, EOFError):
-            pass
+            _thread.interrupt_main()
 
     def run(self):
         "run function."

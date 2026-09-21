@@ -68,11 +68,10 @@ class Boot:
             thrs.append(Thread.launch(mod.init))
         if thrs and wait:
             for thr in thrs:
-                thr.join()
-#                try:
-#                    thr.join()
-#                except (KeyboardInterrupt, EOFError):
-#                    _thread.interrupt_main()
+                try:
+                    thr.join()
+                except (KeyboardInterrupt, EOFError):
+                    _thread.interrupt_main()
         return True
 
     @classmethod
@@ -80,7 +79,7 @@ class Boot:
         "call stop on clients."
         logger.debug("shutdown")
         Clients.shutdown()
-        while self.running.is_set():
+        while cls.running.is_set():
             if len(threading.enumerate()) <= 2:
                 break
             time.sleep(0.01)
