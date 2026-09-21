@@ -21,7 +21,7 @@ class Encoder(json.JSONEncoder):
 
     lock = threading.RLock()
 
-    def default(self, o) -> dict | iter | str:
+    def default(self, o) -> Union[dict,iter,str]:
         "generate serializable versions."
         with Encoder.lock:
             if isinstance(o, type):

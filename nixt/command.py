@@ -8,7 +8,7 @@ import inspect
 
 
 from collections.abc import Callable
-from typing          import ClassVar, Dict, List
+from typing          import ClassVar, Dict, List, Union
 
 
 from .clients import Clients
@@ -61,7 +61,7 @@ class Commands:
         return cls.cmds.get(name, None)
 
     @classmethod
-    def scan(cls, mod, skip=False) -> List[Callable]:
+    def scan(cls, mod, skip=False) -> Union[list,Callable]:
         "scan module for commands."
         result = []
         for _nme, func in inspect.getmembers(mod, inspect.isfunction):
