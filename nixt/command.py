@@ -49,7 +49,7 @@ class Commands:
         return result
 
     @classmethod
-    def ondemand(cls, name) -> Callable | None:
+    def ondemand(cls, name) -> Callable|None:
         "ondemand loading of commands."
         modname = cls.names.get(name, None)
         if not modname:
