@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 class Thr(threading.Thread):
 
-    "unit of thread."
+    "unit of thread"
 
     block = threading.Event()
 
@@ -60,7 +60,7 @@ class Thr(threading.Thread):
 
 class Thread:
 
-    "helper class."
+    "thread helper class"
 
     lock = threading.RLock()
 

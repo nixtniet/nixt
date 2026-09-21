@@ -14,6 +14,7 @@ class Parser:
 
     @classmethod
     def init(cls, obj, text, clean):
+        "set default values."
         data = {
             "args": [],
             "cmd": "",

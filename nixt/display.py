@@ -22,12 +22,12 @@ class Display:
         self.silent = False
 
     def announce(self, text):
-        "announce text to all channels"
+        "announce text to all channels."
         if not self.silent:
             self.raw(text)
 
     def display(self, event):
-        "display event results"
+        "display event results."
         with self.olock:
             for txt in event.result:
                 if self.block.is_set():
@@ -37,21 +37,21 @@ class Display:
         del event
 
     def dosay(self, channel, text):
-        "say called by display"
+        "say called by display."
         self.say(channel, text)
 
     def raw(self, text):
-        "raw output"
+        "raw output."
         raise NotImplementedError
 
     def say(self, channel, text):
-        "say text in channel"
+        "say text in channel."
         self.raw(text)
 
 
 class Screen(Engine, Display):
 
-    "display wit coupled handler"
+    "display wit coupled handler."
 
     def __init__(self):
         Engine.__init__(self)

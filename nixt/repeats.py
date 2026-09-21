@@ -54,7 +54,7 @@ class Repeater:
 
     @classmethod
     def stop(cls):
-        "stop loop"
+        "stop loop."
         cls.stopped.set()
 
     @classmethod

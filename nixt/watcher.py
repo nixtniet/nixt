@@ -21,8 +21,8 @@ e = os.path.exists
 
 class Watcher:
 
-    sleep = 1.0
     cbs: ClassVar[dict[str, Callable]] = {}
+    sleep = 1.0
     stopped = threading.Event()
     times: ClassVar[dict[str, float]] = {}
 

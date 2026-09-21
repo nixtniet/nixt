@@ -62,6 +62,7 @@ class Fetcher:
 
     @classmethod
     def request(cls, req):
+        "handle  a request."
         with urllib.request.urlopen(req, timeout=4) as response:  # nosec
             modi = response.headers.get('Last-Modified', "")
             if modi:

@@ -65,7 +65,7 @@ class Booting(Boot):
 
     @classmethod
     def banner(cls, force=False):
-        "helo."
+        "hello."
         if not force and not Main.verbose:
             return
         tmr = time.ctime(time.time()).replace("  ", " ")
@@ -74,6 +74,7 @@ class Booting(Boot):
 
     @classmethod
     def boot(cls):
+        "configure runtime."
         cls.configure(Main)
         Mods.dir("mods", Workdir.moddir())
         Mods.dir("modules", Mods.moddir())
@@ -136,6 +137,7 @@ class Daemon:
 
     @classmethod
     def pid(cls):
+        "return pid path."
         return Workdir.pid(Main.name)
 
     @classmethod
