@@ -9,7 +9,7 @@ import threading
 import types
 
 
-from collections.abc import Iterable
+jsontypes = dict | list | bool | float | int | str
 
 
 class Encoder(json.JSONEncoder):
@@ -18,7 +18,7 @@ class Encoder(json.JSONEncoder):
 
     lock = threading.RLock()
 
-    def default(self, o) -> dict | Iterable | str:
+    def default(self, o) -> dict | iter | str:
         "generate serializable versions."
         with Encoder.lock:
             if isinstance(o, type):
@@ -64,12 +64,12 @@ class JSON:
         return json.dumps(*args, **kw)
 
     @classmethod
-    def load(cls, s, *args, **kw) -> dict | list | bool| float | int | str:
+    def load(cls, s, *args, **kw) -> jsontypes:
         "load object from disk."
         return json.load(s, *args, **kw)
 
     @classmethod
-    def loads(cls, s, *args, **kw) -> dict | list | bool | float | int | str:
+    def loads(cls, s, *args, **kw) -> jsontypes:
         "load object from string."
         return json.loads(s, *args, **kw)
 
