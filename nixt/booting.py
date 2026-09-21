@@ -31,11 +31,11 @@ class Boot:
     stopped = threading.Event()
 
     @classmethod
-    def banner(cls):
+    def banner(cls) -> str:
         "greetings."
 
     @classmethod
-    def configure(cls, cfg):
+    def configure(cls, cfg) -> None:
         "setup basic variables"
         Workdir.wdr = cfg.wdr or Workdir.wdr or Workdir.home(cfg.name)
         if not cfg.nodisk:
@@ -47,7 +47,7 @@ class Boot:
         Mods.dir(cfg.path, pkgname)
 
     @classmethod
-    def forever(cls):
+    def forever(cls) -> None:
         "run forever until ctrl-c."
         cls.running.set()
         while cls.running.is_set():
@@ -58,7 +58,7 @@ class Boot:
         cls.stopped.set()
 
     @classmethod
-    def init(cls, names, wait=False):
+    def init(cls, names, wait=False) -> bool:
         "call init of modules that have an init function."
         thrs = []
         for name in Utils.spl(names):
@@ -75,7 +75,7 @@ class Boot:
         return True
 
     @classmethod
-    def shutdown(cls):
+    def shutdown(cls) -> None:
         "call stop on clients."
         logger.debug("shutdown")
         Clients.shutdown()
@@ -86,7 +86,7 @@ class Boot:
         cls.stopped.set()
 
     @classmethod
-    def wrapped(cls, func, *args):
+    def wrapped(cls, func, *args) -> None:
         "wrap function in a try/except, silence ctrl-c/ctrl-d."
         try:
             func(*args)
