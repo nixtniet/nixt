@@ -61,7 +61,7 @@ class Commands:
         return cls.cmds.get(name, None)
 
     @classmethod
-    def scan(cls, mod, skip=False) -> Union[list,Callable]:
+    def scan(cls, mod, skip=False) -> list[Callable]:
         "scan module for commands."
         result = []
         for _nme, func in inspect.getmembers(mod, inspect.isfunction):
