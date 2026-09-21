@@ -43,4 +43,5 @@ disable = ["C,R,W0212,W0612,W0613,W0718,E0401,E0402"]
 
 
 [tool.ruff.lint]
-ignore = ["I001", "SIM905", "UP031", "UP041", "UP024", "DTZ005", "DTZ006", "BLE001"]
+ignore = ["I001", "SIM905", "UP006", "UP031", "UP035", "UP041", "UP024", "DTZ005", "DTZ006", "BLE001",
+"TRY401"]

@@ -8,7 +8,7 @@ import datetime
 import time
 
 
-from typing import ClassVar
+from typing import ClassVar, List
 
 
 class Time:
@@ -16,7 +16,7 @@ class Time:
     "time related utilities."
 
     starttime = time.time()
-    times: ClassVar[list[str]] = [
+    times: ClassVar[List[str]] = [
         "%a, %d %b %Y %H:%M:%S %z",
         "%a, %d %b %Y %H:%M:%S",
         "%a, %d %b %Y %T %z",

@@ -12,7 +12,7 @@ import urllib.parse
 import urllib.request
 
 
-from typing import ClassVar
+from typing import ClassVar, Dict
 
 
 from .methods import Method
@@ -23,7 +23,7 @@ class Fetcher:
 
     "fetch urls"
 
-    modified: ClassVar[dict[str,str]] = {}
+    modified: ClassVar[Dict[str,str]] = {}
 
     @classmethod
     def cdata(cls, line):

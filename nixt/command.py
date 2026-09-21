@@ -8,7 +8,7 @@ import inspect
 
 
 from collections.abc import Callable
-from typing          import ClassVar
+from typing          import ClassVar, Dict
 
 
 from .clients import Clients
@@ -20,8 +20,8 @@ class Commands:
 
     "command dispatch"
 
-    cmds: ClassVar[dict[str, Callable]] = {}
-    names: ClassVar[dict[str, str]] = {}
+    cmds: ClassVar[Dict[str, Callable]] = {}
+    names: ClassVar[Dict[str, str]] = {}
 
     @classmethod
     def add(cls, *funcs):

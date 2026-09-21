@@ -9,7 +9,7 @@ import os
 
 
 from types  import ModuleType
-from typing import ClassVar
+from typing import ClassVar, Dict
 
 
 from .methods import Method
@@ -24,10 +24,10 @@ class Mods:
 
     "modules"
 
-    core: ClassVar[dict[str, str]] = {}
-    dirs: ClassVar[dict[str, str]] = {}
-    md5s: ClassVar[dict[str, str]] = {}
-    mods: ClassVar[dict[str, ModuleType]] = {}
+    core: ClassVar[Dict[str, str]] = {}
+    dirs: ClassVar[Dict[str, str]] = {}
+    md5s: ClassVar[Dict[str, str]] = {}
+    mods: ClassVar[Dict[str, ModuleType]] = {}
 
     @classmethod
     def dir(cls, pkgname, path):

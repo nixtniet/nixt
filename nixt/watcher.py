@@ -10,7 +10,7 @@ import time
 
 
 from collections.abc import Callable
-from typing          import ClassVar
+from typing          import ClassVar, Dict
 
 
 from .threads import Thread
@@ -21,10 +21,10 @@ e = os.path.exists
 
 class Watcher:
 
-    cbs: ClassVar[dict[str, Callable]] = {}
+    cbs: ClassVar[Dict[str, Callable]] = {}
     sleep = 1.0
     stopped = threading.Event()
-    times: ClassVar[dict[str, float]] = {}
+    times: ClassVar[Dict[str, float]] = {}
 
     @classmethod
     def add(cls, path, callback):

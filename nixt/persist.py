@@ -12,7 +12,7 @@ import threading
 import time
 
 
-from typing import ClassVar
+from typing import ClassVar, Dict
 
 
 from .encoder import JSON
@@ -33,7 +33,7 @@ class Cache:
 
     "path object cache"
 
-    paths: ClassVar[dict[str, object]] = {}
+    paths: ClassVar[Dict[str, object]] = {}
 
     @classmethod
     def add(cls, path, obj):

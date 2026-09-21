@@ -14,7 +14,7 @@ import time
 import _thread
 
 
-from typing import ClassVar
+from typing import ClassVar, List
 
 
 from nixt.defines import Broker, Buffer, Commands, Disk, Main, Object
@@ -45,7 +45,7 @@ class Config(Object):
     channel = Main.channel or f"#{name}"
     commands = True
     control = "!"
-    ignore: ClassVar[list[str]] = ["PING", "PONG", "PRIVMSG"]
+    ignore: ClassVar[List[str]] = ["PING", "PONG", "PRIVMSG"]
     nick = name
     word = ""
     port = 6667
