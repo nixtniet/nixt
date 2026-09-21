@@ -9,13 +9,17 @@ import threading
 import types
 
 
+from collections.abc import Iterable
+from typing          import Dict, List
+
+
 class Encoder(json.JSONEncoder):
 
     "object to string"
 
     lock = threading.RLock()
 
-    def default(self, o):
+    def default(self, o) -> Dict | Iterable | str:
         "generate serializable versions."
         with Encoder.lock:
             if isinstance(o, type):
@@ -34,14 +38,14 @@ class Encoder(json.JSONEncoder):
                 except TypeError:
                     return repr(o)
 
-    def skip(self, obj):
+    def skip(self, obj) -> dict:
         "yield values without underscored keys."
-        o = {}
+        result = {}
         for key in dir(obj):
             if key.startswith("_"):
                 continue
-            o[key] = getattr(obj, key)
-        return o
+            result[key] = getattr(obj, key)
+        return result
 
 
 class JSON:
@@ -49,24 +53,24 @@ class JSON:
     "json wrapper"
 
     @classmethod
-    def dump(cls, *args, **kw):
+    def dump(cls, *args, **kw) -> None:
         "dump object to disk."
         kw["cls"] = Encoder
         return json.dump(*args, **kw)
 
     @classmethod
-    def dumps(cls, *args, **kw):
+    def dumps(cls, *args, **kw) -> str:
         "dump object to string."
         kw["cls"] = Encoder
         return json.dumps(*args, **kw)
 
     @classmethod
-    def load(cls, s, *args, **kw):
+    def load(cls, s, *args, **kw) -> Dict | List | bool| float | int | str:
         "load object from disk."
         return json.load(s, *args, **kw)
 
     @classmethod
-    def loads(cls, s, *args, **kw):
+    def loads(cls, s, *args, **kw) -> Dict | List | bool | float | int | str:
         "load object from string."
         return json.loads(s, *args, **kw)
 
@@ -76,13 +80,13 @@ class JSONL(JSON):
     "line oriented"
 
     @classmethod
-    def log(cls, *args, **kw):
+    def log(cls, *args, **kw) -> None:
         "dump object to disk."
         kw["indent"] = None
         JSON.dump(cls, *args, **kw)
 
     @classmethod
-    def logtxt(cls, *args, **kw):
+    def logtxt(cls, *args, **kw) -> str:
         "dump object to string."
         kw["indent"] = None
         return JSON.dumps(*args, **kw)

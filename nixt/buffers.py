@@ -26,10 +26,10 @@ class Output:
         self.oqueue = queue.Queue()
         self.ostopped = threading.Event()
 
-    def display(self, event):
+    def display(self, event) -> None:
         "do actual display."
 
-    def output(self):
+    def output(self) -> None:
         "output loop."
         while not self.ostopped.is_set():
             try:
@@ -42,21 +42,21 @@ class Output:
             self.display(event)
             self.oqueue.task_done()
 
-    def raw(self, text):
+    def raw(self, text) -> None:
         "raw output."
         raise NotImplementedError
 
-    def start(self, daemon=True):
+    def start(self, daemon=True) -> None:
         "start output loop."
         self.ostopped.clear()
         Thread.launch(self.output, daemon=daemon)
 
-    def stop(self):
+    def stop(self) -> None:
         "stop output loop."
         self.ostopped.set()
         self.oqueue.put(None)
 
-    def wait(self):
+    def wait(self) -> None:
         "wait for output to finish."
         try:
             self.oqueue.join()
@@ -74,16 +74,16 @@ class Buffer(Engine, Output):
         Output.__init__(self)
         Broker.add(self)
 
-    def raw(self, text):
+    def raw(self, text) -> None:
         "raw output."
         raise NotImplementedError
 
-    def start(self, daemon=True):
+    def start(self, daemon=True) -> None:
         "start output loop."
         Engine.start(self)
         Output.start(self, daemon=daemon)
 
-    def stop(self):
+    def stop(self) -> None:
         "stop output loop."
         Engine.stop(self)
         Output.stop(self)

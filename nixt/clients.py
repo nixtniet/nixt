@@ -19,20 +19,20 @@ class Clients:
     "collection of clients"
 
     @staticmethod
-    def announce(txt):
+    def announce(txt) -> None:
         "announce text on all clients."
         for obj in Broker.objs("announce"):
             obj.announce(txt)
 
     @staticmethod
-    def display(evt):
+    def display(evt) -> None:
         "display results."
         bot = Broker.get(evt.orig)
         if bot:
             bot.display(evt)
 
     @staticmethod
-    def shutdown():
+    def shutdown() -> None:
         "call stop on clients."
         for client in Broker.objs("wait"):
             logger.debug("wait %s", client)

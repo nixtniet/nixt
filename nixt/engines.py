@@ -16,7 +16,7 @@ class Engine(Loop):
         Loop.__init__(self)
         self.cbs = {}
 
-    def handle(self, event):
+    def handle(self, event) -> None:
         "run callback function with event."
         func = self.cbs.get(event.kind, None)
         if not func:
@@ -25,7 +25,7 @@ class Engine(Loop):
         name = event.text and event.text.split()[0]
         event._thr = Thread.launch(func, event, name=name)
 
-    def register(self, kind, callback):
+    def register(self, kind, callback) -> None:
         "register callback."
         self.cbs[kind] = callback
 

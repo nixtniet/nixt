@@ -12,7 +12,7 @@ import urllib.parse
 import urllib.request
 
 
-from typing import ClassVar, Dict
+from typing import ClassVar, Dict, TextIO
 
 
 from .methods import Method
@@ -26,7 +26,7 @@ class Fetcher:
     modified: ClassVar[Dict[str,str]] = {}
 
     @classmethod
-    def cdata(cls, line):
+    def cdata(cls, line) -> str:
         "scrape CDATA block."
         if "CDATA" in line:
             lne = line.replace("![CDATA[", "")
@@ -36,7 +36,7 @@ class Fetcher:
         return line
 
     @classmethod
-    def geturl(cls, url):
+    def geturl(cls, url) -> Data:
         "fetch an url."
         url = urllib.parse.urlunparse(urllib.parse.urlparse(url))
         req = urllib.request.Request(str(url))
@@ -61,7 +61,7 @@ class Fetcher:
         return response
 
     @classmethod
-    def request(cls, req):
+    def request(cls, req) -> TextIO:
         "handle  a request."
         with urllib.request.urlopen(req, timeout=4) as response:  # nosec
             modi = response.headers.get('Last-Modified', "")
@@ -72,24 +72,24 @@ class Fetcher:
             return response
 
     @classmethod
-    def striphtml(cls, text):
+    def striphtml(cls, text) -> str:
         "strip html."
         clean = re.compile("<.*?>")
         return re.sub(clean, "", text)
 
     @classmethod
-    def unescape(cls, text):
+    def unescape(cls, text) -> str:
         "unescape html."
         txt = re.sub(r"\s+", " ", text)
         return html.unescape(txt)
 
     @classmethod
-    def unquote(cls, url):
+    def unquote(cls, url) -> str:
         "unquote an url."
         return urllib.parse.unquote(url, errors='ignore')
 
     @classmethod
-    def useragent(cls, txt):
+    def useragent(cls, txt) -> str:
         "produce useragent string."
         return "Mozilla/5.0 (X11; Linux x86_64) " + txt
 
