@@ -9,7 +9,10 @@ import threading
 import types
 
 
-jsontypes = dict | list | bool | float | int | str
+from typing import Union
+
+
+jsontypes = Union[dict,list,bool,float,int,str]
 
 
 class Encoder(json.JSONEncoder):
