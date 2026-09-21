@@ -10,7 +10,6 @@ import types
 
 
 from collections.abc import Iterable
-from typing          import Dict, List
 
 
 class Encoder(json.JSONEncoder):
@@ -19,7 +18,7 @@ class Encoder(json.JSONEncoder):
 
     lock = threading.RLock()
 
-    def default(self, o) -> Dict | Iterable | str:
+    def default(self, o) -> dict | Iterable | str:
         "generate serializable versions."
         with Encoder.lock:
             if isinstance(o, type):
@@ -65,12 +64,12 @@ class JSON:
         return json.dumps(*args, **kw)
 
     @classmethod
-    def load(cls, s, *args, **kw) -> Dict | List | bool| float | int | str:
+    def load(cls, s, *args, **kw) -> dict | list | bool| float | int | str:
         "load object from disk."
         return json.load(s, *args, **kw)
 
     @classmethod
-    def loads(cls, s, *args, **kw) -> Dict | List | bool | float | int | str:
+    def loads(cls, s, *args, **kw) -> dict | list | bool | float | int | str:
         "load object from string."
         return json.loads(s, *args, **kw)
 
