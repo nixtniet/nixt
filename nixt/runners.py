@@ -12,11 +12,11 @@ class Runner(Loop):
 
     "run job."
 
-    def run(self, *args, **kwargs):
+    def run(self, *args, **kwargs) -> None:
         "fetch a feed."
         raise NotImplementedError
 
-    def loop(self):
+    def loop(self) -> None:
         "loop to handle fetch jobs."
         while not self.stopped.is_set():
             job = self.queue.get()
@@ -24,7 +24,7 @@ class Runner(Loop):
                 break
             self.run(*job)
 
-    def start(self, daemon=True):
+    def start(self, daemon=True) -> None:
         "start callback loop."
         self.done.clear()
         self.stopped.clear()

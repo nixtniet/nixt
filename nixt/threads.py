@@ -36,7 +36,7 @@ class Thr(threading.Thread):
     def __next__(self):
         yield from dir(self)
 
-    def join(self, timeout=0.0):
+    def join(self, timeout=0.0) -> object:
         "join thread and return result."
         try:
             super().join(timeout or None)
@@ -44,7 +44,7 @@ class Thr(threading.Thread):
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
 
-    def run(self):
+    def run(self) -> None:
         "run function."
         func, args = self.queue.get()
         if self.block.is_set():
@@ -65,7 +65,7 @@ class Thread:
     lock = threading.RLock()
 
     @classmethod
-    def launch(cls, func, *args, **kwargs):
+    def launch(cls, func, *args, **kwargs) -> Thr:
         "start a new thread running function with arguments."
         with cls.lock:
             thr = Thr(func, *args, **kwargs)
@@ -73,14 +73,14 @@ class Thread:
             return thr
 
     @classmethod
-    def clsname(cls, obj):
+    def clsname(cls, obj) -> str:
         "class name of an object."
         if "__self__" in dir(obj):
             return obj.__self__.__class__.__name__
         return obj.__class__.__name_
 
     @classmethod
-    def name(cls, obj):
+    def name(cls, obj) -> str:
         "string of function/method."
         if inspect.ismethod(obj):
             return f"{cls.clsname(obj)}.{obj.__name__}"

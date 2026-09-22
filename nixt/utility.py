@@ -9,12 +9,15 @@ import pathlib
 import uuid
 
 
+from typing import List
+
+
 class Utils:
 
     "useful functions"
 
     @staticmethod
-    def cdir(path):
+    def cdir(path) -> None:
         "create directory."
         if os.path.exists(path):
             return
@@ -23,17 +26,17 @@ class Utils:
             pth.parent.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
-    def clsname(obj):
+    def clsname(obj) -> str:
         "return classname of an object."
         return obj.__class__.__name__
 
     @staticmethod
-    def home(name):
+    def home(name) -> str:
         "return home working directory."
         return os.path.expanduser(f"~/.{name}")
 
     @staticmethod
-    def listdir(path, ignore=""):
+    def listdir(path, ignore="") -> List[str]:
         "list modules in a directory."
         return [
                 x[:-3] for x in os.listdir(path)
@@ -43,17 +46,17 @@ class Utils:
                ]
 
     @staticmethod
-    def shortid():
+    def shortid() -> str:
         "return a shortid."
         return str(uuid.uuid4())[:8]
 
     @staticmethod
-    def source(module):
+    def source(module) -> str:
         "return the source of a module."
         return module.__loader__.get_source(module.__name__)
 
     @staticmethod
-    def spl(txt, ignore=""):
+    def spl(txt, ignore="") -> List[str]:
         "list from comma seperated string."
         try:
             ignores = ignore.split(",")
@@ -63,7 +66,7 @@ class Utils:
         return [x for x in result if x and x not in ignores]
 
     @staticmethod
-    def strip(path, nr=3):
+    def strip(path, nr=3) -> str:
         "strip filename from path."
         return os.path.join(*path.split(os.sep)[-nr:])
 

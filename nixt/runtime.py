@@ -64,7 +64,7 @@ class Booting(Boot):
     "at first"
 
     @classmethod
-    def banner(cls, force=False):
+    def banner(cls, force=False) -> None:
         "hello."
         if not force and not Main.verbose:
             return
@@ -73,7 +73,7 @@ class Booting(Boot):
         sys.stdout.flush()
 
     @classmethod
-    def boot(cls):
+    def boot(cls) -> None:
         "configure runtime."
         cls.configure(Main)
         Mods.dir("mods", Workdir.moddir())
@@ -90,7 +90,7 @@ class Booting(Boot):
             Commands.scanner()
 
     @classmethod
-    def wrap(cls, func, *args, dofinal=None):
+    def wrap(cls, func, *args, dofinal=None) -> None:
         "restore console."
         import termios
         try:
@@ -115,11 +115,11 @@ class CLI(Screen):
         Screen.__init__(self)
         self.register("command", Commands.command)
 
-    def after(self, event):
+    def after(self, event) -> None:
         "wait for event to finish"
         event.wait()
 
-    def raw(self, text):
+    def raw(self, text) -> None:
         "write to console."
         print(text.encode('utf-8', 'replace').decode("utf-8"))
         sys.stdout.flush()
@@ -133,7 +133,7 @@ class Console(CLI):
         CLI.__init__(self)
         self.silent = True
 
-    def poll(self):
+    def poll(self) -> Message:
         "return event."
         evt = Message()
         evt.orig = repr(self)
@@ -148,7 +148,7 @@ class Daemon:
     "detach from console"
 
     @classmethod
-    def daemon(cls):
+    def daemon(cls) -> None:
         "run in the background."
         pid = os.fork()
         if pid != 0:
@@ -166,18 +166,18 @@ class Daemon:
         os.nice(10)
 
     @classmethod
-    def null(cls, io):
+    def null(cls, io) -> None:
         "route to dev/null."
         with open('/dev/null', 'r', encoding="utf-8") as sis:
             os.dup2(sis.fileno(), io.fileno())
 
     @classmethod
-    def pid(cls):
+    def pid(cls) -> str:
         "return pid path."
         return Workdir.pid(Main.name)
 
     @classmethod
-    def privileges(cls):
+    def privileges(cls) -> None:
         "drop privileges."
         import getpass
         import pwd
@@ -190,12 +190,13 @@ class Kernel(Booting, Daemon):
 
     "center of believing"
 
+
 class Scripts:
 
     "actual runtime"
 
     @staticmethod
-    def background():
+    def background() -> None:
         "background script."
         Kernel.boot()
         Kernel.daemon()
@@ -206,7 +207,7 @@ class Scripts:
         Kernel.forever()
 
     @staticmethod
-    def console():
+    def console() -> None:
         "console script."
         import readline
         readline.redisplay()
@@ -218,7 +219,7 @@ class Scripts:
         Kernel.forever()
 
     @staticmethod
-    def control():
+    def control() -> None:
         "cli script."
         Kernel.boot()
         Commands.add(Cmd.cmd)
@@ -233,7 +234,7 @@ class Scripts:
         evt.wait()
 
     @staticmethod
-    def service():
+    def service() -> None:
         "service script."
         Kernel.boot()
         Kernel.privileges()
@@ -246,13 +247,13 @@ class Scripts:
         Kernel.forever()
 
 
-def control():
+def control() -> None:
     "only console."
     Arguments.getargs()
     Kernel.wrap(Scripts.control)
     
 
-def main():
+def main() -> None:
     "dispatch to runtime."
     Arguments.getargs()
     if Main.console:

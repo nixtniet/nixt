@@ -26,7 +26,7 @@ class Repeater:
     todo: ClassVar[Dict[int, Callable]] = {}
 
     @classmethod
-    def add(cls, sleep, func, *args, **kwargs):
+    def add(cls, sleep, func, *args, **kwargs) -> None:
         "add a repeater."
         sleep = str(sleep)
         if sleep not in cls.todo:
@@ -34,7 +34,7 @@ class Repeater:
         cls.todo[sleep].append((func, args, kwargs))
 
     @classmethod
-    def loop(cls):
+    def loop(cls) -> None:
         "repeater loop."
         while not cls.stopped.is_set():
             time.sleep(1.0)
@@ -47,18 +47,18 @@ class Repeater:
                     Thread.launch(func, *args, **kwargs)
 
     @classmethod
-    def start(cls, daemon=True):
+    def start(cls, daemon=True) -> None:
         "start callback loop."
         if not cls.stopped.is_set():
             Thread.launch(cls.loop, daemon=daemon, name="Repeater.loop")
 
     @classmethod
-    def stop(cls):
+    def stop(cls) -> None:
         "stop loop."
         cls.stopped.set()
 
     @classmethod
-    def wait(cls):
+    def wait(cls) -> None:
         "wait for loop to stop."
 
 

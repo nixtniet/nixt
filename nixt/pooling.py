@@ -26,12 +26,12 @@ class Pool:
     nrlast = 0
 
     @classmethod
-    def add(cls, client):
+    def add(cls, client) -> None:
         "add a runner."
         cls.runners.append(client)
 
     @classmethod
-    def busy(cls):
+    def busy(cls) -> bool:
         "see if pool is busy."
         for runner in cls.runners:
             if runner.queue.qsize():
@@ -39,7 +39,7 @@ class Pool:
         return False
 
     @classmethod
-    def init(cls, nr, clz=None):
+    def init(cls, nr, clz=None) -> None:
         "initialze a number of runners."
         if clz:
             cls.clazz = clz
@@ -49,7 +49,7 @@ class Pool:
             cls.add(runner)
 
     @classmethod
-    def put(cls, *args):
+    def put(cls, *args) -> None:
         "push job to a runner."
         with cls.lock:
             if cls.nrlast-1 >= len(cls.runners)-1:

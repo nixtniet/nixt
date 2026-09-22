@@ -20,13 +20,13 @@ class Cmd:
     "necessary commands."
 
     @staticmethod
-    def cmd(event):
+    def cmd(event) -> None:
         "show commands."
         check = len(Commands.cmds) > len(Commands.names)
         event.reply(",".join(sorted((check and Commands.cmds) or Commands.names)))
 
     @staticmethod
-    def tbl(event):
+    def tbl(event) -> None:
         "create table."
         core = {}
         md5s = {}
@@ -57,7 +57,7 @@ class Cmd:
         event.reply("    )")
 
     @staticmethod
-    def ver(event):
+    def ver(event) -> None:
         "show verson."
         event.reply(f"{Main.name.upper()} {MD5.core()}")
 

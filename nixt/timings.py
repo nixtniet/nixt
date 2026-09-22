@@ -8,7 +8,7 @@ import datetime
 import time
 
 
-from typing import ClassVar, List
+from typing import ClassVar, List, Union
 
 
 class Time:
@@ -31,7 +31,7 @@ class Time:
     ]
 
     @classmethod
-    def date(cls, daystr):
+    def date(cls, daystr) -> Union[float|None]:
         "date from string."
         daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
         for fmat in cls.times:
@@ -42,7 +42,7 @@ class Time:
         return None
 
     @classmethod
-    def elapsed(cls, seconds, short=True):
+    def elapsed(cls, seconds, short=True) -> str:
         "seconds to string."
         txt = ""
         nsec = float(seconds)
@@ -83,7 +83,7 @@ class Time:
         return txt
 
     @classmethod
-    def extract(cls, daystr):
+    def extract(cls, daystr) -> float:
         "extract date/time from string."
         daystr = str(daystr)
         res = None
@@ -103,7 +103,7 @@ class Time:
         return res
 
     @classmethod
-    def timed(cls, datestr):
+    def timed(cls, datestr) -> float:
         "return time from string."
         if not datestr:
             return time.time()

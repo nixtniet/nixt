@@ -9,7 +9,7 @@ import os
 
 
 from types  import ModuleType
-from typing import ClassVar, Dict
+from typing import ClassVar, Dict, List
 
 
 from .methods import Method
@@ -30,12 +30,12 @@ class Mods:
     mods: ClassVar[Dict[str, ModuleType]] = {}
 
     @classmethod
-    def dir(cls, pkgname, path):
+    def dir(cls, pkgname, path) -> None:
         "add module/path."
         cls.dirs[pkgname] = path
 
     @classmethod
-    def get(cls, name, force=False):
+    def get(cls, name, force=False) -> ModuleType:
         "return module from cache or import module."
         for pkgname, path in cls.dirs.items():
             modname = f"{pkgname}.{name}"
@@ -53,8 +53,8 @@ class Mods:
             return cls.importer(modname, fnm)
 
     @classmethod
-    def has(cls, attr):
-        "return list of modules containing an attribute."
+    def has(cls, attr) -> str:
+        "return comma seperated string of module names containing an attribute."
         result = []
         for modname in cls.list():
             mod = cls.get(modname)
@@ -64,7 +64,7 @@ class Mods:
         return ",".join(result)
 
     @classmethod
-    def importer(cls, name, pth=None):
+    def importer(cls, name, pth=None) -> ModuleType:
         "import module by path."
         import importlib.util
         if pth is None:
@@ -77,7 +77,7 @@ class Mods:
         return cls.mods[name]
 
     @classmethod
-    def list(cls):
+    def list(cls) -> List[ModuleType]:
         "comma seperated list of available modules."
         mods = []
         for path in cls.dirs.values():
@@ -87,17 +87,17 @@ class Mods:
         return sorted(set(mods))
 
     @classmethod
-    def minimal(cls):
+    def minimal(cls) -> str:
         "return package minimal path."
         return os.path.join(Method.where(Mods), "minimal")
 
     @classmethod
-    def moddir(cls):
+    def moddir(cls) -> str:
         "return package modules path."
         return os.path.join(Method.where(Mods), "modules")
 
     @classmethod
-    def statics(cls):
+    def statics(cls) -> None:
         "read table,"
         try:
             from .statics import CORE
@@ -111,7 +111,7 @@ class Mods:
             pass
 
     @classmethod
-    def table(cls):
+    def table(cls) -> None:
         "read static tables."
         cls.statics()
         if cls.core:

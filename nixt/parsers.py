@@ -13,7 +13,7 @@ class Parser:
     "parsing for commands"
 
     @classmethod
-    def init(cls, obj, text, clean):
+    def init(cls, obj, text, clean) -> None:
         "set default values."
         data = {
             "args": [],
@@ -36,7 +36,7 @@ class Parser:
                 setattr(obj, k, v)
 
     @classmethod
-    def parse(cls, obj, text, clean=False):
+    def parse(cls, obj, text, clean=False) -> None:
         "parse text for command and arguments."
         cls.init(obj, text, clean)
         args = []
