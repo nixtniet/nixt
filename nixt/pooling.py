@@ -5,6 +5,7 @@
 
 
 import os
+import threading
 
 
 from typing import ClassVar, List
@@ -17,8 +18,9 @@ class Pool:
 
     "multiple runners."
 
-    clazz = Runner
     runners: ClassVar[List[Runner]] = []
+    clazz = Runner
+    lock = threading.RLock()
     max = os.cpu_count()
     nrcpu = 1
     nrlast = 0
@@ -49,12 +51,12 @@ class Pool:
     @classmethod
     def put(cls, *args):
         "push job to a runner."
-        print(cls.nrlast, cls.runners)
-        if cls.nrlast-1 >= len(cls.runners)-1:
-            cls.nrlast = 0
-        clt = cls.runners[cls.nrlast-1]
-        clt.put(*args)
-        cls.nrlast += 1
+        with cls.lock:
+            if cls.nrlast-1 >= len(cls.runners)-1:
+                cls.nrlast = 0
+            clt = cls.runners[cls.nrlast-1]
+            clt.put(*args)
+            cls.nrlast += 1
 
 
 def __dir__():
