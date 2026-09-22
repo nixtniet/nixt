@@ -12,6 +12,7 @@ from .command import Commands
 from .configs import Main
 from .encoder import JSON
 from .package import MD5, Mods
+from .utility import Utils
 
 
 class Cmd:
@@ -30,11 +31,12 @@ class Cmd:
         core = {}
         md5s = {}
         Commands.names = {}
-        for name in Mods.list():
-            module = Mods.get(name, True)
-            md5s[name] = MD5.md5(module.__file__)
-            for cmd in Commands.scan(module):
-                Commands.names[cmd.__name__] = cmd.__module__.split(".")[-1]
+        if Main.mods:
+            for name in Utils.spl(Main.mods):
+                module = Mods.get(name, True)
+                md5s[name] = MD5.md5(module.__file__)
+                for cmd in Commands.scan(module):
+                    Commands.names[cmd.__name__] = cmd.__module__.split(".")[-1]
         corepath = os.path.dirname(inspect.getsourcefile(Mods))
         MD5.createmd5(corepath, core)
         event.reply("# This file is placed in the Public Domain.")

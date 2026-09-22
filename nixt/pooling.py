@@ -49,11 +49,10 @@ class Pool:
     @classmethod
     def put(cls, *args):
         "push job to a runner."
-        if not cls.runners:
-            return
-        if cls.nrlast > cls.nrcpu-1:
+        print(cls.nrlast, cls.runners)
+        if cls.nrlast-1 >= len(cls.runners)-1:
             cls.nrlast = 0
-        clt = cls.runners[cls.nrlast]
+        clt = cls.runners[cls.nrlast-1]
         clt.put(*args)
         cls.nrlast += 1
 

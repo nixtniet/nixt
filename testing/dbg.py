@@ -10,4 +10,4 @@ class Test(Exception):
 
 
 def dbg(event):
-    raise Test
+    raise Test("Test")

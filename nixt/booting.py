@@ -79,7 +79,7 @@ class Boot:
         "call stop on clients."
         logger.debug("shutdown")
         Clients.shutdown()
-        while cls.running.is_set():
+        while True:
             if len(threading.enumerate()) <= 2:
                 break
             time.sleep(0.01)
