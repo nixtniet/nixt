@@ -33,7 +33,7 @@ class Logging:
     @classmethod
     def level(cls, loglevel):
         "set log level."
-        formatter = Format(cls.format, cls.datefmt)
+        formatter = Format(cls.formats, cls.datefmt)
         stream = logging.StreamHandler()
         stream.setFormatter(formatter)
         try:

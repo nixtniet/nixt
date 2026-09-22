@@ -37,7 +37,6 @@ class TestBroker(unittest.TestCase):
     def test_like(self):
         obj = Object()
         self.broker.add(obj)
-        print(self.broker.objects)
         self.assertTrue(repr(obj), obj in self.broker.like("object"))
 
     def test_remove(self):

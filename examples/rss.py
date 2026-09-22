@@ -213,7 +213,6 @@ class Fetching(Runner):
     def doskip(self, errs):
         "check whether to log."
         if errs not in [200, 304]:
-            print("304")
             return True
         return False
 

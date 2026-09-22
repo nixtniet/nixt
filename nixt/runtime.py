@@ -107,6 +107,42 @@ class Booting(Boot):
             dofinal()
 
 
+class CLI(Screen):
+
+    "Command Line Interface"
+
+    def __init__(self):
+        Screen.__init__(self)
+        self.register("command", Commands.command)
+
+    def after(self, event):
+        "wait for event to finish"
+        event.wait()
+
+    def raw(self, text):
+        "write to console."
+        print(text.encode('utf-8', 'replace').decode("utf-8"))
+        sys.stdout.flush()
+
+
+class Console(CLI):
+
+    "prompt"
+
+    def __init__(self):
+        CLI.__init__(self)
+        self.silent = True
+
+    def poll(self):
+        "return event."
+        evt = Message()
+        evt.orig = repr(self)
+        evt.text = input("> ")
+        evt.kind = "command"
+        self.put(evt)
+        return evt
+
+
 class Daemon:
 
     "detach from console"
@@ -153,43 +189,6 @@ class Daemon:
 class Kernel(Booting, Daemon):
 
     "center of believing"
-
-
-class CLI(Screen):
-
-    "Command Line Interface"
-
-    def __init__(self):
-        Screen.__init__(self)
-        self.register("command", Commands.command)
-
-    def after(self, event):
-        "wait for event to finish"
-        event.wait()
-
-    def raw(self, text):
-        "write to console."
-        print(text.encode('utf-8', 'replace').decode("utf-8"))
-        sys.stdout.flush()
-
-
-class Console(CLI):
-
-    "prompt"
-
-    def __init__(self):
-        CLI.__init__(self)
-        self.silent = True
-
-    def poll(self):
-        "return event."
-        evt = Message()
-        evt.orig = repr(self)
-        evt.text = input("> ")
-        evt.kind = "command"
-        self.put(evt)
-        return evt
-
 
 class Scripts:
 
@@ -247,6 +246,12 @@ class Scripts:
         Kernel.forever()
 
 
+def control():
+    "only console."
+    Arguments.getargs()
+    Kernel.wrap(Scripts.control)
+    
+
 def main():
     "dispatch to runtime."
     Arguments.getargs()
@@ -267,5 +272,6 @@ def __dir__():
         'Daemon',
         'Kernel',
         'Scripts',
+        'control',
         'main'
     )

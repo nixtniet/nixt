@@ -16,7 +16,7 @@ CORE = {
     "encoder": "49c899bea7625493f6e430f67c441938",
     "engines": "24579e4e179c14600a060bd5abcd1a3f",
     "fetcher": "cee4b25e07a0cc1ab7d5fb6479b21b6a",
-    "loggers": "91c35ad6b6220cb2aa2a489c485c2a6d",
+    "loggers": "96657671caf2005c4620161a64f87f1d",
     "looping": "249bc3a3b83e19854aab39fd81140c83",
     "message": "393e827f6f7df305172bdc826e6dee6c",
     "methods": "a2b51f01d23ee265c405f56c12b408a0",
@@ -28,7 +28,7 @@ CORE = {
     "repeats": "c290253438c2be5a4235ceccede186d8",
     "require": "bc38ac96f2f7a6d338df77c860839989",
     "runners": "39b79d95d34697d27ef29ab9290807d3",
-    "runtime": "eaf10e6f1dc63b8424bf71882d1ee4c8",
+    "runtime": "fd1966e7a3d41b77ab794b09cdb705c6",
     "sources": "be4fbea3e6d7ca89022ff75dfddbaebf",
     "threads": "844c5882654cf34712154830b6aff255",
     "timings": "5b9f8bae3301ed00d2f03e28defca751",
@@ -37,10 +37,14 @@ CORE = {
 }
 
 
-MODULES = {}
+MODULES = {
+    "dbg": "58d2cb70cffcbed369325f6982eb2288"
+}
 
 
-NAMES = {}
+NAMES = {
+    "dbg": "dbg"
+}
 
 
 def __dir__():

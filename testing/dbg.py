@@ -8,5 +8,6 @@ class Test(Exception):
 
     pass
 
+
 def dbg(event):
-    raise Test("yo!")
+    raise Test
