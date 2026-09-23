@@ -234,7 +234,7 @@ class Method:
         return res
 
     @staticmethod
-    def skipped(obj) -> Generator:
+    def skipped(obj) -> Generator[object, None, None]:
         "yield values without underscored keys."
         for key in dir(obj):
             if key.startswith("_"):
