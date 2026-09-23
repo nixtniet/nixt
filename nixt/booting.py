@@ -11,7 +11,11 @@ import time
 import _thread
 
 
+from typing import Callable
+
+
 from .clients import Clients
+from .configs import Main
 from .display import Screen
 from .loggers import Logging
 from .package import Mods
@@ -35,16 +39,15 @@ class Boot:
         "greetings."
 
     @classmethod
-    def configure(cls, cfg) -> None:
+    def configure(cls) -> None:
         "setup basic variables"
-        Workdir.wdr = cfg.wdr or Workdir.wdr or Workdir.home(cfg.name)
-        if not cfg.nodisk:
-            Workdir.skel()
-        Logging.size(len(cfg.name))
-        Logging.level(cfg.level or "info")
-        cfg.path = os.path.normpath(cfg.path)
-        pkgname = cfg.path.split(os.sep)[-1]
-        Mods.dir(cfg.path, pkgname)
+        Workdir.wdr = Main.wdr or Workdir.wdr or Workdir.home(Main.name)
+        Workdir.skel()
+        Logging.size(len(Main.name))
+        Logging.level(Main.level or "info")
+        Main.path = os.path.normpath(Main.path)
+        pkgname = Main.path.split(os.sep)[-1]
+        Mods.dir(Main.path, pkgname)
 
     @classmethod
     def forever(cls) -> None:
@@ -58,7 +61,7 @@ class Boot:
         cls.stopped.set()
 
     @classmethod
-    def init(cls, names, wait=False) -> bool:
+    def init(cls, names: str, wait: bool = False) -> bool:
         "call init of modules that have an init function."
         thrs = []
         for name in Utils.spl(names):
@@ -86,7 +89,7 @@ class Boot:
         cls.stopped.set()
 
     @classmethod
-    def wrapped(cls, func, *args) -> None:
+    def wrapped(cls, func: Callable, *args) -> None:
         "wrap function in a try/except, silence ctrl-c/ctrl-d."
         try:
             func(*args)

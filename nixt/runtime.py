@@ -75,7 +75,7 @@ class Booting(Boot):
     @classmethod
     def boot(cls) -> None:
         "configure runtime."
-        cls.configure(Main)
+        cls.configure()
         Mods.dir("mods", Workdir.moddir())
         Mods.dir("modules", Mods.moddir())
         if Main.local:
