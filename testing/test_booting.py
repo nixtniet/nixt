@@ -25,7 +25,7 @@ class TestRuntime(unittest.TestCase):
         self.assertEqual(self.boot.banner(), None)
 
     def test_configure(self):
-        self.assertEqual(self.boot.configure(Main), None)
+        self.assertEqual(self.boot.configure(), None)
 
     def test_forever(self):
         thr = Thread.launch(self.boot.forever)
