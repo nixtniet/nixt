@@ -8,7 +8,7 @@ import os
 import threading
 
 
-from typing import ClassVar, List
+from typing import Any, ClassVar, List
 
 
 from .runners import Runner
@@ -26,9 +26,9 @@ class Pool:
     nrlast = 0
 
     @classmethod
-    def add(cls, client) -> None:
+    def add(cls, runner: Runner) -> None:
         "add a runner."
-        cls.runners.append(client)
+        cls.runners.append(runner)
 
     @classmethod
     def busy(cls) -> bool:
@@ -39,17 +39,17 @@ class Pool:
         return False
 
     @classmethod
-    def init(cls, nr, clz=None) -> None:
+    def init(cls, nrrunners: int, clz: Any = None) -> None:
         "initialze a number of runners."
         if clz:
             cls.clazz = clz
-        for _x in range(nr):
+        for _x in range(nrrunners):
             runner = cls.clazz()
             runner.start()
             cls.add(runner)
 
     @classmethod
-    def put(cls, *args) -> None:
+    def put(cls, *args: Any) -> None:
         "push job to a runner."
         with cls.lock:
             if cls.nrlast-1 >= len(cls.runners)-1:

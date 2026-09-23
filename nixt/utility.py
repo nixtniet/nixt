@@ -10,6 +10,7 @@ import uuid
 
 
 from typing import List
+from types import ModuleType
 
 
 class Utils:
@@ -17,7 +18,7 @@ class Utils:
     "useful functions"
 
     @staticmethod
-    def cdir(path) -> None:
+    def cdir(path: str) -> None:
         "create directory."
         if os.path.exists(path):
             return
@@ -26,17 +27,17 @@ class Utils:
             pth.parent.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
-    def clsname(obj) -> str:
+    def clsname(obj: object) -> str:
         "return classname of an object."
         return obj.__class__.__name__
 
     @staticmethod
-    def home(name) -> str:
+    def home(name: str) -> str:
         "return home working directory."
         return os.path.expanduser(f"~/.{name}")
 
     @staticmethod
-    def listdir(path, ignore="") -> List[str]:
+    def listdir(path: str, ignore: str = "") -> List[str]:
         "list modules in a directory."
         return [
                 x[:-3] for x in os.listdir(path)
@@ -51,24 +52,24 @@ class Utils:
         return str(uuid.uuid4())[:8]
 
     @staticmethod
-    def source(module) -> str:
+    def source(module: ModuleType) -> str:
         "return the source of a module."
         return module.__loader__.get_source(module.__name__)
 
     @staticmethod
-    def spl(txt, ignore="") -> List[str]:
+    def spl(text: str, ignore: str = "") -> List[str]:
         "list from comma seperated string."
         try:
             ignores = ignore.split(",")
-            result = txt.split(",")
+            result = text.split(",")
         except (TypeError, ValueError):
             result = []
         return [x for x in result if x and x not in ignores]
 
     @staticmethod
-    def strip(path, nr=3) -> str:
+    def strip(path: str, nrchar: int = 3) -> str:
         "strip filename from path."
-        return os.path.join(*path.split(os.sep)[-nr:])
+        return os.path.join(*path.split(os.sep)[-nrchar:])
 
 
 def __dir__():

@@ -7,19 +7,22 @@
 import logging
 
 
-class Format(logging.Formatter):
+from logging import basicConfig, Formatter, LogRecord, StreamHandler
+
+
+class Format(Formatter):
 
     "logging format."
 
     disable = False
     size = 3
 
-    def format(self, record) -> str:
+    def format(self, record: LogRecord) -> str:
         "logging formatter."
         if not Format.disable:
             record.module = record.module.upper()
             record.module = record.module[:Format.size]
-        return logging.Formatter.format(self, record)
+        return Formatter.format(self, record)
 
 
 class Logging:
@@ -31,13 +34,13 @@ class Logging:
     formats = "%(message)s"
 
     @classmethod
-    def level(cls, loglevel) -> None:
+    def level(cls, loglevel: str) -> None:
         "set log level."
         formatter = Format(cls.formats, cls.datefmt)
-        stream = logging.StreamHandler()
+        stream = StreamHandler()
         stream.setFormatter(formatter)
         try:
-            logging.basicConfig(
+            basicConfig(
                 level=loglevel.upper(),
                 handlers=[stream],
                 force=True
@@ -46,11 +49,11 @@ class Logging:
             pass
 
     @classmethod
-    def size(cls, nr) -> None:
+    def size(cls, nrchars: int) -> None:
         "set text size."
         index = cls.format.find("-")+1
         newformat = cls.format[:index]
-        newformat += str(nr)
+        newformat += str(nrchars)
         newformat += cls.format[index+1:]
         cls.format = newformat
 

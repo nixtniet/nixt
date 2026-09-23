@@ -9,6 +9,7 @@ import time
 
 
 from .brokers import Broker
+from .message import Message
 
 
 logger = logging.getLogger(__name__)
@@ -19,17 +20,17 @@ class Clients:
     "collection of clients"
 
     @staticmethod
-    def announce(txt) -> None:
+    def announce(text: str) -> None:
         "announce text on all clients."
         for obj in Broker.objs("announce"):
-            obj.announce(txt)
+            obj.announce(text)
 
     @staticmethod
-    def display(evt) -> None:
+    def display(event: Message) -> None:
         "display results."
-        bot = Broker.get(evt.orig)
+        bot = Broker.get(event.orig)
         if bot:
-            bot.display(evt)
+            bot.display(event)
 
     @staticmethod
     def shutdown() -> None:

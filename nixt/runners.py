@@ -4,6 +4,9 @@
 "the big loop"
 
 
+from typing import Any, Dict
+
+
 from .looping import Loop
 from .threads import Thread
 
@@ -12,7 +15,7 @@ class Runner(Loop):
 
     "run job."
 
-    def run(self, *args, **kwargs) -> None:
+    def run(self, *args: Any, **kwargs: Dict[str, Any]) -> None:
         "fetch a feed."
         raise NotImplementedError
 
@@ -24,7 +27,7 @@ class Runner(Loop):
                 break
             self.run(*job)
 
-    def start(self, daemon=True) -> None:
+    def start(self, daemon: bool = True) -> None:
         "start callback loop."
         self.done.clear()
         self.stopped.clear()

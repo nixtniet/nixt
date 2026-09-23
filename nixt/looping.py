@@ -9,6 +9,7 @@ import threading
 import _thread
 
 
+from .message import Message
 from .threads import Thread
 
 
@@ -21,10 +22,10 @@ class Loop:
         self.stopped = threading.Event()
         self.done = threading.Event()
 
-    def after(self, event) -> None:
+    def after(self, event: Message) -> None:
         "called after callback."
 
-    def handle(self, event) -> None:
+    def handle(self, event: Message) -> None:
         "handle event."
 
     def loop(self) -> None:
@@ -44,11 +45,11 @@ class Loop:
     def poll(self) -> None:
         "create event and put it on the queue."
 
-    def put(self, event) -> None:
+    def put(self, event: Message) -> None:
         "put event on queue."
         self.queue.put(event)
 
-    def start(self, daemon=True) -> None:
+    def start(self, daemon: bool = True) -> None:
         "start callback loop."
         self.done.clear()
         self.stopped.clear()

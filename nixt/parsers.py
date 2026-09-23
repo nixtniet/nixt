@@ -5,7 +5,7 @@
 
 
 from .methods import Method
-from .objects import Data
+from .objects import Data, Object
 
 
 class Parser:
@@ -13,7 +13,7 @@ class Parser:
     "parsing for commands"
 
     @classmethod
-    def init(cls, obj, text, clean) -> None:
+    def init(cls, obj: Object, text: str, clean: bool) -> None:
         "set default values."
         data = {
             "args": [],
@@ -36,7 +36,7 @@ class Parser:
                 setattr(obj, k, v)
 
     @classmethod
-    def parse(cls, obj, text, clean=False) -> None:
+    def parse(cls, obj: Object, text: str, clean: bool = False) -> None:
         "parse text for command and arguments."
         cls.init(obj, text, clean)
         args = []

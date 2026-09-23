@@ -24,20 +24,20 @@ class Commands:
     names: ClassVar[Dict[str, str]] = {}
 
     @classmethod
-    def add(cls, *funcs) -> None:
+    def add(cls, *funcs: Callable) -> None:
         "register a command."
         for func in funcs:
             cls.cmds[func.__name__] = func
 
     @classmethod
-    def command(cls, evt) -> None:
+    def command(cls, event) -> None:
         "command callback."
-        Parser.parse(evt, evt.text)
-        func = cls.cmds.get(evt.cmd, cls.ondemand(evt.cmd))
+        Parser.parse(event, event.text)
+        func = cls.cmds.get(event.cmd, cls.ondemand(event.cmd))
         if func:
-            func(evt)
-            Clients.display(evt)
-        evt.ready()
+            func(event)
+            Clients.display(event)
+        event.ready()
 
     @classmethod
     def list(cls) -> List[str]:
@@ -49,7 +49,7 @@ class Commands:
         return result
 
     @classmethod
-    def ondemand(cls, name) -> Union[Callable,None]:
+    def ondemand(cls, name: str) -> Union[Callable,None]:
         "ondemand loading of commands."
         modname = cls.names.get(name, None)
         if not modname:

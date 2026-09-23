@@ -40,7 +40,7 @@ class Encoder(json.JSONEncoder):
                 except TypeError:
                     return repr(o)
 
-    def skip(self, obj) -> dict:
+    def skip(self, obj: object) -> dict:
         "yield values without underscored keys."
         result = {}
         for key in dir(obj):

@@ -24,7 +24,7 @@ class Main(metaclass=Config):
 
     "main config"
 
-    name = Method.pkgname(Config)
+    name: str = Method.pkgname(Config)
 
 
 def __dir__():

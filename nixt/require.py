@@ -11,6 +11,7 @@ import os
 from .command import Commands
 from .configs import Main
 from .encoder import JSON
+from .message import Message
 from .package import MD5, Mods
 from .utility import Utils
 
@@ -20,13 +21,13 @@ class Cmd:
     "necessary commands."
 
     @staticmethod
-    def cmd(event) -> None:
+    def cmd(event: Message) -> None:
         "show commands."
         check = len(Commands.cmds) > len(Commands.names)
         event.reply(",".join(sorted((check and Commands.cmds) or Commands.names)))
 
     @staticmethod
-    def tbl(event) -> None:
+    def tbl(event: Message) -> None:
         "create table."
         core = {}
         md5s = {}
@@ -57,7 +58,7 @@ class Cmd:
         event.reply("    )")
 
     @staticmethod
-    def ver(event) -> None:
+    def ver(event: Message) -> None:
         "show verson."
         event.reply(f"{Main.name.upper()} {MD5.core()}")
 

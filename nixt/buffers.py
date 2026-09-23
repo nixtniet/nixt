@@ -12,6 +12,7 @@ import _thread
 
 from .brokers import Broker
 from .engines import Engine
+from .message import Message
 from .threads import Thread
 
 
@@ -26,7 +27,7 @@ class Output:
         self.oqueue = queue.Queue()
         self.ostopped = threading.Event()
 
-    def display(self, event) -> None:
+    def display(self, event: Message) -> None:
         "do actual display."
 
     def output(self) -> None:
@@ -42,7 +43,7 @@ class Output:
             self.display(event)
             self.oqueue.task_done()
 
-    def raw(self, text) -> None:
+    def raw(self, text: str) -> None:
         "raw output."
         raise NotImplementedError
 

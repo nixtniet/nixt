@@ -27,14 +27,14 @@ class Watcher:
     times: ClassVar[Dict[str, float]] = {}
 
     @classmethod
-    def add(cls, path, callback):
+    def add(cls, path: str, callback: Callable):
         "add callback"
         if not e(path):
             return
         cls.cbs[path] = callback
 
     @classmethod
-    def init(cls, times=None):
+    def init(cls, times: Dict[str,int] = None):
         "read timestamps."
         if times is None:
             times= {}
@@ -57,7 +57,7 @@ class Watcher:
             time.sleep(cls.sleep)
 
     @classmethod
-    def start(cls, daemon=True):
+    def start(cls, daemon: bool = True):
         "start callback loop."
         if not cls.stopped.is_set():
             return

@@ -9,6 +9,7 @@ import threading
 
 from .brokers import Broker
 from .engines import Engine
+from .message import Message
 
 
 class Display:
@@ -21,12 +22,12 @@ class Display:
         self.olock = threading.RLock()
         self.silent = False
 
-    def announce(self, text) -> None:
+    def announce(self, text: str) -> None:
         "announce text to all channels."
         if not self.silent:
             self.raw(text)
 
-    def display(self, event) -> None:
+    def display(self, event: Message) -> None:
         "display event results."
         with self.olock:
             for txt in event.result:
@@ -36,15 +37,15 @@ class Display:
                 del txt
         del event
 
-    def dosay(self, channel, text) -> None:
+    def dosay(self, channel: str, text: str) -> None:
         "say called by display."
         self.say(channel, text)
 
-    def raw(self, text) -> None:
+    def raw(self, text: str) -> None:
         "raw output."
         raise NotImplementedError
 
-    def say(self, channel, text) -> None:
+    def say(self, channel: str, text: str) -> None:
         "say text in channel."
         self.raw(text)
 
@@ -58,7 +59,7 @@ class Screen(Engine, Display):
         Display.__init__(self)
         Broker.add(self)
 
-    def raw(self, text) -> None:
+    def raw(self, text: str) -> None:
         "raw output."
         raise NotImplementedError
 

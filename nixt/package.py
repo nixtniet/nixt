@@ -30,12 +30,12 @@ class Mods:
     mods: ClassVar[Dict[str, ModuleType]] = {}
 
     @classmethod
-    def dir(cls, pkgname, path) -> None:
+    def dir(cls, pkgname: str, path: str) -> None:
         "add module/path."
         cls.dirs[pkgname] = path
 
     @classmethod
-    def get(cls, name, force=False) -> ModuleType:
+    def get(cls, name: str, force: bool = False) -> ModuleType:
         "return module from cache or import module."
         for pkgname, path in cls.dirs.items():
             modname = f"{pkgname}.{name}"
@@ -53,7 +53,7 @@ class Mods:
             return cls.importer(modname, fnm)
 
     @classmethod
-    def has(cls, attr) -> str:
+    def has(cls, attr: str) -> str:
         "return comma seperated string of module names containing an attribute."
         result = []
         for modname in cls.list():
@@ -64,7 +64,7 @@ class Mods:
         return ",".join(result)
 
     @classmethod
-    def importer(cls, name, pth=None) -> ModuleType:
+    def importer(cls, name: str, pth: str = None) -> ModuleType:
         "import module by path."
         import importlib.util
         if pth is None:

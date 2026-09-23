@@ -9,7 +9,7 @@ import time
 
 
 from collections.abc import Callable
-from typing          import ClassVar, Dict
+from typing          import Any, ClassVar, Dict
 
 
 from .threads import Thread
@@ -26,7 +26,7 @@ class Repeater:
     todo: ClassVar[Dict[int, Callable]] = {}
 
     @classmethod
-    def add(cls, sleep, func, *args, **kwargs) -> None:
+    def add(cls, sleep: int, func: Callable, *args: Any, **kwargs: Dict[str,Any]) -> None:
         "add a repeater."
         sleep = str(sleep)
         if sleep not in cls.todo:
@@ -47,7 +47,7 @@ class Repeater:
                     Thread.launch(func, *args, **kwargs)
 
     @classmethod
-    def start(cls, daemon=True) -> None:
+    def start(cls, daemon: bool = True) -> None:
         "start callback loop."
         if not cls.stopped.is_set():
             Thread.launch(cls.loop, daemon=daemon, name="Repeater.loop")

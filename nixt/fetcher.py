@@ -15,6 +15,10 @@ import urllib.request
 from typing import ClassVar, Dict, TextIO
 
 
+from urllib.parse import unquote, urlparse, urlunparse
+from urllib.request import Request, urlopen
+
+
 from .methods import Method
 from .objects import Data
 
@@ -26,7 +30,7 @@ class Fetcher:
     modified: ClassVar[Dict[str,str]] = {}
 
     @classmethod
-    def cdata(cls, line) -> str:
+    def cdata(cls, line: str) -> str:
         "scrape CDATA block."
         if "CDATA" in line:
             lne = line.replace("![CDATA[", "")
@@ -36,10 +40,10 @@ class Fetcher:
         return line
 
     @classmethod
-    def geturl(cls, url) -> Data:
+    def geturl(cls, url: str) -> Data:
         "fetch an url."
-        url = urllib.parse.urlunparse(urllib.parse.urlparse(url))
-        req = urllib.request.Request(str(url))
+        url = urlunparse(urlparse(url))
+        req = Request(str(url))
         req.add_header("User-Agent", cls.useragent("RSS Fetcher"))
         since = cls.modified.get(url, "")
         if since:
@@ -61,9 +65,9 @@ class Fetcher:
         return response
 
     @classmethod
-    def request(cls, req) -> TextIO:
+    def request(cls, req: Request) -> TextIO:
         "handle  a request."
-        with urllib.request.urlopen(req, timeout=4) as response:  # nosec
+        with urlopen(req, timeout=4) as response:  # nosec
             modi = response.headers.get('Last-Modified', "")
             if modi:
                 cls.modified[req.get_full_url()] = modi
@@ -72,13 +76,13 @@ class Fetcher:
             return response
 
     @classmethod
-    def striphtml(cls, text) -> str:
+    def striphtml(cls, text: str) -> str:
         "strip html."
         clean = re.compile("<.*?>")
         return re.sub(clean, "", text)
 
     @classmethod
-    def unescape(cls, text) -> str:
+    def unescape(cls, text: str) -> str:
         "unescape html."
         txt = re.sub(r"\s+", " ", text)
         return html.unescape(txt)
@@ -86,12 +90,12 @@ class Fetcher:
     @classmethod
     def unquote(cls, url) -> str:
         "unquote an url."
-        return urllib.parse.unquote(url, errors='ignore')
+        return unquote(url, errors='ignore')
 
     @classmethod
-    def useragent(cls, txt) -> str:
+    def useragent(cls, text: str) -> str:
         "produce useragent string."
-        return "Mozilla/5.0 (X11; Linux x86_64) " + txt
+        return "Mozilla/5.0 (X11; Linux x86_64) " + text
 
 
 def __dir__():

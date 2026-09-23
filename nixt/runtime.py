@@ -5,9 +5,13 @@
 
 
 import argparse
+import io
 import os
 import sys
 import time
+
+
+from typing import Any, Callable, TextIO
 
 
 from .defines import Boot, Cmd, Commands, Main, MD5, Message
@@ -64,7 +68,7 @@ class Booting(Boot):
     "at first"
 
     @classmethod
-    def banner(cls, force=False) -> None:
+    def banner(cls, force: bool = False) -> None:
         "hello."
         if not force and not Main.verbose:
             return
@@ -90,7 +94,7 @@ class Booting(Boot):
             Commands.scanner()
 
     @classmethod
-    def wrap(cls, func, *args, dofinal=None) -> None:
+    def wrap(cls, func: Callable, *args: Any, dofinal: bool = None) -> None:
         "restore console."
         import termios
         try:
@@ -115,11 +119,11 @@ class CLI(Screen):
         Screen.__init__(self)
         self.register("command", Commands.command)
 
-    def after(self, event) -> None:
+    def after(self, event: Message) -> None:
         "wait for event to finish"
         event.wait()
 
-    def raw(self, text) -> None:
+    def raw(self, text: str) -> None:
         "write to console."
         print(text.encode('utf-8', 'replace').decode("utf-8"))
         sys.stdout.flush()
@@ -166,10 +170,10 @@ class Daemon:
         os.nice(10)
 
     @classmethod
-    def null(cls, io) -> None:
+    def null(cls, iostream: TextIO) -> None:
         "route to dev/null."
         with open('/dev/null', 'r', encoding="utf-8") as sis:
-            os.dup2(sis.fileno(), io.fileno())
+            os.dup2(sis.fileno(), iostream.fileno())
 
     @classmethod
     def pid(cls) -> str:

@@ -4,8 +4,13 @@
 "handling"
 
 
+from typing import Callable
+
+
 from .looping import Loop
+from .message import Message
 from .threads import Thread
+
 
 
 class Engine(Loop):
@@ -16,7 +21,7 @@ class Engine(Loop):
         Loop.__init__(self)
         self.cbs = {}
 
-    def handle(self, event) -> None:
+    def handle(self, event: Message) -> None:
         "run callback function with event."
         func = self.cbs.get(event.kind, None)
         if not func:
@@ -25,7 +30,7 @@ class Engine(Loop):
         name = event.text and event.text.split()[0]
         event._thr = Thread.launch(func, event, name=name)
 
-    def register(self, kind, callback) -> None:
+    def register(self, kind: str, callback: Callable) -> None:
         "register callback."
         self.cbs[kind] = callback
 

@@ -8,6 +8,9 @@ import logging
 import os
 
 
+from typing import Dict
+
+
 from .utility import Utils
 
 
@@ -19,7 +22,7 @@ class MD5:
     "module md5sums"
 
     @classmethod
-    def check(cls, md5s) -> bool:
+    def check(cls, md5s: dict) -> bool:
         "check for md5sums in a given path."
         ok = True
         path = os.path.dirname(__spec__.origin)
@@ -45,7 +48,7 @@ class MD5:
         return cls.source(Utils.source(statics))[:7].upper()
 
     @classmethod
-    def createmd5(cls, path, data) -> None:
+    def createmd5(cls, path: str, data: Dict[str, str]) -> None:
         "create md5s for file in a directory."
         for pth in os.listdir(path):
             if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
@@ -54,7 +57,7 @@ class MD5:
             data[name] = cls.md5(os.path.join(path, pth))
 
     @classmethod
-    def dir(cls, path, md5) -> None:
+    def dir(cls, path: str, md5: Dict[str,str]) -> None:
         "create a md5 for a directory."
         for fnm in os.listdir(path):
             if not fnm.endswith(".py"):
@@ -64,7 +67,7 @@ class MD5:
                 md5.update(file.read().encode("utf-8"))
 
     @classmethod
-    def md5(cls, path) -> str:
+    def md5(cls, path: str) -> str:
         "calculate md5sum of a file."
         import hashlib
         md5 = hashlib.md5()
@@ -73,7 +76,7 @@ class MD5:
         return str(md5.hexdigest())
 
     @classmethod
-    def source(cls, src) -> str:
+    def source(cls, src: str) -> str:
         "determine md5 of source code."
         import hashlib
         md5 = hashlib.md5()

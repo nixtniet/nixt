@@ -25,24 +25,24 @@ class Message(Data):
         self.orig = ""
         self.result = []
 
-    def iface(self, txt) -> None:
+    def iface(self, text: str) -> None:
         "show interface."
-        txt = f"{self.cmd} {txt}"
-        self.reply(txt)
+        txt = f"{self.cmd} {text}"
+        self.reply(text)
 
-    def ok(self, txt="") -> None:
+    def ok(self, text: str = "") -> None:
         "print ok response."
-        self.reply(f"ok {txt}".strip())
+        self.reply(f"ok {text}".strip())
 
     def ready(self) -> None:
         "flag message as ready."
         self._ready.set()
 
-    def reply(self, text) -> None:
+    def reply(self, text: str) -> None:
         "add text to result."
         self.result.append(text)
 
-    def wait(self, timeout=0.0) -> None:
+    def wait(self, timeout: float = 0.0) -> None:
         "wait for completion."
         self._ready.wait(timeout or None)
         if self._thr:

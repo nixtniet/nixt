@@ -17,7 +17,7 @@ from typing import ClassVar, Dict, Generator, List, Set, Tuple, Union
 
 from .encoder import JSON
 from .methods import Method
-from .objects import Data
+from .objects import Data, Object
 from .utility import Utils
 
 
@@ -36,17 +36,17 @@ class Cache:
     paths: ClassVar[Dict[str, object]] = {}
 
     @classmethod
-    def add(cls, path, obj) -> None:
+    def add(cls, path: str, obj: object) -> None:
         "put object into cache."
         cls.paths[path] = obj
 
     @classmethod
-    def get(cls, path) -> object:
+    def get(cls, path: str) -> object:
         "get object from cache."
         return cls.paths.get(path, None)
 
     @classmethod
-    def sync(cls, path, obj) -> None:
+    def sync(cls, path: str, obj: object) -> None:
         "update cached object."
         try:
             Method.update(cls.paths[path], obj)
@@ -61,12 +61,12 @@ class Disk:
     lock = threading.RLock()
 
     @classmethod
-    def ident(cls, obj) -> str:
+    def ident(cls, obj: Object) -> str:
         "return ident string for object."
         return os.path.join(Method.fqn(obj), *str(datetime.datetime.now(tz=None)).split())
 
     @classmethod
-    def read(cls, obj, path, base="store") -> bool:
+    def read(cls, obj: Object, path: str, base: str = "store") -> bool:
         "read object from path."
         with cls.lock:
             pth = os.path.join(Workdir.wdr, base, path)
@@ -80,7 +80,7 @@ class Disk:
             return True
 
     @classmethod
-    def write(cls, obj, path="", base="store") -> str:
+    def write(cls, obj: Object, path: str = "", base: str = "store") -> str:
         "write object to disk."
         with cls.lock:
             if path == "":
@@ -100,7 +100,7 @@ class Locater:
     lock = threading.RLock()
 
     @classmethod
-    def attrs(cls, kind) -> Set[str]:
+    def attrs(cls, kind: str) -> Set[str]:
         "show attributes for kind of objects."
         result = []
         for _pth, obj in cls.find(kind, nritems=1):
@@ -108,12 +108,12 @@ class Locater:
         return set(result)
 
     @classmethod
-    def count(cls, kind) -> int:
+    def count(cls, kind: str) -> int:
         "count kinds of objects."
         return len(list(cls.find(kind)))
 
     @classmethod
-    def find(cls, kind, selector=None, removed=False, matching=False, nritems=None) -> Union[Generator[Tuple[str, object], None, None], Tuple[None, None]]:
+    def find(cls, kind: str, selector: Dict[str,str] = None, removed: bool = False, matching: bool = False, nritems: int = None) -> Union[Generator[Tuple[str, object], None, None], Tuple[None, None]]:
         "locate objects by matching atributes."
         with cls.lock:
             if selector is None:
@@ -137,7 +137,7 @@ class Locater:
                 return None, None
 
     @classmethod
-    def first(cls, obj, selector=None) -> str:
+    def first(cls, obj: Object, selector: Dict[str,str] = None) -> str:
         "return first object of a kind."
         if selector is None:
             selector = {}
@@ -153,7 +153,7 @@ class Locater:
         return res
 
     @classmethod
-    def fns(cls, kind) -> Generator[str, None, None]:
+    def fns(cls, kind: str) -> Generator[str, None, None]:
         "file names by kind of object."
         path = os.path.join(Workdir.wdr, "store", kind)
         for rootdir, dirs, _files in os.walk(path, topdown=True):
@@ -165,7 +165,7 @@ class Locater:
                     yield cls.strip(os.path.join(ddd, fll))
 
     @classmethod
-    def fntime(cls, daystr) -> str:
+    def fntime(cls, daystr: str) -> str:
         "time from path."
         datestr = " ".join(daystr.split(os.sep)[-2:])
         datestr = datestr.replace("_", " ")
@@ -182,7 +182,7 @@ class Locater:
         return float(timd)
 
     @classmethod
-    def last(cls, obj, selector=None) -> str:
+    def last(cls, obj: Object, selector=None) -> str:
         "last saved version."
         if selector is None:
             selector = {}
@@ -198,7 +198,7 @@ class Locater:
         return res
 
     @classmethod
-    def strip(cls, path) -> str:
+    def strip(cls, path: str) -> str:
         "strip filename from path."
         return path.split('store')[-1][1:]
 
@@ -210,7 +210,7 @@ class Workdir:
     wdr = ""
 
     @classmethod
-    def home(cls, name) -> str:
+    def home(cls, name: str) -> str:
         "return home working directory."
         return os.path.expanduser(f"~/.{name}")
 
@@ -224,13 +224,13 @@ class Workdir:
         return os.listdir(path)
 
     @classmethod
-    def logdir(cls, path="") -> str:
+    def logdir(cls, path: str = "") -> str:
         "return directory to logs."
         assert cls.wdr
         return j(cls.wdr, "logs", path)
 
     @classmethod
-    def long(cls, name) -> str:
+    def long(cls, name: str) -> str:
         "expand to fqn."
         if "." in name:
             return name
@@ -249,7 +249,7 @@ class Workdir:
         return j(cls.wdr, "mods")
 
     @classmethod
-    def pid(cls, name) -> None:
+    def pid(cls, name: str) -> None:
         "write pid to file."
         assert cls.wdr
         filename = j(cls.wdr, f"{name}.pid")
