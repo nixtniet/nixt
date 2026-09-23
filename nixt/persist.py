@@ -113,7 +113,7 @@ class Locater:
         return len(list(cls.find(kind)))
 
     @classmethod
-    def find(cls, kind, selector=None, removed=False, matching=False, nritems=None) -> Union[Generator[Tuple[str, object], None, None] | Tuple[None, None]]:
+    def find(cls, kind, selector=None, removed=False, matching=False, nritems=None) -> Union[Generator[Tuple[str, object], None, None], Tuple[None, None]]:
         "locate objects by matching atributes."
         with cls.lock:
             if selector is None:
