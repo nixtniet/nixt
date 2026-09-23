@@ -31,7 +31,7 @@ class Time:
     ]
 
     @classmethod
-    def date(cls, daystr) -> Union[float|None]:
+    def date(cls, daystr) -> Union[float,None]:
         "date from string."
         daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
         for fmat in cls.times:
