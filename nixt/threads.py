@@ -12,6 +12,7 @@ import time
 import _thread
 
 
+from queue  import Queue
 from typing import Any, Callable, Dict, Union
 from types  import FunctionType
 
@@ -29,7 +30,7 @@ class Thr(threading.Thread):
         super().__init__(None, self.run, None, (), daemon=daemon)
         self.event = None
         self.name = kwargs.get("name", Thread.name(func))
-        self.queue = queue.Queue()
+        self.queue: Queue = queue.Queue()
         self.result = None
         self.starttime = time.time()
         self.queue.put((func, args))

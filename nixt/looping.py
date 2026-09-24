@@ -9,6 +9,7 @@ import threading
 import _thread
 
 
+from queue  import Queue
 from typing import Union
 
 
@@ -21,7 +22,7 @@ class Loop:
     "keep looping"
 
     def __init__(self):
-        self.queue = queue.Queue()
+        self.queue: Queue = queue.Queue()
         self.stopped = threading.Event()
         self.done = threading.Event()
 

@@ -10,6 +10,9 @@ import threading
 import _thread
 
 
+from queue import Queue
+
+
 from .brokers import Broker
 from .engines import Engine
 from .message import Message
@@ -24,7 +27,7 @@ class Output:
     "dedicated output loop"
 
     def __init__(self):
-        self.oqueue = queue.Queue()
+        self.oqueue: Queue = queue.Queue()
         self.ostopped = threading.Event()
 
     def display(self, event: Message) -> None:
