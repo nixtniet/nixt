@@ -10,7 +10,7 @@ import threading
 import time
 
 
-from nixt.defines import Object, Broker, Disk, Locater, Method, Thread, Time
+from nixt.defines import Broker, Disk, Locater, Method, Object, Thread, Time
 
 
 logger = logging.getLogger(__name__)

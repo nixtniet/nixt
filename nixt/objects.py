@@ -8,9 +8,6 @@ class Object:
 
     "inheritence without the methods"
 
-    def __init__(self):
-        self.__deleted__ = False
-
     def __contains__(self, key):
         return key in dir(self)
 
@@ -36,6 +33,10 @@ class Object:
 class Data(Object):
 
     "defaulting to string"
+
+    def __init__(self):
+        Object.__init__(self)
+        self.__deleted__ = False
 
     def __getattr__(self, key):
         if key in dir(self):
