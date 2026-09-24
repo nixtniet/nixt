@@ -94,7 +94,7 @@ class Booting(Boot):
             Commands.scanner()
 
     @classmethod
-    def wrap(cls, func: Callable, *args: Any, dofinal: Union[Callable,None] = None) -> None:
+    def wrap(cls, func: Callable, *args: Any, dofinal: Union[Callable, None] = None) -> None:
         "restore console."
         import termios
         try:

@@ -11,7 +11,7 @@ class Broker:
 
     "map repr(obj) to obj"
 
-    objects: ClassVar[Dict[str, object]] = {}
+    objects: ClassVar[Dict[str, Any]] = {}
 
     @classmethod
     def add(cls, obj: Any):

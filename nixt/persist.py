@@ -36,17 +36,17 @@ class Cache:
     paths: ClassVar[Dict[str, object]] = {}
 
     @classmethod
-    def add(cls, path: str, obj: object) -> None:
+    def add(cls, path: str, obj: Any) -> None:
         "put object into cache."
         cls.paths[path] = obj
 
     @classmethod
-    def get(cls, path: str) -> object:
+    def get(cls, path: str) -> Any:
         "get object from cache."
         return cls.paths.get(path, None)
 
     @classmethod
-    def sync(cls, path: str, obj: object) -> None:
+    def sync(cls, path: str, obj: Any) -> None:
         "update cached object."
         try:
             Method.update(cls.paths[path], obj)

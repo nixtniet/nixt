@@ -24,9 +24,9 @@ class Main(metaclass=Config):
 
     "main config"
 
-    mods: str
+    mods: str = ""
     name: str = Method.pkgname(Config)
-    otxt: str
+    otxt: str = ""
     path: str = ""
 
 

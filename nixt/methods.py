@@ -44,7 +44,7 @@ class Method:
             cls.update(obj, kwargs)
 
     @classmethod
-    def copy(cls, obj: Any) -> object:
+    def copy(cls, obj: Any) -> Any:
         "return shallow copy of the object."
         oobj = type(obj)()
         cls.update(oobj, obj.__dict__.copy())
@@ -109,12 +109,12 @@ class Method:
         return kin
 
     @classmethod
-    def fromkeys(cls, obj: Any, keyz: str, value: Any = None) -> Dict[str, object]:
+    def fromkeys(cls, obj: Any, keyz: str, value: Any = None) -> Dict[str, Any]:
         "create a new object with keys from iterable and values set to value."
         return obj.__dict__.fromkeys(keyz, value)
 
     @classmethod
-    def get(cls, obj: Any, key: str, default: Any = None) -> object:
+    def get(cls, obj: Any, key: str, default: Any = None) -> Any:
         "return value for key if key is in the object, otherwise return default."
         try:
             return obj.__dict__.get(key, default)
@@ -177,17 +177,17 @@ class Method:
         return obj.__module__.split(".", maxsplit=1)[0]
 
     @classmethod
-    def pop(cls, obj: Any, key: str, default: Any = None) -> object:
+    def pop(cls, obj: Any, key: str, default: Any = None) -> Any:
         "remove key from object and return it's value. return default or KeyError."
         return obj.__dict__.pop(key, default)
 
     @classmethod
-    def popitem(cls, obj: Any) -> Tuple[str, object]:
+    def popitem(cls, obj: Any) -> Tuple[str, Any]:
         "remove and return (key, value) pair."
         return obj.__dict__.popitem()
 
     @classmethod
-    def reduce(cls, obj: Any) -> Dict[str, object]:
+    def reduce(cls, obj: Any) -> Dict[str, Any]:
         "return dict with values setted attributes."
         result = {}
         for key, value in cls.items(obj):
@@ -234,7 +234,7 @@ class Method:
         return res
 
     @classmethod
-    def skipped(cls, obj: Any) -> Generator[object, None, None]:
+    def skipped(cls, obj: Any) -> Generator[Any, None, None]:
         "yield values without underscored keys."
         for key in dir(obj):
             if key.startswith("_"):
