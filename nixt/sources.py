@@ -8,7 +8,7 @@ import logging
 import os
 
 
-from typing import Dict
+from typing import Dict, Union
 
 
 from .utility import Utils
@@ -25,7 +25,9 @@ class MD5:
     def check(cls, md5s: dict) -> bool:
         "check for md5sums in a given path."
         ok = True
-        path = os.path.dirname(__spec__.origin)
+        if not __spec__:
+            return ok
+        path = os.path.dirname(str(__spec__.origin))
         if not os.path.exists(path):
             return False
         for pth in os.listdir(path):
@@ -39,13 +41,15 @@ class MD5:
         return ok
 
     @classmethod
-    def core(cls) -> str:
+    def core(cls) -> Union[str, None]:
         "calculate md5 of the statics module."
         try:
             from . import statics
         except (ModuleNotFoundError, ImportError, SyntaxError):
             return ""
-        return cls.source(Utils.source(statics))[:7].upper()
+        txt = Utils.source(statics)
+        if txt:
+            return cls.source(txt)[:7].upper()
 
     @classmethod
     def createmd5(cls, path: str, data: Dict[str, str]) -> None:
@@ -57,23 +61,13 @@ class MD5:
             data[name] = cls.md5(os.path.join(path, pth))
 
     @classmethod
-    def dir(cls, path: str, md5: Dict[str,str]) -> None:
-        "create a md5 for a directory."
-        for fnm in os.listdir(path):
-            if not fnm.endswith(".py"):
-                continue
-            mpath = os.path.join(path, fnm)
-            with open(mpath, "r", encoding="utf-8") as file:
-                md5.update(file.read().encode("utf-8"))
-
-    @classmethod
     def md5(cls, path: str) -> str:
         "calculate md5sum of a file."
         import hashlib
-        md5 = hashlib.md5()
+        md5s = hashlib.md5()
         with open(path, "r", encoding="utf-8") as file:
-            md5.update(file.read().encode("utf-8"))
-        return str(md5.hexdigest())
+            md5s.update(file.read().encode("utf-8"))
+        return str(md5s.hexdigest())
 
     @classmethod
     def source(cls, src: str) -> str:

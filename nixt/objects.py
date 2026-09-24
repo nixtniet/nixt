@@ -8,6 +8,9 @@ class Object:
 
     "inheritence without the methods"
 
+    def __init__(self):
+        self.__deleted__ = False
+
     def __contains__(self, key):
         return key in dir(self)
 
@@ -36,7 +39,7 @@ class Data(Object):
 
     def __getattr__(self, key):
         if key in dir(self):
-            return self.__getattribute__(self, key)
+            return self.__getattribute__(key)
         return ""
 
 

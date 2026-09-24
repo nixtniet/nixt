@@ -9,7 +9,7 @@ import time
 
 
 from collections.abc import Callable
-from typing          import Any, ClassVar, Dict
+from typing          import Any, ClassVar, Dict, List
 
 
 from .threads import Thread
@@ -23,15 +23,15 @@ class Repeater:
     stopped = threading.Event()
     counter = 0
     sleeptime = 0.1
-    todo: ClassVar[Dict[int, Callable]] = {}
+    todo: ClassVar[Dict[str, List[Any]]] = {}
 
     @classmethod
     def add(cls, sleep: int, func: Callable, *args: Any, **kwargs: Dict[str,Any]) -> None:
         "add a repeater."
-        sleep = str(sleep)
-        if sleep not in cls.todo:
-            cls.todo[sleep] = []
-        cls.todo[sleep].append((func, args, kwargs))
+        slp = str(sleep)
+        if slp not in cls.todo:
+            cls.todo[slp] = []
+        cls.todo[slp].append((func, args, kwargs))
 
     @classmethod
     def loop(cls) -> None:

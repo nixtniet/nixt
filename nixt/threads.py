@@ -12,7 +12,8 @@ import time
 import _thread
 
 
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, Union
+from types  import FunctionType
 
 
 logger = logging.getLogger(__name__)
@@ -39,7 +40,7 @@ class Thr(threading.Thread):
     def __next__(self):
         yield from dir(self)
 
-    def join(self, timeout: float = 0.0) -> object:
+    def join(self, timeout: Union[float, None] = None) -> Union[Any, None]:
         "join thread and return result."
         try:
             super().join(timeout or None)
@@ -68,7 +69,7 @@ class Thread:
     lock = threading.RLock()
 
     @classmethod
-    def launch(cls, func: Callable, *args: Any, **kwargs: Dict[str,Any]) -> Thr:
+    def launch(cls, func: Callable, *args: Any, **kwargs: Any) -> Thr:
         "start a new thread running function with arguments."
         with cls.lock:
             thr = Thr(func, *args, **kwargs)
@@ -76,14 +77,14 @@ class Thread:
             return thr
 
     @classmethod
-    def clsname(cls, obj: object) -> str:
+    def clsname(cls, obj: Any) -> str:
         "class name of an object."
         if "__self__" in dir(obj):
             return obj.__self__.__class__.__name__
         return obj.__class__.__name_
 
     @classmethod
-    def name(cls, obj: object) -> str:
+    def name(cls, obj: Any) -> str:
         "string of function/method."
         if inspect.ismethod(obj):
             return f"{cls.clsname(obj)}.{obj.__name__}"

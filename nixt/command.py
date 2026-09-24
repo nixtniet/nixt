@@ -9,9 +9,11 @@ import inspect
 
 from collections.abc import Callable
 from typing          import ClassVar, Dict, List, Union
+from types           import FunctionType
 
 
 from .clients import Clients
+from .message import Message
 from .package import Mods
 from .parsers import Parser
 
@@ -20,17 +22,17 @@ class Commands:
 
     "command dispatch"
 
-    cmds: ClassVar[Dict[str, Callable]] = {}
+    cmds: ClassVar[Dict[str, FunctionType]] = {}
     names: ClassVar[Dict[str, str]] = {}
 
     @classmethod
-    def add(cls, *funcs: Callable) -> None:
+    def add(cls, *funcs: FunctionType) -> None:
         "register a command."
         for func in funcs:
             cls.cmds[func.__name__] = func
 
     @classmethod
-    def command(cls, event) -> None:
+    def command(cls, event: Message) -> None:
         "command callback."
         Parser.parse(event, event.text)
         func = cls.cmds.get(event.cmd, cls.ondemand(event.cmd))
@@ -40,16 +42,16 @@ class Commands:
         event.ready()
 
     @classmethod
-    def list(cls) -> List[str]:
+    def list(cls) -> Union[List[str] | None]:
         "scan for a list of all commands."
         result = []
         for modname in Mods.list():
             mod = Mods.get(modname)
-            result.extend([x.__name__ for x in Commands.scan(mod, True) if x])
+            result.extend([x.__name__ for x in Commands.scan(mod, True)])
         return result
 
     @classmethod
-    def ondemand(cls, name: str) -> Union[Callable,None]:
+    def ondemand(cls, name: str) -> Union[FunctionType, None]:
         "ondemand loading of commands."
         modname = cls.names.get(name, None)
         if not modname:
@@ -61,7 +63,7 @@ class Commands:
         return cls.cmds.get(name, None)
 
     @classmethod
-    def scan(cls, mod, skip=False) -> List[Callable]:
+    def scan(cls, mod, skip=False) -> List[FunctionType]:
         "scan module for commands."
         result = []
         for _nme, func in inspect.getmembers(mod, inspect.isfunction):

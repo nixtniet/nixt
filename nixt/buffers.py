@@ -47,7 +47,7 @@ class Output:
         "raw output."
         raise NotImplementedError
 
-    def start(self, daemon=True) -> None:
+    def start(self, daemon: bool = True) -> None:
         "start output loop."
         self.ostopped.clear()
         Thread.launch(self.output, daemon=daemon)
@@ -62,7 +62,6 @@ class Output:
         try:
             self.oqueue.join()
         except (KeyboardInterrupt, EOFError):
-            logger.exception()
             _thread.interrupt_main()
 
 

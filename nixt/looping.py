@@ -9,6 +9,9 @@ import threading
 import _thread
 
 
+from typing import Union
+
+
 from .message import Message
 from .threads import Thread
 
@@ -42,7 +45,7 @@ class Loop:
             self.queue.task_done()
         self.done.set()
 
-    def poll(self) -> None:
+    def poll(self) -> Union[Message, None]:
         "create event and put it on the queue."
 
     def put(self, event: Message) -> None:

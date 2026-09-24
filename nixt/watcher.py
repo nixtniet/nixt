@@ -34,7 +34,7 @@ class Watcher:
         cls.cbs[path] = callback
 
     @classmethod
-    def init(cls, times: Dict[str,int] = None):
+    def init(cls, times: Dict[str,int] = {}):
         "read timestamps."
         if times is None:
             times= {}

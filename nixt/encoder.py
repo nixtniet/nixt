@@ -9,7 +9,7 @@ import threading
 import types
 
 
-from typing import Union
+from typing import Any, Iterator, Literal, Union
 
 
 jsontypes = Union[dict,list,bool,float,int,str]
@@ -21,7 +21,7 @@ class Encoder(json.JSONEncoder):
 
     lock = threading.RLock()
 
-    def default(self, o) -> Union[dict,iter,str]:
+    def default(self, o):
         "generate serializable versions."
         with Encoder.lock:
             if isinstance(o, type):

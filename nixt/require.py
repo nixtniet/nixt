@@ -35,10 +35,14 @@ class Cmd:
         if Main.mods:
             for name in Utils.spl(Main.mods):
                 module = Mods.get(name, True)
+                if not module:
+                    continue
+                if not module.__file__:
+                    continue
                 md5s[name] = MD5.md5(module.__file__)
                 for cmd in Commands.scan(module):
                     Commands.names[cmd.__name__] = cmd.__module__.split(".")[-1]
-        corepath = os.path.dirname(inspect.getsourcefile(Mods))
+        corepath = os.path.dirname(str(inspect.getsourcefile(Mods)))
         MD5.createmd5(corepath, core)
         event.reply("# This file is placed in the Public Domain.")
         event.reply("\n")

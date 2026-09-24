@@ -35,8 +35,9 @@ class Boot:
     stopped = threading.Event()
 
     @classmethod
-    def banner(cls) -> str:
+    def banner(cls):
         "greetings."
+        raise NotImplementedError
 
     @classmethod
     def configure(cls) -> None:

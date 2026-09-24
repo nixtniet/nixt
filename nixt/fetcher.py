@@ -12,15 +12,25 @@ import urllib.parse
 import urllib.request
 
 
-from typing import ClassVar, Dict, TextIO
+from typing import Any, ClassVar, Dict, TextIO
 
 
+from urllib.error import HTTPError, URLError
 from urllib.parse import unquote, urlparse, urlunparse
 from urllib.request import Request, urlopen
 
 
 from .methods import Method
 from .objects import Data
+
+
+class Response(Data):
+
+    def __init__(self):
+        Data.__init__(self)
+        self.data = b""
+        self.reason = ""
+        self.status = None
 
 
 class Fetcher:
@@ -48,24 +58,20 @@ class Fetcher:
         since = cls.modified.get(url, "")
         if since:
             req.add_header('If-Modified-Since', since)
-        response = Data()
+        response = Response()
         response.reason = ""
         try:
             Method.update(response, cls.request(req))
-        except Exception as ex:
+        except URLError as ex:
+            response.reason = str(ex.reason)
+        except HTTPError as ex:
             response.data = b""
-            try:
-                response.reason = ex.reason
-            except AttributeError:
-                response.reason = str(ex)
-            try:
-                response.status = ex.status
-            except AttributeError:
-                response.status = 0
+            response.reason = str(ex.reason)
+            response.status = ex.status
         return response
 
     @classmethod
-    def request(cls, req: Request) -> TextIO:
+    def request(cls, req: Request) -> Dict[str, Any]:
         "handle  a request."
         with urlopen(req, timeout=4) as response:  # nosec
             modi = response.headers.get('Last-Modified', "")

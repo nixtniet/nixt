@@ -9,7 +9,7 @@ import pathlib
 import uuid
 
 
-from typing import List
+from typing import List, Union
 from types import ModuleType
 
 
@@ -52,9 +52,15 @@ class Utils:
         return str(uuid.uuid4())[:8]
 
     @staticmethod
-    def source(module: ModuleType) -> str:
+    def source(module: ModuleType) -> Union[str, None]:
         "return the source of a module."
-        return module.__loader__.get_source(module.__name__)
+        if module.__spec__ is None:
+            return
+        if module.__spec__.loader is None:
+            return
+        get_source = getattr(module.__spec__.loader, "get_source")
+        if get_source:
+            return get_source(module.__name__)
 
     @staticmethod
     def spl(text: str, ignore: str = "") -> List[str]:

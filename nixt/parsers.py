@@ -4,6 +4,9 @@
 "cli parser"
 
 
+from typing import Any
+
+
 from .methods import Method
 from .objects import Data, Object
 
@@ -13,7 +16,7 @@ class Parser:
     "parsing for commands"
 
     @classmethod
-    def init(cls, obj: Object, text: str, clean: bool) -> None:
+    def init(cls, obj: Any, text: str, clean: bool = False) -> None:
         "set default values."
         data = {
             "args": [],
@@ -36,7 +39,7 @@ class Parser:
                 setattr(obj, k, v)
 
     @classmethod
-    def parse(cls, obj: Object, text: str, clean: bool = False) -> None:
+    def parse(cls, obj: Any, text: str, clean: bool = False) -> None:
         "parse text for command and arguments."
         cls.init(obj, text, clean)
         args = []

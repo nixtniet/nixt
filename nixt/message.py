@@ -24,6 +24,7 @@ class Message(Data):
         self.kind = "message"
         self.orig = ""
         self.result = []
+        self.text = ""
 
     def iface(self, text: str) -> None:
         "show interface."

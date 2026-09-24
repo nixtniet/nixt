@@ -11,7 +11,7 @@ import sys
 import time
 
 
-from typing import Any, Callable, TextIO
+from typing import Any, Callable, TextIO, Union
 
 
 from .defines import Boot, Cmd, Commands, Main, MD5, Message
@@ -94,7 +94,7 @@ class Booting(Boot):
             Commands.scanner()
 
     @classmethod
-    def wrap(cls, func: Callable, *args: Any, dofinal: bool = None) -> None:
+    def wrap(cls, func: Callable, *args: Any, dofinal: Union[Callable,None] = None) -> None:
         "restore console."
         import termios
         try:
@@ -176,7 +176,7 @@ class Daemon:
             os.dup2(sis.fileno(), iostream.fileno())
 
     @classmethod
-    def pid(cls) -> str:
+    def pid(cls) -> Union[str, None]:
         "return pid path."
         return Workdir.pid(Main.name)
 

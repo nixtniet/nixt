@@ -12,7 +12,7 @@ import threading
 import time
 
 
-from typing import ClassVar, Dict, Generator, List, Set, Tuple, Union
+from typing import Any, ClassVar, Dict, Generator, List, Set, Tuple, Union
 
 
 from .encoder import JSON
@@ -104,6 +104,8 @@ class Locater:
         "show attributes for kind of objects."
         result = []
         for _pth, obj in cls.find(kind, nritems=1):
+            if not obj:
+                continue
             result.extend(Method.keys(obj))
         return set(result)
 
@@ -113,7 +115,7 @@ class Locater:
         return len(list(cls.find(kind)))
 
     @classmethod
-    def find(cls, kind: str, selector: Dict[str,str] = None, removed: bool = False, matching: bool = False, nritems: int = None) -> Union[Generator[Tuple[str, object], None, None], Tuple[None, None]]:
+    def find(cls, kind: str, selector: Dict[str,str] = {}, removed: bool = False, matching: bool = False, nritems: int = 0) -> Generator[Tuple[str, Any], None, None]:
         "locate objects by matching atributes."
         with cls.lock:
             if selector is None:
@@ -133,11 +135,9 @@ class Locater:
                     break
                 nrs += 1
                 yield pth, obj
-            else:
-                return None, None
 
     @classmethod
-    def first(cls, obj: Object, selector: Dict[str,str] = None) -> str:
+    def first(cls, obj: Object, selector: Dict[str,str] = {}) -> str:
         "return first object of a kind."
         if selector is None:
             selector = {}
@@ -165,7 +165,7 @@ class Locater:
                     yield cls.strip(os.path.join(ddd, fll))
 
     @classmethod
-    def fntime(cls, daystr: str) -> str:
+    def fntime(cls, daystr: str) -> float:
         "time from path."
         datestr = " ".join(daystr.split(os.sep)[-2:])
         datestr = datestr.replace("_", " ")

@@ -9,7 +9,7 @@ import os
 
 
 from types  import ModuleType
-from typing import ClassVar, Dict, List
+from typing import ClassVar, Dict, List, Union
 
 
 from .methods import Method
@@ -35,7 +35,7 @@ class Mods:
         cls.dirs[pkgname] = path
 
     @classmethod
-    def get(cls, name: str, force: bool = False) -> ModuleType:
+    def get(cls, name: str, force: bool = False) -> Union[ModuleType, None]:
         "return module from cache or import module."
         for pkgname, path in cls.dirs.items():
             modname = f"{pkgname}.{name}"
@@ -58,17 +58,17 @@ class Mods:
         result = []
         for modname in cls.list():
             mod = cls.get(modname)
+            if not mod:
+                continue
             if not getattr(mod, attr, False):
                 continue
             result.append(mod.__name__.split(".")[-1])
         return ",".join(result)
 
     @classmethod
-    def importer(cls, name: str, pth: str = None) -> ModuleType:
+    def importer(cls, name: str, pth: str = "") -> Union[ModuleType, None]:
         "import module by path."
         import importlib.util
-        if pth is None:
-            pth = ""
         spec = importlib.util.spec_from_file_location(name, pth)
         if not spec or not spec.loader:
             return None
@@ -77,7 +77,7 @@ class Mods:
         return cls.mods[name]
 
     @classmethod
-    def list(cls) -> List[ModuleType]:
+    def list(cls) -> List[str]:
         "comma seperated list of available modules."
         mods = []
         for path in cls.dirs.values():

@@ -83,7 +83,7 @@ class Time:
         return txt
 
     @classmethod
-    def extract(cls, daystr: str) -> float:
+    def extract(cls, daystr: str) -> Union[float, None]:
         "extract date/time from string."
         daystr = str(daystr)
         res = None
