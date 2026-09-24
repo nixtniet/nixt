@@ -9,7 +9,7 @@ import logging
 import time
 
 
-from nixt.defines import Object, Clients, Message, Method, Repeater, Time
+from nixt.defines import Clients, Data, Message, Method, Repeater, Time
 
 
 logger = logging.getLogger(__name__)
@@ -57,11 +57,19 @@ aliases["Zwangerschap"] = "pregnancy"
 aliases["Suicide"] = "suicide"
 
 
-demo = Object()
+class Demo(Data):
+
+    gehandicapten: int = 0
+    ggz: int = 0
+    population: int = 0
+    part: int = 0
+
+
+demo = Demo()
 demo.gehandicapten = 2000000
 demo.ggz = 800000
 demo.population = 17440000
-demo.part = 7000000000 / demo.population
+demo.part = int(7000000000 / demo.population)
 
 
 jaar = {}
@@ -385,9 +393,9 @@ aantal = """
          """.split(";")
 
 
-oorzaak = Object()
+oorzaak = Data()
 Method.construct(oorzaak, zip([x.strip() for x in oor], [int(x.strip()) for x in aantal]))
-oorzaken = Object()
+oorzaken = Data()
 
 
 def boot():

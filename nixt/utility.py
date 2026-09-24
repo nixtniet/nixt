@@ -55,12 +55,13 @@ class Utils:
     def source(module: ModuleType) -> Union[str, None]:
         "return the source of a module."
         if module.__spec__ is None:
-            return
+            return None
         if module.__spec__.loader is None:
-            return
+            return None
         get_source = getattr(module.__spec__.loader, "get_source")
         if get_source:
             return get_source(module.__name__)
+        return None
 
     @staticmethod
     def spl(text: str, ignore: str = "") -> List[str]:

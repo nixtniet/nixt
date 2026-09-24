@@ -50,6 +50,7 @@ class MD5:
         txt = Utils.source(statics)
         if txt:
             return cls.source(txt)[:7].upper()
+        return None
 
     @classmethod
     def createmd5(cls, path: str, data: Dict[str, str]) -> None:

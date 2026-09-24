@@ -100,12 +100,12 @@ class Booting(Boot):
         try:
             old = termios.tcgetattr(sys.stdin.fileno())
         except termios.error:
-            old = False
+            old = [False,]
         try:
             cls.wrapped(func, *args)
         except (KeyboardInterrupt, EOFError):
             pass
-        if old:
+        if old and old[0]:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
         if dofinal:
             dofinal()

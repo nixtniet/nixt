@@ -47,6 +47,7 @@ class Thr(threading.Thread):
             return self.result
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
+            return None
 
     def run(self) -> None:
         "run function."

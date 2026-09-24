@@ -8,6 +8,9 @@ import inspect
 import os
 
 
+from typing import Dict
+
+
 from .command import Commands
 from .configs import Main
 from .encoder import JSON
@@ -29,8 +32,8 @@ class Cmd:
     @staticmethod
     def tbl(event: Message) -> None:
         "create table."
-        core = {}
-        md5s = {}
+        core: Dict[str, str] = {}
+        md5s: Dict[str, str] = {}
         Commands.names = {}
         if Main.mods:
             for name in Utils.spl(Main.mods):
@@ -48,11 +51,13 @@ class Cmd:
         event.reply("\n")
         event.reply('"tables"')
         event.reply("\n")
-        event.reply(f"CORE = {JSON.dumps(core, indent=4, sort_keys=True)}")
+        event.reply("from typing import Dict")
         event.reply("\n")
-        event.reply(f"MODULES = {JSON.dumps(md5s, indent=4, sort_keys=True)}")
+        event.reply(f"CORE: Dict[str, str] = {JSON.dumps(core, indent=4, sort_keys=True)}")
         event.reply("\n")
-        event.reply(f"NAMES = {JSON.dumps(Commands.names, indent=4, sort_keys=True)}")
+        event.reply(f"MODULES: Dict[str,str] = {JSON.dumps(md5s, indent=4, sort_keys=True)}")
+        event.reply("\n")
+        event.reply(f"NAMES: Dict[str, str] = {JSON.dumps(Commands.names, indent=4, sort_keys=True)}")
         event.reply("\n")
         event.reply("def __dir__():")
         event.reply("    return (")

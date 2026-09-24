@@ -4,7 +4,10 @@
 "tables"
 
 
-CORE = {
+from typing import Dict
+
+
+CORE: Dict[str, str] = {
     "booting": "9497d0902c5ae6889e4d69a4c65797b8",
     "brokers": "5c4dd22dc5823ef76cffbd254cb9907f",
     "buffers": "e951cec89e18d7ed03f68406aacd6faa",
@@ -20,13 +23,13 @@ CORE = {
     "looping": "6780aa8f25c8552a8c9e98714ea551b0",
     "message": "aa36aa728352561439374faa5e73f8a0",
     "methods": "9e8f4c79a597bc0ac1a8dca20c3118b7",
-    "objects": "0673d0f80470cafb826b64d32b091e5e",
+    "objects": "3f68d9bd68dcd88d8a187d1a80d673fe",
     "package": "3fd7da32b72669d2ea07498fda6a2ba1",
     "parsers": "9b6b0be79a35bbe328b948f5c1f0285f",
     "persist": "04810ed0a700282f684c38036ae216ea",
     "pooling": "e0c481684a5192437164fa34b39e2f46",
     "repeats": "0a23dc0e8a481a5115a6f7ad2fd4ad2b",
-    "require": "f98080da7c679461ef0d1962a7d64e8b",
+    "require": "a2878a1f9440c895d4e097d5a5152054",
     "runners": "5ab77a61ce8203336a7b450280644150",
     "runtime": "fadfbbdb921ca242c93a94053289c14a",
     "sources": "b40eb681481e74004fb28da699df5f9c",
@@ -37,10 +40,10 @@ CORE = {
 }
 
 
-MODULES = {}
+MODULES: Dict[str,str] = {}
 
 
-NAMES = {}
+NAMES: Dict[str, str] = {}
 
 
 def __dir__():

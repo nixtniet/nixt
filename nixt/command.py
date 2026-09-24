@@ -9,7 +9,6 @@ import inspect
 
 from collections.abc import Callable
 from typing          import ClassVar, Dict, List, Union
-from types           import FunctionType
 
 
 from .clients import Clients
@@ -22,14 +21,15 @@ class Commands:
 
     "command dispatch"
 
-    cmds: ClassVar[Dict[str, FunctionType]] = {}
+    cmds: ClassVar[Dict[str, Callable]] = {}
     names: ClassVar[Dict[str, str]] = {}
 
     @classmethod
-    def add(cls, *funcs: FunctionType) -> None:
+    def add(cls, *funcs: Callable) -> None:
         "register a command."
         for func in funcs:
-            cls.cmds[func.__name__] = func
+            if "__name__" in dir(func):
+                cls.cmds[func.__name__] = func
 
     @classmethod
     def command(cls, event: Message) -> None:
@@ -51,7 +51,7 @@ class Commands:
         return result
 
     @classmethod
-    def ondemand(cls, name: str) -> Union[FunctionType, None]:
+    def ondemand(cls, name: str) -> Union[Callable, None]:
         "ondemand loading of commands."
         modname = cls.names.get(name, None)
         if not modname:
@@ -63,9 +63,9 @@ class Commands:
         return cls.cmds.get(name, None)
 
     @classmethod
-    def scan(cls, mod, skip=False) -> List[FunctionType]:
+    def scan(cls, mod, skip=False) -> List[Callable]:
         "scan module for commands."
-        result = []
+        result: List[Callable] = []
         for _nme, func in inspect.getmembers(mod, inspect.isfunction):
             if 'event' in inspect.signature(func).parameters:
                 if not skip:

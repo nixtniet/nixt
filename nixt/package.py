@@ -51,6 +51,7 @@ class Mods:
                 if md5s and md5 != md5s:
                     logger.warning("mismatch %s", modname)
             return cls.importer(modname, fnm)
+        return None
 
     @classmethod
     def has(cls, attr: str) -> str:

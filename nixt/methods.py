@@ -130,24 +130,24 @@ class Method:
         return True
 
     @classmethod
-    def items(cls, obj: Any) -> List[Tuple[str, object]]:
+    def items(cls, obj: Any) -> List[Tuple[str ,Any]]:
         "object's key,value pairs."
         if isinstance(obj, type):
             return [(x, getattr(obj, x)) for x in dir(obj) if not x.startswith("_")]
         if isinstance(obj, dict):
-            return obj.items()
+            return list(obj.items())
         if isinstance(obj, types.MappingProxyType):
-            return obj.items()
-        return obj.__dict__.items()
+            return list(obj.items())
+        return list(obj.__dict__.items())
 
     @classmethod
     def keys(cls, obj: Any) -> List[str]:
         "object's keys."
         if isinstance(obj, dict):
-            return obj.keys()
+            return list(obj.keys())
         if isinstance(obj, types.MappingProxyType):
-            return obj.keys()
-        return obj.__dict__.keys()
+            return list(obj.keys())
+        return list(obj.__dict__.keys())
 
     @classmethod
     def merge(cls, obj: Any, obj2: Any) -> None:
@@ -293,13 +293,13 @@ class Method:
         if isinstance(obj, type):
             return [getattr(obj, x) for x in dir(obj) if not x.startswith("_")]
         if isinstance(obj, dict):
-            return obj.values()
+            return list(obj.values())
         if isinstance(obj.__dict__, types.MappingProxyType):
             res = []
             for key in obj.__dict__:
                 res.append(obj[key])
             return res
-        return obj.__dict__.values()
+        return list(obj.__dict__.values())
 
     @classmethod
     def where(cls, obj: Any) -> str:
