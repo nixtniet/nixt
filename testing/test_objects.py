@@ -10,6 +10,14 @@ import unittest
 from nixt.defines import Data, Object
 
 
+class Mine(Object):
+
+    def __init__(self):
+        Object.__init__(self)
+        self.a = ""
+        self.obj = Object()
+        
+
 class TestData(unittest.TestCase):
 
     def construct(self):
@@ -27,7 +35,7 @@ class TestObject(unittest.TestCase):
 class TestComposite(unittest.TestCase):
 
     def testcomposite(self):
-        obj = Object()
-        obj.obj = Object()
+        obj = Mine()
+        obj.obj = Mine()
         obj.obj.a = "test"
         self.assertEqual(obj.obj.a, "test")

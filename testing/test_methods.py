@@ -10,6 +10,15 @@ import unittest
 from nixt.defines import Object, Method
 
 
+class Mine(Object):
+
+
+    def __init__(self):
+        Object.__init__(self)
+        self.a = ""
+        self.key = ""
+
+
 class TestMethod(unittest.TestCase):
 
     def test_construct(self):
@@ -17,75 +26,76 @@ class TestMethod(unittest.TestCase):
         self.assertTrue(type(method), Method)
 
     def test_clear(self):
-        obj = Object()
+        obj = Mine()
         obj.a = "b"
         Method.clear(obj)
         self.assertEqual(str(obj), "{}")
 
     def test_class(self):
-        obj = Object()
+        obj = Mine()
         clz = obj.__class__()
         self.assertTrue("Object" in str(type(clz)))
 
     def test_contains(self):
-        obj = Object()
+        obj = Mine()
         obj.key = "value"
         self.assertTrue("key" in obj)
 
     def test_delattr(self):
-        obj = Object()
+        obj = Mine()
         obj.key = "value"
         del obj.key
         self.assertTrue("key" not in obj)
 
     def test_dict(self):
-        obj = Object()
+        obj = Mine()
         self.assertEqual(obj.__dict__, {})
 
     def test_format(self):
-        obj = Object()
+        obj = Mine()
         self.assertEqual(format(obj, ""), "{}")
 
     def test_getattribute(self):
-        obj = Object()
+        obj = Mine()
         obj.key = "value"
         self.assertEqual(getattr(obj, "key", None), "value")
 
     def test_hash__(self):
-        obj = Object()
+        obj = Mine()
         hsj = hash(obj)
         self.assertTrue(isinstance(hsj, int))
 
     def test_init(self):
-        obj = Object()
-        self.assertTrue(type(Object.__init__(obj)), Object)
+        obj = Mine()
+        Object.__init__(obj)
+        self.assertTrue(type(obj), Mine)
 
     def test_iter(self):
-        obj = Object()
+        obj = Mine()
         obj.key = "value"
         self.assertTrue(list(iter(obj)), ["key",])
 
     def test_format2(self):
-        o = Object()
+        o = Mine()
         o.a = "b"
         self.assertEqual(Method.fmt(o), 'a="b"')
 
     def test_getattr(self):
-        obj = Object()
+        obj = Mine()
         obj.key = "value"
         self.assertEqual(obj.key, "value")
 
     def test_keys(self):
-        obj = Object()
+        obj = Mine()
         obj.key = "value"
         self.assertEqual(list(Method.keys(obj)), ["key"])
 
     def test_len(self):
-        obj = Object()
+        obj = Mine()
         self.assertEqual(len(obj), 0)
 
     def test_items(self):
-        obj = Object()
+        obj = Mine()
         obj.key = "value"
         self.assertEqual(list(Method.items(obj)), [("key", "value")])
 
@@ -96,22 +106,22 @@ class TestMethod(unittest.TestCase):
                        )
 
     def test_setattr(self):
-        obj = Object()
+        obj = Mine()
         obj.key = "value"
         self.assertTrue(obj.key, "value")
 
     def test_str(self):
-        obj = Object()
+        obj = Mine()
         self.assertEqual(str(obj), "{}")
 
     def test_update(self):
-        obj = Object()
+        obj = Mine()
         obj.key = "value"
-        oobj = Object()
+        oobj = Mine()
         Method.update(oobj, obj)
         self.assertTrue(oobj.key, "value")
 
     def test_values(self):
-        obj = Object()
+        obj = Mine()
         obj.key = "value"
         self.assertEqual(list(Method.values(obj)), ["value"])

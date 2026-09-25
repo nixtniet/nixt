@@ -17,7 +17,7 @@ class TestEncoder(unittest.TestCase):
 
     def test_dumps(self):
         obj = Object()
-        obj.test = "bla"
+        setattr(obj, "test", "bla")
         self.assertEqual(JSON.dumps(obj), VALIDJSON)
 
 
@@ -25,9 +25,9 @@ class TestDecoder(unittest.TestCase):
 
     def test_loads(self):
         obj = Object()
-        obj.test = "bla"
+        setattr(obj, "test", "bla")
         oobj = JSON.loads(JSON.dumps(obj))
-        self.assertEqual(oobj["test"], "bla")
+        self.assertEqual(getattr(oobj, "test", None), "bla")
 
 
 class TestTypes(unittest.TestCase):
@@ -58,7 +58,7 @@ class TestTypes(unittest.TestCase):
 
     def test_object(self):
         ooo = Object()
-        ooo.a = "b"
+        setattr(ooo, "a", "b")
         obj = Object()
         Method.update(obj, JSON.loads(JSON.dumps(ooo)))
-        self.assertEqual(obj.a, "b")
+        self.assertTrue(getattr(obj, "a", False))

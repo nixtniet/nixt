@@ -10,10 +10,15 @@ import unittest
 from nixt.defines import Object, Parser
 
 
+class Mine(Object):
+
+    def __init__(self):
+        Object.__init__(self)
+        self.cmd = ""
+
 class TestParse(unittest.TestCase):
 
     def test_parse(self):
-        obj = Object()
-        obj.cmd = ""
+        obj = Mine()
         Parser.parse(obj, "cmd")
         self.assertEqual(obj.cmd, "cmd")

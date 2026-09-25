@@ -7,10 +7,13 @@
 import unittest
 
 
+from typing import List
+
+
 from nixt.defines import Message, Engine
 
 
-buffer = []
+buffer: List[str] = []
 
 
 def hello(event):

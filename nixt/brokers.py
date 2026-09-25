@@ -33,7 +33,7 @@ class Broker:
         "all keys with a substring in their key."
         for orig in cls.objects:
             if text in orig.split()[0]:
-                yield orig, cls.get(orig)
+                yield (orig, cls.get(orig))
 
     @classmethod
     def objs(cls, attr: str) -> Generator[Any, None, None]:

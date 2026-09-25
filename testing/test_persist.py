@@ -29,9 +29,9 @@ class TestDisk(unittest.TestCase):
         self.assertTrue(type(disk), Disk)
 
     def test_loadcfg(self):
-        Main.a = "b"
+        setattr(Main, "a", "b")
         Disk.read(Main, "main", "config")
-        self.assertEqual(Main.a, "b")
+        self.assertEqual(getattr(Main, "a", None), "b")
 
     def test_save(self):
         obj = Method()
@@ -39,7 +39,7 @@ class TestDisk(unittest.TestCase):
         self.assertTrue(os.path.exists(os.path.join(Workdir.wdr, "store", opath)))
 
     def test_writecfg(self):
-        Main.a = "b"
+        setattr(Main, "a", "b")
         Disk.write(Main, "main", "config")
         self.assertTrue(os.path.exists(os.path.join(Workdir.wdr, "config", "main")))
 
