@@ -9,7 +9,10 @@ import urllib
 import _thread
 
 
-from nixt.defines import Disk, Fetcher, Locater, Method, Utils
+from typing import Dict, Generator, List
+
+
+from nixt.defines import Disk, Fetcher, Locater, Message, Method, Utils
 
 
 from .rss import Rss
@@ -23,12 +26,12 @@ class Locks:
 class OPML:
 
     @classmethod
-    def getnames(cls, line):
+    def getnames(cls, line: str) -> List[str]:
         "get names from line."
         return [x.split('="')[0] for x in line.split()]
 
     @classmethod
-    def getvalue(cls, line, attr):
+    def getvalue(cls, line: str, attr: str) -> str:
         "get value from line."
         lne = ""
         index1 = line.find(f'{attr}="')
@@ -43,11 +46,11 @@ class OPML:
         return Fetcher.cdata(line[index1:index2])
 
     @classmethod
-    def getattrs(cls, line, token):
+    def getattrs(cls, line: str, token: str) -> List[str]:
         "get attributes from line."
-        index = 0
-        result = []
-        stop = False
+        index: int = 0
+        result: List[str] = []
+        stop: bool = False
         while not stop:
             index1 = line.find(f"<{token} ", index)
             if index1 == -1:
@@ -61,7 +64,7 @@ class OPML:
         return result
 
     @classmethod
-    def parse(cls, txt, toke="outline", itemz=None):
+    def parse(cls, txt, toke="outline", itemz=None) -> Generator[dict, None, None]:
         "parse opml from text."
         if itemz is None:
             itemz = ",".join(cls.getnames(txt))
@@ -76,13 +79,12 @@ class OPML:
             yield obj
 
 
-def exp(event):
+def exp(event: Message):
     "export opml."
     with Locks.importlock:
         event.reply(TEMPLATE)
         nrs = 0
-        res = Locater.find(Method.fqn(OPML))
-        for nr, _fn, ooo in enumerate(res):
+        for _fn, ooo in Locater.find(Method.fqn(OPML)):
             obj = Rss()
             Method.update(obj, ooo)
             name = f"url{nrs}"
@@ -90,12 +92,13 @@ def exp(event):
             url = obj.rss
             txt = f'<outline name="{name}" display_list="{dipl}" xmlUrl="{url}"/>'
             event.reply(" " * 12 + txt)
+            nrs += 1
         event.reply(" " * 8 + "</outline>")
         event.reply("    <body>")
         event.reply("</opml>")
 
 
-def imp(event):
+def imp(event: Message):
     "import opml."
     if not event.args:
         event.iface("<filename>")

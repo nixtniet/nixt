@@ -139,7 +139,7 @@ class Console(CLI):
 
     def poll(self) -> Message:
         "return event."
-        evt = Message()
+        evt: Message = Message()
         evt.orig = repr(self)
         evt.text = input("> ")
         evt.kind = "command"

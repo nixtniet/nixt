@@ -8,13 +8,14 @@ import logging
 
 
 from random import SystemRandom
+from typing import List
 
 
 from nixt.defines import Clients, Disk, Locater, Message, Repeater
 
 
 logger = logging.getLogger(__name__)
-rand = SystemRandom()
+rand   = SystemRandom()
 
 
 def init():
@@ -28,8 +29,8 @@ class State:
 
     def __init__(self):
         super().__init__()
-        self.fnm = ""
-        self.seen = []
+        self.fnm: str = ""
+        self.seen: List[str] = []
 
     def dump(self):
         if not self.fnm:

@@ -4,7 +4,10 @@
 "configuration"
 
 
-from nixt.defines import Disk, Method, Mods, Object
+from typing import Union
+
+
+from nixt.defines import Data, Disk, Method, Mods, Object
 
 
 def cfg(event):
@@ -15,7 +18,7 @@ def cfg(event):
         event.iface(f"<{mods}>")
         return
     name = event.args[0]
-    config = Object()
+    config: Union[Data, None] = Data()
     Disk.read(config, name, "config")
     if name != "main" and not config:
         mod = Mods.get(name)

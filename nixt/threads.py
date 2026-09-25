@@ -12,9 +12,9 @@ import time
 import _thread
 
 
-from queue  import Queue
-from typing import Any, Callable, Dict, Union
-from types  import FunctionType
+from queue     import Queue
+from threading import Event, RLock
+from typing    import Any, Callable, Dict, Union
 
 
 logger = logging.getLogger(__name__)
@@ -24,15 +24,16 @@ class Thr(threading.Thread):
 
     "unit of thread"
 
-    block = threading.Event()
+    block: Event = Event()
 
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
-        self.event = None
-        self.name = kwargs.get("name", Thread.name(func))
-        self.queue: Queue = queue.Queue()
-        self.result = None
-        self.starttime = time.time()
+        self.name: str = kwargs.get("name", Thread.name(func) or "")
+        self.queue: Queue = Queue()
+        self.result: Any = None
+        self.sleep: float = 0.0
+        self.starttime: float = time.time()
+        self.state = Dict[str, Any]
         self.queue.put((func, args))
 
     def __iter__(self):
@@ -68,7 +69,7 @@ class Thread:
 
     "thread helper class"
 
-    lock = threading.RLock()
+    lock: RLock = RLock()
 
     @classmethod
     def launch(cls, func: Callable, *args: Any, **kwargs: Any) -> Thr:

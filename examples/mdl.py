@@ -26,8 +26,8 @@ def init():
             evt.rest = key
             sec = seconds(val)
             name = aliases.get(key)
-            Repeater.add(sec, cbstats, evt, name=name)
-            logger.info(Time.elapsed(time.time()-STARTTIME))
+            Repeater.add(sec, cbstats, evt)
+            logger.info("delta %s %s", Time.elapsed(time.time()-STARTTIME), SOURCE)
 
 
 DAY = 24*60*60
@@ -92,7 +92,7 @@ def getalias(txt):
 
 def getday():
     "get midnite timestamp."
-    day = datetime.datetime.now(tz="")
+    day = datetime.datetime.now(tz=None)
     day = day.replace(hour=0, minute=0, second=0, microsecond=0)
     return day.timestamp()
 

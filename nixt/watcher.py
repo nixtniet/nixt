@@ -5,11 +5,11 @@
 
 
 import os
-import threading
 import time
 
 
 from collections.abc import Callable
+from threading       import Event
 from typing          import ClassVar, Dict
 
 
@@ -22,8 +22,8 @@ e = os.path.exists
 class Watcher:
 
     cbs: ClassVar[Dict[str, Callable]] = {}
-    sleep = 1.0
-    stopped = threading.Event()
+    sleep: float = 1.0
+    stopped: Event = Event()
     times: ClassVar[Dict[str, float]] = {}
 
     @classmethod

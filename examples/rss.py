@@ -13,9 +13,13 @@ import threading
 import _thread
 
 
+from _thread import LockType, RLock
+from typing  import Any, ClassVar, Dict, Iterator, List, TextIO
+
+
 from nixt.defines import Clients, Data, Disk, Fetcher, Format, JSONL, Locater
-from nixt.defines import Logging, Main, MD5, Method, Object, Pool, Repeater
-from nixt.defines import Runner, Utils, Watcher, Workdir
+from nixt.defines import Logging, Main, MD5, Message, Method, Object, Pool
+from nixt.defines import Repeater, Runner, Utils, Watcher, Workdir
 
 
 logger = logging.getLogger(__name__)
@@ -42,46 +46,46 @@ def shutdown():
 
 class Config(Object):
 
-    polltime = 300
-    save = False
+    polltime: ClassVar[int] = 300
+    save: ClassVar[bool] = False
 
 
 class Rss(Data):
 
     def __init__(self):
         super().__init__()
-        self.__deleted__ = False
-        self.display_list = "title,link,author"
-        self.insertid = None
-        self.name = ""
-        self.rss = ""
-        self.seen = []
-        self.size = 0
+        self.__deleted__: bool = False
+        self.display_list: str = "title,link,author"
+        self.insertid: str = None
+        self.name: str = ""
+        self.rss: str  = ""
+        self.seen: List[str] = []
+        self.size: int = 0
 
 
 class State(Object):
 
-    index = 0
+    index: ClassVar[int] = 0
 
 
 class Locks:
 
-    fetchlock = _thread.allocate_lock()
-    importlock = _thread.allocate_lock()
+    fetchlock: LockType = _thread.allocate_lock()
+    importlock: LockType = _thread.allocate_lock()
 
 
 class Run:
 
-    path = ""
-    file = None
-    lock = threading.RLock()
-    configfn = ""
-    modifiedfn = ""
-    statefn = ""
-    index = 0
+    path: str = ""
+    file: TextIO = None
+    lock: RLock = RLock()
+    configfn: str = ""
+    modifiedfn: str = ""
+    statefn: str = ""
+    index: int = 0
 
     @classmethod
-    def callback(cls):
+    def callback(cls) -> None:
         "monitor log file."
         with cls.lock:
             cls.file.seek(State.index, 0)
@@ -98,7 +102,7 @@ class Run:
         gc.collect(0)
 
     @classmethod
-    def clear(cls):
+    def clear(cls) -> None:
         "retry all failed feeds."
         counter = 0
         for fnm, feed in Locater.find(Method.fqn(Rss)):
@@ -110,7 +114,7 @@ class Run:
         return counter
 
     @classmethod
-    def display(cls, obj, name=None):
+    def display(cls, obj: Any, name=None) -> None:
         "display feed."
         displaylist = ""
         if name in obj:
@@ -133,7 +137,7 @@ class Run:
         return result[:-2].rstrip()
 
     @classmethod
-    def enable(cls, path):
+    def enable(cls, path: str) -> None:
         "enabke module logger."
         formatter = Format(Logging.formats, Logging.datefmt)
         filehandler = logging.handlers.TimedRotatingFileHandler(path, 'midnight')
@@ -146,21 +150,21 @@ class Run:
         logger.setLevel("DEBUG")
 
     @classmethod
-    def got(cls, txt, feed):
+    def got(cls, text: str, feed: Dict[str, str]) -> bool:
         "verify whether text has already been seen."
-        md5 = MD5.source(txt)[:7]
+        md5 = MD5.source(text)[:7]
         if md5 in feed.seen:
             return True
         feed.seen.insert(0, md5)
         return False
 
     @classmethod
-    def log(cls, txt):
+    def log(cls, text: str) -> None:
         "log to file."
-        logger.debug(txt)
+        logger.debug(text)
 
     @classmethod
-    def run(cls, silent=False):
+    def run(cls, silent: bool = False) -> None:
         "do a fetch run of all feeds."
         nrs = 0
         if Pool.busy():
@@ -174,7 +178,7 @@ class Run:
         return nrs
 
     @classmethod
-    def start(cls, once=False):
+    def start(cls, once: bool = False) -> None:
         "initialise module."
         if Config.save:
             cls.path = j(Workdir.logdir("rss"), 'rss.log')
@@ -193,12 +197,12 @@ class Run:
             Repeater.start()
 
     @classmethod
-    def stop(cls):
+    def stop(cls) -> None:
         "shutdown."
         Watcher.stop()
 
     @classmethod
-    def sync(cls):
+    def sync(cls) -> None:
         "sync state to disk."
         if cls.index > State.index:
             State.index = cls.index
@@ -210,11 +214,11 @@ class Fetching(Runner):
     def __init__(self):
         Runner.__init__(self)
 
-    def doskip(self, errs):
+    def doskip(self, errno: int) -> bool:
         "check whether to log."
-        return errs not in [200, 304]
+        return errno not in [200, 304]
 
-    def getfeed(self, fnm, feed, items):
+    def getfeed(self, fnm: str, feed: Dict[str, str], items: Dict[str, str]) -> Iterator[Data]:
         "fetch a feed."
         result = [None,]
         response = Fetcher.geturl(feed.rss)
@@ -235,7 +239,7 @@ class Fetching(Runner):
                              items
                             ) or []
 
-    def run(self, *args, **kwargs):
+    def run(self, *args, **kwargs) -> int:
         "poll all feeds."
         counter = 0
         try:
@@ -276,7 +280,7 @@ class RSS:
     "RSS parser"
 
     @classmethod
-    def getitem(cls, line, item):
+    def getitem(cls, line: str, item: str):
         "return item from line."
         lne = ""
         index1 = line.find(f"<{item}>")
@@ -289,7 +293,7 @@ class RSS:
         return Fetcher.cdata(line[index1:index2]).strip()
 
     @classmethod
-    def getitems(cls, text, token, nrs=None):
+    def getitems(cls, text: str, token: str, nrs: int = 0) -> Iterator[str]:
         "get items from text."
         index = 0
         end = len(text)
@@ -310,7 +314,7 @@ class RSS:
             yield text[index1:index2]
 
     @classmethod
-    def parse(cls, txt, toke="item", items="title,link"):
+    def parse(cls, txt, toke="item", items="title,link") -> Iterator[Data]:
         "parse feed."
         for line in cls.getitems(txt, toke):
             line = line.strip()
@@ -323,7 +327,7 @@ class RSS:
             yield obj
 
 
-def atr(event):
+def atr(event: Message):
     "show attributes of a feed."
     if not event.rest:
         event.iface("<stringinurl>")
@@ -351,7 +355,7 @@ def atr(event):
         event.reply(','.join(resulting))
 
 
-def dpl(event):
+def dpl(event: Message):
     "set feed items to display."
     if len(event.args) < 2:
         event.iface("<stringinurl> <item1,item2>")
@@ -364,7 +368,7 @@ def dpl(event):
     event.ok()
 
 
-def nme(event):
+def nme(event: Message):
     "set name of a feed."
     if len(event.args) == 1:
         name = ""
@@ -386,7 +390,7 @@ def nme(event):
     event.ok()
 
 
-def rem(event):
+def rem(event: Message):
     "remove a feed."
     if len(event.args) != 1:
         event.iface("<stringinurl>")
@@ -403,7 +407,7 @@ def rem(event):
             break
 
 
-def res(event):
+def res(event: Message):
     "restore a feed."
     if len(event.args) != 1:
         event.iface("<stringinurl>")
@@ -423,7 +427,7 @@ def res(event):
     event.reply(f"{nrs} feeds restored.")
 
 
-def rss(event):
+def rss(event: Message):
     "add a feed."
     if not event.rest:
         event.iface("<url>")
@@ -445,7 +449,7 @@ def rss(event):
     event.ok()
 
 
-def syn(event):
+def syn(event: Message):
     "synchronize a feed."
     if Main.debug:
         return

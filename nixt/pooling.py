@@ -5,10 +5,10 @@
 
 
 import os
-import threading
 
 
-from typing import Any, ClassVar, List
+from threading import RLock
+from typing    import Any, ClassVar, List
 
 
 from .runners import Runner
@@ -19,8 +19,8 @@ class Pool:
     "multiple runners."
 
     runners: ClassVar[List[Runner]] = []
-    clazz = Runner
-    lock = threading.RLock()
+    clazz: type = Runner
+    lock: RLock = RLock()
     max = os.cpu_count()
     nrcpu = 1
     nrlast = 0

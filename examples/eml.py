@@ -9,14 +9,21 @@ import os
 import time
 
 
+from mailbox import Maildir, Mailbox, Message, mbox
+from typing  import Any, Union
+
+
 from nixt.defines import Data, Disk, Locater, Method, Time
+
+
+Thing = Union[Mailbox, Maildir]
 
 
 class Email(Data):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.text = ""
+        self.text: str
 
 
 def eml(event):
@@ -29,7 +36,7 @@ def eml(event):
     for key in event.silent:
         if key in args:
             args.remove(key)
-    args = set(args)
+    arguments = list(set(args))
     result = sorted(
                     Locater.find("email", event.gets),
                     key=lambda x: Time.timed(x[1].Date)
@@ -40,14 +47,14 @@ def eml(event):
             obj = obj[-1]
             tme = getattr(obj, "Date", "")
             diff = time.time() - Time.timed(tme)
-            txt = Method.fmt(obj, args, plain=True)
+            txt = Method.fmt(obj, arguments, plain=True)
             event.reply(f'{event.index} {txt} {Time.elapsed(diff)}')
     else:
         for _fn, obj in result:
             nrs += 1
             tme = getattr(obj, "Date", "")
             diff = time.time() - Time.timed(tme)
-            txt = Method.fmt(obj, args, plain=True)
+            txt = Method.fmt(obj, arguments, plain=True)
             event.reply(f'{nrs} {txt} {Time.elapsed(diff)}')
     if not result:
         event.reply("no emails found.")
@@ -63,10 +70,11 @@ def mbx(event):
         event.iface("<path>")
         return
     event.reply(f"reading from {fnm}")
+    thing: Union[Mailbox, Maildir]
     if os.path.isdir(fnm):
-        thing = mailbox.Maildir(fnm, create=False)
+        thing = Maildir(fnm, create=False)
     elif os.path.isfile(fnm):
-        thing = mailbox.mbox(fnm, create=False)
+        thing = mbox(fnm, create=False)
     else:
         return
     try:
@@ -76,12 +84,18 @@ def mbx(event):
     nrs = 0
     try:
         for mail in thing:
+            tmp = Data()
+            Method.update(tmp, mail)
             obj = Email()
-            Method.update(obj, dict(mail._headers))
-            obj.text = ""
+            Method.update(obj, tmp._headers)
             for payload in mail.walk():
                 if payload.get_content_type() == 'text/plain':
-                    obj.text += payload.get_payload()
+                    load =  payload.get_payload()
+                    if isinstance(load, str):
+                        obj.text += load
+                    else:
+                        for line in load:
+                            obj.text += str(line)
             obj.text = obj.text.replace("\\n", "\n")
             Disk.write(obj)
             nrs += 1

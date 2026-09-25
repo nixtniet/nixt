@@ -7,6 +7,9 @@
 import threading
 
 
+from threading import Event, RLock
+
+
 from .brokers import Broker
 from .engines import Engine
 from .message import Message
@@ -16,11 +19,11 @@ class Display:
 
     "unit of display"
 
-    block = threading.Event()
+    block: Event = Event()
 
     def __init__(self):
-        self.olock = threading.RLock()
-        self.silent = False
+        self.olock: RLock = RLock()
+        self.silent: bool = False
 
     def announce(self, text: str) -> None:
         "announce text to all channels."

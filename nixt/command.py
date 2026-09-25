@@ -42,7 +42,7 @@ class Commands:
         event.ready()
 
     @classmethod
-    def list(cls) -> Union[List[str] | None]:
+    def list(cls) -> Union[List[str], None]:
         "scan for a list of all commands."
         result = []
         for modname in Mods.list():

@@ -4,11 +4,11 @@
 "if it repeats it is important"
 
 
-import threading
 import time
 
 
 from collections.abc import Callable
+from threading       import Event
 from typing          import Any, ClassVar, Dict, List
 
 
@@ -19,14 +19,14 @@ class Repeater:
 
     "repeat at interval"
 
-    running = threading.Event()
-    stopped = threading.Event()
-    counter = 0
-    sleeptime = 0.1
+    running: ClassVar[Event] = Event()
+    stopped: ClassVar[Event] = Event()
+    counter: ClassVar[int] = 0
+    sleeptime: ClassVar[float] = 0.1
     todo: ClassVar[Dict[str, List[Any]]] = {}
 
     @classmethod
-    def add(cls, sleep: int, func: Callable, *args: Any, **kwargs: Dict[str,Any]) -> None:
+    def add(cls, sleep: float, func: Callable, *args: Any, **kwargs: Dict[str, Any]) -> None:
         "add a repeater."
         slp = str(sleep)
         if slp not in cls.todo:

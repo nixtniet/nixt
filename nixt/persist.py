@@ -12,7 +12,8 @@ import threading
 import time
 
 
-from typing import Any, ClassVar, Dict, Generator, List, Set, Tuple, Union
+from threading import RLock
+from typing    import Any, ClassVar, Dict, Generator, List, Set, Tuple, Union
 
 
 from .encoder import JSON
@@ -33,7 +34,7 @@ class Cache:
 
     "path object cache"
 
-    paths: ClassVar[Dict[str, object]] = {}
+    paths: ClassVar[Dict[str, Any]] = {}
 
     @classmethod
     def add(cls, path: str, obj: Any) -> None:
@@ -58,15 +59,15 @@ class Disk:
 
     "read/write disk"
 
-    lock = threading.RLock()
+    lock: RLock = RLock()
 
     @classmethod
-    def ident(cls, obj: Object) -> str:
+    def ident(cls, obj: Any) -> str:
         "return ident string for object."
         return os.path.join(Method.fqn(obj), *str(datetime.datetime.now(tz=None)).split())
 
     @classmethod
-    def read(cls, obj: Object, path: str, base: str = "store") -> bool:
+    def read(cls, obj: Any, path: str, base: str = "store") -> bool:
         "read object from path."
         with cls.lock:
             pth = os.path.join(Workdir.wdr, base, path)
@@ -80,7 +81,7 @@ class Disk:
             return True
 
     @classmethod
-    def write(cls, obj: Object, path: str = "", base: str = "store") -> str:
+    def write(cls, obj: Any, path: str = "", base: str = "store") -> str:
         "write object to disk."
         with cls.lock:
             if path == "":
@@ -97,7 +98,7 @@ class Locater:
 
     "find objects"
 
-    lock = threading.RLock()
+    lock: RLock = RLock()
 
     @classmethod
     def attrs(cls, kind: str) -> Set[str]:
@@ -134,10 +135,10 @@ class Locater:
                 if nritems and nrs >= nritems:
                     break
                 nrs += 1
-                yield pth, obj
+                yield (pth, obj)
 
     @classmethod
-    def first(cls, obj: Object, selector: Dict[str,str] = {}) -> str:
+    def first(cls, obj: Any, selector: Dict[str,str] = {}) -> str:
         "return first object of a kind."
         if selector is None:
             selector = {}
@@ -182,7 +183,7 @@ class Locater:
         return float(timd)
 
     @classmethod
-    def last(cls, obj: Object, selector=None) -> str:
+    def last(cls, obj: Any, selector=None) -> str:
         "last saved version."
         if selector is None:
             selector = {}

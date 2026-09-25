@@ -5,11 +5,11 @@
 
 
 import json
-import threading
 import types
 
 
-from typing import Any, Iterator, Literal, Union
+from threading import RLock
+from typing    import Any, Iterator, Literal, Union
 
 
 jsontypes = Union[dict,list,bool,float,int,str]
@@ -19,7 +19,7 @@ class Encoder(json.JSONEncoder):
 
     "object to string"
 
-    lock = threading.RLock()
+    lock: RLock = RLock()
 
     def default(self, o):
         "generate serializable versions."

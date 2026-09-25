@@ -14,10 +14,10 @@ import time
 import _thread
 
 
-from typing import ClassVar, List
+from typing import Any, ClassVar, List, Union
 
 
-from nixt.defines import Broker, Buffer, Commands, Disk, Main, Object
+from nixt.defines import Broker, Buffer, Commands, Data, Disk, Main, Object
 from nixt.defines import Message, Mods, Method, Thread
 
 
@@ -39,7 +39,7 @@ def init():
     return irc
 
 
-class Config(Object):
+class Config(Data):
 
     name = Main.name or Method.pkgname(Mods)
     channel = Main.channel or f"#{name}"
@@ -91,6 +91,38 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
+class Events(Data):
+
+    def __init__(self):
+        Data.__init__(self)
+        self.authed: Event = Event()
+        self.connected: Event = Event()
+        self.joined: Event = Event()
+        self.logon: Event = Event()
+        self.ready: Event = Event()
+ 
+
+class State(Data):
+
+    def __init__(self):
+        Data.__init__(self)
+        self.error = ""
+        self.host = ""
+        self.keeprunning = False
+        self.last = time.time()
+        self.latest = time.time()
+        self.lastline = ""
+        self.needconnect = False
+        self.nickchange = 0
+        self.nrconnect = 0
+        self.nrerror = 0
+        self.nrsend = 0
+        self.pongcheck = False
+        self.running = threading.Event()
+        self.sleep = self.cfg.sleep
+        self.stopkeep = False
+
+
 class IRC(Buffer):
 
     def __init__(self):
@@ -98,30 +130,12 @@ class IRC(Buffer):
         self.buffer = []
         self.cfg = Config()
         self.channels = []
-        self.events = Object()
-        self.events.authed = threading.Event()
-        self.events.connected = threading.Event()
-        self.events.joined = threading.Event()
-        self.events.logon = threading.Event()
-        self.events.ready = threading.Event()
+        self.events = Events()
         self.lock = threading.RLock()
         self.noflood = True
         self.silent = False
-        self.sock = None
-        self.state = Object()
-        self.state.error = ""
-        self.state.keeprunning = False
-        self.state.last = time.time()
-        self.state.lastline = ""
-        self.state.nickchange = 0
-        self.state.nrconnect = 0
-        self.state.nrerror = 0
-        self.state.nrsend = 0
-        self.state.pongcheck = False
-        self.state.running = threading.Event()
-        self.state.sleep = self.cfg.sleep
-        self.state.stopkeep = False
-        self.zelf = ""
+        self.sock: Any = None
+        self.state = State()
         self.register("903", cb_h903)
         self.register("904", cb_h903)
         self.register("AUTHENTICATE", cb_auth)
@@ -146,7 +160,7 @@ class IRC(Buffer):
         if self.cfg.word or self.cfg.word:
             logger.debug("using SASL")
             self.cfg.sasl = True
-            self.cfg.port = "6697"
+            self.cfg.port = 6697
             ctx = ssl.SSLContext(ssl.PROTOCOL_TLS)
             ctx.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1
             ctx.minimum_version = ssl.TLSVersion.TLSv1_2
@@ -156,8 +170,9 @@ class IRC(Buffer):
             self.direct("CAP LS 302")
         else:
             addr = socket.getaddrinfo(server, port, socket.AF_INET)[-1][-1]
-            addr = tuple(addr[:2])
-            self.sock = socket.create_connection(addr)
+            host, port = addr[:2]
+            addr2 = (str(host), int(port))
+            self.sock = socket.create_connection(addr2)
             self.events.authed.set()
         if self.sock:
             os.set_inheritable(self.sock.fileno(), True)

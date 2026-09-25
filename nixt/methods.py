@@ -66,7 +66,7 @@ class Method:
             cls.typed(obj, key, val)
 
     @classmethod
-    def fmt(cls, obj: Any, args: List[Any] = [], skip: List[str] = [], plain: bool = False, empty: bool = False) -> str:
+    def fmt(cls, obj: Any, args: List[str] = [], skip: List[str] = [], plain: bool = False, empty: bool = False) -> str:
         "format object info printable string."
         if args is None:
             args = list(obj.__dict__.keys())

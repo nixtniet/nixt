@@ -12,7 +12,7 @@ import urllib.parse
 import urllib.request
 
 
-from typing import Any, ClassVar, Dict, TextIO
+from typing import Any, ClassVar, Dict, TextIO, Union
 
 
 from urllib.error import HTTPError, URLError
@@ -28,9 +28,9 @@ class Response(Data):
 
     def __init__(self):
         Data.__init__(self)
-        self.data = b""
-        self.reason = ""
-        self.status = None
+        self.data: bytes = b""
+        self.reason: str = ""
+        self.status: Union[int, None] = None
 
 
 class Fetcher:

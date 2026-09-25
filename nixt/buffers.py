@@ -10,7 +10,8 @@ import threading
 import _thread
 
 
-from queue import Queue
+from queue     import Queue
+from threading import Event
 
 
 from .brokers import Broker
@@ -27,8 +28,8 @@ class Output:
     "dedicated output loop"
 
     def __init__(self):
-        self.oqueue: Queue = queue.Queue()
-        self.ostopped = threading.Event()
+        self.oqueue: Queue = Queue()
+        self.ostopped: Event = Event()
 
     def display(self, event: Message) -> None:
         "do actual display."

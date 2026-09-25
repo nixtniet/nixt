@@ -15,7 +15,7 @@ class Time:
 
     "time related utilities."
 
-    starttime = time.time()
+    starttime: float = time.time()
     times: ClassVar[List[str]] = [
         "%a, %d %b %Y %H:%M:%S %z",
         "%a, %d %b %Y %H:%M:%S",
@@ -31,7 +31,7 @@ class Time:
     ]
 
     @classmethod
-    def date(cls, daystr: str) -> Union[float,None]:
+    def date(cls, daystr: str) -> Union[float, None]:
         "date from string."
         daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
         for fmat in cls.times:
@@ -42,7 +42,7 @@ class Time:
         return None
 
     @classmethod
-    def elapsed(cls, seconds: int, short: bool = True) -> str:
+    def elapsed(cls, seconds: float, short: bool = True) -> str:
         "seconds to string."
         txt = ""
         nsec = float(seconds)

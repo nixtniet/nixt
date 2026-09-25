@@ -11,6 +11,7 @@ import time
 import _thread
 
 
+from threading import Event
 from typing import Callable
 
 
@@ -31,8 +32,8 @@ class Boot:
 
     "at startup"
 
-    running = threading.Event()
-    stopped = threading.Event()
+    running: Event = Event()
+    stopped: Event = Event()
 
     @classmethod
     def banner(cls):
