@@ -9,16 +9,19 @@ import time
 
 
 from nixt.defines import Time
+from nixt.threads import Thr
 
 
 def thr(event):
     "list of running threads."
     result = []
     for thread in sorted(threading.enumerate(), key=lambda x: x.name):
+        if not isinstance(thread, Thr):
+            continue
         if str(thread).startswith("<_"):
             continue
         if getattr(thread, "sleep", None):
-            uptime = thread.sleep - int(time.time() - thread.state["latest"])
+            uptime = float(thread.sleep) - float(time.time() - float(thread.state["latest"]))
         elif getattr(thread, "starttime", None):
             uptime = time.time() - thread.starttime
         else:

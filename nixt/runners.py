@@ -15,7 +15,7 @@ class Runner(Loop):
 
     "run job."
 
-    def run(self, *args: Any, **kwargs: Dict[str, Any]) -> None:
+    def run(self, *args: Any, **kwargs: Dict[str, Any]) -> Any:
         "fetch a feed."
         raise NotImplementedError
 

@@ -14,7 +14,7 @@ import _thread
 
 from queue     import Queue
 from threading import Event, RLock
-from typing    import Any, Callable, Dict, Union
+from typing    import Any, Callable, ClassVar, Dict, Union
 
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ class Thr(threading.Thread):
 
     "unit of thread"
 
-    block: Event = Event()
+    block: ClassVar[Event] = Event()
 
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
