@@ -39,7 +39,7 @@ class Kernel(Boot):
 
     @classmethod
     def boot(cls):
-        cls.configure(Main)
+        cls.configure()
         Mods.dir("mods", Workdir.moddir())
         Mods.dir("module", Mods.moddir())
         Mods.dir("examples", "examples")

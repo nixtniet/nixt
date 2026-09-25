@@ -4,9 +4,6 @@
 "loggers"
 
 
-import logging
-
-
 from logging import basicConfig, Formatter, LogRecord, StreamHandler
 from typing  import ClassVar
 

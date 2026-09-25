@@ -12,7 +12,7 @@ import sys
 NAME = "nixt"
 
 
-SKIP = ["---", "Your", "All"]
+SKIP = ["---", "Your", "All", "Success"]
 
 
 def doskip(line):
@@ -33,3 +33,4 @@ def popen(txt):
 
 popen(f"ruff check {NAME} bin/tinder testing examples")
 popen(f"pylint {NAME} bin/tinder testing examples")
+popen(f"mypy -p {NAME} -p testing -p examples --check-untyped-defs")

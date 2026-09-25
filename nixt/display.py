@@ -4,9 +4,6 @@
 "an object for a string"
 
 
-import threading
-
-
 from threading import Event, RLock
 
 

@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# type: ignore
 
 
 "encoder/decoder"
@@ -17,7 +18,7 @@ class TestEncoder(unittest.TestCase):
 
     def test_dumps(self):
         obj = Object()
-        setattr(obj, "test", "bla")
+        obj.test = "bla"
         self.assertEqual(JSON.dumps(obj), VALIDJSON)
 
 
@@ -25,8 +26,9 @@ class TestDecoder(unittest.TestCase):
 
     def test_loads(self):
         obj = Object()
-        setattr(obj, "test", "bla")
-        oobj = JSON.loads(JSON.dumps(obj))
+        obj.test = "bla"
+        oobj = Object()
+        Method.construct(oobj, JSON.loads(JSON.dumps(obj)))
         self.assertEqual(getattr(oobj, "test", None), "bla")
 
 
@@ -58,7 +60,7 @@ class TestTypes(unittest.TestCase):
 
     def test_object(self):
         ooo = Object()
-        setattr(ooo, "a", "b")
+        ooo.a = "b"
         obj = Object()
         Method.update(obj, JSON.loads(JSON.dumps(ooo)))
         self.assertTrue(getattr(obj, "a", False))

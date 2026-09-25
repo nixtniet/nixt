@@ -5,8 +5,6 @@
 
 
 import logging
-import queue
-import threading
 import _thread
 
 

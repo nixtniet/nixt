@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Boot, Main, Thread
+from nixt.defines import Boot, Thread
 
 
 class TestRuntime(unittest.TestCase):

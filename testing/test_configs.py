@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# type: ignore
 
 
 "logging tests"
@@ -24,7 +25,7 @@ class TestMain(unittest.TestCase):
         self.assertTrue(type(main), Main)
 
     def test_main(self):
-        setattr(Main, "a", "b")
+        Main.a = "b"
         self.assertEqual(Main.a, "b")
 
     def test_missing(self):

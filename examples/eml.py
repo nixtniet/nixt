@@ -4,13 +4,12 @@
 "mailbox"
 
 
-import mailbox
 import os
 import time
 
 
-from mailbox import Maildir, Mailbox, Message, mbox
-from typing  import Any, Union
+from mailbox import Maildir, Mailbox, mbox
+from typing  import Union
 
 
 from nixt.defines import Data, Disk, Locater, Method, Time

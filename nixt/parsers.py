@@ -8,7 +8,7 @@ from typing import Any
 
 
 from .methods import Method
-from .objects import Data, Object
+from .objects import Data
 
 
 class Parser:

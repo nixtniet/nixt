@@ -7,7 +7,7 @@
 from typing import Union
 
 
-from nixt.defines import Data, Disk, Method, Mods, Object
+from nixt.defines import Data, Disk, Method, Mods
 
 
 def cfg(event):

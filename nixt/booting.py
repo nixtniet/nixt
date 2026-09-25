@@ -36,9 +36,8 @@ class Boot:
     stopped: Event = Event()
 
     @classmethod
-    def banner(cls):
+    def banner(cls) -> None:
         "greetings."
-        raise NotImplementedError
 
     @classmethod
     def configure(cls) -> None:

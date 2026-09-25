@@ -8,7 +8,6 @@ import datetime
 import json
 import os
 import pathlib
-import threading
 import time
 
 
@@ -18,7 +17,7 @@ from typing    import Any, ClassVar, Dict, Generator, List, Set, Tuple, Union
 
 from .encoder import JSON
 from .methods import Method
-from .objects import Data, Object
+from .objects import Data
 from .utility import Utils
 
 
@@ -116,7 +115,7 @@ class Locater:
         return len(list(cls.find(kind)))
 
     @classmethod
-    def find(cls, kind: str, selector: Dict[str,str] = {}, removed: bool = False, matching: bool = False, nritems: int = 0) -> Generator[Tuple[str, Any], None, None]:
+    def find(cls, kind: str, selector: Union[Dict[str,str], None] = None, removed: bool = False, matching: bool = False, nritems: int = 0) -> Generator[Tuple[str, Any], None, None]:
         "locate objects by matching atributes."
         with cls.lock:
             if selector is None:
@@ -138,7 +137,7 @@ class Locater:
                 yield (pth, obj)
 
     @classmethod
-    def first(cls, obj: Any, selector: Dict[str,str] = {}) -> str:
+    def first(cls, obj: Any, selector: Union[Dict[str,str], None] = None) -> str:
         "return first object of a kind."
         if selector is None:
             selector = {}

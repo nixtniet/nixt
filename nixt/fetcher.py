@@ -6,13 +6,9 @@
 
 import html
 import re
-import urllib
-import urllib.error
-import urllib.parse
-import urllib.request
 
 
-from typing import Any, ClassVar, Dict, TextIO, Union
+from typing import Any, ClassVar, Dict, Union
 
 
 from urllib.error import HTTPError, URLError
@@ -62,12 +58,12 @@ class Fetcher:
         response.reason = ""
         try:
             Method.update(response, cls.request(req))
-        except URLError as ex:
-            response.reason = str(ex.reason)
         except HTTPError as ex:
             response.data = b""
             response.reason = str(ex.reason)
             response.status = ex.status
+        except URLError as ex:
+            response.reason = str(ex.reason)
         return response
 
     @classmethod

@@ -14,10 +14,10 @@ import time
 import _thread
 
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, List
 
 
-from nixt.defines import Broker, Buffer, Commands, Data, Disk, Main, Object
+from nixt.defines import Broker, Buffer, Commands, Data, Disk, Main
 from nixt.defines import Message, Mods, Method, Thread
 
 
@@ -146,6 +146,7 @@ class IRC(Buffer):
         self.register("PRIVMSG", cb_privmsg)
         self.register("QUIT", cb_quit)
         self.register("366", cb_ready)
+        self.zelf: str = ""
 
     def announce(self, text):
         "announce test on all joined channels."

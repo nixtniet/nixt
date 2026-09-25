@@ -25,7 +25,6 @@ def init():
             evt.text = ""
             evt.rest = key
             sec = seconds(val)
-            name = aliases.get(key)
             Repeater.add(sec, cbstats, evt)
             logger.info("delta %s %s", Time.elapsed(time.time()-STARTTIME), SOURCE)
 

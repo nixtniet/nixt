@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# type: ignore
 
 
 "persist tests"
@@ -29,7 +30,7 @@ class TestDisk(unittest.TestCase):
         self.assertTrue(type(disk), Disk)
 
     def test_loadcfg(self):
-        setattr(Main, "a", "b")
+        Main.a = "b"
         Disk.read(Main, "main", "config")
         self.assertEqual(getattr(Main, "a", None), "b")
 
@@ -39,7 +40,7 @@ class TestDisk(unittest.TestCase):
         self.assertTrue(os.path.exists(os.path.join(Workdir.wdr, "store", opath)))
 
     def test_writecfg(self):
-        setattr(Main, "a", "b")
+        Main.a = "b"
         Disk.write(Main, "main", "config")
         self.assertTrue(os.path.exists(os.path.join(Workdir.wdr, "config", "main")))
 

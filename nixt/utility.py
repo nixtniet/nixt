@@ -58,9 +58,9 @@ class Utils:
             return None
         if module.__spec__.loader is None:
             return None
-        get_source = getattr(module.__spec__.loader, "get_source")
-        if get_source:
-            return get_source(module.__name__)
+        get = getattr(module.__spec__.loader, "get_source", None)
+        if get:
+            return get(module.__name__)
         return None
 
     @staticmethod

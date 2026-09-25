@@ -31,8 +31,7 @@ class Message(Data):
 
     def iface(self, text: str) -> None:
         "show interface."
-        txt = f"{self.cmd} {text}"
-        self.reply(text)
+        self.reply(f"{self.cmd} {text}")
 
     def ok(self, text: str = "") -> None:
         "print ok response."

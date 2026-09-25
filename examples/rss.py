@@ -10,16 +10,13 @@ import logging.handlers
 import os
 import pathlib
 import re
-import threading
 import urllib
 import _thread
 
 
-from typing import Dict, Generator, List
-
-
 from _thread import LockType, RLock
-from typing  import Any, ClassVar, Dict, Iterator, List, TextIO, Union
+from typing  import Any, ClassVar, Generator, Iterator, List, TextIO
+from typing  import Union
 
 
 from nixt.defines import Clients, Data, Disk, Fetcher, Format, JSONL, Locater
@@ -249,7 +246,6 @@ class Fetching(Runner):
 
     def getfeed(self, fnm: str, feed: Rss, items: str) -> Iterator[Feed]:
         "fetch a feed."
-        result = [None,]
         response = Fetcher.geturl(feed.rss)
         if not response.data:
             if response.status and self.doskip(response.status):
@@ -456,8 +452,7 @@ def exp(event: Message):
     "export opml."
     with Locks.importlock:
         event.reply(TEMPLATE)
-        nrs = 0
-        for _fn, ooo in Locater.find(Method.fqn(OPML)):
+        for nrs, fnm, ooo in enumerate(Locater.find(Method.fqn(OPML))): # type: ignore
             obj = Rss()
             Method.update(obj, ooo)
             name = f"url{nrs}"
@@ -465,7 +460,6 @@ def exp(event: Message):
             url = obj.rss
             txt = f'<outline name="{name}" display_list="{dipl}" xmlUrl="{url}"/>'
             event.reply(" " * 12 + txt)
-            nrs += 1
         event.reply(" " * 8 + "</outline>")
         event.reply("    <body>")
         event.reply("</opml>")

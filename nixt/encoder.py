@@ -9,7 +9,7 @@ import types
 
 
 from threading import RLock
-from typing    import Any, Iterator, Literal, Union
+from typing    import Union
 
 
 jsontypes = Union[dict,list,bool,float,int,str]

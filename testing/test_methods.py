@@ -1,4 +1,6 @@
 # This file is placed in the Public Domain.
+# type: ignore
+# pylint: disable=W0201
 
 
 "logging tests"
@@ -12,11 +14,7 @@ from nixt.defines import Object, Method
 
 class Mine(Object):
 
-
-    def __init__(self):
-        Object.__init__(self)
-        self.a = ""
-        self.key = ""
+    pass
 
 
 class TestMethod(unittest.TestCase):
@@ -34,7 +32,7 @@ class TestMethod(unittest.TestCase):
     def test_class(self):
         obj = Mine()
         clz = obj.__class__()
-        self.assertTrue("Object" in str(type(clz)))
+        self.assertTrue("Mine" in str(type(clz)))
 
     def test_contains(self):
         obj = Mine()

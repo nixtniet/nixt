@@ -6,7 +6,6 @@
 
 import inspect
 import logging
-import queue
 import threading
 import time
 import _thread

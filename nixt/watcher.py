@@ -10,7 +10,7 @@ import time
 
 from collections.abc import Callable
 from threading       import Event
-from typing          import ClassVar, Dict
+from typing          import ClassVar, Dict, Union
 
 
 from .threads import Thread
@@ -34,7 +34,7 @@ class Watcher:
         cls.cbs[path] = callback
 
     @classmethod
-    def init(cls, times: Dict[str,int] = {}):
+    def init(cls, times: Union[Dict[str,int], None] = None):
         "read timestamps."
         if times is None:
             times= {}
