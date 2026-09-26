@@ -11,11 +11,14 @@ from .looping import Loop
 from .threads import Thread
 
 
+KW = Dict[str, Any]
+
+
 class Runner(Loop):
 
     "run job."
 
-    def run(self, *args: Any, **kwargs: Dict[str, Any]) -> Any:
+    def run(self, *args: Any, **kwargs: Any) -> Any:
         "fetch a feed."
         raise NotImplementedError
 

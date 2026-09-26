@@ -15,6 +15,9 @@ from typing          import Any, ClassVar, Dict, List
 from .threads import Thread
 
 
+Todo = Dict[str, List[Any]]
+
+
 class Repeater:
 
     "repeat at interval"
@@ -23,10 +26,10 @@ class Repeater:
     stopped: ClassVar[Event] = Event()
     counter: ClassVar[int] = 0
     sleeptime: ClassVar[float] = 0.1
-    todo: ClassVar[Dict[str, List[Any]]] = {}
+    todo: ClassVar[Todo] = {}
 
     @classmethod
-    def add(cls, sleep: float, func: Callable, *args: Any, **kwargs: Dict[str, Any]) -> None:
+    def add(cls, sleep: float, func: Callable, *args: Any, **kwargs: Any) -> None:
         "add a repeater."
         slp = str(sleep)
         if slp not in cls.todo:

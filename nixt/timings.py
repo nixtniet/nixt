@@ -11,6 +11,7 @@ import time
 from typing import ClassVar, List, Union
 
 
+Float = Union[float, None]
 Times = ClassVar[List[str]]
 
 
@@ -34,7 +35,7 @@ class Time:
     ]
 
     @classmethod
-    def date(cls, daystr: str) -> Union[float, None]:
+    def date(cls, daystr: str) -> Float:
         "date from string."
         daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
         for fmat in cls.times:
@@ -86,7 +87,7 @@ class Time:
         return txt
 
     @classmethod
-    def extract(cls, daystr: str) -> Union[float, None]:
+    def extract(cls, daystr: str) -> Float:
         "extract date/time from string."
         daystr = str(daystr)
         res = None

@@ -15,6 +15,11 @@ from typing import Any, Dict, Generator, List, Tuple, Union
 from .objects import Object
 
 
+Keys   = List[str]
+Items  = List[Tuple[str, Any]]
+Values = List[Any]
+
+
 class Method:
 
     "yeah"
@@ -137,7 +142,7 @@ class Method:
         return True
 
     @classmethod
-    def items(cls, obj: Any) -> List[Tuple[str ,Any]]:
+    def items(cls, obj: Any) -> Items:
         "object's key,value pairs."
         if isinstance(obj, type):
             return [(x, getattr(obj, x)) for x in dir(obj) if not x.startswith("_")]
@@ -148,7 +153,7 @@ class Method:
         return list(obj.__dict__.items())
 
     @classmethod
-    def keys(cls, obj: Any) -> List[str]:
+    def keys(cls, obj: Any) -> Keys:
         "object's keys."
         if isinstance(obj, dict):
             return list(obj.keys())
@@ -298,7 +303,7 @@ class Method:
             obj.__dict__.update(data.__dict__)
 
     @classmethod
-    def values(cls, obj: Any) -> List[Any]:
+    def values(cls, obj: Any) -> Values:
         "object's values."
         if isinstance(obj, type):
             return [getattr(obj, x) for x in dir(obj) if not x.startswith("_")]

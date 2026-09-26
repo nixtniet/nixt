@@ -7,6 +7,10 @@
 from typing import Any, ClassVar, Dict, Generator, Tuple
 
 
+Liked   = Generator[Tuple[str, Any], None, None]
+Objects = Generator[Any, None, None]
+
+
 class Broker:
 
     "map repr(obj) to obj"
@@ -29,14 +33,14 @@ class Broker:
         return repr(obj) in cls.objects
 
     @classmethod
-    def like(cls, text: str) -> Generator[Tuple[str, Any], None, None]:
+    def like(cls, text: str) -> Liked:
         "all keys with a substring in their key."
         for orig in cls.objects:
             if text in orig.split()[0]:
                 yield (orig, cls.get(orig))
 
     @classmethod
-    def objs(cls, attr: str) -> Generator[Any, None, None]:
+    def objs(cls, attr: str) -> Objects:
         "objects with a certain attribute."
         for obj in cls.objects.values():
             if attr in dir(obj):

@@ -21,8 +21,8 @@ from .objects import Data
 from .utility import Utils
 
 
-Paths = Generator[str, None, None]
-Result = Generator[Tuple[str, Any], None, None]
+Paths    = Generator[str, None, None]
+Result   = Generator[Tuple[str, Any], None, None]
 Selector = Union[Dict[str, str], None]
 
 

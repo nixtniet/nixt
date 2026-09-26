@@ -17,6 +17,9 @@ from .sources import MD5
 from .utility import Utils
 
 
+Module = Union[ModuleType, None]
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -35,7 +38,7 @@ class Mods:
         cls.dirs[pkgname] = path
 
     @classmethod
-    def get(cls, name: str, force: bool = False) -> Union[ModuleType, None]:
+    def get(cls, name: str, force: bool = False) -> Module:
         "return module from cache or import module."
         for pkgname, path in cls.dirs.items():
             modname = f"{pkgname}.{name}"
@@ -67,7 +70,7 @@ class Mods:
         return ",".join(result)
 
     @classmethod
-    def importer(cls, name: str, pth: str = "") -> Union[ModuleType, None]:
+    def importer(cls, name: str, pth: str = "") -> Module:
         "import module by path."
         import importlib.util
         spec = importlib.util.spec_from_file_location(name, pth)
