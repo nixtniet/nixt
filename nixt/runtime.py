@@ -4,13 +4,13 @@
 "runtime"
 
 
-import argparse
 import os
 import sys
 import time
 
 
-from typing import Any, Callable, TextIO, Union
+from argparse import SUPPRESS, ArgumentParser, RawDescriptionHelpFormatter
+from typing  import Any, Callable, TextIO, Union
 
 
 from .defines import Boot, Cmd, Commands, Main, MD5, Message
@@ -25,7 +25,7 @@ class Arguments:
     "comamnd line arguments"
 
     @classmethod
-    def getargs(cls):
+    def getargs(cls) -> None:
         "parse commandline arguments."
         Main.name = Main.name or Method.pkgname(Main)
         theparser = cls.getparser()
@@ -43,10 +43,10 @@ class Arguments:
         optionparser.add_argument("-p", "--path", default='', help='path to modules directory.', metavar="path")
         optparser = theparser.add_argument_group()
         optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
-        optparser.add_argument("--channel", default="", help=argparse.SUPPRESS)
-        optparser.add_argument("--default", default="irc,mdl,rss,wsd", help=argparse.SUPPRESS)
-        optparser.add_argument("--local", action="store_true", help=argparse.SUPPRESS)
-        optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
+        optparser.add_argument("--channel", default="", help=SUPPRESS)
+        optparser.add_argument("--default", default="irc,mdl,rss,wsd", help=SUPPRESS)
+        optparser.add_argument("--local", action="store_true", help=SUPPRESS)
+        optparser.add_argument("--nochdir", action="store_true", help=SUPPRESS)
         optparser.add_argument("--scanner", action="store_true", help="do full modules scan on boot.")
         optparser.add_argument("--wdr", default="", help="set modules directory.")
         args, arguments = theparser.parse_known_args()
@@ -54,13 +54,13 @@ class Arguments:
         Main.otxt = " ".join(arguments)
 
     @classmethod
-    def getparser(cls):
+    def getparser(cls) -> ArgumentParser:
         "create parser."
-        return argparse.ArgumentParser(
+        return ArgumentParser(
             prog=Main.name,
             description=f'{Main.name.upper()}',
             epilog='use "%(prog)s cmd" for a list of commands.',
-            formatter_class=argparse.RawDescriptionHelpFormatter,
+            formatter_class=RawDescriptionHelpFormatter,
             usage="%(prog)s [options] [cmd] [key=val] [key==val] [key-=val] [arguments]"
         )
 
@@ -173,7 +173,7 @@ class Daemon:
 
     @classmethod
     def null(cls, iostream: TextIO) -> None:
-        "route to dev/null."
+        "route to /dev/null."
         with open('/dev/null', 'r', encoding="utf-8") as sis:
             os.dup2(sis.fileno(), iostream.fileno())
 

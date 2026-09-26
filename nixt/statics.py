@@ -31,7 +31,7 @@ CORE: Dict[str, str] = {
     "repeats": "cfdb4d001f1b23305019f5c441ef96d9",
     "require": "892e5f99d4282a489f890bf1e8a52ce3",
     "runners": "34c70ccfaf1319b55f15e1636b2ab615",
-    "runtime": "c938f0924d85c20c50d260723b9a9ca5",
+    "runtime": "eceac157fedcb23fd8489466ab80e318",
     "sources": "bf5be27cab1a738a9d66653ad6623460",
     "threads": "aded8caf8608ab4ddcf3bbb03b91c7a8",
     "timings": "5007232b698ed4effbb35eb6f512d169",
