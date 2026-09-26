@@ -35,6 +35,11 @@ classifiers = [
 [tool.setuptools]
 packages = [
     'nixt',
+    'nixt.minimal',
+    'nixt.mirrors',
+    'nixt.modules',
+    'nixt.neurons',
+    'nixt.numbers'
 ]
 
 
