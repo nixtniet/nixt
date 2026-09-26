@@ -1,0 +1,284 @@
+# This file is placed in the Public Domain.
+
+
+"runtime"
+
+
+import argparse
+import os
+import sys
+import time
+
+
+from typing import Any, Callable, TextIO, Union
+
+
+from .defines import Boot, Cmd, Commands, Main, MD5, Message
+from .defines import Method, Mods, Screen, Workdir
+
+
+Final = Union[Callable, None]
+
+
+class Arguments:
+
+    "comamnd line arguments"
+
+    @classmethod
+    def getargs(cls):
+        "parse commandline arguments."
+        Main.name = Main.name or Method.pkgname(Main)
+        theparser = cls.getparser()
+        group = theparser.add_mutually_exclusive_group()
+        group.add_argument("-c", "--console", action="store_true", help="start a console.")
+        group.add_argument("-d", "--daemon", action="store_true", help="run as background daemon.")
+        group.add_argument("-s", "--service", action="store_true", help="run as service.")
+        parser = theparser.add_argument_group()
+        parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
+        parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
+        parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
+        optionparser = theparser.add_argument_group()
+        optionparser.add_argument("-l", "--level", default="info", help='set loglevel.', metavar="level")
+        optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
+        optionparser.add_argument("-p", "--path", default='', help='path to modules directory.', metavar="path")
+        optparser = theparser.add_argument_group()
+        optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
+        optparser.add_argument("--channel", default="", help=argparse.SUPPRESS)
+        optparser.add_argument("--default", default="irc,mdl,rss,wsd", help=argparse.SUPPRESS)
+        optparser.add_argument("--local", action="store_true", help=argparse.SUPPRESS)
+        optparser.add_argument("--nochdir", action="store_true", help=argparse.SUPPRESS)
+        optparser.add_argument("--scanner", action="store_true", help="do full modules scan on boot.")
+        optparser.add_argument("--wdr", default="", help="set modules directory.")
+        args, arguments = theparser.parse_known_args()
+        Method.update(Main, args)
+        Main.otxt = " ".join(arguments)
+
+    @classmethod
+    def getparser(cls):
+        "create parser."
+        return argparse.ArgumentParser(
+            prog=Main.name,
+            description=f'{Main.name.upper()}',
+            epilog='use "%(prog)s cmd" for a list of commands.',
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+            usage="%(prog)s [options] [cmd] [key=val] [key==val] [key-=val] [arguments]"
+        )
+
+
+class Booting(Boot):
+
+    "at first"
+
+    @classmethod
+    def banner(cls, force: bool = False) -> None:
+        "hello."
+        if not force and not Main.verbose:
+            return
+        tmr = time.ctime(time.time()).replace("  ", " ")
+        print(f"{Main.name.upper()} {tmr} {Main.level.upper() or 'INFO'} {MD5.core()}")
+        sys.stdout.flush()
+
+    @classmethod
+    def boot(cls) -> None:
+        "configure runtime."
+        cls.configure()
+        Mods.dir("mods", Workdir.moddir())
+        Mods.dir("modules", Mods.moddir())
+        if Main.local:
+            Mods.dir("mods", "mods")
+        if Main.all:
+            Main.mods = ",".join(Mods.list())
+        if Main.verbose:
+            cls.banner()
+        Commands.table()
+        Mods.table()
+        if Main.scanner or Main.local:
+            Commands.scanner()
+
+    @classmethod
+    def wrap(cls, func: Callable, *args: Any, dofinal: Final = None) -> None:
+        "restore console."
+        import termios
+        try:
+            old = termios.tcgetattr(sys.stdin.fileno())
+        except termios.error:
+            old = [False,]
+        try:
+            cls.wrapped(func, *args)
+        except (KeyboardInterrupt, EOFError):
+            pass
+        if old and old[0]:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+        if dofinal:
+            dofinal()
+
+
+class CLI(Screen):
+
+    "Command Line Interface"
+
+    def __init__(self):
+        Screen.__init__(self)
+        self.register("command", Commands.command)
+
+    def after(self, event: Message) -> None:
+        "wait for event to finish"
+        event.wait()
+
+    def raw(self, text: str) -> None:
+        "write to console."
+        print(text.encode('utf-8', 'replace').decode("utf-8"))
+        sys.stdout.flush()
+
+
+class Console(CLI):
+
+    "prompt"
+
+    def __init__(self):
+        CLI.__init__(self)
+        self.silent = True
+
+    def poll(self) -> Message:
+        "return event."
+        evt: Message = Message()
+        evt.orig = repr(self)
+        evt.text = input("> ")
+        evt.kind = "command"
+        self.put(evt)
+        return evt
+
+
+class Daemon:
+
+    "detach from console"
+
+    @classmethod
+    def daemon(cls) -> None:
+        "run in the background."
+        pid = os.fork()
+        if pid != 0:
+            os._exit(0)
+        os.setsid()
+        pid2 = os.fork()
+        if pid2 != 0:
+            os._exit(0)
+        if not Main.verbose:
+            cls.null(sys.stdin)
+            cls.null(sys.stdout)
+            cls.null(sys.stderr)
+        os.umask(0o077)
+        os.chdir("/")
+        os.nice(10)
+
+    @classmethod
+    def null(cls, iostream: TextIO) -> None:
+        "route to dev/null."
+        with open('/dev/null', 'r', encoding="utf-8") as sis:
+            os.dup2(sis.fileno(), iostream.fileno())
+
+    @classmethod
+    def pid(cls) -> Union[str, None]:
+        "return pid path."
+        return Workdir.pid(Main.name)
+
+    @classmethod
+    def privileges(cls) -> None:
+        "drop privileges."
+        import getpass
+        import pwd
+        pwnam2 = pwd.getpwnam(getpass.getuser())
+        os.setgid(pwnam2.pw_gid)
+        os.setuid(pwnam2.pw_uid)
+
+
+class Kernel(Booting, Daemon):
+
+    "center of believing"
+
+
+class Scripts:
+
+    "actual runtime"
+
+    @staticmethod
+    def background() -> None:
+        "background script."
+        Kernel.boot()
+        Kernel.daemon()
+        Kernel.privileges()
+        Kernel.pid()
+        Main.mods = ",".join(Mods.list())
+        Kernel.init(Main.mods)
+        Kernel.forever()
+
+    @staticmethod
+    def console() -> None:
+        "console script."
+        import readline
+        readline.redisplay()
+        Kernel.boot()
+        Commands.add(Cmd.cmd)
+        Kernel.init(Main.mods, Main.wait)
+        csl = Console()
+        csl.start()
+        Kernel.forever()
+
+    @staticmethod
+    def control() -> None:
+        "cli script."
+        Kernel.boot()
+        Commands.add(Cmd.cmd)
+        if Main.admin:
+            Commands.add(Cmd.tbl)
+        cli = CLI()
+        evt = Message()
+        evt.kind = "command"
+        evt.orig = repr(cli)
+        evt.text = Main.otxt
+        Commands.command(evt)
+        evt.wait()
+
+    @staticmethod
+    def service() -> None:
+        "service script."
+        Kernel.boot()
+        Kernel.privileges()
+        Kernel.pid()
+        Commands.add(Cmd.cmd)
+        if not Main.verbose:
+            Kernel.banner(True)
+        Main.mods = ",".join(Mods.list())
+        Kernel.init(Main.mods)
+        Kernel.forever()
+
+
+def control() -> None:
+    "only console."
+    Arguments.getargs()
+    Kernel.wrap(Scripts.control)
+    
+
+def main() -> None:
+    "dispatch to runtime."
+    Arguments.getargs()
+    if Main.console:
+        Kernel.wrap(Scripts.console)
+    elif Main.service:
+        Kernel.wrap(Scripts.service)
+    elif Main.daemon:
+        Kernel.wrap(Scripts.background)
+    else:
+        Kernel.wrap(Scripts.control)
+
+
+def __dir__():
+    return (
+        'Arguments',
+        'CLI',
+        'Daemon',
+        'Kernel',
+        'Scripts',
+        'control',
+        'main'
+    )
