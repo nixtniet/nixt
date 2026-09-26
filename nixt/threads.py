@@ -16,6 +16,9 @@ from threading import Event, RLock
 from typing    import Any, Callable, ClassVar, Dict, Union
 
 
+TimeOut = Union[float, None]
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -41,7 +44,7 @@ class Thr(threading.Thread):
     def __next__(self):
         yield from dir(self)
 
-    def join(self, timeout: Union[float, None] = None) -> Union[Any, None]:
+    def join(self, timeout: TimeOut = None) -> Union[Any, None]:
         "join thread and return result."
         try:
             super().join(timeout or None)

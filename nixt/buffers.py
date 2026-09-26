@@ -76,11 +76,11 @@ class Buffer(Engine, Output):
         Output.__init__(self)
         Broker.add(self)
 
-    def raw(self, text) -> None:
+    def raw(self, text: str) -> None:
         "raw output."
         raise NotImplementedError
 
-    def start(self, daemon=True) -> None:
+    def start(self, daemon: bool = True) -> None:
         "start output loop."
         Engine.start(self)
         Output.start(self, daemon=daemon)

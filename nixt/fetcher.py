@@ -11,8 +11,8 @@ import re
 from typing import Any, ClassVar, Dict, Union
 
 
-from urllib.error import HTTPError, URLError
-from urllib.parse import unquote, urlparse, urlunparse
+from urllib.error   import HTTPError, URLError
+from urllib.parse   import unquote, urlparse, urlunparse
 from urllib.request import Request, urlopen
 
 
@@ -33,7 +33,7 @@ class Fetcher:
 
     "fetch urls"
 
-    modified: ClassVar[Dict[str,str]] = {}
+    modified: ClassVar[Dict[str, str]] = {}
 
     @classmethod
     def cdata(cls, line: str) -> str:
@@ -46,7 +46,7 @@ class Fetcher:
         return line
 
     @classmethod
-    def geturl(cls, url: str) -> Data:
+    def geturl(cls, url: str) -> Response:
         "fetch an url."
         url = urlunparse(urlparse(url))
         req = Request(str(url))
@@ -90,7 +90,7 @@ class Fetcher:
         return html.unescape(txt)
 
     @classmethod
-    def unquote(cls, url) -> str:
+    def unquote(cls, url: str) -> str:
         "unquote an url."
         return unquote(url, errors='ignore')
 

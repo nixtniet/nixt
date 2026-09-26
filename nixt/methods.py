@@ -56,7 +56,10 @@ class Method:
         return "__deleted__" in dir(obj) and obj.__deleted__
 
     @classmethod
-    def edit(cls, obj: Any, setter: Union[Dict[str, str], None] = None, skip: bool = False) -> None:
+    def edit(cls,
+             obj: Any,
+             setter: Union[Dict[str, str], None] = None,
+             skip: bool = False) -> None:
         "update object with dict."
         if setter is None:
             setter = {}
@@ -66,7 +69,11 @@ class Method:
             cls.typed(obj, key, val)
 
     @classmethod
-    def fmt(cls, obj: Any, args: Union[List[str], None] = None, skip: Union[List[str], None] = None, plain: bool = False, empty: bool = False) -> str:
+    def fmt(cls,
+            obj: Any, args: Union[List[str], None] = None,
+            skip: Union[List[str], None] = None,
+            plain: bool = False,
+            empty: bool = False) -> str:
         "format object info printable string."
         if args is None:
             args = list(obj.__dict__.keys())
@@ -196,7 +203,10 @@ class Method:
         return result
 
     @classmethod
-    def search(cls, obj: Any, selector: Union[Dict[str, str], None] = None, matching: bool = False) -> bool:
+    def search(cls,
+               obj: Any,
+               selector: Union[Dict[str, str], None] = None,
+               matching: bool = False) -> bool:
         "check whether object matches search criteria."
         if selector is None:
             selector = {}

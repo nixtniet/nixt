@@ -55,7 +55,7 @@ class Cmd:
         event.reply("\n")
         event.reply(f"CORE: Dict[str, str] = {JSON.dumps(core, indent=4, sort_keys=True)}")
         event.reply("\n")
-        event.reply(f"MODULES: Dict[str,str] = {JSON.dumps(md5s, indent=4, sort_keys=True)}")
+        event.reply(f"MODULES: Dict[str, str] = {JSON.dumps(md5s, indent=4, sort_keys=True)}")
         event.reply("\n")
         event.reply(f"NAMES: Dict[str, str] = {JSON.dumps(Commands.names, indent=4, sort_keys=True)}")
         event.reply("\n")

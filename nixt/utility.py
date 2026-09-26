@@ -9,7 +9,7 @@ import pathlib
 import uuid
 
 
-from typing import List, Union
+from typing import Any, List, Union
 from types  import ModuleType
 
 
@@ -27,7 +27,7 @@ class Utils:
             pth.parent.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
-    def clsname(obj: object) -> str:
+    def clsname(obj: Any) -> str:
         "return classname of an object."
         return obj.__class__.__name__
 

@@ -21,6 +21,11 @@ from .objects import Data
 from .utility import Utils
 
 
+Paths = Generator[str, None, None]
+Result = Generator[Tuple[str, Any], None, None]
+Selector = Union[Dict[str, str], None]
+
+
 j = os.path.join
 
 
@@ -115,7 +120,12 @@ class Locater:
         return len(list(cls.find(kind)))
 
     @classmethod
-    def find(cls, kind: str, selector: Union[Dict[str,str], None] = None, removed: bool = False, matching: bool = False, nritems: int = 0) -> Generator[Tuple[str, Any], None, None]:
+    def find(cls,
+             kind: str,
+             selector: Selector = None,
+             removed: bool = False,
+             matching: bool = False,
+             nritems: int = 0) -> Result:
         "locate objects by matching atributes."
         with cls.lock:
             if selector is None:
@@ -137,7 +147,7 @@ class Locater:
                 yield (pth, obj)
 
     @classmethod
-    def first(cls, obj: Any, selector: Union[Dict[str,str], None] = None) -> str:
+    def first(cls, obj: Any, selector: Selector = None) -> str:
         "return first object of a kind."
         if selector is None:
             selector = {}
@@ -153,7 +163,7 @@ class Locater:
         return res
 
     @classmethod
-    def fns(cls, kind: str) -> Generator[str, None, None]:
+    def fns(cls, kind: str) -> Paths:
         "file names by kind of object."
         path = os.path.join(Workdir.wdr, "store", kind)
         for rootdir, dirs, _files in os.walk(path, topdown=True):

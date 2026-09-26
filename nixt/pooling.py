@@ -39,11 +39,11 @@ class Pool:
         return False
 
     @classmethod
-    def init(cls, nrrunners: int, clz: Any = None) -> None:
+    def init(cls, nrs: int, clz: Any = None) -> None:
         "initialze a number of runners."
         if clz:
             cls.clazz = clz
-        for _x in range(nrrunners):
+        for _x in range(nrs):
             runner = cls.clazz()
             runner.start()
             cls.add(runner)

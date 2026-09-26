@@ -11,11 +11,14 @@ import time
 from typing import ClassVar, List, Union
 
 
+Times = ClassVar[List[str]]
+
+
 class Time:
 
     "time related utilities."
 
-    starttime: float = time.time()
+    starttime: ClassVar[float] = time.time()
     times: ClassVar[List[str]] = [
         "%a, %d %b %Y %H:%M:%S %z",
         "%a, %d %b %Y %H:%M:%S",

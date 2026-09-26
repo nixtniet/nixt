@@ -12,7 +12,7 @@ import _thread
 
 
 from threading import Event
-from typing import Callable
+from typing    import Callable
 
 
 from .clients import Clients

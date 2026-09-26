@@ -8,6 +8,7 @@ import inspect
 
 
 from collections.abc import Callable
+from types           import ModuleType
 from typing          import ClassVar, Dict, List, Union
 
 
@@ -28,8 +29,9 @@ class Commands:
     def add(cls, *funcs: Callable) -> None:
         "register a command."
         for func in funcs:
-            if "__name__" in dir(func):
-                cls.cmds[func.__name__] = func
+            if "__name__" not in dir(func):
+                continue
+            cls.cmds[func.__name__] = func
 
     @classmethod
     def command(cls, event: Message) -> None:
@@ -42,11 +44,13 @@ class Commands:
         event.ready()
 
     @classmethod
-    def list(cls) -> Union[List[str], None]:
+    def list(cls) -> Union[List[str]]:
         "scan for a list of all commands."
         result = []
         for modname in Mods.list():
             mod = Mods.get(modname)
+            if not mod:
+                continue
             result.extend([x.__name__ for x in Commands.scan(mod, True)])
         return result
 
@@ -63,7 +67,7 @@ class Commands:
         return cls.cmds.get(name, None)
 
     @classmethod
-    def scan(cls, mod, skip=False) -> List[Callable]:
+    def scan(cls, mod: ModuleType, skip: bool = False) -> List[Callable]:
         "scan module for commands."
         result: List[Callable] = []
         for _nme, func in inspect.getmembers(mod, inspect.isfunction):
@@ -77,7 +81,10 @@ class Commands:
     def scanner(cls) -> None:
         "scan all modules."
         for name in Mods.list():
-            cls.scan(Mods.get(name))
+            mod = Mods.get(name)
+            if not mod:
+                continue
+            cls.scan(mod)
 
     @classmethod
     def statics(cls) -> None:
