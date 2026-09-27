@@ -58,6 +58,10 @@ class Fetcher:
         response.reason = ""
         try:
             Method.update(response, cls.request(req))
+        except TimeoutError:
+            response.data = b""
+            response.reason = "timeout error"
+            response.status = ""
         except HTTPError as ex:
             response.data = b""
             response.reason = str(ex.reason)
