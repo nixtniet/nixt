@@ -75,7 +75,7 @@ class Booting(Boot):
         if not force and not Main.verbose:
             return
         tmr = time.ctime(time.time()).replace("  ", " ")
-        print(f"{Main.name.upper()} {tmr} {Main.level.upper() or 'INFO'} {MD5.core()}")
+        print(f"{Main.name.upper()} {tmr} {Main.level.upper() or 'INFO'} ({MD5.core()})")
         sys.stdout.flush()
 
     @classmethod

@@ -19,9 +19,9 @@ from typing  import Any, ClassVar, Generator, Iterator, List, TextIO
 from typing  import Union
 
 
-from nixt.defines import Clients, Data, Disk, Fetcher, Format, JSONL, Locater
-from nixt.defines import Logging, Main, MD5, Message, Method, Object, Pool
-from nixt.defines import Repeater, Runner, Utils, Watcher, Workdir
+from nixt.defines import Cfg, Clients, Data, Disk, Fetcher, Format, JSONL
+from nixt.defines import Locater, Logging, Main, MD5, Message, Method, Object
+from nixt.defines import Pool, Repeater, Runner, Utils, Watcher, Workdir
 
 
 logger = logging.getLogger(__name__)
@@ -46,7 +46,7 @@ def shutdown():
     Run.stop()
 
 
-class Config(Object):
+class Config(Cfg):
 
     "configuration"
 
@@ -89,7 +89,6 @@ class Locks:
 
     "locking"
 
-    fetchlock: LockType = _thread.allocate_lock()
     importlock: LockType = _thread.allocate_lock()
 
 
@@ -138,7 +137,7 @@ class Run:
         return counter
 
     @classmethod
-    def display(cls, obj: Any, name=None) -> str:
+    def display(cls, obj: Feed, name=None) -> str:
         "display feed."
         displaylist = ""
         if name in obj:
@@ -285,8 +284,8 @@ class Fetching(Runner):
             if Config.save:
                 Run.log(JSONL.logtxt(feed))
             if not silent:
-                txt = Run.display(feed)
-                if not Run.got(txt, feed):
+                txt = Run.display(obj)
+                if not Run.got(txt, obj):
                     Clients.announce(txt)
                     has = True
             del obj
@@ -398,13 +397,13 @@ class RSS:
         "parse feed."
         for line in cls.getitems(txt, toke):
             line = line.strip()
-            obj = Feed()
+            feed = Feed()
             for itm in Utils.spl(items):
                 val = cls.getitem(line, itm)
                 if val:
                     escaped = Fetcher.unescape(val.strip())
-                    obj[itm] = Fetcher.striphtml(escaped).replace("\n", "")
-            yield obj
+                    feed[itm] = Fetcher.striphtml(escaped).replace("\n", "")
+            yield feed
 
 
 def atr(event: Message):

@@ -20,6 +20,11 @@ class Config(type):
         return str(Method.skip(dict(cls.__dict__)))
 
 
+class Cfg(metaclass=Config):
+
+    pass
+
+
 class Main(metaclass=Config):
 
     "main config"
@@ -32,6 +37,7 @@ class Main(metaclass=Config):
 
 def __dir__():
     return (
+        'Cfg',
         'Config',
         'Main'
     )

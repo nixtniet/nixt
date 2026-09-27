@@ -14,11 +14,12 @@ import time
 import _thread
 
 
-from typing import Any, ClassVar, List
+from threading import Event
+from typing    import Any, ClassVar, List
 
 
-from nixt.defines import Broker, Buffer, Commands, Data, Disk, Main
-from nixt.defines import Message, Mods, Method, Thread
+from nixt.defines import Broker, Buffer, Cfg, Commands, Disk, Main
+from nixt.defines import Message, Mods, Method, Object, Thread
 
 
 logger = logging.getLogger(__name__)
@@ -39,7 +40,7 @@ def init():
     return irc
 
 
-class Config(Data):
+class Config(Cfg):
 
     name = Main.name or Method.pkgname(Mods)
     channel = Main.channel or f"#{name}"
@@ -59,7 +60,7 @@ class Config(Data):
     version = 1
 
 
-class Event(Message):
+class IRCEvent(Message):
 
     def __init__(self):
         super().__init__()
@@ -76,6 +77,36 @@ class Event(Message):
         self.text = ""
 
 
+class Events(Object):
+
+    def __init__(self):
+        super().__init__()
+        self.authed: Event = Event()
+        self.connected: Event = Event()
+        self.joined: Event = Event()
+        self.logon: Event = Event()
+        self.ready: Event = Event()
+ 
+
+class State(Object):
+
+    def __init__(self):
+        super().__init__()
+        self.error = ""
+        self.host = ""
+        self.keeprunning = False
+        self.last = time.time()
+        self.latest = time.time()
+        self.lastline = ""
+        self.needconnect = False
+        self.nickchange = 0
+        self.nrconnect = 0
+        self.nrerror = 0
+        self.nrsend = 0
+        self.pongcheck = False
+        self.running = Event()
+        self.stopkeep = False
+
 class TextWrap(textwrap.TextWrapper):
 
     def __init__(self):
@@ -89,38 +120,6 @@ class TextWrap(textwrap.TextWrapper):
 
 
 wrapper = TextWrap()
-
-
-class Events(Data):
-
-    def __init__(self):
-        Data.__init__(self)
-        self.authed: Event = Event()
-        self.connected: Event = Event()
-        self.joined: Event = Event()
-        self.logon: Event = Event()
-        self.ready: Event = Event()
- 
-
-class State(Data):
-
-    def __init__(self):
-        Data.__init__(self)
-        self.error = ""
-        self.host = ""
-        self.keeprunning = False
-        self.last = time.time()
-        self.latest = time.time()
-        self.lastline = ""
-        self.needconnect = False
-        self.nickchange = 0
-        self.nrconnect = 0
-        self.nrerror = 0
-        self.nrsend = 0
-        self.pongcheck = False
-        self.running = threading.Event()
-        self.sleep = self.cfg.sleep
-        self.stopkeep = False
 
 
 class IRC(Buffer):
@@ -332,7 +331,7 @@ class IRC(Buffer):
         rawstr = rawstr.replace("\u0001", "")
         rawstr = rawstr.replace("\001", "")
         self.rlog(txt)
-        obj = Event()
+        obj = IRCEvent()
         obj.args = []
         obj.rawstr = rawstr
         obj.command = ""
@@ -480,7 +479,7 @@ class IRC(Buffer):
 
     def say(self, channel, text):
         "say text in the channel."
-        event = Event()
+        event = IRCEvent()
         event.channel = channel
         event.reply(text)
         self.oput(event)
@@ -505,9 +504,9 @@ class IRC(Buffer):
         Disk.read(self.cfg, "irc", "config")
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
-        self.events.ready.clear()
         self.events.connected.clear()
         self.events.joined.clear()
+        self.events.ready.clear()
         Buffer.start(self)
         if not self.state.keeprunning:
             Thread.launch(self.keep, daemon=daemon)
