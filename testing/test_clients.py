@@ -43,10 +43,10 @@ class TestClient(unittest.TestCase):
         self.assertTrue("hello" in buffer)
 
     def test_display(self):
-        evt = Message()
-        evt.reply("test1")
-        evt.reply("test2")
-        self.clt.display(evt)
+        msg = Message()
+        msg.reply("test1")
+        msg.reply("test2")
+        self.clt.display(msg)
         self.assertTrue("test1" in buffer)
         self.assertTrue("test2" in buffer)
         self.assertTrue(buffer.index("test1") < buffer.index("test2"))
@@ -56,9 +56,9 @@ class TestClient(unittest.TestCase):
         self.assertTrue("yo!" in buffer)
 
     def test_put(self):
-        evt = Message()
-        evt.kind = "hello"
-        evt.text = "hi world"
-        self.clt.put(evt)
-        evt.wait()
-        self.assertTrue("hi world" in evt.result)
+        msg = Message()
+        msg.kind = "hello"
+        msg.text = "hi world"
+        self.clt.put(msg)
+        msg.wait()
+        self.assertTrue("hi world" in msg.result)

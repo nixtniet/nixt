@@ -33,36 +33,36 @@ class TestEngine(unittest.TestCase):
         self.hdl.stop()
 
     def test_callback(self):
-        evt = Message()
-        evt.kind = "hello"
-        evt.text = "hello"
-        self.hdl.handle(evt)
-        evt.wait()
-        self.assertTrue("hello" in evt.result)
+        msg = Message()
+        msg.kind = "hello"
+        msg.text = "hello"
+        self.hdl.handle(msg)
+        msg.wait()
+        self.assertTrue("hello" in msg.result)
 
     def test_loop(self):
-        evt = Message()
-        evt.kind = "hello"
-        evt.text = "hello"
-        self.hdl.put(evt)
-        evt.wait()
-        self.assertTrue(evt._ready.is_set())
+        msg = Message()
+        msg.kind = "hello"
+        msg.text = "hello"
+        self.hdl.put(msg)
+        msg.wait()
+        self.assertTrue(msg._ready.is_set())
 
     def test_loop2(self):
-        evt = Message()
-        evt.kind = "hello"
-        evt.text = "hello bot"
-        self.hdl.put(evt)
-        evt.wait()
-        self.assertTrue("hello bot" in evt.result)
+        msg = Message()
+        msg.kind = "hello"
+        msg.text = "hello bot"
+        self.hdl.put(msg)
+        msg.wait()
+        self.assertTrue("hello bot" in msg.result)
 
     def test_put(self):
         hdl = Engine()
-        evt = Message()
-        evt.kind = "hello"
-        hdl.put(evt)
+        msg = Message()
+        msg.kind = "hello"
+        hdl.put(msg)
         message = hdl.queue.get()
-        self.assertTrue(message is evt)
+        self.assertTrue(message is msg)
 
     def test_register(self):
         self.hdl.register("hlo", hello)

@@ -31,8 +31,8 @@ class TestCommands(unittest.TestCase):
     def test_command(self):
         clt = Engine()
         Commands.add(cmnd)
-        evt = Message()
-        evt.text = "cmnd"
-        evt.orig = repr(clt)
-        Commands.command(evt)
-        self.assertTrue("yo!" in evt.result)
+        msg = Message()
+        msg.text = "cmnd"
+        msg.orig = repr(clt)
+        Commands.command(msg)
+        self.assertTrue("yo!" in msg.result)

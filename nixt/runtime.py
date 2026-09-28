@@ -141,12 +141,12 @@ class Console(CLI):
 
     def poll(self) -> Message:
         "return message."
-        evt: Message = Message()
-        evt.orig = repr(self)
-        evt.text = input("> ")
-        evt.kind = "command"
-        self.put(evt)
-        return evt
+        msg: Message = Message()
+        msg.orig = repr(self)
+        msg.text = input("> ")
+        msg.kind = "command"
+        self.put(msg)
+        return msg
 
 
 class Daemon:
@@ -232,12 +232,12 @@ class Scripts:
         if Main.admin:
             Commands.add(Cmd.tbl)
         cli = CLI()
-        evt = Message()
-        evt.kind = "command"
-        evt.orig = repr(cli)
-        evt.text = Main.otxt
-        Commands.command(evt)
-        evt.wait()
+        msg = Message()
+        msg.kind = "command"
+        msg.orig = repr(cli)
+        msg.text = Main.otxt
+        Commands.command(msg)
+        msg.wait()
 
     @staticmethod
     def service() -> None:

@@ -265,22 +265,22 @@ class IRC(Buffer):
 
     def message(self, txt):
         "parse text into an message."
-        evt = self.parsing(txt)
-        cmd = evt.command
+        msg = self.parsing(txt)
+        cmd = msg.command
         if cmd == "PING":
             self.state.pongcheck = True
-            self.docommand("PONG", evt.text or "")
+            self.docommand("PONG", msg.text or "")
         elif cmd == "PONG":
             self.state.pongcheck = False
         if cmd == "001":
             self.state.needconnect = False
             if self.cfg.servermodes:
                 self.docommand(f"MODE {self.cfg.nick} {self.cfg.servermodes}")
-            self.zelf = evt.args[-1]
+            self.zelf = msg.args[-1]
         elif cmd == "376":
             self.joinall()
         elif cmd == "002":
-            self.state.host = evt.args[2][:-1]
+            self.state.host = msg.args[2][:-1]
         elif cmd == "366":
             self.state.error = ""
             self.messages.joined.set()
@@ -289,7 +289,7 @@ class IRC(Buffer):
             self.state.nickchange += 1
             nck = self.cfg.nick + ("_" * self.state.nickchange)
             self.docommand("NICK", nck)
-        return evt
+        return msg
 
     def joinall(self):
         "join all chennels."
@@ -531,100 +531,100 @@ class IRC(Buffer):
             _thread.interrupt_main()
 
 
-def cb_auth(evt):
+def cb_auth(msg):
     "authorisation callback."
-    bot = Broker.get(evt.orig)
+    bot = Broker.get(msg.orig)
     bot.docommand(f"AUTHENTICATE {bot.cfg.word}")
 
 
-def cb_cap(evt):
+def cb_cap(msg):
     "capabilities callback."
-    bot = Broker.get(evt.orig)
-    if (bot.cfg.word or bot.cfg.word and "ACK" in evt.arguments):
+    bot = Broker.get(msg.orig)
+    if (bot.cfg.word or bot.cfg.word and "ACK" in msg.arguments):
         bot.direct("AUTHENTICATE PLAIN")
     else:
         bot.direct("CAP REQ :sasl")
 
 
-def cb_error(evt):
+def cb_error(msg):
     "error callback."
-    bot = Broker.get(evt.orig)
+    bot = Broker.get(msg.orig)
     bot.state.nrerror += 1
-    bot.state.error = evt.text
-    logger.debug(Method.fmt(evt))
+    bot.state.error = msg.text
+    logger.debug(Method.fmt(msg))
 
 
-def cb_h903(evt):
+def cb_h903(msg):
     "end capabilities callback."
-    bot = Broker.get(evt.orig)
+    bot = Broker.get(msg.orig)
     bot.direct("CAP END")
     bot.messages.authed.set()
 
 
-def cb_h904(evt):
+def cb_h904(msg):
     "end capabilities callback."
-    bot = Broker.get(evt.orig)
+    bot = Broker.get(msg.orig)
     bot.direct("CAP END")
     bot.messages.authed.set()
 
 
-def cb_kill(evt):
+def cb_kill(msg):
     "kill callback."
 
 
-def cb_log(evt):
+def cb_log(msg):
     "log callbacl."
 
 
-def cb_ready(evt):
+def cb_ready(msg):
     "ready callback."
-    bot = Broker.get(evt.orig)
+    bot = Broker.get(msg.orig)
     bot.messages.ready.set()
 
 
-def cb_001(evt):
+def cb_001(msg):
     "greeting callback."
-    bot = Broker.get(evt.orig)
+    bot = Broker.get(msg.orig)
     bot.messages.logon.set()
 
 
-def cb_notice(evt):
+def cb_notice(msg):
     "notice callback."
-    bot = Broker.get(evt.orig)
-    if evt.text.startswith("VERSION"):
+    bot = Broker.get(msg.orig)
+    if msg.text.startswith("VERSION"):
         name = Config.name.upper()
         ver = Config.version
         user = bot.cfg.username
         txt = f"\001VERSION {name} {ver} - {user}\001"
-        bot.docommand("NOTICE", evt.channel, txt)
+        bot.docommand("NOTICE", msg.channel, txt)
 
 
-def cb_privmsg(evt):
+def cb_privmsg(msg):
     "privmsg callback."
-    bot = Broker.get(evt.orig)
+    bot = Broker.get(msg.orig)
     if not bot.cfg.commands:
         return
-    if evt.text:
-        if evt.text[0] == bot.cfg.control:
-            evt.text = evt.text[1:]
-        elif evt.text.startswith(f"{bot.cfg.nick}:"):
-            evt.text = evt.text[len(bot.cfg.nick) + 1:]
+    if msg.text:
+        if msg.text[0] == bot.cfg.control:
+            msg.text = msg.text[1:]
+        elif msg.text.startswith(f"{bot.cfg.nick}:"):
+            msg.text = msg.text[len(bot.cfg.nick) + 1:]
         else:
             return
-        if evt.text:
-            evt.text = evt.text[0].lower() + evt.text[1:]
-        if evt.text:
-            name = evt.text and evt.text.split()[0]
-            Thread.launch(Commands.command, evt, name=name)
+        if msg.text:
+            msg.text = msg.text[0].lower() + msg.text[1:]
+        if msg.text:
+            name = msg.text and msg.text.split()[0]
+            Thread.launch(Commands.command, msg, name=name)
 
 
-def cb_quit(evt):
+def cb_quit(msg):
     "qiot callback."
-    bot = Broker.get(evt.orig)
+    bot = Broker.get(msg.orig)
     logger.debug("quit from %s", bot.cfg.server)
     bot.state.nrerror += 1
-    bot.state.error = evt.text
-    if evt.orig and evt.orig in bot.zelf:
+    bot.state.error = msg.text
+    if msg.orig and msg.orig in bot.zelf:
         bot.stop()
 
 

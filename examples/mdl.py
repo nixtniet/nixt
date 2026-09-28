@@ -21,11 +21,11 @@ def init():
             continue
         val = getattr(oorzaken, key, None)
         if val and int(val) > 10000:
-            evt = Message()
-            evt.text = ""
-            evt.rest = key
+            msg = Message()
+            msg.text = ""
+            msg.rest = key
             sec = seconds(val)
-            Repeater.add(sec, cbstats, evt)
+            Repeater.add(sec, cbstats, msg)
             logger.info("%s since %s %s", Time.elapsed(time.time()-STARTTIME), STARTDATE.split(maxsplit=1)[0], SOURCE)
 
 
@@ -123,19 +123,19 @@ def daily():
     "run daily."
     while 1:
         time.sleep(24*60*60)
-        evt = Message()
-        cbnow(evt)
+        msg = Message()
+        cbnow(msg)
 
 
 def hourly():
     "run hourly."
     while 1:
         time.sleep(60*60)
-        evt = Message()
-        cbnow(evt)
+        msg = Message()
+        cbnow(msg)
 
 
-def cbnow(evt):
+def cbnow(msg):
     "callback for current status."
     delta = time.time() - STARTTIME
     txt = Time.elapsed(delta) + " "
@@ -149,9 +149,9 @@ def cbnow(evt):
     Clients.announce(txt)
 
 
-def cbstats(evt):
+def cbstats(msg):
     "callback for current statistics."
-    nme = evt.rest or "Psych"
+    nme = msg.rest or "Psych"
     needed = seconds(getnr(nme))
     if needed:
         delta = time.time() - STARTTIME
