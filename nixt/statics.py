@@ -18,7 +18,7 @@ CORE: Dict[str, str] = {
     "display": "8cee17e61f2b0e1b2cf017dbc6dc511c",
     "encoder": "672dfad399c7d2f9171d8fa43aca4a93",
     "engines": "c2960c54d18912e1906d9c8956467f39",
-    "fetcher": "233440bfc9c0848b2916dc916567f08e",
+    "fetcher": "5c4cfae2e7e8a03114ccf345c05148bc",
     "loggers": "a247909a266b7fe54f1092704f1a267b",
     "looping": "7e7aeca78f3e192a25e8dce33b7544fa",
     "message": "b74f39d0992d98e222dbf14c2da04516",
