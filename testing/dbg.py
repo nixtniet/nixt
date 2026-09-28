@@ -9,5 +9,5 @@ class Test(Exception):
     pass
 
 
-def dbg(event):
+def dbg(message):
     raise Test("Test")

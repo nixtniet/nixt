@@ -7,6 +7,6 @@
 from nixt.defines import Main, MD5
 
 
-def ver(event):
+def ver(message):
     "show verson."
-    event.reply(f"{Main.name.upper()} {MD5.core()}")
+    message.reply(f"{Main.name.upper()} {MD5.core()}")

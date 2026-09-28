@@ -121,9 +121,9 @@ class CLI(Screen):
         Screen.__init__(self)
         self.register("command", Commands.command)
 
-    def after(self, event: Message) -> None:
-        "wait for event to finish"
-        event.wait()
+    def after(self, message: Message) -> None:
+        "wait for message to finish"
+        message.wait()
 
     def raw(self, text: str) -> None:
         "write to console."
@@ -140,7 +140,7 @@ class Console(CLI):
         self.silent = True
 
     def poll(self) -> Message:
-        "return event."
+        "return message."
         evt: Message = Message()
         evt.orig = repr(self)
         evt.text = input("> ")

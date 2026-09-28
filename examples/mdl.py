@@ -165,7 +165,7 @@ def cbstats(evt):
         Clients.announce(txt)
 
 
-def dis(event):
+def dis(message):
     "show disease numbers."
     delta = time.time() - STARTTIME
     txt = Time.elapsed(delta) + " "
@@ -177,12 +177,12 @@ def dis(event):
         pertime = Time.elapsed(needed)
         txt += f"{getalias(nme)} {nrtimes} ({pertime}) | "
     txt += SOURCE
-    event.reply(txt)
+    message.reply(txt)
 
 
-def now(event):
+def now(message):
     "show current status."
-    nme = event.rest or "Psych"
+    nme = message.rest or "Psych"
     needed = seconds(getnr(nme))
     if needed:
         delta = time.time() - STARTTIME
@@ -193,7 +193,7 @@ def now(event):
         alias = getalias(nme).upper()
         need = Time.elapsed(needed)
         txt = f"{elapsed} {alias} ({nrtimes}/{nrday}/{nryear}) every {need}"
-        event.reply(txt)
+        message.reply(txt)
 
 
 oor = """"Totaal onderliggende doodsoorzaken (aantal)";

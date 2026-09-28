@@ -30,10 +30,10 @@ def init():
     irc = IRC()
     irc.start()
     try:
-        irc.events.joined.wait(60.0)
+        irc.messages.joined.wait(60.0)
     except (KeyboardInterrupt, EOFError):
         _thread.interrupt_main()
-    if irc.events.joined.is_set():
+    if irc.messages.joined.is_set():
         logger.info("%s", Method.fmt(irc.cfg, ["nick", "channel", "server", "port"]))
     else:
         irc.stop()
@@ -129,7 +129,7 @@ class IRC(Buffer):
         self.buffer = []
         self.cfg = Config()
         self.channels = []
-        self.events = Events()
+        self.messages = Events()
         self.lock = threading.RLock()
         self.noflood = True
         self.silent = False
@@ -155,8 +155,8 @@ class IRC(Buffer):
     def connect(self, server, port=6667):
         "connect to irc server."
         self.state.nrconnect += 1
-        self.events.connected.clear()
-        self.events.joined.clear()
+        self.messages.connected.clear()
+        self.messages.joined.clear()
         if self.cfg.word or self.cfg.word:
             logger.debug("using SASL")
             self.cfg.sasl = True
@@ -173,12 +173,12 @@ class IRC(Buffer):
             host, port = addr[:2]
             addr2 = (str(host), int(port))
             self.sock = socket.create_connection(addr2)
-            self.events.authed.set()
+            self.messages.authed.set()
         if self.sock:
             os.set_inheritable(self.sock.fileno(), True)
             self.sock.setblocking(True)
             self.sock.settimeout(180.0)
-            self.events.connected.set()
+            self.messages.connected.set()
             logger.debug(
                           "connected %s:%s channel %s",
                           self.cfg.server,
@@ -201,15 +201,15 @@ class IRC(Buffer):
         except (ssl.SSLError, OSError, BrokenPipeError):
             pass
 
-    def display(self, event):
-        "display results of an event."
-        if len(event.result) > 3:
-            self.say(event.channel, "command would flood")
+    def display(self, message):
+        "display results of an message."
+        if len(message.result) > 3:
+            self.say(message.channel, "command would flood")
             return
-        for txt in event.result:
+        for txt in message.result:
             for text in wrapper.wrap(txt):
-                self.dosay(event.channel, text)
-        event.ready()
+                self.dosay(message.channel, text)
+        message.ready()
 
     def docommand(self, cmd, *args):
         "basic commands."
@@ -234,10 +234,10 @@ class IRC(Buffer):
             try:
                 if self.connect(server, port):
                     self.logon(self.cfg.server, self.cfg.nick)
-                    self.events.joined.wait(45.0)
-                    if not self.events.joined.is_set():
+                    self.messages.joined.wait(45.0)
+                    if not self.messages.joined.is_set():
                         self.disconnect()
-                        self.events.joined.set()
+                        self.messages.joined.set()
                         continue
                     break
             except (KeyboardInterrupt, EOFError):
@@ -250,21 +250,21 @@ class IRC(Buffer):
                     OSError,
                     ConnectionResetError
                    ) as ex:
-                self.events.joined.set()
+                self.messages.joined.set()
                 self.state.error = str(ex)
                 logger.debug("%s", str(type(ex)) + " " + str(ex))
             time.sleep(self.cfg.sleep)
 
     def dosay(self, channel, text):
         "sanitize before sending text to a channel."
-        self.events.joined.wait()
+        self.messages.joined.wait()
         txt = str(text).replace("\n", "")
         txt = txt.replace("  ", " ")
         self.docommand("PRIVMSG", channel, txt)
         del txt
 
-    def event(self, txt):
-        "parse text into an event."
+    def message(self, txt):
+        "parse text into an message."
         evt = self.parsing(txt)
         cmd = evt.command
         if cmd == "PING":
@@ -283,7 +283,7 @@ class IRC(Buffer):
             self.state.host = evt.args[2][:-1]
         elif cmd == "366":
             self.state.error = ""
-            self.events.joined.set()
+            self.messages.joined.set()
         elif cmd == "433":
             self.state.error = txt
             self.state.nickchange += 1
@@ -302,8 +302,8 @@ class IRC(Buffer):
             if self.state.stopkeep:
                 self.state.stopkeep = False
                 break
-            self.events.connected.wait()
-            self.events.authed.wait()
+            self.messages.connected.wait()
+            self.messages.authed.wait()
             self.state.keeprunning = True
             self.state.latest = time.time()
             for x in range(self.cfg.sleep*10):
@@ -316,17 +316,17 @@ class IRC(Buffer):
 
     def logon(self, server, nck):
         "log onto the irc network."
-        self.events.connected.wait()
-        self.events.authed.wait()
+        self.messages.connected.wait()
+        self.messages.authed.wait()
         self.direct(f"NICK {nck}")
         self.direct(f"USER {nck} {server} {server} {nck}")
 
-    def oput(self, event):
-        "put event onto output queue."
-        self.oqueue.put_nowait(event)
+    def oput(self, message):
+        "put message onto output queue."
+        self.oqueue.put_nowait(message)
 
     def parsing(self, txt):
-        "parse text into an event."
+        "parse text into an message."
         rawstr = str(txt)
         rawstr = rawstr.replace("\u0001", "")
         rawstr = rawstr.replace("\001", "")
@@ -377,14 +377,14 @@ class IRC(Buffer):
 
 
     def poll(self):
-        "poll on the socket for an event."
-        self.events.connected.wait()
+        "poll on the socket for an message."
+        self.messages.connected.wait()
         if not self.buffer:
             try:
                 self.some()
             except BlockingIOError as ex:
                 time.sleep(1.0)
-                return self.event(str(ex))
+                return self.message(str(ex))
             except (
                 TimeoutError,
                 OSError,
@@ -404,7 +404,7 @@ class IRC(Buffer):
             txt = self.buffer.pop(0)
         except IndexError:
             txt = ""
-        self.put(self.event(txt))
+        self.put(self.message(txt))
         return None
 
     def post(self, obj, rawstr, arguments):
@@ -443,7 +443,7 @@ class IRC(Buffer):
                 socket.timeout
             ) as ex:
                 logger.debug("%s", str(type(ex)) + " " + str(ex))
-                self.events.joined.set()
+                self.messages.joined.set()
                 self.state.nrerror += 1
                 self.state.error = str(ex)
                 self.state.pongcheck = True
@@ -456,14 +456,14 @@ class IRC(Buffer):
         "reconnect to server."
         logger.debug("reconnecting %s:%s", self.cfg.server, self.cfg.port)
         self.disconnect()
-        self.events.connected.clear()
-        self.events.joined.clear()
+        self.messages.connected.clear()
+        self.messages.joined.clear()
         self.doconnect(self.cfg.server, self.cfg.nick, int(self.cfg.port))
 
     def restart(self):
         "restart client."
         logger.debug("restart")
-        self.events.joined.set()
+        self.messages.joined.set()
         self.state.pongcheck = False
         self.state.keeprunning = False
         self.state.stopkeep = True
@@ -479,14 +479,14 @@ class IRC(Buffer):
 
     def say(self, channel, text):
         "say text in the channel."
-        event = IRCEvent()
-        event.channel = channel
-        event.reply(text)
-        self.oput(event)
+        message = IRCEvent()
+        message.channel = channel
+        message.reply(text)
+        self.oput(message)
 
     def some(self):
         "read some text from the socket."
-        self.events.connected.wait()
+        self.messages.connected.wait()
         if not self.sock:
             return
         inbytes = self.sock.recv(512)
@@ -504,9 +504,9 @@ class IRC(Buffer):
         Disk.read(self.cfg, "irc", "config")
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
-        self.events.connected.clear()
-        self.events.joined.clear()
-        self.events.ready.clear()
+        self.messages.connected.clear()
+        self.messages.joined.clear()
+        self.messages.ready.clear()
         Buffer.start(self)
         if not self.state.keeprunning:
             Thread.launch(self.keep, daemon=daemon)
@@ -526,7 +526,7 @@ class IRC(Buffer):
     def wait(self):
         "wait for client to join."
         try:
-            self.events.ready.wait()
+            self.messages.ready.wait()
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
 
@@ -558,14 +558,14 @@ def cb_h903(evt):
     "end capabilities callback."
     bot = Broker.get(evt.orig)
     bot.direct("CAP END")
-    bot.events.authed.set()
+    bot.messages.authed.set()
 
 
 def cb_h904(evt):
     "end capabilities callback."
     bot = Broker.get(evt.orig)
     bot.direct("CAP END")
-    bot.events.authed.set()
+    bot.messages.authed.set()
 
 
 def cb_kill(evt):
@@ -579,13 +579,13 @@ def cb_log(evt):
 def cb_ready(evt):
     "ready callback."
     bot = Broker.get(evt.orig)
-    bot.events.ready.set()
+    bot.messages.ready.set()
 
 
 def cb_001(evt):
     "greeting callback."
     bot = Broker.get(evt.orig)
-    bot.events.logon.set()
+    bot.messages.logon.set()
 
 
 def cb_notice(evt):
@@ -628,16 +628,16 @@ def cb_quit(evt):
         bot.stop()
 
 
-def pwd(event):
+def pwd(message):
     "generate sasl password."
-    if len(event.args) != 2:
-        event.iface("<nick> <password>")
+    if len(message.args) != 2:
+        message.iface("<nick> <password>")
         return
     import base64
-    arg1 = event.args[0]
-    arg2 = event.args[1]
+    arg1 = message.args[0]
+    arg2 = message.args[1]
     txt = f"\x00{arg1}\x00{arg2}"
     enc = txt.encode("ascii")
     base = base64.b64encode(enc)
     dcd = base.decode("ascii")
-    event.reply(dcd)
+    message.reply(dcd)

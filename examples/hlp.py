@@ -32,8 +32,8 @@ use "%s cmd" for a list of commands.
 """
 
 
-def hlp(event):
-    event.reply(TXT % (
+def hlp(message):
+    message.reply(TXT % (
         Main.name,
         Main.name
        )

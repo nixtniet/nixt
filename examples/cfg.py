@@ -10,27 +10,27 @@ from typing import Union
 from nixt.defines import Data, Disk, Method, Mods
 
 
-def cfg(event):
+def cfg(message):
     "configure modules."
-    if not event.args:
+    if not message.args:
         mods = f"{'main,' + Mods.has('Config')}"
         mods = mods.removesuffix(mods)
-        event.iface(f"<{mods}>")
+        message.iface(f"<{mods}>")
         return
-    name = event.args[0]
+    name = message.args[0]
     config: Union[Data, None] = Data()
     Disk.read(config, name, "config")
     if name != "main" and not config:
         mod = Mods.get(name)
         if not mod:
-            event.reply(f"no {name} module found.")
+            message.reply(f"no {name} module found.")
             return
         config = getattr(mod, "Config", None)
         if not config:
-            event.reply(f"no {name} config found.")
+            message.reply(f"no {name} config found.")
             return
-    if not event.sets:
-        event.reply(
+    if not message.sets:
+        message.reply(
             Method.fmt(
                 config,
                 Method.keys(config),
@@ -38,6 +38,6 @@ def cfg(event):
             )
         )
         return
-    Method.edit(config, event.sets)
+    Method.edit(config, message.sets)
     Disk.write(config, name, "config")
-    event.ok()
+    message.ok()

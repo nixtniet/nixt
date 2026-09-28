@@ -14,7 +14,7 @@ from .threads import Thr
 
 class Message(Data):
 
-    "message as an event"
+    "message as an message"
 
     def __init__(self):
         Data.__init__(self)

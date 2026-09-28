@@ -15,7 +15,7 @@ import _thread
 
 
 from _thread import LockType, RLock
-from typing  import Any, ClassVar, Generator, Iterator, List, TextIO
+from typing  import ClassVar, Generator, Iterator, List, TextIO
 from typing  import Union
 
 
@@ -406,12 +406,12 @@ class RSS:
             yield feed
 
 
-def atr(event: Message):
+def atr(message: Message):
     "show attributes of a feed."
-    if not event.rest:
-        event.iface("<stringinurl>")
+    if not message.rest:
+        message.iface("<stringinurl>")
         return
-    for _fnm, obj in Locater.find(Method.fqn(Rss), {'rss': event.rest}):
+    for _fnm, obj in Locater.find(Method.fqn(Rss), {'rss': message.rest}):
         request = Fetcher.geturl(obj.rss)
         if not request:
             continue
@@ -431,26 +431,26 @@ def atr(event: Message):
         for x in re.findall('<.*?>', result[0]):
             if x[1] == '/' and len(x) > 4:
                 resulting.append(x[2:-1])
-        event.reply(','.join(resulting))
+        message.reply(','.join(resulting))
 
 
-def dpl(event: Message):
+def dpl(message: Message):
     "set feed items to display."
-    if len(event.args) < 2:
-        event.iface("<stringinurl> <item1,item2>")
+    if len(message.args) < 2:
+        message.iface("<stringinurl> <item1,item2>")
         return
-    setter = {"display_list": event.args[1]}
-    for fnm, feed in Locater.find(Method.fqn(Rss), {"rss": event.args[0]}):
+    setter = {"display_list": message.args[1]}
+    for fnm, feed in Locater.find(Method.fqn(Rss), {"rss": message.args[0]}):
         if feed:
             Method.update(feed, setter)
             Disk.write(feed, fnm)
-    event.ok()
+    message.ok()
 
 
-def exp(event: Message):
+def exp(message: Message):
     "export opml."
     with Locks.importlock:
-        event.reply(TEMPLATE)
+        message.reply(TEMPLATE)
         for nrs, fnm, ooo in enumerate(Locater.find(Method.fqn(OPML))): # type: ignore
             obj = Rss()
             Method.update(obj, ooo)
@@ -458,20 +458,20 @@ def exp(event: Message):
             dipl = obj.display_list
             url = obj.rss
             txt = f'<outline name="{name}" display_list="{dipl}" xmlUrl="{url}"/>'
-            event.reply(" " * 12 + txt)
-        event.reply(" " * 8 + "</outline>")
-        event.reply("    <body>")
-        event.reply("</opml>")
+            message.reply(" " * 12 + txt)
+        message.reply(" " * 8 + "</outline>")
+        message.reply("    <body>")
+        message.reply("</opml>")
 
 
-def imp(event: Message):
+def imp(message: Message):
     "import opml."
-    if not event.args:
-        event.iface("<filename>")
+    if not message.args:
+        message.iface("<filename>")
         return
-    fnm = event.args[0]
+    fnm = message.args[0]
     if not os.path.isfile(fnm):
-        event.reply(f"no {fnm} file found.")
+        message.reply(f"no {fnm} file found.")
         return
     with Locks.importlock:
         with open(fnm, "r", encoding="utf-8") as file:
@@ -506,21 +506,21 @@ def imp(event: Message):
             Disk.write(feed)
             nrs += 1
     if nrskip:
-        event.reply(f"skipped {nrskip} urls.")
+        message.reply(f"skipped {nrskip} urls.")
     if nrs:
-        event.reply(f"added {nrs} urls.")
+        message.reply(f"added {nrs} urls.")
 
 
-def nme(event: Message):
+def nme(message: Message):
     "set name of a feed."
-    if len(event.args) == 1:
+    if len(message.args) == 1:
         name = ""
-    elif len(event.args) == 2:
-        name = event.args[1]
+    elif len(message.args) == 2:
+        name = message.args[1]
     else:
-        event.iface("<stringinurl> <name>")
+        message.iface("<stringinurl> <name>")
         return
-    selector = {"rss": event.args[0]}
+    selector = {"rss": message.args[0]}
     for fnm, fed in Locater.find(
                                 Method.fqn(Rss),
                                 selector
@@ -530,30 +530,30 @@ def nme(event: Message):
         if feed:
             feed.name = name
             Disk.write(feed, fnm)
-    event.ok()
+    message.ok()
 
 
-def rem(event: Message):
+def rem(message: Message):
     "remove a feed."
-    if len(event.args) != 1:
-        event.iface("<stringinurl>")
+    if len(message.args) != 1:
+        message.iface("<stringinurl>")
         return
     for fnm, fed in Locater.find(Method.fqn(Rss)):
         feed = Rss()
         Method.update(feed, fed)
-        if event.args[0] not in feed.rss:
+        if message.args[0] not in feed.rss:
             continue
         if feed:
             feed.__deleted__ = True
             Disk.write(feed, fnm)
-            event.ok()
+            message.ok()
             break
 
 
-def res(event: Message):
+def res(message: Message):
     "restore a feed."
-    if len(event.args) != 1:
-        event.iface("<stringinurl>")
+    if len(message.args) != 1:
+        message.iface("<stringinurl>")
         return
     nrs = 0
     for fnm, fed in Locater.find(
@@ -562,43 +562,43 @@ def res(event: Message):
                                ):
         feed = Rss()
         Method.update(feed, fed)
-        if event.args[0] not in feed.rss:
+        if message.args[0] not in feed.rss:
             continue
         nrs += 1
         feed.__deleted__ = False
         Disk.write(feed, fnm)
-    event.reply(f"{nrs} feeds restored.")
+    message.reply(f"{nrs} feeds restored.")
 
 
-def rss(event: Message):
+def rss(message: Message):
     "add a feed."
-    if not event.rest:
-        event.iface("<url>")
+    if not message.rest:
+        message.iface("<url>")
         return
-    url = event.args[0]
+    url = message.args[0]
     if "http://" not in url and "https://" not in url:
-        event.reply("i need an url")
+        message.reply("i need an url")
         return
     for fnm, result in Locater.find(
                                    Method.fqn(Rss),
                                    {"rss": url}
                                   ):
         if result:
-            event.reply(f"{url} is known")
+            message.reply(f"{url} is known")
             return
     feed = Rss()
-    feed.rss = event.args[0]
+    feed.rss = message.args[0]
     Disk.write(feed)
-    event.ok()
+    message.ok()
 
 
-def syn(event: Message):
+def syn(message: Message):
     "synchronize a feed."
     if Main.debug:
         return
     nrs = Run.run(True)
     cleared = Run.clear()
-    event.reply(f"{nrs} feeds synced {cleared} cleared")
+    message.reply(f"{nrs} feeds synced {cleared} cleared")
 
 
 TEMPLATE = """<opml version="1.0">

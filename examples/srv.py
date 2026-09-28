@@ -7,13 +7,13 @@
 from nixt.defines import Main
 
 
-def srv(event):
+def srv(message):
     "generate systemd service file."
     if not Main.admin:
         return
     import getpass
     name = getpass.getuser()
-    event.reply(SYSTEMD % (
+    message.reply(SYSTEMD % (
                            Main.name.upper(),
                            name,
                            name,

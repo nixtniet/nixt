@@ -12,7 +12,7 @@ from nixt.defines import Time
 from nixt.threads import Thr
 
 
-def thr(event):
+def thr(message):
     "list of running threads."
     result = []
     for thread in sorted(threading.enumerate(), key=lambda x: x.name):
@@ -32,6 +32,6 @@ def thr(event):
         lap = Time.elapsed(uptime)
         res.append(f"{txt}/{lap}")
     if res:
-        event.reply(" ".join(res))
+        message.reply(" ".join(res))
     else:
-        event.reply("no threads")
+        message.reply("no threads")

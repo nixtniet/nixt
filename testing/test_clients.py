@@ -13,9 +13,9 @@ from nixt.defines import Message, Screen
 buffer = []
 
 
-def hello(event):
-    event.reply(event.text)
-    event.ready()
+def hello(message):
+    message.reply(message.text)
+    message.ready()
 
 
 class MyClient(Screen):

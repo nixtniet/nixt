@@ -61,7 +61,7 @@ class Fetcher:
         except TimeoutError:
             response.data = b""
             response.reason = "timeout error"
-            response.status = ""
+            response.status = 503
         except HTTPError as ex:
             response.data = b""
             response.reason = str(ex.reason)

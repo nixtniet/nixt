@@ -15,10 +15,10 @@ e = os.path.exists
 j = os.path.join
 
 
-def pth(event):
+def pth(message):
     "create and show path to website."
     path = j(a(Main.docs), "index.html")
     if e(path):
-        event.reply(f"file://{path}")
+        message.reply(f"file://{path}")
     else:
-        event.reply("no index.html")
+        message.reply("no index.html")

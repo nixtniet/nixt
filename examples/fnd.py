@@ -10,23 +10,23 @@ import time
 from nixt.defines import Locater, Method, Time, Workdir
 
 
-def fnd(event):
+def fnd(message):
     "find objects."
-    if not event.rest:
+    if not message.rest:
         res = sorted([x.split('.')[-1].lower() for x in Workdir.kinds()])
         if res:
-            event.reply(",".join(res))
+            message.reply(",".join(res))
         else:
-            event.reply("no data.")
+            message.reply("no data.")
         return
-    otype = event.args[0]
+    otype = message.args[0]
     nmr = 0
     for fnm, obj in sorted(
-                           Locater.find(otype, event.gets),
+                           Locater.find(otype, message.gets),
                            key=lambda x: Locater.fntime(x[0])
                           ):
         diff = time.time()-Locater.fntime(fnm)
-        event.reply(f"{nmr} {Method.fmt(obj)} {Time.elapsed(diff)}")
+        message.reply(f"{nmr} {Method.fmt(obj)} {Time.elapsed(diff)}")
         nmr += 1
     if not nmr:
-        event.reply("no result")
+        message.reply("no result")

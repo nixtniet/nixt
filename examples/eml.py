@@ -25,50 +25,50 @@ class Email(Data):
         self.text: str
 
 
-def eml(event):
+def eml(message):
     "search emails."
     nrs = -1
     args = ["From", "Subject"]
-    args.extend(event.args)
-    if event.gets:
-        args.extend(Method.keys(event.gets))
-    for key in event.silent:
+    args.extend(message.args)
+    if message.gets:
+        args.extend(Method.keys(message.gets))
+    for key in message.silent:
         if key in args:
             args.remove(key)
     arguments = list(set(args))
     result = sorted(
-                    Locater.find("email", event.gets),
+                    Locater.find("email", message.gets),
                     key=lambda x: Time.timed(x[1].Date)
                    )
-    if event.index not in ["", None]:
-        obj = result[event.index]
+    if message.index not in ["", None]:
+        obj = result[message.index]
         if obj:
             obj = obj[-1]
             tme = getattr(obj, "Date", "")
             diff = time.time() - Time.timed(tme)
             txt = Method.fmt(obj, arguments, plain=True)
-            event.reply(f'{event.index} {txt} {Time.elapsed(diff)}')
+            message.reply(f'{message.index} {txt} {Time.elapsed(diff)}')
     else:
         for _fn, obj in result:
             nrs += 1
             tme = getattr(obj, "Date", "")
             diff = time.time() - Time.timed(tme)
             txt = Method.fmt(obj, arguments, plain=True)
-            event.reply(f'{nrs} {txt} {Time.elapsed(diff)}')
+            message.reply(f'{nrs} {txt} {Time.elapsed(diff)}')
     if not result:
-        event.reply("no emails found.")
+        message.reply("no emails found.")
 
 
-def mbx(event):
+def mbx(message):
     "import emails from mailbox."
-    if not event.args:
-        event.iface("<path>")
+    if not message.args:
+        message.iface("<path>")
         return
-    fnm = os.path.expanduser(event.args[0])
+    fnm = os.path.expanduser(message.args[0])
     if not os.path.exists(fnm):
-        event.iface("<path>")
+        message.iface("<path>")
         return
-    event.reply(f"reading from {fnm}")
+    message.reply(f"reading from {fnm}")
     thing: Union[Mailbox, Maildir]
     if os.path.isdir(fnm):
         thing = Maildir(fnm, create=False)
@@ -99,6 +99,6 @@ def mbx(event):
             Disk.write(obj)
             nrs += 1
         if nrs:
-            event.ok(nrs)
+            message.ok(nrs)
     except FileNotFoundError as ex:
-        event.reply(str(ex))
+        message.reply(str(ex))

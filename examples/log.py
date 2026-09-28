@@ -14,12 +14,12 @@ class Log(Object):
         self.txt = ''
 
 
-def log(event):
+def log(message):
     "log text."
-    if len(event.args) == 0:
-        event.iface("<txt>")
+    if len(message.args) == 0:
+        message.iface("<txt>")
         return
     obj = Log()
-    obj.txt = event.rest
+    obj.txt = message.rest
     Disk.write(obj)
-    event.ok()
+    message.ok()
