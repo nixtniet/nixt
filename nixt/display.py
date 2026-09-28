@@ -27,15 +27,15 @@ class Display:
         if not self.silent:
             self.raw(text)
 
-    def display(self, message: Message) -> None:
-        "display message results."
+    def display(self, msg: Message) -> None:
+        "display msg results."
         with self.olock:
-            for txt in message.result:
+            for txt in msg.result:
                 if self.block.is_set():
                     return
-                self.dosay(message.channel, txt)
+                self.dosay(msg.channel, txt)
                 del txt
-        del message
+        del msg
 
     def dosay(self, channel: str, text: str) -> None:
         "say called by display."

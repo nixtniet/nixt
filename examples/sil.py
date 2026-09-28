@@ -7,21 +7,21 @@
 from nixt.defines import Broker
 
 
-def lou(message):
+def lou(msg):
     "disable silent mode."
-    bot = Broker.get(message.orig)
+    bot = Broker.get(msg.orig)
     if not bot:
-        message.reply("no bot in fleet.")
+        msg.reply("no bot in fleet.")
         return
     bot.silent = False
-    message.ok()
+    msg.ok()
 
 
-def sil(message):
+def sil(msg):
     "enable silent mode."
-    bot = Broker.get(message.orig)
+    bot = Broker.get(msg.orig)
     if not bot:
-        message.reply("no bot in fleet.")
+        msg.reply("no bot in fleet.")
         return
     bot.silent = True
-    message.ok()
+    msg.ok()

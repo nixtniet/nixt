@@ -20,14 +20,14 @@ class Engine(Loop):
         Loop.__init__(self)
         self.cbs: Dict[str, Callable] = {}
 
-    def handle(self, message: Message) -> None:
-        "run callback function with message."
-        func = self.cbs.get(message.kind, None)
+    def handle(self, msg: Message) -> None:
+        "run callback function with msg."
+        func = self.cbs.get(msg.kind, None)
         if not func:
-            message.ready()
+            msg.ready()
             return
-        name = message.text and message.text.split()[0]
-        message._thr = Thread.launch(func, message, name=name)
+        name = msg.text and msg.text.split()[0]
+        msg._thr = Thread.launch(func, msg, name=name)
 
     def register(self, kind: str, callback: Callable) -> None:
         "register callback."

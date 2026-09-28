@@ -26,11 +26,11 @@ class Clients:
             obj.announce(text)
 
     @staticmethod
-    def display(message: Message) -> None:
+    def display(msg: Message) -> None:
         "display results."
-        bot = Broker.get(message.orig)
+        bot = Broker.get(msg.orig)
         if bot:
-            bot.display(message)
+            bot.display(msg)
 
     @staticmethod
     def shutdown() -> None:

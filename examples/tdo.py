@@ -14,29 +14,29 @@ class Todo(Object):
         self.txt = ''
 
 
-def dne(message):
+def dne(msg):
     "mark todo as done."
-    if not message.args:
-        message.iface("<txt>")
+    if not msg.args:
+        msg.iface("<txt>")
         return
-    selector = {'txt': message.args[0]}
+    selector = {'txt': msg.args[0]}
     nmr = 0
     for fnm, obj in Locater.find('todo', selector):
         nmr += 1
         obj.__deleted__ = True
         Disk.write(obj, fnm)
-        message.ok()
+        msg.ok()
         break
     if not nmr:
-        message.reply("nothing todo")
+        msg.reply("nothing todo")
 
 
-def tdo(message):
+def tdo(msg):
     "add a todo."
-    if not message.rest:
-        message.iface("<txt>")
+    if not msg.rest:
+        msg.iface("<txt>")
         return
     obj = Todo()
-    obj.txt = message.rest
+    obj.txt = msg.rest
     Disk.write(obj)
-    message.ok()
+    msg.ok()

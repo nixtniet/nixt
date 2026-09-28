@@ -25,7 +25,7 @@ def init():
             msg.text = ""
             msg.rest = key
             sec = seconds(val)
-            Repeater.add(sec, cbstats, msg)
+            Repeater.add(sec, cb_stats, msg)
             logger.info("%s since %s %s", Time.elapsed(time.time()-STARTTIME), STARTDATE.split(maxsplit=1)[0], SOURCE)
 
 
@@ -124,7 +124,7 @@ def daily():
     while 1:
         time.sleep(24*60*60)
         msg = Message()
-        cbnow(msg)
+        cb_now(msg)
 
 
 def hourly():
@@ -132,10 +132,10 @@ def hourly():
     while 1:
         time.sleep(60*60)
         msg = Message()
-        cbnow(msg)
+        cb_now(msg)
 
 
-def cbnow(msg):
+def cb_now(msg):
     "callback for current status."
     delta = time.time() - STARTTIME
     txt = Time.elapsed(delta) + " "
@@ -149,7 +149,7 @@ def cbnow(msg):
     Clients.announce(txt)
 
 
-def cbstats(msg):
+def cb_stats(msg):
     "callback for current statistics."
     nme = msg.rest or "Psych"
     needed = seconds(getnr(nme))
@@ -165,7 +165,7 @@ def cbstats(msg):
         Clients.announce(txt)
 
 
-def dis(message):
+def dis(msg):
     "show disease numbers."
     delta = time.time() - STARTTIME
     txt = Time.elapsed(delta) + " "
@@ -177,12 +177,12 @@ def dis(message):
         pertime = Time.elapsed(needed)
         txt += f"{getalias(nme)} {nrtimes} ({pertime}) | "
     txt += SOURCE
-    message.reply(txt)
+    msg.reply(txt)
 
 
-def now(message):
+def now(msg):
     "show current status."
-    nme = message.rest or "Psych"
+    nme = msg.rest or "Psych"
     needed = seconds(getnr(nme))
     if needed:
         delta = time.time() - STARTTIME
@@ -193,7 +193,7 @@ def now(message):
         alias = getalias(nme).upper()
         need = Time.elapsed(needed)
         txt = f"{elapsed} {alias} ({nrtimes}/{nrday}/{nryear}) every {need}"
-        message.reply(txt)
+        msg.reply(txt)
 
 
 oor = """"Totaal onderliggende doodsoorzaken (aantal)";

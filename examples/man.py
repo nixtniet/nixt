@@ -22,7 +22,7 @@
 ::
 
     %s has all you need to program a unix cli program, such as disk
-    perisistence for configuration files, message handler to handle the
+    perisistence for configuration files, msg handler to handle the
     client/server connection, bork on exit for have an early exit, etc.
 
     %s contains python3 code to program objects in a functional way.
@@ -65,7 +65,7 @@
     %s
 
     options:
-      -h, --help         show this help message and exit
+      -h, --help         show this help msg and exit
       -c, --console      run as console.
       -d, --daemon       run as background daemon.
       -s, --service      run as service.
@@ -169,8 +169,8 @@
     %s has it's user modules in the ~/.%s/mods directory, for a hello world
     command you would edit a file in ~/.%s/mods/hello.py and add the following
 
-        def hello(message):
-            message.reply("hello world !!")
+        def hello(msg):
+            msg.reply("hello world !!")
 
     typing the hello command would result into a nice hello world !!
 
@@ -206,14 +206,14 @@
     %s is Public Domain."""
 
 
-def man(message):
-    args = message.args
+def man(msg):
+    args = msg.args
     try:
         name, email, author = args[0], args[1], " ".join(args[2:])
     except (ValueError, IndexError):
-        message.iface("<name> <email> <author>")
+        msg.iface("<name> <email> <author>")
         return
-    message.reply(__doc__ % (
+    msg.reply(__doc__ % (
         name,
         name.upper(),
         *(name,) * 2,

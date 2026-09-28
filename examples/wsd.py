@@ -20,8 +20,8 @@ rand   = SystemRandom()
 
 def init():
     state.load()
-    message = Message()
-    Repeater.add(3600,  wsd, message)
+    msg = Message()
+    Repeater.add(3600,  wsd, msg)
     logger.info("%s wise", len(TXTLIST))
 
 
@@ -44,7 +44,7 @@ class State:
 state = State()
 
 
-def wsd(message):
+def wsd(msg):
     "show a wisdom quote."
     txt = ""
     for nrs in range(len(TXTLIST)):
@@ -225,7 +225,7 @@ TXT = """| wijsheid, wijs !
 | de overname mensen zeggen er geen last van te hebben
 | topic naming als presence
 | engels/nederlands als vroegtijde dag voorkomers
-| strictly dutch as The Day Prmessageers
+| strictly dutch as The Day Prmsgers
 | corner bouncing
 | long distance woord over de ruit
 | stiltewens genoemd

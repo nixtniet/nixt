@@ -10,6 +10,6 @@ import time
 from nixt.defines import Time
 
 
-def upt(message):
+def upt(msg):
     "show uptiome."
-    message.reply(Time.elapsed(time.time()-Time.starttime))
+    msg.reply(Time.elapsed(time.time()-Time.starttime))

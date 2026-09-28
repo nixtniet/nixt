@@ -7,17 +7,17 @@
 from nixt.defines import Locater, Workdir
 
 
-def fie(message):
+def fie(msg):
     "show fields of a type."
-    if not message.rest:
+    if not msg.rest:
         res = sorted({x.split('.')[-1].lower() for x in Workdir.kinds()})
         if res:
-            message.reply(",".join(res))
+            msg.reply(",".join(res))
         else:
-            message.reply("no types")
+            msg.reply("no types")
         return
-    itms = Locater.attrs(message.args[0])
+    itms = Locater.attrs(msg.args[0])
     if not itms:
-        message.reply("no attributes")
+        msg.reply("no attributes")
     else:
-        message.reply(",".join(itms))
+        msg.reply(",".join(itms))

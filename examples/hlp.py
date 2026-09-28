@@ -12,7 +12,7 @@ TXT = """usage: %s <cmd> [name=value] [name==value]
 NIXT
 
 options:
-  -h, --help     show this help message and exit
+  -h, --help     show this help msg and exit
   --console      run as console.
   --daemon       run as background daemon.
   --service      run as service.
@@ -32,8 +32,8 @@ use "%s cmd" for a list of commands.
 """
 
 
-def hlp(message):
-    message.reply(TXT % (
+def hlp(msg):
+    msg.reply(TXT % (
         Main.name,
         Main.name
        )

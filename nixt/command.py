@@ -34,14 +34,14 @@ class Commands:
             cls.cmds[func.__name__] = func
 
     @classmethod
-    def command(cls, message: Message) -> None:
+    def command(cls, msg: Message) -> None:
         "command callback."
-        Parser.parse(message, message.text)
-        func = cls.cmds.get(message.cmd, cls.ondemand(message.cmd))
+        Parser.parse(msg, msg.text)
+        func = cls.cmds.get(msg.cmd, cls.ondemand(msg.cmd))
         if func:
-            func(message)
-            Clients.display(message)
-        message.ready()
+            func(msg)
+            Clients.display(msg)
+        msg.ready()
 
     @classmethod
     def list(cls) -> Union[List[str]]:
@@ -70,8 +70,10 @@ class Commands:
     def scan(cls, mod: ModuleType, skip: bool = False) -> List[Callable]:
         "scan module for commands."
         result: List[Callable] = []
-        for _nme, func in inspect.getmembers(mod, inspect.isfunction):
-            if 'message' in inspect.signature(func).parameters:
+        for nme, func in inspect.getmembers(mod, inspect.isfunction):
+            if "cb_" in nme:
+                continue
+            if 'msg' in inspect.signature(func).parameters:
                 if not skip:
                     cls.add(func)
                 result.append(func)

@@ -24,13 +24,13 @@ class Cmd:
     "necessary commands."
 
     @staticmethod
-    def cmd(message: Message) -> None:
+    def cmd(msg: Message) -> None:
         "show commands."
         check = len(Commands.cmds) > len(Commands.names)
-        message.reply(",".join(sorted((check and Commands.cmds) or Commands.names)))
+        msg.reply(",".join(sorted((check and Commands.cmds) or Commands.names)))
 
     @staticmethod
-    def tbl(message: Message) -> None:
+    def tbl(msg: Message) -> None:
         "create table."
         core: Dict[str, str] = {}
         md5s: Dict[str, str] = {}
@@ -47,29 +47,29 @@ class Cmd:
                     Commands.names[cmd.__name__] = cmd.__module__.split(".")[-1]
         corepath = os.path.dirname(str(inspect.getsourcefile(Mods)))
         MD5.createmd5(corepath, core)
-        message.reply("# This file is placed in the Public Domain.")
-        message.reply("\n")
-        message.reply('"tables"')
-        message.reply("\n")
-        message.reply("from typing import Dict")
-        message.reply("\n")
-        message.reply(f"CORE: Dict[str, str] = {JSON.dumps(core, indent=4, sort_keys=True)}")
-        message.reply("\n")
-        message.reply(f"MODULES: Dict[str, str] = {JSON.dumps(md5s, indent=4, sort_keys=True)}")
-        message.reply("\n")
-        message.reply(f"NAMES: Dict[str, str] = {JSON.dumps(Commands.names, indent=4, sort_keys=True)}")
-        message.reply("\n")
-        message.reply("def __dir__():")
-        message.reply("    return (")
-        message.reply("        'CORE',")
-        message.reply("        'MODULES',")
-        message.reply("        'NAMES'")
-        message.reply("    )")
+        msg.reply("# This file is placed in the Public Domain.")
+        msg.reply("\n")
+        msg.reply('"tables"')
+        msg.reply("\n")
+        msg.reply("from typing import Dict")
+        msg.reply("\n")
+        msg.reply(f"CORE: Dict[str, str] = {JSON.dumps(core, indent=4, sort_keys=True)}")
+        msg.reply("\n")
+        msg.reply(f"MODULES: Dict[str, str] = {JSON.dumps(md5s, indent=4, sort_keys=True)}")
+        msg.reply("\n")
+        msg.reply(f"NAMES: Dict[str, str] = {JSON.dumps(Commands.names, indent=4, sort_keys=True)}")
+        msg.reply("\n")
+        msg.reply("def __dir__():")
+        msg.reply("    return (")
+        msg.reply("        'CORE',")
+        msg.reply("        'MODULES',")
+        msg.reply("        'NAMES'")
+        msg.reply("    )")
 
     @staticmethod
-    def ver(message: Message) -> None:
+    def ver(msg: Message) -> None:
         "show verson."
-        message.reply(f"{Main.name.upper()} {MD5.core()}")
+        msg.reply(f"{Main.name.upper()} {MD5.core()}")
 
 
 def __dir__():

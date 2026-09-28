@@ -29,20 +29,20 @@ class Output:
         self.oqueue: Queue = Queue()
         self.ostopped: Event = Event()
 
-    def display(self, message: Message) -> None:
+    def display(self, msg: Message) -> None:
         "do actual display."
 
     def output(self) -> None:
         "output loop."
         while not self.ostopped.is_set():
             try:
-                message = self.oqueue.get()
+                msg = self.oqueue.get()
             except (KeyboardInterrupt, EOFError):
                 _thread.interrupt_main()
-            if message is None:
+            if msg is None:
                 self.oqueue.task_done()
                 break
-            self.display(message)
+            self.display(msg)
             self.oqueue.task_done()
 
     def raw(self, text: str) -> None:

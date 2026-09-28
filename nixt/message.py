@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"only the message"
+"only the msg"
 
 
 from threading import Event
@@ -14,7 +14,7 @@ from .threads import Thr
 
 class Message(Data):
 
-    "message as an message"
+    "msg as an msg"
 
     def __init__(self):
         Data.__init__(self)
@@ -23,7 +23,7 @@ class Message(Data):
         self.args: List[str] = []
         self.cmd: str = ""
         self.index: int = 0
-        self.kind: str = "message"
+        self.kind: str = "msg"
         self.orig: str = ""
         self.rest: str = ""
         self.result: List[Any] = []
@@ -38,7 +38,7 @@ class Message(Data):
         self.reply(f"ok {text}".strip())
 
     def ready(self) -> None:
-        "flag message as ready."
+        "flag msg as ready."
         self._ready.set()
 
     def reply(self, text: str) -> None:

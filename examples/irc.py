@@ -30,10 +30,10 @@ def init():
     irc = IRC()
     irc.start()
     try:
-        irc.messages.joined.wait(60.0)
+        irc.msgs.joined.wait(60.0)
     except (KeyboardInterrupt, EOFError):
         _thread.interrupt_main()
-    if irc.messages.joined.is_set():
+    if irc.msgs.joined.is_set():
         logger.info("%s", Method.fmt(irc.cfg, ["nick", "channel", "server", "port"]))
     else:
         irc.stop()
@@ -129,7 +129,7 @@ class IRC(Buffer):
         self.buffer = []
         self.cfg = Config()
         self.channels = []
-        self.messages = Events()
+        self.msgs = Events()
         self.lock = threading.RLock()
         self.noflood = True
         self.silent = False
@@ -155,8 +155,8 @@ class IRC(Buffer):
     def connect(self, server, port=6667):
         "connect to irc server."
         self.state.nrconnect += 1
-        self.messages.connected.clear()
-        self.messages.joined.clear()
+        self.msgs.connected.clear()
+        self.msgs.joined.clear()
         if self.cfg.word or self.cfg.word:
             logger.debug("using SASL")
             self.cfg.sasl = True
@@ -173,12 +173,12 @@ class IRC(Buffer):
             host, port = addr[:2]
             addr2 = (str(host), int(port))
             self.sock = socket.create_connection(addr2)
-            self.messages.authed.set()
+            self.msgs.authed.set()
         if self.sock:
             os.set_inheritable(self.sock.fileno(), True)
             self.sock.setblocking(True)
             self.sock.settimeout(180.0)
-            self.messages.connected.set()
+            self.msgs.connected.set()
             logger.debug(
                           "connected %s:%s channel %s",
                           self.cfg.server,
@@ -201,15 +201,15 @@ class IRC(Buffer):
         except (ssl.SSLError, OSError, BrokenPipeError):
             pass
 
-    def display(self, message):
-        "display results of an message."
-        if len(message.result) > 3:
-            self.say(message.channel, "command would flood")
+    def display(self, msg):
+        "display results of an msg."
+        if len(msg.result) > 3:
+            self.say(msg.channel, "command would flood")
             return
-        for txt in message.result:
+        for txt in msg.result:
             for text in wrapper.wrap(txt):
-                self.dosay(message.channel, text)
-        message.ready()
+                self.dosay(msg.channel, text)
+        msg.ready()
 
     def docommand(self, cmd, *args):
         "basic commands."
@@ -234,10 +234,10 @@ class IRC(Buffer):
             try:
                 if self.connect(server, port):
                     self.logon(self.cfg.server, self.cfg.nick)
-                    self.messages.joined.wait(45.0)
-                    if not self.messages.joined.is_set():
+                    self.msgs.joined.wait(45.0)
+                    if not self.msgs.joined.is_set():
                         self.disconnect()
-                        self.messages.joined.set()
+                        self.msgs.joined.set()
                         continue
                     break
             except (KeyboardInterrupt, EOFError):
@@ -250,21 +250,21 @@ class IRC(Buffer):
                     OSError,
                     ConnectionResetError
                    ) as ex:
-                self.messages.joined.set()
+                self.msgs.joined.set()
                 self.state.error = str(ex)
                 logger.debug("%s", str(type(ex)) + " " + str(ex))
             time.sleep(self.cfg.sleep)
 
     def dosay(self, channel, text):
         "sanitize before sending text to a channel."
-        self.messages.joined.wait()
+        self.msgs.joined.wait()
         txt = str(text).replace("\n", "")
         txt = txt.replace("  ", " ")
         self.docommand("PRIVMSG", channel, txt)
         del txt
 
-    def message(self, txt):
-        "parse text into an message."
+    def msg(self, txt):
+        "parse text into an msg."
         msg = self.parsing(txt)
         cmd = msg.command
         if cmd == "PING":
@@ -283,7 +283,7 @@ class IRC(Buffer):
             self.state.host = msg.args[2][:-1]
         elif cmd == "366":
             self.state.error = ""
-            self.messages.joined.set()
+            self.msgs.joined.set()
         elif cmd == "433":
             self.state.error = txt
             self.state.nickchange += 1
@@ -302,8 +302,8 @@ class IRC(Buffer):
             if self.state.stopkeep:
                 self.state.stopkeep = False
                 break
-            self.messages.connected.wait()
-            self.messages.authed.wait()
+            self.msgs.connected.wait()
+            self.msgs.authed.wait()
             self.state.keeprunning = True
             self.state.latest = time.time()
             for x in range(self.cfg.sleep*10):
@@ -316,17 +316,17 @@ class IRC(Buffer):
 
     def logon(self, server, nck):
         "log onto the irc network."
-        self.messages.connected.wait()
-        self.messages.authed.wait()
+        self.msgs.connected.wait()
+        self.msgs.authed.wait()
         self.direct(f"NICK {nck}")
         self.direct(f"USER {nck} {server} {server} {nck}")
 
-    def oput(self, message):
-        "put message onto output queue."
-        self.oqueue.put_nowait(message)
+    def oput(self, msg):
+        "put msg onto output queue."
+        self.oqueue.put_nowait(msg)
 
     def parsing(self, txt):
-        "parse text into an message."
+        "parse text into an msg."
         rawstr = str(txt)
         rawstr = rawstr.replace("\u0001", "")
         rawstr = rawstr.replace("\001", "")
@@ -377,14 +377,14 @@ class IRC(Buffer):
 
 
     def poll(self):
-        "poll on the socket for an message."
-        self.messages.connected.wait()
+        "poll on the socket for an msg."
+        self.msgs.connected.wait()
         if not self.buffer:
             try:
                 self.some()
             except BlockingIOError as ex:
                 time.sleep(1.0)
-                return self.message(str(ex))
+                return self.msg(str(ex))
             except (
                 TimeoutError,
                 OSError,
@@ -404,7 +404,7 @@ class IRC(Buffer):
             txt = self.buffer.pop(0)
         except IndexError:
             txt = ""
-        self.put(self.message(txt))
+        self.put(self.msg(txt))
         return None
 
     def post(self, obj, rawstr, arguments):
@@ -443,7 +443,7 @@ class IRC(Buffer):
                 socket.timeout
             ) as ex:
                 logger.debug("%s", str(type(ex)) + " " + str(ex))
-                self.messages.joined.set()
+                self.msgs.joined.set()
                 self.state.nrerror += 1
                 self.state.error = str(ex)
                 self.state.pongcheck = True
@@ -456,14 +456,14 @@ class IRC(Buffer):
         "reconnect to server."
         logger.debug("reconnecting %s:%s", self.cfg.server, self.cfg.port)
         self.disconnect()
-        self.messages.connected.clear()
-        self.messages.joined.clear()
+        self.msgs.connected.clear()
+        self.msgs.joined.clear()
         self.doconnect(self.cfg.server, self.cfg.nick, int(self.cfg.port))
 
     def restart(self):
         "restart client."
         logger.debug("restart")
-        self.messages.joined.set()
+        self.msgs.joined.set()
         self.state.pongcheck = False
         self.state.keeprunning = False
         self.state.stopkeep = True
@@ -479,14 +479,14 @@ class IRC(Buffer):
 
     def say(self, channel, text):
         "say text in the channel."
-        message = IRCEvent()
-        message.channel = channel
-        message.reply(text)
-        self.oput(message)
+        msg = IRCEvent()
+        msg.channel = channel
+        msg.reply(text)
+        self.oput(msg)
 
     def some(self):
         "read some text from the socket."
-        self.messages.connected.wait()
+        self.msgs.connected.wait()
         if not self.sock:
             return
         inbytes = self.sock.recv(512)
@@ -504,9 +504,9 @@ class IRC(Buffer):
         Disk.read(self.cfg, "irc", "config")
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
-        self.messages.connected.clear()
-        self.messages.joined.clear()
-        self.messages.ready.clear()
+        self.msgs.connected.clear()
+        self.msgs.joined.clear()
+        self.msgs.ready.clear()
         Buffer.start(self)
         if not self.state.keeprunning:
             Thread.launch(self.keep, daemon=daemon)
@@ -526,7 +526,7 @@ class IRC(Buffer):
     def wait(self):
         "wait for client to join."
         try:
-            self.messages.ready.wait()
+            self.msgs.ready.wait()
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
 
@@ -558,14 +558,14 @@ def cb_h903(msg):
     "end capabilities callback."
     bot = Broker.get(msg.orig)
     bot.direct("CAP END")
-    bot.messages.authed.set()
+    bot.msgs.authed.set()
 
 
 def cb_h904(msg):
     "end capabilities callback."
     bot = Broker.get(msg.orig)
     bot.direct("CAP END")
-    bot.messages.authed.set()
+    bot.msgs.authed.set()
 
 
 def cb_kill(msg):
@@ -579,13 +579,13 @@ def cb_log(msg):
 def cb_ready(msg):
     "ready callback."
     bot = Broker.get(msg.orig)
-    bot.messages.ready.set()
+    bot.msgs.ready.set()
 
 
 def cb_001(msg):
     "greeting callback."
     bot = Broker.get(msg.orig)
-    bot.messages.logon.set()
+    bot.msgs.logon.set()
 
 
 def cb_notice(msg):
@@ -628,16 +628,16 @@ def cb_quit(msg):
         bot.stop()
 
 
-def pwd(message):
+def pwd(msg):
     "generate sasl password."
-    if len(message.args) != 2:
-        message.iface("<nick> <password>")
+    if len(msg.args) != 2:
+        msg.iface("<nick> <password>")
         return
     import base64
-    arg1 = message.args[0]
-    arg2 = message.args[1]
+    arg1 = msg.args[0]
+    arg2 = msg.args[1]
     txt = f"\x00{arg1}\x00{arg2}"
     enc = txt.encode("ascii")
     base = base64.b64encode(enc)
     dcd = base.decode("ascii")
-    message.reply(dcd)
+    msg.reply(dcd)

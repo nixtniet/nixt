@@ -7,20 +7,20 @@
 from nixt.defines import Broker, Method
 
 
-def flt(message):
+def flt(msg):
     "list of running clients."
     try:
-        index = int(message.args[0])
+        index = int(msg.args[0])
     except (IndexError, ValueError):
         index = None
     clts = list(Broker.objs("announce"))
     if not clts:
-        message.reply("no clients")
+        msg.reply("no clients")
         return
     if index is None:
-        message.reply(' | '.join([Method.fqn(o).split(".")[-1] for o in clts]))
+        msg.reply(' | '.join([Method.fqn(o).split(".")[-1] for o in clts]))
         return
     if index < len(clts):
-        message.reply(str(clts[index]))
+        msg.reply(str(clts[index]))
     else:
-        message.reply("no matching client.")
+        msg.reply("no matching client.")

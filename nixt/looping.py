@@ -26,32 +26,32 @@ class Loop:
         self.stopped = threading.Event()
         self.done = threading.Event()
 
-    def after(self, message: Message) -> None:
+    def after(self, msg: Message) -> None:
         "called after callback."
 
-    def handle(self, message: Message) -> None:
-        "handle message."
+    def handle(self, msg: Message) -> None:
+        "handle msg."
 
     def loop(self) -> None:
         "callback loop."
         while not self.stopped.is_set():
             self.poll()
-            message = self.queue.get()
-            if message is None:
+            msg = self.queue.get()
+            if msg is None:
                 self.queue.task_done()
                 break
-            message.orig = repr(self)
-            self.handle(message)
-            self.after(message)
+            msg.orig = repr(self)
+            self.handle(msg)
+            self.after(msg)
             self.queue.task_done()
         self.done.set()
 
     def poll(self) -> Union[Message, None]:
-        "create message and put it on the queue."
+        "create msg and put it on the queue."
 
-    def put(self, message: Message) -> None:
-        "put message on queue."
-        self.queue.put(message)
+    def put(self, msg: Message) -> None:
+        "put msg on queue."
+        self.queue.put(msg)
 
     def start(self, daemon: bool = True) -> None:
         "start callback loop."
@@ -66,7 +66,7 @@ class Loop:
         self.done.wait()
 
     def wait(self) -> None:
-        "wait for all messages to finish,"
+        "wait for all msgs to finish,"
         try:
             self.queue.join()
         except (KeyboardInterrupt, EOFError):

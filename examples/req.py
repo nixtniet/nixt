@@ -67,5 +67,5 @@ king for making the commiting of the above mentioned crimes (killing,
 torture and impotent making) possible."""
 
 
-def req(message):
-    message.reply(__doc__)
+def req(msg):
+    msg.reply(__doc__)
