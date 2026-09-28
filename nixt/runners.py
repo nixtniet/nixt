@@ -4,14 +4,9 @@
 "the big loop"
 
 
-from typing import Any, Dict
-
-
 from .looping import Loop
 from .threads import Thread
-
-
-KW = Dict[str, Any]
+from .typings import Any, Dict
 
 
 class Runner(Loop):

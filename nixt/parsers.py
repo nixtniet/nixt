@@ -4,11 +4,9 @@
 "cli parser"
 
 
-from typing import Any
-
-
 from .methods import Method
 from .objects import Data
+from .typings import Any
 
 
 class Parser:

@@ -9,12 +9,13 @@ import threading
 import _thread
 
 
-from queue  import Queue
-from typing import Union
+from queue     import Queue
+from threading import Event
 
 
 from .message import Message
 from .threads import Thread
+from .typings import Union
 
 
 class Loop:
@@ -22,9 +23,9 @@ class Loop:
     "keep looping"
 
     def __init__(self):
-        self.queue: Queue = queue.Queue()
-        self.stopped = threading.Event()
-        self.done = threading.Event()
+        self.queue: Queue = Queue()
+        self.stopped: Event = Event()
+        self.done: Event = Event()
 
     def after(self, msg: Message) -> None:
         "called after callback."

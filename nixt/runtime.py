@@ -10,14 +10,11 @@ import time
 
 
 from argparse import SUPPRESS, ArgumentParser, RawDescriptionHelpFormatter
-from typing  import Any, Callable, TextIO, Union
 
 
 from .defines import Boot, Cmd, Commands, Main, MD5, Message
 from .defines import Method, Mods, Screen, Workdir
-
-
-Final = Union[Callable, None]
+from .typings import Any, Callable, Final, TextIO, Union
 
 
 class Arguments:

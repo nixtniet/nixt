@@ -4,12 +4,10 @@
 "handling"
 
 
-from typing import Callable, Dict
-
-
 from .looping import Loop
 from .message import Message
 from .threads import Thread
+from .typings import Callable, Dict
 
 
 class Engine(Loop):
@@ -17,7 +15,7 @@ class Engine(Loop):
     "run callbacks"
 
     def __init__(self):
-        Loop.__init__(self)
+        super().__init__()
         self.cbs: Dict[str, Callable] = {}
 
     def handle(self, msg: Message) -> None:

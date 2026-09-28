@@ -7,15 +7,11 @@
 import time
 
 
-from collections.abc import Callable
-from threading       import Event
-from typing          import Any, ClassVar, Dict, List
+from threading import Event
 
 
 from .threads import Thread
-
-
-Todo = Dict[str, List[Any]]
+from .typings import Any, Callable, ClassVar, Dict, List, Todo
 
 
 class Repeater:

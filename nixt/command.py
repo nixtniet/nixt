@@ -7,23 +7,20 @@
 import inspect
 
 
-from collections.abc import Callable
-from types           import ModuleType
-from typing          import ClassVar, Dict, List, Union
-
-
 from .clients import Clients
 from .message import Message
 from .package import Mods
 from .parsers import Parser
+from .typings import Callable, ClassVar, Commands, Dict, Hash, List, ModuleType
+from .typings import Union
 
 
 class Commands:
 
     "command dispatch"
 
-    cmds: ClassVar[Dict[str, Callable]] = {}
-    names: ClassVar[Dict[str, str]] = {}
+    cmds: ClassVar[Commands] = {}
+    names: ClassVar[Hash] = {}
 
     @classmethod
     def add(cls, *funcs: Callable) -> None:
@@ -44,7 +41,7 @@ class Commands:
         msg.ready()
 
     @classmethod
-    def list(cls) -> Union[List[str]]:
+    def list(cls) -> List[str]:
         "scan for a list of all commands."
         result = []
         for modname in Mods.list():

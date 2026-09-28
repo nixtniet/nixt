@@ -9,10 +9,9 @@ import types
 
 
 from threading import RLock
-from typing    import Union
 
 
-jsontypes = Union[dict,list,bool,float,int,str]
+from .typings import Any, Json
 
 
 class Encoder(json.JSONEncoder):
@@ -40,7 +39,7 @@ class Encoder(json.JSONEncoder):
                 except TypeError:
                     return repr(o)
 
-    def skip(self, obj: object) -> dict:
+    def skip(self, obj: Any) -> dict:
         "yield values without underscored keys."
         result = {}
         for key in dir(obj):
@@ -67,12 +66,12 @@ class JSON:
         return json.dumps(*args, **kw)
 
     @classmethod
-    def load(cls, s, *args, **kw) -> jsontypes:
+    def load(cls, s, *args, **kw) -> Json:
         "load object from disk."
         return json.load(s, *args, **kw)
 
     @classmethod
-    def loads(cls, s, *args, **kw) -> jsontypes:
+    def loads(cls, s, *args, **kw) -> Json:
         "load object from string."
         return json.loads(s, *args, **kw)
 

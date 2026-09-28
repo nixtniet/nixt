@@ -5,11 +5,11 @@
 
 
 from threading import Event
-from typing    import Any, List, Union
 
 
 from .objects import Data
 from .threads import Thr
+from .typings import Any, List, Union
 
 
 class Message(Data):
@@ -17,7 +17,7 @@ class Message(Data):
     "msg as an msg"
 
     def __init__(self):
-        Data.__init__(self)
+        super().__init__()
         self._ready: Event = Event()
         self._thr: Union[Thr, None] = None
         self.args: List[str] = []

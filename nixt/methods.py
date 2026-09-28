@@ -9,15 +9,9 @@ import os
 import types
 
 
-from typing import Any, Dict, Generator, List, Tuple, Union
-
-
 from .objects import Object
-
-
-Keys   = List[str]
-Items  = List[Tuple[str, Any]]
-Values = List[Any]
+from .typings import Any, Dict, Generator, List, Tuple, Union
+from .typings import Args, Keys, Items, Selector, Skipped, Values
 
 
 class Method:
@@ -35,7 +29,7 @@ class Method:
         return cls.fqn(obj).split(".")[-1]
 
     @classmethod
-    def construct(cls, obj: Any, *args, **kwargs) -> None:
+    def construct(cls, obj: Any, *args: Any, **kwargs: Any) -> None:
         "object contructor."
         if args:
             val = args[0]
@@ -75,8 +69,9 @@ class Method:
 
     @classmethod
     def fmt(cls,
-            obj: Any, args: Union[List[str], None] = None,
-            skip: Union[List[str], None] = None,
+            obj: Any,
+            args: Args = None,
+            skip: Args = None,
             plain: bool = False,
             empty: bool = False) -> str:
         "format object info printable string."
@@ -210,7 +205,7 @@ class Method:
     @classmethod
     def search(cls,
                obj: Any,
-               selector: Union[Dict[str, str], None] = None,
+               selector: Selector = None,
                matching: bool = False) -> bool:
         "check whether object matches search criteria."
         if selector is None:
@@ -249,7 +244,7 @@ class Method:
         return res
 
     @classmethod
-    def skipped(cls, obj: Any) -> Generator[Any, None, None]:
+    def skipped(cls, obj: Any) -> Skipped:
         "yield values without underscored keys."
         for key in dir(obj):
             if key.startswith("_"):

@@ -13,10 +13,9 @@ import _thread
 
 from queue     import Queue
 from threading import Event, RLock
-from typing    import Any, Callable, ClassVar, Dict, Union
 
 
-TimeOut = Union[float, None]
+from .typings import Any, Anys, Callable, ClassVar, Dict, TimeOut, Union
 
 
 logger = logging.getLogger(__name__)
@@ -35,7 +34,7 @@ class Thr(threading.Thread):
         self.result: Any = None
         self.sleep: float = 0.0
         self.starttime: float = time.time()
-        self.state = Dict[str, Any]
+        self.state = Anys
         self.queue.put((func, args))
 
     def __iter__(self):

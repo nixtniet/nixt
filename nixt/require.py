@@ -8,14 +8,12 @@ import inspect
 import os
 
 
-from typing import Dict
-
-
 from .command import Commands
 from .configs import Main
 from .encoder import JSON
 from .message import Message
 from .package import MD5, Mods
+from .typings import Dict, Hash
 from .utility import Utils
 
 
@@ -32,8 +30,8 @@ class Cmd:
     @staticmethod
     def tbl(msg: Message) -> None:
         "create table."
-        core: Dict[str, str] = {}
-        md5s: Dict[str, str] = {}
+        core: Hash = {}
+        md5s: Hash = {}
         Commands.names = {}
         if Main.mods:
             for name in Utils.spl(Main.mods):
@@ -51,13 +49,13 @@ class Cmd:
         msg.reply("\n")
         msg.reply('"tables"')
         msg.reply("\n")
-        msg.reply("from typing import Dict")
+        msg.reply("from .typings import Hash")
         msg.reply("\n")
-        msg.reply(f"CORE: Dict[str, str] = {JSON.dumps(core, indent=4, sort_keys=True)}")
+        msg.reply(f"CORE: Hash = {JSON.dumps(core, indent=4, sort_keys=True)}")
         msg.reply("\n")
-        msg.reply(f"MODULES: Dict[str, str] = {JSON.dumps(md5s, indent=4, sort_keys=True)}")
+        msg.reply(f"MODULES: Hash = {JSON.dumps(md5s, indent=4, sort_keys=True)}")
         msg.reply("\n")
-        msg.reply(f"NAMES: Dict[str, str] = {JSON.dumps(Commands.names, indent=4, sort_keys=True)}")
+        msg.reply(f"NAMES: Hash = {JSON.dumps(Commands.names, indent=4, sort_keys=True)}")
         msg.reply("\n")
         msg.reply("def __dir__():")
         msg.reply("    return (")

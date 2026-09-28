@@ -4,11 +4,7 @@
 "an object for a string"
 
 
-from typing import Any, ClassVar, Dict, Generator, Tuple
-
-
-Liked   = Generator[Tuple[str, Any], None, None]
-Objects = Generator[Any, None, None]
+from .typings import Any, ClassVar, Dict, Generator, Liked, Objects, Tuple
 
 
 class Broker:

@@ -8,9 +8,6 @@ import html
 import re
 
 
-from typing import Any, ClassVar, Dict, Union
-
-
 from urllib.error   import HTTPError, URLError
 from urllib.parse   import unquote, urlparse, urlunparse
 from urllib.request import Request, urlopen
@@ -18,6 +15,7 @@ from urllib.request import Request, urlopen
 
 from .methods import Method
 from .objects import Data
+from .typings import Any, Anys, ClassVar, Dict, Union
 
 
 class Response(Data):
@@ -71,7 +69,7 @@ class Fetcher:
         return response
 
     @classmethod
-    def request(cls, req: Request) -> Dict[str, Any]:
+    def request(cls, req: Request) -> Anys:
         "handle  a request."
         with urlopen(req, timeout=4) as response:  # nosec
             modi = response.headers.get('Last-Modified', "")

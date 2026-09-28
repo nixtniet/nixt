@@ -13,7 +13,7 @@ class Format(Formatter):
     "logging format."
 
     disable: ClassVar[bool] = False
-    size:    ClassVar[int] = 3
+    size: ClassVar[int] = 3
 
     def format(self, record: LogRecord) -> str:
         "logging formatter."
@@ -28,7 +28,7 @@ class Logging:
     "logging."
 
     datefmt: ClassVar[str] = "%H:%M:%S"
-    format:  ClassVar[str] = "%(module)-3s %(message)s"
+    format: ClassVar[str] = "%(module)-3s %(message)s"
     formats: ClassVar[str] = "%(message)s"
 
     @classmethod
