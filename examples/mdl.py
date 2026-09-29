@@ -26,7 +26,7 @@ def init():
             msg.rest = key
             sec = seconds(val)
             Repeater.add(sec, cb_stats, msg)
-            logger.info("%s since %s %s", Time.elapsed(time.time()-STARTTIME), STARTDATE.split(maxsplit=1)[0], SOURCE)
+            logger.info("%s %s", Time.elapsed(time.time()-STARTTIME), SOURCE)
 
 
 DAY = 24*60*60
