@@ -1,4 +1,4 @@
-# This file is placed in the Public Domain.
+
 
 
 "one config to rule them all"
@@ -22,7 +22,7 @@ class Config(type):
 
 class Cfg(metaclass=Config):
 
-    pass
+    "inheritable config"
 
 
 class Main(metaclass=Config):

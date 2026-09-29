@@ -12,14 +12,12 @@ import time
 
 
 from threading import RLock
-from typing import ClassVar
 
 
 from .encoder import JSON
 from .methods import Method
 from .objects import Data
-from .typings import Any, Dict, List, Set
-from .typings import Paths, Result, Selector
+from .typings import Any, ClassVar, Dict, List, Paths, Result, Selector, Set
 from .utility import Utils
 
 

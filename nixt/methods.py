@@ -10,8 +10,8 @@ import types
 
 
 from .objects import Object
-from .typings import Any, Dict, Tuple, Union
-from .typings import Args, Keys, Items, Selector, Skipped, Values
+from .typings import Any, Args, Dict, Keys, Items, Selector
+from .typings import Skipped, Tuple, Union, Values
 
 
 class Method:

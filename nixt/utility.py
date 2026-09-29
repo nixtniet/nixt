@@ -108,8 +108,6 @@ class Time:
     @classmethod
     def timed(cls, datestr: str) -> float:
         "return time from string."
-        if not datestr:
-            return time.time()
         tme = cls.date(datestr)
         if not tme:
             tme = time.time()

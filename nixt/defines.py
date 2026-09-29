@@ -33,7 +33,6 @@ from .persist import Disk
 from .persist import Locater
 from .persist import Workdir
 from .pooling import Pool
-from .require import Cmd
 from .repeats import Repeater
 from .runners import Runner
 from .sources import MD5
@@ -50,7 +49,6 @@ def __dir__():
        'Buffer',
        'Cfg',
        'Clients',
-       'Cmd',
        'Commands',
        'Config',
        'Data',

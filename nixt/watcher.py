@@ -8,12 +8,11 @@ import os
 import time
 
 
-from collections.abc import Callable
-from threading       import Event
-from typing          import ClassVar, Dict, Union
+from threading import Event
 
 
 from .threads import Thread
+from .typings import Callable, Callables, ClassVar, Dict, Floats, Union
 
 
 e = os.path.exists
@@ -21,10 +20,10 @@ e = os.path.exists
 
 class Watcher:
 
-    cbs: ClassVar[Dict[str, Callable]] = {}
+    cbs: ClassVar[Callables] = {}
     sleep: float = 1.0
     stopped: Event = Event()
-    times: ClassVar[Dict[str, float]] = {}
+    times: ClassVar[Floats] = {}
 
     @classmethod
     def add(cls, path: str, callback: Callable):

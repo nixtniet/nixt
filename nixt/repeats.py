@@ -8,11 +8,10 @@ import time
 
 
 from threading import Event
-from typing import ClassVar
 
 
 from .threads import Thread
-from .typings import Any, Callable, Todo
+from .typings import Any, Callable, ClassVar, Todo
 
 
 class Repeater:

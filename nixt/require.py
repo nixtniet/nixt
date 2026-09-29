@@ -8,13 +8,8 @@ import inspect
 import os
 
 
-from .command import Commands
-from .configs import Main
-from .encoder import JSON
-from .message import Message
-from .package import MD5, Mods
+from .defines import Commands, JSON, Main, MD5, Message, Mods, Utils
 from .typings import Hash
-from .utility import Utils
 
 
 class Cmd:

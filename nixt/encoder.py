@@ -5,13 +5,12 @@
 
 
 import json
-import types
 
 
 from threading import RLock
 
 
-from .typings import Any, Json
+from .typings import Any, Json, MappingProxyType
 
 
 class Encoder(json.JSONEncoder):
@@ -29,7 +28,7 @@ class Encoder(json.JSONEncoder):
                 return o.items()
             if isinstance(o, list):
                 return iter(o)
-            if isinstance(o, types.MappingProxyType):
+            if isinstance(o, MappingProxyType):
                 return dict(o)
             try:
                 return json.JSONEncoder.default(self, o)

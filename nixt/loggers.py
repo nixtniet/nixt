@@ -5,7 +5,9 @@
 
 
 from logging import basicConfig, Formatter, LogRecord, StreamHandler
-from typing  import ClassVar
+
+
+from .typings import ClassVar
 
 
 class Format(Formatter):

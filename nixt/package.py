@@ -8,16 +8,10 @@ import logging
 import os
 
 
-from types  import ModuleType
-from typing import ClassVar, Dict, List, Union
-
-
 from .methods import Method
 from .sources import MD5
+from .typings import ClassVar, List, Module, Modules, Strings
 from .utility import Utils
-
-
-Module = Union[ModuleType, None]
 
 
 logger = logging.getLogger(__name__)
@@ -27,10 +21,10 @@ class Mods:
 
     "modules"
 
-    core: ClassVar[Dict[str, str]] = {}
-    dirs: ClassVar[Dict[str, str]] = {}
-    md5s: ClassVar[Dict[str, str]] = {}
-    mods: ClassVar[Dict[str, ModuleType]] = {}
+    core: ClassVar[Strings] = {}
+    dirs: ClassVar[Strings] = {}
+    md5s: ClassVar[Strings] = {}
+    mods: ClassVar[Modules] = {}
 
     @classmethod
     def dir(cls, pkgname: str, path: str) -> None:

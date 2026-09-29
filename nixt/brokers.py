@@ -4,10 +4,7 @@
 "an object for a string"
 
 
-from typing import ClassVar
-
-
-from .typings import Any, Anys, Liked, Objects
+from .typings import Any, Anys, ClassVar, Liked, Objects
 
 
 class Broker:

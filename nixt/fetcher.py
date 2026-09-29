@@ -8,7 +8,6 @@ import html
 import re
 
 
-from typing         import ClassVar
 from urllib.error   import HTTPError, URLError
 from urllib.parse   import unquote, urlparse, urlunparse
 from urllib.request import Request, urlopen
@@ -16,7 +15,7 @@ from urllib.request import Request, urlopen
 
 from .methods import Method
 from .objects import Data
-from .typings import Anys, Dict, Union
+from .typings import Anys, ClassVar, Integer, Strings
 
 
 class Response(Data):
@@ -25,14 +24,14 @@ class Response(Data):
         Data.__init__(self)
         self.data: bytes = b""
         self.reason: str = ""
-        self.status: Union[int, None] = None
+        self.status: Integer = None
 
 
 class Fetcher:
 
     "fetch urls"
 
-    modified: ClassVar[Dict[str, str]] = {}
+    modified: ClassVar[Strings] = {}
 
     @classmethod
     def cdata(cls, line: str) -> str:
