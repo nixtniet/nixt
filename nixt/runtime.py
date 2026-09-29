@@ -15,7 +15,10 @@ from argparse import SUPPRESS, ArgumentParser, RawDescriptionHelpFormatter
 from .defines import Boot, Commands, Main, MD5, Message, Method, Mods, Screen
 from .defines import Workdir
 from .require import Cmd
-from .typings import Any, Callable, Final, TextIO, Union
+from .typings import Any, Callable, TextIO, Union
+
+
+Final = Union[Callable, None]
 
 
 class Arguments:

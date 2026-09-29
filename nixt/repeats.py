@@ -9,9 +9,11 @@ import time
 
 from threading import Event
 
-
 from .threads import Thread
-from .typings import Any, Callable, ClassVar, Todo
+from .typings import Any, Callable, ClassVar, Dict, List
+
+
+Todo = Dict[str, List[Any]]
 
 
 class Repeater:

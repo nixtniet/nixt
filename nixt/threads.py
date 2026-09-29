@@ -15,10 +15,13 @@ from queue     import Queue
 from threading import Event, RLock
 
 
-from .typings import Any, Anys, Callable, ClassVar, TimeOut, Union
+from .typings import Any, Anys, Callable, ClassVar, Union
 
 
-logger = logging.getLogger(__name__)
+TimeOut = Union[float, None]
+
+
+Logger = logging.getLogger(__name__)
 
 
 class Thr(threading.Thread):
@@ -62,7 +65,7 @@ class Thr(threading.Thread):
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
         except Exception:
-            logger.exception(str(func))
+            Logger.exception(str(func))
             _thread.interrupt_main()
 
 

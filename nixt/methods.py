@@ -10,8 +10,11 @@ import types
 
 
 from .objects import Object
-from .typings import Any, Args, Dict, Keys, Items, Selector
-from .typings import Skipped, Tuple, Union, Values
+from .typings import Any, Args, Dict, Generator, Items, Keys, Selector
+from .typings import Tuple, Union, Values
+
+
+Skipped = Generator[Any, None, None]
 
 
 class Method:
