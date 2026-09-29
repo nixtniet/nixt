@@ -10,7 +10,7 @@ import types
 
 
 from .objects import Object
-from .typings import Any, Dict, Generator, List, Tuple, Union
+from .typings import Any, Dict, Tuple, Union
 from .typings import Args, Keys, Items, Selector, Skipped, Values
 
 

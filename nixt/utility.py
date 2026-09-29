@@ -11,7 +11,7 @@ import time
 import uuid
 
 
-from .typings import Any, ClassVar, Float, List, ModuleType, Times, Union
+from .typings import Any, ClassVar, Float, List, ModuleType, Union
 
 
 class Time:
@@ -19,7 +19,7 @@ class Time:
     "time related utilities."
 
     starttime: ClassVar[float] = time.time()
-    times: ClassVar[Times] = [
+    times = (
         "%a, %d %b %Y %H:%M:%S %z",
         "%a, %d %b %Y %H:%M:%S",
         "%a, %d %b %Y %T %z",
@@ -31,7 +31,7 @@ class Time:
         "%d-%m-%Y",
         "%d-%m",
         "%m-%d"
-    ]
+    )
 
     @classmethod
     def date(cls, daystr: str) -> Float:

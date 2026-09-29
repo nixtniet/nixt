@@ -13,7 +13,7 @@ from .configs import Main
 from .encoder import JSON
 from .message import Message
 from .package import MD5, Mods
-from .typings import Dict, Hash
+from .typings import Hash
 from .utility import Utils
 
 

@@ -5,14 +5,14 @@
 
 
 from collections.abc import Callable
-from typing          import Any, Generator, Set, TextIO, Tuple
-from typing          import ClassVar, Dict, List, Union
 from types           import ModuleType
+from typing          import Any, ClassVar, Dict, Generator, List
+from typing          import Set, TextIO, Tuple, Union
 
 
 Anys = Dict[str, Any]
 Args = Union[List[str], None]
-Commands = Dict[str, Callable]
+Callables = Dict[str, Callable]
 Final = Union[Callable, None]
 Float = Union[float, None]
 Hash = Dict[str, str]
@@ -26,7 +26,7 @@ Result = Generator[Tuple[str, Any], None, None]
 Selector = Union[Dict[str, str], None]
 Skipped = Generator[Any, None, None]
 TimeOut = Union[float, None]
-Times = List[str]
+Times = Tuple[str]
 Todo = Dict[str, List[Any]]
 Values = List[Any]
 
@@ -37,8 +37,8 @@ def __dir__():
         'Anys',
         'Args',
         'Callable',
+        'Callables',
         'ClassVar',
-        'Commands',
         'Dict',
         'Float',
         'Final',
@@ -58,8 +58,10 @@ def __dir__():
         'Skipped',
         'TextIO',
         'TimeOut',
-        'Times',
         'Todo',
         'Union',
         'Values'
     )
+
+
+__all__ = __dir__()

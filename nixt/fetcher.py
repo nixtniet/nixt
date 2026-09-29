@@ -8,6 +8,7 @@ import html
 import re
 
 
+from typing         import ClassVar
 from urllib.error   import HTTPError, URLError
 from urllib.parse   import unquote, urlparse, urlunparse
 from urllib.request import Request, urlopen
@@ -15,7 +16,7 @@ from urllib.request import Request, urlopen
 
 from .methods import Method
 from .objects import Data
-from .typings import Any, Anys, ClassVar, Dict, Union
+from .typings import Anys, Dict, Union
 
 
 class Response(Data):

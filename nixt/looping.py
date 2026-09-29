@@ -4,8 +4,6 @@
 "the big loop"
 
 
-import queue
-import threading
 import _thread
 
 

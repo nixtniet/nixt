@@ -7,11 +7,14 @@
 import inspect
 
 
+from typing import ClassVar
+
+
 from .clients import Clients
 from .message import Message
 from .package import Mods
 from .parsers import Parser
-from .typings import Callable, ClassVar, Commands, Dict, Hash, List, ModuleType
+from .typings import Callable, Callables, Hash, List, ModuleType
 from .typings import Union
 
 
@@ -19,7 +22,7 @@ class Commands:
 
     "command dispatch"
 
-    cmds: ClassVar[Commands] = {}
+    cmds: ClassVar[Callables] = {}
     names: ClassVar[Hash] = {}
 
     @classmethod

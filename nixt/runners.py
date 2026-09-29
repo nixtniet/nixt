@@ -6,7 +6,7 @@
 
 from .looping import Loop
 from .threads import Thread
-from .typings import Any, Dict
+from .typings import Any
 
 
 class Runner(Loop):

@@ -13,9 +13,10 @@ import _thread
 
 from queue     import Queue
 from threading import Event, RLock
+from typing    import ClassVar
 
 
-from .typings import Any, Anys, Callable, ClassVar, Dict, TimeOut, Union
+from .typings import Any, Anys, Callable, TimeOut, Union
 
 
 logger = logging.getLogger(__name__)

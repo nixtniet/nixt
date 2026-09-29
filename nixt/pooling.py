@@ -8,10 +8,11 @@ import os
 
 
 from threading import RLock
+from typing import ClassVar
 
 
 from .runners import Runner
-from .typings import Any, ClassVar, List
+from .typings import Any, List
 
 
 class Pool:
