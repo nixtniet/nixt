@@ -6,11 +6,12 @@
 
 import logging
 import os
+import threading
 import time
 import _thread
 
 
-from threading import Event, enumerate
+from threading import Event
 
 
 from .clients import Clients
@@ -83,7 +84,7 @@ class Boot:
         logger.debug("shutdown")
         Clients.shutdown()
         while True:
-            if len(enumerate()) <= 2:
+            if len(threading.enumerate()) <= 2:
                 break
             time.sleep(0.01)
         cls.stopped.set()

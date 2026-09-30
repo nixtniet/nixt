@@ -5,10 +5,10 @@
 
 
 import html
+import logging
 import re
 
 
-from urllib.error   import HTTPError, URLError
 from urllib.parse   import unquote, urlparse, urlunparse
 from urllib.request import Request, urlopen
 
@@ -25,6 +25,7 @@ class Response(Data):
         self.data: bytes = b""
         self.reason: str = ""
         self.status: Integer = None
+        self.url: str = ""
 
 
 class Fetcher:
@@ -53,19 +54,20 @@ class Fetcher:
         if since:
             req.add_header('If-Modified-Since', since)
         response = Response()
+        response.url = url
         response.reason = ""
         try:
             Method.update(response, cls.request(req))
-        except TimeoutError:
+        except Exception as ex:
             response.data = b""
-            response.reason = "timeout error"
-            response.status = 503
-        except HTTPError as ex:
-            response.data = b""
-            response.reason = str(ex.reason)
-            response.status = ex.status
-        except URLError as ex:
-            response.reason = str(ex.reason)
+            if "reason" in dir(ex):
+                response.reason = ex.reason # type: ignore
+            else:
+                response.reason = str(ex)
+            if "status" in dir(ex):
+                response.status = ex.status # type: ignore
+            else:
+                response.status = None
         return response
 
     @classmethod

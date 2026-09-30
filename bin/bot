@@ -1,1 +1,14 @@
-python3 -c "from nixt.runtime import main; main()" $* ;
+##!/usr/bin/env python3
+# This file is placed in the Public Domain.
+
+
+import os
+import sys
+
+sys.path.insert(0, os.getcwd())
+
+
+from nixt.runtime import main
+
+
+main()

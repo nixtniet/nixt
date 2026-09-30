@@ -11,10 +11,9 @@ import os
 import pathlib
 import re
 import urllib
-import _thread
 
 
-from _thread import LockType, RLock
+from _thread import LockType, RLock, allocate_lock
 from typing  import ClassVar, Generator, Iterator, List, TextIO
 from typing  import Union
 
@@ -89,7 +88,7 @@ class Locks:
 
     "locking"
 
-    importlock: LockType = _thread.allocate_lock()
+    importlock: LockType = allocate_lock()
 
 
 class Run:
@@ -241,7 +240,7 @@ class Fetching(Runner):
 
     def doskip(self, errno: int) -> bool:
         "check whether to log."
-        return errno not in [200, 304]
+        return errno >= 400
 
     def getfeed(self, fnm: str, feed: Rss, items: str) -> Iterator[Feed]:
         "fetch a feed."
@@ -252,7 +251,7 @@ class Fetching(Runner):
                 feed.error = response.error
                 feed.skip = True
                 Disk.write(feed, fnm)
-                logger.debug("skipt %s %s %s", feed.rss, response.status, response.reason)
+                logger.warning("skipt %s %s %s", feed.rss, response.status, response.reason)
             yield Feed()
         else:
             logger.debug("fetch %s", feed.rss)
@@ -274,6 +273,7 @@ class Fetching(Runner):
         if not feed.seen:
             feed.seen = []
         has = False
+        gotcha = 0
         for obj in self.getfeed(fnm, feed, feed.display_list):
             counter += 1
             if obj is None:
@@ -287,12 +287,13 @@ class Fetching(Runner):
                 txt = Run.display(obj)
                 if not Run.got(txt, obj):
                     Clients.announce(txt)
+                    gotcha += 1
                     has = True
             del obj
         if has:
             feed.seen = feed.seen[:counter]
             Disk.write(feed, fnm)
-            logger.debug("write %s", fnm)
+            logger.info("write %s (%s)", feed.rss, gotcha)
         if counter:
             gc.collect(0)
         return counter
@@ -566,6 +567,7 @@ def res(msg: Message):
             continue
         nrs += 1
         feed.__deleted__ = False
+        feed.skip = False
         Disk.write(feed, fnm)
     msg.reply(f"{nrs} feeds restored.")
 

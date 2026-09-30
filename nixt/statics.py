@@ -8,7 +8,7 @@ from .typings import Hash
 
 
 CORE: Hash = {
-    "booting": "8b3604ceefab4a323a91fa797c7dda97",
+    "booting": "032ce55a875bf6526bba9f613bd40c3c",
     "brokers": "4678c7a5b6059bae5aded4a74c092c87",
     "buffers": "20e3a0813ebc95cffdb7cea70d5a9311",
     "clients": "de54fdc0d1d46e36adaca48df6381078",
@@ -18,7 +18,7 @@ CORE: Hash = {
     "display": "fbd0dcc5d4a7daba9ab58540dfafd14e",
     "encoder": "035088b8417a7e8f0d5ceeeeeed80c2e",
     "engines": "d876b24a4572f94acb59d6813f0800e2",
-    "fetcher": "259cb81c051dbf7a50842891f3c1ef83",
+    "fetcher": "e3f61ddef991bdd81ff808db6c40bc10",
     "loggers": "6f03450c75c7cdf69293e58df37deca3",
     "looping": "63a5dcfb9397ed3dcb027aebb877837f",
     "message": "0db8f98189723f4be87f9d8cff1c4a48",
@@ -34,7 +34,7 @@ CORE: Hash = {
     "runtime": "a5276b7848e4c663d39a8e65452e3a0d",
     "sources": "930fb3fe293b956c47ea91d4a9ecab4a",
     "threads": "fbc377f96407edcd1318295d6bc26174",
-    "typings": "0483d67d7c4610e441cb676b8c84a865",
+    "typings": "68dcc212eacb55d9f04f481c79628fe9",
     "utility": "853b0a2062b865b7edd313c520040cb2",
     "watcher": "06b4e78507ed49be9811166ea4c34a7e"
 }
