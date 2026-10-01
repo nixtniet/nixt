@@ -207,6 +207,7 @@
 
 
 def man(msg):
+    "create manual."
     args = msg.args
     try:
         name, email, author = args[0], args[1], " ".join(args[2:])

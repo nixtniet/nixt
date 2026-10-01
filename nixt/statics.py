@@ -18,7 +18,7 @@ CORE: Hash = {
     "display": "fbd0dcc5d4a7daba9ab58540dfafd14e",
     "encoder": "035088b8417a7e8f0d5ceeeeeed80c2e",
     "engines": "d876b24a4572f94acb59d6813f0800e2",
-    "fetcher": "e3f61ddef991bdd81ff808db6c40bc10",
+    "fetcher": "41ec28fa5f595fa6b180f0fd5ea5677d",
     "loggers": "6f03450c75c7cdf69293e58df37deca3",
     "looping": "63a5dcfb9397ed3dcb027aebb877837f",
     "message": "0db8f98189723f4be87f9d8cff1c4a48",

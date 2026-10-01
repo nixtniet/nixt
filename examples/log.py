@@ -9,6 +9,8 @@ from nixt.defines import Disk, Object
 
 class Log(Object):
 
+    "log item"
+
     def __init__(self):
         super().__init__()
         self.txt = ''

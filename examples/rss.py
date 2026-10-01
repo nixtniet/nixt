@@ -56,7 +56,7 @@ class Config(Cfg):
 class Feed(Data):
 
     "feed data"
-        
+
 
 class Rss(Data):
 
@@ -300,6 +300,8 @@ class Fetching(Runner):
 
 
 class OPML:
+
+    "opml parser"
 
     @classmethod
     def getnames(cls, line: str) -> List[str]:
@@ -609,4 +611,3 @@ TEMPLATE = """<opml version="1.0">
     </head>
     <body>
         <outline title="opml" text="rss feeds">"""
-

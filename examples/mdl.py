@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 def init():
+    "start of genocide model."
     for key in Method.keys(oorzaken):
         if "Psych" not in key:
             continue
@@ -57,6 +58,8 @@ aliases["Suicide"] = "suicide"
 
 
 class Demo(Data):
+
+    "demographic data"
 
     gehandicapten: int = 0
     ggz: int = 0

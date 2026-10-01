@@ -9,6 +9,8 @@ from nixt.defines import Disk, Locater, Object
 
 class Todo(Object):
 
+    "todo item"
+
     def __init__(self):
         super().__init__()
         self.txt = ''

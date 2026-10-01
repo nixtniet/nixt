@@ -42,6 +42,8 @@ def init():
 
 class Config(Cfg):
 
+    "IRC cofniguration"
+
     name = Main.name or Method.pkgname(Mods)
     channel = Main.channel or f"#{name}"
     commands = True
@@ -62,6 +64,8 @@ class Config(Cfg):
 
 class IRCEvent(Message):
 
+    "IRC event"
+
     def __init__(self):
         super().__init__()
         self.args = []
@@ -79,6 +83,8 @@ class IRCEvent(Message):
 
 class Events(Object):
 
+    "IRC events."
+
     def __init__(self):
         super().__init__()
         self.authed: Event = Event()
@@ -86,9 +92,11 @@ class Events(Object):
         self.joined: Event = Event()
         self.logon: Event = Event()
         self.ready: Event = Event()
- 
+
 
 class State(Object):
+
+    "IRC state"
 
     def __init__(self):
         super().__init__()
@@ -109,6 +117,8 @@ class State(Object):
 
 class TextWrap(textwrap.TextWrapper):
 
+    "wrap text into IRC protocol"
+
     def __init__(self):
         super().__init__()
         self.break_long_words = False
@@ -123,6 +133,8 @@ wrapper = TextWrap()
 
 
 class IRC(Buffer):
+
+    "IYC client"
 
     def __init__(self):
         Buffer.__init__(self)
@@ -633,7 +645,7 @@ def pwd(msg):
     if len(msg.args) != 2:
         msg.iface("<nick> <password>")
         return
-    import base64
+    import base64 # pylint: disable=C0415
     arg1 = msg.args[0]
     arg2 = msg.args[1]
     txt = f"\x00{arg1}\x00{arg2}"

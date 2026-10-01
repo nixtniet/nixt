@@ -19,6 +19,7 @@ rand   = SystemRandom()
 
 
 def init():
+    "start wisdom service."
     state.load()
     msg = Message()
     Repeater.add(3600,  wsd, msg)
@@ -27,17 +28,21 @@ def init():
 
 class State:
 
+    "state of wisdom"
+
     def __init__(self):
         super().__init__()
         self.fnm: str = ""
         self.seen: List[str] = []
 
     def dump(self):
+        "dump state to disk."
         if not self.fnm:
             self.fnm = Locater.first(self) or Disk.ident(self)
         Disk.write(self, self.fnm)
 
     def load(self):
+        "load from disk."
         Locater.first(self)
 
 

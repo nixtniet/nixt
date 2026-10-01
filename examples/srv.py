@@ -11,7 +11,7 @@ def srv(msg):
     "generate systemd service file."
     if not Main.admin:
         return
-    import getpass
+    import getpass # pylint: disable=C0415
     name = getpass.getuser()
     msg.reply(SYSTEMD % (
                            Main.name.upper(),

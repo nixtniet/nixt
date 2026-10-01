@@ -68,4 +68,5 @@ torture and impotent making) possible."""
 
 
 def req(msg):
+    "request to the prosecutor"
     msg.reply(__doc__)

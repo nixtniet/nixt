@@ -30,10 +30,12 @@ def shutdown():
 
 class Timers(Object):
 
-    pass
+    "timers holder"
 
 
 class TimerLoop:
+
+    "timer loop"
 
     dosave = False
     lock = threading.RLock()
