@@ -12,6 +12,9 @@ from nixt.repeats import Repeater
 
 class TestRepeater(unittest.TestCase):
 
+    "repeater unittests"
+
     def test_construct(self):
+        "test repeater construction."
         repeater = Repeater()
         self.assertTrue(type(repeater), Repeater)

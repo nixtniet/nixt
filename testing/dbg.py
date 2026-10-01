@@ -6,8 +6,9 @@
 
 class Test(Exception):
 
-    pass
+    "custom exception"
 
 
 def dbg(message):
+    "raise exception."
     raise Test("Test")

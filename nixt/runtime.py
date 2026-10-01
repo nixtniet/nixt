@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# pylint: disable=C0301,C0415
 
 
 "runtime"
@@ -258,7 +259,7 @@ def control() -> None:
     "only console."
     Arguments.getargs()
     Kernel.wrap(Scripts.control)
-    
+
 
 def main() -> None:
     "dispatch to runtime."

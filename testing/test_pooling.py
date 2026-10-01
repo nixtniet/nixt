@@ -12,6 +12,9 @@ from nixt.pooling import Pool
 
 class TestPool(unittest.TestCase):
 
+    "pool unittests"
+
     def test_construct(self):
+        "test pool construction."
         pool = Pool()
         self.assertTrue(type(pool), Pool)

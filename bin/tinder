@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # This file is placed in the Public Domain.
+# pylint: disable=C0413,C0415
 
 
 "stress test"
@@ -39,6 +40,7 @@ class Kernel(Boot):
 
     @classmethod
     def boot(cls):
+        "booting the kernel."
         cls.configure()
         Mods.dir("mods", Workdir.moddir())
         Mods.dir("module", Mods.moddir())
@@ -74,6 +76,8 @@ class Kernel(Boot):
 
 class CLI(Screen):
 
+    "Command Line Interface"
+
     def __init__(self):
         Screen.__init__(self)
         self.register("command", Commands.command)
@@ -86,6 +90,7 @@ class CLI(Screen):
 
 
 def payload(todo):
+    "payload to run."
     for cmd, example in todo.items():
         for ex in example:
             Kernel.nrevents += 1
@@ -96,6 +101,7 @@ def payload(todo):
 
 
 def final():
+    "finalizer."
     if "v" not in Main.opts:
         return
     total = Kernel.nrevents
@@ -109,6 +115,7 @@ def final():
 
 
 def main():
+    "main code."
     Parser.parse(Main, " ".join(sys.argv[1:]))
     Kernel.boot()
     Commands.scanner()

@@ -12,6 +12,9 @@ from nixt.defines import Locater
 
 class TestLocater(unittest.TestCase):
 
+    "locater unittests"
+
     def test_construct(self):
+        "test locater construction."
         lct = Locater()
         self.assertTrue(lct)

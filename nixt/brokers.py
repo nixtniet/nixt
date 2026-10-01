@@ -47,6 +47,7 @@ class Broker:
 
     @classmethod
     def remove(cls, obj: Any) -> None:
+        "remove object."
         del cls.objects[repr(obj)]
 
 

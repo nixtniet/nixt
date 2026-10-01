@@ -11,24 +11,31 @@ from nixt.defines import Commands, Engine, Message
 
 
 def cmnd(message):
+    "test command."
     message.reply("yo!")
 
 
 class TestCommands(unittest.TestCase):
 
+    "commands unittests"
+
     def test_construct(self):
+        "test commands construction."
         cmds = Commands()
         self.assertEqual(type(cmds), Commands)
 
     def test_add(self):
+        "test adding a command."
         Commands.add(cmnd)
         self.assertTrue("cmnd" in Commands.cmds)
 
     def test_get(self):
+        "test getting a command."
         Commands.add(cmnd)
         self.assertTrue(Commands.cmds.get("cmnd"))
 
     def test_command(self):
+        "test running a command."
         clt = Engine()
         Commands.add(cmnd)
         msg = Message()

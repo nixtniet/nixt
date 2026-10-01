@@ -19,6 +19,8 @@ from .typings import Anys, ClassVar, Integer, Strings
 
 class Response(Data):
 
+    "response object"
+
     def __init__(self):
         Data.__init__(self)
         self.data: bytes = b""

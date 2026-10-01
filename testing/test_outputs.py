@@ -12,6 +12,9 @@ from nixt.buffers import Output
 
 class TestOutput(unittest.TestCase):
 
+    "output unittests"
+
     def test_construct(self):
+        "test output construction."
         output = Output()
         self.assertTrue(type(output), Output)

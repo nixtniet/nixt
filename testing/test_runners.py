@@ -12,6 +12,9 @@ from nixt.runners import Runner
 
 class TestRunner(unittest.TestCase):
 
+    "runner unittests"
+
     def test_construct(self):
+        "test runner construction."
         runner = Runner()
         self.assertTrue(type(runner), Runner)

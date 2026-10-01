@@ -12,6 +12,9 @@ from nixt.buffers import Buffer
 
 class TestBuffer(unittest.TestCase):
 
+    "buffer unittests"
+
     def test_construct(self):
+        "test biffer construction."
         buffer = Buffer()
         self.assertTrue(type(buffer), Buffer)

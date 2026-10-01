@@ -20,6 +20,8 @@ e = os.path.exists
 
 class Watcher:
 
+    "watch files"
+
     cbs: ClassVar[Callables] = {}
     sleep: float = 1.0
     stopped: Event = Event()
