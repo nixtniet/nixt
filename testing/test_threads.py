@@ -8,9 +8,10 @@ import unittest
 
 
 from nixt.threads import Thr, Thread
+from nixt.typings import List
 
 
-buffer = []
+buffer: List[str] = []
 
 
 def test():

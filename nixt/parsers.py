@@ -6,7 +6,7 @@
 
 from .methods import Method
 from .objects import Data
-from .typings import Any
+from .typings import Any, Dict
 
 
 class Parser:
@@ -16,7 +16,7 @@ class Parser:
     @classmethod
     def init(cls, obj: Any, text: str, clean: bool = False) -> None:
         "set default values."
-        data = {
+        data: Dict[str, Any] = {
             "args": [],
             "cmd": "",
             "gets": Data(),

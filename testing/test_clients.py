@@ -8,9 +8,10 @@ import unittest
 
 
 from nixt.defines import Message, Screen
+from nixt.typings import List
 
 
-buffer = []
+buffer: List[str] = []
 
 
 def hello(message):
