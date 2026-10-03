@@ -10,7 +10,10 @@ import json
 from threading import RLock
 
 
-from .typings import Any, Json, MappingProxyType
+from .typings import Any, MappingProxyType, Union
+
+
+Json = Union[dict,list,bool,float,int,str]
 
 
 class Encoder(json.JSONEncoder):

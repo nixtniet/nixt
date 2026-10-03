@@ -14,7 +14,12 @@ from urllib.request import Request, urlopen
 
 from .methods import Method
 from .objects import Data
-from .typings import Anys, ClassVar, Integer, Strings
+from .typings import Any, ClassVar, Dict, Union
+
+
+Anys = Dict[str, Any]
+Integer = Union[int, None]
+Strings = Dict[str, str]
 
 
 class Response(Data):

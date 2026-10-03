@@ -17,8 +17,13 @@ from threading import RLock
 from .encoder import JSON
 from .methods import Method
 from .objects import Data
-from .typings import Any, ClassVar, Dict, List, Paths, Result, Selector, Set
+from .typings import Any, ClassVar, Dict, Generator, List, Set, Tuple, Union
 from .utility import Utils
+
+
+Paths = Generator[str, None, None]
+Result = Generator[Tuple[str, Any], None, None]
+Selector = Union[Dict[str, str], None]
 
 
 j = os.path.join

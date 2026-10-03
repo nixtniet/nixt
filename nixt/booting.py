@@ -93,6 +93,7 @@ class Boot:
                 pass
         time.sleep(0.01)
         if wait:
+            print(threading.enumerate())
             while True:
                 if len(threading.enumerate()) <= 1:
                     break

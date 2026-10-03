@@ -12,7 +12,11 @@ from threading import Event
 
 
 from .threads import Thread
-from .typings import Callable, Callables, ClassVar, Dict, Floats, Union
+from .typings import Callable, ClassVar, Dict, Union
+
+
+Callables = Dict[str, Callable]
+Floats = Dict[str, float]
 
 
 e = os.path.exists

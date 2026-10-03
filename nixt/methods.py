@@ -10,11 +10,16 @@ import types
 
 
 from .objects import Object
-from .typings import Any, Args, Dict, Generator, Items, Keys, Selector
-from .typings import Tuple, Union, Values
+from .typings import Any, Dict, Generator
+from .typings import List, Tuple, Union
 
 
+Args = Union[List[str], None]
+Items = List[Tuple[str, Any]]
+Keys = List[str]
+Selector = Union[Dict[str, str], None]
 Skipped = Generator[Any, None, None]
+Values = List[Any]
 
 
 class Method:

@@ -44,7 +44,7 @@ class TestRuntime(unittest.TestCase):
 
     def test_shutdown(self):
         "test shutdown/"
-        thr = Thread.launch(self.boot.shutdown)
+        thr = Thread.launch(self.boot.shutdown, False)
         thr.join()
         self.assertTrue(self.boot.stopped.is_set())
 

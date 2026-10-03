@@ -11,7 +11,10 @@ import time
 import uuid
 
 
-from .typings import Any, ClassVar, Float, List, ModuleType, Union
+from .typings import Any, ClassVar, List, ModuleType, Union
+
+
+Float = Union[float, None]
 
 
 class Time:

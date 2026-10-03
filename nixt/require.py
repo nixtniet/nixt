@@ -9,7 +9,10 @@ import os
 
 
 from .defines import Commands, JSON, Main, MD5, Message, Mods, Utils
-from .typings import Hash
+from .typings import Dict
+
+
+Hash = Dict[str, str]
 
 
 class Cmd:
@@ -44,7 +47,9 @@ class Cmd:
         msg.reply("\n")
         msg.reply('"tables"')
         msg.reply("\n")
-        msg.reply("from .typings import Hash")
+        msg.reply("from .typings import Dict")
+        msg.reply("\n")
+        msg.reply("Hash = Dict[str, str]")
         msg.reply("\n")
         msg.reply(f"CORE: Hash = {JSON.dumps(core, indent=4, sort_keys=True)}")
         msg.reply("\n")
