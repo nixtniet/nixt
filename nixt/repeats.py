@@ -7,10 +7,12 @@
 import time
 
 
-from threading import Event
+from collections.abc import Callable
+from threading       import Event
+from typing          import Any, ClassVar, Dict, List
+
 
 from .threads import Thread
-from .typings import Any, Callable, ClassVar, Dict, List
 
 
 Todo = Dict[str, List[Any]]

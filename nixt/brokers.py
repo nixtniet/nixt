@@ -4,11 +4,11 @@
 "an object for a string"
 
 
-from .typings import Any, ClassVar, Dict, Generator, Tuple
+from typing import Any, ClassVar, Dict, Generator, Tuple
 
 
-Anys = Dict[str, Any]
-Liked = Generator[Tuple[str, Any], None, None]
+Anys    = Dict[str, Any]
+Liked   = Generator[Tuple[str, Any], None, None]
 Objects = Generator[Any, None, None]
 
 

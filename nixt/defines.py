@@ -38,7 +38,8 @@ from .runners import Runner
 from .sources import MD5
 from .threads import Thr
 from .threads import Thread
-from .utility import Time, Utils
+from .timings import Time
+from .utility import Utils
 from .watcher import Watcher
 
 

@@ -7,15 +7,19 @@
 import inspect
 
 
+from collections.abc import Callable
+from types           import ModuleType
+from typing          import ClassVar, Dict, List, Union
+
+
 from .clients import Clients
 from .message import Message
 from .package import Mods
 from .parsers import Parser
-from .typings import Callable, ClassVar, Dict, List, ModuleType, Union
 
 
 Callables = Dict[str, Callable]
-Hash = Dict[str, str]
+Hash      = Dict[str, str]
 
 
 class Commands:

@@ -8,9 +8,8 @@ import json
 
 
 from threading import RLock
-
-
-from .typings import Any, MappingProxyType, Union
+from types     import MappingProxyType
+from typing    import Any, Union
 
 
 Json = Union[dict,list,bool,float,int,str]

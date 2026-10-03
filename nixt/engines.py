@@ -1,13 +1,16 @@
 # This file is placed in the Public Domain.
 
 
-"handling"
+"callback engine"
+
+
+from collections.abc import Callable
+from typing          import Dict
 
 
 from .looping import Loop
 from .message import Message
 from .threads import Thread
-from .typings import Callable, Dict
 
 
 class Engine(Loop):

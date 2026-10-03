@@ -12,6 +12,7 @@ import _thread
 
 
 from threading import Event
+from typing    import Callable
 
 
 from .brokers import Broker
@@ -21,7 +22,6 @@ from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
 from .threads import Thr, Thread
-from .typings import Callable
 from .utility import Utils
 
 

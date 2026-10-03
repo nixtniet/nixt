@@ -9,8 +9,10 @@ import logging
 import os
 
 
+from typing import Dict, Union
+
+
 from .utility import Utils
-from .typings import Dict, Union
 
 
 logger = logging.getLogger(__name__)

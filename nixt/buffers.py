@@ -13,6 +13,7 @@ from threading import Event
 
 
 from .brokers import Broker
+from .display import Display
 from .engines import Engine
 from .message import Message
 from .threads import Thread
@@ -21,11 +22,12 @@ from .threads import Thread
 logger = logging.getLogger(__name__)
 
 
-class Output:
+class Output(Display):
 
     "dedicated output loop"
 
     def __init__(self):
+        Display.__init__(self)
         self.oqueue: Queue = Queue()
         self.ostopped: Event = Event()
 
@@ -74,7 +76,6 @@ class Buffer(Engine, Output):
     def __init__(self):
         Engine.__init__(self)
         Output.__init__(self)
-        Broker.add(self)
 
     def raw(self, text: str) -> None:
         "raw output."

@@ -8,8 +8,10 @@ import inspect
 import os
 
 
+from typing import Dict
+
+
 from .defines import Commands, JSON, Main, MD5, Message, Mods, Utils
-from .typings import Dict
 
 
 Hash = Dict[str, str]
@@ -47,7 +49,7 @@ class Cmd:
         msg.reply("\n")
         msg.reply('"tables"')
         msg.reply("\n")
-        msg.reply("from .typings import Dict")
+        msg.reply("from typing import Dict")
         msg.reply("\n")
         msg.reply("Hash = Dict[str, str]")
         msg.reply("\n")

@@ -21,6 +21,7 @@ class Display:
     def __init__(self):
         self.olock: RLock = RLock()
         self.silent: bool = False
+        Broker.add(self)
 
     def announce(self, text: str) -> None:
         "announce text to all channels."
@@ -57,7 +58,6 @@ class Screen(Engine, Display):
     def __init__(self):
         Engine.__init__(self)
         Display.__init__(self)
-        Broker.add(self)
 
     def raw(self, text: str) -> None:
         "raw output."

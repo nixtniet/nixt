@@ -11,11 +11,10 @@ import time
 import _thread
 
 
-from queue     import Queue
-from threading import Event, RLock
-
-
-from .typings import Any, Callable, ClassVar, Dict, Union
+from collections.abc import Callable
+from queue           import Queue
+from threading       import Event, RLock
+from typing          import Any, Callable, ClassVar, Dict, Union
 
 
 Anys = Dict[str, Any]

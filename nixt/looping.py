@@ -9,11 +9,11 @@ import _thread
 
 from queue     import Queue
 from threading import Event
+from typing    import Union
 
 
 from .message import Message
 from .threads import Thread
-from .typings import Union
 
 
 class Loop:
