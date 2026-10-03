@@ -12,7 +12,6 @@ from queue     import Queue
 from threading import Event
 
 
-from .brokers import Broker
 from .display import Display
 from .engines import Engine
 from .message import Message

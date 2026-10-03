@@ -7,8 +7,10 @@
 import unittest
 
 
+from typing import List
+
+
 from nixt.threads import Thr, Thread
-from nixt.typings import List
 
 
 buffer: List[str] = []

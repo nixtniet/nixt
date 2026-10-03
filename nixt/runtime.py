@@ -12,7 +12,7 @@ import time
 
 from argparse        import SUPPRESS, ArgumentParser, RawDescriptionHelpFormatter
 from collections.abc import Callable
-from typing          import Any, Callable, TextIO, Union
+from typing          import Any, TextIO, Union
 
 
 from .defines import Boot, Commands, Main, MD5, Message, Method, Mods, Screen

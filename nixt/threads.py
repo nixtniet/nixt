@@ -14,10 +14,10 @@ import _thread
 from collections.abc import Callable
 from queue           import Queue
 from threading       import Event, RLock
-from typing          import Any, Callable, ClassVar, Dict, Union
+from typing          import Any, ClassVar, Dict, Union
 
 
-Anys = Dict[str, Any]
+Anys    = Dict[str, Any]
 TimeOut = Union[float, None]
 
 
