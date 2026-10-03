@@ -20,6 +20,7 @@ Integer = Union[int, None]
 Items = List[Tuple[str, Any]]
 Json = Union[dict,list,bool,float,int,str]
 Keys = List[str]
+Liked = Generator[Tuple[str, Any], None, None]
 Module = Union[ModuleType, None]
 Modules = Dict[str, ModuleType]
 Objects = Generator[Any, None, None]
@@ -46,6 +47,7 @@ def __dir__():
         'Items',
         'Json',
         'Keys',
+        'Liked',
         'List',
         'MappingProxyType',
         'Module',

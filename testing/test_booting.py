@@ -27,10 +27,6 @@ class TestRuntime(unittest.TestCase):
         "test boot construcion."
         self.assertEqual(type(self.boot), Boot)
 
-    def test_banner(self):
-        "test banner."
-        self.assertEqual(self.boot.banner(), None)
-
     def test_configure(self):
         "test configuration."
         self.assertEqual(self.boot.configure(), None)

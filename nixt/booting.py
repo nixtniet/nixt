@@ -14,7 +14,7 @@ import _thread
 from threading import Event
 
 
-from .clients import Clients
+from .brokers import Broker
 from .configs import Main
 from .display import Screen
 from .loggers import Logging
@@ -34,10 +34,6 @@ class Boot:
 
     running: Event = Event()
     stopped: Event = Event()
-
-    @classmethod
-    def banner(cls) -> None:
-        "greetings."
 
     @classmethod
     def configure(cls) -> None:
@@ -79,14 +75,28 @@ class Boot:
         return True
 
     @classmethod
-    def shutdown(cls) -> None:
+    def shutdown(cls, wait: bool = True) -> None:
         "call stop on clients."
         logger.debug("shutdown")
-        Clients.shutdown()
-        while True:
-            if len(threading.enumerate()) <= 2:
-                break
-            time.sleep(0.01)
+        for client in Broker.objs("wait"):
+            logger.debug("wait %s", client)
+            try:
+                client.wait()
+            except (KeyboardInterrupt, EOFError):
+                pass
+        time.sleep(0.01)
+        for client in Broker.objs("stop"):
+            logger.debug("stop %s", client)
+            try:
+                client.stop()
+            except (KeyboardInterrupt, EOFError):
+                pass
+        time.sleep(0.01)
+        if wait:
+            while True:
+                if len(threading.enumerate()) <= 1:
+                    break
+                time.sleep(0.01)
         cls.stopped.set()
 
     @classmethod

@@ -5,7 +5,6 @@
 
 
 import logging
-import time
 
 
 from .brokers import Broker
@@ -31,24 +30,6 @@ class Clients:
         bot = Broker.get(msg.orig)
         if bot:
             bot.display(msg)
-
-    @staticmethod
-    def shutdown() -> None:
-        "call stop on clients."
-        for client in Broker.objs("wait"):
-            logger.debug("wait %s", client)
-            try:
-                client.wait()
-            except (KeyboardInterrupt, EOFError):
-                pass
-        time.sleep(0.01)
-        for client in Broker.objs("stop"):
-            logger.debug("stop %s", client)
-            try:
-                client.stop()
-            except (KeyboardInterrupt, EOFError):
-                pass
-        time.sleep(0.01)
 
 
 def __dir__():
