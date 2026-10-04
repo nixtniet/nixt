@@ -13,7 +13,7 @@ import re
 import urllib
 
 
-from nixt.default import Logger, LockType, RLock, allocate_lock
+from nixt.default import Logger, RLock
 from nixt.defines import Cfg, Clients, Data, Disk, Fetcher, Format, JSONL
 from nixt.defines import Locater, Logging, Main, MD5, Message, Method, Object
 from nixt.defines import Pool, Repeater, Runner, Utils, Watcher, Workdir
@@ -90,7 +90,7 @@ class Locks:
 
     "locking"
 
-    importlock: LockType = allocate_lock()
+    importlock: RLock = RLock()
 
 
 class Run:
