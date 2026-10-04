@@ -4,13 +4,13 @@
 "wisdom"
 
 
-from nixt.default import Logger, SystemRandom
+from nixt.default import Logger, Random
 from nixt.defines import Clients, Disk, Locater, Message, Repeater
 from nixt.typings import List
 
 
 Log = Logger(__name__)
-Random = SystemRandom()
+Rand = Random()
 
 
 def init():
@@ -48,7 +48,7 @@ def wsd(msg):
     "show a wisdom quote."
     txt = ""
     for nrs in range(len(TXTLIST)):
-        txt = Random.choice(TXTLIST)
+        txt = Rand.choice(TXTLIST)
         if txt in state.seen:
             continue
         state.seen.append(txt)

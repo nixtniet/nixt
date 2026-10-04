@@ -16,7 +16,7 @@ CORE: Hash = {
     "buffers": "67f93bade968660cd3b47dfc32057774",
     "command": "129234a5e166be2afc6b19fd2fbdebe8",
     "configs": "915a02e10b32cc61a5365e6401876008",
-    "default": "a90990c84457465ea2d0887c5510ccc6",
+    "default": "6e261ecbd6e9ae42ce133a13b3a2b81d",
     "defines": "1e9607b3c93eb439dd5b394d4e0f1019",
     "display": "05d0d93528cc6851b05a3f044b2945be",
     "encoder": "0c98563c401e13346c1ec43515f4bc64",
