@@ -21,7 +21,6 @@ from .encoder import JSONL
 from .engines import Engine
 from .fetcher import Fetcher
 from .loggers import Format
-from .loggers import Logging
 from .looping import Loop
 from .message import Message
 from .methods import Method
@@ -39,7 +38,7 @@ from .sources import MD5
 from .threads import Thr
 from .threads import Thread
 from .timings import Time
-from .utility import Utils
+from .utility import Logging, Time, Utils
 from .watcher import Watcher
 
 

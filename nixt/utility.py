@@ -4,13 +4,166 @@
 "usefullness"
 
 
+import datetime
 import os
 import pathlib
+import time
 import uuid
 
 
-from types  import ModuleType
-from typing import Any, List, Union
+from .default import Any, ClassVar, Formatter, List. LogRecord, ModuleType
+from .default import StreamHandler, Union, basicConfig, Union
+
+
+Float = Union[float, None]
+
+
+class Format(Formatter):
+
+    "logging format."
+
+    disable: ClassVar[bool] = False
+    size: ClassVar[int] = 3
+
+    def format(self, record: LogRecord) -> str:
+        "logging formatter."
+        if not Format.disable:
+            record.module = record.module.upper()
+            record.module = record.module[:Format.size]
+        return Formatter.format(self, record)
+
+
+class Logging:
+
+    "logging."
+
+    datefmt: ClassVar[str] = "%H:%M:%S"
+    format:  ClassVar[str] = "%(module)-3s %(message)s"
+    formats: ClassVar[str] = "%(message)s"
+
+    @classmethod
+    def level(cls, loglevel: str) -> None:
+        "set log level."
+        formatter = Format(cls.formats, cls.datefmt)
+        stream = StreamHandler()
+        stream.setFormatter(formatter)
+        try:
+            basicConfig(
+                level=loglevel.upper(),
+                handlers=[stream],
+                force=True
+            )
+        except ValueError:
+            pass
+
+    @classmethod
+    def size(cls, nrchars: int) -> None:
+        "set text size."
+        index = cls.format.find("-")+1
+        newformat = cls.format[:index]
+        newformat += str(nrchars)
+        newformat += cls.format[index+1:]
+        cls.format = newformat
+
+
+class Time:
+
+    "time related utilities."
+
+    starttime: ClassVar[float] = time.time()
+    times = (
+        "%a, %d %b %Y %H:%M:%S %z",
+        "%a, %d %b %Y %H:%M:%S",
+        "%a, %d %b %Y %T %z",
+        "%a, %d %b %Y %T",
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%d %H:%M",
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%d",
+        "%d-%m-%Y",
+        "%d-%m",
+        "%m-%d"
+    )
+
+    @classmethod
+    def date(cls, daystr: str) -> Float:
+        "date from string."
+        daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
+        for fmat in cls.times:
+            try:
+                return time.mktime(time.strptime(daystr, fmat))
+            except ValueError:
+                pass
+        return None
+
+    @classmethod
+    def elapsed(cls, seconds: float, short: bool = True) -> str:
+        "seconds to string."
+        txt = ""
+        nsec = float(seconds)
+        if nsec < 1:
+            return f"{nsec:.2f}s"
+        yea = 365 * 24 * 60 * 60
+        week = 7 * 24 * 60 * 60
+        nday = 24 * 60 * 60
+        hou = 60 * 60
+        minute = 60
+        yeas = int(nsec / yea)
+        nsec -= yeas * yea
+        weeks = int(nsec / week)
+        nsec -= weeks * week
+        nrdays = int(nsec / nday)
+        nsec -= nrdays * nday
+        hours = int(nsec / hou)
+        nsec -= hours * hou
+        minutes = int(nsec / minute)
+        nsec -= minutes * minute
+        sec = int(nsec / 1)
+        nsec -= nsec - sec
+        if yeas:
+            txt += f"{yeas}y"
+        if weeks:
+            nrdays += weeks * 7
+        if nrdays:
+            txt += f"{nrdays}d"
+        if hours:
+            txt += f"{hours}h"
+        if short and txt:
+            return txt.strip()
+        if minutes:
+            txt += f"{minutes}m"
+        if sec:
+            txt += f"{sec}s"
+        txt = txt.strip()
+        return txt
+
+    @classmethod
+    def extract(cls, daystr: str) -> Float:
+        "extract date/time from string."
+        daystr = str(daystr)
+        res = None
+        for word in daystr.split():
+            if word.startswith("+"):
+                try:
+                    return int(word[1:]) + time.time()
+                except (ValueError, IndexError):
+                    continue
+            res = cls.date(word.strip())
+            if not res:
+                date = datetime.datetime.fromtimestamp(time.time(), tz=None).date()
+                word = f"{date.year}-{date.month}-{date.day}" + " " + word
+                res = cls.date(word.strip())
+            if res:
+                break
+        return res
+
+    @classmethod
+    def timed(cls, datestr: str) -> float:
+        "return time from string."
+        tme = cls.date(datestr)
+        if not tme:
+            tme = time.time()
+        return tme
 
 
 class Utils:
@@ -81,5 +234,8 @@ class Utils:
 
 def __dir__():
     return (
-        'Utils',
+        'Format',
+        'Logging',
+        'Time',
+        'Utils'
     )

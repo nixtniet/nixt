@@ -4,14 +4,7 @@
 "if it repeats it is important"
 
 
-import time
-
-
-from collections.abc import Callable
-from threading       import Event
-from typing          import Any, ClassVar, Dict, List
-
-
+from .default import Any, Callable, ClassVar, Dict, Event, List, time
 from .threads import Thread
 
 
@@ -22,11 +15,11 @@ class Repeater:
 
     "repeat at interval"
 
-    running: ClassVar[Event] = Event()
-    stopped: ClassVar[Event] = Event()
-    counter: ClassVar[int] = 0
+    running:   ClassVar[Event] = Event()
+    stopped:   ClassVar[Event] = Event()
+    counter:   ClassVar[int] = 0
     sleeptime: ClassVar[float] = 0.1
-    todo: ClassVar[Todo] = {}
+    todo:      ClassVar[Todo] = {}
 
     @classmethod
     def add(cls, sleep: float, func: Callable, *args: Any, **kwargs: Any) -> None:

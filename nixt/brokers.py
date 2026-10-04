@@ -4,7 +4,7 @@
 "an object for a string"
 
 
-from typing import Any, ClassVar, Dict, Generator, Tuple
+from .default import Any, ClassVar, Dict, Generator, Tuple
 
 
 Anys    = Dict[str, Any]

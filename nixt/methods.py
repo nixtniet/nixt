@@ -4,17 +4,12 @@
 "a function with an object as the first argument"
 
 
-import inspect
-import os
-import types
-
-
-from typing import Any, Dict, Generator, List, Tuple, Union
-
-
+from .default import inspect, os, types
 from .objects import Object
+from .typings import Any, Dict, Generator, List, Tuple, Union
 
 
+Anys     = Dict[str, Any]
 Args     = Union[List[str], None]
 Items    = List[Tuple[str, Any]]
 Keys     = List[str]
@@ -125,7 +120,7 @@ class Method:
         return kin
 
     @classmethod
-    def fromkeys(cls, obj: Any, keyz: str, value: Any = None) -> Dict[str, Any]:
+    def fromkeys(cls, obj: Any, keyz: str, value: Any = None) -> Anys:
         "create a new object with keys from iterable and values set to value."
         return obj.__dict__.fromkeys(keyz, value)
 

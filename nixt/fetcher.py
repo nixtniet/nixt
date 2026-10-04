@@ -4,17 +4,14 @@
 "fetching feeds"
 
 
-import html
-import re
-
-
-from typing         import Any, ClassVar, Dict, Union
-from urllib.parse   import unquote, urlparse, urlunparse
-from urllib.request import Request, urlopen
-
-
+from .default import html, re, urllib
 from .methods import Method
 from .objects import Data
+from .typings import Any, ClassVar, Dict, Union
+
+
+from urllib.parse   import unquote, urlparse, urlunparse
+from urllib.request import Request, urlopen
 
 
 Anys    = Dict[str, Any]

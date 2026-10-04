@@ -4,13 +4,13 @@
 "callback engine"
 
 
-from collections.abc import Callable
-from typing          import Dict
-
-
 from .looping import Loop
 from .message import Message
 from .threads import Thread
+from .typings import Callable, Dict
+
+
+Callables = Dict[str, Callable]
 
 
 class Engine(Loop):
@@ -19,7 +19,7 @@ class Engine(Loop):
 
     def __init__(self):
         super().__init__()
-        self.cbs: Dict[str, Callable] = {}
+        self.cbs: Callables = {}
 
     def handle(self, msg: Message) -> None:
         "run callback function with msg."

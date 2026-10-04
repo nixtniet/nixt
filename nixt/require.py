@@ -4,13 +4,7 @@
 "required commands"
 
 
-import inspect
-import os
-
-
-from typing import Dict
-
-
+from .default import Dict, inspect, os
 from .defines import Commands, JSON, Main, MD5, Message, Mods, Utils
 
 

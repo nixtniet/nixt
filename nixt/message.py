@@ -4,12 +4,15 @@
 "only the msg"
 
 
-from threading import Event
-from typing    import Any, List, Union
-
-
+from .default import Event
 from .objects import Data
 from .threads import Thr
+from .typings import Any, List, Union
+
+
+Args   = List[str]
+Result = List[str]
+Task   = Union[Thr, None]
 
 
 class Message(Data):
@@ -19,15 +22,15 @@ class Message(Data):
     def __init__(self):
         super().__init__()
         self._ready: Event = Event()
-        self._thr: Union[Thr, None] = None
-        self.args: List[str] = []
-        self.cmd: str = ""
-        self.index: int = 0
-        self.kind: str = "msg"
-        self.orig: str = ""
-        self.rest: str = ""
-        self.result: List[Any] = []
-        self.text: str = ""
+        self._thr:   Task = None
+        self.args:   Args = []
+        self.cmd:    str = ""
+        self.index:  int = 0
+        self.kind:   str = "msg"
+        self.orig:   str = ""
+        self.rest:   str = ""
+        self.result: Result = []
+        self.text:   str = ""
 
     def iface(self, text: str) -> None:
         "show interface."

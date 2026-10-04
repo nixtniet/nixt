@@ -10,11 +10,8 @@ import sys
 import time
 
 
-from argparse        import SUPPRESS, ArgumentParser, RawDescriptionHelpFormatter
-from collections.abc import Callable
-from typing          import Any, TextIO, Union
-
-
+from .default import Any, ArgumentParser, Callable, RawFormat
+from .default import SUPRESS, TextIO, Union
 from .defines import Boot, Commands, Main, MD5, Message, Method, Mods, Screen
 from .defines import Workdir
 from .require import Cmd
@@ -63,7 +60,7 @@ class Arguments:
             prog=Main.name,
             description=f'{Main.name.upper()}',
             epilog='use "%(prog)s cmd" for a list of commands.',
-            formatter_class=RawDescriptionHelpFormatter,
+            formatter_class=RawFormat,
             usage="%(prog)s [options] [cmd] [key=val] [key==val] [key-=val] [arguments]"
         )
 

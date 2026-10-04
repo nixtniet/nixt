@@ -4,9 +4,7 @@
 "the big loop"
 
 
-from typing import Any
-
-
+from .default import Any
 from .looping import Loop
 from .threads import Thread
 

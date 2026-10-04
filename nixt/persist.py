@@ -4,17 +4,8 @@
 "path to object cache"
 
 
-import datetime
-import json
-import os
-import pathlib
-import time
-
-
-from threading import RLock
-from typing    import Any, ClassVar, Dict, Generator, List, Set, Tuple, Union
-
-
+from .default import Any, ClassVar, Dict, Generator, List, RLock, Set, Tuple
+from .default import Union, datetime, json, os, pathlib, time
 from .encoder import JSON
 from .methods import Method
 from .objects import Data
@@ -26,6 +17,7 @@ Result   = Generator[Tuple[str, Any], None, None]
 Selector = Union[Dict[str, str], None]
 
 
+e = os.path.exists
 j = os.path.join
 
 
@@ -68,14 +60,14 @@ class Disk:
     @classmethod
     def ident(cls, obj: Any) -> str:
         "return ident string for object."
-        return os.path.join(Method.fqn(obj), *str(datetime.datetime.now(tz=None)).split())
+        return j(Method.fqn(obj), *str(datetime.datetime.now(tz=None)).split())
 
     @classmethod
     def read(cls, obj: Any, path: str, base: str = "store") -> bool:
         "read object from path."
         with cls.lock:
-            pth = os.path.join(Workdir.wdr, base, path)
-            if not os.path.exists(pth):
+            pth = j(Workdir.wdr, base, path)
+            if not e(pth):
                 return False
             with open(pth, "r", encoding="utf-8") as fpt:
                 try:
@@ -90,7 +82,7 @@ class Disk:
         with cls.lock:
             if path == "":
                 path = cls.ident(obj)
-            pth = os.path.join(Workdir.wdr, base, path)
+            pth = j(Workdir.wdr, base, path)
             Utils.cdir(pth)
             with open(pth, "w", encoding="utf-8") as fpt:
                 JSON.dump(obj, fpt, indent=4)
@@ -165,14 +157,14 @@ class Locater:
     @classmethod
     def fns(cls, kind: str) -> Paths:
         "file names by kind of object."
-        path = os.path.join(Workdir.wdr, "store", kind)
+        path = j(Workdir.wdr, "store", kind)
         for rootdir, dirs, _files in os.walk(path, topdown=True):
             for dname in dirs:
                 if dname.count("-") != 2:
                     continue
-                ddd = os.path.join(rootdir, dname)
+                ddd = j(rootdir, dname)
                 for fll in os.listdir(ddd):
-                    yield cls.strip(os.path.join(ddd, fll))
+                    yield cls.strip(j(ddd, fll))
 
     @classmethod
     def fntime(cls, daystr: str) -> float:
@@ -229,7 +221,7 @@ class Workdir:
         "show kind on objects in cache."
         assert cls.wdr
         path = j(cls.wdr, "store")
-        if not os.path.exists(path):
+        if not e(path):
             cls.skel()
         return os.listdir(path)
 
@@ -263,7 +255,7 @@ class Workdir:
         "write pid to file."
         assert cls.wdr
         filename = j(cls.wdr, f"{name}.pid")
-        if os.path.exists(filename):
+        if e(filename):
             os.unlink(filename)
         path2 = pathlib.Path(filename)
         path2.parent.mkdir(parents=True, exist_ok=True)
@@ -274,7 +266,7 @@ class Workdir:
     def skel(cls) -> None:
         "create directories."
         assert cls.wdr
-        if not os.path.exists(cls.wdr):
+        if not e(cls.wdr):
             Utils.cdir(cls.wdr)
         path = os.path.abspath(cls.wdr)
         for wpth in ["config", "logs", "mods", "store"]:

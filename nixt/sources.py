@@ -5,17 +5,14 @@
 "module md5sum"
 
 
-import logging
 import os
 
 
-from typing import Dict, Union
-
-
+from .default import Dict, Logger, Union
 from .utility import Utils
 
 
-logger = logging.getLogger(__name__)
+logger = Logger(__name__)
 
 
 class MD5:

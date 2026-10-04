@@ -4,28 +4,19 @@
 "in the beginning"
 
 
-import logging
-import os
-import threading
-import time
-import _thread
-
-
-from threading import Event
-from typing    import Callable
-
-
 from .brokers import Broker
 from .configs import Main
+from .default import Event, Logger, os, threading, time, _thread
 from .display import Screen
 from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
 from .threads import Thr, Thread
+from .typing  import Callable 
 from .utility import Utils
 
 
-logger = logging.getLogger(__name__)
+Log = Logger(__name__)
 
 
 class Boot:
@@ -77,16 +68,16 @@ class Boot:
     @classmethod
     def shutdown(cls, wait: bool = True) -> None:
         "call stop on clients."
-        logger.debug("shutdown")
+        Log.debug("shutdown")
         for client in Broker.objs("wait"):
-            logger.debug("wait %s", client)
+            Log.debug("wait %s", client)
             try:
                 client.wait()
             except (KeyboardInterrupt, EOFError):
                 pass
         time.sleep(0.01)
         for client in Broker.objs("stop"):
-            logger.debug("stop %s", client)
+            Log.debug("stop %s", client)
             try:
                 client.stop()
             except (KeyboardInterrupt, EOFError):
@@ -109,7 +100,7 @@ class Boot:
             Thr.block.set()
             _thread.interrupt_main()
         except Exception as ex:
-            logger.exception(ex)
+            Log.exception(ex)
             _thread.interrupt_main()
 
 

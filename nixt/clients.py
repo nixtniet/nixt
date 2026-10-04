@@ -4,14 +4,8 @@
 "an object for a string"
 
 
-import logging
-
-
 from .brokers import Broker
 from .message import Message
-
-
-logger = logging.getLogger(__name__)
 
 
 class Clients:

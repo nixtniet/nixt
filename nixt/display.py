@@ -4,10 +4,8 @@
 "an object for a string"
 
 
-from threading import Event, RLock
-
-
 from .brokers import Broker
+from .default import Event, RLock
 from .engines import Engine
 from .message import Message
 

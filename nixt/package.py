@@ -4,25 +4,20 @@
 "module management"
 
 
-import logging
-import os
-
-
-from types  import ModuleType
-from typing import ClassVar, Dict, List, Union
-
-
+from .default import ClassVar, Dict, List, Logger, ModuleType, Union, os
 from .methods import Method
 from .sources import MD5
 from .utility import Utils
 
 
+Log     = Logger(__name__)
 Module  = Union[ModuleType, None]
 Modules = Dict[str, ModuleType]
 Strings = Dict[str, str]
 
 
-logger = logging.getLogger(__name__)
+e = os.path.exists
+j = os.path.join
 
 
 class Mods:
@@ -47,14 +42,14 @@ class Mods:
             mod = cls.mods.get(modname, None)
             if mod:
                 return mod
-            fnm = os.path.join(path, name + ".py")
-            if not os.path.exists(fnm):
+            fnm = j(path, name + ".py")
+            if not e(fnm):
                 continue
             if not force and cls.md5s:
                 md5 = MD5.md5(fnm)
                 md5s = cls.md5s.get(name)
                 if md5s and md5 != md5s:
-                    logger.warning("mismatch %s", modname)
+                    Log.warning("mismatch %s", modname)
             return cls.importer(modname, fnm)
         return None
 
@@ -87,7 +82,7 @@ class Mods:
         "comma seperated list of available modules."
         mods = []
         for path in cls.dirs.values():
-            if not os.path.exists(path):
+            if not e(path):
                 continue
             mods.extend(Utils.listdir(path))
         return sorted(set(mods))
@@ -95,12 +90,12 @@ class Mods:
     @classmethod
     def minimal(cls) -> str:
         "return package minimal path."
-        return os.path.join(Method.where(Mods), "minimal")
+        return j(Method.where(Mods), "minimal")
 
     @classmethod
     def moddir(cls) -> str:
         "return package modules path."
-        return os.path.join(Method.where(Mods), "modules")
+        return j(Method.where(Mods), "modules")
 
     @classmethod
     def statics(cls) -> None:

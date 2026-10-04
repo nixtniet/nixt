@@ -4,21 +4,11 @@
 "buffered output"
 
 
-import logging
-import _thread
-
-
-from queue     import Queue
-from threading import Event
-
-
+from .default import Event, Queue, _thread
 from .display import Display
 from .engines import Engine
 from .message import Message
 from .threads import Thread
-
-
-logger = logging.getLogger(__name__)
 
 
 class Output(Display):

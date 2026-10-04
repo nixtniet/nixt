@@ -4,9 +4,7 @@
 "cli parser"
 
 
-from typing import Any, Dict
-
-
+from .default import Any, Dict
 from .methods import Method
 from .objects import Data
 

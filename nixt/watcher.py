@@ -8,16 +8,12 @@ import os
 import time
 
 
-from collections.abc import Callable
-from threading       import Event
-from typing          import ClassVar, Dict, Union
-
-
+from .default import Callable, ClassVar, Dict, Event, Union
 from .threads import Thread
 
 
 Callables = Dict[str, Callable]
-Floats = Dict[str, float]
+Floats    = Dict[str, float]
 
 
 e = os.path.exists

@@ -4,12 +4,8 @@
 "encoder/decoder"
 
 
-import json
-
-
-from threading import RLock
-from types     import MappingProxyType
-from typing    import Any, Union
+from .default import json
+from .typings import Any, MappingProxyType, RLock, Union
 
 
 Json = Union[dict,list,bool,float,int,str]
