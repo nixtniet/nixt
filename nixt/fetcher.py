@@ -6,16 +6,15 @@
 
 import html
 import re
-import urllib
+
+
+from urllib.parse   import unquote, urlparse, urlunparse
+from urllib.request import Request, urlopen
 
 
 from .methods import Method
 from .objects import Data
 from .typings import Any, ClassVar, Dict, Union
-
-
-from urllib.parse   import unquote, urlparse, urlunparse
-from urllib.request import Request, urlopen
 
 
 Anys    = Dict[str, Any]

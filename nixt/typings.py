@@ -18,7 +18,9 @@ def __dir__():
         'Dict',
         'Generator',
         'List',
+        'MappingProxyType',
         'ModuleType',
+        'Set',
         'TextIO',
         'Tuple',
         'Union'

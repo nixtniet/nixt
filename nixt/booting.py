@@ -18,7 +18,7 @@ from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
 from .threads import Thr, Thread
-from .typings import Callable 
+from .typings import Callable
 from .utility import Utils
 
 

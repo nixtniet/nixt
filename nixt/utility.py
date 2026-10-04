@@ -11,7 +11,6 @@ import time
 import uuid
 
 
-from .default import Formatter, LogRecord, StreamHandler, basicConfig
 from .typings import Any, ClassVar, List, ModuleType, Union
 
 

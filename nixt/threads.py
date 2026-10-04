@@ -5,7 +5,6 @@
 
 
 import inspect
-import logging
 import threading
 import time
 import _thread

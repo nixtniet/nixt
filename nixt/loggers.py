@@ -60,7 +60,5 @@ class Logging:
 def __dir__():
     return (
         'Format',
-        'Logging',
-        'Time',
-        'Utils'
+        'Logging'
     )

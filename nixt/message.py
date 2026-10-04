@@ -7,7 +7,7 @@
 from .default import Event
 from .objects import Data
 from .threads import Thr
-from .typings import Any, List, Union
+from .typings import List, Union
 
 
 Args   = List[str]
@@ -22,15 +22,15 @@ class Message(Data):
     def __init__(self):
         super().__init__()
         self._ready: Event = Event()
-        self._thr:   Task = None
-        self.args:   Args = []
-        self.cmd:    str = ""
-        self.index:  int = 0
-        self.kind:   str = "msg"
-        self.orig:   str = ""
-        self.rest:   str = ""
+        self._thr: Task = None
+        self.args: Args = []
+        self.cmd: str = ""
+        self.index: int = 0
+        self.kind: str = "msg"
+        self.orig: str = ""
+        self.rest: str = ""
         self.result: Result = []
-        self.text:   str = ""
+        self.text: str = ""
 
     def iface(self, text: str) -> None:
         "show interface."

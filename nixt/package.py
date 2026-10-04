@@ -6,6 +6,7 @@
 
 import os
 
+
 from .default import Logger
 from .methods import Method
 from .sources import MD5

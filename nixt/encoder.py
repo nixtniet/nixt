@@ -8,7 +8,7 @@ import json
 
 
 from .default import RLock
-from .typings import Any, MappingProxyType,Union
+from .typings import Any, MappingProxyType, Union
 
 
 Json = Union[dict,list,bool,float,int,str]

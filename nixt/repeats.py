@@ -19,11 +19,11 @@ class Repeater:
 
     "repeat at interval"
 
-    running:   ClassVar[Event] = Event()
-    stopped:   ClassVar[Event] = Event()
-    counter:   ClassVar[int] = 0
+    running: ClassVar[Event] = Event()
+    stopped: ClassVar[Event] = Event()
+    counter: ClassVar[int] = 0
     sleeptime: ClassVar[float] = 0.1
-    todo:      ClassVar[Todo] = {}
+    todo: ClassVar[Todo] = {}
 
     @classmethod
     def add(cls, sleep: float, func: Callable, *args: Any, **kwargs: Any) -> None:
