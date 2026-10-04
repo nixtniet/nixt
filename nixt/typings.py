@@ -1,0 +1,28 @@
+# This file is placed in the Public Domain.
+
+
+"default imports"
+
+
+from collections.abc import Callable
+from types           import ModuleType
+from typing          import Any, ClassVar, Dict, Generator, List, TextIO, Tuple
+from typing          import Union
+
+
+def __dir__():
+    return (
+        'Any',
+        'Callable',
+        'ClassVar',
+        'Dict',
+        'Generator',
+        'List',
+        'ModuleType',
+        'TextIO',
+        'Tuple',
+        'Union'
+    )
+
+
+__all__ = __dir__()
