@@ -10,17 +10,18 @@ import threading
 import time
 
 
+from nixt.default import Logger
 from nixt.defines import Broker, Disk, Locater, Method, Object, Thread, Time
 
 
-logger = logging.getLogger(__name__)
-rand = random.SystemRandom()
+Log = Logger(__name__)
+Rand = random.SystemRandom()
 
 
 def init():
     "intialize the timer module."
     TimerLoop.start()
-    logger.info("%s timers" , len(TimerLoop.timers))
+    Log.info("%s timers" , len(TimerLoop.timers))
 
 
 def shutdown():
@@ -103,7 +104,7 @@ def tmr(msg):
     if not todo:
         msg.reply("can't determine time")
         return
-    todo += rand.random()
+    todo += Rand.random()
     if not todo or time.time() > todo:
         msg.reply("already passed given time.")
         return

@@ -9,10 +9,10 @@ import time
 
 
 from mailbox import Maildir, Mailbox, mbox
-from typing  import Union
 
 
 from nixt.defines import Data, Disk, Locater, Method, Time
+from nixt.typings import Union
 
 
 Thing = Union[Mailbox, Maildir]

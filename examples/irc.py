@@ -14,15 +14,13 @@ import time
 import _thread
 
 
-from threading import Event
-from typing    import Any, ClassVar, List
-
-
+from nixt.default import Event, Logger
 from nixt.defines import Broker, Buffer, Cfg, Commands, Disk, Main
 from nixt.defines import Message, Mods, Method, Object, Thread
+from nixt.typings import Any, ClassVar, List 
 
 
-logger = logging.getLogger(__name__)
+Log = Logger(__name__)
 
 
 def init():
@@ -34,7 +32,7 @@ def init():
     except (KeyboardInterrupt, EOFError):
         _thread.interrupt_main()
     if irc.msgs.joined.is_set():
-        logger.info("%s", Method.fmt(irc.cfg, ["nick", "channel", "server", "port"]))
+        Log.info("%s", Method.fmt(irc.cfg, ["nick", "channel", "server", "port"]))
     else:
         irc.stop()
     return irc
@@ -170,7 +168,7 @@ class IRC(Buffer):
         self.msgs.connected.clear()
         self.msgs.joined.clear()
         if self.cfg.word or self.cfg.word:
-            logger.debug("using SASL")
+            Log.debug("using SASL")
             self.cfg.sasl = True
             self.cfg.port = 6697
             ctx = ssl.SSLContext(ssl.PROTOCOL_TLS)
@@ -191,12 +189,12 @@ class IRC(Buffer):
             self.sock.setblocking(True)
             self.sock.settimeout(180.0)
             self.msgs.connected.set()
-            logger.debug(
-                          "connected %s:%s channel %s",
-                          self.cfg.server,
-                          self.cfg.port,
-                          self.cfg.channel
-                         )
+            Log.debug(
+                      "connected %s:%s channel %s",
+                      self.cfg.server,
+                      self.cfg.port,
+                      self.cfg.channel
+                     )
             return True
         return False
 
@@ -264,7 +262,7 @@ class IRC(Buffer):
                    ) as ex:
                 self.msgs.joined.set()
                 self.state.error = str(ex)
-                logger.debug("%s", str(type(ex)) + " " + str(ex))
+                Log.debug("%s", str(type(ex)) + " " + str(ex))
             time.sleep(self.cfg.sleep)
 
     def dosay(self, channel, text):
@@ -408,7 +406,7 @@ class IRC(Buffer):
             ) as ex:
                 self.state.nrerror += 1
                 self.state.error = str(type(ex)) + " " + str(ex)
-                logger.debug(self.state.error)
+                Log.debug(self.state.error)
                 self.state.pongcheck = True
                 self.stop()
                 return None
@@ -454,7 +452,7 @@ class IRC(Buffer):
                 BrokenPipeError,
                 socket.timeout
             ) as ex:
-                logger.debug("%s", str(type(ex)) + " " + str(ex))
+                Log.debug("%s", str(type(ex)) + " " + str(ex))
                 self.msgs.joined.set()
                 self.state.nrerror += 1
                 self.state.error = str(ex)
@@ -466,7 +464,7 @@ class IRC(Buffer):
 
     def reconnect(self):
         "reconnect to server."
-        logger.debug("reconnecting %s:%s", self.cfg.server, self.cfg.port)
+        Log.debug("reconnecting %s:%s", self.cfg.server, self.cfg.port)
         self.disconnect()
         self.msgs.connected.clear()
         self.msgs.joined.clear()
@@ -474,7 +472,7 @@ class IRC(Buffer):
 
     def restart(self):
         "restart client."
-        logger.debug("restart")
+        Log.debug("restart")
         self.msgs.joined.set()
         self.state.pongcheck = False
         self.state.keeprunning = False
@@ -487,7 +485,7 @@ class IRC(Buffer):
         for ign in Config.ignore:
             if ign in str(txt):
                 return
-        logger.debug(txt)
+        Log.debug(txt)
 
     def say(self, channel, text):
         "say text in the channel."
@@ -563,7 +561,7 @@ def cb_error(msg):
     bot = Broker.get(msg.orig)
     bot.state.nrerror += 1
     bot.state.error = msg.text
-    logger.debug(Method.fmt(msg))
+    Log.debug(Method.fmt(msg))
 
 
 def cb_h903(msg):
@@ -633,7 +631,7 @@ def cb_privmsg(msg):
 def cb_quit(msg):
     "qiot callback."
     bot = Broker.get(msg.orig)
-    logger.debug("quit from %s", bot.cfg.server)
+    Log.debug("quit from %s", bot.cfg.server)
     bot.state.nrerror += 1
     bot.state.error = msg.text
     if msg.orig and msg.orig in bot.zelf:

@@ -4,10 +4,8 @@
 "configuration"
 
 
-from typing import Union
-
-
 from nixt.defines import Data, Disk, Method, Mods
+from nixt.typings import Union
 
 
 def cfg(msg):

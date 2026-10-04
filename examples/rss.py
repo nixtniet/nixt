@@ -13,17 +13,14 @@ import re
 import urllib
 
 
-from _thread import LockType, RLock, allocate_lock
-from typing  import ClassVar, Generator, Iterator, List, TextIO
-from typing  import Union
-
-
+from nixt.default import Logger, LockType, RLock, allocate_lock
 from nixt.defines import Cfg, Clients, Data, Disk, Fetcher, Format, JSONL
 from nixt.defines import Locater, Logging, Main, MD5, Message, Method, Object
 from nixt.defines import Pool, Repeater, Runner, Utils, Watcher, Workdir
+from nixt.typings import ClassVar, Generator, Iterator, List, TextIO, Union
 
 
-logger = logging.getLogger(__name__)
+Log = Logger(__name__)
 
 
 j = os.path.join
@@ -37,7 +34,7 @@ def init():
     txt = f"{nrs} feeds"
     if nrs == 1:
         txt = txt[:-1]
-    logger.info(txt)
+    Log.info(txt)
 
 
 def shutdown():
@@ -132,7 +129,7 @@ class Run:
                 feed.skip = False
                 Disk.write(feed, fnm)
                 counter += 1
-        logger.debug("clear %s", counter)
+        Log.debug("clear %s", counter)
         return counter
 
     @classmethod
@@ -164,12 +161,12 @@ class Run:
         formatter = Format(Logging.formats, Logging.datefmt)
         filehandler = logging.handlers.TimedRotatingFileHandler(path, 'midnight')
         filehandler.setFormatter(formatter)
-        if logger.handlers:
-            for handler in logger.handlers:
-                logger.removeHandler(handler)
-        logger.addHandler(filehandler)
-        logger.propagate = False
-        logger.setLevel("DEBUG")
+        if Log.handlers:
+            for handler in Log.handlers:
+                Log.removeHandler(handler)
+        Log.addHandler(filehandler)
+        Log.propagate = False
+        Log.setLevel("DEBUG")
 
     @classmethod
     def got(cls, text: str, feed: Feed) -> bool:
@@ -183,14 +180,14 @@ class Run:
     @classmethod
     def log(cls, text: str) -> None:
         "log to file."
-        logger.debug(text)
+        Log.debug(text)
 
     @classmethod
     def run(cls, silent: bool = False) -> int:
         "do a fetch run of all feeds."
         nrs = 0
         if Pool.busy():
-            logger.debug("next!")
+            Log.debug("next!")
             return 0
         for fnm, feed in Locater.find(Method.fqn(Rss)):
             if feed.skip:
@@ -251,10 +248,10 @@ class Fetching(Runner):
                 feed.error = response.error
                 feed.skip = True
                 Disk.write(feed, fnm)
-                logger.warning("skipt %s %s %s", feed.rss, response.status, response.reason)
+                Log.warning("skipt %s %s %s", feed.rss, response.status, response.reason)
             yield Feed()
         else:
-            logger.debug("fetch %s", feed.rss)
+            Log.debug("fetch %s", feed.rss)
             if "link" not in items:
                 items += ",link"
             yield from RSS.parse(
@@ -293,7 +290,7 @@ class Fetching(Runner):
         if has:
             feed.seen = feed.seen[:counter]
             Disk.write(feed, fnm)
-            logger.debug("write %s (%s)", feed.rss, gotcha)
+            Log.debug("write %s (%s)", feed.rss, gotcha)
         if counter:
             gc.collect(0)
         return counter

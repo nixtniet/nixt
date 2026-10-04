@@ -9,7 +9,9 @@ from argparse  import RawDescriptionHelpFormatter as RawFormat
 from logging   import basicConfig, Formatter, LogRecord, StreamHandler
 from logging   import getLogger as Logger
 from queue     import Queue
+from random    import SystemRandom
 from threading import Event, RLock
+from _thread   import LockType, allocate_lock
 
 
 def __dir__():
@@ -18,13 +20,16 @@ def __dir__():
         'ArgumentParser',
         'Event',
         'Formatter',
+        'LockType',
         'Logger',
         'LogRecord',
         'Queue',
         'RawFormat',
         'RLock',
         'StreamHandler',
-        'basicConfig',
+        'SystemRandom',
+        'allocate_lock',
+        'basicConfig'
     )
 
 

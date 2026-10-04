@@ -11,11 +11,13 @@ from random import SystemRandom
 from typing import List
 
 
+from nixt.default import Logger, SystemRandom
 from nixt.defines import Clients, Disk, Locater, Message, Repeater
+from nixt.typings import List
 
 
-logger = logging.getLogger(__name__)
-rand   = SystemRandom()
+Log = Logger(__name__)
+Rand = SystemRandom()
 
 
 def init():
@@ -23,7 +25,7 @@ def init():
     state.load()
     msg = Message()
     Repeater.add(3600,  wsd, msg)
-    logger.info("%s wise", len(TXTLIST))
+    Log.info("%s wise", len(TXTLIST))
 
 
 class State:
@@ -53,7 +55,7 @@ def wsd(msg):
     "show a wisdom quote."
     txt = ""
     for nrs in range(len(TXTLIST)):
-        txt = rand.choice(TXTLIST)
+        txt = Rand.choice(TXTLIST)
         if txt in state.seen:
             continue
         state.seen.append(txt)
