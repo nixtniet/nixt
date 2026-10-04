@@ -17,10 +17,12 @@ from nixt.default import Logger, LockType, RLock, allocate_lock
 from nixt.defines import Cfg, Clients, Data, Disk, Fetcher, Format, JSONL
 from nixt.defines import Locater, Logging, Main, MD5, Message, Method, Object
 from nixt.defines import Pool, Repeater, Runner, Utils, Watcher, Workdir
-from nixt.typings import ClassVar, Generator, Iterator, List, TextIO, Union
+from nixt.typings import ClassVar, Generator, List, TextIO, Union
 
 
-Log = Logger(__name__)
+Dicts   = Generator[dict, None, None]
+Log     = Logger(__name__)
+Strings = Generator[str, None, None]
 
 
 j = os.path.join
@@ -53,6 +55,9 @@ class Config(Cfg):
 class Feed(Data):
 
     "feed data"
+
+
+Feeds   = Generator[Feed, None, None]
 
 
 class Rss(Data):
@@ -239,7 +244,7 @@ class Fetching(Runner):
         "check whether to log."
         return errno >= 400
 
-    def getfeed(self, fnm: str, feed: Rss, items: str) -> Iterator[Feed]:
+    def getfeed(self, fnm: str, feed: Rss, items: str) -> Feeds:
         "fetch a feed."
         response = Fetcher.geturl(feed.rss)
         if not response.data:
@@ -339,7 +344,7 @@ class OPML:
         return result
 
     @classmethod
-    def parse(cls, txt, toke="outline", itemz=None) -> Generator[dict, None, None]:
+    def parse(cls, txt, toke="outline", itemz=None) -> Dicts:
         "parse opml from text."
         if itemz is None:
             itemz = ",".join(cls.getnames(txt))
@@ -359,7 +364,7 @@ class RSS:
     "RSS parser"
 
     @classmethod
-    def getitem(cls, line: str, item: str):
+    def getitem(cls, line: str, item: str) -> str:
         "return item from line."
         lne = ""
         index1 = line.find(f"<{item}>")
@@ -372,7 +377,7 @@ class RSS:
         return Fetcher.cdata(line[index1:index2]).strip()
 
     @classmethod
-    def getitems(cls, text: str, token: str, nrs: int = 0) -> Iterator[str]:
+    def getitems(cls, text: str, token: str, nrs: int = 0) -> Strings:
         "get items from text."
         index = 0
         end = len(text)
@@ -393,7 +398,7 @@ class RSS:
             yield text[index1:index2]
 
     @classmethod
-    def parse(cls, txt, toke="item", items="title,link") -> Iterator[Feed]:
+    def parse(cls, txt, toke="item", items="title,link") -> Feeds:
         "parse feed."
         for line in cls.getitems(txt, toke):
             line = line.strip()
