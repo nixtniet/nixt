@@ -4,15 +4,6 @@
 "default imports"
 
 
-import datetime
-import inspect
-import json
-import os
-import threading
-import time
-import _thread
-
-
 from argparse  import SUPPRESS, ArgumentParser
 from argparse  import RawDescriptionHelpFormatter as RawFormat
 from logging   import basicConfig, Formatter, LogRecord, StreamHandler
@@ -23,9 +14,9 @@ from threading import Event, RLock
 
 def __dir__():
     return (
-        'SUPRESS',
+        'SUPPRESS',
         'ArgumentParser',
-        'Event'.
+        'Event',
         'Formatter',
         'Logger',
         'LogRecord',
@@ -34,13 +25,6 @@ def __dir__():
         'RLock',
         'StreamHandler',
         'basicConfig',
-        'datetime',
-        'inspect',
-        'json',
-        'os',
-        'threading',
-        'time',
-        '_thread'
     )
 
 

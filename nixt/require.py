@@ -4,8 +4,12 @@
 "required commands"
 
 
-from .default import Dict, inspect, os
+import inspect
+import os
+
+
 from .defines import Commands, JSON, Main, MD5, Message, Mods, Utils
+from .typings import Dict
 
 
 Hash = Dict[str, str]

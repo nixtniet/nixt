@@ -4,7 +4,11 @@
 "fetching feeds"
 
 
-from .default import html, re, urllib
+import html
+import re
+import urllib
+
+
 from .methods import Method
 from .objects import Data
 from .typings import Any, ClassVar, Dict, Union

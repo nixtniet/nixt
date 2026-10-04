@@ -10,11 +10,11 @@ import sys
 import time
 
 
-from .default import Any, ArgumentParser, Callable, RawFormat
-from .default import SUPRESS, TextIO, Union
+from .default import SUPPRESS, ArgumentParser, RawFormat
 from .defines import Boot, Commands, Main, MD5, Message, Method, Mods, Screen
 from .defines import Workdir
 from .require import Cmd
+from .typings import Any, Callable, TextIO, Union
 
 
 Final = Union[Callable, None]

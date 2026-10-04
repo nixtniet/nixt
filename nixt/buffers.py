@@ -4,7 +4,9 @@
 "buffered output"
 
 
-from .default import Event, Queue, _thread
+import _thread
+
+from .default import Event, Queue
 from .display import Display
 from .engines import Engine
 from .message import Message

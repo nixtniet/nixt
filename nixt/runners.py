@@ -4,9 +4,9 @@
 "the big loop"
 
 
-from .default import Any
 from .looping import Loop
 from .threads import Thread
+from .typings import Any
 
 
 class Runner(Loop):

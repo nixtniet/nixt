@@ -4,7 +4,10 @@
 "the big loop"
 
 
-from .default import Event, Queue, _thread
+import _thread
+
+
+from .default import Event, Queue
 from .message import Message
 from .threads import Thread
 from .typings import Union

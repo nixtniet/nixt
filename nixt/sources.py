@@ -8,7 +8,8 @@
 import os
 
 
-from .default import Dict, Logger, Union
+from .default import Logger
+from .typings import Dict, Union
 from .utility import Utils
 
 

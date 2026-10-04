@@ -4,8 +4,12 @@
 "collection of runners/clients"
 
 
-from .default import Any, ClassVar, List, RLock, os
+import os
+
+
+from .default import RLock
 from .runners import Runner
+from .typings import Any, ClassVar, List
 
 
 class Pool:

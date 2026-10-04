@@ -4,9 +4,12 @@
 "module management"
 
 
-from .default import ClassVar, Dict, List, Logger, ModuleType, Union, os
+import os
+
+from .default import Logger
 from .methods import Method
 from .sources import MD5
+from .typings import ClassVar, Dict, List, ModuleType, Union
 from .utility import Utils
 
 

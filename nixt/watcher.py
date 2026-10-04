@@ -8,8 +8,9 @@ import os
 import time
 
 
-from .default import Callable, ClassVar, Dict, Event, Union
+from .default import Event
 from .threads import Thread
+from .typings import Callable, ClassVar, Dict, Union
 
 
 Callables = Dict[str, Callable]

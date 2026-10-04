@@ -4,8 +4,11 @@
 "encoder/decoder"
 
 
-from .default import json
-from .typings import Any, MappingProxyType, RLock, Union
+import json
+
+
+from .default import RLock
+from .typings import Any, MappingProxyType,Union
 
 
 Json = Union[dict,list,bool,float,int,str]

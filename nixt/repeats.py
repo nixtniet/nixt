@@ -4,8 +4,12 @@
 "if it repeats it is important"
 
 
-from .default import Any, Callable, ClassVar, Dict, Event, List, time
+import time
+
+
+from .default import Event
 from .threads import Thread
+from .typings import Any, Callable, ClassVar, Dict, List
 
 
 Todo = Dict[str, List[Any]]

@@ -4,7 +4,11 @@
 "a function with an object as the first argument"
 
 
-from .default import inspect, os, types
+import inspect
+import os
+import types
+
+
 from .objects import Object
 from .typings import Any, Dict, Generator, List, Tuple, Union
 

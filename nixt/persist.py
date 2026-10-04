@@ -4,11 +4,18 @@
 "path to object cache"
 
 
-from .default import Any, ClassVar, Dict, Generator, List, RLock, Set, Tuple
-from .default import Union, datetime, json, os, pathlib, time
+import datetime
+import json
+import os
+import pathlib
+import time
+
+
+from .default import RLock
 from .encoder import JSON
 from .methods import Method
 from .objects import Data
+from .typings import Any, ClassVar, Dict, Generator, List, Set, Tuple, Union
 from .utility import Utils
 
 

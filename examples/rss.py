@@ -293,7 +293,7 @@ class Fetching(Runner):
         if has:
             feed.seen = feed.seen[:counter]
             Disk.write(feed, fnm)
-            logger.info("write %s (%s)", feed.rss, gotcha)
+            logger.debug("write %s (%s)", feed.rss, gotcha)
         if counter:
             gc.collect(0)
         return counter

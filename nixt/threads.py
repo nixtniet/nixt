@@ -11,8 +11,8 @@ import time
 import _thread
 
 
-from .default import Any, Callable, ClassVar, Dict, Event, Logger
-from .default import Queue, RLock, Union
+from .default import Event, Logger, Queue, RLock
+from .typings import Any, Callable, ClassVar, Dict, Union
 
 
 Anys    = Dict[str, Any]
