@@ -4,7 +4,6 @@
 "internet relay chat"
 
 
-import logging
 import os
 import socket
 import ssl
@@ -17,7 +16,7 @@ import _thread
 from nixt.default import Event, Logger
 from nixt.defines import Broker, Buffer, Cfg, Commands, Disk, Main
 from nixt.defines import Message, Mods, Method, Object, Thread
-from nixt.typings import Any, ClassVar, List 
+from nixt.typings import Any, ClassVar, List
 
 
 Log = Logger(__name__)

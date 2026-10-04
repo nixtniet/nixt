@@ -4,13 +4,6 @@
 "wisdom"
 
 
-import logging
-
-
-from random import SystemRandom
-from typing import List
-
-
 from nixt.default import Logger, SystemRandom
 from nixt.defines import Clients, Disk, Locater, Message, Repeater
 from nixt.typings import List
