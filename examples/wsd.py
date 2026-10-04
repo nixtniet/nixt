@@ -10,7 +10,7 @@ from nixt.typings import List
 
 
 Log = Logger(__name__)
-Rand = SystemRandom()
+Random = SystemRandom()
 
 
 def init():
@@ -48,7 +48,7 @@ def wsd(msg):
     "show a wisdom quote."
     txt = ""
     for nrs in range(len(TXTLIST)):
-        txt = Rand.choice(TXTLIST)
+        txt = Random.choice(TXTLIST)
         if txt in state.seen:
             continue
         state.seen.append(txt)

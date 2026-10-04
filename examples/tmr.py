@@ -4,17 +4,16 @@
 "timers"
 
 
-import random
 import threading
 import time
 
 
-from nixt.default import Logger
+from nixt.default import Logger, SystemRandom
 from nixt.defines import Broker, Disk, Locater, Method, Object, Thread, Time
 
 
 Log = Logger(__name__)
-Rand = random.SystemRandom()
+Random = SystemRandom()
 
 
 def init():
@@ -103,7 +102,7 @@ def tmr(msg):
     if not todo:
         msg.reply("can't determine time")
         return
-    todo += Rand.random()
+    todo += Random.random()
     if not todo or time.time() > todo:
         msg.reply("already passed given time.")
         return
