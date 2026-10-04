@@ -8,15 +8,14 @@ import threading
 import time
 
 
-from nixt.defines import Time
-from nixt.threads import Thr
+from nixt.defines import Task, Time
 
 
 def thr(msg):
     "list of running threads."
     result = []
     for thread in sorted(threading.enumerate(), key=lambda x: x.name):
-        if not isinstance(thread, Thr):
+        if not isinstance(thread, Task):
             continue
         if str(thread).startswith("<_"):
             continue

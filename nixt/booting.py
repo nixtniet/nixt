@@ -17,7 +17,7 @@ from .display import Screen
 from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
-from .threads import Thr, Thread
+from .threads import Task, Thread
 from .typings import Callable
 from .utility import Utils
 
@@ -103,7 +103,7 @@ class Boot:
             func(*args)
         except (KeyboardInterrupt, EOFError):
             Screen.block.set()
-            Thr.block.set()
+            Task.block.set()
             _thread.interrupt_main()
         except Exception as ex:
             Log.exception(ex)

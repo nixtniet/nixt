@@ -19,7 +19,7 @@ Log     = Logger(__name__)
 TimeOut = Union[float, None]
 
 
-class Thr(threading.Thread):
+class Task(threading.Thread):
 
     "unit of thread"
 
@@ -71,12 +71,12 @@ class Thread:
     lock: RLock = RLock()
 
     @classmethod
-    def launch(cls, func: Callable, *args: Any, **kwargs: Any) -> Thr:
+    def launch(cls, func: Callable, *args: Any, **kwargs: Any) -> Task:
         "start a new thread running function with arguments."
         with cls.lock:
-            thr = Thr(func, *args, **kwargs)
-            thr.start()
-            return thr
+            task = Task(func, *args, **kwargs)
+            task.start()
+            return task
 
     @classmethod
     def clsname(cls, obj: Any) -> str:
@@ -97,6 +97,6 @@ class Thread:
 
 def __dir__():
     return (
-        'Thr',
+        'Task',
         'Thread'
     )

@@ -6,40 +6,28 @@
 
 
 from .booting import Boot
-from .brokers import Broker
-from .brokers import Clients
-from .buffers import Buffer
-from .buffers import Output
+from .brokers import Broker, Clients
+from .buffers import Buffer, Output
 from .command import Commands
-from .configs import Cfg
-from .configs import Config
-from .configs import Main
-from .display import Display
-from .display import Screen
-from .encoder import JSON
-from .encoder import JSONL
+from .configs import Cfg, Config, Main
+from .display import Display, Screen
+from .encoder import JSON, JSONL
 from .engines import Engine
 from .fetcher import Fetcher
-from .loggers import Format
-from .loggers import Logging
+from .loggers import Format, Logging
 from .looping import Loop
 from .message import Message
 from .methods import Method
-from .objects import Data
-from .objects import Object
+from .objects import Data, Object
 from .package import Mods
 from .parsers import Parser
-from .persist import Disk
-from .persist import Locater
-from .persist import Workdir
+from .persist import Disk, Locater, Workdir
 from .pooling import Pool
 from .repeats import Repeater
 from .runners import Runner
 from .sources import MD5
-from .threads import Thr
-from .threads import Thread
-from .utility import Time
-from .utility import Utils
+from .threads import Task, Thread
+from .utility import Time, Utils
 from .watcher import Watcher
 
 
@@ -75,7 +63,7 @@ def __dir__():
        'Repeater',
        'Runner',
        'Screen',
-       'Thr',
+       'Task',
        'Thread',
        'Time',
        'Utils',

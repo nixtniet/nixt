@@ -6,13 +6,13 @@
 
 from .default import Event
 from .objects import Data
-from .threads import Thr
+from .threads import Task
 from .typings import List, Union
 
 
 Args   = List[str]
 Result = List[str]
-Task   = Union[Thr, None]
+Thr    = Union[Task, None]
 
 
 class Message(Data):
@@ -22,7 +22,7 @@ class Message(Data):
     def __init__(self):
         super().__init__()
         self._ready: Event = Event()
-        self._thr: Task = None
+        self._thr: Thr = None
         self.args: Args = []
         self.cmd: str = ""
         self.index: int = 0
