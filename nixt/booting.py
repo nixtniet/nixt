@@ -40,7 +40,7 @@ class Boot:
         Logging.size(len(Main.name))
         Logging.level(Main.level or "info")
         Main.path = os.path.normpath(Main.path)
-        pkgname = Main.path.split(os.sep)[-1]
+        pkgname = Main.path.rsplit(os.sep, maxsplit=1)[-1]
         Mods.dir(Main.path, pkgname)
 
     @classmethod
