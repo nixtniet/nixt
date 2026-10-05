@@ -16,7 +16,7 @@ import urllib
 from nixt.default import Logger, RLock
 from nixt.defines import Cfg, Clients, Data, Disk, Fetcher, Format, JSONL
 from nixt.defines import Locater, Logging, Main, MD5, Message, Method, Object
-from nixt.defines import Pool, Repeater, Runner, Utils, Watcher, Workdir
+from nixt.defines import Pool, Repeater, Task, Utils, Watcher, Workdir
 from nixt.typings import ClassVar, Generator, List, TextIO, Union
 
 
@@ -57,7 +57,7 @@ class Feed(Data):
     "feed data"
 
 
-Feeds   = Generator[Feed, None, None]
+Feeds = Generator[Feed, None, None]
 
 
 class Rss(Data):
@@ -233,12 +233,12 @@ class Run:
             Disk.write(State, cls.statefn)
 
 
-class Fetching(Runner):
+class Fetching(Task):
 
     "teh fetcher"
 
     def __init__(self):
-        Runner.__init__(self)
+        Task.__init__(self)
 
     def doskip(self, errno: int) -> bool:
         "check whether to log."

@@ -15,7 +15,7 @@ import _thread
 
 from nixt.default import Event, Logger
 from nixt.defines import Broker, Buffer, Cfg, Commands, Disk, Main
-from nixt.defines import Message, Mods, Method, Object, Thread
+from nixt.defines import Message, Mods, Method, Object, Threading
 from nixt.typings import Any, ClassVar, List
 
 
@@ -518,8 +518,8 @@ class IRC(Buffer):
         self.msgs.ready.clear()
         Buffer.start(self)
         if not self.state.keeprunning:
-            Thread.launch(self.keep, daemon=daemon)
-        Thread.launch(
+            Threading.launch(self.keep, daemon=daemon)
+        Threading.launch(
             self.doconnect,
             self.cfg.server or "localhost",
             self.cfg.nick,

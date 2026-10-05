@@ -8,7 +8,7 @@ import os
 
 
 from .default import RLock
-from .runners import Runner
+from .tasking import Task
 from .typings import Any, ClassVar, List
 
 
@@ -16,15 +16,15 @@ class Pool:
 
     "multiple runners"
 
-    runners: ClassVar[List[Runner]] = []
-    clazz: type = Runner
+    runners: ClassVar[List[Task]] = []
+    clazz: type = Task
     lock: RLock = RLock()
     max = os.cpu_count()
     nrcpu = 1
     nrlast = 0
 
     @classmethod
-    def add(cls, runner: Runner) -> None:
+    def add(cls, runner: Task) -> None:
         "add a runner."
         cls.runners.append(runner)
 

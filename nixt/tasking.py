@@ -5,11 +5,11 @@
 
 
 from .looping import Loop
-from .threads import Thread
+from .threads import Threading
 from .typings import Any
 
 
-class Runner(Loop):
+class Task(Loop):
 
     "run job"
 
@@ -29,10 +29,10 @@ class Runner(Loop):
         "start callback loop."
         self.done.clear()
         self.stopped.clear()
-        Thread.launch(self.loop, daemon=daemon, name="Runner.loop")
+        Threading.launch(self.loop, daemon=daemon, name="Runner.loop")
 
 
 def __dir__():
     return (
-        'Runner',
+        'Task',
     )

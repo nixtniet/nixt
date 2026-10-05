@@ -11,7 +11,7 @@ from .default import Event, Queue
 from .display import Display
 from .engines import Engine
 from .message import Message
-from .threads import Thread
+from .threads import Threading
 
 
 class Output(Display):
@@ -46,7 +46,7 @@ class Output(Display):
     def start(self, daemon: bool = True) -> None:
         "start output loop."
         self.ostopped.clear()
-        Thread.launch(self.output, daemon=daemon)
+        Threading.launch(self.output, daemon=daemon)
 
     def stop(self) -> None:
         "stop output loop."

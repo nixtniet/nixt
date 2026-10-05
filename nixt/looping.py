@@ -9,7 +9,7 @@ import _thread
 
 from .default import Event, Queue
 from .message import Message
-from .threads import Thread
+from .threads import Threading
 from .typings import Union
 
 
@@ -53,7 +53,7 @@ class Loop:
         "start callback loop."
         self.done.clear()
         self.stopped.clear()
-        Thread.launch(self.loop, daemon=daemon)
+        Threading.launch(self.loop, daemon=daemon)
 
     def stop(self) -> None:
         "stop xallback loop."

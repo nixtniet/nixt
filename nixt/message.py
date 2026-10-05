@@ -6,13 +6,13 @@
 
 from .default import Event
 from .objects import Data
-from .threads import Task
+from .threads import Thread
 from .typings import List, Union
 
 
 Args   = List[str]
 Result = List[str]
-Thr    = Union[Task, None]
+Thr    = Union[Thread, None]
 
 
 class Message(Data):

@@ -24,9 +24,9 @@ from .parsers import Parser
 from .persist import Disk, Locater, Workdir
 from .pooling import Pool
 from .repeats import Repeater
-from .runners import Runner
 from .sources import MD5
-from .threads import Task, Thread
+from .tasking import Task
+from .threads import Thread, Threading
 from .utility import Time, Utils
 from .watcher import Watcher
 

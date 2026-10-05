@@ -19,7 +19,7 @@ Log     = Logger(__name__)
 TimeOut = Union[float, None]
 
 
-class Task(threading.Thread):
+class Thread(threading.Thread):
 
     "unit of thread"
 
@@ -27,7 +27,7 @@ class Task(threading.Thread):
 
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
-        self.name: str = kwargs.get("name", Thread.name(func) or "")
+        self.name: str = kwargs.get("name", self.name(func) or "")
         self.queue: Queue = Queue()
         self.result: Any = None
         self.sleep: float = 0.0
@@ -50,6 +50,20 @@ class Task(threading.Thread):
             _thread.interrupt_main()
             return None
 
+    def clsname(self, obj: Any) -> str:
+        "class name of an object."
+        if "__self__" in dir(obj):
+            return obj.__self__.__class__.__name__
+        return obj.__class__.__name_
+
+    def name(self, obj: Any) -> str:
+        "string of function/method."
+        if inspect.ismethod(obj):
+            return f"{self.clsname(obj)}.{obj.__name__}"
+        if inspect.isfunction(obj):
+            return repr(obj).split()[1]
+        return repr(obj)
+
     def run(self) -> None:
         "run function."
         func, args = self.queue.get()
@@ -64,35 +78,19 @@ class Task(threading.Thread):
             _thread.interrupt_main()
 
 
-class Thread:
+class Threading:
 
     "thread helper class"
 
     lock: RLock = RLock()
 
     @classmethod
-    def launch(cls, func: Callable, *args: Any, **kwargs: Any) -> Task:
+    def launch(cls, func: Callable, *args: Any, **kwargs: Any) -> Thread:
         "start a new thread running function with arguments."
         with cls.lock:
-            task = Task(func, *args, **kwargs)
-            task.start()
-            return task
-
-    @classmethod
-    def clsname(cls, obj: Any) -> str:
-        "class name of an object."
-        if "__self__" in dir(obj):
-            return obj.__self__.__class__.__name__
-        return obj.__class__.__name_
-
-    @classmethod
-    def name(cls, obj: Any) -> str:
-        "string of function/method."
-        if inspect.ismethod(obj):
-            return f"{cls.clsname(obj)}.{obj.__name__}"
-        if inspect.isfunction(obj):
-            return repr(obj).split()[1]
-        return repr(obj)
+            thr = Thread(func, *args, **kwargs)
+            thr.start()
+            return thr
 
 
 def __dir__():

@@ -8,7 +8,7 @@ import time
 
 
 from .default import Event
-from .threads import Thread
+from .threads import Threading
 from .typings import Any, Callable, ClassVar, Dict, List
 
 
@@ -44,13 +44,13 @@ class Repeater:
                 if cls.counter % slept != 0:
                     continue
                 for func, args, kwargs in arguments:
-                    Thread.launch(func, *args, **kwargs)
+                    Threading.launch(func, *args, **kwargs)
 
     @classmethod
     def start(cls, daemon: bool = True) -> None:
         "start callback loop."
         if not cls.stopped.is_set():
-            Thread.launch(cls.loop, daemon=daemon, name="Repeater.loop")
+            Threading.launch(cls.loop, daemon=daemon, name="Repeater.loop")
 
     @classmethod
     def stop(cls) -> None:
