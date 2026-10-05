@@ -10,7 +10,7 @@ from .typings import ClassVar
 
 class Format(Formatter):
 
-    "logging format."
+    "logging format"
 
     disable: ClassVar[bool] = False
     size: ClassVar[int] = 3
@@ -25,7 +25,7 @@ class Format(Formatter):
 
 class Logging:
 
-    "logging."
+    "log"
 
     datefmt: ClassVar[str] = "%H:%M:%S"
     format:  ClassVar[str] = "%(module)-3s %(message)s"

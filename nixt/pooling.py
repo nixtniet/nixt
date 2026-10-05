@@ -14,7 +14,7 @@ from .typings import Any, ClassVar, List
 
 class Pool:
 
-    "multiple runners."
+    "multiple runners"
 
     runners: ClassVar[List[Runner]] = []
     clazz: type = Runner

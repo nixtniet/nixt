@@ -11,7 +11,7 @@ from .typings import Any
 
 class Runner(Loop):
 
-    "run job."
+    "run job"
 
     def run(self, *args: Any, **kwargs: Any) -> Any:
         "fetch a feed."
