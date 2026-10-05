@@ -6,7 +6,7 @@
 
 from .brokers import Broker
 from .default import Event, RLock
-from .engines import Engine
+from .handler import Handler
 from .message import Message
 
 
@@ -49,12 +49,12 @@ class Display:
         self.raw(text)
 
 
-class Screen(Engine, Display):
+class Screen(Handler, Display):
 
     "display wit coupled handler."
 
     def __init__(self):
-        Engine.__init__(self)
+        Handler.__init__(self)
         Display.__init__(self)
 
     def raw(self, text: str) -> None:

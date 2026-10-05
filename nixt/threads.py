@@ -27,7 +27,7 @@ class Thread(threading.Thread):
 
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
-        self.name: str = kwargs.get("name", self.name(func) or "")
+        self.name: str = kwargs.get("name", self.getname(func) or "")
         self.queue: Queue = Queue()
         self.result: Any = None
         self.sleep: float = 0.0
@@ -56,7 +56,7 @@ class Thread(threading.Thread):
             return obj.__self__.__class__.__name__
         return obj.__class__.__name_
 
-    def name(self, obj: Any) -> str:
+    def getname(self, obj: Any) -> str:
         "string of function/method."
         if inspect.ismethod(obj):
             return f"{self.clsname(obj)}.{obj.__name__}"
@@ -95,6 +95,6 @@ class Threading:
 
 def __dir__():
     return (
-        'Task',
-        'Thread'
+        'Thread',
+        'Threading'
     )

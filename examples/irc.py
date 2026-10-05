@@ -477,7 +477,7 @@ class IRC(Buffer):
         self.state.keeprunning = False
         self.state.stopkeep = True
         self.stop()
-        Thread.launch(init)
+        Threading.launch(init)
 
     def rlog(self, txt):
         "log function that ignore ping/pong/etc."
@@ -624,7 +624,7 @@ def cb_privmsg(msg):
             msg.text = msg.text[0].lower() + msg.text[1:]
         if msg.text:
             name = msg.text and msg.text.split()[0]
-            Thread.launch(Commands.command, msg, name=name)
+            Threading.launch(Commands.command, msg, name=name)
 
 
 def cb_quit(msg):

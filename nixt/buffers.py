@@ -9,7 +9,7 @@ import _thread
 
 from .default import Event, Queue
 from .display import Display
-from .engines import Engine
+from .handler import Handler
 from .message import Message
 from .threads import Threading
 
@@ -61,12 +61,12 @@ class Output(Display):
             _thread.interrupt_main()
 
 
-class Buffer(Engine, Output):
+class Buffer(Handler, Output):
 
     "buffered output"
 
     def __init__(self):
-        Engine.__init__(self)
+        Handler.__init__(self)
         Output.__init__(self)
 
     def raw(self, text: str) -> None:
@@ -75,12 +75,12 @@ class Buffer(Engine, Output):
 
     def start(self, daemon: bool = True) -> None:
         "start output loop."
-        Engine.start(self)
+        Handler.start(self)
         Output.start(self, daemon=daemon)
 
     def stop(self) -> None:
         "stop output loop."
-        Engine.stop(self)
+        Handler.stop(self)
         Output.stop(self)
 
 

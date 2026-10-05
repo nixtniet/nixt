@@ -10,7 +10,7 @@ import unittest
 from typing import List
 
 
-from nixt.threads import Task, Thread
+from nixt.threads import Thread, Threading
 
 
 buffer: List[str] = []
@@ -21,21 +21,21 @@ def test():
     buffer.append("test")
 
 
-class TestTask(unittest.TestCase):
+class TestThread(unittest.TestCase):
 
     "thr unittests"
 
     def test_construct(self):
         "test thr construction." 
-        task = Task(test)
-        self.assertTrue(type(task), Task)
+        thr = Thread(test)
+        self.assertTrue(type(thr), Thread)
 
 
-class TestThread(unittest.TestCase):
+class TestThreading(unittest.TestCase):
 
     "thread unittests"
 
     def test_construct(self):
         "test thread construction."
-        thr = Thread()
-        self.assertTrue(type(thr), Thread)
+        thr = Threading()
+        self.assertTrue(type(thr), Threading)

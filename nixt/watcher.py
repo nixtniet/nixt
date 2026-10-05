@@ -9,7 +9,7 @@ import time
 
 
 from .default import Event
-from .threads import Thread
+from .threads import Threading
 from .typings import Callable, ClassVar, Dict, Union
 
 
@@ -64,7 +64,7 @@ class Watcher:
         "start callback loop."
         if not cls.stopped.is_set():
             return
-        Thread.launch(cls.loop, daemon=daemon)
+        Threading.launch(cls.loop, daemon=daemon)
 
     @classmethod
     def stop(cls):

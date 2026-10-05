@@ -13,7 +13,7 @@ from .typings import Callable, Dict
 Callables = Dict[str, Callable]
 
 
-class Engine(Loop):
+class Handler(Loop):
 
     "run callbacks"
 
@@ -37,5 +37,5 @@ class Engine(Loop):
 
 def __dir__():
     return (
-        'Engine',
+        'Handler',
     )

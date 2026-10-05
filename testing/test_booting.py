@@ -8,7 +8,7 @@
 import unittest
 
 
-from nixt.defines import Boot, Thread
+from nixt.defines import Boot, Threading
 
 
 class TestRuntime(unittest.TestCase):
@@ -33,7 +33,7 @@ class TestRuntime(unittest.TestCase):
 
     def test_forever(self):
         "test main loop."
-        thr = Thread.launch(self.boot.forever)
+        thr = Threading.launch(self.boot.forever)
         self.boot.running.clear()
         thr.join()
         self.assertEqual(self.boot.stopped.is_set(), True)
@@ -44,7 +44,7 @@ class TestRuntime(unittest.TestCase):
 
     def test_shutdown(self):
         "test shutdown/"
-        thr = Thread.launch(self.boot.shutdown, False)
+        thr = Threading.launch(self.boot.shutdown, False)
         thr.join()
         self.assertTrue(self.boot.stopped.is_set())
 

@@ -10,7 +10,7 @@ import unittest
 from typing import List
 
 
-from nixt.defines import Message, Engine
+from nixt.defines import Handler, Message
 
 
 buffer: List[str] = []
@@ -22,11 +22,11 @@ def hello(message):
     message.ready()
 
 
-class TestEngine(unittest.TestCase):
+class TestHandler(unittest.TestCase):
 
     "unittest to test the callback engine"
 
-    hdl = Engine()
+    hdl = Handler()
 
     def setUp(self): # pylint: disable=C0103
         "setup engine."
@@ -66,7 +66,7 @@ class TestEngine(unittest.TestCase):
 
     def test_put(self):
         "test push/get from queue."
-        hdl = Engine()
+        hdl = Handler()
         msg = Message()
         msg.kind = "hello"
         hdl.put(msg)
@@ -80,7 +80,7 @@ class TestEngine(unittest.TestCase):
 
     def test_start(self):
         "test engine start."
-        hdl = Engine()
+        hdl = Handler()
         hdl.start()
         self.assertTrue(not hdl.stopped.is_set())
 

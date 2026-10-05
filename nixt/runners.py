@@ -9,9 +9,9 @@ from .threads import Threading
 from .typings import Any
 
 
-class Task(Loop):
+class Runner(Loop):
 
-    "run job"
+    "run jobs"
 
     def run(self, *args: Any, **kwargs: Any) -> Any:
         "fetch a feed."
@@ -34,5 +34,5 @@ class Task(Loop):
 
 def __dir__():
     return (
-        'Task',
+        'Runner',
     )

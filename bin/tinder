@@ -17,7 +17,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Boot, Commands, Main, MD5, Message, Method, Mods
-from nixt.defines import Parser, Pool, Screen, Thread, Time, Workdir
+from nixt.defines import Parser, Pool, Screen, Threading, Time, Workdir
 
 
 Workdir.wdr = ".test"
@@ -130,11 +130,11 @@ def main():
     nrs = Main.index or 1
     thrs = []
     for _x in range(nrs):
-        thrs.append(Thread.launch(payload, pre))
+        thrs.append(Threading.launch(payload, pre))
     for _x in range(nrs):
-        thrs.append(Thread.launch(payload, examples))
+        thrs.append(Threading.launch(payload, examples))
     for _x in range(nrs):
-        thrs.append(Thread.launch(payload, post))
+        thrs.append(Threading.launch(payload, post))
     for thr in thrs:
         thr.join()
     Kernel.shutdown()
