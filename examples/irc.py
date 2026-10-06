@@ -515,13 +515,7 @@ class IRC(Buffer):
         Buffer.start(self)
         if not self.state.keeprunning:
             Threading.launch(self.keep, daemon=daemon)
-        Threading.launch(
-            self.doconnect,
-            self.cfg.server or "localhost",
-            self.cfg.nick,
-            int(self.cfg.port) or 6667,
-            daemon=daemon
-        )
+        Threading.launch(self.doconnect)
 
     def stop(self):
         "stop client."

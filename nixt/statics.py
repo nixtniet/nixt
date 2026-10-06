@@ -27,7 +27,7 @@ CORE: Hash = {
     "message": "7cc5255ed84908310753a8d305831f61",
     "methods": "4a5d87f4d70f5335f58f8ef60720635a",
     "objects": "e7d8664b921306546ac5df9bf30c9b65",
-    "package": "f8613faac495a1e2b4b4457fb3214e41",
+    "package": "855a1716ed970848ef4cd035d26dac74",
     "parsers": "1b032844c15e7f61d8ea4bc5d8864d8d",
     "persist": "6deceebeb0702f57bfbd9d0eaf1cd775",
     "pooling": "f4323daad55e86892317acb7abcbda7d",
