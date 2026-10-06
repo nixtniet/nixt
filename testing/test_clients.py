@@ -44,7 +44,7 @@ class TestClient(unittest.TestCase):
         self.clt.silent = False
         self.clt.start()
 
-    def shutDown(self): # pylint: disable=C0103
+    def shutDown(self):
         "shutdown client"
         self.clt.stop()
 

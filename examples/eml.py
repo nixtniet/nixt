@@ -88,7 +88,7 @@ def mbx(msg):
             tmp = Data()
             Method.update(tmp, mail)
             obj = Email()
-            Method.update(obj, tmp._headers)
+            Method.update(obj, tmp._headers) # pylint: disable=W0212
             for payload in mail.walk():
                 if payload.get_content_type() == 'text/plain':
                     load =  payload.get_payload()

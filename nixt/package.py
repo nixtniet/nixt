@@ -73,7 +73,7 @@ class Mods:
     @classmethod
     def importer(cls, name: str, pth: str = "") -> Module:
         "import module by path."
-        import importlib.util # pylint: disable=C0415
+        import importlib.util
         spec = importlib.util.spec_from_file_location(name, pth)
         if not spec or not spec.loader:
             return None
@@ -105,12 +105,12 @@ class Mods:
     def statics(cls) -> None:
         "read table,"
         try:
-            from .statics import CORE # pylint: disable=C0415
+            from .statics import CORE
             cls.core.update(CORE)
         except (ImportError, SyntaxError, ValueError):
             pass
         try:
-            from .statics import MODULES # pylint: disable=C0415
+            from .statics import MODULES
             cls.md5s.update(MODULES)
         except (ImportError, SyntaxError, ValueError):
             pass

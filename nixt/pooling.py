@@ -31,10 +31,7 @@ class Pool:
     @classmethod
     def busy(cls) -> bool:
         "see if pool is busy."
-        for runner in cls.runners:
-            if runner.queue.qsize():
-                return True
-        return False
+        return any(runner.queue.qsize() for runner in cls.runners)
 
     @classmethod
     def init(cls, nrs: int, clz: Any = None) -> None:

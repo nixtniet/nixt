@@ -65,6 +65,7 @@ class Fetcher:
         try:
             Method.update(response, cls.request(req))
         except Exception as ex:
+            # pylint: disable=E1101
             response.data = b""
             if "reason" in dir(ex):
                 response.reason = ex.reason # type: ignore

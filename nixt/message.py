@@ -21,8 +21,8 @@ class Message(Data):
 
     def __init__(self):
         super().__init__()
-        self._ready: Event = Event()
-        self._thr: Thr = None
+        self.__ready__: Event = Event()
+        self.__thr__: Thr = None
         self.args: Args = []
         self.cmd: str = ""
         self.index: int = 0
@@ -42,7 +42,7 @@ class Message(Data):
 
     def ready(self) -> None:
         "flag msg as ready."
-        self._ready.set()
+        self.__ready__.set()
 
     def reply(self, text: str) -> None:
         "add text to result."
@@ -50,9 +50,9 @@ class Message(Data):
 
     def wait(self, timeout: float = 0.0) -> None:
         "wait for completion."
-        self._ready.wait(timeout or None)
-        if self._thr:
-            self._thr.join(timeout or None)
+        self.__ready__.wait(timeout or None)
+        if self.__thr__:
+            self.__thr__.join(timeout or None)
 
 
 def __dir__():

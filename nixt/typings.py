@@ -4,28 +4,28 @@
 "default imports"
 
 
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Generator, Iterator
 from types           import ModuleType, MappingProxyType
-from typing          import Any, ClassVar, Dict, Generator, List, Set, TextIO
+from typing          import Any, ClassVar, Dict, List, Set, TextIO
 from typing          import Tuple, Union
 
 
 def __dir__():
-    return (
-        'Any',
-        'Callable',
-        'ClassVar',
-        'Dict',
-        'Generator',
-        'Iterator',
-        'List',
-        'MappingProxyType',
-        'ModuleType',
-        'Set',
-        'TextIO',
-        'Tuple',
-        'Union'
-    )
+    return __all__
 
 
-__all__ = __dir__()
+__all__ = (
+    'Any',
+    'Callable',
+    'ClassVar',
+    'Dict',
+    'Generator',
+    'Iterator',
+    'List',
+    'MappingProxyType',
+    'ModuleType',
+    'Set',
+    'TextIO',
+    'Tuple',
+    'Union'
+)

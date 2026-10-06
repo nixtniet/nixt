@@ -17,8 +17,8 @@ class TestMessage(unittest.TestCase):
     def test_ready(self):
         "test flagging a message ready."
         msg = Message()
-        msg.ready()  # pylint: disable=E1102
-        self.assertTrue(msg._ready.is_set())
+        msg.ready()
+        self.assertTrue(msg.__ready__.is_set())
 
     def test_reply(self):
         "test replying to a message."
@@ -29,6 +29,6 @@ class TestMessage(unittest.TestCase):
     def test_wait(self):
         "test waiting for a message to complete."
         msg = Message()
-        msg.ready() # pylint: disable=E1102
+        msg.ready()
         msg.wait()
-        self.assertTrue(msg._ready.is_set())
+        self.assertTrue(msg.__ready__.is_set())

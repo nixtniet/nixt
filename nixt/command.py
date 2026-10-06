@@ -92,7 +92,7 @@ class Commands:
     def statics(cls) -> None:
         "read table,"
         try:
-            from .statics import NAMES # pylint: disable=C0415
+            from .statics import NAMES
             cls.names.update(NAMES)
         except (ImportError, SyntaxError, ValueError):
             pass

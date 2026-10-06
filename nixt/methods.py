@@ -139,10 +139,7 @@ class Method:
     @classmethod
     def isempty(cls, obj: Any) -> bool:
         "check if all keys heve empty value."
-        for key in cls.keys(obj):
-            if cls.get(obj, key):
-                return False
-        return True
+        return all(not cls.get(obj, key) for key in cls.keys(obj))
 
     @classmethod
     def items(cls, obj: Any) -> Items:

@@ -77,7 +77,6 @@ class TestMethod(unittest.TestCase):
     def test_init(self):
         "test object construction."
         obj = Mine()
-        Object.__init__(obj)
         self.assertTrue(type(obj), Mine)
 
     def test_iter(self):

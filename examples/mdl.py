@@ -116,15 +116,12 @@ def seconds(nrs):
 
 def iswanted(k, line):
     "see whether a key is in a line of text."
-    for word in line:
-        if word in k:
-            return True
-    return False
+    return any(word in k for word in line)
 
 
 def daily():
     "run daily."
-    while 1:
+    while True:
         time.sleep(24*60*60)
         msg = Message()
         cb_now(msg)
@@ -132,7 +129,7 @@ def daily():
 
 def hourly():
     "run hourly."
-    while 1:
+    while True:
         time.sleep(60*60)
         msg = Message()
         cb_now(msg)
@@ -293,7 +290,7 @@ oor = """"Totaal onderliggende doodsoorzaken (aantal)";
          "17 Uitwendige doodsoorzaken/17.5 Overige uitwendige doodsoorzaken (aantal)";
          "18 COVID-19 (Coronavirus ziekte 19)/18 Totaal COVID-19 (Coronavirus 19) (aantal)";
          "18 COVID-19 (Coronavirus ziekte 19)/18.1 Vastgestelde COVID-19 (aantal)";
-         "18 COVID-19 (Coronavirus ziekte 19)/18.2 Vermoedelijke COVID-19 (aantal)""".split(";")
+         "18 COVID-19 (Coronavirus ziekte 19)/18.2 Vermoedelijke COVID-19 (aantal)""".split(";") # noqa: SIM905
 
 
 aantal = """
@@ -392,7 +389,7 @@ aantal = """
           20173;
           17495;
           2678
-         """.split(";")
+         """.split(";") # noqa: SIM905
 
 
 oorzaak = Data()

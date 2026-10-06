@@ -28,7 +28,7 @@ class Handler(Loop):
             msg.ready()
             return
         name = msg.text and msg.text.split()[0]
-        msg._thr = Threading.launch(func, msg, name=name)
+        msg.__thr__ = Threading.launch(func, msg, name=name)
 
     def register(self, kind: str, callback: Callable) -> None:
         "register callback."

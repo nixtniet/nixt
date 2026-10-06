@@ -5,7 +5,6 @@
 
 
 import gc
-import logging
 import logging.handlers
 import os
 import pathlib
@@ -416,7 +415,7 @@ def atr(msg: Message):
     if not msg.rest:
         msg.iface("<stringinurl>")
         return
-    for _fnm, obj in Locater.find(Method.fqn(Rss), {'rss': msg.rest}):
+    for obj in Locater.objects(Method.fqn(Rss), {'rss': msg.rest}):
         request = Fetcher.geturl(obj.rss)
         if not request:
             continue
@@ -456,7 +455,7 @@ def exp(msg: Message):
     "export opml."
     with Locks.importlock:
         msg.reply(TEMPLATE)
-        for nrs, fnm, ooo in enumerate(Locater.find(Method.fqn(OPML))): # type: ignore
+        for nrs, ooo in enumerate(Locater.objects(Method.fqn(OPML))): # type: ignore
             obj = Rss()
             Method.update(obj, ooo)
             name = f"url{nrs}"
@@ -585,10 +584,7 @@ def rss(msg: Message):
     if "http://" not in url and "https://" not in url:
         msg.reply("i need an url")
         return
-    for fnm, result in Locater.find(
-                                   Method.fqn(Rss),
-                                   {"rss": url}
-                                  ):
+    for result in Locater.objects(Method.fqn(Rss), {"rss": url}):
         if result:
             msg.reply(f"{url} is known")
             return

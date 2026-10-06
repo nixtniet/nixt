@@ -15,22 +15,22 @@ from _thread   import LockType, allocate_lock
 
 
 def __dir__():
-    return (
-        'SUPPRESS',
-        'ArgumentParser',
-        'Event',
-        'Formatter',
-        'LockType',
-        'Logger',
-        'LogRecord',
-        'Queue',
-        'RawFormat',
-        'RLock',
-        'StreamHandler',
-        'Random',
-        'allocate_lock',
-        'basicConfig'
-    )
+    return __all__
 
 
-__all__ = __dir__()
+__all__ = (
+    'SUPPRESS',
+    'ArgumentParser',
+    'Event',
+    'Formatter',
+    'LockType',
+    'LogRecord',
+    'Logger',
+    'Queue',
+    'RLock',
+    'Random',
+    'RawFormat',
+    'StreamHandler',
+    'allocate_lock',
+    'basicConfig'
+)

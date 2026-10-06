@@ -207,9 +207,23 @@ class Locater:
         return res
 
     @classmethod
+    def objects(cls,
+                kind: str,
+                selector: Selector = None,
+                removed: bool = False,
+                matching: bool = False,
+                nritems: int = 0) -> Generator[Any, None, None]:
+        "return objects by matching atributes."
+        yield from [x[1] for x in cls.find(kind,
+                                           selector,
+                                           removed,
+                                           matching,
+                                           nritems)]
+
+    @classmethod
     def strip(cls, path: str) -> str:
         "strip filename from path."
-        return path.split('store')[-1][1:]
+        return path.rsplit('store', maxsplit=1)[-1][1:]
 
 
 class Workdir:
@@ -243,7 +257,7 @@ class Workdir:
         "expand to fqn."
         if "." in name:
             return name
-        split = name.split(".")[-1].lower()
+        split = name.rsplit(".", maxsplit=1)[-1].lower()
         res = name
         for names in cls.kinds():
             if split == names.split(".")[-1].lower():

@@ -54,7 +54,7 @@ class Thread(threading.Thread):
         "class name of an object."
         if "__self__" in dir(obj):
             return obj.__self__.__class__.__name__
-        return obj.__class__.__name_
+        return obj.__class__.__name__
 
     def getname(self, obj: Any) -> str:
         "string of function/method."

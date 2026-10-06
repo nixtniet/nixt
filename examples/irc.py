@@ -232,16 +232,16 @@ class IRC(Buffer):
                 self.raw(f"{cmd.upper()} {args[0]} :{txt}")
             elif len(args) >= 3:
                 txt = " ".join(args[2:])
-                self.raw("{cmd.upper()} {args[0]} {args[1]} :{txt}")
+                self.raw(f"{cmd.upper()} {args[0]} {args[1]} :{txt}")
             if (time.time() - self.state.last) < 5.0:
                 time.sleep(5.0)
             self.state.last = time.time()
 
-    def doconnect(self, server, nck, port=6667):
+    def doconnect(self):
         "loop until connected."
-        while 1:
+        while True:
             try:
-                if self.connect(server, port):
+                if self.connect(self.cfg.server, self.cfg.port):
                     self.logon(self.cfg.server, self.cfg.nick)
                     self.msgs.joined.wait(45.0)
                     if not self.msgs.joined.is_set():
@@ -253,8 +253,6 @@ class IRC(Buffer):
                 _thread.interrupt_main()
             except (
                     TimeoutError,
-                    socket.error,
-                    socket.timeout,
                     ssl.SSLError,
                     OSError,
                     ConnectionResetError
@@ -315,7 +313,7 @@ class IRC(Buffer):
             self.msgs.authed.wait()
             self.state.keeprunning = True
             self.state.latest = time.time()
-            for x in range(self.cfg.sleep*10):
+            for _x in range(self.cfg.sleep*10):
                 time.sleep(0.1)
                 if self.stopped.is_set():
                     break
@@ -397,7 +395,6 @@ class IRC(Buffer):
             except (
                 TimeoutError,
                 OSError,
-                socket.timeout,
                 ssl.SSLError,
                 ssl.SSLZeroReturnError,
                 ConnectionResetError,
@@ -427,7 +424,7 @@ class IRC(Buffer):
             obj.args = splitted[1:]
         if obj.args:
             obj.rest = " ".join(obj.args)
-        obj.orig = object.__repr__(self)
+        obj.orig = repr(self)
         obj.text = obj.text.strip()
         obj.kind = obj.command
         return obj
@@ -449,7 +446,6 @@ class IRC(Buffer):
                 ssl.SSLZeroReturnError,
                 ConnectionResetError,
                 BrokenPipeError,
-                socket.timeout
             ) as ex:
                 Log.debug("%s", str(type(ex)) + " " + str(ex))
                 self.msgs.joined.set()
@@ -467,7 +463,7 @@ class IRC(Buffer):
         self.disconnect()
         self.msgs.connected.clear()
         self.msgs.joined.clear()
-        self.doconnect(self.cfg.server, self.cfg.nick, int(self.cfg.port))
+        self.doconnect()
 
     def restart(self):
         "restart client."
@@ -642,7 +638,7 @@ def pwd(msg):
     if len(msg.args) != 2:
         msg.iface("<nick> <password>")
         return
-    import base64 # pylint: disable=C0415
+    import base64
     arg1 = msg.args[0]
     arg2 = msg.args[1]
     txt = f"\x00{arg1}\x00{arg2}"

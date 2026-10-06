@@ -53,7 +53,7 @@ class TestHandler(unittest.TestCase):
         msg.text = "hello"
         self.hdl.put(msg)
         msg.wait()
-        self.assertTrue(msg._ready.is_set())
+        self.assertTrue(msg.__ready__.is_set())
 
     def test_loop2(self):
         "test whether result is being set."    

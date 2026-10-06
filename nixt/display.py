@@ -15,6 +15,7 @@ class Display:
     "unit of display"
 
     block: Event = Event()
+    last: str = ""
 
     def __init__(self):
         self.olock: RLock = RLock()
@@ -46,6 +47,7 @@ class Display:
 
     def say(self, channel: str, text: str) -> None:
         "say text in channel."
+        self.last = channel
         self.raw(text)
 
 

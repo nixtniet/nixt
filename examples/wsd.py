@@ -1,12 +1,11 @@
 # This file is placed in the Public Domain.
-# pylint: disable=C0103
 
 
 "wisdom"
 
 
 from nixt.default import Logger, Random
-from nixt.defines import Clients, Disk, Locater, Message, Repeater
+from nixt.defines import Clients, Disk, Locater, Repeater
 from nixt.typings import List
 
 
@@ -17,8 +16,7 @@ Rand = Random()
 def init():
     "start wisdom service."
     state.load()
-    msg = Message()
-    Repeater.add(3600,  wsd, msg)
+    Repeater.add(3600,  cb_wsd)
     Log.info("%s wise", len(TXTLIST))
 
 
@@ -45,10 +43,10 @@ class State:
 state = State()
 
 
-def wsd(msg):
-    "show a wisdom quote."
+def get_msg():
+    "choose message."
     txt = ""
-    for nrs in range(len(TXTLIST)):
+    for _nrs in range(len(TXTLIST)):
         txt = Rand.choice(TXTLIST)
         if txt in state.seen:
             continue
@@ -58,7 +56,16 @@ def wsd(msg):
         state.seen = []
         txt = "* reset"
     state.dump()
-    Clients.announce(txt.strip()[2:])
+    return txt.strip()[2:]
+
+def cb_wsd():
+    "show a wisdom quote."
+    Clients.announce(get_msg())
+
+
+def wsd(msg):
+    "show a wisdom quote."
+    msg.reply(get_msg())
 
 
 TXT = """| wijsheid, wijs !
