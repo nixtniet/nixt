@@ -13,10 +13,10 @@ import _thread
 from .brokers import Broker
 from .configs import Main
 from .default import Event, Logger
-from .display import Screen
 from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
+from .screens import Screen
 from .threads import Thread, Threading
 from .typings import Callable
 from .utility import Utils

@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.display import Display, Screen
+from nixt.display import Display
 
 
 class TestDisplay(unittest.TestCase):
@@ -18,13 +18,3 @@ class TestDisplay(unittest.TestCase):
         "test display contruction."
         display = Display()
         self.assertTrue(type(display), Display)
-
-
-class TestScreen(unittest.TestCase):
-
-    "screen unittest"
-
-    def test_construct(self):
-        "test screen construction."
-        screen = Screen()
-        self.assertTrue(type(screen), Screen)
