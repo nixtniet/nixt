@@ -16,5 +16,5 @@ class TestLocater(unittest.TestCase):
 
     def test_construct(self):
         "test locater construction."
-        lct = Locater()
-        self.assertTrue(lct)
+        locater = Locater()
+        self.assertTrue(locater)
