@@ -17,7 +17,7 @@ from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
 from .screens import Screen
-from .threads import Thread, Threading
+from .tasking import Task, Worker
 from .typings import Callable
 from .utility import Utils
 
@@ -62,7 +62,7 @@ class Boot:
             mod = Mods.get(name)
             if not mod or "init" not in dir(mod):
                 continue
-            thrs.append(Threading.launch(mod.init))
+            thrs.append(Task.start(mod.init))
         if thrs and wait:
             for thr in thrs:
                 try:
@@ -103,7 +103,7 @@ class Boot:
             func(*args)
         except (KeyboardInterrupt, EOFError):
             Screen.block.set()
-            Thread.block.set()
+            Worker.block.set()
             _thread.interrupt_main()
         except Exception as ex:
             Log.exception(ex)

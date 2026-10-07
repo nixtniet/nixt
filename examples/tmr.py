@@ -9,7 +9,7 @@ import time
 
 
 from nixt.default import Logger, Random
-from nixt.defines import Broker, Disk, Locater, Method, Object, Threading, Time
+from nixt.defines import Broker, Disk, Locater, Method, Object, Task, Time
 
 
 Log = Logger(__name__)
@@ -63,7 +63,7 @@ class TimerLoop:
             remove = []
             for tme, args in Method.items(cls.timers):
                 if float(tme) < timed:
-                    Threading.launch(cls.run, args)
+                    Task.start(cls.run, args)
                     remove.append(tme)
             for tme in remove:
                 cls.dosave = True
@@ -83,7 +83,7 @@ class TimerLoop:
         "start timers."
         cls.path = Locater.first(cls.timers) or Disk.ident(cls.timers)
         cls.running.set()
-        Threading.launch(cls.loop, name="Timers.loop")
+        Task.start(cls.loop, name="Timers.loop")
 
     @classmethod
     def stop(cls):

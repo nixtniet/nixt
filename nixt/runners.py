@@ -5,7 +5,7 @@
 
 
 from .looping import Loop
-from .threads import Threading
+from .tasking import Task
 from .typings import Any
 
 
@@ -29,7 +29,7 @@ class Runner(Loop):
         "start callback loop."
         self.done.clear()
         self.stopped.clear()
-        Threading.launch(self.loop, daemon=daemon, name="Runner.loop")
+        Task.start(self.loop, daemon=daemon, name="Runner.loop")
 
 
 def __dir__():

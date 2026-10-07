@@ -5,12 +5,11 @@
 
 
 import inspect
-import threading
 import time
 import _thread
 
 
-from .default import Event, Logger, Queue, RLock
+from .default import Event, Logger, Queue, RLock, Thread
 from .typings import Any, Callable, ClassVar, Dict, Union
 
 
@@ -19,7 +18,7 @@ Log     = Logger(__name__)
 TimeOut = Union[float, None]
 
 
-class Thread(threading.Thread):
+class Worker(Thread):
 
     "unit of thread"
 
@@ -78,23 +77,23 @@ class Thread(threading.Thread):
             _thread.interrupt_main()
 
 
-class Threading:
+class Task:
 
-    "thread helper class"
+    "start a task"
 
-    lock: RLock = RLock()
+    lock: ClassVar[RLock] = RLock()
 
     @classmethod
-    def launch(cls, func: Callable, *args: Any, **kwargs: Any) -> Thread:
+    def start(cls, func: Callable, *args: Any, **kwargs: Any) -> Worker:
         "start a new thread running function with arguments."
         with cls.lock:
-            thr = Thread(func, *args, **kwargs)
-            thr.start()
-            return thr
+            worker = Worker(func, *args, **kwargs)
+            worker.start()
+            return worker
 
 
 def __dir__():
     return (
-        'Thread',
-        'Threading'
+        'Task',
+        'Worker'
     )

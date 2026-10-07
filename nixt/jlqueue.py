@@ -1,4 +1,4 @@
 # This file is placed in the Public Domain.
 
 
-"file queues"
+"json line queue"

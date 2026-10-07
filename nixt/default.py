@@ -10,7 +10,7 @@ from logging   import basicConfig, Formatter, LogRecord, StreamHandler
 from logging   import getLogger as Logger
 from queue     import Queue
 from random    import SystemRandom as Random
-from threading import Event, RLock
+from threading import Event, RLock, Thread
 from _thread   import LockType, allocate_lock
 
 
@@ -27,6 +27,7 @@ __all__ = (
     'Random',
     'RawFormat',
     'StreamHandler',
+    'Thread',
     'allocate_lock',
     'basicConfig'
 )

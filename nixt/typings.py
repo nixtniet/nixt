@@ -6,7 +6,7 @@
 
 from collections.abc import Callable, Generator, Iterator
 from types           import ModuleType, MappingProxyType
-from typing          import Any, ClassVar, Dict, List, Set, TextIO
+from typing          import Any, ClassVar, Dict, List, Self, Set, TextIO
 from typing          import Tuple, Union
 
 
@@ -20,6 +20,7 @@ __all__ = (
     'List',
     'MappingProxyType',
     'ModuleType',
+    'Self',
     'Set',
     'TextIO',
     'Tuple',

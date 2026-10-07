@@ -6,7 +6,7 @@
 
 from .looping import Loop
 from .message import Message
-from .threads import Threading
+from .tasking import Task
 from .typings import Callable, Dict
 
 
@@ -28,7 +28,7 @@ class Handler(Loop):
             msg.ready()
             return
         name = msg.text and msg.text.split()[0]
-        msg.__thr__ = Threading.launch(func, msg, name=name)
+        msg.__thr__ = Task.start(func, msg, name=name)
 
     def register(self, kind: str, callback: Callable) -> None:
         "register callback."

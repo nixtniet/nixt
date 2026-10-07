@@ -29,7 +29,7 @@ from .repeats import Repeater
 from .runners import Runner
 from .screens import Screen
 from .sources import MD5
-from .threads import Thread, Threading
+from .tasking import Task, Worker
 from .timings import Time
 from .utility import Utils
 from .watcher import Watcher
@@ -66,12 +66,12 @@ __all__ = (
     'Repeater',
     'Runner',
     'Screen',
-    'Thread',
-    'Threading',
+    'Task',
     'Time',
     'Utils',
     'Watcher',
-    'Workdir'
+    'Workdir',
+    'Worker'
     )
 
 
