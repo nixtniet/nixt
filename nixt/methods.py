@@ -63,10 +63,12 @@ class Method:
         return "__deleted__" in dir(obj) and obj.__deleted__
 
     @classmethod
-    def edit(cls,
-             obj: Any,
-             setter: Union[Dict[str, str], None] = None,
-             skip: bool = False) -> None:
+    def edit(
+        cls,
+        obj: Any,
+        setter: Union[Dict[str, str], None] = None,
+        skip: bool = False
+        ) -> None:
         "update object with dict."
         if setter is None:
             setter = {}

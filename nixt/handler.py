@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"callback engine"
+"message handler"
 
 
 from .looping import Loop

@@ -18,6 +18,7 @@ class Mine(Object):
         Object.__init__(self)
         self.cmd = ""
 
+
 class TestParse(unittest.TestCase):
 
     "parsing unittests"

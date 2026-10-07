@@ -10,10 +10,6 @@ from typing          import Any, ClassVar, Dict, List, Set, TextIO
 from typing          import Tuple, Union
 
 
-def __dir__():
-    return __all__
-
-
 __all__ = (
     'Any',
     'Callable',
@@ -29,3 +25,7 @@ __all__ = (
     'Tuple',
     'Union'
 )
+
+
+def __dir__():
+    return __all__

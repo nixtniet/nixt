@@ -14,10 +14,6 @@ from threading import Event, RLock
 from _thread   import LockType, allocate_lock
 
 
-def __dir__():
-    return __all__
-
-
 __all__ = (
     'SUPPRESS',
     'ArgumentParser',
@@ -34,3 +30,7 @@ __all__ = (
     'allocate_lock',
     'basicConfig'
 )
+
+
+def __dir__():
+    return __all__
