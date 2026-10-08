@@ -4,7 +4,11 @@
 "usefullness"
 
 
-from .default import basicConfig, Formatter, LogRecord, StreamHandler
+import logging
+import logging.handlers
+
+
+from .default import basicConfig, Formatter, Logger, LogRecord, StreamHandler
 from .typings import ClassVar
 
 
@@ -30,6 +34,19 @@ class Logging:
     datefmt: ClassVar[str] = "%H:%M:%S"
     format:  ClassVar[str] = "%(module)-3s %(message)s"
     formats: ClassVar[str] = "%(message)s"
+
+    @classmethod
+    def enable(cls, path: str, logger: Logger) -> None:
+        "enabke module logger."
+        formatter = Format(Logging.formats, Logging.datefmt)
+        filehandler = logging.handlers.TimedRotatingFileHandler(path, 'midnight')
+        filehandler.setFormatter(formatter)
+        if logger.handlers:
+            for handler in logger.handlers:
+                logger.removeHandler(handler)
+        logger.addHandler(filehandler)
+        logger.propagate = False
+        logger.setLevel("DEBUG")
 
     @classmethod
     def level(cls, loglevel: str) -> None:

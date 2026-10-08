@@ -8,11 +8,11 @@ import threading
 import time
 
 
-from nixt.default import Logger, Random
+from nixt.default import getLogger, Random
 from nixt.defines import Broker, Disk, Locater, Method, Object, Task, Time
 
 
-Log = Logger(__name__)
+Log = getLogger(__name__)
 Rand = Random()
 
 

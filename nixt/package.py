@@ -7,14 +7,14 @@
 import os
 
 
-from .default import Logger
+from .default import getLogger
 from .methods import Method
 from .sources import MD5
 from .typings import ClassVar, Dict, List, ModuleType, Union
 from .utility import Utils
 
 
-Log     = Logger(__name__)
+Log     = getLogger(__name__)
 Module  = Union[ModuleType, None]
 Modules = Dict[str, ModuleType]
 Strings = Dict[str, str]

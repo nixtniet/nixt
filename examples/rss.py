@@ -12,7 +12,7 @@ import re
 import urllib
 
 
-from nixt.default import Logger, RLock
+from nixt.default import getLogger, RLock
 from nixt.defines import Cfg, Clients, Data, Disk, Fetcher, Format, JSONL
 from nixt.defines import Locater, Logging, Main, MD5, Message, Method, Object
 from nixt.defines import Pool, Repeater, Runner, Utils, Watcher, Workdir
@@ -20,7 +20,7 @@ from nixt.typings import ClassVar, Generator, List, TextIO, Union
 
 
 Dicts   = Generator[dict, None, None]
-Log     = Logger(__name__)
+Log     = getLogger(__name__)
 Strings = Generator[str, None, None]
 
 

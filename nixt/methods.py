@@ -247,7 +247,10 @@ class Method:
                     donext = True
             if donext:
                 continue
-            setattr(res, key, value)
+            if isinstance(res, dict):
+                res[key] = value
+            else:
+                setattr(res, key, value)
         return res
 
     @classmethod

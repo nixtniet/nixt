@@ -12,7 +12,7 @@ import _thread
 
 from .brokers import Broker
 from .configs import Main
-from .default import Event, Logger
+from .default import Event, getLogger
 from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
@@ -22,7 +22,7 @@ from .typings import Callable
 from .utility import Utils
 
 
-Log = Logger(__name__)
+Log = getLogger(__name__)
 
 
 class Boot:

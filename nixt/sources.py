@@ -7,12 +7,12 @@
 import os
 
 
-from .default import Logger
+from .default import getLogger
 from .typings import Dict, Union
 from .utility import Utils
 
 
-Log = Logger(__name__)
+Log = getLogger(__name__)
 
 
 class MD5:

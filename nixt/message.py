@@ -27,6 +27,9 @@ class Message(Data):
         self.result: List[str] = []
         self.text: str = ""
 
+    def __iter__(self):
+        return iter([x for x in self.__dict__ if not x.startswith("_")])
+
     def iface(self, text: str) -> None:
         "show interface."
         self.reply(f"{self.cmd} {text}")

@@ -13,13 +13,13 @@ import time
 import _thread
 
 
-from nixt.default import Event, Logger
+from nixt.default import Event, Queue, getLogger
 from nixt.defines import Broker, Buffer, Cfg, Commands, Disk, Main
 from nixt.defines import Message, Mods, Method, Object, Task
 from nixt.typings import Any, ClassVar, List
 
 
-Log = Logger(__name__)
+Log = getLogger(__name__)
 
 
 def init():
@@ -141,6 +141,7 @@ class IRC(Buffer):
         self.msgs = Events()
         self.lock = threading.RLock()
         self.noflood = True
+        self.queue = Queue()
         self.silent = False
         self.sock: Any = None
         self.state = State()

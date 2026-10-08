@@ -9,12 +9,12 @@ import time
 import _thread
 
 
-from .default import Event, Logger, Queue, RLock, Thread
+from .default import Event, getLogger, Queue, RLock, Thread
 from .typings import Any, Callable, ClassVar, Dict, Union
 
 
 Anys    = Dict[str, Any]
-Log     = Logger(__name__)
+Log     = getLogger(__name__)
 TimeOut = Union[float, None]
 
 

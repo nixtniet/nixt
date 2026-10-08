@@ -5,9 +5,11 @@
 
 
 import json
+import types
 
 
 from .default import RLock
+from .methods import Method
 from .typings import Any, MappingProxyType, Union
 
 
@@ -35,17 +37,19 @@ class Encoder(json.JSONEncoder):
                 return json.JSONEncoder.default(self, o)
             except TypeError:
                 try:
-                    return vars(o)
+                    return self.skip(vars(o))
                 except TypeError:
                     return repr(o)
 
     def skip(self, obj: Any) -> dict:
         "yield values without underscored keys."
         result = {}
-        for key in dir(obj):
+        for key, value in Method.items(obj):
             if key.startswith("_"):
                 continue
-            result[key] = getattr(obj, key)
+            if isinstance(value, types.MethodType):
+                continue
+            result[key] = value
         return result
 
 
@@ -81,24 +85,20 @@ class JSONL(JSON):
     "line oriented"
 
     @classmethod
-    def log(cls, *args, **kw) -> None:
+    def read(cls, fp, *args, **kw):
+        return cls.loads(fp, *args, **kw)
+
+    @classmethod
+    def write(cls, *args, **kw) -> None:
         "dump object to disk."
         kw["indent"] = None
         kw["skipkeys"] = True
+        kw["sort_keys"] = True
         cls.dump(*args, **kw)
+        args[1].write("\n")
+        args[1].flush()
 
-    @classmethod
-    def logtxt(cls, *args, **kw) -> str:
-        "dump object to string."
-        kw["indent"] = None
-        kw["skipkeys"] = True
-        cls.dumps(*args, **kw)
-
-    @classmethod
-    def read(cls, fp, *args, **kw):
-        return cls.loads(fp, *args, **kw)
  
-
 def __dir__():
     return (
         'JSON',

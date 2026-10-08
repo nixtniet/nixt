@@ -4,12 +4,12 @@
 "wisdom"
 
 
-from nixt.default import Logger, Random
+from nixt.default import getLogger, Random
 from nixt.defines import Clients, Disk, Locater, Repeater
 from nixt.typings import List
 
 
-Log = Logger(__name__)
+Log = getLogger(__name__)
 Rand = Random()
 
 

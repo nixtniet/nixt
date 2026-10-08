@@ -6,8 +6,8 @@
 
 from argparse  import SUPPRESS, ArgumentParser
 from argparse  import RawDescriptionHelpFormatter as RawFormat
-from logging   import basicConfig, Formatter, LogRecord, StreamHandler
-from logging   import getLogger as Logger
+from logging   import basicConfig, Formatter, Logger, LogRecord, StreamHandler
+from logging   import getLogger
 from queue     import Queue
 from random    import SystemRandom as Random
 from threading import Event, RLock, Thread
@@ -21,6 +21,7 @@ __all__ = (
     'Formatter',
     'LockType',
     'LogRecord',
+    'Logging',
     'Logger',
     'Queue',
     'RLock',
@@ -29,7 +30,8 @@ __all__ = (
     'StreamHandler',
     'Thread',
     'allocate_lock',
-    'basicConfig'
+    'basicConfig',
+    'getLogger'
 )
 
 

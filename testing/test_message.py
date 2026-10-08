@@ -7,12 +7,27 @@
 import unittest
 
 
-from nixt.defines import Message
+from nixt.defines import JSON, Message
+
+
+jsontxt = '''{"args": [], "cmd": "", "index": 0, "kind": "msg", "orig": "", "rest": "", "result": [], "text": "", "a": "b"}'''
 
 
 class TestMessage(unittest.TestCase):
 
     "message unittests"
+
+    def test_construct(self):
+        "test message construction."
+        msg = Message()
+        self.assertTrue(type(msg), Message)
+
+    def test_json(self):
+        "test message json dump."
+        msg = Message()
+        msg.a = "b"
+        txt = JSON.dumps(msg)
+        self.assertEqual(txt, jsontxt)
 
     def test_ready(self):
         "test flagging a message ready."

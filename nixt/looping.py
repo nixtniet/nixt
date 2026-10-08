@@ -20,8 +20,8 @@ class Loop:
     "keep looping"
 
     def __init__(self):
-        # self.queue: Queue = DQueue(Workdir.runpath("loop"))
-        self.queue = Queue()
+        self.queue: Queue = DQueue(Workdir.runpath("loop"))
+        # self.queue = Queue()
         self.stopped: Event = Event()
         self.done: Event = Event()
 
@@ -36,7 +36,6 @@ class Loop:
         while not self.stopped.is_set():
             self.poll()
             msg = self.queue.get()
-            print(msg)
             if msg is None:
                 self.queue.task_done()
                 break

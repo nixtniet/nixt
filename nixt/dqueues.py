@@ -10,8 +10,9 @@ import pathlib
 import time
 
 
-from .default import RLock, Logger
+from .default import RLock, getLogger
 from .encoder import Encoder, JSON, JSONL
+from .loggers import Logging
 from .message import Message
 from .methods import Method
 from .typings import List, TextIO, Union
@@ -19,7 +20,7 @@ from .utility import Utils
 
 
 IO = Union[TextIO, None]
-Log = Logger(__name__)
+Log = getLogger(__name__)
 
 
 class DQueue:
@@ -34,6 +35,7 @@ class DQueue:
         self.path: str = path
         Utils.cdir(self.path)
         pathlib.Path(self.path).touch()
+        Logging.enable(self.path, Log)
 
     def get(self) -> Message:
         "get message from disk."
@@ -60,7 +62,6 @@ class DQueue:
                     try:
                         Method.construct(msg, JSONL.read(line.strip()))
                     except json.decoder.JSONDecodeError as ex:
-                        Log.exception(ex)
                         del msg
                         continue
                     self.buffer.append(msg)
@@ -72,9 +73,11 @@ class DQueue:
         "put message to disk."
         with self.lock:
             with open(self.path, "a+", encoding="utf-8") as file:
-               skp = Method.skip(msg)
-               if skp:
-                   JSONL.log(skp, file)
+                JSONL.write(msg, file)
+
+    def qsize(self):
+        "return size."
+        return self.index
 
     def task_done(self):
         "dummy"
