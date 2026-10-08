@@ -13,6 +13,13 @@ from nixt.defines import JSON, Message
 jsontxt = '''{"args": [], "cmd": "", "index": 0, "kind": "msg", "orig": "", "rest": "", "result": [], "text": "", "a": "b"}'''
 
 
+class MyMessage(Message):
+
+    "stub"
+
+    a = ""
+
+
 class TestMessage(unittest.TestCase):
 
     "message unittests"
@@ -24,7 +31,7 @@ class TestMessage(unittest.TestCase):
 
     def test_json(self):
         "test message json dump."
-        msg = Message()
+        msg = MyMessage()
         msg.a = "b"
         txt = JSON.dumps(msg)
         self.assertEqual(txt, jsontxt)

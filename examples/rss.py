@@ -13,7 +13,7 @@ import urllib
 
 
 from nixt.default import getLogger, RLock
-from nixt.defines import Cfg, Clients, Data, Disk, Fetcher, Format, JSONL
+from nixt.defines import Cfg, Clients, Data, Disk, Fetcher, Format, JSON, JSONL
 from nixt.defines import Locater, Logging, Main, MD5, Message, Method, Object
 from nixt.defines import Pool, Repeater, Runner, Utils, Watcher, Workdir
 from nixt.typings import ClassVar, Generator, List, TextIO, Union
@@ -283,7 +283,7 @@ class Fetching(Runner):
                 continue
             Method.update(obj, feed)
             if Config.save:
-                Run.log(JSONL.logtxt(feed))
+                Run.log(JSON.dumps(feed))
             if not silent:
                 txt = Run.display(obj)
                 if not Run.got(txt, obj):

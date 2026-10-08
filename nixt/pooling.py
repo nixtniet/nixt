@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"collection of runners/clients"
+"runners/clients"
 
 
 import os

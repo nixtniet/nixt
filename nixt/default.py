@@ -6,6 +6,7 @@
 
 from argparse  import SUPPRESS, ArgumentParser
 from argparse  import RawDescriptionHelpFormatter as RawFormat
+from html      import unescape
 from logging   import basicConfig, Formatter, Logger, LogRecord, StreamHandler
 from logging   import getLogger
 from queue     import Queue
@@ -21,7 +22,6 @@ __all__ = (
     'Formatter',
     'LockType',
     'LogRecord',
-    'Logging',
     'Logger',
     'Queue',
     'RLock',
@@ -31,7 +31,8 @@ __all__ = (
     'Thread',
     'allocate_lock',
     'basicConfig',
-    'getLogger'
+    'getLogger',
+    'unescape'
 )
 
 

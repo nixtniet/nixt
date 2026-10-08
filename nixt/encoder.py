@@ -86,6 +86,7 @@ class JSONL(JSON):
 
     @classmethod
     def read(cls, fp, *args, **kw):
+        "read from file."
         return cls.loads(fp, *args, **kw)
 
     @classmethod
@@ -98,7 +99,7 @@ class JSONL(JSON):
         args[1].write("\n")
         args[1].flush()
 
- 
+
 def __dir__():
     return (
         'JSON',

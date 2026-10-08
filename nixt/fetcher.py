@@ -4,14 +4,11 @@
 "fetching feeds"
 
 
-import html
-import re
-
-
 from urllib.parse   import unquote, urlparse, urlunparse
 from urllib.request import Request, urlopen
 
 
+from .default import unescape
 from .methods import Method
 from .objects import Data
 from .typings import Any, ClassVar, Dict, Union
@@ -91,14 +88,16 @@ class Fetcher:
     @classmethod
     def striphtml(cls, text: str) -> str:
         "strip html."
+        import re
         clean = re.compile("<.*?>")
         return re.sub(clean, "", text)
 
     @classmethod
     def unescape(cls, text: str) -> str:
         "unescape html."
+        import re
         txt = re.sub(r"\s+", " ", text)
-        return html.unescape(txt)
+        return unescape(txt)
 
     @classmethod
     def unquote(cls, url: str) -> str:

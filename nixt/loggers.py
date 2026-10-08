@@ -1,10 +1,9 @@
 # This file is placed in the Public Domain.
 
 
-"usefullness"
+"logging"
 
 
-import logging
 import logging.handlers
 
 
@@ -71,7 +70,6 @@ class Logging:
         newformat += str(nrchars)
         newformat += cls.format[index+1:]
         cls.format = newformat
-
 
 
 def __dir__():

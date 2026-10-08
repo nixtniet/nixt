@@ -78,12 +78,14 @@ class Method:
             cls.typed(obj, key, val)
 
     @classmethod
-    def fmt(cls,
-            obj: Any,
-            args: Args = None,
-            skip: Args = None,
-            plain: bool = False,
-            empty: bool = False) -> str:
+    def fmt(
+        cls,
+        obj: Any,
+        args: Args = None,
+        skip: Args = None,
+        plain: bool = False,
+        empty: bool = False
+        ) -> str:
         "format object info printable string."
         if args is None:
             args = list(obj.__dict__.keys())
@@ -210,10 +212,12 @@ class Method:
         return result
 
     @classmethod
-    def search(cls,
-               obj: Any,
-               selector: Selector = None,
-               matching: bool = False) -> bool:
+    def search(
+        cls,
+        obj: Any,
+        selector: Selector = None,
+        matching: bool = False
+        ) -> bool:
         "check whether object matches search criteria."
         if selector is None:
             selector = {}

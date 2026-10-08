@@ -14,7 +14,8 @@ from .parsers import Parser
 from .typings import Callable, ClassVar, Dict, List, ModuleType, Union
 
 
-Callables = Dict[str, Callable]
+Callables = List[Callable]
+Cmds      = Dict[str, Callable]
 Hash      = Dict[str, str]
 
 
@@ -22,7 +23,7 @@ class Commands:
 
     "command dispatch"
 
-    cmds: ClassVar[Callables] = {}
+    cmds: ClassVar[Cmds] = {}
     names: ClassVar[Hash] = {}
 
     @classmethod
@@ -67,9 +68,9 @@ class Commands:
         return cls.cmds.get(name, None)
 
     @classmethod
-    def scan(cls, mod: ModuleType, skip: bool = False) -> List[Callable]:
+    def scan(cls, mod: ModuleType, skip: bool = False) -> Callables:
         "scan module for commands."
-        result: List[Callable] = []
+        result: Callables = []
         for nme, func in inspect.getmembers(mod, inspect.isfunction):
             if "cb_" in nme:
                 continue

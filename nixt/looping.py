@@ -8,9 +8,7 @@ import _thread
 
 
 from .default import Event, Queue
-from .dqueues import DQueue
 from .message import Message
-from .persist import Workdir
 from .tasking import Task
 from .typings import Union
 
@@ -20,8 +18,7 @@ class Loop:
     "keep looping"
 
     def __init__(self):
-        self.queue: Queue = DQueue(Workdir.runpath("loop"))
-        # self.queue = Queue()
+        self.queue: Queue = Queue()
         self.stopped: Event = Event()
         self.done: Event = Event()
 

@@ -207,12 +207,14 @@ class Locater:
         return res
 
     @classmethod
-    def objects(cls,
-                kind: str,
-                selector: Selector = None,
-                removed: bool = False,
-                matching: bool = False,
-                nritems: int = 0) -> Generator[Any, None, None]:
+    def objects(
+        cls,
+        kind: str,
+        selector: Selector = None,
+        removed: bool = False,
+        matching: bool = False,
+        nritems: int = 0
+        ) -> Generator[Any, None, None]:
         "return objects by matching atributes."
         yield from [x[1] for x in cls.find(kind,
                                            selector,
@@ -285,6 +287,7 @@ class Workdir:
 
     @classmethod
     def runpath(cls, name: str):
+        "return path in run directory."
         assert cls.wdr
         return j(cls.wdr, "run", name)
 

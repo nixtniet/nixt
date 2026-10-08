@@ -47,6 +47,7 @@ __all__ = (
     'Clients',
     'Commands',
     'Config',
+    'DQueue',
     'Data',
     'Disk',
     'Display',

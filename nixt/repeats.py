@@ -26,7 +26,13 @@ class Repeater:
     todo: ClassVar[Todo] = {}
 
     @classmethod
-    def add(cls, sleep: float, func: Callable, *args: Any, **kwargs: Any) -> None:
+    def add(
+        cls,
+        sleep: float,
+        func: Callable,
+        *args: Any,
+        **kwargs: Any
+        ) -> None:
         "add a repeater."
         slp = str(sleep)
         if slp not in cls.todo:
