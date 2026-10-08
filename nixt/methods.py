@@ -233,11 +233,11 @@ class Method:
         return res
 
     @classmethod
-    def skip(cls, obj: Any, chars: str = "") -> Union[Object, None]:
+    def skip(cls, obj: Any, chars: str = "_") -> Union[Object, None]:
         "skip class keys containing chars."
         if chars is None:
             chars = "_"
-        res = Object()
+        res = type(obj)()
         for key, value in cls.items(obj):
             if isinstance(value, types.MethodType):
                 continue

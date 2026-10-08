@@ -37,6 +37,7 @@ class Commands:
     def command(cls, msg: Message) -> None:
         "command callback."
         Parser.parse(msg, msg.text)
+        print(msg)
         func = cls.cmds.get(msg.cmd, cls.ondemand(msg.cmd))
         if func:
             func(msg)

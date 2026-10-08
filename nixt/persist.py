@@ -284,13 +284,18 @@ class Workdir:
             fds.write(str(os.getpid()))
 
     @classmethod
+    def runpath(cls, name: str):
+        assert cls.wdr
+        return j(cls.wdr, "run", name)
+
+    @classmethod
     def skel(cls) -> None:
         "create directories."
         assert cls.wdr
         if not e(cls.wdr):
             Utils.cdir(cls.wdr)
         path = os.path.abspath(cls.wdr)
-        for wpth in ["config", "logs", "mods", "store"]:
+        for wpth in ["config", "logs", "mods", "run", "store"]:
             pth = pathlib.Path(j(path, wpth))
             pth.mkdir(parents=True, exist_ok=True)
 

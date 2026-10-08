@@ -84,14 +84,20 @@ class JSONL(JSON):
     def log(cls, *args, **kw) -> None:
         "dump object to disk."
         kw["indent"] = None
-        JSON.dump(cls, *args, **kw)
+        kw["skipkeys"] = True
+        cls.dump(*args, **kw)
 
     @classmethod
     def logtxt(cls, *args, **kw) -> str:
         "dump object to string."
         kw["indent"] = None
-        return JSON.dumps(*args, **kw)
+        kw["skipkeys"] = True
+        cls.dumps(*args, **kw)
 
+    @classmethod
+    def read(cls, fp, *args, **kw):
+        return cls.loads(fp, *args, **kw)
+ 
 
 def __dir__():
     return (

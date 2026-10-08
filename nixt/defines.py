@@ -11,6 +11,7 @@ from .buffers import Buffer
 from .clients import Clients
 from .command import Commands
 from .configs import Cfg, Config, Main
+from .dqueues import DQueue
 from .display import Display
 from .encoder import JSON, JSONL
 from .fetcher import Fetcher
