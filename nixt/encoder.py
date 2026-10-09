@@ -87,17 +87,17 @@ class JSONL(JSON):
     @classmethod
     def read(cls, fp, *args, **kw):
         "read from file."
-        return cls.loads(fp, *args, **kw)
+        return cls.load(fp, *args, **kw)
 
     @classmethod
-    def write(cls, *args, **kw) -> None:
+    def write(cls, obj, fp, *args, **kw) -> None:
         "dump object to disk."
         kw["indent"] = None
         kw["skipkeys"] = True
         kw["sort_keys"] = True
-        cls.dump(*args, **kw)
-        args[1].write("\n")
-        args[1].flush()
+        cls.dump(obj, fp, *args, **kw)
+        fp.write("\n")
+        fp.flush()
 
 
 def __dir__():

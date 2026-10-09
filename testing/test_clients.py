@@ -73,6 +73,9 @@ class TestClient(unittest.TestCase):
         msg = Message()
         msg.kind = "hello"
         msg.text = "hi world"
+        print("yp1")
         self.clt.put(msg)
+        print("yo2")
         msg.wait()
+        time.sleep(1.0)
         self.assertTrue("hi world" in msg.result)

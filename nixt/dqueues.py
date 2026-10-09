@@ -4,6 +4,7 @@
 "persisted queue"
 
 
+import select
 import json
 import os
 import pathlib
@@ -39,41 +40,28 @@ class DQueue:
 
     def get(self) -> Union[Message, None]:
         "get message from disk."
-        with self.lock:
-            if self.buffer:
-                return self.buffer.pop()
+        with self.lock, open(self.path, "a+", encoding="utf-8") as file:
             while True:
-                mtime = os.stat(self.path).st_mtime
-                if mtime > self.ltime:
-                    self.ltime = mtime
-                    break
-                time.sleep(1.0)
-            with open(self.path, "a+", encoding="utf-8") as file:
+                file.seek(2)
+                indx = file.tell()
+                if indx <= self.index:
+                    time.sleep(1.0)
+                    continue
                 file.seek(self.index, 0)
-                while True:
-                    line = file.readline()
-                    if not line:
-                        if self.buffer:
-                            break
-                        else:
-                            time.sleep(1.0)
-                            continue
-                    msg = Message()
-                    try:
-                        Method.construct(msg, JSONL.read(line.strip()))
-                    except json.decoder.JSONDecodeError as ex:
-                        Log.exception(ex)
-                        del msg
-                        continue
-                    self.buffer.append(msg)
+                line = file.readline()
+                msg = Message()
+                try:
+                    Method.construct(msg, JSONL.loads(line.strip()))
+                    return msg
+                except json.decoder.JSONDecodeError as ex:
+                    Log.exception(ex)
+                    del msg                    
                 self.index = file.tell()
-            if self.buffer:
-                return self.buffer.pop()
-            return None
+        return None
 
     def put(self, msg: Message):
         "put message to disk."
-        with self.lock, open(self.path, "a+", encoding="utf-8") as file:
+        with open(self.path, "a+", encoding="utf-8") as file:
             JSONL.write(msg, file)
 
     def qsize(self):
