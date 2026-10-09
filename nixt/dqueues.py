@@ -30,39 +30,41 @@ class DQueue:
 
     def __init__(self, path):
         self.buffer: List[Message] = []
+        self.file = open(path, "a+", encoding="utf-8")
         self.index: int = 0
+        self.last: int = 0
         self.lock: RLock = RLock()
         self.ltime: float = 0.0
         self.path: str = path
+        self.configure()
+
+    def configure(self):
         Utils.cdir(self.path)
         pathlib.Path(self.path).touch()
         Logging.enable(self.path, Log)
 
     def get(self) -> Union[Message, None]:
         "get message from disk."
-        with self.lock, open(self.path, "a+", encoding="utf-8") as file:
-            while True:
-                file.seek(2)
-                indx = file.tell()
-                if indx <= self.index:
-                    time.sleep(1.0)
-                    continue
-                file.seek(self.index, 0)
-                line = file.readline()
-                msg = Message()
-                try:
-                    Method.construct(msg, JSONL.loads(line.strip()))
-                    return msg
-                except json.decoder.JSONDecodeError as ex:
-                    Log.exception(ex)
-                    del msg                    
-                self.index = file.tell()
-        return None
+        self.file.seek(self.index, 0)
+        while True:
+            line = self.file.readline()
+            if not line:
+                time.sleep(0.1)
+                continue
+            self.index = self.file.tell()
+            msg = Message()
+            try:
+                data = JSONL.loads(line.strip())
+                Method.construct(msg, data)
+                return msg
+            except json.decoder.JSONDecodeError as ex:
+                Log.exception(ex)
+                del msg
 
     def put(self, msg: Message):
         "put message to disk."
-        with open(self.path, "a+", encoding="utf-8") as file:
-            JSONL.write(msg, file)
+        JSONL.write(msg, self.file)
+        self.last = self.file.tell()
 
     def qsize(self):
         "return size."

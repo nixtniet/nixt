@@ -22,8 +22,8 @@ class Loop:
     counter: ClassVar[int] = 0
 
     def __init__(self):
-        # self.queue: DQueue = DQueue(Workdir.runpath("loop" + str(self.counter)))
-        self.queue: Queue = Queue()
+        self.queue: DQueue = DQueue(Workdir.runpath("loop" + str(self.counter)))
+        #self.queue: Queue = Queue()
         self.stopped: Event = Event()
         self.done: Event = Event()
         self.counter += 1
