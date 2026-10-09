@@ -41,7 +41,6 @@ class Commands:
         func = cls.cmds.get(msg.cmd, cls.ondemand(msg.cmd))
         if func:
             func(msg)
-            print(func, msg)
             Clients.display(msg)
         msg.ready()
 

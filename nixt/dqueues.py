@@ -11,13 +11,14 @@ import pathlib
 import time
 
 
-from .default import RLock, getLogger
+from .default import Queue, RLock, getLogger
 from .encoder import JSONL
 from .loggers import Logging
 from .message import Message
 from .methods import Method
 from .typings import List, TextIO, Union
 from .utility import Utils
+from .watcher import Watcher
 
 
 IO = Union[TextIO, None]
@@ -36,30 +37,35 @@ class DQueue:
         self.lock: RLock = RLock()
         self.ltime: float = 0.0
         self.path: str = path
+        self.queue: Queue = Queue()
         self.configure()
 
-    def configure(self):
-        Utils.cdir(self.path)
-        pathlib.Path(self.path).touch()
-        Logging.enable(self.path, Log)
-
-    def get(self) -> Union[Message, None]:
-        "get message from disk."
+    def callback(self):
+        "read from file"
         self.file.seek(self.index, 0)
         while True:
-            line = self.file.readline()
+            line = cls.file.readline()
             if not line:
-                time.sleep(0.1)
-                continue
+                break
             self.index = self.file.tell()
             msg = Message()
             try:
                 data = JSONL.loads(line.strip())
                 Method.construct(msg, data)
-                return msg
+                self.queue.put(msg)
             except json.decoder.JSONDecodeError as ex:
                 Log.exception(ex)
                 del msg
+
+    def configure(self):
+        Utils.cdir(self.path)
+        pathlib.Path(self.path).touch()
+        # Logging.enable(self.path, Log)
+        Watcher.add(self.path, self.callback)
+
+    def get(self) -> Union[Message, None]:
+        "get message from disk."
+        return self.queue.get()
 
     def put(self, msg: Message):
         "put message to disk."
