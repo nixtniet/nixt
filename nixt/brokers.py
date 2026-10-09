@@ -4,6 +4,7 @@
 "an object for a string"
 
 
+from .message import Message
 from .typings import Any, ClassVar, Dict, Generator, Tuple
 
 
@@ -53,7 +54,26 @@ class Broker:
         del cls.objects[repr(obj)]
 
 
+class Clients:
+
+    "collection of clients"
+
+    @staticmethod
+    def announce(text: str) -> None:
+        "announce text on all clients."
+        for obj in Broker.objs("announce"):
+            obj.announce(text)
+
+    @staticmethod
+    def display(msg: Message) -> None:
+        "display results."
+        bot = Broker.get(msg.orig)
+        if bot:
+            bot.display(msg)
+
+
 def __dir__():
     return (
         'Broker',
+        'Clients'
     )

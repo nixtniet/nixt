@@ -9,9 +9,3 @@ import sys
 
 
 sys.path.insert(0, os.getcwd())
-
-
-from nixt.booting import Boot
-
-
-Boot.configure()

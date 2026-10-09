@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.screens import Screen
+from nixt.defines import Screen
 
 
 class TestScreen(unittest.TestCase):

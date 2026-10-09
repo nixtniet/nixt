@@ -8,25 +8,19 @@ import _thread
 
 
 from .default import Event, Queue
-from .dqueues import DQueue
 from .message import Message
-from .persist import Workdir
 from .tasking import Task
-from .typings import ClassVar, Union
+from .typings import Union
 
 
 class Loop:
 
     "keep looping"
 
-    counter: ClassVar[int] = 0
-
     def __init__(self):
-        self.queue: DQueue = DQueue(Workdir.runpath("loop" + str(self.counter)))
-        #self.queue: Queue = Queue()
+        self.queue: Queue = Queue()
         self.stopped: Event = Event()
         self.done: Event = Event()
-        self.counter += 1
 
     def after(self, msg: Message) -> None:
         "called after callback."
