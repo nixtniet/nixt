@@ -4,10 +4,10 @@
 "default imports"
 
 
-from collections.abc import Callable, Generator, Iterator
+from collections.abc import Callable, Iterator
 from types           import ModuleType, MappingProxyType
 from typing          import Any, ClassVar, Dict, List, Self, Set, TextIO
-from typing          import Tuple, Union
+from typing          import Tuple, Union, Generator
 
 
 __all__ = (
