@@ -4,10 +4,8 @@
 "displaying messages"
 
 
-from threading import Event, RLock
-
-
 from .brokers import Broker
+from .default import Event, RLock
 from .handler import Handler
 from .message import Message
 

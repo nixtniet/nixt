@@ -8,11 +8,11 @@ import datetime
 import time
 
 
-from nixt.default import getLogger
+from nixt.default import Log
 from nixt.defines import Clients, Data, Message, Method, Repeater, Time
 
 
-logger = getLogger(__name__)
+logger = Log(__name__)
 
 
 def init():

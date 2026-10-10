@@ -7,7 +7,7 @@
 import os
 
 
-from .default import getLogger
+from .default import Log
 from .methods import Method
 from .sources import MD5
 from .typings import ClassVar, Dict, List, ModuleType, Union
@@ -19,7 +19,7 @@ Modules = Dict[str, ModuleType]
 Strings = Dict[str, str]
 
 
-logger = getLogger(__name__)
+logger = Log(__name__)
 
 
 e = os.path.exists

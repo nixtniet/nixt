@@ -5,20 +5,17 @@
 
 
 import inspect
-import logging
 import time
 import _thread
 
 
-from .default import Event, Queue, RLock, Thread
+from .default import Event, Log, Queue, RLock, Thread
 from .typings import Any, Callable, ClassVar, Dict, Union
 
 
 Anys    = Dict[str, Any]
 TimeOut = Union[float, None]
-
-
-logger = logging.getLogger()
+logger  = Log(__name__)
 
 
 class Worker(Thread):
@@ -34,7 +31,7 @@ class Worker(Thread):
         self.result: Any = None
         self.sleep: float = 0.0
         self.starttime: float = time.time()
-        self.state = Anys
+        self.state: Anys = {}
         self.queue.put((func, args))
 
     def __iter__(self):

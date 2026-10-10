@@ -4,7 +4,6 @@
 "in the beginning"
 
 
-import logging
 import os
 import threading
 import time
@@ -13,7 +12,7 @@ import _thread
 
 from .brokers import Broker
 from .configs import Main
-from .default import Event
+from .default import Event, Log
 from .display import Screen
 from .loggers import Logging
 from .package import Mods
@@ -23,7 +22,7 @@ from .typings import Callable
 from .utility import Utils
 
 
-logger = logging.getLogger(__name__)
+logger = Log(__name__)
 
 
 class Boot:
