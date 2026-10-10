@@ -20,8 +20,10 @@ from nixt.typings import ClassVar, Generator, List, TextIO, Union
 
 
 Dicts   = Generator[dict, None, None]
-Log     = getLogger(__name__)
 Strings = Generator[str, None, None]
+
+
+logger = getLogger(__name__)
 
 
 j = os.path.join
@@ -35,7 +37,7 @@ def init():
     txt = f"{nrs} feeds"
     if nrs == 1:
         txt = txt[:-1]
-    Log.info(txt)
+    logger.info(txt)
 
 
 def shutdown():
@@ -133,7 +135,7 @@ class Run:
                 feed.skip = False
                 Disk.write(feed, fnm)
                 counter += 1
-        Log.debug("clear %s", counter)
+        logger.debug("clear %s", counter)
         return counter
 
     @classmethod
@@ -165,12 +167,12 @@ class Run:
         formatter = Format(Logging.formats, Logging.datefmt)
         filehandler = logging.handlers.TimedRotatingFileHandler(path, 'midnight')
         filehandler.setFormatter(formatter)
-        if Log.handlers:
-            for handler in Log.handlers:
-                Log.removeHandler(handler)
-        Log.addHandler(filehandler)
-        Log.propagate = False
-        Log.setLevel("DEBUG")
+        if logger.handlers:
+            for handler in logger.handlers:
+                logger.removeHandler(handler)
+        logger.addHandler(filehandler)
+        logger.propagate = False
+        logger.setLevel("DEBUG")
 
     @classmethod
     def got(cls, text: str, feed: Feed) -> bool:
@@ -184,14 +186,14 @@ class Run:
     @classmethod
     def log(cls, text: str) -> None:
         "log to file."
-        Log.debug(text)
+        logger.debug(text)
 
     @classmethod
     def run(cls, silent: bool = False) -> int:
         "do a fetch run of all feeds."
         nrs = 0
         if Pool.busy():
-            Log.debug("next!")
+            logger.debug("next!")
             return 0
         for fnm, feed in Locater.find(Method.fqn(Rss)):
             if feed.skip:
@@ -252,10 +254,10 @@ class Fetching(Runner):
                 feed.error = response.error
                 feed.skip = True
                 Disk.write(feed, fnm)
-                Log.warning("skipt %s %s %s", feed.rss, response.status, response.reason)
+                logger.warning("skipt %s %s %s", feed.rss, response.status, response.reason)
             yield Feed()
         else:
-            Log.debug("fetch %s", feed.rss)
+            logger.debug("fetch %s", feed.rss)
             if "link" not in items:
                 items += ",link"
             yield from RSS.parse(
@@ -294,7 +296,7 @@ class Fetching(Runner):
         if has:
             feed.seen = feed.seen[:counter]
             Disk.write(feed, fnm)
-            Log.debug("write %s (%s)", feed.rss, gotcha)
+            logger.debug("write %s (%s)", feed.rss, gotcha)
         if counter:
             gc.collect(0)
         return counter

@@ -12,7 +12,7 @@ from nixt.default import getLogger
 from nixt.defines import Clients, Data, Message, Method, Repeater, Time
 
 
-Log = getLogger(__name__)
+logger = getLogger(__name__)
 
 
 def init():
@@ -27,7 +27,7 @@ def init():
             msg.rest = key
             sec = seconds(val)
             Repeater.add(sec, cb_stats, msg)
-            Log.info("%s %s", Time.elapsed(time.time()-STARTTIME), SOURCE)
+            logger.info("%s %s", Time.elapsed(time.time()-STARTTIME), SOURCE)
 
 
 DAY = 24*60*60

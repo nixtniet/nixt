@@ -9,15 +9,15 @@ from nixt.defines import Clients, Disk, Locater, Repeater
 from nixt.typings import List
 
 
-Log = getLogger(__name__)
-Rand = Random()
+logger = getLogger(__name__)
+rand = Random()
 
 
 def init():
     "start wisdom service."
     state.load()
     Repeater.add(3600,  cb_wsd)
-    Log.info("%s wise", len(TXTLIST))
+    logger.info("%s wise", len(TXTLIST))
 
 
 class State:
@@ -47,7 +47,7 @@ def get_msg():
     "choose message."
     txt = ""
     for _nrs in range(len(TXTLIST)):
-        txt = Rand.choice(TXTLIST)
+        txt = rand.choice(TXTLIST)
         if txt in state.seen:
             continue
         state.seen.append(txt)

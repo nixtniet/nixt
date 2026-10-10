@@ -12,14 +12,14 @@ from nixt.default import getLogger, Random
 from nixt.defines import Broker, Disk, Locater, Method, Object, Task, Time
 
 
-Log = getLogger(__name__)
-Rand = Random()
+logger = getLogger(__name__)
+rand = Random()
 
 
 def init():
     "intialize the timer module."
     TimerLoop.start()
-    Log.info("%s timers" , len(TimerLoop.timers))
+    logger.info("%s timers" , len(TimerLoop.timers))
 
 
 def shutdown():
@@ -102,7 +102,7 @@ def tmr(msg):
     if not todo:
         msg.reply("can't determine time")
         return
-    todo += Rand.random()
+    todo += rand.random()
     if not todo or time.time() > todo:
         msg.reply("already passed given time.")
         return
