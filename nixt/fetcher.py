@@ -11,8 +11,10 @@ from urllib.parse   import unquote, urlparse, urlunparse
 from urllib.request import Request, urlopen
 
 
+from .configs import Main
 from .methods import Method
 from .objects import Data
+from .sources import MD5
 from .typings import Any, ClassVar, Dict, Union
 
 
@@ -54,7 +56,7 @@ class Fetcher:
         "fetch an url."
         url = urlunparse(urlparse(url))
         req = Request(str(url))
-        req.add_header("User-Agent", cls.useragent("RSS Fetcher"))
+        req.add_header("User-Agent", cls.useragent(f"{Main.name.upper()} {MD5.core()}"))
         since = cls.modified.get(url, "")
         if since:
             req.add_header('If-Modified-Since', since)
