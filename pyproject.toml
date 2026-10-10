@@ -36,8 +36,8 @@ classifiers = [
 packages = [
     'nixt',
     'nixt.minimal',
-    'nixt.mirrors',
     'nixt.modules',
+    'nixt.namings',
     'nixt.neurons',
     'nixt.numbers'
 ]
