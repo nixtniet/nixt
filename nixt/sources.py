@@ -12,7 +12,7 @@ from .typings import Dict, Union
 from .utility import Utils
 
 
-Log = getLogger(__name__)
+logger = getLogger(__name__)
 
 
 class MD5:
@@ -34,7 +34,7 @@ class MD5:
             name = pth[:-3]
             modpath = os.path.join(path, pth)
             if md5s and cls.md5(modpath) != md5s.get(name):
-                Log.warning("mismatch %s", name)
+                logger.warning("mismatch %s", name)
                 ok = False
         return ok
 

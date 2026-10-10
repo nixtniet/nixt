@@ -5,17 +5,20 @@
 
 
 import inspect
+import logging
 import time
 import _thread
 
 
-from .default import Event, getLogger, Queue, RLock, Thread
+from .default import Event, Queue, RLock, Thread
 from .typings import Any, Callable, ClassVar, Dict, Union
 
 
 Anys    = Dict[str, Any]
-Log     = getLogger(__name__)
 TimeOut = Union[float, None]
+
+
+logger = logging.getLogger()
 
 
 class Worker(Thread):
@@ -73,7 +76,7 @@ class Worker(Thread):
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
         except Exception:
-            Log.exception(str(func))
+            logger.exception(str(func))
             _thread.interrupt_main()
 
 

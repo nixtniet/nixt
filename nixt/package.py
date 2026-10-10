@@ -14,10 +14,12 @@ from .typings import ClassVar, Dict, List, ModuleType, Union
 from .utility import Utils
 
 
-Log     = getLogger(__name__)
 Module  = Union[ModuleType, None]
 Modules = Dict[str, ModuleType]
 Strings = Dict[str, str]
+
+
+logger = getLogger(__name__)
 
 
 e = os.path.exists
@@ -53,7 +55,7 @@ class Mods:
                 md5 = MD5.md5(fnm)
                 md5s = cls.md5s.get(name)
                 if md5s and md5 != md5s:
-                    Log.info("mismatch %s", name)
+                    logger.info("mismatch %s", name)
             return cls.importer(modname, fnm)
         return None
 

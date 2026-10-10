@@ -6,13 +6,11 @@
 
 from argparse  import SUPPRESS, ArgumentParser
 from argparse  import RawDescriptionHelpFormatter as RawFormat
-from html      import unescape
 from logging   import basicConfig, Formatter, Logger, LogRecord, StreamHandler
 from logging   import getLogger
 from queue     import Queue
 from random    import SystemRandom as Random
 from threading import Event, RLock, Thread
-from _thread   import LockType, allocate_lock
 
 
 __all__ = (
@@ -20,7 +18,6 @@ __all__ = (
     'ArgumentParser',
     'Event',
     'Formatter',
-    'LockType',
     'LogRecord',
     'Logger',
     'Queue',
@@ -29,10 +26,8 @@ __all__ = (
     'RawFormat',
     'StreamHandler',
     'Thread',
-    'allocate_lock',
     'basicConfig',
-    'getLogger',
-    'unescape'
+    'getLogger'
 )
 
 
