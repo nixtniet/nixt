@@ -20,7 +20,7 @@ CORE: Hash = {
     "defines": "b8e15ccad79099579b802d1bd7108540",
     "display": "50a5e7bc8d6e48caaffb5dd92b8fe802",
     "encoder": "a3812b8a3463e33bc8fc1db9ae7aac53",
-    "fetcher": "6885108fdbaadfceaa3ae6fea12b64a5",
+    "fetcher": "0332bf3cd0c7dfae06bb3c63cc283f5e",
     "handler": "4a25a67e8b516fa25f3b4b1d07e54992",
     "loggers": "27c867484e3cca8cff53584f1a514eb9",
     "looping": "c63da1fe1c26388e684da267f0f66315",
