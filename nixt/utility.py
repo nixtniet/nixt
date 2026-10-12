@@ -11,7 +11,7 @@ import time
 import uuid
 
 
-from .default import d, e, expanduser, j, listdir
+from .default import e, expanduser, j, listdir
 from .typings import Any, ClassVar, List, ModuleType, Union
 
 

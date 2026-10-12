@@ -4,9 +4,6 @@
 "if it repeats it is important"
 
 
-import time
-
-
 from .default import Event, sleep
 from .tasking import Task
 from .typings import Any, Callable, ClassVar, Dict, List
@@ -28,13 +25,13 @@ class Repeater:
     @classmethod
     def add(
         cls,
-        sleep: float,
+        sleeptime: float,
         func: Callable,
         *args: Any,
         **kwargs: Any
         ) -> None:
         "add a repeater."
-        slp = str(sleep)
+        slp = str(sleeptime)
         if slp not in cls.todo:
             cls.todo[slp] = []
         cls.todo[slp].append((func, args, kwargs))
@@ -43,10 +40,10 @@ class Repeater:
     def loop(cls) -> None:
         "repeater loop."
         while not cls.stopped.is_set():
-            time.sleep(1.0)
+            sleep(1.0)
             cls.counter += 1
-            for sleep, arguments in cls.todo.items():
-                slept = int(sleep)
+            for sleeptime, arguments in cls.todo.items():
+                slept = int(sleeptime)
                 if cls.counter % slept != 0:
                     continue
                 for func, args, kwargs in arguments:
