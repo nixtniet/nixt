@@ -11,7 +11,7 @@ import pathlib
 import time
 
 
-from .default import RLock
+from .default import RLock, e, j
 from .encoder import JSON
 from .methods import Method
 from .objects import Data
@@ -22,10 +22,6 @@ from .utility import Utils
 Paths    = Generator[str, None, None]
 Result   = Generator[Tuple[str, Any], None, None]
 Selector = Union[Dict[str, str], None]
-
-
-e = os.path.exists
-j = os.path.join
 
 
 class DecodeError(Exception):

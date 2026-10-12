@@ -4,10 +4,7 @@
 "runners/clients"
 
 
-import os
-
-
-from .default import RLock
+from .default import RLock, cpu_count
 from .runners import Runner
 from .typings import Any, ClassVar, List
 
@@ -19,7 +16,7 @@ class Pool:
     runners: ClassVar[List[Runner]] = []
     clazz: type = Runner
     lock: RLock = RLock()
-    max = os.cpu_count()
+    max = cpu_count()
     nrcpu = 1
     nrlast = 0
 

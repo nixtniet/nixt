@@ -7,7 +7,7 @@
 import time
 
 
-from .default import Event
+from .default import Event, sleep
 from .tasking import Task
 from .typings import Any, Callable, ClassVar, Dict, List
 

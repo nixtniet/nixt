@@ -4,10 +4,7 @@
 "module management"
 
 
-import os
-
-
-from .default import Log
+from .default import Log, e, j
 from .methods import Method
 from .sources import MD5
 from .typings import ClassVar, Dict, List, ModuleType, Union
@@ -20,10 +17,6 @@ Strings = Dict[str, str]
 
 
 logger = Log(__name__)
-
-
-e = os.path.exists
-j = os.path.join
 
 
 class Mods:

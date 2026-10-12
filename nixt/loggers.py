@@ -4,9 +4,6 @@
 "logging"
 
 
-import logging.handlers
-
-
 from .default import basicConfig, Formatter, Logger, LogRecord, StreamHandler
 from .typings import ClassVar
 
@@ -37,6 +34,7 @@ class Logging:
     @classmethod
     def enable(cls, path: str, logger: Logger) -> None:
         "enabke module logger."
+        import logging.handlers
         formatter = Format(Logging.formats, Logging.datefmt)
         filehandler = logging.handlers.TimedRotatingFileHandler(path, 'midnight')
         filehandler.setFormatter(formatter)

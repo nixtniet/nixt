@@ -11,6 +11,7 @@ import time
 import uuid
 
 
+from .default import d, e, expanduser, j, listdir
 from .typings import Any, ClassVar, List, ModuleType, Union
 
 
@@ -124,10 +125,10 @@ class Utils:
     @staticmethod
     def cdir(path: str) -> None:
         "create directory."
-        if os.path.exists(path):
+        if e(path):
             return
         pth = pathlib.Path(path)
-        if not os.path.exists(pth.parent):
+        if not e(pth.parent):
             pth.parent.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
@@ -138,13 +139,13 @@ class Utils:
     @staticmethod
     def home(name: str) -> str:
         "return home working directory."
-        return os.path.expanduser(f"~/.{name}")
+        return expanduser(f"~/.{name}")
 
     @staticmethod
     def listdir(path: str, ignore: str = "") -> List[str]:
         "list modules in a directory."
         return [
-                x[:-3] for x in os.listdir(path)
+                x[:-3] for x in listdir(path)
                 if x.endswith(".py") and
                 not x.startswith("__") and
                 x[:-3] not in Utils.spl(ignore)
@@ -180,7 +181,7 @@ class Utils:
     @staticmethod
     def strip(path: str, nrchar: int = 3) -> str:
         "strip filename from path."
-        return os.path.join(*path.split(os.sep)[-nrchar:])
+        return j(*path.split(os.sep)[-nrchar:])
 
 
 def __dir__():

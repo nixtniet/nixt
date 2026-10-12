@@ -4,14 +4,12 @@
 "fetching feeds"
 
 
-import html
-
-
 from urllib.parse   import unquote, urlparse, urlunparse
 from urllib.request import Request, urlopen
 
 
 from .configs import Main
+from .default import unescape
 from .methods import Method
 from .objects import Data
 from .sources import MD5
@@ -101,7 +99,7 @@ class Fetcher:
         "unescape html."
         import re
         txt = re.sub(r"\s+", " ", text)
-        return html.unescape(txt)
+        return unescape(txt)
 
     @classmethod
     def unquote(cls, url: str) -> str:
