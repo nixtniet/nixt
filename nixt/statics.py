@@ -13,7 +13,7 @@ Hash = Dict[str, str]
 CORE: Hash = {
     "booting": "e0f7ea918f07e8fb42cc56ff0abc9215",
     "brokers": "be3138aaf29cd7bbe2469ae71269647f",
-    "buffers": "a95264453bbfa417e4404e45ba0ea6d0",
+    "buffers": "fa4850755baafcb4997f982da4ae73b2",
     "command": "9f3a3e01f7ff3a15b475221b7cc95fa3",
     "configs": "915a02e10b32cc61a5365e6401876008",
     "default": "48205062a1378b54def4d2e7c295066b",
