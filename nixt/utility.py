@@ -4,10 +4,12 @@
 "usefulness"
 
 
-import datetime
 import os
 import time
 import uuid
+
+
+from datetime import datetime
 
 
 from .default import Path
@@ -101,7 +103,7 @@ class Time:
                     continue
             res = cls.date(word.strip())
             if not res:
-                date = datetime.datetime.fromtimestamp(time.time(), tz=None).date()
+                date = datetime.fromtimestamp(time.time(), tz=None).date()
                 word = f"{date.year}-{date.month}-{date.day}" + " " + word
                 res = cls.date(word.strip())
             if res:

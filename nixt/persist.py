@@ -116,12 +116,14 @@ class Locater:
         return len(list(cls.find(kind)))
 
     @classmethod
-    def find(cls,
-             kind: str,
-             selector: Selector = None,
-             removed: bool = False,
-             matching: bool = False,
-             nritems: int = 0) -> Result:
+    def find(
+        cls,
+        kind: str,
+        selector: Selector = None,
+        removed: bool = False,
+        matching: bool = False,
+        nritems: int = 0
+        ) -> Result:
         "locate objects by matching atributes."
         with cls.lock:
             if selector is None:
@@ -143,7 +145,11 @@ class Locater:
                 yield (pth, obj)
 
     @classmethod
-    def first(cls, obj: Any, selector: Selector = None) -> str:
+    def first(
+        cls,
+        obj: Any,
+        selector: Selector = None
+        ) -> str:
         "return first object of a kind."
         if selector is None:
             selector = {}

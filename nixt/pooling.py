@@ -12,11 +12,14 @@ from .runners import Runner
 from .typings import Any, ClassVar, List
 
 
+Runners = List[Runner]
+
+
 class Pool:
 
     "multiple runners"
 
-    runners: ClassVar[List[Runner]] = []
+    runners: ClassVar[Runners] = []
     clazz: type = Runner
     lock: RLock = RLock()
     max = os.cpu_count()
