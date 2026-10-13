@@ -10,8 +10,12 @@ from typing          import Any, ClassVar, Dict, List, Set, TextIO
 from typing          import Tuple, Union, Generator
 
 
+Anys = Dict[str, Any]
+
+
 __all__ = (
     'Any',
+    'Anys',
     'Callable',
     'ClassVar',
     'Dict',

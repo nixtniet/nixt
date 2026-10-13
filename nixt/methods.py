@@ -9,11 +9,10 @@ import os.path
 
 
 from .objects import Object
-from .typings import Any, Dict, Generator, List, MappingProxyType, MethodType
-from .typings import Tuple, Union
+from .typings import Any, Anys, Dict, Generator, List, MappingProxyType
+from .typings import MethodType, Tuple, Union
 
 
-Anys     = Dict[str, Any]
 Args     = Union[List[str], None]
 Items    = List[Tuple[str, Any]]
 Keys     = List[str]

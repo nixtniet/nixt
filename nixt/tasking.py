@@ -12,14 +12,13 @@ import _thread
 
 
 from .default import Queue, RLock, Thread
-from .typings import Any, Callable, ClassVar, Dict, Union
+from .typings import Any, Anys, Callable, ClassVar, Union
 
 
-Anys    = Dict[str, Any]
 TimeOut = Union[float, None]
 
 
-logger  = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class Worker(Thread):

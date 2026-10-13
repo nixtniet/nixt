@@ -5,10 +5,9 @@
 
 
 from .message import Message
-from .typings import Any, ClassVar, Dict, Generator, Tuple
+from .typings import Any, Anys, ClassVar, Generator, Tuple
 
 
-Anys    = Dict[str, Any]
 Liked   = Generator[Tuple[str, Any], None, None]
 Objects = Generator[Any, None, None]
 
