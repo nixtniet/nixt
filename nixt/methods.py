@@ -9,14 +9,14 @@ import os.path
 
 
 from .objects import Object
-from .typings import Any, Anys, Dict, Generator, List, MappingProxyType
-from .typings import MethodType, Tuple, Union
+from .typings import Any, Anys, Generator, List, Hash
+from .typings import MappingProxyType, MethodType, Tuple, Union
 
 
 Args     = Union[List[str], None]
 Items    = List[Tuple[str, Any]]
 Keys     = List[str]
-Selector = Union[Dict[str, str], None]
+Selector = Union[Hash, None]
 Skipped  = Generator[Any, None, None]
 Values   = List[Any]
 
@@ -65,7 +65,7 @@ class Method:
     def edit(
         cls,
         obj: Any,
-        setter: Union[Dict[str, str], None] = None,
+        setter: Union[Hash, None] = None,
         skip: bool = False
         ) -> None:
         "update object with dict."
@@ -202,7 +202,7 @@ class Method:
         return obj.__dict__.popitem()
 
     @classmethod
-    def reduce(cls, obj: Any) -> Dict[str, Any]:
+    def reduce(cls, obj: Any) -> Anys:
         "return dict with values setted attributes."
         result = {}
         for key, value in cls.items(obj):

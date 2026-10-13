@@ -15,11 +15,11 @@ from .configs import Main
 from .methods import Method
 from .objects import Data
 from .sources import MD5
-from .typings import Anys, ClassVar, Dict, Union
+from .typings import Anys, ClassVar, Hash, Union
 
 
 Integer = Union[int, None]
-Strings = Dict[str, str]
+Strings = Hash
 
 
 class Response(Data):

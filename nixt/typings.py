@@ -11,6 +11,7 @@ from typing          import Tuple, Union, Generator
 
 
 Anys = Dict[str, Any]
+Hash = Dict[str, str]
 
 
 __all__ = (
@@ -20,6 +21,7 @@ __all__ = (
     'ClassVar',
     'Dict',
     'Generator',
+    'Hash',
     'Iterator',
     'List',
     'MappingProxyType',

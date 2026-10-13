@@ -8,7 +8,7 @@ import logging
 import os
 
 
-from .typings import Dict, Union
+from .typings import Hash, Union
 from .utility import Utils
 
 
@@ -51,7 +51,7 @@ class MD5:
         return None
 
     @classmethod
-    def createmd5(cls, path: str, data: Dict[str, str]) -> None:
+    def createmd5(cls, path: str, data: Hash) -> None:
         "create md5s for file in a directory."
         for pth in os.listdir(path):
             if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:

@@ -11,12 +11,11 @@ from .brokers import Clients
 from .message import Message
 from .package import Mods
 from .parsers import Parser
-from .typings import Callable, ClassVar, Dict, List, ModuleType, Union
+from .typings import Callable, ClassVar, Dict, Hash, List, ModuleType, Union
 
 
 Callables = List[Callable]
 Cmds      = Dict[str, Callable]
-Hash      = Dict[str, str]
 
 
 class Commands:

@@ -16,13 +16,14 @@ from .default import Path, RLock
 from .encoder import JSON
 from .methods import Method
 from .objects import Data
-from .typings import Any, ClassVar, Dict, Generator, List, Set, Tuple, Union
+from .typings import Any, Anys, ClassVar, Generator, Hash, List
+from .typings import Set, Tuple, Union
 from .utility import Utils
 
 
 Paths    = Generator[str, None, None]
 Result   = Generator[Tuple[str, Any], None, None]
-Selector = Union[Dict[str, str], None]
+Selector = Union[Hash, None]
 
 
 class DecodeError(Exception):
@@ -34,7 +35,7 @@ class Cache:
 
     "path object cache"
 
-    paths: ClassVar[Dict[str, Any]] = {}
+    paths: ClassVar[Anys] = {}
 
     @classmethod
     def add(cls, path: str, obj: Any) -> None:

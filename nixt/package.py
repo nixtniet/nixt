@@ -10,13 +10,13 @@ import os
 
 from .methods import Method
 from .sources import MD5
-from .typings import ClassVar, Dict, List, ModuleType, Union
+from .typings import ClassVar, Dict, Hash, List, ModuleType, Union
 from .utility import Utils
 
 
 Module  = Union[ModuleType, None]
 Modules = Dict[str, ModuleType]
-Strings = Dict[str, str]
+Strings = Hash
 
 
 logger = logging.getLogger(__name__)
