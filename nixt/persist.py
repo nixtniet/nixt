@@ -4,10 +4,12 @@
 "path to object cache"
 
 
-import datetime
 import json
 import os
 import time
+
+
+from datetime import datetime
 
 
 from .default import Path, RLock
@@ -62,7 +64,7 @@ class Disk:
     @classmethod
     def ident(cls, obj: Any) -> str:
         "return ident string for object."
-        return os.path.join(Method.fqn(obj), *str(datetime.datetime.now(tz=None)).split())
+        return os.path.join(Method.fqn(obj), *str(datetime.now(tz=None)).split())
 
     @classmethod
     def read(cls, obj: Any, path: str, base: str = "store") -> bool:

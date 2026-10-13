@@ -29,7 +29,7 @@ CORE: Hash = {
     "objects": "e7d8664b921306546ac5df9bf30c9b65",
     "package": "a347c135442ad3f2451a8f129b660310",
     "parsers": "9d17a6c7999bd6f92ee137a206b34bce",
-    "persist": "3108cd760aea8365e1b1b2dc08ea6bc9",
+    "persist": "12a7367de108c7afd5f87e8f185ebe11",
     "pooling": "3aef2f8677df380f8aa7d2b1bb715d0c",
     "repeats": "47f08d61ed6059c9595d80caa0d69fe8",
     "require": "64863daa33090e4956eef461fd06280c",
