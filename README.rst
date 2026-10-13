@@ -36,8 +36,8 @@
     and add the following:
 
 
-        def hello(message):
-            message.reply("hello world !!")
+        def hello(msg):
+            msg.reply("hello world !!")
 
 
     typing the hello command would result into a hello world !!:
