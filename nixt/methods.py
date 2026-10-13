@@ -22,9 +22,6 @@ Skipped  = Generator[Any, None, None]
 Values   = List[Any]
 
 
-d = os.path.dirname
-
-
 class Method:
 
     "yeah"
@@ -331,7 +328,7 @@ class Method:
     @classmethod
     def where(cls, obj: Any) -> str:
         "path where object is defined."
-        return d(inspect.getfile(obj))
+        return os.path.dirname(inspect.getfile(obj))
 
 
 def __dir__():
