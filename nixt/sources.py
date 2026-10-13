@@ -4,12 +4,15 @@
 "module md5sum"
 
 
-from .default import Log, d, e, j, listdir
+import logging
+import os
+
+
 from .typings import Dict, Union
 from .utility import Utils
 
 
-logger = Log(__name__)
+logger = logging.getLogger(__name__)
 
 
 class MD5:
@@ -22,14 +25,14 @@ class MD5:
         ok = True
         if not __spec__:
             return ok
-        path = d(str(__spec__.origin))
-        if not e(path):
+        path = os.path.dirname(str(__spec__.origin))
+        if not os.path.exists(path):
             return False
-        for pth in listdir(path):
+        for pth in os.listdir(path):
             if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
                 continue
             name = pth[:-3]
-            modpath = j(path, pth)
+            modpath = os.path.join(path, pth)
             if md5s and cls.md5(modpath) != md5s.get(name):
                 logger.warning("mismatch %s", name)
                 ok = False
@@ -50,11 +53,11 @@ class MD5:
     @classmethod
     def createmd5(cls, path: str, data: Dict[str, str]) -> None:
         "create md5s for file in a directory."
-        for pth in listdir(path):
+        for pth in os.listdir(path):
             if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
                 continue
             name = pth[:-3]
-            data[name] = cls.md5(j(path, pth))
+            data[name] = cls.md5(os.path.join(path, pth))
 
     @classmethod
     def md5(cls, path: str) -> str:

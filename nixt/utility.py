@@ -4,8 +4,13 @@
 "usefulness"
 
 
-from .default import Path, datetime, e, expanduser, j, listdir, mktime
-from .default import sep, strptime, time, uuid4
+import datetime
+import os
+import time
+import uuid
+
+
+from .default import Path
 from .typings import Any, ClassVar, List, ModuleType, Union
 
 
@@ -16,7 +21,7 @@ class Time:
 
     "time related utilities."
 
-    starttime: ClassVar[float] = time()
+    starttime: ClassVar[float] = time.time()
     times = (
         "%a, %d %b %Y %H:%M:%S %z",
         "%a, %d %b %Y %H:%M:%S",
@@ -37,7 +42,7 @@ class Time:
         daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
         for fmat in cls.times:
             try:
-                return mktime(strptime(daystr, fmat))
+                return time.mktime(time.strptime(daystr, fmat))
             except ValueError:
                 pass
         return None
@@ -91,12 +96,12 @@ class Time:
         for word in daystr.split():
             if word.startswith("+"):
                 try:
-                    return int(word[1:]) + time()
+                    return int(word[1:]) + time.time()
                 except (ValueError, IndexError):
                     continue
             res = cls.date(word.strip())
             if not res:
-                date = datetime.fromtimestamp(time(), tz=None).date()
+                date = datetime.datetime.fromtimestamp(time.time(), tz=None).date()
                 word = f"{date.year}-{date.month}-{date.day}" + " " + word
                 res = cls.date(word.strip())
             if res:
@@ -108,7 +113,7 @@ class Time:
         "return time from string."
         tme = cls.date(datestr)
         if not tme:
-            tme = time()
+            tme = time.time()
         return tme
 
 
@@ -119,10 +124,10 @@ class Utils:
     @staticmethod
     def cdir(path: str) -> None:
         "create directory."
-        if e(path):
+        if os.path.exists(path):
             return
         pth = Path(path)
-        if not e(pth.parent):
+        if not os.path.exists(pth.parent):
             pth.parent.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
@@ -133,13 +138,13 @@ class Utils:
     @staticmethod
     def home(name: str) -> str:
         "return home working directory."
-        return expanduser(f"~/.{name}")
+        return os.path.expanduser(f"~/.{name}")
 
     @staticmethod
     def listdir(path: str, ignore: str = "") -> List[str]:
         "list modules in a directory."
         return [
-                x[:-3] for x in listdir(path)
+                x[:-3] for x in os.listdir(path)
                 if x.endswith(".py") and
                 not x.startswith("__") and
                 x[:-3] not in Utils.spl(ignore)
@@ -148,7 +153,7 @@ class Utils:
     @staticmethod
     def shortid() -> str:
         "return a shortid."
-        return str(uuid4())[:8]
+        return str(uuid.uuid4())[:8]
 
     @staticmethod
     def source(module: ModuleType) -> Union[str, None]:
@@ -175,7 +180,7 @@ class Utils:
     @staticmethod
     def strip(path: str, nrchar: int = 3) -> str:
         "strip filename from path."
-        return j(*path.split(sep)[-nrchar:])
+        return os.path.join(*path.split(os.sep)[-nrchar:])
 
 
 def __dir__():

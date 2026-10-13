@@ -4,8 +4,10 @@
 "program your own commands"
 
 
+import inspect
+
+
 from .brokers import Clients
-from .default import getmembers, isfunction, signature
 from .message import Message
 from .package import Mods
 from .parsers import Parser
@@ -69,10 +71,10 @@ class Commands:
     def scan(cls, mod: ModuleType, skip: bool = False) -> Callables:
         "scan module for commands."
         result: Callables = []
-        for nme, func in getmembers(mod, isfunction):
+        for nme, func in inspect.getmembers(mod, inspect.isfunction):
             if "cb_" in nme:
                 continue
-            if 'msg' in signature(func).parameters:
+            if 'msg' in inspect.signature(func).parameters:
                 if not skip:
                     cls.add(func)
                 result.append(func)

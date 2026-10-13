@@ -4,7 +4,10 @@
 "a function with an object as the first argument"
 
 
-from .default import d, getfile
+import inspect
+import os.path
+
+
 from .objects import Object
 from .typings import Any, Dict, Generator, List, MappingProxyType, MethodType
 from .typings import Tuple, Union
@@ -17,6 +20,9 @@ Keys     = List[str]
 Selector = Union[Dict[str, str], None]
 Skipped  = Generator[Any, None, None]
 Values   = List[Any]
+
+
+d = os.path.dirname
 
 
 class Method:
@@ -325,7 +331,7 @@ class Method:
     @classmethod
     def where(cls, obj: Any) -> str:
         "path where object is defined."
-        return d(getfile(obj))
+        return d(inspect.getfile(obj))
 
 
 def __dir__():

@@ -4,7 +4,10 @@
 "buffered output"
 
 
-from .default import Event, Queue, interrupt_main
+import _thread
+
+
+from .default import Event, Queue
 from .display import Display
 from .handler import Handler
 from .message import Message
@@ -29,7 +32,7 @@ class Output(Display):
             try:
                 msg = self.oqueue.get()
             except (KeyboardInterrupt, EOFError):
-                interrupt_main()
+                _thread.interrupt_main()
             if msg is None:
                 self.oqueue.task_done()
                 break
@@ -55,7 +58,7 @@ class Output(Display):
         try:
             self.oqueue.join()
         except (KeyboardInterrupt, EOFError):
-            interrupt_main()
+            _thread.interrupt_main()
 
 
 class Buffer(Handler, Output):

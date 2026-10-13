@@ -4,7 +4,9 @@
 "logging"
 
 
-from .default import basicConfig, Formatter, Logger, LogRecord, StreamHandler
+from logging import basicConfig, Formatter, Logger, LogRecord, StreamHandler
+
+
 from .typings import ClassVar
 
 

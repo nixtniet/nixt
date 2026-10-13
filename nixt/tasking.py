@@ -4,21 +4,29 @@
 "non-blocking"
 
 
-from .default import Event, Log, Queue, RLock, Thread, isfunction, ismethod
-from .default import interrupt_main, time
+import inspect
+import logging
+import threading
+import time
+import _thread
+
+
+from .default import Queue, RLock, Thread
 from .typings import Any, Callable, ClassVar, Dict, Union
 
 
 Anys    = Dict[str, Any]
 TimeOut = Union[float, None]
-logger  = Log(__name__)
+
+
+logger  = logging.getLogger(__name__)
 
 
 class Worker(Thread):
 
     "unit of thread"
 
-    block: ClassVar[Event] = Event()
+    block: ClassVar[threading.Event] = threading.Event()
 
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
@@ -26,7 +34,7 @@ class Worker(Thread):
         self.queue: Queue = Queue()
         self.result: Any = None
         self.sleep: float = 0.0
-        self.starttime: float = time()
+        self.starttime: float = time.time()
         self.state: Anys = {}
         self.queue.put((func, args))
 
@@ -42,7 +50,7 @@ class Worker(Thread):
             super().join(timeout or None)
             return self.result
         except (KeyboardInterrupt, EOFError):
-            interrupt_main()
+            _thread.interrupt_main()
             return None
 
     def clsname(self, obj: Any) -> str:
@@ -53,9 +61,9 @@ class Worker(Thread):
 
     def getname(self, obj: Any) -> str:
         "string of function/method."
-        if ismethod(obj):
+        if inspect.ismethod(obj):
             return f"{self.clsname(obj)}.{obj.__name__}"
-        if isfunction(obj):
+        if inspect.isfunction(obj):
             return repr(obj).split()[1]
         return repr(obj)
 
@@ -67,10 +75,10 @@ class Worker(Thread):
         try:
             self.result = func(*args)
         except (KeyboardInterrupt, EOFError):
-            interrupt_main()
+            _thread.interrupt_main()
         except Exception:
             logger.exception(str(func))
-            interrupt_main()
+            _thread.interrupt_main()
 
 
 class Task:

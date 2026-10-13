@@ -4,10 +4,13 @@
 "path to object cache"
 
 
+import datetime
+import json
+import os
+import time
 
 
-from .default import RLock, JSONDecodeError, datetime, a, e, j, listdir, sep
-from .default import Path, expanduser, getpid, mktime, strptime, unlink, walk
+from .default import Path, RLock
 from .encoder import JSON
 from .methods import Method
 from .objects import Data
@@ -59,19 +62,19 @@ class Disk:
     @classmethod
     def ident(cls, obj: Any) -> str:
         "return ident string for object."
-        return j(Method.fqn(obj), *str(datetime.now(tz=None)).split())
+        return os.path.join(Method.fqn(obj), *str(datetime.datetime.now(tz=None)).split())
 
     @classmethod
     def read(cls, obj: Any, path: str, base: str = "store") -> bool:
         "read object from path."
         with cls.lock:
-            pth = j(Workdir.wdr, base, path)
-            if not e(pth):
+            pth = os.path.join(Workdir.wdr, base, path)
+            if not os.path.exists(pth):
                 return False
             with open(pth, "r", encoding="utf-8") as fpt:
                 try:
                     Method.update(obj, JSON.load(fpt))
-                except JSONDecodeError as ex:
+                except json.JSONDecodeError as ex:
                     raise DecodeError(Utils.strip(pth)) from ex
             return True
 
@@ -81,7 +84,7 @@ class Disk:
         with cls.lock:
             if path == "":
                 path = cls.ident(obj)
-            pth = j(Workdir.wdr, base, path)
+            pth = os.path.join(Workdir.wdr, base, path)
             Utils.cdir(pth)
             with open(pth, "w", encoding="utf-8") as fpt:
                 JSON.dump(obj, fpt, indent=4)
@@ -156,25 +159,25 @@ class Locater:
     @classmethod
     def fns(cls, kind: str) -> Paths:
         "file names by kind of object."
-        path = j(Workdir.wdr, "store", kind)
-        for rootdir, dirs, _files in walk(path, topdown=True):
+        path = os.path.join(Workdir.wdr, "store", kind)
+        for rootdir, dirs, _files in os.walk(path, topdown=True):
             for dname in dirs:
                 if dname.count("-") != 2:
                     continue
-                ddd = j(rootdir, dname)
-                for fll in listdir(ddd):
-                    yield cls.strip(j(ddd, fll))
+                ddd = os.path.join(rootdir, dname)
+                for fll in os.listdir(ddd):
+                    yield cls.strip(os.path.join(ddd, fll))
 
     @classmethod
     def fntime(cls, daystr: str) -> float:
         "time from path."
-        datestr = " ".join(daystr.split(sep)[-2:])
+        datestr = " ".join(daystr.split(os.sep)[-2:])
         datestr = datestr.replace("_", " ")
         if "." in datestr:
             datestr, rest = datestr.rsplit(".", 1)
         else:
             rest = ""
-        timd = mktime(strptime(datestr, "%Y-%m-%d %H:%M:%S"))
+        timd = time.mktime(time.strptime(datestr, "%Y-%m-%d %H:%M:%S"))
         if rest:
             try:
                 timd += float("." + rest)
@@ -229,22 +232,22 @@ class Workdir:
     @classmethod
     def home(cls, name: str) -> str:
         "return home working directory."
-        return expanduser(f"~/.{name}")
+        return os.path.expanduser(f"~/.{name}")
 
     @classmethod
     def kinds(cls) -> List[str]:
         "show kind on objects in cache."
         assert cls.wdr
-        path = j(cls.wdr, "store")
-        if not e(path):
+        path = os.path.join(cls.wdr, "store")
+        if not os.path.exists(path):
             cls.skel()
-        return listdir(path)
+        return os.listdir(path)
 
     @classmethod
     def logdir(cls, path: str = "") -> str:
         "return directory to logs."
         assert cls.wdr
-        return j(cls.wdr, "logs", path)
+        return os.path.join(cls.wdr, "logs", path)
 
     @classmethod
     def long(cls, name: str) -> str:
@@ -263,35 +266,35 @@ class Workdir:
     def moddir(cls) -> str:
         "return modules directory."
         assert cls.wdr
-        return j(cls.wdr, "mods")
+        return os.path.join(cls.wdr, "mods")
 
     @classmethod
     def pid(cls, name: str) -> None:
         "write pid to file."
         assert cls.wdr
-        filename = j(cls.wdr, f"{name}.pid")
-        if e(filename):
-            unlink(filename)
+        filename = os.path.join(cls.wdr, f"{name}.pid")
+        if os.path.exists(filename):
+            os.unlink(filename)
         path2 = Path(filename)
         path2.parent.mkdir(parents=True, exist_ok=True)
         with open(filename, "w", encoding="utf-8") as fds:
-            fds.write(str(getpid()))
+            fds.write(str(os.getpid()))
 
     @classmethod
     def runpath(cls, name: str):
         "return path in run directory."
         assert cls.wdr
-        return j(cls.wdr, "run", name)
+        return os.path.join(cls.wdr, "run", name)
 
     @classmethod
     def skel(cls) -> None:
         "create directories."
         assert cls.wdr
-        if not e(cls.wdr):
+        if not os.path.exists(cls.wdr):
             Utils.cdir(cls.wdr)
-        path = a(cls.wdr)
+        path = os.path.abspath(cls.wdr)
         for wpth in ["config", "logs", "mods", "run", "store"]:
-            pth = Path(j(path, wpth))
+            pth = Path(os.path.join(path, wpth))
             pth.mkdir(parents=True, exist_ok=True)
 
 

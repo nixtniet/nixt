@@ -4,7 +4,10 @@
 "the big loop"
 
 
-from .default import Event, Queue, interrupt_main
+import _thread
+
+
+from .default import Event, Queue
 from .message import Message
 from .tasking import Task
 from .typings import Union
@@ -63,7 +66,7 @@ class Loop:
         try:
             self.queue.join()
         except (KeyboardInterrupt, EOFError):
-            interrupt_main()
+            _thread.interrupt_main()
 
 
 def __dir__():

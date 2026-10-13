@@ -4,7 +4,10 @@
 "if it repeats it is important"
 
 
-from .default import Event, sleep
+import time
+
+
+from .default import Event
 from .tasking import Task
 from .typings import Any, Callable, ClassVar, Dict, List
 
@@ -40,7 +43,7 @@ class Repeater:
     def loop(cls) -> None:
         "repeater loop."
         while not cls.stopped.is_set():
-            sleep(1.0)
+            time.sleep(1.0)
             cls.counter += 1
             for sleeptime, arguments in cls.todo.items():
                 slept = int(sleeptime)

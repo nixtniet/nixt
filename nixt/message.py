@@ -4,7 +4,9 @@
 "only the msg"
 
 
-from .default import Event
+import threading
+
+
 from .objects import Data
 from .tasking import Worker
 from .typings import List, Union
@@ -16,7 +18,7 @@ class Message(Data):
 
     def __init__(self):
         super().__init__()
-        self.__ready__: Event = Event()
+        self.__ready__: threading.Event = threading.Event()
         self.__thr__: Union[Worker ,None] = None
         self.args: List[str] = []
         self.cmd: str = ""
