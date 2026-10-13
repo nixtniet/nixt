@@ -44,7 +44,7 @@ class Cmd:
         msg.reply("\n")
         msg.reply('"tables"')
         msg.reply("\n")
-        msg.reply("from typing import Hash")
+        msg.reply("from .typings import Hash")
         msg.reply("\n")
         msg.reply(f"CORE: Hash = {JSON.dumps(core, indent=4, sort_keys=True)}")
         msg.reply("\n")

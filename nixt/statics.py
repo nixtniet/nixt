@@ -4,7 +4,7 @@
 "tables"
 
 
-from typing import Hash
+from .typings import Hash
 
 
 CORE: Hash = {
@@ -29,7 +29,7 @@ CORE: Hash = {
     "persist": "ec0d66a2ad90e49900bbb3b9959bd707",
     "pooling": "7bc45b10d0893df428e96a8d72ca9219",
     "repeats": "47f08d61ed6059c9595d80caa0d69fe8",
-    "require": "3c41a64e66479130b0030667fb7a5a94",
+    "require": "968ff36fc8df1d8f31132b1fd53a9e5d",
     "runners": "ad38cfe20ee364a9b61613a78ce3177b",
     "runtime": "32f3d085ad5a8c7ec07a346b874a8a08",
     "sources": "7be987770a04b91a97d464d3040d00d3",
