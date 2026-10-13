@@ -4,20 +4,13 @@
 "watching files"
 
 
-import os
-import time
-
-
-from .default import Event
+from .default import Event, e, sleep, stat
 from .tasking import Task
 from .typings import Callable, ClassVar, Dict, Union
 
 
 Callables = Dict[str, Callable]
 Floats    = Dict[str, float]
-
-
-e = os.path.exists
 
 
 class Watcher:
@@ -44,7 +37,7 @@ class Watcher:
         for path in cls.cbs:
             if not e(path):
                 continue
-            cls.times[path] = times.get(path, os.stat(path).st_mtime)
+            cls.times[path] = times.get(path, stat(path).st_mtime)
 
     @classmethod
     def loop(cls):
@@ -53,11 +46,11 @@ class Watcher:
             for path, callback in cls.cbs.items():
                 if not e(path):
                     continue
-                mtime = os.stat(path).st_mtime
+                mtime = stat(path).st_mtime
                 if mtime > cls.times[path]:
                     callback()
                 cls.times[path] = mtime
-            time.sleep(cls.sleep)
+            sleep(cls.sleep)
 
     @classmethod
     def start(cls, daemon: bool = True):

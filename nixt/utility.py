@@ -4,14 +4,8 @@
 "usefulness"
 
 
-import datetime
-import os
-import pathlib
-import time
-import uuid
-
-
-from .default import e, expanduser, j, listdir
+from .default import Path, datetime, e, expanduser, j, listdir, mktime
+from .default import sep, strptime, time, uuid4
 from .typings import Any, ClassVar, List, ModuleType, Union
 
 
@@ -22,7 +16,7 @@ class Time:
 
     "time related utilities."
 
-    starttime: ClassVar[float] = time.time()
+    starttime: ClassVar[float] = time()
     times = (
         "%a, %d %b %Y %H:%M:%S %z",
         "%a, %d %b %Y %H:%M:%S",
@@ -43,7 +37,7 @@ class Time:
         daystr = daystr.encode('utf-8', 'replace').decode("utf-8")
         for fmat in cls.times:
             try:
-                return time.mktime(time.strptime(daystr, fmat))
+                return mktime(strptime(daystr, fmat))
             except ValueError:
                 pass
         return None
@@ -97,12 +91,12 @@ class Time:
         for word in daystr.split():
             if word.startswith("+"):
                 try:
-                    return int(word[1:]) + time.time()
+                    return int(word[1:]) + time()
                 except (ValueError, IndexError):
                     continue
             res = cls.date(word.strip())
             if not res:
-                date = datetime.datetime.fromtimestamp(time.time(), tz=None).date()
+                date = datetime.fromtimestamp(time(), tz=None).date()
                 word = f"{date.year}-{date.month}-{date.day}" + " " + word
                 res = cls.date(word.strip())
             if res:
@@ -114,7 +108,7 @@ class Time:
         "return time from string."
         tme = cls.date(datestr)
         if not tme:
-            tme = time.time()
+            tme = time()
         return tme
 
 
@@ -127,7 +121,7 @@ class Utils:
         "create directory."
         if e(path):
             return
-        pth = pathlib.Path(path)
+        pth = Path(path)
         if not e(pth.parent):
             pth.parent.mkdir(parents=True, exist_ok=True)
 
@@ -154,7 +148,7 @@ class Utils:
     @staticmethod
     def shortid() -> str:
         "return a shortid."
-        return str(uuid.uuid4())[:8]
+        return str(uuid4())[:8]
 
     @staticmethod
     def source(module: ModuleType) -> Union[str, None]:
@@ -181,7 +175,7 @@ class Utils:
     @staticmethod
     def strip(path: str, nrchar: int = 3) -> str:
         "strip filename from path."
-        return j(*path.split(os.sep)[-nrchar:])
+        return j(*path.split(sep)[-nrchar:])
 
 
 def __dir__():

@@ -4,12 +4,8 @@
 "non-blocking"
 
 
-import inspect
-import time
-import _thread
-
-
-from .default import Event, Log, Queue, RLock, Thread
+from .default import Event, Log, Queue, RLock, Thread, isfunction, ismethod
+from .default import interrupt_main, time
 from .typings import Any, Callable, ClassVar, Dict, Union
 
 
@@ -30,7 +26,7 @@ class Worker(Thread):
         self.queue: Queue = Queue()
         self.result: Any = None
         self.sleep: float = 0.0
-        self.starttime: float = time.time()
+        self.starttime: float = time()
         self.state: Anys = {}
         self.queue.put((func, args))
 
@@ -46,7 +42,7 @@ class Worker(Thread):
             super().join(timeout or None)
             return self.result
         except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
+            interrupt_main()
             return None
 
     def clsname(self, obj: Any) -> str:
@@ -57,9 +53,9 @@ class Worker(Thread):
 
     def getname(self, obj: Any) -> str:
         "string of function/method."
-        if inspect.ismethod(obj):
+        if ismethod(obj):
             return f"{self.clsname(obj)}.{obj.__name__}"
-        if inspect.isfunction(obj):
+        if isfunction(obj):
             return repr(obj).split()[1]
         return repr(obj)
 
@@ -71,10 +67,10 @@ class Worker(Thread):
         try:
             self.result = func(*args)
         except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
+            interrupt_main()
         except Exception:
             logger.exception(str(func))
-            _thread.interrupt_main()
+            interrupt_main()
 
 
 class Task:

@@ -4,14 +4,10 @@
 "path to object cache"
 
 
-import datetime
-import json
-import os
-import pathlib
-import time
 
 
-from .default import RLock, e, j
+from .default import RLock, JSONDecodeError, datetime, a, e, j, listdir, sep
+from .default import Path, expanduser, getpid, mktime, strptime, unlink, walk
 from .encoder import JSON
 from .methods import Method
 from .objects import Data
@@ -63,7 +59,7 @@ class Disk:
     @classmethod
     def ident(cls, obj: Any) -> str:
         "return ident string for object."
-        return j(Method.fqn(obj), *str(datetime.datetime.now(tz=None)).split())
+        return j(Method.fqn(obj), *str(datetime.now(tz=None)).split())
 
     @classmethod
     def read(cls, obj: Any, path: str, base: str = "store") -> bool:
@@ -75,7 +71,7 @@ class Disk:
             with open(pth, "r", encoding="utf-8") as fpt:
                 try:
                     Method.update(obj, JSON.load(fpt))
-                except json.decoder.JSONDecodeError as ex:
+                except JSONDecodeError as ex:
                     raise DecodeError(Utils.strip(pth)) from ex
             return True
 
@@ -161,24 +157,24 @@ class Locater:
     def fns(cls, kind: str) -> Paths:
         "file names by kind of object."
         path = j(Workdir.wdr, "store", kind)
-        for rootdir, dirs, _files in os.walk(path, topdown=True):
+        for rootdir, dirs, _files in walk(path, topdown=True):
             for dname in dirs:
                 if dname.count("-") != 2:
                     continue
                 ddd = j(rootdir, dname)
-                for fll in os.listdir(ddd):
+                for fll in listdir(ddd):
                     yield cls.strip(j(ddd, fll))
 
     @classmethod
     def fntime(cls, daystr: str) -> float:
         "time from path."
-        datestr = " ".join(daystr.split(os.sep)[-2:])
+        datestr = " ".join(daystr.split(sep)[-2:])
         datestr = datestr.replace("_", " ")
         if "." in datestr:
             datestr, rest = datestr.rsplit(".", 1)
         else:
             rest = ""
-        timd = time.mktime(time.strptime(datestr, "%Y-%m-%d %H:%M:%S"))
+        timd = mktime(strptime(datestr, "%Y-%m-%d %H:%M:%S"))
         if rest:
             try:
                 timd += float("." + rest)
@@ -233,7 +229,7 @@ class Workdir:
     @classmethod
     def home(cls, name: str) -> str:
         "return home working directory."
-        return os.path.expanduser(f"~/.{name}")
+        return expanduser(f"~/.{name}")
 
     @classmethod
     def kinds(cls) -> List[str]:
@@ -242,7 +238,7 @@ class Workdir:
         path = j(cls.wdr, "store")
         if not e(path):
             cls.skel()
-        return os.listdir(path)
+        return listdir(path)
 
     @classmethod
     def logdir(cls, path: str = "") -> str:
@@ -275,11 +271,11 @@ class Workdir:
         assert cls.wdr
         filename = j(cls.wdr, f"{name}.pid")
         if e(filename):
-            os.unlink(filename)
-        path2 = pathlib.Path(filename)
+            unlink(filename)
+        path2 = Path(filename)
         path2.parent.mkdir(parents=True, exist_ok=True)
         with open(filename, "w", encoding="utf-8") as fds:
-            fds.write(str(os.getpid()))
+            fds.write(str(getpid()))
 
     @classmethod
     def runpath(cls, name: str):
@@ -293,9 +289,9 @@ class Workdir:
         assert cls.wdr
         if not e(cls.wdr):
             Utils.cdir(cls.wdr)
-        path = os.path.abspath(cls.wdr)
+        path = a(cls.wdr)
         for wpth in ["config", "logs", "mods", "run", "store"]:
-            pth = pathlib.Path(j(path, wpth))
+            pth = Path(j(path, wpth))
             pth.mkdir(parents=True, exist_ok=True)
 
 

@@ -5,7 +5,7 @@
 
 
 from collections.abc import Callable, Iterator
-from types           import ModuleType, MappingProxyType
+from types           import MethodType, ModuleType, MappingProxyType
 from typing          import Any, ClassVar, Dict, List, Set, TextIO
 from typing          import Tuple, Union, Generator
 
@@ -19,6 +19,7 @@ __all__ = (
     'Iterator',
     'List',
     'MappingProxyType',
+    'MethodType',
     'ModuleType',
     'Set',
     'TextIO',

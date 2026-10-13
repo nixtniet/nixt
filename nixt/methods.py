@@ -4,13 +4,10 @@
 "a function with an object as the first argument"
 
 
-import inspect
-import os
-import types
-
-
+from .default import d, getfile
 from .objects import Object
-from .typings import Any, Dict, Generator, List, Tuple, Union
+from .typings import Any, Dict, Generator, List, MappingProxyType, MethodType
+from .typings import Tuple, Union
 
 
 Anys     = Dict[str, Any]
@@ -152,7 +149,7 @@ class Method:
             return [(x, getattr(obj, x)) for x in dir(obj) if not x.startswith("_")]
         if isinstance(obj, dict):
             return list(obj.items())
-        if isinstance(obj, types.MappingProxyType):
+        if isinstance(obj, MappingProxyType):
             return list(obj.items())
         return list(obj.__dict__.items())
 
@@ -161,7 +158,7 @@ class Method:
         "object's keys."
         if isinstance(obj, dict):
             return list(obj.keys())
-        if isinstance(obj, types.MappingProxyType):
+        if isinstance(obj, MappingProxyType):
             return list(obj.keys())
         return list(obj.__dict__.keys())
 
@@ -243,7 +240,7 @@ class Method:
             chars = "_"
         res = type(obj)()
         for key, value in cls.items(obj):
-            if isinstance(value, types.MethodType):
+            if isinstance(value, MethodType):
                 continue
             donext = False
             for char in chars:
@@ -303,7 +300,7 @@ class Method:
                 obj.update(data)
             else:
                 obj.update(data.__dict__)
-        elif isinstance(obj.__dict__, types.MappingProxyType):
+        elif isinstance(obj.__dict__, MappingProxyType):
             for key, value in data.items():
                 setattr(obj, key, value)
         elif isinstance(data, dict):
@@ -318,7 +315,7 @@ class Method:
             return [getattr(obj, x) for x in dir(obj) if not x.startswith("_")]
         if isinstance(obj, dict):
             return list(obj.values())
-        if isinstance(obj.__dict__, types.MappingProxyType):
+        if isinstance(obj.__dict__, MappingProxyType):
             res = []
             for key in obj.__dict__:
                 res.append(obj[key])
@@ -328,7 +325,7 @@ class Method:
     @classmethod
     def where(cls, obj: Any) -> str:
         "path where object is defined."
-        return os.path.dirname(inspect.getfile(obj))
+        return d(getfile(obj))
 
 
 def __dir__():
