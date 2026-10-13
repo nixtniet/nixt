@@ -4,10 +4,8 @@
 "displaying messages"
 
 
-import threading
-
-
 from .brokers import Broker
+from .default import Event, RLock
 from .handler import Handler
 from .message import Message
 
@@ -16,11 +14,11 @@ class Display:
 
     "unit of display"
 
-    block: threading.Event = threading.Event()
+    block: Event = Event()
     last: str = ""
 
     def __init__(self):
-        self.olock: threading.RLock = threading.RLock()
+        self.olock: RLock = RLock()
         self.silent: bool = False
         Broker.add(self)
 
