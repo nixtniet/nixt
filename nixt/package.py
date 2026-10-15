@@ -16,7 +16,6 @@ from .utility import Utils
 
 Module  = Union[ModuleType, None]
 Modules = Dict[str, ModuleType]
-Strings = Hash
 
 
 logger = logging.getLogger(__name__)
@@ -26,9 +25,9 @@ class Mods:
 
     "modules"
 
-    core: ClassVar[Strings] = {}
-    dirs: ClassVar[Strings] = {}
-    md5s: ClassVar[Strings] = {}
+    core: ClassVar[Hash] = {}
+    dirs: ClassVar[Hash] = {}
+    md5s: ClassVar[Hash] = {}
     mods: ClassVar[Modules] = {}
 
     @classmethod

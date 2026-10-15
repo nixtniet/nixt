@@ -7,10 +7,7 @@
 from .looping import Loop
 from .message import Message
 from .tasking import Task
-from .typings import Callable, Dict
-
-
-Callbacks = Dict[str, Callable]
+from .typings import Callable, Callables
 
 
 class Handler(Loop):
@@ -19,7 +16,7 @@ class Handler(Loop):
 
     def __init__(self):
         super().__init__()
-        self.cbs: Callbacks = {}
+        self.cbs: Callables = {}
 
     def handle(self, msg: Message) -> None:
         "run callback function with msg."

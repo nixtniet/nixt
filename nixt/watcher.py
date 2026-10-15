@@ -10,11 +10,10 @@ import time
 
 from .default import Event
 from .tasking import Task
-from .typings import Callable, ClassVar, Dict, Union
+from .typings import Callable, Callables, ClassVar, Dict, Union
 
 
-Callables = Dict[str, Callable]
-Floats    = Dict[str, float]
+Floats = Dict[str, float]
 
 
 class Watcher:

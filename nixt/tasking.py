@@ -6,12 +6,11 @@
 
 import inspect
 import logging
-import threading
 import time
 import _thread
 
 
-from .default import Queue, RLock, Thread
+from .default import Event, Queue, RLock, Thread
 from .typings import Any, Anys, Callable, ClassVar, Union
 
 
@@ -25,7 +24,7 @@ class Worker(Thread):
 
     "unit of thread"
 
-    block: ClassVar[threading.Event] = threading.Event()
+    block: ClassVar[Event] = Event()
 
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)

@@ -11,18 +11,18 @@ from .brokers import Clients
 from .message import Message
 from .package import Mods
 from .parsers import Parser
-from .typings import Callable, ClassVar, Dict, Hash, List, ModuleType, Union
+from .typings import Callable, Callables, ClassVar, Hash, List
+from .typings import ModuleType, Union
 
 
-Callables = List[Callable]
-Cmds      = Dict[str, Callable]
+Cmds = List[Callable]
 
 
 class Commands:
 
     "command dispatch"
 
-    cmds: ClassVar[Cmds] = {}
+    cmds: ClassVar[Callables] = {}
     names: ClassVar[Hash] = {}
 
     @classmethod
@@ -67,9 +67,9 @@ class Commands:
         return cls.cmds.get(name, None)
 
     @classmethod
-    def scan(cls, mod: ModuleType, skip: bool = False) -> Callables:
+    def scan(cls, mod: ModuleType, skip: bool = False) -> Cmds:
         "scan module for commands."
-        result: Callables = []
+        result: Cmds = []
         for nme, func in inspect.getmembers(mod, inspect.isfunction):
             if "cb_" in nme:
                 continue

@@ -10,14 +10,16 @@ from typing          import Any, ClassVar, Dict, List, Set, TextIO
 from typing          import Tuple, Union, Generator
 
 
-Anys = Dict[str, Any]
-Hash = Dict[str, str]
+Anys      = Dict[str, Any]
+Callables = Dict[str, Callable]
+Hash      = Dict[str, str]
 
 
 __all__ = (
     'Any',
     'Anys',
     'Callable',
+    'Callables',
     'ClassVar',
     'Dict',
     'Generator',
