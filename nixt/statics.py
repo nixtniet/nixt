@@ -9,7 +9,7 @@ from .typings import Hash
 
 CORE: Hash = {
     "booting": "eb77c8edddc947366e426712ebddbfbc",
-    "brokers": "b8c55c1a8f48d15e44224e8121847ec2",
+    "brokers": "a205a33a52ac19005a89da9fb90318df",
     "buffers": "a95264453bbfa417e4404e45ba0ea6d0",
     "command": "a4e191ad9de4f58be0d104ef538d6649",
     "configs": "915a02e10b32cc61a5365e6401876008",

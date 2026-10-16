@@ -9,7 +9,7 @@ import sys
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.runtime import control
+from nixt.runtime import main
 
 
-control()
+main()
