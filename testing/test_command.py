@@ -10,9 +10,9 @@ import unittest
 from nixt.defines import Commands, Handler, Message
 
 
-def cmnd(message):
+def cmnd(msg):
     "test command."
-    message.reply("yo!")
+    msg.reply("yo!")
 
 
 class TestCommands(unittest.TestCase):

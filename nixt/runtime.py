@@ -15,7 +15,7 @@ from argparse import SUPPRESS, ArgumentParser, RawTextHelpFormatter
 from .defines import Boot, Commands, Main, MD5, Message, Method, Mods, Screen
 from .defines import Workdir
 from .require import Cmd
-from .typings import Any, Callable, TextIO, Union
+from .typings import Any, Callable, List, TextIO, Union
 
 
 Final = Union[Callable, None]
@@ -100,6 +100,7 @@ class Booting(Boot):
     def wrap(cls, func: Callable, *args: Any, dofinal: Final = None) -> None:
         "restore console."
         import termios
+        old: List[Any] = []
         try:
             old = termios.tcgetattr(sys.stdin.fileno())
         except termios.error:

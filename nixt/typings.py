@@ -5,13 +5,16 @@
 
 
 from collections.abc import Callable, Iterator
-from types           import MethodType, ModuleType, MappingProxyType
+from types           import FunctionType, MethodType, ModuleType
+from types           import MappingProxyType
 from typing          import Any, ClassVar, Dict, List, Set, TextIO
 from typing          import Tuple, Union, Generator
 
 
 Anys      = Dict[str, Any]
 Callables = Dict[str, Callable]
+Exec      = Union[FunctionType, MethodType]
+Execs     = Dict[str, Exec]
 Hash      = Dict[str, str]
 
 
@@ -22,6 +25,9 @@ __all__ = (
     'Callables',
     'ClassVar',
     'Dict',
+    'Exec',
+    'Execs',
+    'FunctionType',
     'Generator',
     'Hash',
     'Iterator',

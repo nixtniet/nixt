@@ -138,6 +138,14 @@ class Utils:
         return obj.__class__.__name__
 
     @staticmethod
+    def funcname(obj: Any) -> str:
+        "return functionname."
+        try:
+            return obj.__name__
+        except AttributeError:
+            return ""
+
+    @staticmethod
     def home(name: str) -> str:
         "return home working directory."
         return os.path.expanduser(f"~/.{name}")

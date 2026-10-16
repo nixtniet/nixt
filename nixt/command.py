@@ -12,7 +12,8 @@ from .message import Message
 from .package import Mods
 from .parsers import Parser
 from .typings import Callable, Callables, ClassVar, Hash, List
-from .typings import ModuleType, Union
+from .typings import ModuleType, Tuple, Union
+from .utility import Utils
 
 
 Cmds = List[Callable]
@@ -26,12 +27,11 @@ class Commands:
     names: ClassVar[Hash] = {}
 
     @classmethod
-    def add(cls, *funcs: Callable) -> None:
+    def add(cls, *funcs: *Tuple[Callable]) -> None:
         "register a command."
         for func in funcs:
-            if "__name__" not in dir(func):
-                continue
-            cls.cmds[func.__name__] = func
+            name = Utils.funcname(func)
+            cls.cmds[name] = func
 
     @classmethod
     def command(cls, msg: Message) -> None:
@@ -51,7 +51,7 @@ class Commands:
             mod = Mods.get(modname)
             if not mod:
                 continue
-            result.extend([x.__name__ for x in Commands.scan(mod, True)])
+            result.extend([Utils.funcname(x) for x in Commands.scan(mod, True)])
         return result
 
     @classmethod

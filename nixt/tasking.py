@@ -51,16 +51,18 @@ class Worker(Thread):
             _thread.interrupt_main()
             return None
 
-    def clsname(self, obj: Any) -> str:
+    @classmethod
+    def clsname(cls, obj: Any) -> str:
         "class name of an object."
         if "__self__" in dir(obj):
             return obj.__self__.__class__.__name__
         return obj.__class__.__name__
 
-    def getname(self, obj: Any) -> str:
+    @classmethod
+    def getname(cls, obj: Any) -> str:
         "string of function/method."
         if inspect.ismethod(obj):
-            return f"{self.clsname(obj)}.{obj.__name__}"
+            return f"{cls.clsname(obj)}.{obj.__name__}"
         if inspect.isfunction(obj):
             return repr(obj).split()[1]
         return repr(obj)

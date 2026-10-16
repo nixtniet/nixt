@@ -62,6 +62,7 @@ ignore = [
     'invalid-all-format',
     'mutable-class-default',
     'non-pep585-annotation',
+    'non-pep604-annotation-union',
     'unsorted-imports',
     'verbose-log-message'
 ]

@@ -34,4 +34,5 @@ def popen(txt):
 popen(f"ruff check {NAME} bin/tinder testing examples")
 popen(f"pylint {NAME} bin/tinder testing examples")
 popen(f"mypy -p {NAME} -p testing -p examples --check-untyped-defs")
+popen("ty check")
 popen("bin/tinder")

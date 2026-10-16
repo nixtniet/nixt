@@ -10,7 +10,7 @@ import logging.handlers
 import os
 import pathlib
 import re
-import urllib
+import urllib.parse
 
 
 from nixt.default import RLock
@@ -458,7 +458,7 @@ def exp(msg: Message):
     "export opml."
     with Locks.importlock:
         msg.reply(TEMPLATE)
-        for nrs, ooo in enumerate(Locater.objects(Method.fqn(OPML))): # type: ignore
+        for nrs, ooo in enumerate(Locater.objects(Method.fqn(OPML))):
             obj = Rss()
             Method.update(obj, ooo)
             name = f"url{nrs}"
@@ -508,7 +508,7 @@ def imp(msg: Message):
             del obj["xmlUrl"]
             Method.update(feed, obj)
             uri = urllib.parse.urlparse(feed.rss)
-            feed.name = max(uri.netloc.split("."), key=len)
+            feed.name = str(max(uri.netloc.split("."), key=len))
             feed.insertid = insertid
             Disk.write(feed)
             nrs += 1
