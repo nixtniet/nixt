@@ -19,8 +19,8 @@ class Output(Display):
 
     def __init__(self):
         Display.__init__(self)
-        self.oqueue: Queue = Queue()
-        self.ostopped: Event = Event()
+        self.oqueue = Queue()
+        self.ostopped = Event()
 
     def display(self, msg):
         "do actual display."

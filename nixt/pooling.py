@@ -9,13 +9,14 @@ import os
 
 from .default import RLock
 from .runners import Runner
+from .typings import List
 
 
 class Pool:
 
     "multiple runners"
 
-    runners = []
+    runners: List[Runner] = []
     clazz = Runner
     lock = RLock()
     max = os.cpu_count()

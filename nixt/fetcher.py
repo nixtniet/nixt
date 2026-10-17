@@ -15,6 +15,7 @@ from .configs import Main
 from .methods import Method
 from .objects import Data
 from .sources import MD5
+from .typings import Dict
 
 
 class Response(Data):
@@ -33,7 +34,7 @@ class Fetcher:
 
     "fetch urls"
 
-    modified = {}
+    modified: Dict[str, str] = {}
 
     @classmethod
     def cdata(cls, line):

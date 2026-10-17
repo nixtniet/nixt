@@ -96,11 +96,10 @@ class Booting(Boot):
     def wrap(cls, func, *args, dofinal=None):
         "restore console."
         import termios
-        old = []
         try:
             old = termios.tcgetattr(sys.stdin.fileno())
         except termios.error:
-            old = [False,]
+            old = None
         try:
             cls.wrapped(func, *args)
         except (KeyboardInterrupt, EOFError):

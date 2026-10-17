@@ -49,6 +49,7 @@ disable = [
     'relative-beyond-top-level',
 ]
 
+
 [tool.ruff.lint]
 preview = true
 ignore = [
@@ -61,4 +62,11 @@ ignore = [
     'non-pep604-annotation-union',
     'unsorted-imports',
     'verbose-log-message'
+]
+
+
+[tool.mypy]
+disable_error_code = [
+    'annotation-unchecked',
+    'var-annotated'
 ]
