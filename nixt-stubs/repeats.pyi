@@ -1,0 +1,74 @@
+# This file is placed in the Public Domain.
+
+
+"if it repeats it is important"
+
+
+import time
+
+
+from .default import Event
+from .tasking import Task
+from .typings import Any, Callable, ClassVar, Dict, List
+
+
+Todo = Dict[str, List[Any]]
+
+
+class Repeater:
+
+    "repeat at interval"
+
+    running: ClassVar[Event] = Event()
+    stopped: ClassVar[Event] = Event()
+    counter: ClassVar[int] = 0
+    sleeptime: ClassVar[float] = 0.1
+    todo: ClassVar[Todo] = {}
+
+    @classmethod
+    def add(
+        cls,
+        sleeptime: float,
+        func: Callable,
+        *args: Any,
+        **kwargs: Any
+        ) -> None:
+        "add a repeater."
+        slp = str(sleeptime)
+        if slp not in cls.todo:
+            cls.todo[slp] = []
+        cls.todo[slp].append((func, args, kwargs))
+
+    @classmethod
+    def loop(cls) -> None:
+        "repeater loop."
+        while not cls.stopped.is_set():
+            time.sleep(1.0)
+            cls.counter += 1
+            for sleeptime, arguments in cls.todo.items():
+                slept = int(sleeptime)
+                if cls.counter % slept != 0:
+                    continue
+                for func, args, kwargs in arguments:
+                    Task.start(func, *args, **kwargs)
+
+    @classmethod
+    def start(cls, daemon: bool = True) -> None:
+        "start callback loop."
+        if not cls.stopped.is_set():
+            Task.start(cls.loop, daemon=daemon, name="Repeater.loop")
+
+    @classmethod
+    def stop(cls) -> None:
+        "stop loop."
+        cls.stopped.set()
+
+    @classmethod
+    def wait(cls) -> None:
+        "wait for loop to stop."
+
+
+def __dir__():
+    return (
+        'Repeater',
+    )

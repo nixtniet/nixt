@@ -4,46 +4,43 @@
 "tables"
 
 
-from .typings import Hash
-
-
-CORE: Hash = {
-    "booting": "eb77c8edddc947366e426712ebddbfbc",
-    "brokers": "a205a33a52ac19005a89da9fb90318df",
-    "buffers": "a95264453bbfa417e4404e45ba0ea6d0",
-    "command": "a4e191ad9de4f58be0d104ef538d6649",
-    "configs": "915a02e10b32cc61a5365e6401876008",
+CORE = {
+    "booting": "9b7783d4b9e68c49a990b579b654a69f",
+    "brokers": "f11e0513b58e221f4969209a8e1643a5",
+    "buffers": "95a44ff8f0595f0a601f5a88219db859",
+    "command": "75b0c1bd935be10dc0e301289fa51c47",
+    "configs": "cd3a6bfd128bcee5a8a34a7dca7a94c6",
     "default": "f12cd3e1a616b5cbc66aabccdaf6ec15",
     "defines": "b8e15ccad79099579b802d1bd7108540",
-    "display": "50a5e7bc8d6e48caaffb5dd92b8fe802",
-    "encoder": "a3812b8a3463e33bc8fc1db9ae7aac53",
-    "fetcher": "f7d1fc0a540a2571479d5c8b19c2a2c4",
-    "handler": "aa86de3128b544239b89642f05d38e36",
-    "loggers": "9de82546991fe7f0c5a10ae42d4c0ade",
-    "looping": "c63da1fe1c26388e684da267f0f66315",
-    "message": "07e8febe6e1e5e2170a518d9826879c2",
-    "methods": "446405d8c25c607e94a474c287dbdbad",
+    "display": "ba98814f422b2803910ea9c9e4582f69",
+    "encoder": "37d171396bcca4c1657bc675ce3e753e",
+    "fetcher": "269e44738d0c2ddd0416678583d6edba",
+    "handler": "1733c553d1b04b45d60dbaef7f0556f5",
+    "loggers": "b3a4b4e60c059022472b2717050327dc",
+    "looping": "ee1e5a3fd08df1841fdee4f182cd0d82",
+    "message": "e51bc665378eac6ea9ffd21dd66334f6",
+    "methods": "7d40ca5e10f1e5a1453e9beab72fdac3",
     "objects": "e7d8664b921306546ac5df9bf30c9b65",
-    "package": "68f0e0a1e769d4b4ffbf3420f49da989",
-    "parsers": "9d17a6c7999bd6f92ee137a206b34bce",
-    "persist": "ec0d66a2ad90e49900bbb3b9959bd707",
-    "pooling": "7bc45b10d0893df428e96a8d72ca9219",
-    "repeats": "47f08d61ed6059c9595d80caa0d69fe8",
-    "require": "19b2a495f738ab3acb1de3ba1b564199",
-    "runners": "ad38cfe20ee364a9b61613a78ce3177b",
-    "runtime": "2aaf81a246086c2390c87ca0244d5024",
-    "sources": "7be987770a04b91a97d464d3040d00d3",
-    "tasking": "dcca6257aa35d2c6317f923b30bb020a",
+    "package": "dbdd0fe9a6d3a3c568ea1802adf31328",
+    "parsers": "c0aeb283743face93c350cb0fdb2f20b",
+    "persist": "27d9bbd6ccca7912749c837b3198af6a",
+    "pooling": "1b24dcb285469aec5b59f32d504d144c",
+    "repeats": "31c1498ba4eb490a9dedcab4b0aec52c",
+    "require": "3efa60fede3cc45492f7583bf345a7e2",
+    "runners": "90b299799f28069571c3fd79e8c48162",
+    "runtime": "9ac44c5bc1c8830e2aa1bed6417a05f8",
+    "sources": "f83a08fb6cfa9df0ba517baa6f0a704e",
+    "tasking": "b95fe4f34c04d86313929570f56770b1",
     "typings": "77251d50b6ecc33356ce5cbdde603abd",
-    "utility": "e588d7445d2c8630676e6aa21983cec1",
+    "utility": "61f75841876ac8554b7dc11f6b09d0df",
     "watcher": "585dcad0f6d88c4b7db32e10dcbc9c9d"
 }
 
 
-MODULES: Hash = {}
+MODULES = {}
 
 
-NAMES: Hash = {}
+NAMES = {}
 
 
 def __dir__():

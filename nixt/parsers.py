@@ -6,7 +6,6 @@
 
 from .methods import Method
 from .objects import Data
-from .typings import Any, Anys
 
 
 class Parser:
@@ -14,9 +13,9 @@ class Parser:
     "parsing for commands"
 
     @classmethod
-    def init(cls, obj: Any, text: str, clean: bool = False) -> None:
+    def init(cls, obj, text, clean=False):
         "set default values."
-        data: Anys = {
+        data = {
             "args": [],
             "cmd": "",
             "gets": Data(),
@@ -37,7 +36,7 @@ class Parser:
                 setattr(obj, k, v)
 
     @classmethod
-    def parse(cls, obj: Any, text: str, clean: bool = False) -> None:
+    def parse(cls, obj, text, clean=False):
         "parse text for command and arguments."
         cls.init(obj, text, clean)
         args = []

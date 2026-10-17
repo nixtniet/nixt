@@ -8,9 +8,7 @@ import _thread
 
 
 from .default import Event, Queue
-from .message import Message
 from .tasking import Task
-from .typings import Union
 
 
 class Loop:
@@ -18,17 +16,17 @@ class Loop:
     "keep looping"
 
     def __init__(self):
-        self.queue: Queue = Queue()
-        self.stopped: Event = Event()
-        self.done: Event = Event()
+        self.queue = Queue()
+        self.stopped = Event()
+        self.done = Event()
 
-    def after(self, msg: Message) -> None:
+    def after(self, msg):
         "called after callback."
 
-    def handle(self, msg: Message) -> None:
+    def handle(self, msg):
         "handle msg."
 
-    def loop(self) -> None:
+    def loop(self):
         "callback loop."
         while not self.stopped.is_set():
             self.poll()
@@ -42,26 +40,26 @@ class Loop:
             self.queue.task_done()
         self.done.set()
 
-    def poll(self) -> Union[Message, None]:
+    def poll(self):
         "create msg and put it on the queue."
 
-    def put(self, msg: Message) -> None:
+    def put(self, msg):
         "put msg on queue."
         self.queue.put(msg)
 
-    def start(self, daemon: bool = True) -> None:
+    def start(self, daemon=True):
         "start callback loop."
         self.done.clear()
         self.stopped.clear()
         Task.start(self.loop, daemon=daemon)
 
-    def stop(self) -> None:
+    def stop(self):
         "stop xallback loop."
         self.stopped.set()
         self.queue.put(None)
         self.done.wait()
 
-    def wait(self) -> None:
+    def wait(self):
         "wait for all msgs to finish,"
         try:
             self.queue.join()

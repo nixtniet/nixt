@@ -9,35 +9,31 @@ import os
 
 from .default import RLock
 from .runners import Runner
-from .typings import Any, ClassVar, List
-
-
-Runners = List[Runner]
 
 
 class Pool:
 
     "multiple runners"
 
-    runners: ClassVar[Runners] = []
-    clazz: type = Runner
-    lock: RLock = RLock()
+    runners = []
+    clazz = Runner
+    lock = RLock()
     max = os.cpu_count()
     nrcpu = 1
     nrlast = 0
 
     @classmethod
-    def add(cls, runner: Runner) -> None:
+    def add(cls, runner):
         "add a runner."
         cls.runners.append(runner)
 
     @classmethod
-    def busy(cls) -> bool:
+    def busy(cls):
         "see if pool is busy."
         return any(runner.queue.qsize() for runner in cls.runners)
 
     @classmethod
-    def init(cls, nrs: int, clz: Any = None) -> None:
+    def init(cls, nrs, clz=None):
         "initialze a number of runners."
         if clz:
             cls.clazz = clz
@@ -47,7 +43,7 @@ class Pool:
             cls.add(runner)
 
     @classmethod
-    def put(cls, *args: Any) -> None:
+    def put(cls, *args):
         "push job to a runner."
         with cls.lock:
             if cls.nrlast-1 >= len(cls.runners)-1:

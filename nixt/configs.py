@@ -29,10 +29,10 @@ class Main(metaclass=Config):
 
     "main config"
 
-    mods: str = ""
-    name: str = Method.pkgname(Config)
-    otxt: str = ""
-    path: str = ""
+    mods = ""
+    name = Method.pkgname(Config)
+    otxt = ""
+    path = ""
 
 
 def __dir__():

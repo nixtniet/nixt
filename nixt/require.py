@@ -8,9 +8,8 @@ import inspect
 import os
 
 
-from .defines import Commands, JSON, Main, MD5, Message, Mods, Utils
+from .defines import Commands, JSON, Main, MD5, Mods, Utils
 from .tasking import Worker
-from .typings import Hash
 
 
 class Cmd:
@@ -18,16 +17,16 @@ class Cmd:
     "necessary commands."
 
     @staticmethod
-    def cmd(msg: Message) -> None:
+    def cmd(msg):
         "show commands."
         check = len(Commands.cmds) > len(Commands.names)
         msg.reply(",".join(sorted((check and Commands.cmds) or Commands.names)))
 
     @staticmethod
-    def tbl(msg: Message) -> None:
+    def tbl(msg):
         "create table."
-        core: Hash = {}
-        md5s: Hash = {}
+        core = {}
+        md5s = {}
         Commands.names = {}
         if Main.mods:
             for name in Utils.spl(Main.mods):
@@ -45,13 +44,11 @@ class Cmd:
         msg.reply("\n")
         msg.reply('"tables"')
         msg.reply("\n")
-        msg.reply("from .typings import Hash")
+        msg.reply(f"CORE = {JSON.dumps(core, indent=4, sort_keys=True)}")
         msg.reply("\n")
-        msg.reply(f"CORE: Hash = {JSON.dumps(core, indent=4, sort_keys=True)}")
+        msg.reply(f"MODULES = {JSON.dumps(md5s, indent=4, sort_keys=True)}")
         msg.reply("\n")
-        msg.reply(f"MODULES: Hash = {JSON.dumps(md5s, indent=4, sort_keys=True)}")
-        msg.reply("\n")
-        msg.reply(f"NAMES: Hash = {JSON.dumps(Commands.names, indent=4, sort_keys=True)}")
+        msg.reply(f"NAMES = {JSON.dumps(Commands.names, indent=4, sort_keys=True)}")
         msg.reply("\n")
         msg.reply("def __dir__():")
         msg.reply("    return (")
@@ -61,7 +58,7 @@ class Cmd:
         msg.reply("    )")
 
     @staticmethod
-    def ver(msg: Message) -> None:
+    def ver(msg):
         "show verson."
         msg.reply(f"{Main.name.upper()} {MD5.core()}")
 

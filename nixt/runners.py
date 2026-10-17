@@ -6,18 +6,17 @@
 
 from .looping import Loop
 from .tasking import Task
-from .typings import Any
 
 
 class Runner(Loop):
 
     "run jobs"
 
-    def run(self, *args: Any, **kwargs: Any) -> Any:
+    def run(self, *args, **kwargs):
         "fetch a feed."
         raise NotImplementedError
 
-    def loop(self) -> None:
+    def loop(self):
         "loop to handle fetch jobs."
         while not self.stopped.is_set():
             job = self.queue.get()
@@ -25,7 +24,7 @@ class Runner(Loop):
                 break
             self.run(*job)
 
-    def start(self, daemon: bool = True) -> None:
+    def start(self, daemon=True):
         "start callback loop."
         self.done.clear()
         self.stopped.clear()

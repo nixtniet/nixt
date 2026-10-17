@@ -8,17 +8,7 @@ import inspect
 import os.path
 
 
-from .objects import Object
-from .typings import Any, Anys, Generator, List, Hash
-from .typings import MappingProxyType, MethodType, Tuple, Union
-
-
-Args     = Union[List[str], None]
-Items    = List[Tuple[str, Any]]
-Keys     = List[str]
-Selector = Union[Hash, None]
-Skipped  = Generator[Any, None, None]
-Values   = List[Any]
+from .typings import MappingProxyType, MethodType
 
 
 class Method:
@@ -26,17 +16,17 @@ class Method:
     "yeah"
 
     @classmethod
-    def clear(cls, obj: Any) -> None:
+    def clear(cls, obj):
         "remove all items from the object."
         obj.__dict__.clear()
 
     @classmethod
-    def clz(cls, obj: Any) -> str:
+    def clz(cls, obj):
         "return class name of an object."
         return cls.fqn(obj).split(".")[-1]
 
     @classmethod
-    def construct(cls, obj: Any, *args: Any, **kwargs: Any) -> None:
+    def construct(cls, obj, *args, **kwargs):
         "object contructor."
         if args:
             val = args[0]
@@ -50,24 +40,24 @@ class Method:
             cls.update(obj, kwargs)
 
     @classmethod
-    def copy(cls, obj: Any) -> Any:
+    def copy(cls, obj):
         "return shallow copy of the object."
         oobj = type(obj)()
         cls.update(oobj, obj.__dict__.copy())
         return oobj
 
     @classmethod
-    def deleted(cls, obj: Any) -> bool:
+    def deleted(cls, obj):
         "check whether obj had deleted flag set."
         return "__deleted__" in dir(obj) and obj.__deleted__
 
     @classmethod
     def edit(
         cls,
-        obj: Any,
-        setter: Union[Hash, None] = None,
-        skip: bool = False
-        ) -> None:
+        obj,
+        setter=None,
+        skip=False
+        ):
         "update object with dict."
         if setter is None:
             setter = {}
@@ -79,12 +69,12 @@ class Method:
     @classmethod
     def fmt(
         cls,
-        obj: Any,
-        args: Args = None,
-        skip: Args = None,
-        plain: bool = False,
-        empty: bool = False
-        ) -> str:
+        obj,
+        args=None,
+        skip= None,
+        plain=False,
+        empty=False
+        ):
         "format object info printable string."
         if args is None:
             args = list(obj.__dict__.keys())
@@ -116,7 +106,7 @@ class Method:
         return txt.strip()
 
     @classmethod
-    def fqn(cls, obj: Any) -> str:
+    def fqn(cls, obj):
         "full qualified name."
         if "__qualname__" in dir(obj):
             kin = obj.__qualname__
@@ -127,12 +117,12 @@ class Method:
         return kin
 
     @classmethod
-    def fromkeys(cls, obj: Any, keyz: str, value: Any = None) -> Anys:
+    def fromkeys(cls, obj, keyz, value=None):
         "create a new object with keys from iterable and values set to value."
         return obj.__dict__.fromkeys(keyz, value)
 
     @classmethod
-    def get(cls, obj: Any, key: str, default: Any = None) -> Any:
+    def get(cls, obj, key, default=None):
         "return value for key if key is in the object, otherwise return default."
         try:
             return obj.__dict__.get(key, default)
@@ -140,12 +130,12 @@ class Method:
             return obj.get(key, default)
 
     @classmethod
-    def isempty(cls, obj: Any) -> bool:
+    def isempty(cls, obj):
         "check if all keys heve empty value."
         return all(not cls.get(obj, key) for key in cls.keys(obj))
 
     @classmethod
-    def items(cls, obj: Any) -> Items:
+    def items(cls, obj):
         "object's key,value pairs."
         if isinstance(obj, type):
             return [(x, getattr(obj, x)) for x in dir(obj) if not x.startswith("_")]
@@ -156,7 +146,7 @@ class Method:
         return list(obj.__dict__.items())
 
     @classmethod
-    def keys(cls, obj: Any) -> Keys:
+    def keys(cls, obj):
         "object's keys."
         if isinstance(obj, dict):
             return list(obj.keys())
@@ -165,7 +155,7 @@ class Method:
         return list(obj.__dict__.keys())
 
     @classmethod
-    def merge(cls, obj: Any, obj2: Any) -> None:
+    def merge(cls, obj, obj2):
         "skip emoty values."
         for key, value in cls.items(obj2):
             if not value and getattr(obj, key, False):
@@ -173,12 +163,12 @@ class Method:
             setattr(obj, key, value)
 
     @classmethod
-    def modname(cls, obj: Any) -> str:
+    def modname(cls, obj):
         "return package name of an object."
         return obj.__module__.split(".")[-1]
 
     @classmethod
-    def notset(cls, obj: Any, obj2: Any) -> None:
+    def notset(cls, obj, obj2):
         "only set if not set."
         for key, value in cls.items(obj2):
             if getattr(obj, key, False):
@@ -187,22 +177,22 @@ class Method:
                 setattr(obj, key, value)
 
     @classmethod
-    def pkgname(cls, obj: Any) -> str:
+    def pkgname(cls, obj):
         "return package name of an object."
         return obj.__module__.split(".", maxsplit=1)[0]
 
     @classmethod
-    def pop(cls, obj: Any, key: str, default: Any = None) -> Any:
+    def pop(cls, obj, key, default=None):
         "remove key from object and return it's value. return default or KeyError."
         return obj.__dict__.pop(key, default)
 
     @classmethod
-    def popitem(cls, obj: Any) -> Tuple[str, Any]:
+    def popitem(cls, obj):
         "remove and return (key, value) pair."
         return obj.__dict__.popitem()
 
     @classmethod
-    def reduce(cls, obj: Any) -> Anys:
+    def reduce(cls, obj):
         "return dict with values setted attributes."
         result = {}
         for key, value in cls.items(obj):
@@ -213,10 +203,10 @@ class Method:
     @classmethod
     def search(
         cls,
-        obj: Any,
-        selector: Selector = None,
-        matching: bool = False
-        ) -> bool:
+        obj,
+        selector=None,
+        matching=False
+        ):
         "check whether object matches search criteria."
         if selector is None:
             selector = {}
@@ -236,7 +226,7 @@ class Method:
         return res
 
     @classmethod
-    def skip(cls, obj: Any, chars: str = "_") -> Union[Object, None]:
+    def skip(cls, obj, chars="_"):
         "skip class keys containing chars."
         if chars is None:
             chars = "_"
@@ -257,7 +247,7 @@ class Method:
         return res
 
     @classmethod
-    def skipped(cls, obj: Any) -> Skipped:
+    def skipped(cls, obj):
         "yield values without underscored keys."
         for key in dir(obj):
             if key.startswith("_"):
@@ -265,7 +255,7 @@ class Method:
             yield getattr(obj, key)
 
     @classmethod
-    def typed(cls, obj: Any, key: str, val: Any) -> None:
+    def typed(cls, obj, key, val):
         "assign proper types."
         if not val:
             return None
@@ -284,7 +274,7 @@ class Method:
         return setattr(obj, key, val)
 
     @classmethod
-    def update(cls, obj: Any, data: Any) -> None:
+    def update(cls, obj, data):
         "update object,"
         if isinstance(obj, type):
             if isinstance(data, type):
@@ -311,7 +301,7 @@ class Method:
             obj.__dict__.update(data.__dict__)
 
     @classmethod
-    def values(cls, obj: Any) -> Values:
+    def values(cls, obj):
         "object's values."
         if isinstance(obj, type):
             return [getattr(obj, x) for x in dir(obj) if not x.startswith("_")]
@@ -325,7 +315,7 @@ class Method:
         return list(obj.__dict__.values())
 
     @classmethod
-    def where(cls, obj: Any) -> str:
+    def where(cls, obj):
         "path where object is defined."
         return os.path.dirname(inspect.getfile(obj))
 

@@ -10,17 +10,14 @@ import types
 
 from .default import RLock
 from .methods import Method
-from .typings import Any, MappingProxyType, Union
-
-
-Json = Union[dict,list,bool,float,int,str]
+from .typings import MappingProxyType
 
 
 class Encoder(json.JSONEncoder):
 
     "object to string"
 
-    lock: RLock = RLock()
+    lock = RLock()
 
     def default(self, o):
         "generate serializable versions."
@@ -41,7 +38,7 @@ class Encoder(json.JSONEncoder):
                 except TypeError:
                     return repr(o)
 
-    def skip(self, obj: Any) -> dict:
+    def skip(self, obj):
         "yield values without underscored keys."
         result = {}
         for key, value in Method.items(obj):
@@ -58,24 +55,24 @@ class JSON:
     "json wrapper"
 
     @classmethod
-    def dump(cls, *args, **kw) -> None:
+    def dump(cls, *args, **kw):
         "dump object to disk."
         kw["cls"] = Encoder
         return json.dump(*args, **kw)
 
     @classmethod
-    def dumps(cls, *args, **kw) -> str:
+    def dumps(cls, *args, **kw):
         "dump object to string."
         kw["cls"] = Encoder
         return json.dumps(*args, **kw)
 
     @classmethod
-    def load(cls, s, *args, **kw) -> Json:
+    def load(cls, s, *args, **kw):
         "load object from disk."
         return json.load(s, *args, **kw)
 
     @classmethod
-    def loads(cls, s, *args, **kw) -> Json:
+    def loads(cls, s, *args, **kw):
         "load object from string."
         return json.loads(s, *args, **kw)
 
@@ -90,7 +87,7 @@ class JSONL(JSON):
         return cls.load(fp, *args, **kw)
 
     @classmethod
-    def write(cls, obj, fp, *args, **kw) -> None:
+    def write(cls, obj, fp, *args, **kw):
         "dump object to disk."
         kw["indent"] = None
         kw["skipkeys"] = True

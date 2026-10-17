@@ -8,7 +8,6 @@ import logging
 import os
 
 
-from .typings import Hash, Union
 from .utility import Utils
 
 
@@ -20,7 +19,7 @@ class MD5:
     "module md5sums"
 
     @classmethod
-    def check(cls, md5s: dict) -> bool:
+    def check(cls, md5s):
         "check for md5sums in a given path."
         ok = True
         if not __spec__:
@@ -39,7 +38,7 @@ class MD5:
         return ok
 
     @classmethod
-    def core(cls) -> Union[str, None]:
+    def core(cls):
         "calculate md5 of the statics module."
         try:
             from . import statics
@@ -51,7 +50,7 @@ class MD5:
         return None
 
     @classmethod
-    def createmd5(cls, path: str, data: Hash) -> None:
+    def createmd5(cls, path, data):
         "create md5s for file in a directory."
         for pth in os.listdir(path):
             if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
@@ -60,7 +59,7 @@ class MD5:
             data[name] = cls.md5(os.path.join(path, pth))
 
     @classmethod
-    def md5(cls, path: str) -> str:
+    def md5(cls, path):
         "calculate md5sum of a file."
         import hashlib
         md5s = hashlib.md5()
@@ -69,7 +68,7 @@ class MD5:
         return str(md5s.hexdigest())
 
     @classmethod
-    def source(cls, src: str) -> str:
+    def source(cls, src):
         "determine md5 of source code."
         import hashlib
         md5 = hashlib.md5()

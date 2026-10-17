@@ -19,7 +19,6 @@ from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
 from .tasking import Task, Worker
-from .typings import Callable
 from .utility import Utils
 
 
@@ -30,11 +29,11 @@ class Boot:
 
     "at startup"
 
-    running: Event = Event()
-    stopped: Event = Event()
+    running = Event()
+    stopped = Event()
 
     @classmethod
-    def configure(cls) -> None:
+    def configure(cls):
         "setup basic variables"
         Workdir.wdr = Main.wdr or Workdir.wdr or Workdir.home(Main.name)
         Workdir.skel()
@@ -45,7 +44,7 @@ class Boot:
         Mods.dir(Main.path, pkgname)
 
     @classmethod
-    def forever(cls) -> None:
+    def forever(cls):
         "run forever until ctrl-c."
         cls.running.set()
         while cls.running.is_set():
@@ -56,7 +55,7 @@ class Boot:
         cls.stopped.set()
 
     @classmethod
-    def init(cls, names: str, wait: bool = False) -> bool:
+    def init(cls, names, wait=False):
         "call init of modules that have an init function."
         thrs = []
         for name in Utils.spl(names):
@@ -73,7 +72,7 @@ class Boot:
         return True
 
     @classmethod
-    def shutdown(cls, wait: bool = True) -> None:
+    def shutdown(cls, wait=True):
         "call stop on clients."
         logger.debug("shutdown")
         for client in Broker.objs("wait"):
@@ -98,7 +97,7 @@ class Boot:
         cls.stopped.set()
 
     @classmethod
-    def wrapped(cls, func: Callable, *args) -> None:
+    def wrapped(cls, func, *args):
         "wrap function in a try/except, silence ctrl-c/ctrl-d."
         try:
             func(*args)

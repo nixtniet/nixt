@@ -4,20 +4,17 @@
 "logging"
 
 
-from logging import basicConfig, Formatter, Logger, LogRecord, StreamHandler
-
-
-from .typings import ClassVar
+from logging import basicConfig, Formatter, StreamHandler
 
 
 class Format(Formatter):
 
     "logging format"
 
-    disable: ClassVar[bool] = False
-    size: ClassVar[int] = 3
+    disable = False
+    size = 3
 
-    def format(self, record: LogRecord) -> str:
+    def format(self, record):
         "logging formatter."
         if not Format.disable:
             record.module = record.module.upper()
@@ -29,12 +26,12 @@ class Logging:
 
     "log"
 
-    datefmt: ClassVar[str] = "%H:%M:%S"
-    format:  ClassVar[str] = "%(module)-3s %(message)s"
-    formats: ClassVar[str] = "%(message)s"
+    datefmt = "%H:%M:%S"
+    format = "%(module)-3s %(message)s"
+    formats = "%(message)s"
 
     @classmethod
-    def enable(cls, path: str, logger: Logger) -> None:
+    def enable(cls, path, logger):
         "enabke module logger."
         import logging.handlers
         formatter = Format(Logging.formats, Logging.datefmt)
@@ -48,7 +45,7 @@ class Logging:
         logger.setLevel("DEBUG")
 
     @classmethod
-    def level(cls, loglevel: str) -> None:
+    def level(cls, loglevel):
         "set log level."
         formatter = Format(cls.formats, cls.datefmt)
         stream = StreamHandler()
@@ -63,7 +60,7 @@ class Logging:
             pass
 
     @classmethod
-    def size(cls, nrchars: int) -> None:
+    def size(cls, nrchars):
         "set text size."
         index = cls.format.find("-")+1
         newformat = cls.format[:index]

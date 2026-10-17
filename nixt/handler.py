@@ -5,9 +5,7 @@
 
 
 from .looping import Loop
-from .message import Message
 from .tasking import Task
-from .typings import Callable, Callables
 
 
 class Handler(Loop):
@@ -16,9 +14,9 @@ class Handler(Loop):
 
     def __init__(self):
         super().__init__()
-        self.cbs: Callables = {}
+        self.cbs = {}
 
-    def handle(self, msg: Message) -> None:
+    def handle(self, msg):
         "run callback function with msg."
         func = self.cbs.get(msg.kind, None)
         if not func:
@@ -27,7 +25,7 @@ class Handler(Loop):
         name = msg.text and msg.text.split()[0]
         msg.__thr__ = Task.start(func, msg, name=name)
 
-    def register(self, kind: str, callback: Callable) -> None:
+    def register(self, kind, callback):
         "register callback."
         self.cbs[kind] = callback
 

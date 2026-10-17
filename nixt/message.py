@@ -30,23 +30,23 @@ class Message(Data):
     def __iter__(self):
         return iter([x for x in self.__dict__ if not x.startswith("_")])
 
-    def iface(self, text: str) -> None:
+    def iface(self, text):
         "show interface."
         self.reply(f"{self.cmd} {text}")
 
-    def ok(self, text: str = "") -> None:
+    def ok(self, text=""):
         "print ok response."
         self.reply(f"ok {text}".strip())
 
-    def ready(self) -> None:
+    def ready(self):
         "flag msg as ready."
         self.__ready__.set()
 
-    def reply(self, text: str) -> None:
+    def reply(self, text):
         "add text to result."
         self.result.append(text)
 
-    def wait(self, timeout: float = 0.0) -> None:
+    def wait(self, timeout=0.0):
         "wait for completion."
         self.__ready__.wait(timeout or None)
         if self.__thr__:
