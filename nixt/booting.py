@@ -11,10 +11,10 @@ import time
 import _thread
 
 
-from .brokers import Broker
+from .clients import Broker, Screen
 from .configs import Main
 from .default import Event
-from .outputs import Screen
+from .excepts import Errors
 from .package import Mods
 from .persist import Workdir
 from .tasking import Task, Worker
@@ -66,8 +66,8 @@ class Boot:
             for thr in thrs:
                 try:
                     thr.join()
-                except (KeyboardInterrupt, EOFError):
-                    _thread.interrupt_main()
+                except Exception as ex:
+                    Errors.defer(ex)
         return True
 
     @classmethod
@@ -105,8 +105,7 @@ class Boot:
             Worker.block.set()
             _thread.interrupt_main()
         except Exception as ex:
-            logger.exception(ex)
-            _thread.interrupt_main()
+            Errors.defer(ex)
 
 
 def __dir__():

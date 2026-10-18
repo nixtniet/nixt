@@ -15,7 +15,6 @@ from logging  import basicConfig, Formatter, StreamHandler
 
 
 from .default import Path
-from .utility import Utils
 
 
 logger = logging.getLogger(__name__)

@@ -11,6 +11,7 @@ import _thread
 
 
 from .default import Event, Queue, RLock, Thread
+from .excepts import Errors
 
 
 logger = logging.getLogger(__name__)
@@ -43,9 +44,8 @@ class Worker(Thread):
         try:
             super().join(timeout or None)
             return self.result
-        except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
-            return None
+        except Exception as ex:
+            Errors.defer(ex)
 
     @classmethod
     def clsname(cls, obj):
@@ -70,11 +70,8 @@ class Worker(Thread):
             return
         try:
             self.result = func(*args)
-        except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
-        except Exception:
-            logger.exception(str(func))
-            _thread.interrupt_main()
+        except Exception as ex:
+            Errors.defer(ex)
 
 
 class Task:

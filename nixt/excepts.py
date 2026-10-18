@@ -5,20 +5,13 @@
 
 
 import traceback
+import _thread
 
 
 class Errors:
 
     bork = False
     errors = []
-
-    def errors():
-        "print errors."
-        for error in Errors.errors:
-            for line in error:
-                print(line)
-        if not Errors.errors and "v" in cfg.opts:
-            print("no errors")
 
     @classmethod
     def format(cls, exc):
@@ -30,6 +23,8 @@ class Errors:
         "add an exception"
         if cls.bork:
             raise exc
+        if exc in (KeyboardInterrupt, EOFError):
+            return _thread.interrupt_main()
         excp = exc.with_traceback(exc.__traceback__)
         fmt = format(excp)
         if fmt not in cls.errors:
