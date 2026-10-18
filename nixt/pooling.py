@@ -8,15 +8,39 @@ import os
 
 
 from .default import RLock
-from .runners import Runner
+from .looping import Loop
+from .tasking import Task
 from .typings import List
+
+
+class Runner(Loop):
+
+    "run jobs"
+
+    def run(self, *args, **kwargs):
+        "fetch a feed."
+        raise NotImplementedError
+
+    def loop(self):
+        "loop to handle fetch jobs."
+        while not self.stopped.is_set():
+            job = self.queue.get()
+            if job is None:
+                break
+            self.run(*job)
+
+    def start(self, daemon=True):
+        "start callback loop."
+        self.done.clear()
+        self.stopped.clear()
+        Task.start(self.loop, daemon=daemon, name="Runner.loop")
 
 
 class Pool:
 
     "multiple runners"
 
-    runners: List[Runner] = []
+    runners = []
     clazz = Runner
     lock = RLock()
     max = os.cpu_count()
@@ -57,4 +81,5 @@ class Pool:
 def __dir__():
     return (
         'Pool',
+        'Runner'
     )

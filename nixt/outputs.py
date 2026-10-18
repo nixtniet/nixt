@@ -1,16 +1,57 @@
 # This file is placed in the Public Domain.
 
 
-"buffered output"
+"displaying messages"
 
 
 import _thread
 
 
-from .default import Event, Queue
-from .display import Display
+from .brokers import Broker
+from .default import Event, RLock, Queue
 from .handler import Handler
 from .tasking import Task
+
+
+class Display:
+
+    "unit of display"
+
+    block = Event()
+    last = ""
+
+    def __init__(self):
+        self.olock: RLock = RLock()
+        self.silent: bool = False
+        Broker.add(self)
+
+    def announce(self, text):
+        "announce text to all channels."
+        if not self.silent:
+            self.raw(text)
+
+    def display(self, msg):
+        "display msg results."
+        with self.olock:
+            for txt in msg.result:
+                if self.block.is_set():
+                    return
+                self.dosay(msg.channel, txt)
+                del txt
+        del msg
+
+    def dosay(self, channel, text):
+        "say called by display."
+        self.say(channel, text)
+
+    def raw(self, text):
+        "raw output."
+        raise NotImplementedError
+
+    def say(self, channel, text):
+        "say text in channel."
+        self.last = channel
+        self.raw(text)
 
 
 class Output(Display):
@@ -59,6 +100,18 @@ class Output(Display):
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
 
+class Screen(Handler, Display):
+
+    "display wit coupled handler."
+
+    def __init__(self):
+        Handler.__init__(self)
+        Display.__init__(self)
+
+    def raw(self, text):
+        "raw output."
+        raise NotImplementedError
+
 
 class Buffer(Handler, Output):
 
@@ -86,5 +139,7 @@ class Buffer(Handler, Output):
 def __dir__():
     return (
         'Buffer',
-        'Output'
+        'Display',
+        'Pit[ut',
+        'Screen'
     )

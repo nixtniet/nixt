@@ -14,12 +14,11 @@ import _thread
 from .brokers import Broker
 from .configs import Main
 from .default import Event
-from .display import Screen
-from .loggers import Logging
+from .outputs import Screen
 from .package import Mods
 from .persist import Workdir
 from .tasking import Task, Worker
-from .utility import Utils
+from .utility import Logging, Utils
 
 
 logger = logging.getLogger(__name__)

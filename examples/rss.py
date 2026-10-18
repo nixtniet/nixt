@@ -3,8 +3,8 @@
 
 "rich site syndicate"
 
-
 import gc
+import html
 import logging
 import logging.handlers
 import os
@@ -13,15 +13,14 @@ import re
 import urllib.parse
 
 
+from urllib.parse   import unquote, urlparse, urlunparse
+from urllib.request import Request, urlopen
+
+
 from nixt.default import RLock
-from nixt.defines import Cfg, Clients, Data, Disk, Fetcher, Format, JSON, JSONL
+from nixt.defines import Cfg, Clients, Data, Disk, Format, JSON, JSONL
 from nixt.defines import Locater, Logging, Main, MD5, Message, Method, Object
 from nixt.defines import Pool, Repeater, Runner, Utils, Watcher, Workdir
-from nixt.typings import ClassVar, Generator, List, TextIO, Union
-
-
-Dicts   = Generator[dict, None, None]
-Strings = Generator[str, None, None]
 
 
 logger = logging.getLogger(__name__)
@@ -50,8 +49,8 @@ class Config(Cfg):
 
     "configuration"
 
-    polltime: ClassVar[int] = 300
-    save: ClassVar[bool] = False
+    polltime = 300
+    save = False
 
 
 class Feed(Data):
@@ -59,7 +58,16 @@ class Feed(Data):
     "feed data"
 
 
-Feeds = Generator[Feed, None, None]
+class Response(Data):
+
+    "response object"
+
+    def __init__(self):
+        Data.__init__(self)
+        self.data = b""
+        self.reason = ""
+        self.status = None
+        self.url = ""
 
 
 class Rss(Data):
@@ -68,44 +76,44 @@ class Rss(Data):
 
     def __init__(self):
         super().__init__()
-        self.__deleted__: bool = False
-        self.display_list: str = "title,link,author"
-        self.error: str = ""
-        self.feed: str = ""
-        self.insertid: str = ""
-        self.name: str = ""
-        self.rss: str  = ""
-        self.seen: List[str] = []
-        self.size: int = 0
-        self.skip: bool = False
-        self.status: int = 0
+        self.__deleted__ = False
+        self.display_list = "title,link,author"
+        self.error = ""
+        self.feed = ""
+        self.insertid = ""
+        self.name = ""
+        self.rss  = ""
+        self.seen = []
+        self.size = 0
+        self.skip = False
+        self.status = 0
 
 
 class State(Object):
 
     "keeping state"
 
-    index: ClassVar[int] = 0
+    index = 0
 
 
 class Locks:
 
     "locking"
 
-    importlock: RLock = RLock()
+    importlock = RLock()
 
 
 class Run:
 
     "runtime"
 
-    path: str = ""
-    file: Union[TextIO, None] = None
-    lock: RLock = RLock()
-    configfn: str = ""
-    modifiedfn: str = ""
-    statefn: str = ""
-    index: int = 0
+    path = ""
+    file = None
+    lock = RLock()
+    configfn = ""
+    modifiedfn = ""
+    statefn = ""
+    index = 0
 
     @classmethod
     def callback(cls) -> None:
@@ -242,11 +250,11 @@ class Fetching(Runner):
     def __init__(self):
         Runner.__init__(self)
 
-    def doskip(self, errno: int) -> bool:
+    def doskip(self, errno: int):
         "check whether to log."
         return errno >= 400
 
-    def getfeed(self, fnm: str, feed: Rss, items: str) -> Feeds:
+    def getfeed(self, fnm: str, feed: Rss, items: str):
         "fetch a feed."
         response = Fetcher.geturl(feed.rss)
         if not response.data:
@@ -267,7 +275,7 @@ class Fetching(Runner):
                                  items
                                 ) or []
 
-    def run(self, *args, **kwargs) -> int:
+    def run(self, *args, **kwargs):
         "poll all feeds."
         counter = 0
         try:
@@ -303,17 +311,96 @@ class Fetching(Runner):
         return counter
 
 
+class Fetcher:
+
+    "fetch urls"
+
+    modified = {}
+
+    @classmethod
+    def cdata(cls, line):
+        "scrape CDATA block."
+        if "CDATA" in line:
+            lne = line.replace("![CDATA[", "")
+            lne = lne.replace("]]", "")
+            lne = lne[1:-1]
+            return lne
+        return line
+
+    @classmethod
+    def geturl(cls, url):
+        "fetch an url."
+        url = urlunparse(urlparse(url))
+        req = Request(str(url))
+        req.add_header("User-Agent", cls.useragent(f"{Main.name.upper()} {MD5.core()}"))
+        since = cls.modified.get(url, "")
+        if since:
+            req.add_header('If-Modified-Since', since)
+        response = Response()
+        response.url = url
+        response.reason = ""
+        try:
+            Method.update(response, cls.request(req))
+        except Exception as ex:
+            # pylint: disable=E1101
+            response.data = b""
+            if "reason" in dir(ex):
+                response.reason = ex.reason # type: ignore
+            else:
+                response.reason = str(ex)
+            if "status" in dir(ex):
+                response.status = ex.status # type: ignore
+            else:
+                response.status = None
+        return response
+
+    @classmethod
+    def request(cls, req):
+        "handle  a request."
+        with urlopen(req, timeout=4) as response:  # nosec
+            modi = response.headers.get('Last-Modified', "")
+            if modi:
+                cls.modified[req.get_full_url()] = modi
+            response.data = response.read()
+            response.error = ""
+            return response
+
+    @classmethod
+    def striphtml(cls, text):
+        "strip html."
+        import re
+        clean = re.compile("<.*?>")
+        return re.sub(clean, "", text)
+
+    @classmethod
+    def unescape(cls, text):
+        "unescape html."
+        import re
+        txt = re.sub(r"\s+", " ", text)
+        return html.unescape(txt)
+
+    @classmethod
+    def unquote(cls, url):
+        "unquote an url."
+        return unquote(url, errors='ignore')
+
+    @classmethod
+    def useragent(cls, text):
+        "produce useragent string."
+        return "Mozilla/5.0 (X11; Linux x86_64) " + text
+
+
 class OPML:
 
     "opml parser"
 
     @classmethod
-    def getnames(cls, line: str) -> List[str]:
+    def getnames(cls, line):
         "get names from line."
         return [x.split('="')[0] for x in line.split()]
 
     @classmethod
-    def getvalue(cls, line: str, attr: str) -> str:
+    def getvalue(cls, line, attr):
         "get value from line."
         lne = ""
         index1 = line.find(f'{attr}="')
@@ -328,7 +415,7 @@ class OPML:
         return Fetcher.cdata(line[index1:index2])
 
     @classmethod
-    def getattrs(cls, line: str, token: str) -> List[str]:
+    def getattrs(cls, line, token):
         "get attributes from line."
         index: int = 0
         result: List[str] = []
@@ -346,7 +433,7 @@ class OPML:
         return result
 
     @classmethod
-    def parse(cls, txt, toke="outline", itemz=None) -> Dicts:
+    def parse(cls, txt, toke="outline", itemz=None):
         "parse opml from text."
         if itemz is None:
             itemz = ",".join(cls.getnames(txt))
@@ -366,7 +453,7 @@ class RSS:
     "RSS parser"
 
     @classmethod
-    def getitem(cls, line: str, item: str) -> str:
+    def getitem(cls, line, item):
         "return item from line."
         lne = ""
         index1 = line.find(f"<{item}>")
@@ -379,7 +466,7 @@ class RSS:
         return Fetcher.cdata(line[index1:index2]).strip()
 
     @classmethod
-    def getitems(cls, text: str, token: str, nrs: int = 0) -> Strings:
+    def getitems(cls, text, token, nrs=0):
         "get items from text."
         index = 0
         end = len(text)
@@ -400,7 +487,7 @@ class RSS:
             yield text[index1:index2]
 
     @classmethod
-    def parse(cls, txt, toke="item", items="title,link") -> Feeds:
+    def parse(cls, txt, toke="item", items="title,link"):
         "parse feed."
         for line in cls.getitems(txt, toke):
             line = line.strip()
