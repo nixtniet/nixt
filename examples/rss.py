@@ -368,14 +368,12 @@ class Fetcher:
     @classmethod
     def striphtml(cls, text):
         "strip html."
-        import re
         clean = re.compile("<.*?>")
         return re.sub(clean, "", text)
 
     @classmethod
     def unescape(cls, text):
         "unescape html."
-        import re
         txt = re.sub(r"\s+", " ", text)
         return html.unescape(txt)
 
@@ -417,9 +415,9 @@ class OPML:
     @classmethod
     def getattrs(cls, line, token):
         "get attributes from line."
-        index: int = 0
-        result: List[str] = []
-        stop: bool = False
+        index = 0
+        result = []
+        stop = False
         while not stop:
             index1 = line.find(f"<{token} ", index)
             if index1 == -1:

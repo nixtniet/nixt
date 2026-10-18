@@ -10,7 +10,6 @@ import os
 from .default import RLock
 from .looping import Loop
 from .tasking import Task
-from .typings import List
 
 
 class Runner(Loop):

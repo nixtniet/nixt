@@ -46,6 +46,7 @@ disable = [
     'invalid-name',
     'import-outside-toplevel',
     'line-too-long',
+    'protected-access',
     'relative-beyond-top-level',
 ]
 

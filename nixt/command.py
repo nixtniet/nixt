@@ -8,6 +8,7 @@ import inspect
 
 
 from .brokers import Clients
+from .methods import Method
 from .objects import Data
 from .package import Mods
 from .utility import Utils
@@ -174,4 +175,3 @@ def __dir__():
         'Commands',
         'Parser'
     )
-
