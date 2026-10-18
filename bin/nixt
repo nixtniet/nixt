@@ -17,8 +17,8 @@ from argparse import SUPPRESS, ArgumentParser, RawTextHelpFormatter
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Commands, JSON, Main, MD5, Message, Method
-from nixt.defines import Mods, Screen, Workdir
+from nixt.defines import Boot, Commands, Errors, JSON, Main, MD5, Message
+from nixt.defines import Method, Mods, Screen, Workdir
 
 
 class Arguments:
@@ -95,6 +95,16 @@ class Booting(Boot):
         Mods.table()
         if Main.scanner or Main.local:
             Commands.scanner()
+
+    @classmethod
+    def errors(cls):
+        "print errors."
+        for error in Errors.errors:
+            for line in error:
+                print(line)
+        if not Errors.errors and "v" in cfg.opts:
+            print("no errors")
+
 
     @classmethod
     def wrap(cls, func, *args, dofinal=None):

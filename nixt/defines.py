@@ -11,6 +11,7 @@ from .command import Commands, Parser
 from .configs import Cfg, Config, Main
 from .outputs import Buffer, Display, Output, Screen
 from .encoder import JSON, JSONL
+from .excepts import Errors
 from .handler import Handler
 from .looping import Loop
 from .message import Message
@@ -40,6 +41,7 @@ __all__ = (
     'Data',
     'Disk',
     'Display',
+    'Errors',
     'Format',
     'Handler',
     'Locater',
