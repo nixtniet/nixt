@@ -7,7 +7,7 @@
 
 from .booting import Boot
 from .brokers import Broker, Clients
-from .command import Commands
+from .command import Commands, Parser
 from .configs import Cfg, Config, Main
 from .outputs import Buffer, Display, Output, Screen
 from .encoder import JSON, JSONL

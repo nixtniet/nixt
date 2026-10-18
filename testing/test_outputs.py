@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.buffers import Output
+from nixt.outputs import Output
 
 
 class TestOutput(unittest.TestCase):
