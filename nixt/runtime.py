@@ -80,7 +80,7 @@ class Booting(Boot):
         "configure runtime."
         cls.configure()
         Mods.dir("mods", Workdir.moddir())
-        Mods.dir("modules", Mods.moddir())
+        Mods.dir(f"{Main.name}.modules", Mods.moddir())
         if Main.local:
             Mods.dir("mods", "mods")
         if Main.all:

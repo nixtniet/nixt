@@ -6,8 +6,6 @@
 
 from .default import Event
 from .objects import Data
-from .tasking import Worker
-from .typings import List, Union
 
 
 class Message(Data):
@@ -16,16 +14,16 @@ class Message(Data):
 
     def __init__(self):
         super().__init__()
-        self.__ready__: Event = Event()
-        self.__thr__: Union[Worker ,None] = None
-        self.args: List[str] = []
-        self.cmd: str = ""
-        self.index: int = 0
-        self.kind: str = "msg"
-        self.orig: str = ""
-        self.rest: str = ""
-        self.result: List[str] = []
-        self.text: str = ""
+        self._ready= Event()
+        self._thr = None
+        self.args = []
+        self.cmd = ""
+        self.index = 0
+        self.kind = "msg"
+        self.orig = ""
+        self.rest = ""
+        self.result = []
+        self.text = ""
 
     def __iter__(self):
         return iter([x for x in self.__dict__ if not x.startswith("_")])
@@ -40,7 +38,7 @@ class Message(Data):
 
     def ready(self):
         "flag msg as ready."
-        self.__ready__.set()
+        self._ready.set()
 
     def reply(self, text):
         "add text to result."
@@ -48,9 +46,9 @@ class Message(Data):
 
     def wait(self, timeout=0.0):
         "wait for completion."
-        self.__ready__.wait(timeout or None)
-        if self.__thr__:
-            self.__thr__.join(timeout or None)
+        self._ready.wait(timeout or None)
+        if self._thr:
+            self._thr.join(timeout or None)
 
 
 def __dir__():
