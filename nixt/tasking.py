@@ -71,7 +71,7 @@ class Worker(Thread):
         try:
             self.result = func(*args)
         except Exception as ex:
-            Errors.defer(ex)
+            Errors.defer(ex, *args)
 
 
 class Task:
