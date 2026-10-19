@@ -9,6 +9,7 @@ from .booting import Kernel
 from .clients import Broker, Buffer, Clients, Display, Output, Screen
 from .command import Commands, Parser
 from .configs import Cfg, Config, Main
+from .default import Log
 from .encoder import JSON, JSONL
 from .excepts import Errors
 from .handler import Handler
@@ -43,6 +44,7 @@ __all__ = (
     'Handler',
     'Kernel',
     'Locater',
+    'Log',
     'Logging',
     'Loop',
     'Main',

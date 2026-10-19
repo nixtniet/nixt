@@ -4,24 +4,20 @@
 "internet relay chat"
 
 
-import logging
 import os
 import socket
 import ssl
 import textwrap
-import threading
 import time
 import _thread
 
 
-from nixt.default import Event, Queue
+from nixt.default import Event, Log, RLock, Queue
 from nixt.defines import Broker, Buffer, Cfg, Commands, Disk, Main
 from nixt.defines import Message, Mods, Method, Object, Task
-from nixt.typings import Any, ClassVar, List
 
 
-
-logger = logging.getLogger(__name__)
+logger = Log(__name__)
 
 
 def init():
@@ -47,7 +43,7 @@ class Config(Cfg):
     channel = Main.channel or f"#{name}"
     commands = True
     control = "!"
-    ignore: ClassVar[List[str]] = ["PING", "PONG", "PRIVMSG"]
+    ignore = ["PING", "PONG", "PRIVMSG"]
     nick = name
     word = ""
     port = 6667
@@ -141,11 +137,11 @@ class IRC(Buffer):
         self.cfg = Config()
         self.channels = []
         self.msgs = Events()
-        self.lock = threading.RLock()
+        self.lock = RLock()
         self.noflood = True
         self.queue = Queue()
         self.silent = False
-        self.sock: Any = None
+        self.sock = None
         self.state = State()
         self.register("903", cb_h903)
         self.register("904", cb_h903)
@@ -157,7 +153,7 @@ class IRC(Buffer):
         self.register("PRIVMSG", cb_privmsg)
         self.register("QUIT", cb_quit)
         self.register("366", cb_ready)
-        self.zelf: str = ""
+        self.zelf = ""
 
     def announce(self, text):
         "announce test on all joined channels."

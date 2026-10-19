@@ -4,16 +4,16 @@
 "timers"
 
 
-import logging
 import random
 import threading
 import time
 
 
-from nixt.defines import Broker, Disk, Locater, Method, Object, Task, Time
+from nixt.defines import Broker, Disk, Locater, Log, Method, Object
+from nixt.defines import Task, Time
 
 
-logger = logging.getLogger(__name__)
+logger = Log(__name__)
 rand = random.Random()
 
 

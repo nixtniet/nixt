@@ -5,7 +5,6 @@
 
 import gc
 import html
-import logging
 import logging.handlers
 import os
 import pathlib
@@ -17,16 +16,13 @@ from urllib.parse   import unquote, urlparse, urlunparse
 from urllib.request import Request, urlopen
 
 
-from nixt.default import RLock
+from nixt.default import Log, RLock
 from nixt.defines import Cfg, Clients, Data, Disk, Format, JSON, JSONL
 from nixt.defines import Locater, Logging, Main, MD5, Message, Method, Object
 from nixt.defines import Pool, Repeater, Runner, Utils, Watcher, Workdir
 
 
-logger = logging.getLogger(__name__)
-
-
-j = os.path.join
+logger = Log(__name__)
 
 
 def init():
@@ -215,7 +211,7 @@ class Run:
     def start(cls, once: bool = False) -> None:
         "initialise module."
         if Config.save:
-            cls.path = j(Workdir.logdir("rss"), 'rss.log')
+            cls.path = os.path.join(Workdir.logdir("rss"), 'rss.log')
             Utils.cdir(cls.path)
             pathlib.Path(cls.path).touch()
             with open(cls.path, "a+", encoding="utf-8") as file:

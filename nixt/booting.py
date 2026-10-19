@@ -4,7 +4,6 @@
 "in the beginning"
 
 
-import logging
 import os
 import sys
 import threading
@@ -15,7 +14,7 @@ import _thread
 from .clients import Broker, Screen
 from .command import Commands
 from .configs import Main
-from .default import Event
+from .default import Event, Log
 from .excepts import Errors
 from .package import Mods
 from .persist import Workdir
@@ -23,7 +22,7 @@ from .tasking import Task, Worker
 from .utility import MD5, Logging, Utils
 
 
-logger = logging.getLogger(__name__)
+logger = Log(__name__)
 
 
 class Boot:

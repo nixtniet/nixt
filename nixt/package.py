@@ -4,15 +4,15 @@
 "module management"
 
 
-import logging
 import os
 
 
+from .default import Log
 from .methods import Method
 from .utility import MD5, Utils
 
 
-logger = logging.getLogger(__name__)
+logger = Log(__name__)
 
 
 class Mods:

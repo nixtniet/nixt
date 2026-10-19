@@ -5,15 +5,14 @@
 
 
 import inspect
-import logging
 import time
 
 
-from .default import Event, Queue, RLock, Thread
+from .default import Event, Log, Queue, RLock, Thread
 from .excepts import Errors
 
 
-logger = logging.getLogger(__name__)
+logger = Log(__name__)
 
 
 class Worker(Thread):

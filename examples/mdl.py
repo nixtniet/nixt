@@ -5,14 +5,13 @@
 
 
 import datetime
-import logging
 import time
 
 
-from nixt.defines import Clients, Data, Message, Method, Repeater, Time
+from nixt.defines import Clients, Data, Log, Message, Method, Repeater, Time
 
 
-logger = logging.getLogger(__name__)
+logger = Log(__name__)
 
 
 def init():
