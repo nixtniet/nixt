@@ -320,23 +320,9 @@ class Utils:
 
 def __dir__():
     return (
-        'MS%',
+        'MSS',
         'Format',
         'Logging',
         'Time',
         'Utils'
-    )
-# This file is placed in the Public Domain.
-
-
-"module md5sum"
-
-
-
-
-
-
-def __dir__():
-    return (
-        'MD5',
     )

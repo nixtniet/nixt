@@ -40,7 +40,7 @@ class Boot:
         Logging.level(Main.level or "info")
         Main.path = os.path.normpath(Main.path)
         pkgname = Main.path.rsplit(os.sep, maxsplit=1)[-1]
-        Mods.dir(Main.path, pkgname)
+        Mods.dir(pkgname, Main.path)
 
     @classmethod
     def forever(cls):
@@ -67,7 +67,7 @@ class Boot:
                 try:
                     thr.join()
                 except Exception as ex:
-                    Errors.defer(ex)
+                    Errors.throw(ex)
         return True
 
     @classmethod
