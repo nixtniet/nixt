@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.sources import MD5
+from nixt.utility import MD5
 
 
 class TestMD5(unittest.TestCase):
