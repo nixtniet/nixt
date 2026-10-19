@@ -8,7 +8,7 @@
 import unittest
 
 
-from nixt.defines import Boot, Task
+from nixt.defines import Kernel, Task
 
 
 class TestRuntime(unittest.TestCase):
@@ -17,7 +17,7 @@ class TestRuntime(unittest.TestCase):
 
     def setUp(self):
         "setup boot object."
-        self.boot = Boot()
+        self.boot = Kernel()
 
     def shutDown(self):
         "boot shutdown."
@@ -25,7 +25,7 @@ class TestRuntime(unittest.TestCase):
 
     def test_construct(self):
         "test boot construcion."
-        self.assertEqual(type(self.boot), Boot)
+        self.assertEqual(type(self.boot), Kernel)
 
     def test_configure(self):
         "test configuration."

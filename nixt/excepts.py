@@ -4,15 +4,20 @@
 "default exception handler"
 
 
-import logging
 import traceback
 import _thread
 
 
+from .default import Log
 from .message import Message
 
 
+logger = Log(__name__)
+
+
 class Errors:
+
+    "error management"
 
     errors = []
 
@@ -32,7 +37,8 @@ class Errors:
 
     @classmethod
     def throw(cls, exc, *args):
-        logging.exception(exc)
+        "log the exception and interrupt main loop."
+        logger.exception(exc)
         _thread.interrupt_main()
 
 
@@ -40,4 +46,3 @@ def __dir__():
     return (
         'Errors',
     )
-            

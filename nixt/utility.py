@@ -4,20 +4,19 @@
 "usefulness"
 
 
-import logging
 import os
 import time
 import uuid
 
 
 from datetime import datetime
-from logging  import basicConfig, Formatter, StreamHandler
 
 
-from .default import Path
+from .default import Formatter, Log, Path, StreamHandler
+from .default import TimedRotatingFileHandler, basicConfig
 
 
-logger = logging.getLogger(__name__)
+logger = Log(__name__)
 
 
 class Format(Formatter):
@@ -44,18 +43,17 @@ class Logging:
     formats = "%(message)s"
 
     @classmethod
-    def enable(cls, path, logger):
+    def enable(cls, path, log):
         "enabke module logger."
-        import logging.handlers
         formatter = Format(Logging.formats, Logging.datefmt)
-        filehandler = logging.handlers.TimedRotatingFileHandler(path, 'midnight')
+        filehandler = TimedRotatingFileHandler(path, 'midnight')
         filehandler.setFormatter(formatter)
-        if logger.handlers:
-            for handler in logger.handlers:
-                logger.removeHandler(handler)
-        logger.addHandler(filehandler)
-        logger.propagate = False
-        logger.setLevel("DEBUG")
+        if log.handlers:
+            for handler in log.handlers:
+                log.removeHandler(handler)
+        log.addHandler(filehandler)
+        log.propagate = False
+        log.setLevel("DEBUG")
 
     @classmethod
     def level(cls, loglevel):

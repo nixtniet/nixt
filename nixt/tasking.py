@@ -7,7 +7,6 @@
 import inspect
 import logging
 import time
-import _thread
 
 
 from .default import Event, Queue, RLock, Thread
@@ -72,7 +71,7 @@ class Worker(Thread):
             self.result = func(*args)
         except Exception as ex:
             Errors.throw(ex, *args)
-        
+
 
 class Task:
 

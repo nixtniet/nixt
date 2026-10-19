@@ -199,7 +199,7 @@ def __dir__():
     return (
         'Buffer',
         'Broker',
-        'Clients'
+        'Clients',
         'Display',
         'Pit[ut',
         'Screen'

@@ -1,4 +1,3 @@
 include bin/clean
 include bin/nixt
-recursive-include docs *
 recursive-include examples *.py

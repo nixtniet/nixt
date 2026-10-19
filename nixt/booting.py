@@ -6,19 +6,21 @@
 
 import logging
 import os
+import sys
 import threading
 import time
 import _thread
 
 
 from .clients import Broker, Screen
+from .command import Commands
 from .configs import Main
 from .default import Event
 from .excepts import Errors
 from .package import Mods
 from .persist import Workdir
 from .tasking import Task, Worker
-from .utility import Logging, Utils
+from .utility import MD5, Logging, Utils
 
 
 logger = logging.getLogger(__name__)
@@ -49,7 +51,7 @@ class Boot:
         while cls.running.is_set():
             try:
                 time.sleep(0.1)
-            except (KeyboardInterrupt, EOFError) as ex:
+            except (KeyboardInterrupt, EOFError):
                 break
         cls.stopped.set()
 
@@ -108,7 +110,115 @@ class Boot:
             Errors.throw(ex)
 
 
+class Booting(Boot):
+
+    "at first"
+
+    @classmethod
+    def banner(cls, force=False):
+        "hello."
+        if not force and not Main.verbose:
+            return
+        tmr = time.ctime(time.time()).replace("  ", " ")
+        print(f"{Main.name.upper()} {tmr} {Main.level.upper() or 'INFO'} ({MD5.core()})")
+        sys.stdout.flush()
+
+    @classmethod
+    def boot(cls):
+        "configure runtime."
+        cls.configure()
+        Mods.dir("mods", Workdir.moddir())
+        Mods.dir(f"{Main.name}.modules", Mods.moddir())
+        if Main.local:
+            Mods.dir("mods", "mods")
+        if Main.all:
+            Main.mods = ",".join(Mods.list())
+        if Main.verbose:
+            cls.banner()
+        Commands.table()
+        Mods.table()
+        if Main.scanner or Main.local:
+            Commands.scanner()
+
+    @classmethod
+    def errors(cls):
+        "print errors."
+        for error in Errors.errors:
+            print("\n")
+            for line in Errors.format(error):
+                print(line.rstrip())
+
+    @classmethod
+    def wrap(cls, func, *args, dofinal=None):
+        "restore console."
+        import termios
+        try:
+            old = termios.tcgetattr(sys.stdin.fileno())
+        except termios.error:
+            old = None
+        try:
+            cls.wrapped(func, *args)
+        except (KeyboardInterrupt, EOFError):
+            pass
+        if old and old[0]:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+        if dofinal:
+            dofinal()
+
+
+class Daemon:
+
+    "detach from console"
+
+    @classmethod
+    def daemon(cls):
+        "run in the background."
+        pid = os.fork()
+        if pid != 0:
+            os._exit(0)
+        os.setsid()
+        pid2 = os.fork()
+        if pid2 != 0:
+            os._exit(0)
+        if not Main.verbose:
+            cls.null(sys.stdin)
+            cls.null(sys.stdout)
+            cls.null(sys.stderr)
+        os.umask(0o077)
+        os.chdir("/")
+        os.nice(10)
+
+    @classmethod
+    def null(cls, iostream):
+        "route to /dev/null."
+        with open('/dev/null', 'r', encoding="utf-8") as sis:
+            os.dup2(sis.fileno(), iostream.fileno())
+
+    @classmethod
+    def pid(cls):
+        "return pid path."
+        return Workdir.pid(Main.name)
+
+    @classmethod
+    def privileges(cls):
+        "drop privileges."
+        import getpass
+        import pwd
+        pwnam2 = pwd.getpwnam(getpass.getuser())
+        os.setgid(pwnam2.pw_gid)
+        os.setuid(pwnam2.pw_uid)
+
+
+class Kernel(Booting, Daemon):
+
+    "center of believing"
+
+    nrevents = 0
+
+
 def __dir__():
     return (
         'Boot',
+        'Booting',
+        'Kernel'
     )

@@ -5,7 +5,7 @@
 "interface"
 
 
-from .booting import Boot
+from .booting import Kernel
 from .clients import Broker, Buffer, Clients, Display, Output, Screen
 from .command import Commands, Parser
 from .configs import Cfg, Config, Main
@@ -29,7 +29,6 @@ __all__ = (
     'JSON',
     'JSONL',
     'MD5',
-    'Boot',
     'Broker',
     'Buffer',
     'Cfg',
@@ -42,6 +41,7 @@ __all__ = (
     'Errors',
     'Format',
     'Handler',
+    'Kernel',
     'Locater',
     'Logging',
     'Loop',
