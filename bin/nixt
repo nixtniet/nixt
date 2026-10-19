@@ -101,10 +101,9 @@ class Booting(Boot):
     def errors(cls):
         "print errors."
         for error in Errors.errors:
+            print("\n")
             for line in Errors.format(error):
                 print(line.rstrip())
-        if not Errors.errors and Main.verbose:
-            print("no errors")
 
     @classmethod
     def wrap(cls, func, *args, dofinal=None):
@@ -329,5 +328,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    Kernel.errors()
 

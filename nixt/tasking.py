@@ -27,7 +27,7 @@ class Worker(Thread):
         super().__init__(None, self.run, None, (), daemon=daemon)
         self.name = kwargs.get("name", self.getname(func) or "")
         self.queue = Queue()
-        self.resul = None
+        self.result = None
         self.sleep = 0.0
         self.starttime = time.time()
         self.state = {}
@@ -45,7 +45,7 @@ class Worker(Thread):
             super().join(timeout or None)
             return self.result
         except Exception as ex:
-            Errors.defer(ex)
+            Errors.throw(ex)
 
     @classmethod
     def clsname(cls, obj):
@@ -71,8 +71,8 @@ class Worker(Thread):
         try:
             self.result = func(*args)
         except Exception as ex:
-            Errors.defer(ex, *args)
-
+            Errors.throw(ex, *args)
+        
 
 class Task:
 

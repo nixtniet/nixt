@@ -49,7 +49,7 @@ class Boot:
         while cls.running.is_set():
             try:
                 time.sleep(0.1)
-            except (KeyboardInterrupt, EOFError):
+            except (KeyboardInterrupt, EOFError) as ex:
                 break
         cls.stopped.set()
 
@@ -105,7 +105,7 @@ class Boot:
             Worker.block.set()
             _thread.interrupt_main()
         except Exception as ex:
-            Errors.defer(ex)
+            Errors.throw(ex)
 
 
 def __dir__():
