@@ -4,18 +4,13 @@
 "runtime"
 
 
-import inspect
-import logging
-import os
 import sys
-import time
 
 
 from argparse import SUPPRESS, ArgumentParser, RawTextHelpFormatter
 
 
-from .defines import Cmd, Commands, Errors, JSON, Kernel, Main, MD5
-from .defines import Message, Method, Mods, Screen, Workdir
+from .defines import Cmd, Commands, Kernel, Main, Message, Method, Mods, Screen
 
 
 class Arguments:
@@ -33,16 +28,16 @@ class Arguments:
         group.add_argument("-s", "--service", action="store_true", help="run as service.")
         parser = theparser.add_argument_group()
         parser.add_argument("-a", "--all", action="store_true", help="load all modules.")
+        parser.add_argument("-l", "--level", default="info", help='set loglevel.', metavar="level")
         parser.add_argument("-v", "--verbose", action='store_true', help='enable verbose.')
         parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
         optionparser = theparser.add_argument_group()
-        optionparser.add_argument("-l", "--level", default="info", help='set loglevel.', metavar="level")
         optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
+        optionparser.add_argument("-n", "--network", default="", help='network modules to load.', metavar="m1,m2")
         optionparser.add_argument("-p", "--path", default='', help='path to modules directory.', metavar="path")
         optparser = theparser.add_argument_group()
         optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
         optparser.add_argument("--channel", default="", help=SUPPRESS)
-        optparser.add_argument("--default", default="irc,mdl,rss,wsd", help=SUPPRESS)
         optparser.add_argument("--local", action="store_true", help=SUPPRESS)
         optparser.add_argument("--nochdir", action="store_true", help=SUPPRESS)
         optparser.add_argument("--scanner", action="store_true", help="do full modules scan on boot.")
@@ -111,6 +106,7 @@ class Scripts:
         Kernel.privileges()
         Kernel.pid()
         Main.mods = ",".join(Mods.list())
+        Kernel.init(Main.network, Main.wait)
         Kernel.init(Main.mods)
         Kernel.forever()
 
@@ -122,6 +118,7 @@ class Scripts:
         Kernel.boot()
         Commands.add(Cmd.cmd)
         Kernel.init(Main.mods, Main.wait)
+        Kernel.init(Main.network, Main.wait)
         csl = Console()
         csl.start()
         Kernel.forever()
@@ -151,6 +148,7 @@ class Scripts:
             Kernel.banner(True)
         Main.mods = ",".join(Mods.list())
         Kernel.init(Main.mods)
+        Kernel.init(Main.network, Main.wait)
         Kernel.forever()
 
 

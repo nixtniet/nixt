@@ -205,7 +205,8 @@ class IRC(Buffer):
     def disconnect(self):
         "disconnect from server."
         try:
-            self.sock.shutdown(2)
+            if self.sock:
+                self.sock.shutdown(2)
         except (ssl.SSLError, OSError, BrokenPipeError):
             pass
 

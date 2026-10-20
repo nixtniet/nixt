@@ -127,6 +127,8 @@ class MD5:
     @classmethod
     def md5(cls, path):
         "calculate md5sum of a file."
+        if not os.path.exists(path):
+            return ""
         import hashlib
         md5s = hashlib.md5()
         with open(path, "r", encoding="utf-8") as file:

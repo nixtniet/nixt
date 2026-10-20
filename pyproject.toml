@@ -25,6 +25,7 @@ classifiers = [
 [project.scripts]
 "nixt" = "nixt.runtime:main"
 
+
 [project.urls]
 "home" = "https://github.com/nixtniet/nixt"
 "bugs" = "https://github.com/nixtniet/nixt/issues"

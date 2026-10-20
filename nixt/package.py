@@ -93,6 +93,11 @@ class Mods:
         return os.path.join(Method.where(Mods), "modules")
 
     @classmethod
+    def netdir(cls):
+        "return package modules path."
+        return os.path.join(Method.where(Mods), "betwirk")
+
+    @classmethod
     def statics(cls):
         "read table,"
         try:
