@@ -38,7 +38,7 @@ packages = [
     'nixt.minimal',
     'nixt.modules',
     'nixt.namings',
-    'nixt'network'
+    'nixt.network'
 ]
 
 

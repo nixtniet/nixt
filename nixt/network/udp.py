@@ -9,10 +9,11 @@ import threading
 import time
 
 
-from nixt.defines import Main, Object, Task, objs
+from nixt.defines import Clients, Main, Object, Task
 
 
 def init():
+    "initialize udp module."
     udp = UDP()
     udp.start()
     logging.warning("http://%s:%s", Cfg.host, Cfg.port)
@@ -21,12 +22,16 @@ def init():
 
 class Cfg(Object):
 
+    "Configuration"
+
     addr = ""
     host = "localhost"
     port = 5500
 
 
 class UDP(Object):
+
+    "UDP listener"
 
     def __init__(self):
         Object.__init__(self)
@@ -38,13 +43,17 @@ class UDP(Object):
         self._starttime = time.time()
         self.ready = threading.Event()
 
-    def output(self, txt, addr=None):
-        if addr:
-            Cfg.addr = addr
-        for bot in objs("announce"):
-            bot.announce(txt.replace("\00", ""))
+    def exit(self):
+        "quit UDP listener."
+        self.stopped = True
+        self._sock.settimeout(0.01)
+        self._sock.sendto(
+                          bytes("exit", "utf-8"),
+                          (Cfg.host, Cfg.port)
+                         )
 
     def loop(self):
+        "udp loop."
         try:
             self._sock.bind((Cfg.host, Cfg.port))
         except socket.gaierror:
@@ -59,28 +68,27 @@ class UDP(Object):
                 break
             self.output(data, addr)
 
-    def exit(self):
-        self.stopped = True
-        self._sock.settimeout(0.01)
-        self._sock.sendto(
-                          bytes("exit", "utf-8"),
-                          (Cfg.host, Cfg.port)
-                         )
+    def output(self, txt, addr=None):
+        "announce to clients."
+        if addr:
+            Cfg.addr = addr
+        Clients.announce(txt.replace("\00", ""))
 
     def start(self):
+        "start UDP listener."
         Task.start(self.loop)
 
+    @classmethod
+    def toudp(cls, host, port, txt):
+        if Main.debug:
+            return
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))
 
-def toudp(host, port, txt):
-    if Main.debug:
-        return
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))
 
-
-def udp(event):
-    if event.rest:
-        toudp(Cfg.host, Cfg.port, event.rest)
+def udp(msg):
+    if msg.rest:
+        UDP.toudp(Cfg.host, Cfg.port, msg.rest)
         return
     if not select.select(
                          [sys.stdin, ],
@@ -88,7 +96,7 @@ def udp(event):
                          [],
                          0.0
                         )[0]:
-        event.reply("udp <text>")
+        msg.iface("<text>")
         return
     size = 0
     while 1:
@@ -109,6 +117,6 @@ def udp(event):
                 stop = True
                 break
             size += len(txt)
-            toudp(Cfg.host, Cfg.port, txt)
+            UDP.toudp(Cfg.host, Cfg.port, txt)
         if stop:
             break

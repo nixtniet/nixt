@@ -117,7 +117,6 @@ class Scripts:
         Kernel.boot()
         Commands.add(Cmd.cmd)
         Kernel.init(Main.mods, Main.wait)
-        Kernel.init(Main.network, Main.wait)
         csl = Console()
         csl.start()
         Kernel.forever()
@@ -147,7 +146,6 @@ class Scripts:
             Kernel.banner(True)
         Main.mods = ",".join(Mods.list())
         Kernel.init(Main.mods)
-        Kernel.init(Main.network)
         Kernel.forever()
 
 

@@ -73,10 +73,12 @@ class Mods:
         return cls.mods[name]
 
     @classmethod
-    def list(cls):
+    def list(cls, skip=""):
         "comma seperated list of available modules."
         mods = []
-        for path in cls.dirs.values():
+        for name, path in cls.dirs.items():
+            if name in skip:
+                continue
             if not os.path.exists(path):
                 continue
             mods.extend(Utils.listdir(path))

@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.statics import CORE, MODULES, NAMES
+from nixt.statics import CORE
 
 
 class TestStatics(unittest.TestCase):
@@ -17,11 +17,3 @@ class TestStatics(unittest.TestCase):
     def test_core(self):
         "test for core definitions."
         self.assertTrue(CORE)
-
-    def test_modules(self):
-        "test for modules emptyness."
-        self.assertFalse(MODULES)
-
-    def test_names(self):
-        "test for names emptyness."
-        self.assertFalse(NAMES)

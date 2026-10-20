@@ -128,13 +128,15 @@ class Booting(Boot):
         cls.configure()
         Mods.dir("mods", Workdir.moddir())
         Mods.dir(f"{Main.name}.minimal", Mods.moddir("minimal"))
-        Mods.dir(f"{Main.name}.modules", Mods.moddir())
+        if Main.mods:
+            Mods.dir(f"{Main.name}.modules", Mods.moddir())
         if Main.network:
             Mods.dir(f"{Main.name}.network", Mods.moddir("network"))
+            Commands.list()
         if Main.local:
             Mods.dir("mods", "mods")
         if Main.all:
-            Main.mods = ",".join(Mods.list())
+            Main.mods = ",".join(Mods.list("network"))
         if Main.verbose:
             cls.banner()
         Commands.table()
