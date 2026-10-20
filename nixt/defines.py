@@ -5,7 +5,7 @@
 "interface"
 
 
-from .booting import Kernel
+from .booting import Cmd, Kernel
 from .clients import Broker, Buffer, Clients, Display, Output, Screen
 from .command import Commands, Parser
 from .configs import Cfg, Config, Main
@@ -34,6 +34,7 @@ __all__ = (
     'Buffer',
     'Cfg',
     'Clients',
+    'Cmd',
     'Commands',
     'Config',
     'Data',
