@@ -215,6 +215,7 @@ class Kernel(Booting, Daemon):
     "center of believing"
 
     nrevents = 0
+    starttime = time.time()
 
 
 class Cmd:

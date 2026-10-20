@@ -17,7 +17,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Commands, Kernel, Main, Message, Method, Parser
-from nixt.defines import Pool, Screen, Task, Time, Workdir
+from nixt.defines import Mods, Pool, Screen, Task, Time, Workdir
 
 
 Workdir.wdr = ".test"
@@ -67,6 +67,7 @@ def main():
     "main code."
     Parser.parse(Main, " ".join(sys.argv[1:]))
     Kernel.boot()
+    Mods.dir("examples", "examples")
     Commands.scanner()
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)
