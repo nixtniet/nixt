@@ -83,19 +83,9 @@ class Mods:
         return sorted(set(mods))
 
     @classmethod
-    def minimal(cls):
-        "return package minimal path."
-        return os.path.join(Method.where(Mods), "minimal")
-
-    @classmethod
-    def moddir(cls):
+    def moddir(cls, name="modules"):
         "return package modules path."
-        return os.path.join(Method.where(Mods), "modules")
-
-    @classmethod
-    def netdir(cls):
-        "return package modules path."
-        return os.path.join(Method.where(Mods), "network")
+        return os.path.join(Method.where(Mods), name)
 
     @classmethod
     def statics(cls):

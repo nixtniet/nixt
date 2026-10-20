@@ -12,10 +12,6 @@ from mailbox import Maildir, Mailbox, mbox
 
 
 from nixt.defines import Data, Disk, Locater, Method, Time
-from nixt.typings import Union
-
-
-Thing = Union[Mailbox, Maildir]
 
 
 class Email(Data):
@@ -71,7 +67,6 @@ def mbx(msg):
         msg.iface("<path>")
         return
     msg.reply(f"reading from {fnm}")
-    thing: Union[Mailbox, Maildir]
     if os.path.isdir(fnm):
         thing = Maildir(fnm, create=False)
     elif os.path.isfile(fnm):

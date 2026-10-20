@@ -9,15 +9,11 @@ import time
 
 
 from nixt.defines import Time, Worker
-from nixt.typings import List, Tuple
-
-
-Result = List[Tuple[float, str]]
 
 
 def thr(msg):
     "list of running threads."
-    result: Result = []
+    result = []
     for thread in sorted(threading.enumerate(), key=lambda x: x.name):
         if not isinstance(thread, Worker):
             continue

@@ -8,11 +8,10 @@ import logging
 import random
 
 
-from nixt.defines import Clients, Disk, Locater, Repeater
-from nixt.typings import List
+from nixt.defines import Clients, Disk, Locater, Log, Repeater
 
 
-logger = logging.getLogger(__name__)
+logger = Log(__name__)
 rand = random.Random()
 
 
@@ -29,8 +28,8 @@ class State:
 
     def __init__(self):
         super().__init__()
-        self.fnm: str = ""
-        self.seen: List[str] = []
+        self.fnm = ""
+        self.seen  = []
 
     def dump(self):
         "dump state to disk."

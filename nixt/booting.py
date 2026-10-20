@@ -127,10 +127,10 @@ class Booting(Boot):
         "configure runtime."
         cls.configure()
         Mods.dir("mods", Workdir.moddir())
-        Mods.dir(f"{Main.name}.minimal", Mods.minimal())
+        Mods.dir(f"{Main.name}.minimal", Mods.moddir("minimal"))
         Mods.dir(f"{Main.name}.modules", Mods.moddir())
         if Main.network:
-            Mods.dir(f"{Main.name}.network", Mods.netdir())
+            Mods.dir(f"{Main.name}.network", Mods.moddir("network"))
         if Main.local:
             Mods.dir("mods", "mods")
         if Main.all:

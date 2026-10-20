@@ -16,7 +16,6 @@ from .default import Path, RLock
 from .encoder import JSON
 from .methods import Method
 from .objects import Data
-from .typings import Dict
 from .utility import Utils
 
 
@@ -29,7 +28,7 @@ class Cache:
 
     "path object cache"
 
-    paths: Dict[str, str] = {}
+    paths = {}
 
     @classmethod
     def add(cls, path, obj):
