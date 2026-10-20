@@ -5,18 +5,17 @@
 
 
 from nixt.defines import Data, Disk, Method, Mods
-from nixt.typings import Union
 
 
 def cfg(msg):
     "configure modules."
     if not msg.args:
         mods = f"{'main,' + Mods.has('Config')}"
-        mods = mods.removesuffix(mods)
+        mods.removesuffix(mods)
         msg.iface(f"<{mods}>")
         return
     name = msg.args[0]
-    config: Union[Data, None] = Data()
+    config = Data()
     Disk.read(config, name, "config")
     if name != "main" and not config:
         mod = Mods.get(name)
