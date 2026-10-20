@@ -95,7 +95,7 @@ class Mods:
     @classmethod
     def netdir(cls):
         "return package modules path."
-        return os.path.join(Method.where(Mods), "betwirk")
+        return os.path.join(Method.where(Mods), "network")
 
     @classmethod
     def statics(cls):
