@@ -12,27 +12,24 @@ from .default import Event
 from .tasking import Task
 
 
-Floats = Dict[str, float]
-
-
 class Watcher:
 
     "watch files"
 
     cbs = {}
     sleep  = 1.0
-    stopped= Event()
+    stopped = Event()
     times = {}
 
     @classmethod
-    def add(cls, path: str, callback: Callable):
+    def add(cls, path, callback):
         "add callback"
         if not os.path.exists(path):
             return
         cls.cbs[path] = callback
 
     @classmethod
-    def init(cls, times = None):
+    def init(cls, times=None):
         "read timestamps."
         if times is None:
             times= {}
@@ -55,7 +52,7 @@ class Watcher:
             time.sleep(cls.sleep)
 
     @classmethod
-    def start(cls, daemon: bool = True):
+    def start(cls, daemon=True):
         "start callback loop."
         if not cls.stopped.is_set():
             return

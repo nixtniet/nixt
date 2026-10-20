@@ -286,7 +286,7 @@ class Utils:
                ]
 
     @staticmethod
-    def shortid() -> str:
+    def shortid():
         "return a shortid."
         return str(uuid.uuid4())[:8]
 

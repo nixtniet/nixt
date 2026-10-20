@@ -33,7 +33,7 @@ class Arguments:
         parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
         optionparser = theparser.add_argument_group()
         optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
-        optionparser.add_argument("-n", "--network", action="store_true", help='network modules to load.')
+        optionparser.add_argument("-n", "--network", default="", help='network modules to load.', metavar="m1,m2")
         optionparser.add_argument("-p", "--path", default='', help='path to modules directory.', metavar="path")
         optparser = theparser.add_argument_group()
         optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
@@ -106,7 +106,6 @@ class Scripts:
         Kernel.privileges()
         Kernel.pid()
         Main.mods = ",".join(Mods.list())
-        Kernel.init(Main.network, Main.wait)
         Kernel.init(Main.mods)
         Kernel.forever()
 
@@ -148,7 +147,7 @@ class Scripts:
             Kernel.banner(True)
         Main.mods = ",".join(Mods.list())
         Kernel.init(Main.mods)
-        Kernel.init(Main.network, Main.wait)
+        Kernel.init(Main.network)
         Kernel.forever()
 
 
@@ -165,5 +164,12 @@ def main():
         Kernel.wrap(Scripts.control)
 
 
-if __name__ == "__main__":
-    main()
+
+def __dir__():
+    return (
+        'CLI',
+        'Arguments',
+        'Console',
+        'Scripts',
+        'main'
+    )
