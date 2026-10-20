@@ -5,7 +5,7 @@
 "interface"
 
 
-from .booting import Cmd, Kernel
+from .booting import Kernel
 from .clients import Broker, Buffer, Clients, Display, Output, Screen
 from .command import Commands, Parser
 from .configs import Cfg, Config, Main
@@ -21,6 +21,7 @@ from .package import Mods
 from .persist import Disk, Locater, Workdir
 from .pooling import Pool, Runner
 from .repeats import Repeater
+from .require import Cmd
 from .tasking import Task, Worker
 from .utility import MD5, Format, Logging, Time, Utils
 from .watcher import Watcher
