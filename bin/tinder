@@ -16,10 +16,11 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Commands, Kernel, Main, Message, Method, Parser
+from nixt.defines import Booting, Commands, Main, Message, Method, Parser
 from nixt.defines import Mods, Pool, Screen, Task, Time, Workdir
 
 
+Main.local = True
 Workdir.wdr = ".test"
 
 
@@ -36,6 +37,14 @@ class CLI(Screen):
         if "v" in Main.opts:
             print(text.encode('utf-8', 'replace').decode("utf-8"))
             sys.stdout.flush()
+
+
+class Kernel(Booting):
+
+    "teh kernal"
+
+    nrevents = 0
+    starttime = time.time()
 
 
 def payload(todo):
@@ -67,7 +76,7 @@ def main():
     "main code."
     Parser.parse(Main, " ".join(sys.argv[1:]))
     Kernel.boot()
-    Mods.dir("examples", "examples")
+    Mods.dir("mods", "mods")
     Commands.scanner()
     if os.path.exists(Workdir.wdr):
         shutil.rmtree(Workdir.wdr)

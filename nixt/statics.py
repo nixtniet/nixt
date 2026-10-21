@@ -5,12 +5,12 @@
 
 
 CORE = {
-    "booting": "4c1a52e42446e1d74bbd9e1eec3a8469",
+    "booting": "8d5291338d2a81fd0004e88a22bce020",
     "clients": "3b510081849e5bc4417b8f13bec66fcd",
     "command": "0a8e4a406efb5ece89b3c6ac05aae370",
     "configs": "cd3a6bfd128bcee5a8a34a7dca7a94c6",
     "default": "6da7a299d30b1f703714c4ec3a43041a",
-    "defines": "e9a80e7357b02bb9eff61be27bd97f3d",
+    "defines": "23adb0c937c083fc9bc84eb0cb5ffd58",
     "encoder": "92abad042c1efdf77a6cedb20c482f53",
     "excepts": "4f37c69852e5d51aacfc0ab0ffab1df1",
     "handler": "ce2669417c97854896fad10446923423",
@@ -23,7 +23,7 @@ CORE = {
     "pooling": "76c57d81410b074f47593430e566a4b8",
     "repeats": "31c1498ba4eb490a9dedcab4b0aec52c",
     "require": "169511e608fdb20d2dd9b77ebc0f25cf",
-    "runtime": "50588be7cf731b4ce038b40dd001afca",
+    "runtime": "78e054f84983056181daf882b99c7596",
     "tasking": "bebdedd62e611d13458cdaf917201988",
     "typings": "77251d50b6ecc33356ce5cbdde603abd",
     "utility": "5b97aa86664d52c6fd70d24d36ec2e00",

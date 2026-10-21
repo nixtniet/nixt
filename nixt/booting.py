@@ -108,50 +108,6 @@ class Boot:
         except Exception as ex:
             Errors.throw(ex)
 
-
-class Booting(Boot):
-
-    "at first"
-
-    @classmethod
-    def banner(cls, force=False):
-        "hello."
-        if not force and not Main.verbose:
-            return
-        tmr = time.ctime(time.time()).replace("  ", " ")
-        print(f"{Main.name.upper()} {tmr} {Main.level.upper() or 'INFO'} ({MD5.core()})")
-        sys.stdout.flush()
-
-    @classmethod
-    def boot(cls):
-        "configure runtime."
-        cls.configure()
-        Mods.dir("mods", Workdir.moddir())
-        Mods.dir(f"{Main.name}.minimal", Mods.moddir("minimal"))
-        if Main.mods:
-            Mods.dir(f"{Main.name}.modules", Mods.moddir())
-        if Main.network:
-            Mods.dir(f"{Main.name}.network", Mods.moddir("network"))
-            Commands.list()
-        if Main.local:
-            Mods.dir("mods", "mods")
-        if Main.all:
-            Main.mods = ",".join(Mods.list("network"))
-        if Main.verbose:
-            cls.banner()
-        Commands.table()
-        Mods.table()
-        if Main.scanner or Main.local:
-            Commands.scanner()
-
-    @classmethod
-    def errors(cls):
-        "print errors."
-        for error in Errors.errors:
-            print("\n")
-            for line in Errors.format(error):
-                print(line.rstrip())
-
     @classmethod
     def wrap(cls, func, *args, dofinal=None):
         "restore console."
@@ -213,17 +169,18 @@ class Daemon:
         os.setuid(pwnam2.pw_uid)
 
 
-class Kernel(Booting, Daemon):
+class Booting(Boot, Daemon):
 
-    "center of believing"
+    "at start"
 
-    nrevents = 0
-    starttime = time.time()
+    @classmethod
+    def boot(cls):
+        "starting"
 
 
 def __dir__():
     return (
         'Boot',
         'Booting',
-        'Kernel'
+        'Daemon'
     )

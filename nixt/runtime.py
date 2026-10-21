@@ -5,12 +5,14 @@
 
 
 import sys
+import time
 
 
 from argparse import SUPPRESS, ArgumentParser, RawTextHelpFormatter
 
 
-from .defines import Cmd, Commands, Kernel, Main, Message, Method, Mods, Screen
+from .defines import MD5, Booting, Cmd, Commands,Main, Message, Method
+from .defines import Mods, Screen, Workdir
 
 
 class Arguments:
@@ -92,6 +94,45 @@ class Console(CLI):
         msg.kind = "command"
         self.put(msg)
         return msg
+
+
+class Kernel(Booting):
+
+    "at first"
+
+    @classmethod
+    def banner(cls, force=False):
+        "hello."
+        if not force and not Main.verbose:
+            return
+        tmr = time.ctime(time.time()).replace("  ", " ")
+        print(f"{Main.name.upper()} {tmr} {Main.level.upper() or 'INFO'} ({MD5.core()})")
+        sys.stdout.flush()
+
+    @classmethod
+    def boot(cls):
+        "configure runtime."
+        cls.configure()
+        Mods.dir("mods", Workdir.moddir())
+        Mods.dir(f"{Main.name}.modules", Mods.moddir())
+        if Main.local:
+            Mods.dir("mods", "mods")
+        if Main.all:
+            Main.mods = ",".join(Mods.list())
+        if Main.verbose:
+            cls.banner()
+        Commands.table()
+        Mods.table()
+        if Main.scanner or Main.local:
+            Commands.scanner()
+
+    @classmethod
+    def errors(cls):
+        "print errors."
+        for error in Errors.errors:
+            print("\n")
+            for line in Errors.format(error):
+                print(line.rstrip())
 
 
 class Scripts:
