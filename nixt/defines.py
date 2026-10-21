@@ -47,7 +47,6 @@ __all__ = (
     'Errors',
     'Format',
     'Handler',
-    'Kernel',
     'Locater',
     'Log',
     'Logging',

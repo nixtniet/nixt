@@ -31,8 +31,8 @@ def popen(txt):
         sys.stdout.flush()
 
 
-popen(f"ruff check {NAME} bin/tinder testing examples")
-popen(f"pylint {NAME} bin/tinder testing examples")
-popen(f"mypy -p {NAME} -p testing -p examples")
+popen(f"ruff check {NAME} bin/tinder mods extra testing")
+popen(f"pylint {NAME} bin/tinder mods extra testing")
+popen(f"mypy -p {NAME} -p mods -p extra -p testing")
 popen("ty check nixt")
 popen("bin/tinder")
