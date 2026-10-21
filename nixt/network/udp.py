@@ -1,7 +1,9 @@
 # This file is placed in the Public Domain.
 
 
-import logging
+"UDP to IRC relay"
+
+
 import select
 import socket
 import sys
@@ -9,15 +11,18 @@ import threading
 import time
 
 
-from nixt.defines import Clients, Main, Object, Task
+from nixt.defines import Clients, Log, Main, Object, Task
+
+
+logger = Log(__name__)
 
 
 def init():
     "initialize udp module."
-    udp = UDP()
-    udp.start()
-    logging.warning("http://%s:%s", Cfg.host, Cfg.port)
-    return udp
+    listener = UDP()
+    listener.start()
+    logger.warning("http://%s:%s", Cfg.host, Cfg.port)
+    return listener
 
 
 class Cfg(Object):
@@ -39,7 +44,7 @@ class UDP(Object):
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-        self._sock.setblocking(1)
+        self._sock.setblocking(True)
         self._starttime = time.time()
         self.ready = threading.Event()
 
@@ -80,6 +85,7 @@ class UDP(Object):
 
     @classmethod
     def toudp(cls, host, port, txt):
+        "send text to UDP relay."
         if Main.debug:
             return
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -87,6 +93,7 @@ class UDP(Object):
 
 
 def udp(msg):
+    "senf text to UDP relay."
     if msg.rest:
         UDP.toudp(Cfg.host, Cfg.port, msg.rest)
         return
@@ -99,7 +106,7 @@ def udp(msg):
         msg.iface("<text>")
         return
     size = 0
-    while 1:
+    while True:
         try:
             (inp, _out, err) = select.select(
                                              [sys.stdin,],
