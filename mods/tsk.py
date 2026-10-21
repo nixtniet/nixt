@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"locate objects"
+"running tasks"
 
 
 import threading
@@ -11,8 +11,8 @@ import time
 from nixt.defines import Time, Worker
 
 
-def thr(msg):
-    "list of running threads."
+def tsk(msg):
+    "list of running tasks."
     result = []
     for thread in sorted(threading.enumerate(), key=lambda x: x.name):
         if not isinstance(thread, Worker):

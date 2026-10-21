@@ -35,7 +35,6 @@ class Arguments:
         parser.add_argument("-w", "--wait", action='store_true', help='wait for services to start.')
         optionparser = theparser.add_argument_group()
         optionparser.add_argument("-m", "--mods", default="", help='modules to load.', metavar="m1,m2")
-        optionparser.add_argument("-n", "--network", default="", help='network modules to load.', metavar="m1,m2")
         optionparser.add_argument("-p", "--path", default='', help='path to modules directory.', metavar="path")
         optparser = theparser.add_argument_group()
         optparser.add_argument("--admin", action="store_true", help="enable admin mode.")

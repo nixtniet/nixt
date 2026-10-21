@@ -139,11 +139,7 @@ class Locater:
                 yield (pth, obj)
 
     @classmethod
-    def first(
-        cls,
-        obj,
-        selector=None
-        ):
+    def first(cls, obj, selector=None):
         "return first object of a kind."
         if selector is None:
             selector = {}

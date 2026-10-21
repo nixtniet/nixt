@@ -12,8 +12,7 @@
 
 ::
 
-    %s [-c|-d|-h|-s] [-a] [-v] [-w] [-l level] [-m m1,m2] [-p path]
-    %s [cmd] [key=val] [key==val]
+    %s [options] [cmd] [key=val] [key==val] [key-=val] [arguments]
 
 
 **DESCRIPTION**
@@ -46,7 +45,7 @@
 
     <new terminal>
 
-    $ %s srv > %s.service
+    $ %s --admin srv > %s.service
     $ sudo mv %s.service /etc/systemd/system/
     $ sudo systemctl enable %s --now
 
@@ -59,34 +58,29 @@
 
     $ %s -h
 
-    usage: %s [-c|-d|-h|-s] [-a] [-v] [-w] [-l level] [-m m1,m2] [-p path]
-           %s [cmd] [key=val] [key==val]
+    usage: %s [options] [cmd] [key=val] [key==val] [key-=val] [arguments]
 
     %s
 
     options:
-      -h, --help         show this help msg and exit
-      -c, --console      run as console.
+      -h, --help         show this help message and exit
+      -c, --console      start a console.
       -d, --daemon       run as background daemon.
       -s, --service      run as service.
 
       -a, --all          load all modules.
+      -l, --level level  set loglevel.
       -v, --verbose      enable verbose.
       -w, --wait         wait for services to start.
 
-      -l, --level level  set loglevel.
       -m, --mods m1,m2   modules to load.
-      -p, --path path    path to working directory.
+      -p, --path path    path to modules directory.
 
-      --admin            enable admin mode
-      --user             use local mods directory.
+      --admin            enable admin mode.
+      --scanner          do full modules scan on boot.
+      --wdr WDR          set modules directory.
 
-      use "%s cmd" for a list of commands.
-
-
-    $ %s cmd
-    cfg,cmd,dne,dpl,err,exp,imp,log,mod,mre,nme,
-    pwd,rem,req,res,rss,srv,syn,tdo,thr,upt
+    use "nixt cmd" for a list of commands.
 
 
 **COMMANDS**
@@ -124,7 +118,7 @@
     syn - sync rss feeds
     tbl - create table module
     tdo - add todo item
-    thr - show running threads
+    tsk - show running tasks
     tmr - timers
     udp - send udp packet to udp/irc relay
     upt - show uptime
@@ -217,11 +211,11 @@ def man(msg):
     msg.reply(__doc__ % (
         name,
         name.upper(),
-        *(name,) * 2,
+        *(name,) * 1,
         *(name.upper(),) * 4,
-        *(name,) * 9,
+        *(name,) * 8,
         name.upper(),
-        *(name,) * 13,
+        *(name,) * 11,
         name.upper(),
         *(name,) * 6,
         author,

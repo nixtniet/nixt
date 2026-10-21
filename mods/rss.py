@@ -3,6 +3,7 @@
 
 "rich site syndicate"
 
+
 import gc
 import html
 import logging.handlers
@@ -17,9 +18,9 @@ from urllib.request import Request, urlopen
 
 
 from nixt.default import Log, RLock
-from nixt.defines import Cfg, Clients, Data, Disk, Format, JSON, JSONL
-from nixt.defines import Locater, Logging, Main, MD5, Message, Method, Object
-from nixt.defines import Pool, Repeater, Runner, Utils, Watcher, Workdir
+from nixt.defines import Cfg, Clients, Data, Disk, Format, JSON, JSONL, Locater
+from nixt.defines import Logging, Main, MD5, Method, Object, Pool, Repeater
+from nixt.defines import Runner, Utils, Watcher, Workdir
 
 
 logger = Log(__name__)
@@ -112,7 +113,7 @@ class Run:
     index = 0
 
     @classmethod
-    def callback(cls) -> None:
+    def callback(cls):
         "monitor log file."
         if cls.file is None:
             return
@@ -132,7 +133,7 @@ class Run:
         gc.collect(0)
 
     @classmethod
-    def clear(cls) -> int:
+    def clear(cls):
         "retry all failed feeds."
         counter = 0
         for fnm, feed in Locater.find(Method.fqn(Rss)):
@@ -144,7 +145,7 @@ class Run:
         return counter
 
     @classmethod
-    def display(cls, obj: Feed, name=None) -> str:
+    def display(cls, obj, name=None):
         "display feed."
         displaylist = ""
         if name in obj:
@@ -167,7 +168,7 @@ class Run:
         return result[:-2].rstrip()
 
     @classmethod
-    def enable(cls, path: str) -> None:
+    def enable(cls, path):
         "enabke module logger."
         formatter = Format(Logging.formats, Logging.datefmt)
         filehandler = logging.handlers.TimedRotatingFileHandler(path, 'midnight')
@@ -180,7 +181,7 @@ class Run:
         logger.setLevel("DEBUG")
 
     @classmethod
-    def got(cls, text: str, feed: Feed) -> bool:
+    def got(cls, text, feed):
         "verify whether text has already been seen."
         md5 = MD5.source(text)[:7]
         if md5 in feed.seen:
@@ -189,12 +190,12 @@ class Run:
         return False
 
     @classmethod
-    def log(cls, text: str) -> None:
+    def log(cls, text):
         "log to file."
         logger.debug(text)
 
     @classmethod
-    def run(cls, silent: bool = False) -> int:
+    def run(cls, silent=False):
         "do a fetch run of all feeds."
         nrs = 0
         if Pool.busy():
@@ -208,7 +209,7 @@ class Run:
         return nrs
 
     @classmethod
-    def start(cls, once: bool = False) -> None:
+    def start(cls, once=False):
         "initialise module."
         if Config.save:
             cls.path = os.path.join(Workdir.logdir("rss"), 'rss.log')
@@ -227,12 +228,12 @@ class Run:
             Repeater.start()
 
     @classmethod
-    def stop(cls) -> None:
+    def stop(cls):
         "shutdown."
         Watcher.stop()
 
     @classmethod
-    def sync(cls) -> None:
+    def sync(cls):
         "sync state to disk."
         if cls.index > State.index:
             State.index = cls.index
@@ -246,11 +247,11 @@ class Fetching(Runner):
     def __init__(self):
         Runner.__init__(self)
 
-    def doskip(self, errno: int):
+    def doskip(self, errno):
         "check whether to log."
         return errno >= 400
 
-    def getfeed(self, fnm: str, feed: Rss, items: str):
+    def getfeed(self, fnm, feed, items):
         "fetch a feed."
         response = Fetcher.geturl(feed.rss)
         if not response.data:
@@ -494,7 +495,7 @@ class RSS:
             yield feed
 
 
-def atr(msg: Message):
+def atr(msg):
     "show attributes of a feed."
     if not msg.rest:
         msg.iface("<stringinurl>")
@@ -522,7 +523,7 @@ def atr(msg: Message):
         msg.reply(','.join(resulting))
 
 
-def dpl(msg: Message):
+def dpl(msg):
     "set feed items to display."
     if len(msg.args) < 2:
         msg.iface("<stringinurl> <item1,item2>")
@@ -535,7 +536,7 @@ def dpl(msg: Message):
     msg.ok()
 
 
-def exp(msg: Message):
+def exp(msg):
     "export opml."
     with Locks.importlock:
         msg.reply(TEMPLATE)
@@ -552,7 +553,7 @@ def exp(msg: Message):
         msg.reply("</opml>")
 
 
-def imp(msg: Message):
+def imp(msg):
     "import opml."
     if not msg.args:
         msg.iface("<filename>")
@@ -599,7 +600,7 @@ def imp(msg: Message):
         msg.reply(f"added {nrs} urls.")
 
 
-def nme(msg: Message):
+def nme(msg):
     "set name of a feed."
     if len(msg.args) == 1:
         name = ""
@@ -621,7 +622,7 @@ def nme(msg: Message):
     msg.ok()
 
 
-def rem(msg: Message):
+def rem(msg):
     "remove a feed."
     if len(msg.args) != 1:
         msg.iface("<stringinurl>")
@@ -638,7 +639,7 @@ def rem(msg: Message):
             break
 
 
-def res(msg: Message):
+def res(msg):
     "restore a feed."
     if len(msg.args) != 1:
         msg.iface("<stringinurl>")
@@ -659,7 +660,7 @@ def res(msg: Message):
     msg.reply(f"{nrs} feeds restored.")
 
 
-def rss(msg: Message):
+def rss(msg):
     "add a feed."
     if not msg.rest:
         msg.iface("<url>")
@@ -678,7 +679,7 @@ def rss(msg: Message):
     msg.ok()
 
 
-def syn(msg: Message):
+def syn(msg):
     "synchronize a feed."
     if Main.debug:
         return

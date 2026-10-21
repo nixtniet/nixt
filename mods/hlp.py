@@ -18,10 +18,10 @@ options:
   -s, --service      run as service.
 
   -a, --all          load all modules.
+  -l, --level level  set loglevel.
   -v, --verbose      enable verbose.
   -w, --wait         wait for services to start.
 
-  -l, --level level  set loglevel.
   -m, --mods m1,m2   modules to load.
   -p, --path path    path to modules directory.
 
