@@ -26,7 +26,7 @@ class Message(Data):
         self.text = ""
 
     def __iter__(self):
-        return iter([x for x in self.__dict__ if not x.startswith("_")])
+        return iter(self.__dict__)
 
     def iface(self, text):
         "show interface."
