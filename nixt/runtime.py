@@ -113,6 +113,7 @@ class Kernel(Booting):
         "configure runtime."
         cls.configure()
         Mods.dir("mods", Workdir.moddir())
+        Mods.dir(f"{Main.name}.minimal", Mods.moddir("minimal"))
         Mods.dir(f"{Main.name}.modules", Mods.moddir())
         if Main.local:
             Mods.dir("mods", "mods")
