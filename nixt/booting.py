@@ -109,7 +109,8 @@ class Boot:
     @classmethod
     def wrap(cls, func, *args, dofinal=None):
         "restore console."
-        import termios, sys
+        import termios
+        import sys
         try:
             old = termios.tcgetattr(sys.stdin.fileno())
         except termios.error:
