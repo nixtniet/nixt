@@ -59,42 +59,6 @@ class Arguments:
         )
 
 
-class CLI(Screen):
-
-    "Command Line Interface"
-
-    def __init__(self):
-        Screen.__init__(self)
-        self.register("command", Commands.command)
-
-    def after(self, msg):
-        "wait for msg to finish"
-        msg.wait()
-
-    def raw(self, text):
-        "write to console."
-        print(text.encode('utf-8', 'replace').decode("utf-8"))
-        sys.stdout.flush()
-
-
-class Console(CLI):
-
-    "prompt"
-
-    def __init__(self):
-        CLI.__init__(self)
-        self.silent = True
-
-    def poll(self):
-        "return msg."
-        msg = Message()
-        msg.orig = repr(self)
-        msg.text = input("> ")
-        msg.kind = "command"
-        self.put(msg)
-        return msg
-
-
 class Kernel(Booting):
 
     "at first"
@@ -133,6 +97,42 @@ class Kernel(Booting):
             print("\n")
             for line in Errors.format(error):
                 print(line.rstrip())
+
+
+class CLI(Screen):
+
+    "Command Line Interface"
+
+    def __init__(self):
+        Screen.__init__(self)
+        self.register("command", Commands.command)
+
+    def after(self, msg):
+        "wait for msg to finish"
+        msg.wait()
+
+    def raw(self, text):
+        "write to console."
+        print(text.encode('utf-8', 'replace').decode("utf-8"))
+        sys.stdout.flush()
+
+
+class Console(CLI):
+
+    "prompt"
+
+    def __init__(self):
+        CLI.__init__(self)
+        self.silent = True
+
+    def poll(self):
+        "return msg."
+        msg = Message()
+        msg.orig = repr(self)
+        msg.text = input("> ")
+        msg.kind = "command"
+        self.put(msg)
+        return msg
 
 
 class Scripts:
@@ -203,12 +203,5 @@ def main():
         Kernel.wrap(Scripts.control)
 
 
-
-def __dir__():
-    return (
-        'CLI',
-        'Arguments',
-        'Console',
-        'Scripts',
-        'main'
-    )
+# if __name__ == "__main__":
+#    main()
