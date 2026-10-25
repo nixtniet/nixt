@@ -165,7 +165,7 @@ class Scripts:
         Kernel.boot()
         Commands.add(Cmd.cmd)
         if Main.admin:
-            Commands.add(Cmd.tbl)
+            Commands.add(Cmd.tbl, Cmd.srv)
         cli = CLI()
         msg = Message()
         msg.kind = "command"
