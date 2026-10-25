@@ -27,6 +27,19 @@ class Cmd:
         msg.reply(",".join(sorted((check and Commands.cmds) or Commands.names)))
 
     @staticmethod
+    def srv(msg):
+        "generate systemd service file."
+        import getpass
+        name = getpass.getuser()
+        msg.reply(SYSTEMD % (
+            Main.name.upper(),
+            name,
+            name,
+            name,
+            Main.name
+        ))
+
+    @staticmethod
     def tbl(msg):
         "create table."
         core = {}
@@ -65,6 +78,20 @@ class Cmd:
     def ver(msg):
         "show verson."
         msg.reply(f"{Main.name.upper()} {MD5.core()}")
+
+
+SYSTEMD = """[Unit]
+Description=%s
+After=multi-user.target
+
+[Service]
+Type=simple
+User=%s
+Group=%s
+ExecStart=/home/%s/.local/bin/%s -s
+
+[Install]
+WantedBy=multi-user.target"""
 
 
 def __dir__():
