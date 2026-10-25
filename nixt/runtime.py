@@ -39,7 +39,6 @@ class Arguments:
         optparser = theparser.add_argument_group()
         optparser.add_argument("--admin", action="store_true", help="enable admin mode.")
         optparser.add_argument("--channel", default="", help=SUPPRESS)
-        optparser.add_argument("--local", action="store_true", help=SUPPRESS)
         optparser.add_argument("--nochdir", action="store_true", help=SUPPRESS)
         optparser.add_argument("--scanner", action="store_true", help="do full modules scan on boot.")
         optparser.add_argument("--wdr", default="", help="set modules directory.")
@@ -79,8 +78,6 @@ class Kernel(Booting):
         Mods.dir("modules", Workdir.moddir())
         Mods.dir(f"{Main.name}.minimal", Mods.moddir("minimal"))
         Mods.dir(f"{Main.name}.modules", Mods.moddir())
-        if Main.local:
-            Mods.dir("mods", "mods")
         if Main.all:
             Main.mods = ",".join(Mods.list())
         if Main.verbose:
