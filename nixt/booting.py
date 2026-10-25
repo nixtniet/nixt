@@ -5,7 +5,6 @@
 
 
 import os
-import sys
 import threading
 import time
 import _thread
@@ -110,7 +109,7 @@ class Boot:
     @classmethod
     def wrap(cls, func, *args, dofinal=None):
         "restore console."
-        import termios
+        import termios, sys
         try:
             old = termios.tcgetattr(sys.stdin.fileno())
         except termios.error:
@@ -132,6 +131,7 @@ class Daemon:
     @classmethod
     def daemon(cls):
         "run in the background."
+        import sys
         pid = os.fork()
         if pid != 0:
             os._exit(0)

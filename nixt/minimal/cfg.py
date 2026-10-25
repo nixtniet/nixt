@@ -10,8 +10,8 @@ from nixt.defines import Data, Disk, Method, Mods
 def cfg(msg):
     "configure modules."
     if not msg.args:
-        mods = f"{'main,' + Mods.has('Config')}"
-        mods.removesuffix(mods)
+        mods = "main," + Mods.has('Config')
+        mods = mods.removesuffix(",")
         msg.iface(f"<{mods}>")
         return
     name = msg.args[0]
