@@ -11,7 +11,8 @@ def cfg(msg):
     "configure modules."
     if not msg.args:
         mods = "main," + Mods.has('Config')
-        mods = mods.removesuffix(",")
+        if mods and mods[-1] == ",":
+            mods = mods[:-1]
         msg.iface(f"<{mods}>")
         return
     name = msg.args[0]
