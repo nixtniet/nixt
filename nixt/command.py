@@ -85,7 +85,7 @@ class Commands:
 
     @classmethod
     def statics(cls):
-        "read table,"
+        "read table."
         try:
             from .statics import NAMES
             cls.names.update(NAMES)

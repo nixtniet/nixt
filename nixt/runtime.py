@@ -105,7 +105,7 @@ class CLI(Screen):
         self.register("command", Commands.command)
 
     def after(self, msg):
-        "wait for msg to finish"
+        "wait for msg to finish."
         msg.wait()
 
     def raw(self, text):

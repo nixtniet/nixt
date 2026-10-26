@@ -23,7 +23,7 @@ class Watcher:
 
     @classmethod
     def add(cls, path, callback):
-        "add callback"
+        "add callback."
         if not os.path.exists(path):
             return
         cls.cbs[path] = callback

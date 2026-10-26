@@ -300,5 +300,5 @@ def __dir__():
     return (
         'Disk',
         'Locater',
-        'WOrkdir'
+        'Workdir'
     )

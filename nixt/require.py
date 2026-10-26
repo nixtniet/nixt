@@ -18,7 +18,7 @@ from .utility import MD5, Utils
 
 class Cmd:
 
-    "necessary commands."
+    "necessary commands"
 
     @staticmethod
     def cmd(msg):

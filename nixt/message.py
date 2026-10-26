@@ -14,7 +14,7 @@ class Message(Data):
 
     def __init__(self):
         super().__init__()
-        self._ready= Event()
+        self._ready = Event()
         self._thr = None
         self.args = []
         self.cmd = ""

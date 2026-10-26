@@ -143,7 +143,7 @@ class Output(Display):
 
 class Screen(Handler, Display):
 
-    "display wit coupled handler."
+    "display with coupled handler"
 
     def __init__(self):
         Handler.__init__(self)

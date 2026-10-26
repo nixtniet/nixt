@@ -82,7 +82,7 @@ class Logging:
 
 class MD5:
 
-    "module md5sums"
+    "module md5sum"
 
     @classmethod
     def check(cls, md5s):
@@ -146,7 +146,7 @@ class MD5:
 
 class Time:
 
-    "time related utilities."
+    "time related utilities"
 
     starttime = time.time()
     times = (
