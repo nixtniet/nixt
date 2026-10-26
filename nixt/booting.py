@@ -37,6 +37,9 @@ class Boot:
         Workdir.skel()
         Logging.size(len(Main.name))
         Logging.level(Main.level or "info")
+        Mods.dir("modules", Workdir.moddir())
+        Mods.dir(f"{Main.name}.minimal", Mods.moddir("minimal"))
+        Mods.dir(f"{Main.name}.modules", Mods.moddir())
         Main.path = os.path.normpath(Main.path)
         pkgname = Main.path.rsplit(os.sep, maxsplit=1)[-1]
         Mods.dir(pkgname, Main.path)

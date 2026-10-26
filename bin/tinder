@@ -23,9 +23,6 @@ from nixt.defines import Mods, Pool, Screen, Task, Time, Workdir
 Workdir.wdr = ".test"
 
 
-events = []
-
-
 class CLI(Screen):
 
     "Command Line Interface"
@@ -61,56 +58,64 @@ class Kernel(Booting):
         else:
             Pool.nrcpu = 1
         Pool.init(Pool.nrcpu, CLI)
-        cls.starttime = time.time()
 
     @classmethod
     def collect(cls):
         for msg in cls.messages:
             msg.wait()
-        
 
-def payload(todo):
-    "payload to run."
-    for cmd, example in todo.items():
-        for ex in example:
-            Kernel.nrevents += 1
-            evt = Message()
-            evt.kind = "command"
-            evt.text = f"{cmd} {ex}"
-            Pool.put(evt)
-            events.append(evt)
+    @classmethod
+    def launch(cls):
+        nrs = Main.index or 1
+        thrs = []
+        for _x in range(nrs):
+            thrs.append(Task.start(cls.payload, pre))
+        for thr in thrs:
+            thr.join()
+        thrs = []
+        for _x in range(nrs):
+            thrs.append(Task.start(cls.payload, examples))
+        for thr in thrs:
+            thr.join()
+        thrs = []
+        for _x in range(nrs):
+            thrs.append(Task.start(cls.payload, post))
+        for thr in thrs:
+            thr.join()
+
+    @classmethod
+    def payload(cls, todo):
+        "payload to run."
+        for cmd, example in todo.items():
+            for ex in example:
+                Kernel.nrevents += 1
+                evt = Message()
+                evt.kind = "command"
+                evt.text = f"{cmd} {ex}"
+                Pool.put(evt)
+                cls.messages.append(evt)
 
 
-
-
-def final():
-    "finalizer."
-    if not Main.verbose:
-        return
-    total = Kernel.nrevents
-    endtime = time.time()
-    lap = Time.elapsed(endtime-Kernel.starttime)
-    percall = (endtime-Kernel.starttime)/total
-    print(f"{Method.fmt(Main, skip='otxt,txt')}")
-    print(f"nrcpu: {Pool.nrcpu} events: {total}")
-    print(f"total: {lap} nrs: {Kernel.nrevents} call: {percall}")
-    print(threading.enumerate())
+    @classmethod
+    def final(cls):
+        "finalizer."
+        if not Main.verbose:
+            return
+        total = Kernel.nrevents
+        endtime = time.time()
+        lap = Time.elapsed(endtime-Kernel.starttime)
+        percall = (endtime-Kernel.starttime)/total
+        print(f"{Method.fmt(Main, skip='otxt,txt')}")
+        print(f"nrcpu: {Pool.nrcpu} events: {total}")
+        print(f"total: {lap} nrs: {Kernel.nrevents} call: {percall}")
+        print(threading.enumerate())
 
 
 def main():
     "main code."
     Parser.parse(Main, " ".join(sys.argv[1:]))
     Kernel.boot()
-    nrs = Main.index or 1
-    thrs = []
-    for _x in range(nrs):
-        thrs.append(Task.start(payload, pre))
-    for _x in range(nrs):
-        thrs.append(Task.start(payload, examples))
-    for _x in range(nrs):
-        thrs.append(Task.start(payload, post))
-    for thr in thrs:
-        thr.join()
+    Kernel.launch()
     Kernel.collect()
     Kernel.shutdown()
 
@@ -167,9 +172,9 @@ post = {
     "dbg": [""],
     "dne": ["", "mekker"],
     "exp": [""],
-    "rem": ["", "rem hnrss"]
+    "rem": ["", "hnrss"]
 }
 
 
 if __name__ == "__main__":
-    Kernel.wrap(main, dofinal=final)
+    Kernel.wrap(main, dofinal=Kernel.final)

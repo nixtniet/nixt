@@ -61,8 +61,8 @@ class Display:
     last = ""
 
     def __init__(self):
-        self.olock: RLock = RLock()
-        self.silent: bool = False
+        self.olock = RLock()
+        self.silent = False
         Broker.add(self)
 
     def announce(self, text):

@@ -75,9 +75,6 @@ class Kernel(Booting):
     def boot(cls):
         "configure runtime."
         cls.configure()
-        Mods.dir("modules", Workdir.moddir())
-        Mods.dir(f"{Main.name}.minimal", Mods.moddir("minimal"))
-        Mods.dir(f"{Main.name}.modules", Mods.moddir())
         if Main.all:
             Main.mods = ",".join(Mods.list())
         if Main.verbose:
