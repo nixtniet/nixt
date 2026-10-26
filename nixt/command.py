@@ -168,6 +168,10 @@ class Parser:
             obj.text = obj.text + " " + obj.rest
         else:
             obj.text = obj.mod + " " + obj.cmd
+        if "v" in obj.opts:
+            obj.verbose = True
+        if "t" in obj.opts:
+            obj.threaded = True
 
 
 def __dir__():

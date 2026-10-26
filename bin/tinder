@@ -20,8 +20,10 @@ from nixt.defines import Booting, Commands, Main, Message, Method, Parser
 from nixt.defines import Mods, Pool, Screen, Task, Time, Workdir
 
 
-Main.local = True
 Workdir.wdr = ".test"
+
+
+events = []
 
 
 class CLI(Screen):
@@ -34,7 +36,7 @@ class CLI(Screen):
 
     def raw(self, text):
         "write to console."
-        if "v" in Main.opts:
+        if Main.verbose:
             print(text.encode('utf-8', 'replace').decode("utf-8"))
             sys.stdout.flush()
 
@@ -43,9 +45,29 @@ class Kernel(Booting):
 
     "teh kernal"
 
+    messages = []
     nrevents = 0
     starttime = time.time()
 
+    @classmethod
+    def boot(cls):
+        cls.configure()
+        Mods.dir("mods", "mods")
+        Commands.scanner()
+        if os.path.exists(Workdir.wdr):
+            shutil.rmtree(Workdir.wdr)
+        if Main.threaded:
+            Pool.nrcpu = os.cpu_count()
+        else:
+            Pool.nrcpu = 1
+        Pool.init(Pool.nrcpu, CLI)
+        cls.starttime = time.time()
+
+    @classmethod
+    def collect(cls):
+        for msg in cls.messages:
+            msg.wait()
+        
 
 def payload(todo):
     "payload to run."
@@ -56,18 +78,21 @@ def payload(todo):
             evt.kind = "command"
             evt.text = f"{cmd} {ex}"
             Pool.put(evt)
+            events.append(evt)
+
+
 
 
 def final():
     "finalizer."
-    if "v" not in Main.opts:
+    if not Main.verbose:
         return
     total = Kernel.nrevents
     endtime = time.time()
     lap = Time.elapsed(endtime-Kernel.starttime)
     percall = (endtime-Kernel.starttime)/total
     print(f"{Method.fmt(Main, skip='otxt,txt')}")
-    print(f"events: {total}")
+    print(f"nrcpu: {Pool.nrcpu} events: {total}")
     print(f"total: {lap} nrs: {Kernel.nrevents} call: {percall}")
     print(threading.enumerate())
 
@@ -76,16 +101,6 @@ def main():
     "main code."
     Parser.parse(Main, " ".join(sys.argv[1:]))
     Kernel.boot()
-    Mods.dir("mods", "mods")
-    Commands.scanner()
-    if os.path.exists(Workdir.wdr):
-        shutil.rmtree(Workdir.wdr)
-    if "t" in Main.opts:
-        nrcpu = os.cpu_count()
-    else:
-        nrcpu = 1
-    Pool.init(nrcpu, CLI)
-    Kernel.starttime = time.time()
     nrs = Main.index or 1
     thrs = []
     for _x in range(nrs):
@@ -96,6 +111,7 @@ def main():
         thrs.append(Task.start(payload, post))
     for thr in thrs:
         thr.join()
+    Kernel.collect()
     Kernel.shutdown()
 
 
@@ -105,8 +121,8 @@ examples = {
     "dpl": ["", "tittle.link"],
     "eml": ["", "root@localhost"],
     "flt": ["", "0"],
-    "fnd": ["", "log", "todo"],
-    "fie": ["", "log", "todo"],
+    "fnd": ["", "log", "rss", "todo"],
+    "fie": ["", "log", "rss", "todo"],
     "lou": [""],
     "mbx": ["", "~/25-1-2013"],
     "man": ["", "nixt nixtniet@gmail.com Nixt Niet"],

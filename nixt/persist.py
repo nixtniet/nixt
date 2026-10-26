@@ -119,24 +119,23 @@ class Locater:
         nritems=0
         ):
         "locate objects by matching atributes."
-        with cls.lock:
-            if selector is None:
-                selector = {}
-            nrs = 0
-            for pth in cls.fns(Workdir.long(kind)):
-                obj = Cache.get(pth)
-                if not obj:
-                    obj = Data()
-                    Disk.read(obj, pth)
-                    Cache.add(pth, obj)
-                if not removed and Method.deleted(obj):
-                    continue
-                if selector and not Method.search(obj, selector, matching):
-                    continue
-                if nritems and nrs >= nritems:
-                    break
-                nrs += 1
-                yield (pth, obj)
+        if selector is None:
+            selector = {}
+        nrs = 0
+        for pth in cls.fns(Workdir.long(kind)):
+            obj = Cache.get(pth)
+            if not obj:
+                obj = Data()
+                Disk.read(obj, pth)
+                Cache.add(pth, obj)
+            if not removed and Method.deleted(obj):
+                continue
+            if selector and not Method.search(obj, selector, matching):
+                continue
+            if nritems and nrs >= nritems:
+                break
+            nrs += 1
+            yield (pth, obj)
 
     @classmethod
     def first(cls, obj, selector=None):

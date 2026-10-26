@@ -5,10 +5,10 @@
 
 
 import random
-import threading
 import time
 
 
+from nixt.default import Event, RLock
 from nixt.defines import Broker, Disk, Locater, Log, Method, Object
 from nixt.defines import Task, Time
 
@@ -38,9 +38,9 @@ class TimerLoop:
     "timer loop"
 
     dosave = False
-    lock = threading.RLock()
+    lock = RLock()
     path = ""
-    running = threading.Event()
+    running = Event()
     timers = Timers()
 
     @classmethod
