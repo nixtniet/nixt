@@ -8,15 +8,13 @@ import threading
 import time
 
 
-from nixt.defines import Time, Worker
+from nixt.defines import Time
 
 
 def tsk(msg):
     "list of running tasks."
     result = []
     for thread in sorted(threading.enumerate(), key=lambda x: x.name):
-        if not isinstance(thread, Worker):
-            continue
         if str(thread).startswith("<_"):
             continue
         if getattr(thread, "sleep", None):

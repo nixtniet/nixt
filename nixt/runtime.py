@@ -11,8 +11,9 @@ import time
 from argparse import SUPPRESS, ArgumentParser, RawTextHelpFormatter
 
 
-from .defines import MD5, Booting, Cmd, Commands, Errors, Main, Message
-from .defines import Method, Mods, Screen, Workdir
+from .defines import MD5, Booting, Commands, Errors, Main
+from .defines import Message, Method, Mods, Screen
+from .require import Cmd
 
 
 class Arguments:

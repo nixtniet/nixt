@@ -7,13 +7,10 @@
 import unittest
 
 
-from typing import List
-
-
 from nixt.defines import Handler, Message
 
 
-buffer: List[str] = []
+buffer = []
 
 
 def hello(message):

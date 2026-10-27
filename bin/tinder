@@ -60,12 +60,8 @@ class Kernel(Booting):
         Pool.init(Pool.nrcpu, CLI)
 
     @classmethod
-    def collect(cls):
-        for msg in cls.messages:
-            msg.wait()
-
-    @classmethod
     def launch(cls):
+        "launch commands."
         nrs = Main.index or 1
         thrs = []
         for _x in range(nrs):
@@ -116,7 +112,6 @@ def main():
     Parser.parse(Main, " ".join(sys.argv[1:]))
     Kernel.boot()
     Kernel.launch()
-    Kernel.collect()
     Kernel.shutdown()
 
 

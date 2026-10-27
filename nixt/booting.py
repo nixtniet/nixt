@@ -16,7 +16,7 @@ from .default import Event, Log
 from .excepts import Errors
 from .package import Mods
 from .persist import Workdir
-from .tasking import Task, Worker
+from .tasking import Task
 from .utility import Logging, Utils
 
 
@@ -104,7 +104,7 @@ class Boot:
             func(*args)
         except (KeyboardInterrupt, EOFError):
             Screen.block.set()
-            Worker.block.set()
+            Task.block.set()
             _thread.interrupt_main()
         except Exception as ex:
             Errors.throw(ex)

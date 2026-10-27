@@ -21,8 +21,7 @@ from .package import Mods
 from .persist import Disk, Locater, Workdir
 from .pooling import Pool, Runner
 from .repeats import Repeater
-from .require import Cmd
-from .tasking import Task, Worker
+from .tasking import Task
 from .utility import MD5, Format, Logging, Time, Utils
 from .watcher import Watcher
 
@@ -37,7 +36,6 @@ __all__ = (
     'Buffer',
     'Cfg',
     'Clients',
-    'Cmd',
     'Commands',
     'Config',
     'Daemon',
@@ -66,8 +64,7 @@ __all__ = (
     'Time',
     'Utils',
     'Watcher',
-    'Workdir',
-    'Worker'
+    'Workdir'
     )
 
 

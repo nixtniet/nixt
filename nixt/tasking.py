@@ -5,45 +5,26 @@
 
 
 import inspect
-import time
 
 
-from .default import Event, Log, Queue, RLock, Thread
-from .excepts import Errors
+from .default import Event, Log, RLock, Thread
 
 
 logger = Log(__name__)
 
 
-class Worker(Thread):
+class Task:
 
-    "unit of thread"
+    "start a task"
 
     block = Event()
-
-    def __init__(self, func, *args, daemon=True, **kwargs):
-        super().__init__(None, self.run, None, (), daemon=daemon)
-        self.name = kwargs.get("name", self.getname(func) or "")
-        self.queue = Queue()
-        self.result = None
-        self.sleep = 0.0
-        self.starttime = time.time()
-        self.state = {}
-        self.queue.put((func, args))
+    lock = RLock()
 
     def __iter__(self):
         return self
 
     def __next__(self):
         yield from dir(self)
-
-    def join(self, timeout=None):
-        "join thread and return result."
-        try:
-            super().join(timeout or None)
-            return self.result
-        except Exception as ex:
-            Errors.throw(ex)
 
     @classmethod
     def clsname(cls, obj):
@@ -61,28 +42,18 @@ class Worker(Thread):
             return repr(obj).split()[1]
         return repr(obj)
 
-    def run(self):
-        "run function."
-        func, args = self.queue.get()
-        if self.block.is_set():
-            return
-        try:
-            self.result = func(*args)
-        except Exception as ex:
-            Errors.throw(ex, *args)
-
-
-class Task:
-
-    "start a task"
-
-    lock = RLock()
-
     @classmethod
-    def start(cls, func, *args, **kwargs):
+    def start(cls, func, *args, daemon=True, **kwargs):
         "start a new thread running function with arguments."
         with cls.lock:
-            worker = Worker(func, *args, **kwargs)
+            if cls.block.is_set():
+                return
+            name = kwargs.get("name", None)
+            if name:
+                del kwargs["name"]
+            else:
+                name = cls.getname(func)
+            worker = Thread(None, func, name, args, kwargs, daemon=daemon)
             worker.start()
             return worker
 
@@ -90,5 +61,4 @@ class Task:
 def __dir__():
     return (
         'Task',
-        'Worker'
     )
