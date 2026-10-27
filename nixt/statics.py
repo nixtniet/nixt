@@ -22,19 +22,29 @@ CORE = {
     "persist": "4d50fc7f0d754f67a9c94df67e211271",
     "pooling": "7086c51df646ac118f605ba74de6715c",
     "repeats": "31c1498ba4eb490a9dedcab4b0aec52c",
-    "require": "3cce514916c4c00a34a34a0519a838d0",
-    "runtime": "c2db8f37d9aeeb0140f9dc6defb164c6",
-    "tasking": "2116098237edb75ed130e102e4a0a313",
+    "require": "c1e120b234485261065716ba22001540",
+    "runtime": "e9a4456b12532b5ed9bce666520ec7af",
+    "tasking": "0f2442b07267e5a04fdcef09eb369334",
     "typings": "27741c2543077c3835f7f460a3538ceb",
     "utility": "21b81f3d9b848bfa703158b293306dd6",
     "watcher": "06ff2810ae0c2b0bd1140fbeed5b4ec7"
 }
 
 
-MODULES = {}
+MODULES = {
+    "cfg": "df5f53fe8e05128d074f8aa21ee66506",
+    "fnd": "4c972ae2d620facc199948d3aeab6f46",
+    "upt": "a3a082517a3099b155e798a9d4be0cf8",
+    "ver": "f7b60ee98f308d797b36be302f01e9f6"
+}
 
 
-NAMES = {}
+NAMES = {
+    "cfg": "cfg",
+    "fnd": "fnd",
+    "upt": "upt",
+    "ver": "ver"
+}
 
 
 def __dir__():
