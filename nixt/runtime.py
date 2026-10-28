@@ -11,7 +11,7 @@ import time
 from argparse import SUPPRESS, ArgumentParser, RawTextHelpFormatter
 
 
-from .defines import MD5, Booting, Commands, Errors, Main, Message
+from .defines import MD5, Booting, Commands, Main, Message
 from .defines import Method, Mods, Screen, Workdir
 from .require import Cmd
 
@@ -87,14 +87,6 @@ class Kernel(Booting):
         Mods.table()
         if Main.scanner or Main.local:
             Commands.scanner()
-
-    @classmethod
-    def errors(cls):
-        "print errors."
-        for error in Errors.errors:
-            print("\n")
-            for line in Errors.format(error):
-                print(line.rstrip())
 
 
 class CLI(Screen):

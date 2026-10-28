@@ -10,7 +10,6 @@ import time
 
 
 from .default import Event, Queue, RLock, Thread
-from .excepts import Errors
 
 
 logger = logging.getLogger(__name__)

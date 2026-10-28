@@ -14,7 +14,6 @@ from .clients import Broker, Screen
 from .command import Commands
 from .configs import Main
 from .default import Event, Log
-from .excepts import Errors
 from .package import Mods
 from .persist import Workdir
 from .tasking import Task, Worker
@@ -66,10 +65,7 @@ class Boot:
             thrs.append(Task.start(mod.init))
         if thrs and wait:
             for thr in thrs:
-                try:
-                    thr.join()
-                except Exception as ex:
-                    Errors.throw(ex)
+                thr.join()
         return True
 
     @classmethod

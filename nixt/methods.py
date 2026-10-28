@@ -93,7 +93,7 @@ class Method:
     @classmethod
     def isempty(cls, obj):
         "check if all keys heve empty value."
-        return all(not obj.get(key) for key in obj.__dict__)
+        return all(not obj.get(key) for key in obj)
 
     @classmethod
     def merge(cls, obj, obj2):

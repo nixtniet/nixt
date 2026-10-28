@@ -5,7 +5,6 @@
 
 
 import gc
-import html
 import logging.handlers
 import os
 import pathlib
@@ -13,14 +12,12 @@ import re
 import urllib.parse
 
 
-from urllib.parse   import unquote, urlparse, urlunparse
-from urllib.request import Request, urlopen
 
 
 from nixt.default import Log, RLock
-from nixt.defines import Cfg, Clients, Data, Disk, Errors, Format, JSON, JSONL, Locater
-from nixt.defines import Logging, Main, MD5, Method, Object, Pool, Repeater
-from nixt.defines import Runner, Utils, Watcher, Workdir
+from nixt.defines import Cfg, Clients, Data, Disk, Fetcher, Format, JSON, JSONL
+from nixt.defines import Locater, Logging, Main, MD5, Method, Object, Pool
+from nixt.defines import Repeater, Runner, Utils, Watcher, Workdir
 
 
 logger = Log(__name__)
@@ -55,24 +52,12 @@ class Feed(Data):
     "feed data"
 
 
-class Response(Data):
-
-    "response object"
-
-    def __init__(self):
-        Data.__init__(self)
-        self.data = b""
-        self.reason = ""
-        self.status = None
-        self.url = ""
-
-
 class Rss(Data):
 
     "feed meta data"
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        Data.__init__(self, *args, **kwargs)
         self.__deleted__ = False
         self.display_list = "title,link,author"
         self.error = ""
@@ -125,7 +110,7 @@ class Run:
                     break
                 feed = Feed()
                 Method.update(feed, JSONL.loads(line.strip()))
-                txt = cls.display(feed)
+                txt = cls.display(vars(feed))
                 if not Run.got(txt, feed):
                     Clients.announce(txt)
             State.index = cls.file.tell()
@@ -201,11 +186,12 @@ class Run:
         if Pool.busy():
             logger.debug("next!")
             return 0
-        for fnm, feed in Locater.find(Method.fqn(Rss)):
-            fed = Feed(feed)
-            if fed.skip:
+        for fnm, rssitem in Locater.find(Method.fqn(Rss)):
+            feed = Rss()
+            Method.update(feed, rssitem)
+            if feed.skip:
                 continue
-            Pool.put((fnm, fed, silent))
+            Pool.put((fnm, feed, silent))
             nrs += 1
         return nrs
 
@@ -252,26 +238,25 @@ class Fetching(Runner):
         "check whether to log."
         return errno >= 400
 
-    def getfeed(self, fnm, feed, items):
+    def getfeed(self, fnm, feed):
         "fetch a feed."
         try:
-            data = Fetcher.geturl(feed.rss).read()
-        except (urllib.error.URLError, TimeoutError) as ex:
-            logger.debug(f"{feed.rss} {str(ex)}")
+            data = Fetcher.geturl(feed.rss)
+            return RSS.parse(data,
+                             (feed.rss.endswith("atom") and "entry") or "item",
+                             feed.display_list
+                            ) or []
+        except TimeoutError as ex:
+            logger.debug("%s %s", feed.rss, ex)
             return []
         except urllib.error.HTTPError as ex:
             if ex.status == 304:
                 return []
-            logger.debug(f"{feed.rss} {ex.status}")
+            logger.debug("%s %s", feed.rss, ex.status)
             return []
-        return RSS.parse(
-                         str(data,
-                             "utf-8",
-                             errors='ignore'
-                            ),
-                         (feed.rss.endswith("atom") and "entry") or "item",
-                         items
-                        ) or []
+        except urllib.error.URLError as ex:
+            logger.debug("%s %s", feed.rss, ex.errno)
+            return []
 
     def run(self, *args, **kwargs):
         "poll all feeds."
@@ -281,19 +266,22 @@ class Fetching(Runner):
             feed.seen = []
         has = False
         gotcha = 0
-        for obj in self.getfeed(fnm, feed, feed.display_list):
+        for obj in self.getfeed(fnm, feed):
+            fed = Feed()
+            Method.update(fed, obj)
+            Method.update(fed, vars(feed))
             counter += 1
-            print(obj)
             if obj is None:
                 continue
-            if Method.isempty(obj):
+            if Method.isempty(vars(feed)):
+                print("is empty")
                 continue
-            obj.update(feed)
+            Method.update(feed, obj)
             if Config.save:
                 Run.log(JSON.dumps(feed))
             if not silent:
-                txt = Run.display(obj)
-                if not Run.got(txt, obj):
+                txt = Run.display(vars(feed))
+                if not Run.got(txt, feed):
                     Clients.announce(txt)
                     gotcha += 1
                     has = True
@@ -305,60 +293,6 @@ class Fetching(Runner):
         if counter:
             gc.collect(0)
         return counter
-
-
-class Fetcher:
-
-    "fetch urls"
-
-    modified = {}
-
-    @classmethod
-    def cdata(cls, line):
-        "scrape CDATA block."
-        if "CDATA" in line:
-            lne = line.replace("![CDATA[", "")
-            lne = lne.replace("]]", "")
-            lne = lne[1:-1]
-            return lne
-        return line
-
-    @classmethod
-    def geturl(cls, url):
-        "fetch an url."
-        url = urlunparse(urlparse(url))
-        req = Request(str(url))
-        req.add_header("User-Agent", cls.useragent(f"{Main.name.upper()} {MD5.core()}"))
-        since = cls.modified.get(url, "")
-        if since:
-            req.add_header('If-Modified-Since', since)
-        with urlopen(req, timeout=10) as response:  # nosec
-            modi = response.headers.get('Last-Modified', "")
-            if modi:
-                cls.modified[req.get_full_url()] = modi
-            return response
-
-    @classmethod
-    def striphtml(cls, text):
-        "strip html."
-        clean = re.compile("<.*?>")
-        return re.sub(clean, "", text)
-
-    @classmethod
-    def unescape(cls, text):
-        "unescape html."
-        txt = re.sub(r"\s+", " ", text)
-        return html.unescape(txt)
-
-    @classmethod
-    def unquote(cls, url):
-        "unquote an url."
-        return unquote(url, errors='ignore')
-
-    @classmethod
-    def useragent(cls, text):
-        "produce useragent string."
-        return "Mozilla/5.0 (X11; Linux x86_64) " + text
 
 
 class OPML:
@@ -460,9 +394,10 @@ class RSS:
     @classmethod
     def parse(cls, txt, toke="item", items="title,link"):
         "parse feed."
+        print(txt, toke, items)
         for line in cls.getitems(txt, toke):
             line = line.strip()
-            feed = Feed()
+            feed = {}
             for itm in Utils.spl(items):
                 val = cls.getitem(line, itm)
                 if val:
@@ -476,25 +411,18 @@ def atr(msg):
     if not msg.rest:
         msg.iface("<stringinurl>")
         return
-    for obj in Locater.objects("mods.rss.Rss", {'rss': msg.rest}):
-        url = obj.get("rss", None)
+    for feed in Locater.objects("mods.rss.Rss", {'rss': msg.rest}):
+        url = feed.get("rss", None)
         if not url:
             continue
-        request = Fetcher.geturl(url)
-        if not request:
+        data = Fetcher.geturl(url)
+        if not data:
             continue
-        if obj.rss.endswith('atom'):
-            result = list(RSS.getitems(
-                                       str(request.data, 'utf-8', errors='ignore'),
-                                       'entry',
-                                       1
-                                      ))
-        else:
-            result = list(RSS.getitems(
-                                       str(request.data, 'utf-8', errors='ignore'),
-                                       'item',
-                                       1
-                                      ))
+        result = list(RSS.getitems(
+                                   str(data, 'utf-8', errors='ignore'),
+                                   (feed.rss.endswith("atom") and "entry") or "item",
+                                   1
+                                  ))
         resulting = []
         for x in re.findall('<.*?>', result[0]):
             if x[1] == '/' and len(x) > 4:
@@ -569,7 +497,7 @@ def imp(msg):
             uri = urllib.parse.urlparse(feed["rss"])
             feed["name"] = str(max(uri.netloc.split("."), key=len))
             feed["insertid"] = insertid
-            Disk.write(vars(feed), Disk.ident("mods.rss.Rss"))
+            Disk.write(feed, Disk.ident("mods.rss.Rss"))
             nrs += 1
     if nrskip:
         msg.reply(f"skipped {nrskip} urls.")
