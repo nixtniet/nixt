@@ -15,7 +15,6 @@ from datetime import datetime
 from .default import Path, RLock
 from .encoder import JSON
 from .methods import Method
-from .objects import Data
 from .utility import Utils
 
 
@@ -43,9 +42,11 @@ class Cache:
     @classmethod
     def sync(cls, path, obj):
         "update cached object."
+        if not isinstance(obj, dict):
+            raise TypeError(type(obj))
         try:
-            Method.update(cls.paths[path], obj)
-        except KeyError:
+            cls.paths[path].update(obj)
+        except (KeyError, AttributeError):
             cls.add(path, obj)
 
 
@@ -56,30 +57,27 @@ class Disk:
     lock = RLock()
 
     @classmethod
-    def ident(cls, obj):
+    def ident(cls, name):
         "return ident string for object."
-        return os.path.join(Method.fqn(obj), *str(datetime.now(tz=None)).split())
+        return os.path.join(name, *str(datetime.now(tz=None)).split())
 
     @classmethod
-    def read(cls, obj, path, base="store"):
+    def read(cls, path, base="store"):
         "read object from path."
         with cls.lock:
             pth = os.path.join(Workdir.wdr, base, path)
             if not os.path.exists(pth):
-                return False
+                return {}
             with open(pth, "r", encoding="utf-8") as fpt:
                 try:
-                    Method.update(obj, JSON.load(fpt))
+                    return JSON.load(fpt)
                 except json.JSONDecodeError as ex:
                     raise DecodeError(Utils.strip(pth)) from ex
-            return True
 
     @classmethod
-    def write(cls, obj, path="", base="store"):
+    def write(cls, obj, path, base="store"):
         "write object to disk."
         with cls.lock:
-            if path == "":
-                path = cls.ident(obj)
             pth = os.path.join(Workdir.wdr, base, path)
             Utils.cdir(pth)
             with open(pth, "w", encoding="utf-8") as fpt:
@@ -101,7 +99,7 @@ class Locater:
         for _pth, obj in cls.find(kind, nritems=1):
             if not obj:
                 continue
-            result.extend(Method.keys(obj))
+            result.extend(obj.keys())
         return set(result)
 
     @classmethod
@@ -125,8 +123,7 @@ class Locater:
         for pth in cls.fns(Workdir.long(kind)):
             obj = Cache.get(pth)
             if not obj:
-                obj = Data()
-                Disk.read(obj, pth)
+                obj = Disk.read(pth)
                 Cache.add(pth, obj)
             if not removed and Method.deleted(obj):
                 continue
@@ -149,7 +146,7 @@ class Locater:
         res = ""
         if result:
             inp = result[0]
-            Method.update(obj, inp[-1])
+            obj.update(inp[-1])
             res = inp[0]
         return res
 
@@ -194,7 +191,7 @@ class Locater:
         res = ""
         if result:
             inp = result[-1]
-            Method.update(obj, inp[-1])
+            obj.update(inp[-1])
             res = inp[0]
         return res
 

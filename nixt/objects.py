@@ -34,6 +34,13 @@ class Data(Object):
 
     "defaulting to string"
 
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        if args:
+            self.__dict__.update(args[0])
+        if kwargs:
+            self.__dict__.update(kwargs)
+
     def __getattr__(self, key):
         if key in dir(self):
             return self.__getattribute__(key)

@@ -23,5 +23,5 @@ def log(msg):
         return
     obj = Log()
     obj.txt = msg.rest
-    Disk.write(obj)
+    Disk.write(vars(obj), Disk.ident("mods.log.Log"))
     msg.ok()

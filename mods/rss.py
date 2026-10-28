@@ -28,7 +28,7 @@ logger = Log(__name__)
 
 def init():
     "initialize rss module."
-    Disk.read(Config, "rss", "config")
+    Method.updatecls(Config, Disk.read("rss", "config"))
     Run.start()
     nrs = Locater.count("rss")
     txt = f"{nrs} feeds"
@@ -124,12 +124,12 @@ class Run:
                 if not line:
                     break
                 feed = Feed()
-                Method.construct(feed, JSONL.loads(line.strip()))
+                feed.__dict__.update(JSONL.loads(line.strip()))
                 txt = cls.display(feed)
                 if not Run.got(txt, feed):
                     Clients.announce(txt)
             State.index = cls.file.tell()
-        Disk.write(State, cls.statefn)
+        Disk.write(vars(State), cls.statefn)
         gc.collect(0)
 
     @classmethod
@@ -139,7 +139,7 @@ class Run:
         for fnm, feed in Locater.find(Method.fqn(Rss)):
             if feed.skip:
                 feed.skip = False
-                Disk.write(feed, fnm)
+                Disk.write(vars(feed), fnm)
                 counter += 1
         logger.debug("clear %s", counter)
         return counter
@@ -153,13 +153,13 @@ class Run:
         else:
             result = ""
         try:
-            displaylist = Method.get(obj, "display_list") or "title,link"
+            displaylist = obj.get("display_list", "title,link")
         except AttributeError:
             displaylist = "title,link,author"
         for key in displaylist.split(","):
             if not key:
                 continue
-            data = Method.get(obj, key, None)
+            data = obj.get(key, None)
             if not data:
                 continue
             stripped = Fetcher.striphtml(data.replace("\n", " ").rstrip())
@@ -202,9 +202,10 @@ class Run:
             logger.debug("next!")
             return 0
         for fnm, feed in Locater.find(Method.fqn(Rss)):
-            if feed.skip:
+            fed = Feed(feed)
+            if fed.skip:
                 continue
-            Pool.put((fnm, feed, silent))
+            Pool.put((fnm, fed, silent))
             nrs += 1
         return nrs
 
@@ -220,7 +221,7 @@ class Run:
             cls.enable(cls.path)
             Watcher.add(cls.path, cls.callback)
             Watcher.start()
-        cls.statefn = Locater.last(State) or Disk.ident(State)
+        cls.statefn = Locater.last(State) or "mods.rss.State"
         Pool.init(2, Fetching)
         if not once:
             Repeater.add(Config.polltime, cls.run)
@@ -237,7 +238,7 @@ class Run:
         "sync state to disk."
         if cls.index > State.index:
             State.index = cls.index
-            Disk.write(State, cls.statefn)
+            Disk.write(vars(State), cls.statefn)
 
 
 class Fetching(Runner):
@@ -259,7 +260,7 @@ class Fetching(Runner):
                 feed.status = response.status
                 feed.error = response.error
                 feed.skip = True
-                Disk.write(feed, fnm)
+                Disk.write(vars(feed), fnm)
                 logger.warning("skipt %s %s %s", feed.rss, response.status, response.reason)
             yield Feed()
         else:
@@ -289,7 +290,7 @@ class Fetching(Runner):
                 continue
             if Method.isempty(obj):
                 continue
-            Method.update(obj, feed)
+            obj.update(feed)
             if Config.save:
                 Run.log(JSON.dumps(feed))
             if not silent:
@@ -301,7 +302,7 @@ class Fetching(Runner):
             del obj
         if has:
             feed.seen = feed.seen[:counter]
-            Disk.write(feed, fnm)
+            Disk.write(vars(feed), fnm)
             logger.debug("write %s (%s)", feed.rss, gotcha)
         if counter:
             gc.collect(0)
@@ -337,7 +338,7 @@ class Fetcher:
         response.url = url
         response.reason = ""
         try:
-            Method.update(response, cls.request(req))
+            response.update(cls.request(req))
         except Exception as ex:
             # pylint: disable=E1101
             response.data = b""
@@ -500,8 +501,11 @@ def atr(msg):
     if not msg.rest:
         msg.iface("<stringinurl>")
         return
-    for obj in Locater.objects(Method.fqn(Rss), {'rss': msg.rest}):
-        request = Fetcher.geturl(obj.rss)
+    for obj in Locater.objects("mods.rss.Rss", {'rss': msg.rest}):
+        url = obj.get("rss", None)
+        if not url:
+            continue
+        request = Fetcher.geturl(url)
         if not request:
             continue
         if obj.rss.endswith('atom'):
@@ -531,7 +535,7 @@ def dpl(msg):
     setter = {"display_list": msg.args[1]}
     for fnm, feed in Locater.find(Method.fqn(Rss), {"rss": msg.args[0]}):
         if feed:
-            Method.update(feed, setter)
+            feed.update(setter)
             Disk.write(feed, fnm)
     msg.ok()
 
@@ -540,12 +544,10 @@ def exp(msg):
     "export opml."
     with Locks.importlock:
         msg.reply(TEMPLATE)
-        for nrs, ooo in enumerate(Locater.objects(Method.fqn(OPML))):
-            obj = Rss()
-            Method.update(obj, ooo)
+        for nrs, obj in enumerate(Locater.objects(Method.fqn(OPML))):
             name = f"url{nrs}"
-            dipl = obj.display_list
-            url = obj.rss
+            dipl = obj["display_list"]
+            url = obj["rss"]
             txt = f'<outline name="{name}" display_list="{dipl}" xmlUrl="{url}"/>'
             msg.reply(" " * 12 + txt)
         msg.reply(" " * 8 + "</outline>")
@@ -585,14 +587,14 @@ def imp(msg):
                 skipped.append(url)
                 nrskip += 1
                 continue
-            feed = Rss()
-            feed.rss = obj["xmlUrl"]
+            feed = {}
+            feed["rss"] = obj["xmlUrl"]
             del obj["xmlUrl"]
-            Method.update(feed, obj)
-            uri = urllib.parse.urlparse(feed.rss)
-            feed.name = str(max(uri.netloc.split("."), key=len))
-            feed.insertid = insertid
-            Disk.write(feed)
+            feed.update(obj)
+            uri = urllib.parse.urlparse(feed["rss"])
+            feed["name"] = str(max(uri.netloc.split("."), key=len))
+            feed["insertid"] = insertid
+            Disk.write(vars(feed), Disk.ident("mods.rss.Rss"))
             nrs += 1
     if nrskip:
         msg.reply(f"skipped {nrskip} urls.")
@@ -614,11 +616,8 @@ def nme(msg):
                                 Method.fqn(Rss),
                                 selector
                                ):
-        feed = Rss()
-        Method.update(feed, fed)
-        if feed:
-            feed.name = name
-            Disk.write(feed, fnm)
+        fed["name"] = name
+        Disk.write(fed, fnm)
     msg.ok()
 
 
@@ -628,15 +627,12 @@ def rem(msg):
         msg.iface("<stringinurl>")
         return
     for fnm, fed in Locater.find(Method.fqn(Rss)):
-        feed = Rss()
-        Method.update(feed, fed)
-        if msg.args[0] not in feed.rss:
+        if msg.args[0] not in fed.get("rss", ""):
             continue
-        if feed:
-            feed.__deleted__ = True
-            Disk.write(feed, fnm)
-            msg.ok()
-            break
+        fed["__deleted__"] = True
+        Disk.write(fed, fnm)
+        msg.ok()
+        break
 
 
 def res(msg):
@@ -649,14 +645,12 @@ def res(msg):
                                 Method.fqn(Rss),
                                 removed=True
                                ):
-        feed = Rss()
-        Method.update(feed, fed)
-        if msg.args[0] not in feed.rss:
+        if msg.args and msg.args[0] not in fed.get("rss", ""):
             continue
         nrs += 1
-        feed.__deleted__ = False
-        feed.skip = False
-        Disk.write(feed, fnm)
+        fed["__deleted__"] = False
+        fed["skip"] = False
+        Disk.write(fed, fnm)
     msg.reply(f"{nrs} feeds restored.")
 
 
@@ -673,9 +667,9 @@ def rss(msg):
         if result:
             msg.reply(f"{url} is known")
             return
-    feed = Rss()
-    feed.rss = msg.args[0]
-    Disk.write(feed)
+    feed = {}
+    feed["rss"] = msg.args[0]
+    Disk.write(feed, Disk.ident("mods.rss.Rss"))
     msg.ok()
 
 
