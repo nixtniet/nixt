@@ -255,17 +255,23 @@ class Fetching(Runner):
     def getfeed(self, fnm, feed, items):
         "fetch a feed."
         try:
-            yield from RSS.parse(
-                                 str(
-                                     Fetcher.geturl(feed.rss).read(),
-                                     "utf-8",
-                                     errors='ignore'
-                                    ),
-                                 (feed.rss.endswith("atom") and "entry") or "item",
-                                 items
-                                ) or []
-        except (urllib.error.URLError, TimeoutError, urllib.error.HTTPError) as ex:
+            data = Fetcher.geturl(feed.rss).read()
+        except (urllib.error.URLError, TimeoutError) as ex:
+            logger.debug(f"{feed.rss} {str(ex)}")
+            return []
+        except urllib.error.HTTPError as ex:
+            if ex.status == 304:
+                return []
             logger.debug(f"{feed.rss} {ex.status}")
+            return []
+        return RSS.parse(
+                         str(data,
+                             "utf-8",
+                             errors='ignore'
+                            ),
+                         (feed.rss.endswith("atom") and "entry") or "item",
+                         items
+                        ) or []
 
     def run(self, *args, **kwargs):
         "poll all feeds."
