@@ -320,7 +320,7 @@ class Utils:
 
 def __dir__():
     return (
-        'MSS',
+        'MD5',
         'Format',
         'Logging',
         'Time',

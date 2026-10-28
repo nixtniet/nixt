@@ -76,5 +76,5 @@ class TestTypes(unittest.TestCase):
         ooo = Object()
         ooo.a = "b"
         obj = Object()
-        Method.updatecls(obj, JSON.loads(JSON.dumps(ooo)))
+        Method.update(obj, JSON.loads(JSON.dumps(ooo)))
         self.assertTrue(getattr(obj, "a", False))

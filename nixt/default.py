@@ -10,11 +10,9 @@ import logging
 
 from logging          import basicConfig, Formatter, StreamHandler
 from logging.handlers import TimedRotatingFileHandler
-
-
-from pathlib   import Path
-from queue     import Queue
-from threading import Event, RLock, Thread
+from pathlib          import Path
+from queue            import Queue
+from threading        import Event, RLock, Thread
 
 
 Log = logging.getLogger

@@ -40,11 +40,8 @@ class Worker(Thread):
 
     def join(self, timeout=None):
         "join thread and return result."
-        try:
-            super().join(timeout or None)
-            return self.result
-        except Exception as ex:
-            Errors.defer(ex)
+        super().join(timeout or None)
+        return self.result
 
     @classmethod
     def clsname(cls, obj):
@@ -67,10 +64,7 @@ class Worker(Thread):
         func, args = self.queue.get()
         if self.block.is_set():
             return
-        try:
-            self.result = func(*args)
-        except Exception as ex:
-            Errors.defer(ex, *args)
+        self.result = func(*args)
 
 
 class Task:

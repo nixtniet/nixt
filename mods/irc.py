@@ -505,7 +505,8 @@ class IRC(Buffer):
 
     def start(self, daemon=True):
         "start client."
-        self.cfg.update(Disk.read("irc", "config") or {})
+        cfg = Disk.read("irc", "config") or {}
+        Method.update(self.cfg, cfg)
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
         self.msgs.connected.clear()

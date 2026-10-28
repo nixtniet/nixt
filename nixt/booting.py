@@ -38,9 +38,6 @@ class Boot:
         Workdir.skel()
         Logging.size(len(Main.name))
         Logging.level(Main.level or "info")
-        Mods.dir("modules", Workdir.moddir())
-        Mods.dir(f"{Main.name}.minimal", Mods.moddir("minimal"))
-        Mods.dir(f"{Main.name}.modules", Mods.moddir())
         if Main.path:
             Main.path = os.path.normpath(Main.path)
             pkgname = Main.path.rsplit(os.sep, maxsplit=1)[-1]
@@ -109,8 +106,6 @@ class Boot:
             Screen.block.set()
             Worker.block.set()
             _thread.interrupt_main()
-        except Exception as ex:
-            Errors.throw(ex)
 
     @classmethod
     def wrap(cls, func, *args, dofinal=None):

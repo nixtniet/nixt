@@ -211,17 +211,10 @@ class Method:
         obj[key] = val
 
     @classmethod
-    def updatecls(cls, obj, data):
+    def update(cls, obj, data):
         "update a class."
-        for key in dir(data):
-            if '_' in key:
-                continue
-            value = data.get(key, None)
-            if value:
-                setattr(obj, key, value)
-            else:
-                for key, value in data.items():
-                    setattr(obj, key, value)
+        for key, value in data.items():
+            setattr(obj, key, value)
 
     @classmethod
     def where(cls, obj):

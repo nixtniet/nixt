@@ -11,8 +11,8 @@ import time
 from argparse import SUPPRESS, ArgumentParser, RawTextHelpFormatter
 
 
-from .defines import MD5, Booting, Commands, Errors, Main
-from .defines import Message, Method, Mods, Screen
+from .defines import MD5, Booting, Commands, Errors, Main, Message
+from .defines import Method, Mods, Screen, Workdir
 from .require import Cmd
 
 
@@ -44,7 +44,7 @@ class Arguments:
         optparser.add_argument("--scanner", action="store_true", help="do full modules scan on boot.")
         optparser.add_argument("--wdr", default="", help="set modules directory.")
         args, arguments = theparser.parse_known_args()
-        Method.updatecls(Main, vars(args))
+        Method.update(Main, vars(args))
         Main.otxt = " ".join(arguments)
 
     @classmethod
@@ -76,6 +76,9 @@ class Kernel(Booting):
     def boot(cls):
         "configure runtime."
         cls.configure()
+        Mods.dir("modules", Workdir.moddir())
+        Mods.dir(f"{Main.name}.minimal", Mods.moddir("minimal"))
+        Mods.dir(f"{Main.name}.modules", Mods.moddir())
         if Main.all:
             Main.mods = ",".join(Mods.list())
         if Main.verbose:

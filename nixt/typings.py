@@ -11,25 +11,13 @@ from typing          import Any, ClassVar, Dict, List, Set, TextIO
 from typing          import Tuple, Union, Generator
 
 
-Anys      = Dict[str, Any]
-Callables = Dict[str, Callable]
-Exec      = Union[FunctionType, MethodType]
-Execs     = Dict[str, Exec]
-Hash      = Dict[str, str]
-
-
 __all__ = (
     'Any',
-    'Anys',
     'Callable',
-    'Callables',
     'ClassVar',
     'Dict',
-    'Exec',
-    'Execs',
     'FunctionType',
     'Generator',
-    'Hash',
     'Iterator',
     'List',
     'MappingProxyType',

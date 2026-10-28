@@ -4,6 +4,7 @@
 "default exception handler"
 
 
+import os
 import traceback
 import _thread
 
@@ -34,6 +35,22 @@ class Errors:
             cls.errors.append(excp)
         if args and isinstance(args[0], Message):
             args[0].ready()
+
+    @classmethod
+    def line(cls, exc, *args):
+        res = []
+        fmt = cls.format(exc, *args)
+        for line in fmt[::-1]:
+            spl = line.split()
+            if not spl:
+                continue
+            if spl[0] != "File":
+                continue
+            filename = spl[1].split(os.sep)[-1][:-5]
+            lineno = spl[3]
+            res.append(f"{filename}:{lineno}")
+        res.append(fmt[-1])
+        return " | ".join(res)
 
     @classmethod
     def throw(cls, exc, *args):

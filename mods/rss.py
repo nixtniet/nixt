@@ -18,7 +18,7 @@ from urllib.request import Request, urlopen
 
 
 from nixt.default import Log, RLock
-from nixt.defines import Cfg, Clients, Data, Disk, Format, JSON, JSONL, Locater
+from nixt.defines import Cfg, Clients, Data, Disk, Errors, Format, JSON, JSONL, Locater
 from nixt.defines import Logging, Main, MD5, Method, Object, Pool, Repeater
 from nixt.defines import Runner, Utils, Watcher, Workdir
 
@@ -28,7 +28,7 @@ logger = Log(__name__)
 
 def init():
     "initialize rss module."
-    Method.updatecls(Config, Disk.read("rss", "config"))
+    Method.update(Config, Disk.read("rss", "config"))
     Run.start()
     nrs = Locater.count("rss")
     txt = f"{nrs} feeds"
@@ -46,7 +46,7 @@ class Config(Cfg):
 
     "configuration"
 
-    polltime = 300
+    polltime = 60
     save = False
 
 
@@ -124,7 +124,7 @@ class Run:
                 if not line:
                     break
                 feed = Feed()
-                feed.__dict__.update(JSONL.loads(line.strip()))
+                Method.update(feed, JSONL.loads(line.strip()))
                 txt = cls.display(feed)
                 if not Run.got(txt, feed):
                     Clients.announce(txt)
@@ -254,38 +254,30 @@ class Fetching(Runner):
 
     def getfeed(self, fnm, feed, items):
         "fetch a feed."
-        response = Fetcher.geturl(feed.rss)
-        if not response.data:
-            if response.status and self.doskip(response.status):
-                feed.status = response.status
-                feed.error = response.error
-                feed.skip = True
-                Disk.write(vars(feed), fnm)
-                logger.warning("skipt %s %s %s", feed.rss, response.status, response.reason)
-            yield Feed()
-        else:
-            logger.debug("fetch %s", feed.rss)
-            if "link" not in items:
-                items += ",link"
+        try:
             yield from RSS.parse(
-                                 str(response.data, "utf-8", errors='ignore'),
+                                 str(
+                                     Fetcher.geturl(feed.rss).read(),
+                                     "utf-8",
+                                     errors='ignore'
+                                    ),
                                  (feed.rss.endswith("atom") and "entry") or "item",
                                  items
                                 ) or []
+        except (urllib.error.URLError, TimeoutError, urllib.error.HTTPError) as ex:
+            logger.debug(f"{feed.rss} {ex.status}")
 
     def run(self, *args, **kwargs):
         "poll all feeds."
         counter = 0
-        try:
-            fnm, feed, silent = args
-        except ValueError:
-            return counter
+        fnm, feed, silent = args
         if not feed.seen:
             feed.seen = []
         has = False
         gotcha = 0
         for obj in self.getfeed(fnm, feed, feed.display_list):
             counter += 1
+            print(obj)
             if obj is None:
                 continue
             if Method.isempty(obj):
@@ -334,33 +326,10 @@ class Fetcher:
         since = cls.modified.get(url, "")
         if since:
             req.add_header('If-Modified-Since', since)
-        response = Response()
-        response.url = url
-        response.reason = ""
-        try:
-            response.update(cls.request(req))
-        except Exception as ex:
-            # pylint: disable=E1101
-            response.data = b""
-            if "reason" in dir(ex):
-                response.reason = ex.reason # type: ignore
-            else:
-                response.reason = str(ex)
-            if "status" in dir(ex):
-                response.status = ex.status # type: ignore
-            else:
-                response.status = None
-        return response
-
-    @classmethod
-    def request(cls, req):
-        "handle  a request."
-        with urlopen(req, timeout=4) as response:  # nosec
+        with urlopen(req, timeout=10) as response:  # nosec
             modi = response.headers.get('Last-Modified', "")
             if modi:
                 cls.modified[req.get_full_url()] = modi
-            response.data = response.read()
-            response.error = ""
             return response
 
     @classmethod
