@@ -5,14 +5,14 @@
 
 
 import inspect
-import logging
 import time
 
 
-from .default import Event, Queue, RLock, Thread
+from .default import Event, Log, Queue, RLock, Thread
+from .excepts import Errors
 
 
-logger = logging.getLogger(__name__)
+logger = Log(__name__)
 
 
 class Worker(Thread):
@@ -25,7 +25,7 @@ class Worker(Thread):
         super().__init__(None, self.run, None, (), daemon=daemon)
         self.name = kwargs.get("name", self.getname(func) or "")
         self.queue = Queue()
-        self.resul = None
+        self.result = None
         self.sleep = 0.0
         self.starttime = time.time()
         self.state = {}
@@ -39,8 +39,11 @@ class Worker(Thread):
 
     def join(self, timeout=None):
         "join thread and return result."
-        super().join(timeout or None)
-        return self.result
+        try:
+            super().join(timeout or None)
+            return self.result
+        except Exception as ex:
+            Errors.throw(ex)
 
     @classmethod
     def clsname(cls, obj):
@@ -63,7 +66,10 @@ class Worker(Thread):
         func, args = self.queue.get()
         if self.block.is_set():
             return
-        self.result = func(*args)
+        try:
+            self.result = func(*args)
+        except Exception as ex:
+            Errors.throw(ex, *args)
 
 
 class Task:

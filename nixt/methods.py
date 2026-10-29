@@ -8,6 +8,7 @@ import inspect
 import os.path
 
 
+from .objects import Dict
 from .typings import MappingProxyType, MethodType
 
 
@@ -35,7 +36,7 @@ class Method:
         "update object with dict."
         if setter is None:
             setter = {}
-        for key, val in setter.items():
+        for key, val in Dict.items(setter):
             if skip and val == "":
                 continue
             cls.typed(obj, key, val)
@@ -51,7 +52,7 @@ class Method:
         ):
         "format object info printable string."
         if args is None:
-            args = list(cls.keys(obj))
+            args = list(Dict.keys(obj))
         if args == []:
             args = [x for x in dir(obj) if not x.startswith("_")]
         if skip is None:
@@ -91,29 +92,17 @@ class Method:
         return kin
 
     @classmethod
-    def get(cls, obj, key, default=""):
-        return obj.__dict__.get(key, default)
-
-    @classmethod
     def isempty(cls, obj):
         "check if all keys heve empty value."
-        return all(not cls.get(obj, key) for key in obj)
-
-    @classmethod
-    def items(cls, obj):
-        return obj.__dict__.items()
-
-    @classmethod
-    def keys(cls, obj):
-        return obj.__dict__.keys()
+        return all(not Dict.get(obj, key) for key in obj)
 
     @classmethod
     def merge(cls, obj, obj2):
         "skip emoty values."
-        for key, value in cls.items(obj2):
-            if not value and cls.get(obj, key, False):
+        for key, value in Dict.items(obj2):
+            if not value and Dict.get(obj, key, False):
                 continue
-            setattr(obj, key. value)
+            setattr(obj, key, value)
 
     @classmethod
     def modname(cls, obj):
@@ -123,8 +112,8 @@ class Method:
     @classmethod
     def notset(cls, obj, obj2):
         "only set if not set."
-        for key, value in cls.items(obj2):
-            if cls.get(obj. key, False):
+        for key, value in Dict.items(obj2):
+            if Dict.get(obj. key, False):
                 continue
             if value:
                 setattr(obj, key, value)
@@ -138,7 +127,7 @@ class Method:
     def reduce(cls, obj):
         "return dict with values setted attributes."
         result = {}
-        for key, value in cls.items(obj):
+        for key, value in Dict.items(obj):
             if value:
                 result[key] = value
         return result
@@ -154,7 +143,7 @@ class Method:
         if selector is None:
             selector = {}
         res = False
-        for key, value in selector.items():
+        for key, value in Dict.items(selector):
             val = obj.get(key, None)
             if not val:
                 res = False
@@ -188,10 +177,10 @@ class Method:
     @classmethod
     def skipped(cls, obj):
         "yield values without underscored keys."
-        for key in cls.keys(obj):
+        for key in Dict.keys(obj):
             if key.startswith("_"):
                 continue
-            yield cls.get(obj, key)
+            yield Dict.get(obj, key)
 
     @classmethod
     def typed(cls, obj, key, val):
@@ -217,16 +206,6 @@ class Method:
         except ValueError:
             pass
         obj[key] = val
-
-    @classmethod
-    def update(cls, obj, data):
-        "update a class."
-        for key, value in data.items():
-            setattr(obj, key, value)
-
-    @classmethod
-    def values(cls, obj):
-        return obj.__dict__.values()
 
     @classmethod
     def where(cls, obj):

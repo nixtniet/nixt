@@ -5,6 +5,7 @@
 
 
 import gc
+import html
 import logging.handlers
 import os
 import pathlib
@@ -12,10 +13,14 @@ import re
 import urllib.parse
 
 
+from http.client    import RemoteDisconnected
+from urllib.error   import HTTPError, URLError
+from urllib.parse   import unquote, urlparse, urlunparse
+from urllib.request import Request, urlopen
 
 
 from nixt.default import Log, RLock
-from nixt.defines import Cfg, Clients, Data, Disk, Fetcher, Format, JSON, JSONL
+from nixt.defines import Cfg, Clients, Data, Dict, Disk, Format, JSON, JSONL
 from nixt.defines import Locater, Logging, Main, MD5, Method, Object, Pool
 from nixt.defines import Repeater, Runner, Utils, Watcher, Workdir
 
@@ -25,7 +30,7 @@ logger = Log(__name__)
 
 def init():
     "initialize rss module."
-    Method.update(Config, Disk.read("rss", "config"))
+    Dict.update(Config, Disk.read("rss", "config"))
     Run.start()
     nrs = Locater.count("rss")
     txt = f"{nrs} feeds"
@@ -109,7 +114,7 @@ class Run:
                 if not line:
                     break
                 feed = Feed()
-                Method.update(feed, JSONL.loads(line.strip()))
+                Dict.update(feed, JSONL.loads(line.strip()))
                 txt = cls.display(vars(feed))
                 if not Run.got(txt, feed):
                     Clients.announce(txt)
@@ -121,7 +126,9 @@ class Run:
     def clear(cls):
         "retry all failed feeds."
         counter = 0
-        for fnm, feed in Locater.find(Method.fqn(Rss)):
+        for fnm, fed in Locater.find(Method.fqn(Rss)):
+            feed = Rss()
+            Dict.update(feed, fed)
             if feed.skip:
                 feed.skip = False
                 Disk.write(vars(feed), fnm)
@@ -185,9 +192,9 @@ class Run:
         nrs = 0
         if Pool.busy():
             return 0
-        for fnm, rssitem in Locater.find(Method.fqn(Rss)):
+        for fnm, fed in Locater.find(Method.fqn(Rss)):
             feed = Rss()
-            Method.update(feed, rssitem)
+            Dict.update(feed, fed)
             if feed.skip:
                 continue
             Pool.put((fnm, feed, silent))
@@ -230,9 +237,35 @@ class Fetching(Runner):
 
     "teh fetcher"
 
+    def doskip(self, errno):
+        "check whether to skip feed."
+        return errno >= 400
+
+    def fetch(self, fnm, feed):
+        "fetch a feed."
+        errr = None
+        try:
+            return Fetcher.geturl(feed.rss)
+        except (RemoteDisconnected, TimeoutError) as ex:
+            errr = ex
+        except (HTTPError, URLError) as ex:
+            errr = ex
+        err = Data()
+        Dict.update(err, vars(errr))
+        error = err.erno or err.status or 0
+        if error != 304:
+            logger.debug("%s %s", feed.rss, err.reason)
+        if self.doskip(error):
+            feed.status = error
+            feed.error = err.reason
+            feed.skip = True
+            Disk.write(feed, fnm)
+            logger.debug("skipt %s %s %s", feed.rss, error, err.reason)
+
+
     def getfeed(self, fnm, feed):
         "fetch a feed."
-        data = Fetcher.fetch(feed.rss)
+        data = self.fetch(fnm, feed)
         if not data:
             return []
         return RSS.parse(data,
@@ -250,14 +283,14 @@ class Fetching(Runner):
         gotcha = 0
         for obj in self.getfeed(fnm, feed):
             fed = Feed()
-            Method.update(fed, obj)
-            Method.update(fed, vars(feed))
+            Dict.update(fed, obj)
+            Dict.update(fed, vars(feed))
             counter += 1
             if obj is None:
                 continue
             if Method.isempty(feed):
                 continue
-            Method.update(feed, obj)
+            Dict.update(feed, obj)
             if Config.save:
                 Run.log(JSON.dumps(feed))
             if not silent:
@@ -273,6 +306,60 @@ class Fetching(Runner):
         if counter:
             gc.collect(0)
         return counter
+
+
+class Fetcher:
+
+    "fetch urls"
+
+    modified = {}
+
+    @classmethod
+    def cdata(cls, line):
+        "scrape CDATA block."
+        if "CDATA" in line:
+            lne = line.replace("![CDATA[", "")
+            lne = lne.replace("]]", "")
+            lne = lne[1:-1]
+            return lne
+        return line
+
+    @classmethod
+    def geturl(cls, url):
+        "fetch an url."
+        url = urlunparse(urlparse(url))
+        req = Request(str(url))
+        req.add_header("User-Agent", cls.useragent(f"{Main.name.upper()} {MD5.core()}"))
+        since = cls.modified.get(url, "")
+        if since:
+            req.add_header('If-Modified-Since', since)
+        with urlopen(req, timeout=10) as response:  # nosec
+            modi = response.headers.get('Last-Modified', "")
+            if modi:
+                cls.modified[req.get_full_url()] = modi
+            return str(response.read(), "utf-8", errors='ignore')
+
+    @classmethod
+    def striphtml(cls, text):
+        "strip html."
+        clean = re.compile("<.*?>")
+        return re.sub(clean, "", text)
+
+    @classmethod
+    def unescape(cls, text):
+        "unescape html."
+        txt = re.sub(r"\s+", " ", text)
+        return html.unescape(txt)
+
+    @classmethod
+    def unquote(cls, url):
+        "unquote an url."
+        return unquote(url, errors='ignore')
+
+    @classmethod
+    def useragent(cls, text):
+        "produce useragent string."
+        return "Mozilla/5.0 (X11; Linux x86_64) " + text
 
 
 class OPML:

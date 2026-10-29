@@ -11,7 +11,6 @@ import _thread
 
 
 from .clients import Broker, Screen
-from .command import Commands
 from .configs import Main
 from .default import Event, Log
 from .package import Mods
@@ -41,7 +40,6 @@ class Boot:
             Main.path = os.path.normpath(Main.path)
             pkgname = Main.path.rsplit(os.sep, maxsplit=1)[-1]
             Mods.dir(pkgname, Main.path)
-            Commands.scanner()
 
     @classmethod
     def forever(cls):

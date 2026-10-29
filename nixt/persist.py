@@ -15,12 +15,18 @@ from datetime import datetime
 from .default import Path, RLock
 from .encoder import JSON
 from .methods import Method
+from .objects import Data, Dict
 from .utility import Utils
 
 
 class DecodeError(Exception):
 
     "could not parse input"
+
+
+class Selector(Data):
+
+    "field values to select on"
 
 
 class Cache:
@@ -77,6 +83,10 @@ class Disk:
     @classmethod
     def write(cls, obj, path, base="store"):
         "write object to disk."
+        try:
+            obj = vars(obj)
+        except TypeError:
+            pass
         with cls.lock:
             pth = os.path.join(Workdir.wdr, base, path)
             Utils.cdir(pth)
@@ -119,6 +129,8 @@ class Locater:
         "locate objects by matching atributes."
         if selector is None:
             selector = {}
+        select = Selector()
+        Dict.update(select, selector)
         nrs = 0
         for pth in cls.fns(Workdir.long(kind)):
             obj = Cache.get(pth)
@@ -127,7 +139,7 @@ class Locater:
                 Cache.add(pth, obj)
             if not removed and Method.deleted(obj):
                 continue
-            if selector and not Method.search(obj, selector, matching):
+            if select and not Method.search(obj, select, matching):
                 continue
             if nritems and nrs >= nritems:
                 break
@@ -139,8 +151,10 @@ class Locater:
         "return first object of a kind."
         if selector is None:
             selector = {}
+        select = Selector()
+        Dict.update(select, selector)
         result = sorted(
-                        cls.find(Method.fqn(obj), selector),
+                        cls.find(Method.fqn(obj), select),
                         key=lambda x: cls.fntime(x[0])
                        )
         res = ""
@@ -184,8 +198,10 @@ class Locater:
         "last saved version."
         if selector is None:
             selector = {}
+        select = Selector()
+        Dict.update(select, selector)
         result = sorted(
-                        cls.find(Method.fqn(obj), selector),
+                        cls.find(Method.fqn(obj), select),
                         key=lambda x: cls.fntime(x[0])
                        )
         res = ""

@@ -13,7 +13,7 @@ import _thread
 
 
 from nixt.default import Event, Log, RLock, Queue
-from nixt.defines import Broker, Buffer, Cfg, Commands, Disk, Main
+from nixt.defines import Broker, Buffer, Cfg, Commands, Dict, Disk, Main
 from nixt.defines import Message, Mods, Method, Object, Task
 
 
@@ -506,7 +506,7 @@ class IRC(Buffer):
     def start(self, daemon=True):
         "start client."
         cfg = Disk.read("irc", "config") or {}
-        Method.update(self.cfg, cfg)
+        Dict.update(self.cfg, cfg)
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
         self.msgs.connected.clear()
