@@ -9,7 +9,7 @@ import time
 
 
 from nixt.default import Event, RLock
-from nixt.defines import Broker, Disk, Locater, Log, Method, Object
+from nixt.defines import Broker, Dict, Disk, Locater, Log, Method, Object
 from nixt.defines import Task, Time
 
 
@@ -41,7 +41,7 @@ class TimerLoop:
     lock = RLock()
     path = ""
     running = Event()
-    timers = {}
+    timers = Timers()
 
     @classmethod
     def add(cls, tme, orig, channel,  txt):
@@ -62,7 +62,7 @@ class TimerLoop:
             time.sleep(1.0)
             timed = time.time()
             remove = []
-            for tme, args in cls.timers.items():
+            for tme, args in Dict.items(cls.timers):
                 if float(tme) < timed:
                     Task.start(cls.run, args)
                     remove.append(tme)

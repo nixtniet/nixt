@@ -77,7 +77,7 @@ def mbx(msg):
     try:
         for mail in thing:
             tmp = Data(mail)
-            obj = Email(tmp._headers) # pylint: disable=W0212
+            obj = Email(tmp._headers)
             for payload in mail.walk():
                 if payload.get_content_type() == 'text/plain':
                     load =  payload.get_payload()

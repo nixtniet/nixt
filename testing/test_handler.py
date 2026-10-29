@@ -25,12 +25,12 @@ class TestHandler(unittest.TestCase):
 
     hdl = Handler()
 
-    def setUp(self): # pylint: disable=C0103
+    def setUp(self):
         "setup engine."
         self.hdl.register("hello", hello)
         self.hdl.start()
 
-    def shutDown(self): # pylint: disable=C0103
+    def shutDown(self):
         "shutdown engine."
         self.hdl.stop()
 

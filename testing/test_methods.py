@@ -1,6 +1,4 @@
 # This file is placed in the Public Domain.
-# type: ignore
-# pylint: disable=W0201
 
 
 "logging tests"

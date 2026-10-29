@@ -22,7 +22,7 @@ from urllib.request import Request, urlopen
 from nixt.default import Log, RLock
 from nixt.defines import Cfg, Clients, Data, Dict, Disk, Format, JSON, JSONL
 from nixt.defines import Locater, Logging, Main, MD5, Method, Object, Pool
-from nixt.defines import Repeater, Runner, Utils, Watcher, Workdir
+from nixt.defines import Repeater, Runner, Selector, Utils, Watcher, Workdir
 
 
 logger = Log(__name__)
@@ -246,7 +246,7 @@ class Fetching(Runner):
         errr = None
         try:
             return Fetcher.geturl(feed.rss)
-        except (RemoteDisconnected, TimeoutError) as ex:
+        except (ConnectionResetError, RemoteDisconnected, TimeoutError) as ex:
             errr = ex
         except (HTTPError, URLError) as ex:
             errr = ex
@@ -580,7 +580,7 @@ def nme(msg):
     else:
         msg.iface("<stringinurl> <name>")
         return
-    selector = {"rss": msg.args[0]}
+    selector = Selector({"rss": msg.args[0]})
     for fnm, fed in Locater.find(
                                 Method.fqn(Rss),
                                 selector

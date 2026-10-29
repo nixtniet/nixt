@@ -129,8 +129,6 @@ class Locater:
         "locate objects by matching atributes."
         if selector is None:
             selector = {}
-        select = Selector()
-        Dict.update(select, selector)
         nrs = 0
         for pth in cls.fns(Workdir.long(kind)):
             obj = Cache.get(pth)
@@ -139,7 +137,7 @@ class Locater:
                 Cache.add(pth, obj)
             if not removed and Method.deleted(obj):
                 continue
-            if select and not Method.search(obj, select, matching):
+            if selector and not Method.search(obj, selector, matching):
                 continue
             if nritems and nrs >= nritems:
                 break
@@ -151,16 +149,14 @@ class Locater:
         "return first object of a kind."
         if selector is None:
             selector = {}
-        select = Selector()
-        Dict.update(select, selector)
         result = sorted(
-                        cls.find(Method.fqn(obj), select),
+                        cls.find(Method.fqn(obj), selector),
                         key=lambda x: cls.fntime(x[0])
                        )
         res = ""
         if result:
             inp = result[0]
-            obj.update(inp[-1])
+            Dict.update(obj, inp[-1])
             res = inp[0]
         return res
 
@@ -198,10 +194,8 @@ class Locater:
         "last saved version."
         if selector is None:
             selector = {}
-        select = Selector()
-        Dict.update(select, selector)
         result = sorted(
-                        cls.find(Method.fqn(obj), select),
+                        cls.find(Method.fqn(obj), selector),
                         key=lambda x: cls.fntime(x[0])
                        )
         res = ""
@@ -312,5 +306,6 @@ def __dir__():
     return (
         'Disk',
         'Locater',
+        'Selector',
         'Workdir'
     )
