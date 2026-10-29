@@ -12,7 +12,7 @@ CORE = {
     "default": "b5e6891c8b3958d7c6e4175fe493d5c0",
     "defines": "0fab796b73f5068763a915ed71bf11bf",
     "encoder": "6f3e788f8a26fbfb77d000537304bc84",
-    "fetcher": "e5a11803998d8275a712993b0a023b4a",
+    "fetcher": "5b027c17fb406858670a51c6e92c7a23",
     "handler": "ce2669417c97854896fad10446923423",
     "looping": "ca59722b4b2a188bda75cbcc10abae78",
     "message": "cec2b5187cafa025d20d13087132b81b",

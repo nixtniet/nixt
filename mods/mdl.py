@@ -19,14 +19,15 @@ def init():
     for key in oorzaken:
         if "Psych" not in key:
             continue
-        val = getattr(oorzaken, key, None)
+        val = oorzaken.get(key, None)
         if val and int(val) > 10000:
             msg = Message()
             msg.text = ""
             msg.rest = key
             sec = seconds(val)
             Repeater.add(sec, cb_stats, msg)
-            logger.info("%s %s", Time.elapsed(time.time()-STARTTIME), SOURCE)
+    Repeater.start()
+    logger.info("%s %s", Time.elapsed(time.time()-STARTTIME), SOURCE)
 
 
 DAY = 24*60*60
