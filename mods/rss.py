@@ -184,7 +184,6 @@ class Run:
         "do a fetch run of all feeds."
         nrs = 0
         if Pool.busy():
-            logger.debug("next!")
             return 0
         for fnm, rssitem in Locater.find(Method.fqn(Rss)):
             feed = Rss()
@@ -231,32 +230,15 @@ class Fetching(Runner):
 
     "teh fetcher"
 
-    def __init__(self):
-        Runner.__init__(self)
-
-    def doskip(self, errno):
-        "check whether to log."
-        return errno >= 400
-
     def getfeed(self, fnm, feed):
         "fetch a feed."
-        try:
-            data = Fetcher.geturl(feed.rss)
-            return RSS.parse(data,
-                             (feed.rss.endswith("atom") and "entry") or "item",
-                             feed.display_list
-                            ) or []
-        except TimeoutError as ex:
-            logger.debug("%s %s", feed.rss, ex)
+        data = Fetcher.fetch(feed.rss)
+        if not data:
             return []
-        except urllib.error.HTTPError as ex:
-            if ex.status == 304:
-                return []
-            logger.debug("%s %s", feed.rss, ex.status)
-            return []
-        except urllib.error.URLError as ex:
-            logger.debug("%s %s", feed.rss, ex.errno)
-            return []
+        return RSS.parse(data,
+                         (feed.rss.endswith("atom") and "entry") or "item",
+                         feed.display_list
+                        ) or []
 
     def run(self, *args, **kwargs):
         "poll all feeds."
@@ -273,8 +255,7 @@ class Fetching(Runner):
             counter += 1
             if obj is None:
                 continue
-            if Method.isempty(vars(feed)):
-                print("is empty")
+            if Method.isempty(feed):
                 continue
             Method.update(feed, obj)
             if Config.save:
@@ -289,7 +270,6 @@ class Fetching(Runner):
         if has:
             feed.seen = feed.seen[:counter]
             Disk.write(vars(feed), fnm)
-            logger.debug("write %s (%s)", feed.rss, gotcha)
         if counter:
             gc.collect(0)
         return counter
@@ -394,7 +374,6 @@ class RSS:
     @classmethod
     def parse(cls, txt, toke="item", items="title,link"):
         "parse feed."
-        print(txt, toke, items)
         for line in cls.getitems(txt, toke):
             line = line.strip()
             feed = {}

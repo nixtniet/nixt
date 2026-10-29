@@ -51,7 +51,7 @@ class Method:
         ):
         "format object info printable string."
         if args is None:
-            args = list(obj.__dict__.keys())
+            args = list(cls.keys(obj))
         if args == []:
             args = [x for x in dir(obj) if not x.startswith("_")]
         if skip is None:
@@ -91,17 +91,29 @@ class Method:
         return kin
 
     @classmethod
+    def get(cls, obj, key, default=""):
+        return obj.__dict__.get(key, default)
+
+    @classmethod
     def isempty(cls, obj):
         "check if all keys heve empty value."
-        return all(not obj.get(key) for key in obj)
+        return all(not cls.get(obj, key) for key in obj)
+
+    @classmethod
+    def items(cls, obj):
+        return obj.__dict__.items()
+
+    @classmethod
+    def keys(cls, obj):
+        return obj.__dict__.keys()
 
     @classmethod
     def merge(cls, obj, obj2):
         "skip emoty values."
-        for key, value in obj2.__dict__.items():
-            if not value and obj.__dict__.get(key, False):
+        for key, value in cls.items(obj2):
+            if not value and cls.get(obj, key, False):
                 continue
-            obj.__dict__[key] = value
+            setattr(obj, key. value)
 
     @classmethod
     def modname(cls, obj):
@@ -111,11 +123,11 @@ class Method:
     @classmethod
     def notset(cls, obj, obj2):
         "only set if not set."
-        for key, value in obj2.__dict__.items():
-            if obj.__dict__.get(key, False):
+        for key, value in cls.items(obj2):
+            if cls.get(obj. key, False):
                 continue
             if value:
-                obj.__dict__[key] = value
+                setattr(obj, key, value)
 
     @classmethod
     def pkgname(cls, obj):
@@ -126,7 +138,7 @@ class Method:
     def reduce(cls, obj):
         "return dict with values setted attributes."
         result = {}
-        for key, value in obj.__dict__.items():
+        for key, value in cls.items(obj):
             if value:
                 result[key] = value
         return result
@@ -176,20 +188,16 @@ class Method:
     @classmethod
     def skipped(cls, obj):
         "yield values without underscored keys."
-        for key in obj.__dict__:
+        for key in cls.keys(obj):
             if key.startswith("_"):
                 continue
-            yield obj.__dict__.get(key)
+            yield cls.get(obj, key)
 
     @classmethod
     def typed(cls, obj, key, val):
         "assign proper types."
         if obj is None or not val:
             return
-        try:
-            obj = obj.__dict__
-        except AttributeError:
-            pass
         if isinstance(obj, MappingProxyType):
             obj = dict(obj)
         if val in ["True", "true", True]:
@@ -215,6 +223,10 @@ class Method:
         "update a class."
         for key, value in data.items():
             setattr(obj, key, value)
+
+    @classmethod
+    def values(cls, obj):
+        return obj.__dict__.values()
 
     @classmethod
     def where(cls, obj):

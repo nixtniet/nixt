@@ -5,15 +5,23 @@
 
 
 import html
+import http
 import re
+import urllib
 
 
+from http.client    import RemoteDisconnected
+from urllib.error   import HTTPError, URLError
 from urllib.parse   import unquote, urlparse, urlunparse
 from urllib.request import Request, urlopen
 
 
 from .configs import Main
+from .default import Log
 from .utility import MD5
+
+
+logger = Log(__name__)
 
 
 class Fetcher:
@@ -31,6 +39,19 @@ class Fetcher:
             lne = lne[1:-1]
             return lne
         return line
+
+    @classmethod
+    def fetch(cls, url):
+        "fetch a feed."
+        try:
+            return cls.geturl(url)
+        except (RemoteDisconnected, TimeoutError) as ex:
+            logger.debug("%s %s", url, ex)
+        except HTTPError as ex:
+            if ex.status != 304:
+                logger.debug("%s %s", url, ex.reason)
+        except URLError as ex:
+            logger.debug("%s %s", url, ex.reason)
 
     @classmethod
     def geturl(cls, url):
