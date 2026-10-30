@@ -262,10 +262,7 @@ class Fetching(Runner):
             if typ in err.type:
                 return True
         reason = str(err.reason)
-        for txt in self.skiptxt:
-            if txt in reason:
-                return True
-        return False
+        return any(txt in reason for txt in self.skiptxt)
 
     def fetch(self, fnm, feed):
         "fetch a feed."
