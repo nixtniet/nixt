@@ -29,6 +29,7 @@ class Main(metaclass=Config):
 
     "main config"
 
+    level = ""
     mods = ""
     name = Method.pkgname(Config)
     otxt = ""

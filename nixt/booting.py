@@ -34,8 +34,9 @@ class Boot:
         "setup basic variables"
         Workdir.wdr = Main.wdr or Workdir.wdr or Workdir.home(Main.name)
         Workdir.skel()
+        Main.level = Main.level or "warning"
         Logging.size(len(Main.name))
-        Logging.level(Main.level or "info")
+        Logging.level(Main.level)
         if Main.path:
             Main.path = os.path.normpath(Main.path)
             pkgname = Main.path.rsplit(os.sep, maxsplit=1)[-1]
@@ -69,7 +70,7 @@ class Boot:
     @classmethod
     def shutdown(cls, wait=True):
         "call stop on clients."
-        logger.debug("shutdown")
+        logger.info("shutdown")
         for client in Broker.objs("wait"):
             logger.debug("wait %s", client)
             try:

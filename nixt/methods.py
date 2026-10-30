@@ -51,6 +51,7 @@ class Method:
         empty=False
         ):
         "format object info printable string."
+        obj = vars(object)
         if args is None:
             args = list(Dict.keys(obj))
         if args == []:
@@ -124,9 +125,9 @@ class Method:
         ):
         "check whether object matches search criteria."
         if selector is None:
-            selector = {}
+            return False
         res = False
-        for key, value in Dict.items(selector):
+        for key, value in Dict.items(vars(selector)):
             val = obj.get(key, None)
             if not val:
                 res = False
