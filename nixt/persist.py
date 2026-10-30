@@ -152,8 +152,6 @@ class Locater:
     @classmethod
     def first(cls, obj, selector=None):
         "return first object of a kind."
-        if selector is None:
-            selector = {}
         result = sorted(
                         cls.find(Method.fqn(obj), selector),
                         key=lambda x: cls.fntime(x[0])
@@ -197,8 +195,6 @@ class Locater:
     @classmethod
     def last(cls, obj, selector=None):
         "last saved version."
-        if selector is None:
-            selector = {}
         result = sorted(
                         cls.find(Method.fqn(obj), selector),
                         key=lambda x: cls.fntime(x[0])

@@ -127,7 +127,7 @@ class Method:
         if selector is None:
             return False
         res = False
-        for key, value in Dict.items(vars(selector)):
+        for key, value in selector.items():
             val = obj.get(key, None)
             if not val:
                 res = False

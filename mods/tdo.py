@@ -21,7 +21,7 @@ def dne(msg):
     if not msg.args:
         msg.iface("<txt>")
         return
-    selector = Selector({'txt': msg.args[0]})
+    selector = {'txt': msg.args[0]}
     nmr = 0
     for fnm, obj in Locater.find('mods.tdo.Todo', selector):
         nmr += 1
