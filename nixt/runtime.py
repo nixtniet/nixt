@@ -44,7 +44,7 @@ class Arguments:
         optparser.add_argument("--scanner", action="store_true", help="do full modules scan on boot.")
         optparser.add_argument("--wdr", default="", help="set modules directory.")
         args, arguments = theparser.parse_known_args()
-        Dict.update(Main, args)
+        Dict.update(Main, vars(args))
         Main.otxt = " ".join(arguments)
 
     @classmethod

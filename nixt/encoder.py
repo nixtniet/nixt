@@ -21,6 +21,10 @@ class Encoder(json.JSONEncoder):
     def default(self, o):
         "generate serializable versions."
         with Encoder.lock:
+            try:
+                return json.JSONEncoder.default(self, self.skip(o))
+            except TypeError:
+                pass
             if isinstance(o, type):
                 return self.skip(o)
             if isinstance(o, dict):

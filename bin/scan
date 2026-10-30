@@ -11,13 +11,19 @@ import os
 import sys
 
 
+sys.path.insert(0, os.getcwd())
+
+
+from nixt.utility import Utils
+
+
 def popen(txt):
     for line in os.popen(txt).readlines():
         print(line.rstrip())
         sys.stdout.flush()
 
 
-def main():
+def scanfile():
     try:
         path, target = sys.argv[1:]
     except ValueError:
@@ -36,6 +42,25 @@ def main():
                 #print(dat)
                 if f"({target})" in dat:
                     print(ffn)
+
+
+def main():
+    try:
+        name = sys.argv[1]
+    except ValueError:
+        print("scan <name>")
+        return
+    print(name) 
+    mod = __import__(name)
+    #print(mod.__loader__)
+    #print(mod, dir(mod))
+    #src = mod.__loader__.get_source(name)
+    #print(type(src), src)
+    #code = compile(src, mod.__file__, "exec")
+    with io.StringIO() as data:
+        dis.disassemble(mod, file=data)
+        dat = data.getvalue()
+        print(dat)
 
 
 if __name__ == "__main__":
