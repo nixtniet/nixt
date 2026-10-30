@@ -97,14 +97,6 @@ class Method:
         return all(not Dict.get(obj, key) for key in obj)
 
     @classmethod
-    def merge(cls, obj, obj2):
-        "skip emoty values."
-        for key, value in Dict.items(obj2):
-            if not value and Dict.get(obj, key, False):
-                continue
-            setattr(obj, key, value)
-
-    @classmethod
     def modname(cls, obj):
         "return package name of an object."
         return obj.__module__.split(".")[-1]
@@ -122,15 +114,6 @@ class Method:
     def pkgname(cls, obj):
         "return package name of an object."
         return obj.__module__.split(".", maxsplit=1)[0]
-
-    @classmethod
-    def reduce(cls, obj):
-        "return dict with values setted attributes."
-        result = {}
-        for key, value in Dict.items(obj):
-            if value:
-                result[key] = value
-        return result
 
     @classmethod
     def search(
@@ -173,14 +156,6 @@ class Method:
                 continue
             res[key] = value
         return res
-
-    @classmethod
-    def skipped(cls, obj):
-        "yield values without underscored keys."
-        for key in Dict.keys(obj):
-            if key.startswith("_"):
-                continue
-            yield Dict.get(obj, key)
 
     @classmethod
     def typed(cls, obj, key, val):

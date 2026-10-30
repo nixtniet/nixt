@@ -571,9 +571,10 @@ def imp(msg):
                 continue
             if not url.startswith("http"):
                 continue
+            selector = Selector({"rss": url})
             has = list(Locater.find(
                                    Method.fqn(OPML),
-                                   {"rss": url},
+                                   selector,
                                    matching=True
                                   ))
             if has:
@@ -656,7 +657,8 @@ def rss(msg):
     if "http://" not in url and "https://" not in url:
         msg.reply("i need an url")
         return
-    for result in Locater.objects(Method.fqn(Rss), {"rss": url}):
+    selector = Selector({"rss": url})
+    for result in Locater.objects(Method.fqn(Rss), selector):
         if result:
             msg.reply(f"{url} is known")
             return

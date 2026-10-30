@@ -67,6 +67,14 @@ class Dict:
         return obj.__dict__.keys()
 
     @classmethod
+    def merge(cls, obj, obj2):
+        "skip emoty values."
+        for key, value in cls.items(obj2):
+            if not value and cls.get(obj, key, False):
+                continue
+            setattr(obj, key, value)
+
+    @classmethod
     def update(cls, obj, data):
         "update an object."
         for key, value in data.items():
