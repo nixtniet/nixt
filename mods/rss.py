@@ -48,7 +48,7 @@ class Config(Cfg):
 
     "configuration"
 
-    polltime = 60
+    polltime = 300
     save = False
 
 
@@ -278,7 +278,6 @@ class Fetching(Runner):
         error.type = str(type(errr))
         if error.code == 304:
             return
-        print(error)
         if self.doskip(error):
             feed.status = error.code or error.status
             feed.error = str(error.msg or error.reason)
