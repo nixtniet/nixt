@@ -12,11 +12,14 @@ import time
 from datetime import datetime
 
 
-from .default import Path, RLock
+from .default import Log, Path, RLock
 from .encoder import JSON
 from .methods import Method
 from .objects import Data, Dict
 from .utility import Utils
+
+
+logger = Log(__name__)
 
 
 class DecodeError(Exception):
@@ -74,6 +77,7 @@ class Disk:
             pth = os.path.join(Workdir.wdr, base, path)
             if not os.path.exists(pth):
                 return {}
+            logger.debug(f"read {path}")
             with open(pth, "r", encoding="utf-8") as fpt:
                 try:
                     return JSON.load(fpt)
@@ -89,6 +93,7 @@ class Disk:
             pass
         with cls.lock:
             pth = os.path.join(Workdir.wdr, base, path)
+            logger.debug(f"write {path}")
             Utils.cdir(pth)
             with open(pth, "w", encoding="utf-8") as fpt:
                 JSON.dump(obj, fpt, indent=4)

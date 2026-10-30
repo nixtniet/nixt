@@ -119,7 +119,7 @@ class Run:
                 if not Run.got(txt, feed):
                     Clients.announce(txt)
             State.index = cls.file.tell()
-        Disk.write(vars(State), cls.statefn)
+        Disk.write(State, cls.statefn)
         gc.collect(0)
 
     @classmethod
@@ -127,11 +127,10 @@ class Run:
         "retry all failed feeds."
         counter = 0
         for fnm, fed in Locater.find(Method.fqn(Rss)):
-            feed = Rss()
-            Dict.update(feed, fed)
+            feed = Rss(fed)
             if feed.skip:
                 feed.skip = False
-                Disk.write(vars(feed), fnm)
+                Disk.write(feed, fnm)
                 counter += 1
         logger.debug("clear %s", counter)
         return counter
@@ -191,6 +190,7 @@ class Run:
         "do a fetch run of all feeds."
         nrs = 0
         if Pool.busy():
+            logger.debug("next!")
             return 0
         for fnm, fed in Locater.find(Method.fqn(Rss)):
             feed = Rss()
@@ -230,38 +230,66 @@ class Run:
         "sync state to disk."
         if cls.index > State.index:
             State.index = cls.index
-            Disk.write(vars(State), cls.statefn)
+            Disk.write(State, cls.statefn)
 
 
 class Fetching(Runner):
 
     "teh fetcher"
 
-    def doskip(self, errno):
+    skiptype = (
+        'TimeoutError',
+        'RemoteDisconnected'
+    )
+
+    skiptxt = (
+        'not known',
+        'not valid',
+        'timed out',
+        'Connection refused',
+        'No address associated',
+        'has expired',
+        'self-signed',
+        'internal error',
+        'violation of protocol'
+    )
+
+    def doskip(self, err):
         "check whether to skip feed."
-        return errno >= 400
+        if int(err.code or 0) >= 400:
+            return True
+        for typ in self.skiptype:
+            if typ in err.type:
+                return True
+        reason = str(err.reason)
+        for txt in self.skiptxt:
+            if txt in reason:
+                return True
+        return False
 
     def fetch(self, fnm, feed):
         "fetch a feed."
         errr = None
         try:
+            logger.debug("fetching %s", feed.rss)
             return Fetcher.geturl(feed.rss)
         except (ConnectionResetError, RemoteDisconnected, TimeoutError) as ex:
             errr = ex
         except (HTTPError, URLError) as ex:
             errr = ex
-        err = Data()
-        Dict.update(err, vars(errr))
-        error = err.erno or err.status or 0
-        if error != 304:
-            logger.debug("%s %s", feed.rss, err.reason)
+        error = Data(vars(errr))
+        error.type = str(type(errr))
+        if error.code == 304:
+            return
+        print(error)
         if self.doskip(error):
-            feed.status = error
-            feed.error = err.reason
+            feed.status = error.code or error.status
+            feed.error = str(error.msg or error.reason)
             feed.skip = True
             Disk.write(feed, fnm)
-            logger.debug("skipt %s %s %s", feed.rss, error, err.reason)
-
+            logger.debug("skipt %s %s %s", feed.rss, feed.status, error.reason)
+        else:
+            logger.debug("missed  %s %s", feed.rss, error)
 
     def getfeed(self, fnm, feed):
         "fetch a feed."
@@ -302,7 +330,7 @@ class Fetching(Runner):
             del obj
         if has:
             feed.seen = feed.seen[:counter]
-            Disk.write(vars(feed), fnm)
+            Disk.write(feed, fnm)
         if counter:
             gc.collect(0)
         return counter
