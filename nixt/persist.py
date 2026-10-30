@@ -15,7 +15,7 @@ from datetime import datetime
 from .default import Log, Path, RLock
 from .encoder import JSON
 from .methods import Method
-from .objects import Data, Dict
+from .objects import Dict
 from .utility import Utils
 
 
@@ -25,11 +25,6 @@ logger = Log(__name__)
 class DecodeError(Exception):
 
     "could not parse input"
-
-
-class Selector(Data):
-
-    "field values to select on"
 
 
 class Cache:

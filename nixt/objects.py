@@ -54,17 +54,20 @@ class Dict:
     @classmethod
     def get(cls, obj, key, default=""):
         "get attribute from object."
-        return obj.get(key, default)
+        return vars(obj).get(key, default)
 
     @classmethod
     def items(cls, obj):
         "return items on object."
-        return obj.items()
+        return vars(obj).items()
 
     @classmethod
     def keys(cls, obj):
         "return keys from object."
-        return obj.keys()
+        try:
+            return vars(obj).keys()
+        except TypeError:
+            return obj.keys()
 
     @classmethod
     def merge(cls, obj, obj2):
@@ -83,7 +86,7 @@ class Dict:
     @classmethod
     def values(cls, obj):
         "fetch values from object."
-        return obj.values()
+        return vars(obj).values()
 
 
 def __dir__():

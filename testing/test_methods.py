@@ -75,6 +75,7 @@ class TestMethod(unittest.TestCase):
         "test formatting an object."
         o = Mine()
         o.a = "b"
+        print(o)
         self.assertEqual(Method.fmt(o), 'a="b"')
 
     def test_getattr(self):

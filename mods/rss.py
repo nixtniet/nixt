@@ -22,7 +22,7 @@ from urllib.request import Request, urlopen
 from nixt.default import Log, RLock
 from nixt.defines import Cfg, Clients, Data, Dict, Disk, Format, JSON, JSONL
 from nixt.defines import Locater, Logging, Main, MD5, Method, Object, Pool
-from nixt.defines import Repeater, Runner, Selector, Utils, Watcher, Workdir
+from nixt.defines import Repeater, Runner, Utils, Watcher, Workdir
 
 
 logger = Log(__name__)

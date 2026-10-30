@@ -4,7 +4,7 @@
 "todo"
 
 
-from nixt.defines import Disk, Locater, Object, Selector
+from nixt.defines import Disk, Locater, Object
 
 
 class Todo(Object):

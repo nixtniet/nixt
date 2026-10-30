@@ -51,7 +51,6 @@ class Method:
         empty=False
         ):
         "format object info printable string."
-        obj = vars(object)
         if args is None:
             args = list(Dict.keys(obj))
         if args == []:

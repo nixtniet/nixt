@@ -17,7 +17,7 @@ from .message import Message
 from .methods import Method
 from .objects import Data, Dict, Object
 from .package import Mods
-from .persist import Disk, Locater, Selector, Workdir
+from .persist import Disk, Locater, Workdir
 from .pooling import Pool, Runner
 from .repeats import Repeater
 from .tasking import Task, Worker
@@ -60,7 +60,6 @@ __all__ = (
     'Repeater',
     'Runner',
     'Screen',
-    'Selector',
     'Task',
     'Time',
     'Utils',
