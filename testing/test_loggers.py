@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.utility import Format, Logging
+from nixt.defines import Format, Logging
 
 
 class TestFormat(unittest.TestCase):
