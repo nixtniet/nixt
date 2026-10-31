@@ -50,7 +50,7 @@ class Kernel(Boot):
         "at start."
         cls.configure()
         Mods.dir("mods", "mods")
-        Commands.scanner()
+        Commands.table()
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
         if Main.threaded:
@@ -58,6 +58,25 @@ class Kernel(Boot):
         else:
             Pool.nrcpu = 1
         Pool.init(Pool.nrcpu, CLI)
+
+    @classmethod
+    def collect(cls):
+        for message in cls.messages:
+            message.wait()
+
+    @classmethod
+    def final(cls):
+        "finalizer."
+        if not Main.verbose:
+            return
+        total = Kernel.nrevents
+        endtime = time.time()
+        lap = Time.elapsed(endtime-Kernel.starttime)
+        percall = (endtime-Kernel.starttime)/total
+        print(f"{Method.fmt(Main, skip='otxt,txt')}")
+        print(f"nrcpu: {Pool.nrcpu} events: {total}")
+        print(f"total: {lap} nrs: {Kernel.nrevents} call: {percall}")
+        print(threading.enumerate())
 
     @classmethod
     def launch(cls):
@@ -91,20 +110,22 @@ class Kernel(Boot):
                 Pool.put(evt)
                 cls.messages.append(evt)
 
-
     @classmethod
-    def final(cls):
-        "finalizer."
-        if not Main.verbose:
-            return
-        total = Kernel.nrevents
-        endtime = time.time()
-        lap = Time.elapsed(endtime-Kernel.starttime)
-        percall = (endtime-Kernel.starttime)/total
-        print(f"{Method.fmt(Main, skip='otxt,txt')}")
-        print(f"nrcpu: {Pool.nrcpu} events: {total}")
-        print(f"total: {lap} nrs: {Kernel.nrevents} call: {percall}")
-        print(threading.enumerate())
+    def wrap(cls, func, *args, dofinal=None):
+        "restore console."
+        import termios
+        try:
+            old = termios.tcgetattr(sys.stdin.fileno())
+        except termios.error:
+            old = None
+        try:
+            cls.wrapped(func, *args)
+        except (KeyboardInterrupt, EOFError):
+            pass
+        if old and old[0]:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+        if dofinal:
+            dofinal()
 
 
 def main():
@@ -112,6 +133,7 @@ def main():
     Parser.parse(Main, " ".join(sys.argv[1:]))
     Kernel.boot()
     Kernel.launch()
+    Kernel.collect()
     Kernel.shutdown()
 
 
