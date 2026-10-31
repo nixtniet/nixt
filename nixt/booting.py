@@ -13,11 +13,10 @@ import _thread
 from .clients import Broker, Screen
 from .configs import Main
 from .default import Event, Log
-from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
 from .tasking import Task, Worker
-from .utility import Utils
+from .utility import Logging, Utils
 
 
 logger = Log(__name__)

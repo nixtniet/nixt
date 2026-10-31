@@ -13,7 +13,7 @@ from urllib.request import Request, urlopen
 
 
 from .configs import Main
-from .sources import MD5
+from .utility import MD5
 
 
 class Fetcher:

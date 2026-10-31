@@ -5,7 +5,6 @@
 
 
 import gc
-import html
 import logging.handlers
 import os
 import pathlib
@@ -15,8 +14,6 @@ import urllib.parse
 
 from http.client    import RemoteDisconnected
 from urllib.error   import HTTPError, URLError
-from urllib.parse   import unquote, urlparse, urlunparse
-from urllib.request import Request, urlopen
 
 
 from nixt.default import Log, RLock

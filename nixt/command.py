@@ -8,8 +8,8 @@ import inspect
 
 
 from .clients import Clients
+from .methods import Method
 from .package import Mods
-from .parsers import Parser
 from .utility import Utils
 
 
@@ -99,7 +99,82 @@ class Commands:
             cls.scanner()
 
 
+class Parser:
+
+    "parsing for commands"
+
+    @classmethod
+    def init(cls, obj, text, clean=False):
+        "set default values."
+        data = {
+            "args": [],
+            "cmd": "",
+            "gets": {},
+            "index": None,
+            "init": "",
+            "mod": "",
+            "opts": "",
+            "otxt": text,
+            "rest": "",
+            "silent": {},
+            "sets": {},
+            "text": text
+        }
+        for k, v in data.items():
+            if not clean:
+                setattr(obj, k, getattr(obj, k, v) or v)
+            else:
+                setattr(obj, k, v)
+
+    @classmethod
+    def parse(cls, obj, text, clean=False):
+        "parse text for command and arguments."
+        cls.init(obj, text, clean)
+        args = []
+        nr = -1
+        for spli in text.split():
+            if spli.startswith("--"):
+                obj.opts += f",{spli[2:]}"
+                continue
+            if spli.startswith("-"):
+                try:
+                    obj.index = int(spli[1:])
+                except ValueError:
+                    obj.opts += spli[1:]
+                continue
+            if "-=" in spli:
+                key, value = spli.split("-=", maxsplit=1)
+                Method.typed(obj.silent, key, value)
+                Method.typed(obj.gets, key, value)
+                continue
+            if "==" in spli:
+                key, value = spli.split("==", maxsplit=1)
+                Method.typed(obj.gets, key, value)
+                continue
+            if "=" in spli:
+                key, value = spli.split("=", maxsplit=1)
+                Method.typed(obj.sets, key, value)
+                continue
+            nr += 1
+            if nr == 0:
+                obj.cmd = spli
+                continue
+            args.append(spli)
+        if args:
+            obj.args = args
+            obj.text = obj.mod + " " + obj.cmd
+            obj.rest = " ".join(obj.args)
+            obj.text = obj.text + " " + obj.rest
+        else:
+            obj.text = obj.mod + " " + obj.cmd
+        if "v" in obj.opts:
+            obj.verbose = True
+        if "t" in obj.opts:
+            obj.threaded = True
+
+
 def __dir__():
     return (
         'Commands',
+        'Parser'
     )

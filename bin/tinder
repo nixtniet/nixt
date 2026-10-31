@@ -61,6 +61,7 @@ class Kernel(Boot):
 
     @classmethod
     def collect(cls):
+        "wait for all messages."
         for message in cls.messages:
             message.wait()
 
