@@ -9,7 +9,8 @@ import os
 
 from .default import Log
 from .methods import Method
-from .utility import MD5, Utils
+from .sources import MD5
+from .utility import Utils
 
 
 logger = Log(__name__)

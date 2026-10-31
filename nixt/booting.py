@@ -12,11 +12,13 @@ import _thread
 
 from .clients import Broker, Screen
 from .configs import Main
+from .daemons import Daemon
 from .default import Event, Log
+from .loggers import Logging
 from .package import Mods
 from .persist import Workdir
 from .tasking import Task, Worker
-from .utility import Logging, Utils
+from .utility import Utils
 
 
 logger = Log(__name__)
@@ -121,50 +123,6 @@ class Boot:
             dofinal()
 
 
-class Daemon:
-
-    "detach from console"
-
-    @classmethod
-    def daemon(cls):
-        "run in the background."
-        import sys
-        pid = os.fork()
-        if pid != 0:
-            os._exit(0)
-        os.setsid()
-        pid2 = os.fork()
-        if pid2 != 0:
-            os._exit(0)
-        if not Main.verbose:
-            cls.null(sys.stdin)
-            cls.null(sys.stdout)
-            cls.null(sys.stderr)
-        os.umask(0o077)
-        os.chdir("/")
-        os.nice(10)
-
-    @classmethod
-    def null(cls, iostream):
-        "route to /dev/null."
-        with open('/dev/null', 'r', encoding="utf-8") as sis:
-            os.dup2(sis.fileno(), iostream.fileno())
-
-    @classmethod
-    def pid(cls):
-        "return pid path."
-        return Workdir.pid(Main.name)
-
-    @classmethod
-    def privileges(cls):
-        "drop privileges."
-        import getpass
-        import pwd
-        pwnam2 = pwd.getpwnam(getpass.getuser())
-        os.setgid(pwnam2.pw_gid)
-        os.setuid(pwnam2.pw_uid)
-
-
 class Booting(Boot, Daemon):
 
     "at start"
@@ -177,6 +135,5 @@ class Booting(Boot, Daemon):
 def __dir__():
     return (
         'Boot',
-        'Booting',
-        'Daemon'
+        'Booting'
     )
