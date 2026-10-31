@@ -4,11 +4,8 @@
 "logging"
 
 
-from .default import Formatter, Log, StreamHandler
+from .default import Formatter, StreamHandler
 from .default import TimedRotatingFileHandler, basicConfig
-
-
-logger = Log(__name__)
 
 
 class Format(Formatter):

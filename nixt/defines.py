@@ -4,7 +4,7 @@
 "interface"
 
 
-from .booting import Boot, Booting
+from .booting import Boot
 from .brokers import Broker
 from .clients import Buffer, Clients, Display, Output, Screen
 from .command import Commands
@@ -36,7 +36,6 @@ __all__ = (
     'JSONL',
     'MD5',
     'Boot',
-    'Booting',
     'Broker',
     'Buffer',
     'Cfg',

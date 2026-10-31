@@ -15,7 +15,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Booting, Commands, Main, Message, Method, Parser
+from nixt.defines import Boot, Commands, Main, Message, Method, Parser
 from nixt.defines import Mods, Pool, Screen, Task, Time, Workdir
 
 
@@ -37,7 +37,7 @@ class CLI(Screen):
             sys.stdout.flush()
 
 
-class Kernel(Booting):
+class Kernel(Boot):
 
     "teh kernal"
 
@@ -47,6 +47,7 @@ class Kernel(Booting):
 
     @classmethod
     def boot(cls):
+        "at start."
         cls.configure()
         Mods.dir("mods", "mods")
         Commands.scanner()

@@ -11,7 +11,7 @@ import time
 from argparse import SUPPRESS, ArgumentParser, RawTextHelpFormatter
 
 
-from .defines import MD5, Booting, Commands, Dict, Main, Message
+from .defines import MD5, Boot, Commands, Daemon, Dict, Main, Message
 from .defines import Method, Mods, Screen, Workdir
 from .require import Cmd
 
@@ -59,7 +59,7 @@ class Arguments:
         )
 
 
-class Kernel(Booting):
+class Kernel(Boot, Daemon):
 
     "at first"
 

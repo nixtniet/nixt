@@ -12,7 +12,6 @@ import _thread
 
 from .clients import Broker, Screen
 from .configs import Main
-from .daemons import Daemon
 from .default import Event, Log
 from .loggers import Logging
 from .package import Mods
@@ -123,17 +122,7 @@ class Boot:
             dofinal()
 
 
-class Booting(Boot, Daemon):
-
-    "at start"
-
-    @classmethod
-    def boot(cls):
-        "starting"
-
-
 def __dir__():
     return (
         'Boot',
-        'Booting'
     )
