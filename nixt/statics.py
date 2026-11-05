@@ -5,7 +5,7 @@
 
 
 CORE = {
-    "booting": "c5ad0ac42617c69e1b3fafd06223f4b6",
+    "booting": "d05f37495a05c91036b44208546b07f0",
     "clients": "9b9fefac3d6aeee427ccaddb2c313061",
     "command": "e0dfeb6bb9ecfb64da63c31efd35c69c",
     "configs": "923bfc6abc122898b234471595fddbf1",

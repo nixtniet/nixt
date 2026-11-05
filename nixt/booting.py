@@ -58,9 +58,10 @@ class Boot:
         Mods.dir("modules", Workdir.moddir())
         Mods.dir(f"{Main.name}.modules", Mods.moddir())
         if Main.path:
-            Main.path = os.path.normpath(Main.path)
-            pkgname = Main.path.rsplit(os.sep, maxsplit=1)[-1]
-            Mods.dir(pkgname, Main.path)
+            for pth in Utils.spl(Main.path):
+                pth = os.path.normpath(pth)
+                pkgname = pth.rsplit(os.sep, maxsplit=1)[-1]
+                Mods.dir(pkgname, pth)
 
     @classmethod
     def forever(cls):
