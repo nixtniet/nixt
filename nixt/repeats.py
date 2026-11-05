@@ -22,13 +22,7 @@ class Repeater:
     todo = {}
 
     @classmethod
-    def add(
-        cls,
-        sleeptime,
-        func,
-        *args,
-        **kwargs
-        ):
+    def add(cls, sleeptime, func, *args, **kwargs):
         "add a repeater."
         slp = str(sleeptime)
         if slp not in cls.todo:

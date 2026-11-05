@@ -24,12 +24,12 @@ logger = Log(__name__)
 
 class DecodeError(Exception):
 
-    "could not parse input"
+    "could not parse to JSON"
 
 
 class MissingPath(Exception):
 
-    "don't know where to write."
+    "don't know where to write"
 
 
 class Cache:

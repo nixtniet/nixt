@@ -11,17 +11,8 @@ import time
 from argparse import SUPPRESS, ArgumentParser, RawTextHelpFormatter
 
 
-from .booting import Boot
-from .clients import Screen
-from .configs import Main
-from .command import Commands
-from .daemons import Daemon
-from .message import Message
-from .methods import Method
-from .objects import Dict
-from .package import Mods
-from .require import Cmd
-from .utility import MD5
+from .defines import Boot, Cmd, Commands, Daemon, Dict, Main, Message, Method
+from .defines import MD5, Mods, Screen
 
 
 class Arguments:
@@ -65,7 +56,6 @@ class Arguments:
             formatter_class=RawTextHelpFormatter,
             usage="%(prog)s [options] [cmd] [key=val] [key==val] [key-=val] [arguments]"
         )
-
 
 
 class Kernel(Boot, Daemon):
