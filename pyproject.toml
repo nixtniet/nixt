@@ -12,7 +12,7 @@ name = "nixt"
 authors = [
     {name = "Nixt Niet", email = "nixtniet@proton.me" },
 ]
-description = "write your own commands."
+description = "write your own commands"
 readme = "README.rst"
 license = "Unlicense"
 classifiers = [
@@ -38,7 +38,7 @@ packages = [
     'nixt.minimal',
     'nixt.modules',
     'nixt.namings',
-    'nixt.network'
+    'nixt.numbers'
 ]
 
 
