@@ -43,10 +43,10 @@ class Repeater:
                     Task.start(func, *args, **kwargs)
 
     @classmethod
-    def start(cls, daemon=True):
+    def start(cls, daemon=True, name="Repeater"):
         "start callback loop."
         if not cls.stopped.is_set():
-            Task.start(cls.loop, daemon=daemon, name="Repeater.loop")
+            Task.start(cls.loop, daemon=daemon, name=name)
 
     @classmethod
     def stop(cls):

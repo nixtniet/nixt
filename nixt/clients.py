@@ -123,10 +123,10 @@ class Output(Display):
         "raw output."
         raise NotImplementedError
 
-    def start(self, daemon=True):
+    def start(self, daemon=True, name=None):
         "start output loop."
         self.ostopped.clear()
-        Task.start(self.output, daemon=daemon)
+        Task.start(self.output, daemon=daemon, name=name)
 
     def stop(self):
         "stop output loop."
@@ -169,7 +169,7 @@ class Buffer(Handler, Output):
     def start(self, daemon=True, name=None):
         "start output loop."
         Handler.start(self)
-        Output.start(self, daemon=daemon)
+        Output.start(self, daemon=daemon, name=name)
 
     def stop(self):
         "stop output loop."

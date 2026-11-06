@@ -131,7 +131,7 @@ class Run:
     def clear(cls):
         "retry all failed feeds."
         counter = 0
-        for fnm, fed in Locater.find(Method.fqn(Rss)):
+        for fnm, fed in Locater.find("rss"):
             feed = Rss(fed)
             if feed.skip:
                 feed.skip = False
@@ -203,7 +203,7 @@ class Run:
         if Pool.busy():
             logger.debug("next!")
             return 0
-        for fnm, fed in Locater.find(Method.fqn(Rss)):
+        for fnm, fed in Locater.find("rss"):
             feed = Rss()
             Dict.update(feed, fed)
             if feed.skip:
@@ -223,7 +223,7 @@ class Run:
                 cls.file = file
             cls.enable(cls.path)
             Watcher.add(cls.path, cls.callback)
-            Watcher.start()
+            Watcher.start(name="Watcher")
         cls.state.load()
         Pool.init(2, Fetching)
         if not once:
@@ -537,7 +537,7 @@ def dpl(msg):
         setter = {"display_list": msg.args[1]}
     else:
         setter = None
-    for fnm, feed in Locater.find(Method.fqn(Rss), {"rss": msg.args[0]}):
+    for fnm, feed in Locater.find("rss", {"rss": msg.args[0]}):
         fed = Rss()
         Dict.update(fed, feed)
         if fed:
@@ -553,7 +553,7 @@ def exp(msg):
     "export opml."
     with Locks.importlock:
         msg.reply(TEMPLATE)
-        for nrs, obj in enumerate(Locater.objects(Method.fqn(OPML))):
+        for nrs, obj in enumerate(Locater.objects("rss")):
             name = f"url{nrs}"
             dipl = obj["display_list"]
             url = obj["rss"]
@@ -619,7 +619,7 @@ def nme(msg):
         msg.iface("<stringinurl> <name>")
         return
     for fnm, fed in Locater.find(
-                                Method.fqn(Rss),
+                                "rss",
                                 {"rss": msg.args[0]},
                                ):
         fed["name"] = name
@@ -632,7 +632,7 @@ def rem(msg):
     if len(msg.args) != 1:
         msg.iface("<stringinurl>")
         return
-    for fnm, fed in Locater.find(Method.fqn(Rss)):
+    for fnm, fed in Locater.find("rss"):
         if msg.args[0] not in fed.get("rss", ""):
             continue
         fed["__deleted__"] = True
@@ -648,7 +648,7 @@ def res(msg):
         return
     nrs = 0
     for fnm, fed in Locater.find(
-                                Method.fqn(Rss),
+                                "rss",
                                 removed=True
                                ):
         if msg.args and msg.args[0] not in fed.get("rss", ""):
@@ -672,7 +672,7 @@ def rss(msg):
     if "http://" not in url and "https://" not in url:
         msg.reply("i need an url")
         return
-    for result in Locater.objects(Method.fqn(Rss), {"rss": url}):
+    for result in Locater.objects("rss", {"rss": url}):
         if result:
             msg.reply(f"{url} is known")
             return

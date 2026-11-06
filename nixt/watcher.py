@@ -52,11 +52,11 @@ class Watcher:
             time.sleep(cls.sleep)
 
     @classmethod
-    def start(cls, daemon=True):
+    def start(cls, daemon=True, name="Watcher"):
         "start callback loop."
         if not cls.stopped.is_set():
             return
-        Task.start(cls.loop, daemon=daemon)
+        Task.start(cls.loop, daemon=daemon, name=name)
 
     @classmethod
     def stop(cls):

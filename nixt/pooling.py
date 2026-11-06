@@ -26,7 +26,10 @@ class Runner(Loop):
             if job is None:
                 break
             self.run(*job)
-        self.stopped.set()
+        self.done.set()
+
+    def wait(self):
+        "skip wait."
 
 
 class Pool:
@@ -56,9 +59,9 @@ class Pool:
         cls.nrcpu = nrs
         if clz:
             cls.clazz = clz
-        for _x in range(nrs):
+        for nr in range(nrs):
             runner = cls.clazz()
-            runner.start()
+            runner.start(name=f"Runner{nr}")
             cls.add(runner)
 
     @classmethod
