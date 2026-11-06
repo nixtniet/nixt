@@ -34,13 +34,6 @@ class Data(Object):
 
     "defaulting to string"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__()
-        if args:
-            Dict.update(self, args[0])
-        if kwargs:
-            Dict.update(self, kwargs)
-
     def __getattr__(self, key):
         if key in dir(self):
             return self.__getattribute__(key)
@@ -86,9 +79,7 @@ class Dict:
         try:
             data = vars(data)
         except TypeError:
-            print("no vars")
             pass
-        print(type(obj), type(data))
         for key, value in data.items():
             setattr(obj, key, value)
 

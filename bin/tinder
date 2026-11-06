@@ -50,6 +50,7 @@ class Kernel(Boot):
         "at start."
         cls.configure()
         Mods.dir("mods", "mods")
+        Mods.dir("extra", "extra")
         Commands.table()
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)

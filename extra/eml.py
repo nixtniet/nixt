@@ -76,7 +76,8 @@ def mbx(msg):
     nrs = 0
     try:
         for mail in thing:
-            tmp = Data(mail)
+            tmp = Data()
+            Dict.update(tmp, mail)
             obj = Email(tmp._headers)
             for payload in mail.walk():
                 if payload.get_content_type() == 'text/plain':

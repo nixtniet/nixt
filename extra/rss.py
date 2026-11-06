@@ -285,7 +285,8 @@ class Fetching(Runner):
             errr = ex
         except (SSLError, HTTPError, URLError) as ex:
             errr = ex
-        error = Data(vars(errr))
+        error = Data()
+        Dict.update(error, vars(errr))
         error.type = str(type(errr))
         if error.code == 304:
             logger.debug("%s %s", feed.rss, error.code)
@@ -657,6 +658,7 @@ def res(msg):
             continue
         nrs += 1
         fed["__deleted__"] = False
+        fed['error'] = ""
         fed["skip"] = False
         Disk.write(fed, fnm)
     txt = f"{nrs} feeds"

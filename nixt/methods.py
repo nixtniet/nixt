@@ -51,10 +51,14 @@ class Method:
         empty=False
         ):
         "format object info printable string."
+        try:
+            obj = vars(obj)
+        except TypeError:
+            pass
         if args is None:
-            args = list(Dict.keys(obj))
+            args = list(obj.keys())
         if args == []:
-            args = [x for x in dir(obj) if not x.startswith("_")]
+            args = [x for x in obj.keys() if not x.startswith("_")]
         if skip is None:
             skip = []
         txt = ""
@@ -63,7 +67,7 @@ class Method:
                 continue
             if key in skip:
                 continue
-            value = getattr(obj, key, None)
+            value = obj.get(key, None)
             if value is None:
                 continue
             if not empty and value == "":

@@ -27,7 +27,7 @@ def fnd(msg):
         key=lambda x: Locater.fntime(x[0])
     ):
         diff = time.time()-Locater.fntime(fnm)
-        msg.reply(f"{nmr} {Method.fmt(Data(obj))} {Time.elapsed(diff)}")
+        msg.reply(f"{nmr} {Method.fmt(obj)} {Time.elapsed(diff)}")
         nmr += 1
     if not nmr:
         msg.reply("no result")
