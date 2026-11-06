@@ -132,7 +132,9 @@ class Run:
         "retry all failed feeds."
         counter = 0
         for fnm, fed in Locater.find("rss"):
-            feed = Rss(fed)
+            feed = Rss()
+            Dict.update(feed, fed)
+            print(feed)
             if feed.skip:
                 feed.skip = False
                 Disk.write(feed, fnm)
@@ -228,7 +230,7 @@ class Run:
         Pool.init(2, Fetching)
         if not once:
             Repeater.add(Config.polltime, cls.run)
-            Repeater.add(600, cls.clear)
+            Repeater.add(120, cls.clear)
             Repeater.start()
 
     @classmethod

@@ -30,8 +30,8 @@ class Boot:
     stopped = Event()
 
     @classmethod
-    def banner(cls):
-        "hi world."
+    def banner(cls, force=False):
+        "hello"
 
     @classmethod
     def boot(cls):

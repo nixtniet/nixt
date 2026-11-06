@@ -86,7 +86,9 @@ class Dict:
         try:
             data = vars(data)
         except TypeError:
+            print("no vars")
             pass
+        print(type(obj), type(data))
         for key, value in data.items():
             setattr(obj, key, value)
 

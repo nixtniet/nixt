@@ -197,10 +197,12 @@ class Clients:
 
 def __dir__():
     return (
+        'CLI',
         'Broker',
         'Buffer',
         'Clients',
+        'Console',
         'Display',
-        'Pit[ut',
+        'Output',
         'Screen'
     )

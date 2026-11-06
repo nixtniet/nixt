@@ -23,7 +23,7 @@ class Worker(Thread):
 
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
-        self.name = kwargs.get("name", None)
+        self.name = kwargs.get("name", "")
         if not self.name:
             self.name = self.getname(func) or ""
         self.queue = Queue()
