@@ -8,57 +8,47 @@ import inspect
 import os.path
 
 
-from .objects import Dict
 from .typings import MethodType
 
 
-class Method:
+class Dict:
 
     "yeah"
 
     @classmethod
-    def clz(cls, obj):
-        "return class name of an object."
-        return cls.fqn(obj).split(".")[-1]
-
-    @classmethod
-    def deleted(cls, obj):
+    def deleted(cls, dct):
         "check whether obj had deleted flag set."
-        return "__deleted__" in dir(obj) and obj.__deleted__
+        return "__deleted__" in dct and dct["__deleted__"]
 
     @classmethod
     def edit(
         cls,
-        obj,
+        dct,
         setter=None,
         skip=False
         ):
         "update object with dict."
         if setter is None:
             setter = {}
-        for key, val in Dict.items(setter):
+        for key, val in setter.items():
             if skip and val == "":
                 continue
-            cls.typed(obj, key, val)
+            cls.typed(dct, key, val)
 
     @classmethod
     def fmt(
         cls,
-        obj,
+        dct,
         args=None,
         skip= None,
         plain=False,
         empty=False
         ):
         "format object info printable string."
-        try:
-            obj = vars(obj)
-        except TypeError:
-            pass
         if args is None:
-            args = list(obj.keys())
+            args = list(dct.keys())
         if args == []:
-            args = [x for x in obj.keys() if not x.startswith("_")]
+            args = [x for x in dct if not x.startswith("_")]
         if skip is None:
             skip = []
         txt = ""
@@ -67,7 +57,7 @@ class Method:
                 continue
             if key in skip:
                 continue
-            value = obj.get(key, None)
+            value = dct.get(key, None)
             if value is None:
                 continue
             if not empty and value == "":
@@ -79,50 +69,29 @@ class Method:
             elif isinstance(value, str):
                 txt += f'{key}="{value}" '
             else:
-                txt += f"{key}={cls.clz(value)}({value!s}) "
+                txt += f"{key}={Method.clz(value)}({value!s}) "
         if txt == "":
             txt = "{}"
         return txt.strip()
 
     @classmethod
-    def fqn(cls, obj):
-        "full qualified name."
-        if "__qualname__" in dir(obj):
-            kin = obj.__qualname__
-        else:
-            kin = str(type(obj)).split()[-1][1:-2]
-        if kin == "type":
-            kin = f"{obj.__module__}.{obj.__name__}"
-        return kin
-
-    @classmethod
-    def isempty(cls, obj):
+    def isempty(cls, dct):
         "check if all keys heve empty value."
-        return all(not Dict.get(obj, key) for key in obj)
+        return all(not dct.get(key) for key in dct)
 
     @classmethod
-    def modname(cls, obj):
-        "return package name of an object."
-        return obj.__module__.split(".")[-1]
-
-    @classmethod
-    def notset(cls, obj, obj2):
+    def notset(cls, dct1, dct2):
         "only set if not set."
-        for key, value in Dict.items(obj2):
-            if Dict.get(obj. key, False):
+        for key, value in dct2.items():
+            if dct1.get(key, False):
                 continue
             if value:
-                setattr(obj, key, value)
-
-    @classmethod
-    def pkgname(cls, obj):
-        "return package name of an object."
-        return obj.__module__.split(".", maxsplit=1)[0]
+                dct1[key] = value
 
     @classmethod
     def search(
         cls,
-        obj,
+        dct,
         selector=None,
         matching=False
         ):
@@ -131,7 +100,7 @@ class Method:
             return False
         res = False
         for key, value in selector.items():
-            val = obj.get(key, None)
+            val = dct.get(key, None)
             if not val:
                 res = False
                 break
@@ -145,15 +114,15 @@ class Method:
         return res
 
     @classmethod
-    def skip(cls, obj, char=None):
+    def skip(cls, dct, char=None):
         "skip class keys containing chars."
         if char is None:
             char = "_"
         res = {}
-        for key in dir(obj):
+        for key in dct:
             if char in key:
                 continue
-            value = getattr(obj, key, None)
+            value = dct.get(key, None)
             if not value:
                 continue
             if isinstance(value, MethodType):
@@ -162,27 +131,99 @@ class Method:
         return res
 
     @classmethod
-    def typed(cls, obj, key, val):
+    def typed(cls, dct, key, val):
         "assign proper types."
-        if obj is None or not val:
+        if dct is None or not val:
             return
         if val in ["True", "true", True]:
-            setattr(obj, key, True)
+            dct[key] = True
             return
         if val in ["False", "false", False]:
-            setattr(obj, key, False)
+            dct[key] = False
             return
         try:
-            setattr(obj, key, int(val))
+            dct[key] = int(val)
             return
         except ValueError:
             pass
         try:
-            setattr(obj, key, float(val))
+            dct[key] = float(val)
             return
         except ValueError:
             pass
-        setattr(obj, key, val)
+        dct[key] = val
+
+
+class Method:
+
+    "methods"
+
+    @classmethod
+    def clsname(cls, obj):
+        "class name of an object."
+        if "__self__" in dir(obj):
+            return obj.__self__.__class__.__name__
+        return obj.__class__.__name__
+
+    @classmethod
+    def clz(cls, obj):
+        "return class name of an object."
+        return cls.fqn(obj).split(".")[-1]
+
+    @classmethod
+    def fqn(cls, obj):
+        "full qualified name."
+        if "__qualname__" in dir(obj):
+            kin = obj.__qualname__
+        else:
+            kin = str(type(obj)).split()[-1][1:-2]
+        if kin == "type":
+            kin = f"{obj.__module__}.{obj.__name__}"
+        return kin
+
+    @classmethod
+    def getname(cls, obj):
+        "string of function/method."
+        if inspect.ismethod(obj):
+            return f"{cls.clsname(obj)}.{obj.__name__}"
+        if inspect.isfunction(obj):
+            return repr(obj).split()[1]
+        return repr(obj)
+
+    @classmethod
+    def modname(cls, obj):
+        "return package name of an object."
+        return obj.__module__.split(".")[-1]
+
+    @classmethod
+    def pkgname(cls, obj):
+        "return package name of an object."
+        return obj.__module__.split(".", maxsplit=1)[0]
+
+    @classmethod
+    def todict(cls, obj):
+        "convert object to dictionary."
+        res = {}
+        for key in dir(obj):
+            if key.startswith("_"):
+                continue
+            res[key] = getattr(obj, key)
+        return res
+
+    @classmethod
+    def typed(cls, obj, key, value):
+        "set typed values on the object."
+        try:
+            obj = vars(obj)
+        except TypeError:
+            pass
+        Dict.typed(obj, key, value)
+
+    @classmethod
+    def update(cls, obj, data):
+        "update object with a dict."
+        for key, value in data.items():
+            setattr(obj, key, value)
 
     @classmethod
     def where(cls, obj):
@@ -192,5 +233,6 @@ class Method:
 
 def __dir__():
     return (
-        'Method',
+        'Dict',
+        'Method'
     )

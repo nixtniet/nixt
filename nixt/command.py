@@ -10,7 +10,6 @@ import inspect
 from .clients import Clients
 from .message import Message
 from .methods import Method
-from .objects import Data
 from .package import Mods
 from .utility import Utils
 
@@ -56,7 +55,7 @@ class Commands:
             mod = Mods.get(modname)
             if not mod:
                 continue
-            result.extend([Utils.funcname(x) for x in Commands.scan(mod, True)])
+            result.extend([Utils.funcname(x) for x in cls.scan(mod, True)])
         return result
 
     @classmethod
@@ -111,6 +110,7 @@ class Commands:
 
 
 cmd = Commands.cmd
+typed = Method.typed
 
 
 class Parser:
@@ -123,20 +123,20 @@ class Parser:
         data = {
             "args": [],
             "cmd": "",
-            "gets": Data(),
+            "gets": {},
             "index": None,
             "init": "",
             "mod": "",
             "opts": "",
             "otxt": text,
             "rest": "",
-            "silent": Data(),
-            "sets": Data(),
+            "silent": {},
+            "sets": {},
             "text": text
         }
         for k, v in data.items():
             if not clean:
-                setattr(obj, k, getattr(obj, k, v) or v)
+                setattr(obj, k, data.get(k, v) or v)
             else:
                 setattr(obj, k, v)
 
@@ -158,16 +158,16 @@ class Parser:
                 continue
             if "-=" in spli:
                 key, value = spli.split("-=", maxsplit=1)
-                Method.typed(obj.silent, key, value)
-                Method.typed(obj.gets, key, value)
+                typed(obj.silent, key, value)
+                typed(obj.gets, key, value)
                 continue
             if "==" in spli:
                 key, value = spli.split("==", maxsplit=1)
-                Method.typed(obj.gets, key, value)
+                typed(obj.gets, key, value)
                 continue
             if "=" in spli:
                 key, value = spli.split("=", maxsplit=1)
-                Method.typed(obj.sets, key, value)
+                typed(obj.sets, key, value)
                 continue
             nr += 1
             if nr == 0:
@@ -176,11 +176,8 @@ class Parser:
             args.append(spli)
         if args:
             obj.args = args
-            obj.text = obj.mod + " " + obj.cmd
             obj.rest = " ".join(obj.args)
-            obj.text = obj.text + " " + obj.rest
-        else:
-            obj.text = obj.mod + " " + obj.cmd
+            obj.text = obj.cmd + " " + obj.rest
         if "v" in obj.opts:
             obj.verbose = True
         if "t" in obj.opts:

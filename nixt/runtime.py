@@ -11,7 +11,7 @@ import time
 from argparse import SUPPRESS, ArgumentParser, RawTextHelpFormatter
 
 
-from .defines import Boot, Cmd, Commands, Daemon, Dict, Main, Message, Method
+from .defines import Boot, Cmd, Commands, Daemon, Main, Message, Method
 from .defines import MD5, Mods, Screen
 
 
@@ -43,7 +43,7 @@ class Arguments:
         optparser.add_argument("--scanner", action="store_true", help="do full modules scan on boot.")
         optparser.add_argument("--wdr", default="", help="set modules directory.")
         args, arguments = theparser.parse_known_args()
-        Dict.update(Main, vars(args))
+        Method.update(Main, vars(args))
         Main.otxt = " ".join(arguments)
 
     @classmethod
