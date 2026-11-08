@@ -280,14 +280,14 @@ class Fetching(Runner):
             errr = ex
         except (SSLError, HTTPError, URLError) as ex:
             errr = ex
-        error = {}
-        error.update(vars(errr))
-        error["type"] = str(type(errr))
-        if error.get("code", 600) == 304:
-            logger.debug("%s %s", feed["rss"], error["code"])
+        error = Data()
+        Method.update(error, vars(errr))
+        error.type = str(type(errr))
+        if error.code == 304:
+            logger.debug("%s %s", feed["rss"], error.code)
             return
-        feed["status"] = error.get("code", error.get("errno", error.get("status", 0)))
-        feed["error"] = str(error.get("msg", error.get("reason", "none")))
+        feed["status"] = error.code or error.errno or error.status
+        feed["error"] = str(error.msg or error.reason or "none")
         if self.doskip(error):
             feed["skip"] = True
             Disk.write(feed, fnm)
