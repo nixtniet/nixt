@@ -141,7 +141,7 @@ class Output(Display):
             _thread.interrupt_main()
 
 
-class Screen(Handler, Display):
+class Client(Handler, Display):
 
     "display with coupled handler"
 
@@ -154,7 +154,7 @@ class Screen(Handler, Display):
         raise NotImplementedError
 
 
-class Buffer(Handler, Output):
+class BufferedClient(Handler, Output):
 
     "buffered output"
 
@@ -198,9 +198,9 @@ class Clients:
 def __dir__():
     return (
         'Broker',
-        'Buffer',
+        'BufferedClient',
+        'Client',
         'Clients',
         'Display',
         'Output',
-        'Screen'
     )

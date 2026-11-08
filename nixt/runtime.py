@@ -11,8 +11,8 @@ import time
 from argparse import SUPPRESS, ArgumentParser, RawTextHelpFormatter
 
 
-from .defines import Boot, Cmd, Commands, Daemon, Main, Message, Method
-from .defines import MD5, Mods, Screen
+from .defines import Boot, Client, Cmd, Commands, Daemon, Main
+from .defines import MD5, Message, Method, Mods
 
 
 class Arguments:
@@ -72,12 +72,12 @@ class Kernel(Boot, Daemon):
         sys.stdout.flush()
 
 
-class CLI(Screen):
+class CLI(Client):
 
     "Command Line Interface"
 
     def __init__(self):
-        Screen.__init__(self)
+        Client.__init__(self)
         self.register("command", Commands.command)
 
     def after(self, msg):

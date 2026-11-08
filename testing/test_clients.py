@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Message, Screen
+from nixt.defines import Client, Message
 
 
 buffer = []
@@ -19,12 +19,12 @@ def hello(message):
     message.ready()
 
 
-class MyClient(Screen):
+class MyClient(Client):
 
     "clients raw puts text into buffer"
 
     def __init__(self):
-        Screen.__init__(self)
+        Client.__init__(self)
         self.register("hello", hello)
 
     def raw(self, text):
@@ -49,6 +49,11 @@ class TestClient(unittest.TestCase):
         "test announce."
         self.clt.announce("hello")
         self.assertTrue("hello" in buffer)
+
+    def test_construct(self):
+        "test client construction."
+        client = MyClient()
+        self.assertTrue(type(client), MyClient)
 
     def test_display(self):
         "test display function."

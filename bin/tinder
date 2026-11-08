@@ -15,19 +15,19 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Commands, Dict, Main, Message, Parser
-from nixt.defines import Mods, Pool, Screen, Task, Time, Workdir
+from nixt.defines import Boot, Client, Commands, Dict, Main, Message
+from nixt.defines import Mods, Parser, Pool, Task, Time, Workdir
 
 
 Workdir.wdr = ".test"
 
 
-class CLI(Screen):
+class CLI(Client):
 
     "Command Line Interface"
 
     def __init__(self):
-        Screen.__init__(self)
+        Client.__init__(self)
         self.register("command", Commands.command)
 
     def raw(self, text):

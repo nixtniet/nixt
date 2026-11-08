@@ -10,7 +10,7 @@ import time
 import _thread
 
 
-from .clients import Broker, Screen
+from .clients import Broker, Client
 from .command import Commands
 from .configs import Main
 from .package import Mods
@@ -119,7 +119,7 @@ class Boot:
         try:
             func(*args)
         except (KeyboardInterrupt, EOFError):
-            Screen.block.set()
+            Client.block.set()
             _thread.interrupt_main()
 
     @classmethod

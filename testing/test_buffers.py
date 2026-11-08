@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.clients import Buffer
+from nixt.clients import BufferedClient
 
 
 class TestBuffer(unittest.TestCase):
@@ -16,5 +16,5 @@ class TestBuffer(unittest.TestCase):
 
     def test_construct(self):
         "test biffer construction."
-        buffer = Buffer()
-        self.assertTrue(type(buffer), Buffer)
+        buffer = BufferedClient()
+        self.assertTrue(type(buffer), BufferedClient)

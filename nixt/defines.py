@@ -5,7 +5,7 @@
 
 
 from .booting import Boot
-from .clients import Broker, Buffer, Clients, Display, Output, Screen
+from .clients import Broker, BufferedClient, Client, Clients, Display, Output
 from .command import Commands, Parser, cmd
 from .configs import Cfg, Config, Main
 from .daemons import Daemon
@@ -34,8 +34,9 @@ __all__ = (
     'MD5',
     'Boot',
     'Broker',
-    'Buffer',
+    'BufferedClient',
     'Cfg',
+    'Client',
     'Clients',
     'Cmd',
     'Commands',
@@ -66,7 +67,6 @@ __all__ = (
     'RLock',
     'Repeater',
     'Runner',
-    'Screen',
     'Stated',
     'StreamHandler',
     'Task',
