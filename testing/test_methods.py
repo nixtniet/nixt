@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Data, Object, Method
+from nixt.defines import Data, Dict, Method, Object
 
 
 class Mine(Object):
@@ -75,8 +75,7 @@ class TestMethod(unittest.TestCase):
         "test formatting an object."
         o = Mine()
         o.a = "b"
-        print(o)
-        self.assertEqual(Method.fmt(o), 'a="b"')
+        self.assertEqual(Dict.fmt(vars(o)), 'a="b"')
 
     def test_getattr(self):
         "test attribute access."
@@ -91,8 +90,8 @@ class TestMethod(unittest.TestCase):
 
     def test_repr(self):
         "test repr() on an object."
-        obj = Data({"key": "value"})
-        print(repr(obj))
+        obj = Data()
+        Method.update(obj, {"key": "value"})
         self.assertTrue("nixt.objects.Data" in repr(obj))
 
     def test_setattr(self):

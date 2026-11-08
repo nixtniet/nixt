@@ -7,8 +7,7 @@
 import time
 
 
-from nixt.defines import Data, Time
-from nixt.defines import Locater, Method, Workdir
+from nixt.defines import Dict, Locater, Time, Workdir
 
 
 def fnd(msg):
@@ -22,12 +21,12 @@ def fnd(msg):
         return
     otype = msg.args[0]
     nmr = 0
-    for fnm, obj in sorted(
+    for fnm, dct in sorted(
         Locater.find(otype, msg.gets),
         key=lambda x: Locater.fntime(x[0])
     ):
         diff = time.time()-Locater.fntime(fnm)
-        msg.reply(f"{nmr} {Method.fmt(obj)} {Time.elapsed(diff)}")
+        msg.reply(f"{nmr} {Dict.fmt(dct)} {Time.elapsed(diff)}")
         nmr += 1
     if not nmr:
         msg.reply("no result")

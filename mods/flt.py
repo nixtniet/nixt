@@ -4,8 +4,7 @@
 "locate objects"
 
 
-from nixt.defines import Broker
-from nixt.defines import Method
+from nixt.defines import Broker, Method
 
 
 def flt(msg):

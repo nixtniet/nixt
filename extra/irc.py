@@ -13,9 +13,9 @@ import _thread
 
 
 
-from nixt.defines import Event, Log, RLock, Queue
-from nixt.defines import Broker, Buffer, Dict, Message,Object, Task
-from nixt.defines import Cfg, Commands, Disk, Main, Mods, Method
+from nixt.defines import Dict, Event, Log, Method, RLock, Queue
+from nixt.defines import Broker, Buffer, Message, Object, Task
+from nixt.defines import Cfg, Commands, Disk, Main, Mods
 
 
 logger = Log(__name__)
@@ -30,7 +30,7 @@ def init():
     except (KeyboardInterrupt, EOFError):
         _thread.interrupt_main()
     if irc.msgs.joined.is_set():
-        logger.info("%s", Method.fmt(irc.cfg, ["nick", "channel", "server", "port"]))
+        logger.info("%s", Dict.fmt(Method.todict(irc.cfg), ["nick", "channel", "server", "port"]))
     else:
         irc.stop()
     return irc
@@ -507,7 +507,7 @@ class IRC(Buffer):
     def start(self, daemon=True, name=None):
         "start client."
         cfg = Disk.read("irc", "config") or {}
-        Dict.update(self.cfg, cfg)
+        Method.update(self.cfg, cfg)
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
         self.msgs.connected.clear()
@@ -551,7 +551,7 @@ def cb_error(msg):
     bot = Broker.get(msg.orig)
     bot.state.nrerror += 1
     bot.state.error = msg.text
-    logger.debug(Method.fmt(msg))
+    logger.debug(Dict.fmt(msg))
 
 
 def cb_h903(msg):
