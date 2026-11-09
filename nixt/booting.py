@@ -56,6 +56,7 @@ class Boot:
         Logging.size(len(Main.name))
         Logging.level(Main.level)
         Mods.dir("modules", Workdir.moddir())
+        Mods.dir(f"{Main.name}.miminal", Mods.moddir("minimal"))
         Mods.dir(f"{Main.name}.modules", Mods.moddir())
         if Main.path:
             for pth in Utils.spl(Main.path):

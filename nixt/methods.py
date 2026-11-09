@@ -201,6 +201,11 @@ class Method:
         return obj.__module__.split(".", maxsplit=1)[0]
 
     @classmethod
+    def skip(cls, obj, char=None):
+        "return values with keys don't contain an underscore."
+        return Dict.skip(vars(obj))
+
+    @classmethod
     def todict(cls, obj):
         "convert object to dictionary."
         res = {}

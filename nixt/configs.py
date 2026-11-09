@@ -4,7 +4,7 @@
 "one config to rule them all"
 
 
-from .methods import Dict, Method
+from .methods import Method
 
 
 class Config(type):
@@ -17,7 +17,7 @@ class Config(type):
         return ""
 
     def __str__(cls):
-        return str(Dict.skip(dict(cls.__dict__)))
+        return str(Method.skip(cls))
 
 
 class Main(metaclass=Config):
