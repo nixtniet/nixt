@@ -60,7 +60,7 @@ class Loop:
         self.done.wait()
 
     def wait(self):
-        "wait for all msgs to finish,"
+        "wait for all msgs to finish."
         try:
             self.queue.join()
         except (KeyboardInterrupt, EOFError):
@@ -69,5 +69,5 @@ class Loop:
 
 def __dir__():
     return (
-        'Loop'
+        'Loop',
     )
