@@ -182,11 +182,11 @@ class Run:
     def got(cls, text, feed):
         "verify whether text has already been seen."
         md5 = MD5.source(text)[:7]
-        if not feed.get("seen", False):
-            feed["seen"] = []
         if md5 in feed.get("seen", []):
             return True
-        feed["seen"].insert(0, md5)
+        if not feed.get("seen", False):
+            feed["seen"] = []
+        feed.get("seen", []).insert(0, md5)
         return False
 
     @classmethod
@@ -322,7 +322,7 @@ class Fetching(Runner):
                 Run.log(JSON.dumps(dct))
             if not silent:
                 txt = Run.display(dct)
-                if not Run.got(txt, dct):
+                if not Run.got(txt, feed):
                     Clients.announce(txt)
                     gotcha += 1
                     has = True
@@ -667,9 +667,9 @@ def rss(msg):
         if result:
             msg.reply(f"{url} is known")
             return
-    data = {}
-    data["rss"] = msg.args[0]
-    Disk.write(data, Disk.ident(Rss))
+    data = Rss()
+    data.rss = msg.args[0]
+    Disk.write(vars(data), Disk.ident(Rss))
     msg.ok()
 
 

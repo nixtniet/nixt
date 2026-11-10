@@ -12,9 +12,9 @@ from .daemons import Daemon
 from .encoder import JSON, JSONL
 from .excepts import Errors
 from .handler import Handler
-from .methods import Dict, Method
 from .looping import Loop
 from .message import Message
+from .methods import Dict, Method
 from .objects import Data, Object
 from .package import Mods
 from .persist import Disk, Locater, Stated, Workdir
