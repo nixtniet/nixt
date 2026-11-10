@@ -182,7 +182,9 @@ class Run:
     def got(cls, text, feed):
         "verify whether text has already been seen."
         md5 = MD5.source(text)[:7]
-        if md5 in feed.get("seen", ""):
+        if not feed.get("seen", False):
+            feed["seen"] = []
+        if md5 in feed.get("seen", []):
             return True
         feed["seen"].insert(0, md5)
         return False
