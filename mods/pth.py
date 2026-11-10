@@ -7,18 +7,13 @@
 import os
 
 
-from nixt.defines import Main
-
-
-a = os.path.abspath
-e = os.path.exists
-j = os.path.join
+from nixt.defines import Mods
 
 
 def pth(msg):
     "create and show path to website."
-    path = j(a(Main.docs), "index.html")
-    if e(path):
+    path = os.path.join(os.path.abspath(Mods.moddir("numbers")), "index.html")
+    if os.path.exists(path):
         msg.reply(f"file://{path}")
     else:
         msg.reply("no index.html")
