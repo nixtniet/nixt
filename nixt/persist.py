@@ -13,7 +13,7 @@ from datetime import datetime
 
 
 from .encoder import JSON
-from .methods import Dict, Method
+from .methods import Dct, Method
 from .typings import MappingProxyType
 from .utility import Log, Path, RLock, Utils
 
@@ -137,9 +137,9 @@ class Locater:
             if not dct:
                 dct = Disk.read(pth)
                 Cache.add(pth, dct)
-            if not removed and Dict.deleted(dct):
+            if not removed and Dct.deleted(dct):
                 continue
-            if selector and not Dict.search(dct, selector, matching):
+            if selector and not Dct.search(dct, selector, matching):
                 continue
             if nritems and nrs >= nritems:
                 break

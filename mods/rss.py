@@ -24,7 +24,7 @@ from http.client    import RemoteDisconnected
 from ssl            import SSLError
 
 
-from nixt.defines import Cfg, Clients, Data, Dict, Disk, Format, JSON, JSONL
+from nixt.defines import Cfg, Clients, Data, Dct, Disk, Format, JSON, JSONL
 from nixt.defines import Locater, Log, Logging, MD5, Main, Method,  Pool
 from nixt.defines import Repeater, RLock, Runner, Stated, Utils, Watcher
 from nixt.defines import Workdir
@@ -316,7 +316,7 @@ class Fetching(Runner):
             counter += 1
             if dct is None:
                 continue
-            if Dict.isempty(dct):
+            if Dct.isempty(dct):
                 continue
             if Config.save:
                 Run.log(JSON.dumps(dct))

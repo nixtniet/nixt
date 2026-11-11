@@ -13,7 +13,7 @@ import _thread
 
 
 
-from nixt.defines import Dict, Event, Log, Method, RLock, Queue
+from nixt.defines import Dct, Event, Log, Method, RLock, Queue
 from nixt.defines import Broker, BufferedClient, Message, Object, Task
 from nixt.defines import Cfg, Commands, Disk, Main, Mods
 
@@ -30,7 +30,7 @@ def init():
     except (KeyboardInterrupt, EOFError):
         _thread.interrupt_main()
     if irc.msgs.joined.is_set():
-        logger.info("%s", Dict.fmt(Method.todict(irc.cfg), ["nick", "channel", "server", "port"]))
+        logger.info("%s", Dct.fmt(Method.todict(irc.cfg), ["nick", "channel", "server", "port"]))
     else:
         irc.stop()
     return irc
@@ -551,7 +551,7 @@ def cb_error(msg):
     bot = Broker.get(msg.orig)
     bot.state.nrerror += 1
     bot.state.error = msg.text
-    logger.debug(Dict.fmt(msg))
+    logger.debug(Dct.fmt(msg))
 
 
 def cb_h903(msg):

@@ -11,7 +11,7 @@ import os.path
 from .typings import MethodType
 
 
-class Dict:
+class Dct:
 
     "yeah"
 
@@ -203,7 +203,7 @@ class Method:
     @classmethod
     def skip(cls, obj, char=None):
         "return values with keys don't contain an underscore."
-        return Dict.skip(vars(obj))
+        return Dct.skip(vars(obj))
 
     @classmethod
     def todict(cls, obj):
@@ -222,7 +222,7 @@ class Method:
             obj = vars(obj)
         except TypeError:
             pass
-        Dict.typed(obj, key, value)
+        Dct.typed(obj, key, value)
 
     @classmethod
     def update(cls, obj, data):
@@ -238,6 +238,6 @@ class Method:
 
 def __dir__():
     return (
-        'Dict',
+        'Dct',
         'Method'
     )
