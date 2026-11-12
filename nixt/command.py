@@ -108,13 +108,11 @@ class Commands:
             cls.scanner()
 
 
-cmd = Commands.cmd
-typed = Methods.typed
-
-
 class Parser:
 
     "parsing for commands"
+
+    typed = Methods.typed
 
     @classmethod
     def init(cls, obj, text, clean=False):
@@ -157,16 +155,16 @@ class Parser:
                 continue
             if "-=" in spli:
                 key, value = spli.split("-=", maxsplit=1)
-                typed(obj.silent, key, value)
-                typed(obj.gets, key, value)
+                cls.typed(obj.silent, key, value)
+                cls.typed(obj.gets, key, value)
                 continue
             if "==" in spli:
                 key, value = spli.split("==", maxsplit=1)
-                typed(obj.gets, key, value)
+                cls.typed(obj.gets, key, value)
                 continue
             if "=" in spli:
                 key, value = spli.split("=", maxsplit=1)
-                typed(obj.sets, key, value)
+                cls.typed(obj.sets, key, value)
                 continue
             nr += 1
             if nr == 0:
@@ -181,6 +179,9 @@ class Parser:
             obj.verbose = True
         if "t" in obj.opts:
             obj.threaded = True
+
+
+cmd = Commands.cmd
 
 
 def __dir__():
