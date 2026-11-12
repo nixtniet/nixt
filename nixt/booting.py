@@ -4,7 +4,6 @@
 "in the beginning"
 
 
-import os
 import threading
 import time
 import _thread
@@ -15,6 +14,7 @@ from .command import Commands
 from .configs import Main
 from .package import Mods
 from .persist import Workdir
+from .require import Cmd
 from .tasking import Task
 from .utility import MD5, Event, Log, Logging, Utils
 
@@ -37,6 +37,7 @@ class Boot:
     def boot(cls):
         "prepare for runtime."
         cls.configure()
+        Mods.configure()
         MD5.core()
         if Main.verbose:
             cls.banner()
@@ -46,6 +47,7 @@ class Boot:
         Mods.table()
         if Main.scanner:
             Commands.scanner()
+        Commands.add(Cmd.cmd)
 
     @classmethod
     def configure(cls, wdr=""):
@@ -55,14 +57,6 @@ class Boot:
         Main.level = Main.level or "warning"
         Logging.size(len(Main.name))
         Logging.level(Main.level)
-        Mods.dir("modules", Workdir.moddir())
-        Mods.dir(f"{Main.name}.miminal", Mods.moddir("minimal"))
-        Mods.dir(f"{Main.name}.modules", Mods.moddir())
-        if Main.path:
-            for pth in Utils.spl(Main.path):
-                pth = os.path.normpath(pth)
-                pkgname = pth.rsplit(os.sep, maxsplit=1)[-1]
-                Mods.dir(pkgname, pth)
 
     @classmethod
     def forever(cls):

@@ -129,7 +129,6 @@ class Scripts:
         import readline
         readline.redisplay()
         Kernel.boot()
-        Commands.add(Cmd.cmd)
         Kernel.init(Main.mods, Main.wait)
         csl = Console()
         csl.start()
@@ -139,7 +138,6 @@ class Scripts:
     def control():
         "cli script."
         Kernel.boot()
-        Commands.add(Cmd.cmd)
         if Main.admin:
             Commands.add(Cmd.tbl, Cmd.srv)
         cli = CLI()
@@ -174,7 +172,6 @@ def main():
         Kernel.wrap(Scripts.background)
     else:
         Kernel.wrap(Scripts.control)
-
 
 # if __name__ == "__main__":
 #     main()

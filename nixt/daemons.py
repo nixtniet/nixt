@@ -29,7 +29,8 @@ class Daemon:
             cls.null(sys.stdout)
             cls.null(sys.stderr)
         os.umask(0o077)
-        os.chdir("/")
+        if not Main.nochdir:
+            os.chdir("/")
         os.nice(10)
 
     @classmethod

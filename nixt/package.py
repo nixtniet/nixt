@@ -7,7 +7,9 @@
 import os
 
 
+from .configs import Main
 from .methods import Methods
+from .persist import Workdir
 from .utility import MD5, Log, Utils
 
 
@@ -22,6 +24,19 @@ class Mods:
     dirs = {}
     md5s = {}
     mods = {}
+
+    @classmethod
+    def configure(cls):
+        "configure modules."
+        cls.dir("modules", Workdir.moddir())
+        cls.dir(f"{Main.name}.miminal", cls.moddir("minimal"))
+        cls.dir(f"{Main.name}.modules", cls.moddir())
+        if Main.path:
+            for pth in Utils.spl(Main.path):
+                pth = os.path.normpath(pth)
+                pkgname = pth.rsplit(os.sep, maxsplit=1)[-1]
+                cls.dir(pkgname, pth)
+
 
     @classmethod
     def dir(cls, pkgname, path):
