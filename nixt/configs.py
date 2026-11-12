@@ -4,7 +4,7 @@
 "one config to rule them all"
 
 
-from .methods import Method
+from .methods import Methods
 
 
 class Config(type):
@@ -17,7 +17,7 @@ class Config(type):
         return ""
 
     def __str__(cls):
-        return str(Method.skip(cls))
+        return str(Methods.skip(cls))
 
 
 class Main(metaclass=Config):
@@ -26,7 +26,7 @@ class Main(metaclass=Config):
 
     level = ""
     mods = ""
-    name = Method.pkgname(Config)
+    name = Methods.pkgname(Config)
     otxt = ""
     path = ""
 

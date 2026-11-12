@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"a function with an object as the first argument"
+"a function with an object/dict as the first argument"
 
 
 import inspect
@@ -11,7 +11,7 @@ import os.path
 from .typings import MethodType
 
 
-class Dct:
+class Dicts:
 
     "yeah"
 
@@ -69,7 +69,7 @@ class Dct:
             elif isinstance(value, str):
                 txt += f'{key}="{value}" '
             else:
-                txt += f"{key}={Method.clz(value)}({value!s}) "
+                txt += f"{key}={Methods.clz(value)}({value!s}) "
         if txt == "":
             txt = "{}"
         return txt.strip()
@@ -154,7 +154,7 @@ class Dct:
         dct[key] = val
 
 
-class Method:
+class Methods:
 
     "methods"
 
@@ -181,6 +181,14 @@ class Method:
             kin = f"{obj.__module__}.{obj.__name__}"
         return kin
 
+    @staticmethod
+    def funcname(obj):
+        "return functionname."
+        try:
+            return obj.__name__
+        except AttributeError:
+            return ""
+
     @classmethod
     def getname(cls, obj):
         "string of function/method."
@@ -203,7 +211,7 @@ class Method:
     @classmethod
     def skip(cls, obj, char=None):
         "return values with keys don't contain an underscore."
-        return Dct.skip(vars(obj))
+        return Dicts.skip(vars(obj))
 
     @classmethod
     def todict(cls, obj):
@@ -222,7 +230,7 @@ class Method:
             obj = vars(obj)
         except TypeError:
             pass
-        Dct.typed(obj, key, value)
+        Dicts.typed(obj, key, value)
 
     @classmethod
     def update(cls, obj, data):
@@ -238,6 +246,6 @@ class Method:
 
 def __dir__():
     return (
-        'Dct',
-        'Method'
+        'Dicts',
+        'Methods'
     )

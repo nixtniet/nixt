@@ -14,7 +14,7 @@ from .excepts import Errors
 from .handler import Handler
 from .looping import Loop
 from .message import Message
-from .methods import Dct, Method
+from .methods import Dicts, Methods
 from .objects import Data, Object
 from .package import Mods
 from .persist import Disk, Locater, Stated, Workdir
@@ -43,7 +43,7 @@ __all__ = (
     'Config',
     'Daemon',
     'Data',
-    'Dct',
+    'Dicts',
     'Disk',
     'Display',
     'Errors',
@@ -56,7 +56,7 @@ __all__ = (
     'Loop',
     'Main',
     'Message',
-    'Method',
+    'Methods',
     'Mods',
     'Object',
     'Output',

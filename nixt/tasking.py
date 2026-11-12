@@ -8,7 +8,7 @@ import time
 
 
 from .excepts import Errors
-from .methods import Method
+from .methods import Methods
 from .utility import Event, Log, Queue, RLock, Thread
 
 
@@ -25,7 +25,7 @@ class Worker(Thread):
         super().__init__(None, self.run, None, (), daemon=daemon)
         self.name = kwargs.get("name", "")
         if not self.name:
-            self.name = Method.getname(func) or ""
+            self.name = Methods.getname(func) or ""
         self.queue = Queue()
         self.result = None
         self.sleep = 0.0

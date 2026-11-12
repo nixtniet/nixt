@@ -12,7 +12,7 @@ from argparse import SUPPRESS, ArgumentParser, RawTextHelpFormatter
 
 
 from .defines import Boot, Client, Cmd, Commands, Daemon, Main
-from .defines import MD5, Message, Method, Mods
+from .defines import MD5, Message, Methods, Mods
 
 
 class Arguments:
@@ -22,7 +22,7 @@ class Arguments:
     @classmethod
     def getargs(cls):
         "parse commandline arguments."
-        Main.name = Main.name or Method.pkgname(Main)
+        Main.name = Main.name or Methods.pkgname(Main)
         theparser = cls.getparser()
         group = theparser.add_mutually_exclusive_group()
         group.add_argument("-c", "--console", action="store_true", help="start a console.")
@@ -43,7 +43,7 @@ class Arguments:
         optparser.add_argument("--scanner", action="store_true", help="do full modules scan on boot.")
         optparser.add_argument("--wdr", default="", help="set modules directory.")
         args, arguments = theparser.parse_known_args()
-        Method.update(Main, vars(args))
+        Methods.update(Main, vars(args))
         Main.otxt = " ".join(arguments)
 
     @classmethod

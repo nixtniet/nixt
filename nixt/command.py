@@ -9,9 +9,8 @@ import inspect
 
 from .clients import Clients
 from .message import Message
-from .methods import Method
+from .methods import Methods
 from .package import Mods
-from .utility import Utils
 
 
 class Commands:
@@ -25,7 +24,7 @@ class Commands:
     def add(cls, *funcs):
         "register a command."
         for func in funcs:
-            name = Utils.funcname(func)
+            name = Methods.funcname(func)
             cls.cmds[name] = func
 
     @classmethod
@@ -55,7 +54,7 @@ class Commands:
             mod = Mods.get(modname)
             if not mod:
                 continue
-            result.extend([Utils.funcname(x) for x in cls.scan(mod, True)])
+            result.extend([Methods.funcname(x) for x in cls.scan(mod, True)])
         return result
 
     @classmethod
@@ -110,7 +109,7 @@ class Commands:
 
 
 cmd = Commands.cmd
-typed = Method.typed
+typed = Methods.typed
 
 
 class Parser:

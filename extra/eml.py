@@ -11,7 +11,7 @@ import time
 from mailbox import Maildir, mbox
 
 
-from nixt.defines import Data, Dct, Disk, Locater, Time
+from nixt.defines import Data, Dicts, Disk, Locater, Time
 
 
 class Email(Data):
@@ -39,14 +39,14 @@ def eml(msg):
         if dct:
             tme = dct.get("Date", "")
             diff = time.time() - Time.timed(tme)
-            txt = Dct.fmt(dct, arguments, plain=True)
+            txt = Dicts.fmt(dct, arguments, plain=True)
             msg.reply(f'{msg.index} {txt} {Time.elapsed(diff)}')
     else:
         for dct in result:
             nrs += 1
             tme = dct.get("Date", "")
             diff = time.time() - Time.timed(tme)
-            txt = Dct.fmt(dct, arguments, plain=True)
+            txt = Dicts.fmt(dct, arguments, plain=True)
             msg.reply(f'{nrs} {txt} {Time.elapsed(diff)}')
     if not result:
         msg.reply("no emails found.")

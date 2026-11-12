@@ -13,7 +13,7 @@ import _thread
 
 
 
-from nixt.defines import Dct, Event, Log, Method, RLock, Queue
+from nixt.defines import Dicts, Event, Log, Methods, RLock, Queue
 from nixt.defines import Broker, BufferedClient, Message, Object, Task
 from nixt.defines import Cfg, Commands, Disk, Main, Mods
 
@@ -30,7 +30,7 @@ def init():
     except (KeyboardInterrupt, EOFError):
         _thread.interrupt_main()
     if irc.msgs.joined.is_set():
-        logger.info("%s", Dct.fmt(Method.todict(irc.cfg), ["nick", "channel", "server", "port"]))
+        logger.info("%s", Dicts.fmt(Methods.todict(irc.cfg), ["nick", "channel", "server", "port"]))
     else:
         irc.stop()
     return irc
@@ -40,7 +40,7 @@ class Config(Cfg):
 
     "IRC configuration"
 
-    name = Main.name or Method.pkgname(Mods)
+    name = Main.name or Methods.pkgname(Mods)
     channel = Main.channel or f"#{name}"
     commands = True
     control = "!"
@@ -507,7 +507,7 @@ class IRC(BufferedClient):
     def start(self, daemon=True, name=None):
         "start client."
         cfg = Disk.read("irc", "config") or {}
-        Method.update(self.cfg, cfg)
+        Methods.update(self.cfg, cfg)
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
         self.msgs.connected.clear()
@@ -551,7 +551,7 @@ def cb_error(msg):
     bot = Broker.get(msg.orig)
     bot.state.nrerror += 1
     bot.state.error = msg.text
-    logger.debug(Dct.fmt(msg))
+    logger.debug(Dicts.fmt(msg))
 
 
 def cb_h903(msg):

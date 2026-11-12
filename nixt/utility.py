@@ -267,19 +267,6 @@ class Utils:
             pth.parent.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
-    def clsname(obj):
-        "return classname of an object."
-        return obj.__class__.__name__
-
-    @staticmethod
-    def funcname(obj):
-        "return functionname."
-        try:
-            return obj.__name__
-        except AttributeError:
-            return ""
-
-    @staticmethod
     def home(name):
         "return home working directory."
         return os.path.expanduser(f"~/.{name}")

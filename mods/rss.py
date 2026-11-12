@@ -24,8 +24,8 @@ from http.client    import RemoteDisconnected
 from ssl            import SSLError
 
 
-from nixt.defines import Cfg, Clients, Data, Dct, Disk, Format, JSON, JSONL
-from nixt.defines import Locater, Log, Logging, MD5, Main, Method,  Pool
+from nixt.defines import Cfg, Clients, Data, Dicts, Disk, Format, JSON, JSONL
+from nixt.defines import Locater, Log, Logging, MD5, Main, Methods,  Pool
 from nixt.defines import Repeater, RLock, Runner, Stated, Utils, Watcher
 from nixt.defines import Workdir
 
@@ -35,7 +35,7 @@ logger = Log(__name__)
 
 def init():
     "initialize rss module."
-    Method.update(Config, Disk.read("rss", "config"))
+    Methods.update(Config, Disk.read("rss", "config"))
     Run.start()
     nrs = Locater.count("rss")
     txt = f"{nrs} feeds"
@@ -120,7 +120,7 @@ class Run:
                 if not line:
                     break
                 feed = Feed()
-                Method.update(feed, JSONL.loads(line.strip()))
+                Methods.update(feed, JSONL.loads(line.strip()))
                 txt = cls.display(vars(feed))
                 if not Run.got(txt, feed):
                     Clients.announce(txt)
@@ -283,7 +283,7 @@ class Fetching(Runner):
         except (SSLError, HTTPError, URLError) as ex:
             errr = ex
         error = Data()
-        Method.update(error, vars(errr))
+        Methods.update(error, vars(errr))
         error.type = str(type(errr))
         if error.code == 304:
             logger.debug("%s %s", feed["rss"], error.code)
@@ -316,7 +316,7 @@ class Fetching(Runner):
             counter += 1
             if dct is None:
                 continue
-            if Dct.isempty(dct):
+            if Dicts.isempty(dct):
                 continue
             if Config.save:
                 Run.log(JSON.dumps(dct))
