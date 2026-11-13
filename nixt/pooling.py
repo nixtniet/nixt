@@ -7,29 +7,8 @@
 import os
 
 
-from .looping import Loop
+from .looping import Runner
 from .utility import RLock
-
-
-class Runner(Loop):
-
-    "run jobs"
-
-    def run(self, *args, **kwargs):
-        "fetch a feed."
-        raise NotImplementedError
-
-    def loop(self):
-        "loop to handle fetch jobs."
-        while not self.stopped.is_set():
-            job = self.queue.get()
-            if job is None:
-                break
-            self.run(*job)
-        self.done.set()
-
-    def wait(self):
-        "skip wait."
 
 
 class Pool:
@@ -78,5 +57,4 @@ class Pool:
 def __dir__():
     return (
         'Pool',
-        'Runner'
     )

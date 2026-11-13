@@ -25,9 +25,8 @@ from ssl            import SSLError
 
 
 from nixt.defines import Cfg, Clients, Data, Dicts, Disk, Format, JSON, JSONL
-from nixt.defines import Locater, Log, Logging, MD5, Main, Methods,  Pool
-from nixt.defines import Repeater, RLock, Runner, Stated, Utils, Watcher
-from nixt.defines import Workdir
+from nixt.defines import Locater, Log, Logging, MD5, Main, Methods, Monitor
+from nixt.defines import Pool, Repeater, RLock, Runner, Stated, Utils, Workdir
 
 
 logger = Log(__name__)
@@ -218,8 +217,8 @@ class Run:
             with open(cls.path, "a+", encoding="utf-8") as file:
                 cls.file = file
             cls.enable(cls.path)
-            Watcher.add(cls.path, cls.callback)
-            Watcher.start(name="Watcher")
+            Monitor.add(cls.path, cls.callback)
+            Monitor.start(name="Monitor")
         cls.state.load()
         Pool.init(2, Fetching)
         if not once:
@@ -230,7 +229,7 @@ class Run:
     @classmethod
     def stop(cls):
         "shutdown."
-        Watcher.stop()
+        Monitor.stop()
 
     @classmethod
     def sync(cls):

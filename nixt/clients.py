@@ -7,7 +7,7 @@
 import _thread
 
 
-from .handler import Handler
+from .looping import Handler
 from .tasking import Task
 from .utility import Event, RLock, Queue
 

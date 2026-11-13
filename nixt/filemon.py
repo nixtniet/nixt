@@ -12,7 +12,7 @@ from .tasking import Task
 from .utility import Event
 
 
-class Watcher:
+class Monitor:
 
     "watch files"
 
@@ -52,7 +52,7 @@ class Watcher:
             time.sleep(cls.sleep)
 
     @classmethod
-    def start(cls, daemon=True, name="Watcher"):
+    def start(cls, daemon=True, name="Monitor"):
         "start callback loop."
         if not cls.stopped.is_set():
             return
@@ -66,5 +66,5 @@ class Watcher:
 
 def __dir__():
     return (
-        'Watcher',
+        'Monitor',
     )

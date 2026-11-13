@@ -1,13 +1,13 @@
 # This file is placed in the Public Domain.
 
 
-"watcher"
+"filem monitor"
 
 
 import unittest
 
 
-from nixt.watcher import Watcher
+from nixt.defines import Monitor
 
 
 class TestWatcher(unittest.TestCase):
@@ -16,5 +16,5 @@ class TestWatcher(unittest.TestCase):
 
     def test_construct(self):
         "test watcher construction."
-        watcher = Watcher()
-        self.assertTrue(type(watcher), Watcher)
+        watcher = Monitor()
+        self.assertTrue(type(watcher), Monitor)
