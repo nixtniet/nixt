@@ -36,7 +36,7 @@ class Errors:
         return traceback.format_exception(type(exc), exc, exc.__traceback__)
 
     @classmethod
-    def throw(cls, exc, *args):
+    def throw(cls, exc):
         "log the exception and interrupt main loop."
         logger.exception(exc)
         _thread.interrupt_main()

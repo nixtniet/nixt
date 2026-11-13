@@ -45,14 +45,10 @@ packages = [
 [tool.pylint."messages control"]
 disable = [
     'R',
-    'attribute-defined-outside-init',
     'broad-exception-caught',
-    'invalid-name',
     'import-outside-toplevel',
     'line-too-long',
-    'protected-access',
     'relative-beyond-top-level',
-    'unused-argument',
     'wrong-import-position'
 ]
 

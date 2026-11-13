@@ -211,7 +211,7 @@ class Methods:
     @classmethod
     def skip(cls, obj, char=None):
         "return values with keys don't contain an underscore."
-        return Dicts.skip(vars(obj))
+        return Dicts.skip(vars(obj), char)
 
     @classmethod
     def todict(cls, obj):

@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# pylint: disable=C0103
 
 
 "engine"
@@ -50,7 +51,7 @@ class TestHandler(unittest.TestCase):
         msg.text = "hello"
         self.hdl.put(msg)
         msg.wait()
-        self.assertTrue(msg._ready.is_set())
+        self.assertTrue(msg.isready())
 
     def test_loop2(self):
         "test whether result is being set."    

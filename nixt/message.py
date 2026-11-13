@@ -32,6 +32,10 @@ class Message(Data):
         "show interface."
         self.reply(f"{self.cmd} {text}")
 
+    def isready(self):
+        "see if message is processed."
+        return self._ready.is_set()
+
     def ok(self, text=""):
         "print ok response."
         self.reply(f"ok {text}".strip())
@@ -43,6 +47,10 @@ class Message(Data):
     def reply(self, text):
         "add text to result."
         self.result.append(text)
+
+    def thread(self, thr):
+        "set running thread."
+        self._thr = thr
 
     def wait(self, timeout=0.0):
         "wait for completion."

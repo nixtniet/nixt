@@ -1,4 +1,5 @@
 # This file is placed in the Public Domain.
+# pylint: disable=C0103
 
 
 "message"
@@ -40,7 +41,7 @@ class TestMessage(unittest.TestCase):
         "test flagging a message ready."
         msg = Message()
         msg.ready()
-        self.assertTrue(msg._ready.is_set())
+        self.assertTrue(msg.isready())
 
     def test_reply(self):
         "test replying to a message."
@@ -53,4 +54,4 @@ class TestMessage(unittest.TestCase):
         msg = Message()
         msg.ready()
         msg.wait()
-        self.assertTrue(msg._ready.is_set())
+        self.assertTrue(msg.isready())

@@ -14,6 +14,10 @@ class Mine(Object):
 
     "custom object"
 
+    def __init__(self):
+        super().__init__()
+        self.key = ""
+
 
 class TestMethods(unittest.TestCase):
 
@@ -74,8 +78,8 @@ class TestMethods(unittest.TestCase):
     def test_format2(self):
         "test formatting an object."
         o = Mine()
-        o.a = "b"
-        self.assertEqual(Dicts.fmt(vars(o)), 'a="b"')
+        o.key = "b"
+        self.assertEqual(Dicts.fmt(vars(o)), 'key="b"')
 
     def test_getattr(self):
         "test attribute access."

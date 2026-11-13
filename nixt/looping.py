@@ -82,7 +82,7 @@ class Handler(Loop):
             msg.ready()
             return
         name = msg.text and msg.text.split()[0]
-        msg._thr = Task.start(func, msg, name=name)
+        msg.thread(Task.start(func, msg, name=name))
 
     def register(self, kind, callback):
         "register callback."
