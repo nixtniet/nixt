@@ -14,28 +14,24 @@ from mailbox import Maildir, mbox
 from nixt.defines import Data, Dicts, Disk, Locater, Time
 
 
-from . import parse
-
-
 class Email(Data):
 
     "email record"
 
 
-@parse
 def eml(msg):
     "search emails."
     nrs = -1
     args = ["From", "Subject"]
     args.extend(msg.args)
-    if msg.gets:
-        args.extend(msg.gets.keys())
+    if msg.gets():
+        args.extend(msg.gets().keys())
     for key in msg.silent:
         if key in args:
             args.remove(key)
     arguments = list(set(args))
     result = sorted(
-                    Locater.objects("email", msg.gets),
+                    Locater.objects("email", msg.gets()),
                     key=lambda x: Time.timed(x[1].Date)
                    )
     if msg.index not in ["", None]:

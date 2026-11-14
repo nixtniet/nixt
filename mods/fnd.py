@@ -22,7 +22,7 @@ def fnd(msg):
     otype = msg.args[0]
     nmr = 0
     for fnm, dct in sorted(
-        Locater.find(otype, msg.gets),
+        Locater.find(otype, msg.gets()),
         key=lambda x: Locater.fntime(x[0])
     ):
         diff = time.time()-Locater.fntime(fnm)

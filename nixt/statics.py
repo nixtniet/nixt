@@ -7,7 +7,7 @@
 CORE = {
     "booting": "78501969039a1659f0fbdbebb64d0246",
     "clients": "af9668e8740c6e9185838c7c5d00bd7d",
-    "command": "8cf9f9f8976f437006d158e9cca50658",
+    "command": "0cce796a60c543cbab8d1f25d5ed02e8",
     "configs": "dcbb9c9a94ac0daf8ef5615dddc1abc5",
     "daemons": "5db6a23f825016c2676e914909c9130a",
     "defines": "66f6a22dc7a4e817c24bb8bbb10ae9e2",

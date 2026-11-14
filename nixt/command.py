@@ -39,11 +39,8 @@ class Commands:
     @classmethod
     def command(cls, msg):
         "command callback."
-        try:
-            msg.cmd, *msg.args = msg.text.split()
-            msg.rest = " ".join(msg.args)
-        except ValueError as ex:
-            print(ex)
+        if not cls.parse(msg):
+            return
         func = cls.cmds.get(msg.cmd, cls.ondemand(msg.cmd))
         if func:
             func(msg)
@@ -72,6 +69,16 @@ class Commands:
             return None
         cls.scan(mod)
         return cls.cmds.get(name, None)
+
+    @classmethod
+    def parse(cls, msg):
+        try:
+            msg.cmd, *msg.args = msg.text.split()
+            msg.rest = " ".join(msg.args)
+            return True
+        except ValueError as ex:
+            msg.ready()
+            return False
 
     @classmethod
     def scan(cls, mod, skip=False):

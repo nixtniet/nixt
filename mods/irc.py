@@ -68,12 +68,10 @@ class IRCEvent(Message):
         self.arguments = []
         self.command = ""
         self.channel = ""
-        self.gets = {}
         self.nick = ""
         self.origin = ""
         self.rawstr = ""
         self.rest = ""
-        self.sets = {}
         self.text = ""
 
 
