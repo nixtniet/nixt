@@ -7,7 +7,10 @@
 import os
 
 
-from .utility import Utils
+from .utility import Log, Utils
+
+
+logger = Log(__name__)
 
 
 class MD5:

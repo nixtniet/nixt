@@ -72,11 +72,12 @@ class Commands:
 
     @classmethod
     def parse(cls, msg):
+        "parse message."
         try:
             msg.cmd, *msg.args = msg.text.split()
             msg.rest = " ".join(msg.args)
             return True
-        except ValueError as ex:
+        except ValueError:
             msg.ready()
             return False
 

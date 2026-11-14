@@ -34,13 +34,17 @@ def eml(msg):
                     Locater.objects("email", msg.gets()),
                     key=lambda x: Time.timed(x[1].Date)
                    )
-    if msg.index not in ["", None]:
-        dct = result[msg.index]
+    if msg.index() not in ["", None]:
+        try:
+            dct = result[msg.index()]
+        except IndexError:
+            msg.reply(f"{msg.index()} is too high.")
+            return
         if dct:
             tme = dct.get("Date", "")
             diff = time.time() - Time.timed(tme)
             txt = Dicts.fmt(dct, arguments, plain=True)
-            msg.reply(f'{msg.index} {txt} {Time.elapsed(diff)}')
+            msg.reply(f'{msg.index()} {txt} {Time.elapsed(diff)}')
     else:
         for dct in result:
             nrs += 1

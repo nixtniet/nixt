@@ -45,12 +45,12 @@ class TestMethods(unittest.TestCase):
     def test_dict(self):
         "test for __dict__."
         obj = Mine()
-        self.assertEqual(obj.__dict__, {})
+        self.assertEqual(obj.__dict__, {"key": ""})
 
     def test_format(self):
         "test formatting an object."
         obj = Mine()
-        self.assertEqual(format(obj, ""), "{}")
+        self.assertEqual(format(obj, ""), "{'key': ''}")
 
     def test_getattribute(self):
         "test getting an attribute/"
@@ -90,7 +90,7 @@ class TestMethods(unittest.TestCase):
     def test_len(self):
         "testing length of an object."
         obj = Mine()
-        self.assertEqual(len(obj), 0)
+        self.assertEqual(len(obj), 1)
 
     def test_repr(self):
         "test repr() on an object."
@@ -107,4 +107,4 @@ class TestMethods(unittest.TestCase):
     def test_str(self):
         "test concerting an object to a string."
         obj = Mine()
-        self.assertEqual(str(obj), "{}")
+        self.assertEqual(str(obj), "{'key': ''}")

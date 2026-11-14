@@ -133,8 +133,9 @@ class Kernel(Boot):
 
 def main():
     "main code."
+    Main.debug = True
     Main.index = 100
-    Main.verbose = True
+    #Main.verbose = True
     Kernel.boot()
     Kernel.launch()
     Kernel.collect()

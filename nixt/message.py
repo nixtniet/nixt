@@ -18,7 +18,6 @@ class Message(Data):
         self._thr = None
         self.args = []
         self.cmd = ""
-        self.index = 0
         self.kind = "message"
         self.orig = ""
         self.rest = ""
@@ -36,8 +35,12 @@ class Message(Data):
         "show interface."
         self.reply(f"{self.cmd} {text}")
 
-    def indexes(self):
-        return [int(x) for x in self.text.split() if x.startswith("-") and isinstance(x, int)]
+    def index(self):
+        "return index if found."
+        try:
+            return [int(x) for x in self.text.split() if x.startswith("-") and isinstance(x, int)][-1]
+        except IndexError:
+            return 0
 
     def isready(self):
         "see if message is processed."
@@ -65,9 +68,9 @@ class Message(Data):
 
     def wait(self, timeout=0.0):
         "wait for completion."
-        self._ready.wait(timeout or None)
         if self._thr:
             self._thr.join(timeout or None)
+        self._ready.wait(timeout or None)
 
 
 def __dir__():
