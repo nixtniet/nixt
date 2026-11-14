@@ -11,7 +11,6 @@ from .clients import Clients
 from .message import Message
 from .methods import Methods
 from .package import Mods
-from .parsers import Parser
 
 
 class Commands:
@@ -40,7 +39,11 @@ class Commands:
     @classmethod
     def command(cls, msg):
         "command callback."
-        Parser.parse(msg, msg.text)
+        try:
+            msg.cmd, *msg.args = msg.text.split()
+            msg.rest = " ".join(msg.args)
+        except ValueError as ex:
+            print(ex)
         func = cls.cmds.get(msg.cmd, cls.ondemand(msg.cmd))
         if func:
             func(msg)

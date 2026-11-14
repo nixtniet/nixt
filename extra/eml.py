@@ -14,11 +14,15 @@ from mailbox import Maildir, mbox
 from nixt.defines import Data, Dicts, Disk, Locater, Time
 
 
+from . import parse
+
+
 class Email(Data):
 
     "email record"
 
 
+@parse
 def eml(msg):
     "search emails."
     nrs = -1

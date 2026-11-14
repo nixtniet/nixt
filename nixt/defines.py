@@ -17,7 +17,6 @@ from .message import Message
 from .methods import Dicts, Methods
 from .objects import Data, Object
 from .package import Mods
-from .parsers import Parser
 from .persist import Disk, Locater, Stated, Workdir
 from .pooling import Pool
 from .repeats import Repeater
@@ -61,7 +60,6 @@ __all__ = (
     'Monitor',
     'Object',
     'Output',
-    'Parser',
     'Path',
     'Pool',
     'Queue',
@@ -79,7 +77,7 @@ __all__ = (
     'Worker',
     'basicConfig',
     'cmd'
-    )
+)
 
 
 def __dir__():

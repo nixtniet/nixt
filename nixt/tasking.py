@@ -57,7 +57,7 @@ class Worker(Thread):
             self.result = func(*args)
         except Exception as ex:
             Worker.block.set()
-            Errors.throw(ex, *args)
+            Errors.throw(ex)
 
 
 class Task:

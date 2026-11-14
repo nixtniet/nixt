@@ -37,8 +37,11 @@ class Parser:
                 setattr(obj, k, v)
 
     @classmethod
-    def parse(cls, obj, text, clean=False):
+    def parse(cls, obj, text=None, clean=False):
         "parse text for command and arguments."
+        text = text or getattr(obj, "text", None)
+        if text is None:
+            return
         cls.init(obj, text, clean)
         args = []
         nr = -1
@@ -78,6 +81,14 @@ class Parser:
             obj.verbose = True
         if "t" in obj.opts:
             obj.threaded = True
+
+
+def parse(event):
+
+    def doparse(event):
+        Parse.parse(event, event.txt)
+
+    return doparse
 
 
 def __dir__():
