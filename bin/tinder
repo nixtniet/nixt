@@ -17,7 +17,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Boot, Client, Commands, Dicts, Main, Message
-from nixt.defines import Mods, Pool, Task, Time, Workdir
+from nixt.defines import Mods, Parser, Pool, Task, Time, Workdir
 
 
 Workdir.wdr = ".test"
@@ -133,9 +133,7 @@ class Kernel(Boot):
 
 def main():
     "main code."
-    Main.debug = True
-    Main.index = 100
-    #Main.verbose = True
+    Parser.parse(Main, " ".join(sys.argv[1:]))
     Kernel.boot()
     Kernel.launch()
     Kernel.collect()

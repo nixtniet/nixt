@@ -81,7 +81,7 @@ class Handler(Loop):
         if not func:
             msg.ready()
             return
-        name = msg.text and msg.text.split()[0]
+        name = msg.text.strip() and msg.text.split()[0]
         msg.thread(Task.start(func, msg, name=name))
 
     def register(self, kind, callback):

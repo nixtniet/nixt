@@ -50,6 +50,16 @@ class Message(Data):
         "print ok response."
         self.reply(f"ok {text}".strip())
 
+    def parse(self):
+        "parse message."
+        try:
+            self.cmd, *self.args = self.text.split()
+            self.rest = " ".join(self.args)
+            return True
+        except ValueError:
+            self.ready()
+            return False
+
     def ready(self):
         "flag msg as ready."
         self._ready.set()
