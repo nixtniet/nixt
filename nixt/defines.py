@@ -21,8 +21,9 @@ from .persist import Disk, Locater, Stated, Workdir
 from .pooling import Pool
 from .repeats import Repeater
 from .require import Cmd
+from .sources import MD5
 from .tasking import Task, Worker
-from .utility import Event, Format, Log, Logging, MD5, StreamHandler
+from .utility import Event, Format, Log, Logging, StreamHandler
 from .utility import Time, TimedRotatingFileHandler, Path, Queue, RLock, Utils
 from .utility import Thread, basicConfig
 

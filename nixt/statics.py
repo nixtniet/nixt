@@ -6,28 +6,28 @@
 
 CORE = {
     "booting": "78501969039a1659f0fbdbebb64d0246",
-    "clients": "b74903244e9f071d85765a952277bf5d",
-    "command": "aa5a1bc745596e24e67ced8a8fc3b116",
+    "clients": "af9668e8740c6e9185838c7c5d00bd7d",
+    "command": "8cf9f9f8976f437006d158e9cca50658",
     "configs": "dcbb9c9a94ac0daf8ef5615dddc1abc5",
     "daemons": "5db6a23f825016c2676e914909c9130a",
-    "defines": "1cd31878d7ca89e710ebec1313599c4e",
+    "defines": "66f6a22dc7a4e817c24bb8bbb10ae9e2",
     "encoder": "247261c74fc7d0213ed9172251d90e96",
-    "excepts": "ada2714bd64174e585246fc292da7780",
-    "handler": "852ddea2cc4b0b3f8f600cb8b29716f2",
-    "looping": "8166c9906511324e87d57a53cd6ee7e1",
-    "message": "f1ae7304290d5eb11f222b85f416edf5",
-    "methods": "743cb9b7b756f9f4184a3314ed1ec411",
+    "excepts": "74e6636a90d9292217b12907148e0295",
+    "filemon": "e0e7283405d171ca3b4b284c123997c1",
+    "looping": "64b5dfc25fe2dc1462655dc66fba2e11",
+    "message": "84115bf43087f7b7688e1974b0354f5f",
+    "methods": "511f1c59bb6339e5d936a1b180e79641",
     "objects": "e7d8664b921306546ac5df9bf30c9b65",
     "package": "9b28973c5e31c9503b2e9690644eca80",
     "persist": "4a1474965e9f07ee3d86c12f762f7861",
-    "pooling": "7d25fafd81c82e91b776a5c37806b6cb",
+    "pooling": "8db752f3141a0209ba92cd56af11eb6c",
     "repeats": "95f5f136470b8e81bc67928b1dbbb45a",
     "require": "0b48a5e773f1753f610c7ea152ac2053",
     "runtime": "560dac54d19974dae214ee73b3a71a75",
-    "tasking": "25e2324598c95ede5b7f704c9536fb8d",
+    "sources": "8f9ea1c8d516fed6df6cc7de971f4f92",
+    "tasking": "a06213753e157fb32f7d5684aec9de6a",
     "typings": "6c5b6ff2333247550bc2177d4ab8fc59",
-    "utility": "d4f7b6db5eaf8e89141ca8fa2aac6b00",
-    "watcher": "1d06636d81b041649aad6bc7ee838c24"
+    "utility": "d4f7b6db5eaf8e89141ca8fa2aac6b00"
 }
 
 
