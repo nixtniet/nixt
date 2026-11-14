@@ -40,6 +40,7 @@ class Commands:
     def command(cls, msg):
         "command callback."
         if not msg.parse():
+            msg.ready()
             return
         func = cls.cmds.get(msg.cmd, cls.ondemand(msg.cmd))
         if func:

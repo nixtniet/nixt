@@ -142,11 +142,11 @@ class Run:
         return counter
 
     @classmethod
-    def display(cls, dct, name=None):
+    def display(cls, dct):
         "display feed."
         displaylist = ""
-        if name in dct:
-            result = f"[{dct['name']} "
+        if Dicts.exists(dct, 'name'):
+            result = f"[{dct['name']}] "
         else:
             result = ""
         try:

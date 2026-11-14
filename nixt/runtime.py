@@ -131,7 +131,7 @@ class Scripts:
         Kernel.boot()
         Kernel.init(Main.mods, Main.wait)
         csl = Console()
-        csl.start()
+        csl.start(name="Console")
         Kernel.forever()
 
     @staticmethod

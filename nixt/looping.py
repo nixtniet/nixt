@@ -47,11 +47,11 @@ class Loop:
         "put msg on queue."
         self.queue.put(msg)
 
-    def start(self, daemon=True, name=None):
+    def start(self, **kwargs):
         "start callback loop."
         self.done.clear()
         self.stopped.clear()
-        Task.start(self.loop, daemon=daemon, name=name)
+        Task.start(self.loop, **kwargs)
 
     def stop(self):
         "stop xallback loop."
@@ -81,7 +81,7 @@ class Handler(Loop):
         if not func:
             msg.ready()
             return
-        name = msg.text.strip() and msg.text.split()[0]
+        name = msg.text and msg.text.split()[0]
         msg.thread(Task.start(func, msg, name=name))
 
     def register(self, kind, callback):

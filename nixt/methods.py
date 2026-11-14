@@ -80,6 +80,11 @@ class Dicts:
         return all(not dct.get(key) for key in dct)
 
     @classmethod
+    def exists(cls, dct, key):
+        "return default if key doesn't exists"
+        return dct.get(key, False)
+
+    @classmethod
     def notset(cls, dct1, dct2):
         "only set if not set."
         for key, value in dct2.items():
@@ -161,6 +166,8 @@ class Methods:
     @classmethod
     def clsname(cls, obj):
         "class name of an object."
+        if isinstance(obj, type):
+            return obj__name__
         if "__self__" in dir(obj):
             return obj.__self__.__class__.__name__
         return obj.__class__.__name__

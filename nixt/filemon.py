@@ -18,6 +18,7 @@ class Monitor:
 
     cbs = {}
     sleep  = 1.0
+    running = Event()
     stopped = Event()
     times = {}
 
@@ -41,7 +42,7 @@ class Monitor:
     @classmethod
     def loop(cls):
         "loop select."
-        while not cls.stopped.is_set():
+        while cls.running.is_set():
             for path, callback in cls.cbs.items():
                 if not os.path.exists(path):
                     continue
@@ -50,18 +51,26 @@ class Monitor:
                     callback()
                 cls.times[path] = mtime
             time.sleep(cls.sleep)
+        self.stopped.set()
 
     @classmethod
-    def start(cls, daemon=True, name="Monitor"):
+    def start(cls):
         "start callback loop."
-        if not cls.stopped.is_set():
+        if cls.running.is_set():
             return
-        Task.start(cls.loop, daemon=daemon, name=name)
+        self.running.set()
+        kwargs["name"] = "Monitor"
+        Task.start(cls.loop, **kwargs)
 
     @classmethod
     def stop(cls):
         "stop xallback loop."
-        cls.stopped.set()
+        cls.running.clear()
+
+    @classmethod
+    def wait(cls):
+        "wait for monitor to stop."
+        cls.stopped.wait()
 
 
 def __dir__():

@@ -21,9 +21,15 @@ class Worker(Thread):
 
     block = Event()
 
-    def __init__(self, func, *args, daemon=True, **kwargs):
-        super().__init__(None, self.run, None, (), daemon=daemon)
-        self.name = kwargs.get('name', "")
+    def __init__(self, func, *args, **kwargs):
+        super().__init__(
+            None,
+            self.run,
+            None,
+            (),
+            daemon=kwargs.get("daemon",True)
+        )
+        self.name = kwargs.get("name", Methods.getname(func))
         self.queue = Queue()
         self.result = None
         self.sleep = 0.0
@@ -68,7 +74,6 @@ class Task:
     def start(cls, func, *args, **kwargs):
         "start a new thread running function with arguments."
         with cls.lock:
-            kwargs["name"] = kwargs.get('name', Methods.getname(func))
             worker = Worker(func, *args, **kwargs)
             worker.start()
             return worker

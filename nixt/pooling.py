@@ -7,7 +7,7 @@
 import os
 
 
-from .looping import Runner
+from .methods import Methods
 from .utility import RLock
 
 
@@ -16,7 +16,6 @@ class Pool:
     "multiple runners"
 
     runners = []
-    clazz = Runner
     lock = RLock()
     max = os.cpu_count()
     nrcpu = 1
@@ -33,14 +32,12 @@ class Pool:
         return any(runner.queue.qsize() for runner in cls.runners)
 
     @classmethod
-    def init(cls, nrs, clz=None):
+    def init(cls, nrs, clz):
         "initialze a number of runners."
         cls.nrcpu = nrs
-        if clz:
-            cls.clazz = clz
         for nr in range(nrs):
-            runner = cls.clazz()
-            runner.start(name=f"Runner{nr}")
+            runner = clz()
+            runner.start(name=Methods.clsname(runner))
             cls.add(runner)
 
     @classmethod

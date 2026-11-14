@@ -83,7 +83,7 @@ class TimerLoop:
         "start timers."
         cls.path = Locater.first("timers", cls.timers)
         cls.running.set()
-        Task.start(cls.loop, name="Timers.loop")
+        Task.start(cls.loop, name="Timers")
 
     @classmethod
     def stop(cls):

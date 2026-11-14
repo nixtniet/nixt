@@ -32,7 +32,7 @@ class Repeater:
     @classmethod
     def loop(cls):
         "repeater loop."
-        while not cls.stopped.is_set():
+        while cls.running.is_set():
             time.sleep(1.0)
             cls.counter += 1
             for sleeptime, arguments in cls.todo.items():
@@ -41,21 +41,27 @@ class Repeater:
                     continue
                 for func, args, kwargs in arguments:
                     Task.start(func, *args, **kwargs)
+        self.stopped.set()
 
     @classmethod
-    def start(cls, daemon=True, name="Repeater"):
+    def start(cls, **kwargs):
         "start callback loop."
-        if not cls.stopped.is_set():
-            Task.start(cls.loop, daemon=daemon, name=name)
+        if cls.running.is_set():
+            return
+        cls.stopped.clear()
+        cls.running.set()
+        kwargs["name"] = "Repeater"
+        Task.start(cls.loop, **kwargs)
 
     @classmethod
     def stop(cls):
         "stop loop."
-        cls.stopped.set()
+        cls.running.clear()
 
     @classmethod
     def wait(cls):
         "wait for loop to stop."
+        self.stopped.wait()
 
 
 def __dir__():
