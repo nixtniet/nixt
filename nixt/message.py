@@ -57,7 +57,6 @@ class Message(Data):
             self.rest = " ".join(self.args)
             return True
         except ValueError:
-            self.ready()
             return False
 
     def ready(self):

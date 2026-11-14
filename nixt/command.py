@@ -39,7 +39,8 @@ class Commands:
     @classmethod
     def command(cls, msg):
         "command callback."
-        msg.parse()
+        if not msg.parse():
+            return
         func = cls.cmds.get(msg.cmd, cls.ondemand(msg.cmd))
         if func:
             func(msg)

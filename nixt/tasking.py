@@ -23,9 +23,7 @@ class Worker(Thread):
 
     def __init__(self, func, *args, daemon=True, **kwargs):
         super().__init__(None, self.run, None, (), daemon=daemon)
-        self.name = kwargs.get("name", "")
-        if not self.name:
-            self.name = Methods.getname(func) or ""
+        self.name = kwargs.get('name', "")
         self.queue = Queue()
         self.result = None
         self.sleep = 0.0
@@ -70,6 +68,7 @@ class Task:
     def start(cls, func, *args, **kwargs):
         "start a new thread running function with arguments."
         with cls.lock:
+            kwargs["name"] = kwargs.get('name', Methods.getname(func))
             worker = Worker(func, *args, **kwargs)
             worker.start()
             return worker

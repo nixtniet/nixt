@@ -53,6 +53,24 @@ class Broker:
         del cls.objects[repr(obj)]
 
 
+class Clients:
+
+    "collection of clients"
+
+    @staticmethod
+    def announce(text):
+        "announce text on all clients."
+        for obj in Broker.objs("announce"):
+            obj.announce(text)
+
+    @staticmethod
+    def display(msg):
+        "display results."
+        bot = Broker.get(msg.orig)
+        if bot:
+            bot.display(msg)
+
+
 class Display:
 
     "unit of display"
@@ -175,24 +193,6 @@ class BufferedClient(Handler, Output):
         "stop output loop."
         Handler.stop(self)
         Output.stop(self)
-
-
-class Clients:
-
-    "collection of clients"
-
-    @staticmethod
-    def announce(text):
-        "announce text on all clients."
-        for obj in Broker.objs("announce"):
-            obj.announce(text)
-
-    @staticmethod
-    def display(msg):
-        "display results."
-        bot = Broker.get(msg.orig)
-        if bot:
-            bot.display(msg)
 
 
 def __dir__():
