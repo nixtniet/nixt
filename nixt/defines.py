@@ -6,7 +6,7 @@
 
 from .booting import Boot
 from .clients import Broker, BufferedClient, Client, Clients, Display, Output
-from .command import Commands, cmd
+from .command import Commands
 from .configs import Cfg, Config, Main
 from .daemons import Daemon
 from .encoder import JSON, JSONL
@@ -26,6 +26,9 @@ from .tasking import Task, Worker
 from .utility import MD5, Event, Format, Log, Logging, StreamHandler
 from .utility import Time, TimedRotatingFileHandler, Path, Queue, RLock, Utils
 from .utility import Thread, basicConfig
+
+
+cmd = Commands.cmd
 
 
 __all__ = (

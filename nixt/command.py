@@ -110,11 +110,7 @@ class Commands:
             cls.scanner()
 
 
-cmd = Commands.cmd
-
-
 def __dir__():
     return (
         'Commands',
-        'cmd'
     )

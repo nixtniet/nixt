@@ -37,8 +37,10 @@ class Parser:
                 setattr(obj, k, v)
 
     @classmethod
-    def parse(cls, obj, text, clean=False):
+    def parse(cls, obj, text=None, clean=False):
         "parse text for command and arguments."
+        if text is None:
+            text = obj.text
         cls.init(obj, text, clean)
         args = []
         nr = -1

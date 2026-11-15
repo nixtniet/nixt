@@ -11,7 +11,7 @@ import time
 from mailbox import Maildir, mbox
 
 
-from nixt.defines import Data, Dicts, Disk, Locater, Time
+from nixt.defines import Data, Dicts, Disk, Locater, Parser, Time
 
 
 class Email(Data):
@@ -21,30 +21,31 @@ class Email(Data):
 
 def eml(msg):
     "search emails."
+    Parser.parse(msg)
     nrs = -1
     args = ["From", "Subject"]
     args.extend(msg.args)
-    if msg.gets():
-        args.extend(msg.gets().keys())
+    if msg.gets:
+        args.extend(msg.gets.keys())
     for key in msg.silent:
         if key in args:
             args.remove(key)
     arguments = list(set(args))
     result = sorted(
-                    Locater.objects("email", msg.gets()),
+                    Locater.objects("email", msg.gets),
                     key=lambda x: Time.timed(x[1].Date)
                    )
-    if msg.index() not in ["", None]:
+    if msg.index not in ["", None]:
         try:
-            dct = result[msg.index()]
+            dct = result[msg.index]
         except IndexError:
-            msg.reply(f"{msg.index()} is too high.")
+            msg.reply(f"{msg.index} is too high.")
             return
         if dct:
             tme = dct.get("Date", "")
             diff = time.time() - Time.timed(tme)
             txt = Dicts.fmt(dct, arguments, plain=True)
-            msg.reply(f'{msg.index()} {txt} {Time.elapsed(diff)}')
+            msg.reply(f'{msg.index} {txt} {Time.elapsed(diff)}')
     else:
         for dct in result:
             nrs += 1

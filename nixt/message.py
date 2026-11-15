@@ -18,6 +18,7 @@ class Message(Data):
         self._thr = None
         self.args = []
         self.cmd = ""
+        self.index = 0
         self.kind = "message"
         self.orig = ""
         self.rest = ""
@@ -27,20 +28,9 @@ class Message(Data):
     def __iter__(self):
         return iter(self.__dict__)
 
-    def gets(self):
-        "return selectors."
-        return dict([x.split("==", maxsplit=1) for x in self.text.split() if "==" in x])
-
     def iface(self, text):
         "show interface."
         self.reply(f"{self.cmd} {text}")
-
-    def index(self):
-        "return index if found."
-        try:
-            return [int(x) for x in self.text.split() if x.startswith("-") and isinstance(x, int)][-1]
-        except IndexError:
-            return 0
 
     def isready(self):
         "see if message is processed."
@@ -66,10 +56,6 @@ class Message(Data):
     def reply(self, text):
         "add text to result."
         self.result.append(text)
-
-    def sets(self):
-        "return setted attributes."
-        return dict([x.split("=", maxsplit=1) for x in self.text.split() if "=" in x and not "==" in x])
 
     def thread(self, thr):
         "set running thread."

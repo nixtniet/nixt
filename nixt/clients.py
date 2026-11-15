@@ -141,10 +141,10 @@ class Output(Display):
         "raw output."
         raise NotImplementedError
 
-    def start(self):
+    def start(self, **kwargs):
         "start output loop."
         self.ostopped.clear()
-        Task.start(self.output)
+        Task.start(self.output, **kwargs)
 
     def stop(self):
         "stop output loop."

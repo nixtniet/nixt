@@ -4,11 +4,12 @@
 "configuration"
 
 
-from nixt.defines import Dicts, Disk, Main, Methods, Mods
+from nixt.defines import Dicts, Disk, Main, Methods, Mods, Parser
 
 
 def cfg(msg):
     "configure modules."
+    Parser.parse(msg)
     if not msg.args:
         mods = "main," + Mods.has('Config')
         if mods and mods[-1] == ",":
@@ -27,7 +28,7 @@ def cfg(msg):
             return
     else:
         config = Main
-    if not msg.sets():
+    if not msg.sets:
         msg.reply(
             Dicts.fmt(
                 vars(config),
@@ -37,7 +38,7 @@ def cfg(msg):
         )
         return
     dct = {}
-    Dicts.edit(dct, msg.sets())
+    Dicts.edit(dct, msg.sets)
     Methods.update(config, dct)
     Disk.write(vars(config), name, "config")
     msg.ok()
