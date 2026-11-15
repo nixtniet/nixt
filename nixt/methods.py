@@ -21,12 +21,7 @@ class Dicts:
         return "__deleted__" in dct and dct["__deleted__"]
 
     @classmethod
-    def edit(
-        cls,
-        dct,
-        setter=None,
-        skip=False
-        ):
+    def edit(cls, dct, setter=None, skip=False):
         "update object with dict."
         if setter is None:
             setter = {}
@@ -36,14 +31,7 @@ class Dicts:
             cls.typed(dct, key, val)
 
     @classmethod
-    def fmt(
-        cls,
-        dct,
-        args=None,
-        skip= None,
-        plain=False,
-        empty=False
-        ):
+    def fmt(cls, dct, args=None, skip= None, plain=False, empty=False):
         "format object info printable string."
         if args is None:
             args = list(dct.keys())
@@ -94,12 +82,7 @@ class Dicts:
                 dct1[key] = value
 
     @classmethod
-    def search(
-        cls,
-        dct,
-        selector=None,
-        matching=False
-        ):
+    def search(cls, dct, selector=None, matching=False):
         "check whether object matches search criteria."
         if selector is None:
             return False
@@ -188,8 +171,8 @@ class Methods:
             kin = f"{obj.__module__}.{obj.__name__}"
         return kin
 
-    @staticmethod
-    def funcname(obj):
+    @classmethod
+    def funcname(cls, obj):
         "return functionname."
         try:
             return obj.__name__

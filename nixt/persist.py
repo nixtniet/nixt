@@ -107,12 +107,10 @@ class Locater:
     @classmethod
     def attrs(cls, kind):
         "show attributes for kind of objects."
-        result = []
-        for _pth, obj in cls.find(kind, nritems=1):
-            if not obj:
-                continue
-            result.extend(obj.keys())
-        return set(result)
+        _pth, obj = cls.first(kind)
+        if obj:
+            return obj.keys()
+        return []
 
     @classmethod
     def count(cls, kind):
@@ -120,18 +118,10 @@ class Locater:
         return len(list(cls.find(kind)))
 
     @classmethod
-    def find(
-        cls,
-        kind,
-        selector=None,
-        removed=False,
-        matching=False,
-        nritems=0
-        ):
+    def find(cls, kind, selector=None, removed=False, matching=False):
         "locate objects by matching atributes."
         if selector is None:
             selector = {}
-        nrs = 0
         for pth in cls.fns(Workdir.long(kind)):
             dct = Cache.get(pth)
             if not dct:
@@ -141,9 +131,6 @@ class Locater:
                 continue
             if selector and not Dicts.search(dct, selector, matching):
                 continue
-            if nritems and nrs >= nritems:
-                break
-            nrs += 1
             yield (pth, dct)
 
     @classmethod
@@ -198,21 +185,13 @@ class Locater:
         return (None, None)
 
     @classmethod
-    def objects(
-        cls,
-        kind,
-        selector=None,
-        removed=False,
-        matching=False,
-        nritems=0
-        ):
+    def objects(cls, kind, selector=None, removed=False, matching=False):
         "return objects by matching atributes."
         yield from [x[1] for x in cls.find(
             kind,
             selector,
             removed,
-            matching,
-            nritems
+            matching
         )]
 
     @classmethod
