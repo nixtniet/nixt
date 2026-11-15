@@ -37,7 +37,7 @@ class Pool:
         cls.nrcpu = nrs
         for nr in range(nrs):
             runner = clz()
-            runner.start(name=Methods.clsname(runner))
+            runner.start(name=f"{Methods.clsname(runner)}{nr}")
             cls.add(runner)
 
     @classmethod

@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.pooling import Runner
+from nixt.looping import Runner
 
 
 class TestRunner(unittest.TestCase):

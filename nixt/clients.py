@@ -184,10 +184,10 @@ class BufferedClient(Handler, Output):
         "raw output."
         raise NotImplementedError
 
-    def start(self):
+    def start(self, **kwargs):
         "start output loop."
-        Handler.start(self)
-        Output.start(self)
+        Handler.start(self, **kwargs)
+        Output.start(self, **kwargs)
 
     def stop(self):
         "stop output loop."

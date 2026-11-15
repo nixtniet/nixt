@@ -41,7 +41,7 @@ class Repeater:
                     continue
                 for func, args, kwargs in arguments:
                     Task.start(func, *args, **kwargs)
-        self.stopped.set()
+        cls.stopped.set()
 
     @classmethod
     def start(cls, **kwargs):
@@ -61,7 +61,7 @@ class Repeater:
     @classmethod
     def wait(cls):
         "wait for loop to stop."
-        self.stopped.wait()
+        cls.stopped.wait()
 
 
 def __dir__():

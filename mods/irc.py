@@ -502,7 +502,7 @@ class IRC(BufferedClient):
             self.buffer.append(line)
         self.state.lastline = splitted[-1]
 
-    def start(self):
+    def start(self, **kwargs):
         "start client."
         cfg = Disk.read("irc", "config") or {}
         Methods.update(self.cfg, cfg)
@@ -513,8 +513,8 @@ class IRC(BufferedClient):
         self.msgs.ready.clear()
         BufferedClient.start(self)
         if not self.state.keeprunning:
-            Task.start(self.keep)
-        Task.start(self.doconnect)
+            Task.start(self.keep, **kwargs)
+        Task.start(self.doconnect, **kwargs)
 
     def stop(self):
         "stop client."
@@ -612,8 +612,8 @@ def cb_privmsg(msg):
         if msg.text:
             msg.text = msg.text[0].lower() + msg.text[1:]
         if msg.text:
-            name = msg.text and msg.text.split()[0]
-            Task.start(Commands.command, msg)
+            kwargs = {"name": msg.text and msg.text.split()[0]}
+            Task.start(Commands.command, msg, **kwargs)
 
 
 def cb_quit(msg):

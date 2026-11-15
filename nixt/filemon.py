@@ -51,14 +51,14 @@ class Monitor:
                     callback()
                 cls.times[path] = mtime
             time.sleep(cls.sleep)
-        self.stopped.set()
+        cls.stopped.set()
 
     @classmethod
-    def start(cls):
+    def start(cls, **kwargs):
         "start callback loop."
         if cls.running.is_set():
             return
-        self.running.set()
+        cls.running.set()
         kwargs["name"] = "Monitor"
         Task.start(cls.loop, **kwargs)
 
