@@ -11,7 +11,7 @@ from .methods import Methods
 from .utility import RLock
 
 
-class Pool:
+class Engine:
 
     "multiple runners"
 
@@ -53,5 +53,5 @@ class Pool:
 
 def __dir__():
     return (
-        'Pool',
+        'Engine',
     )

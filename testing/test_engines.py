@@ -7,14 +7,14 @@
 import unittest
 
 
-from nixt.pooling import Pool
+from nixt.engines import Engine
 
 
-class TestPool(unittest.TestCase):
+class TestEngine(unittest.TestCase):
 
     "pool unittests"
 
     def test_construct(self):
         "test pool construction."
-        pool = Pool()
-        self.assertTrue(type(pool), Pool)
+        engine = Engine()
+        self.assertTrue(type(engine), Engine)

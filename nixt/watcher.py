@@ -12,7 +12,7 @@ from .tasking import Task
 from .utility import Event
 
 
-class Monitor:
+class Watcher:
 
     "watch files"
 
@@ -75,5 +75,5 @@ class Monitor:
 
 def __dir__():
     return (
-        'Monitor',
+        'Watcher',
     )

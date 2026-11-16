@@ -24,9 +24,10 @@ from http.client    import RemoteDisconnected
 from ssl            import SSLError
 
 
-from nixt.defines import Cfg, Clients, Data, Dicts, Disk, Format, JSON, JSONL
-from nixt.defines import Locater, Log, Logging, MD5, Main, Methods, Monitor
-from nixt.defines import Pool, Repeater, RLock, Runner, Stated, Utils, Workdir
+from nixt.defines import Cfg, Clients, Data, Dicts, Disk, Engine, Format, JSON
+from nixt.defines import JSONL, Locater, Log, Logging, MD5, Main, Methods
+from nixt.defines import Repeater, RLock, Runner, Stated, Utils, Watcher
+from nixt.defines import Workdir
 
 
 logger = Log(__name__)
@@ -197,13 +198,13 @@ class Run:
     def run(cls, silent=False):
         "do a fetch run of all feeds."
         nrs = 0
-        if Pool.busy():
+        if Engine.busy():
             logger.debug("next!")
             return 0
         for fnm, fed in Locater.find("rss"):
             if fed.get("skip", False):
                 continue
-            Pool.put((fnm, fed, silent))
+            Engine.put((fnm, fed, silent))
             nrs += 1
         return nrs
 
@@ -217,10 +218,10 @@ class Run:
             with open(cls.path, "a+", encoding="utf-8") as file:
                 cls.file = file
             cls.enable(cls.path)
-            Monitor.add(cls.path, cls.callback)
-            Monitor.start(name="Monitor")
+            Watcher.add(cls.path, cls.callback)
+            Watcher.start(name="Watcher")
         cls.state.load()
-        Pool.init(2, Fetching)
+        Engine.init(2, Fetching)
         if not once:
             Repeater.add(Config.polltime, cls.run)
             Repeater.add(120, cls.clear)
@@ -229,7 +230,7 @@ class Run:
     @classmethod
     def stop(cls):
         "shutdown."
-        Monitor.stop()
+        Watcher.stop()
 
     @classmethod
     def sync(cls):

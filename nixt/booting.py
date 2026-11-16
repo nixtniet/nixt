@@ -12,6 +12,7 @@ import _thread
 from .clients import Broker, Client
 from .command import Commands
 from .configs import Main
+from .looping import Handler
 from .package import Mods
 from .persist import Workdir
 from .require import Cmd
@@ -26,12 +27,13 @@ class Boot:
 
     "at startup"
 
+    handler = Handler()
     running = Event()
     stopped = Event()
 
     @classmethod
     def banner(cls, force=False):
-        "hello"
+        "hello."
 
     @classmethod
     def boot(cls):
@@ -109,6 +111,11 @@ class Boot:
         cls.stopped.set()
 
     @classmethod
+    def start(cls):
+        "start the kernel."
+        cls.handler.start(name="Kernel")
+
+    @classmethod
     def wrapped(cls, func, *args):
         "wrap function in a try/except, silence ctrl-c/ctrl-d."
         try:
@@ -138,5 +145,5 @@ class Boot:
 
 def __dir__():
     return (
-        'Boot',
+        'Kernel',
     )

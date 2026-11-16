@@ -60,7 +60,7 @@ class Arguments:
 
 class Kernel(Boot, Daemon):
 
-    "at first"
+    "init/shutdown"
 
     @classmethod
     def banner(cls, force=False):
@@ -119,6 +119,7 @@ class Scripts:
         Kernel.daemon()
         Kernel.privileges()
         Kernel.pid()
+        Kernel.start()
         Main.mods = ",".join(Mods.list())
         Kernel.init(Main.mods)
         Kernel.forever()
@@ -129,6 +130,7 @@ class Scripts:
         import readline
         readline.redisplay()
         Kernel.boot()
+        Kernel.start()
         Kernel.init(Main.mods, Main.wait)
         csl = Console()
         csl.start(name="Console")
@@ -154,6 +156,7 @@ class Scripts:
         Kernel.boot()
         Kernel.privileges()
         Kernel.pid()
+        Kernel.start()
         if not Main.verbose:
             Kernel.banner(True)
         Main.mods = ",".join(Mods.list())

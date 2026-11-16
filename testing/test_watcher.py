@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Monitor
+from nixt.defines import Watcher
 
 
 class TestWatcher(unittest.TestCase):
@@ -16,5 +16,5 @@ class TestWatcher(unittest.TestCase):
 
     def test_construct(self):
         "test watcher construction."
-        watcher = Monitor()
-        self.assertTrue(type(watcher), Monitor)
+        watcher = Watcher()
+        self.assertTrue(type(watcher), Watcher)
