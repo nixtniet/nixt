@@ -20,7 +20,7 @@ from logging          import basicConfig, Formatter, StreamHandler
 from logging.handlers import TimedRotatingFileHandler
 
 
-Log = logging.getLogger
+Log = logging.getLogger # pylint: ignore=invalid-name
 
 
 logger = Log(__name__)
