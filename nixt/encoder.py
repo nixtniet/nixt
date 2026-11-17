@@ -5,9 +5,9 @@
 
 
 import json
+import types
 
 
-from .typings import MappingProxyType, MethodType
 from .utility import RLock
 
 
@@ -30,7 +30,7 @@ class Encoder(json.JSONEncoder):
                 return o.items()
             if isinstance(o, list):
                 return iter(o)
-            if isinstance(o, MappingProxyType):
+            if isinstance(o, types.MappingProxyType):
                 return dict(o)
             try:
                 return json.JSONEncoder.default(self, o)
@@ -47,7 +47,7 @@ class Encoder(json.JSONEncoder):
             if key.startswith("_"):
                 continue
             value = getattr(obj, key, None)
-            if isinstance(value, MethodType):
+            if isinstance(value, types.MethodType):
                 continue
             result[key] = value
         return result

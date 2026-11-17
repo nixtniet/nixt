@@ -12,9 +12,8 @@ import time
 import _thread
 
 
-
 from nixt.defines import Dicts, Event, Log, Methods, RLock, Queue
-from nixt.defines import Broker, BufferedClient, Message, Object, Task
+from nixt.defines import Broker, Buffered, Message, Object, Task
 from nixt.defines import Cfg, Commands, Disk, Main, Mods
 
 
@@ -126,12 +125,12 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-class IRC(BufferedClient):
+class IRC(Buffered):
 
     "IYC client"
 
     def __init__(self):
-        BufferedClient.__init__(self)
+        Buffered.__init__(self)
         self.buffer = []
         self.cfg = Config()
         self.channels = []
@@ -511,7 +510,7 @@ class IRC(BufferedClient):
         self.msgs.connected.clear()
         self.msgs.joined.clear()
         self.msgs.ready.clear()
-        BufferedClient.start(self)
+        Buffered.start(self)
         if not self.state.keeprunning:
             Task.start(self.keep, **kwargs)
         Task.start(self.doconnect, **kwargs)
@@ -519,7 +518,7 @@ class IRC(BufferedClient):
     def stop(self):
         "stop client."
         self.state.stopkeep = True
-        BufferedClient.stop(self)
+        Buffered.stop(self)
 
     def wait(self):
         "wait for client to join."

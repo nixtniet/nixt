@@ -6,9 +6,7 @@
 
 import inspect
 import os.path
-
-
-from .typings import MethodType
+import types
 
 
 class Dicts:
@@ -113,7 +111,7 @@ class Dicts:
             value = dct.get(key, None)
             if not value:
                 continue
-            if isinstance(value, MethodType):
+            if isinstance(value, types.MethodType):
                 continue
             res[key] = value
         return res

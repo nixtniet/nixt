@@ -7,6 +7,7 @@
 import json
 import os
 import time
+import types
 
 
 from datetime import datetime
@@ -14,7 +15,6 @@ from datetime import datetime
 
 from .encoder import JSON
 from .methods import Dicts, Methods
-from .typings import MappingProxyType
 from .utility import Log, Path, RLock, Utils
 
 
@@ -40,7 +40,7 @@ class Cache:
     @classmethod
     def add(cls, path, obj):
         "put object into cache."
-        if not isinstance(obj, (dict, MappingProxyType)):
+        if not isinstance(obj, (dict, types.MappingProxyType)):
             raise TypeError(type(obj))
         cls.paths[path] = obj
 

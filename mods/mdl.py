@@ -8,8 +8,10 @@ import datetime
 import time
 
 
+from typing import Dict
+
+
 from nixt.defines import Clients, Log, Message, Repeater, Time
-from nixt.typings import Dict
 
 
 logger = Log(__name__)
