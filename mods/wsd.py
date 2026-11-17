@@ -178,7 +178,7 @@ TXT = """| wijsheid, wijs !
 | moraal roeping
 | haakse als effectief op gedachtenstroom (uitleg van de hemel)
 | de een zijn hemel is de ander zijn hel
-| 'het woord begeleid', nieuw komenden
+| het woord begeleid, nieuw komenden
 | ultra addaptables
 | terminator badjes
 | denk instraal met materiaal (zonder handjes)
