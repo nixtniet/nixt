@@ -21,8 +21,8 @@ from .persist import Disk, Locater, Stated, Workdir
 from .repeats import Repeater
 from .require import Cmd
 from .tasking import Errors, Task, Worker
-from .utility import MD5, Event, Format, Log, Logging, StreamHandler
-from .utility import Time, TimedRotatingFileHandler, Path, Queue, RLock, Utils
+from .utility import MD5, Event, Format, Log, Logging, StreamHandler, Time
+from .utility import TimedRotatingFileHandler, Path, Queue, RLock, Utils
 from .utility import Thread, basicConfig
 from .watcher import Watcher
 

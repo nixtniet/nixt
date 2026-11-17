@@ -4,7 +4,6 @@
 "usefulness"
 
 
-import logging
 import os
 import time
 import uuid
@@ -18,9 +17,7 @@ from threading import Event, RLock, Thread
 
 from logging          import basicConfig, Formatter, StreamHandler
 from logging.handlers import TimedRotatingFileHandler
-
-
-Log = logging.getLogger # pylint: ignore=invalid-name
+from logging          import getLogger as Log
 
 
 logger = Log(__name__)
