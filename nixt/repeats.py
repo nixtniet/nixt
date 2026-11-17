@@ -44,14 +44,13 @@ class Repeater:
         cls.stopped.set()
 
     @classmethod
-    def start(cls, **kwargs):
+    def start(cls):
         "start callback loop."
         if cls.running.is_set():
             return
         cls.stopped.clear()
         cls.running.set()
-        kwargs["name"] = "Repeater"
-        Task.start(cls.loop, **kwargs)
+        Task.start(cls.loop, name="Repeater")
 
     @classmethod
     def stop(cls):

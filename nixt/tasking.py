@@ -5,46 +5,18 @@
 
 
 import time
-import traceback
-import _thread
 
 
-from .message import Message
+from .excepts import Errors
+from .loggers import Log
 from .methods import Methods
-from .utility import Event, Log, Queue, RLock, Thread
+from .utility import Event, Queue, RLock, Thread
 
 
 logger = Log(__name__)
 
 
-class Errors:
-
-    "error management"
-
-    errors = []
-
-    @classmethod
-    def defer(cls, exc, *args):
-        "add an exception"
-        excp = exc.with_traceback(exc.__traceback__)
-        if excp not in cls.errors:
-            cls.errors.append(excp)
-        if args and isinstance(args[0], Message):
-            args[0].ready()
-
-    @classmethod
-    def format(cls, exc):
-        "format an exception"
-        return traceback.format_exception(type(exc), exc, exc.__traceback__)
-
-    @classmethod
-    def throw(cls, exc):
-        "log the exception and interrupt main loop."
-        logger.exception(exc)
-        _thread.interrupt_main()
-
-
-class Worker(Thread):
+class Job(Thread):
 
     "unit of thread"
 
@@ -78,7 +50,7 @@ class Worker(Thread):
             super().join(timeout or None)
             return self.result
         except Exception as ex:
-            Worker.block.set()
+            self.block.set()
             Errors.throw(ex)
 
     def run(self):
@@ -89,7 +61,7 @@ class Worker(Thread):
         try:
             self.result = func(*args)
         except Exception as ex:
-            Worker.block.set()
+            self.block.set()
             Errors.throw(ex)
 
 
@@ -103,14 +75,13 @@ class Task:
     def start(cls, func, *args, **kwargs):
         "start a new thread running function with arguments."
         with cls.lock:
-            worker = Worker(func, *args, **kwargs)
-            worker.start()
-            return worker
+            job = Job(func, *args, **kwargs)
+            job.start()
+            return job
 
 
 def __dir__():
     return (
-        'Errors',
-        'Task',
-        'Worker'
+        'Job',
+        'Task'
     )

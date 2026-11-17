@@ -15,4 +15,4 @@
 ['Display']
 
 >>> cmd("flt 0")
-['<nixt.clients.Display object at ...']
+['<nixt.display.Display object at ...']
