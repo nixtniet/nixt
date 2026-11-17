@@ -113,7 +113,7 @@ class Boot:
     @classmethod
     def start(cls):
         "start the kernel."
-        cls.handler.start(name="Kernel")
+        cls.handler.start(name="Kernel.handler")
 
     @classmethod
     def wrapped(cls, func, *args):
