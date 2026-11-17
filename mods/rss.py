@@ -26,8 +26,8 @@ from ssl            import SSLError
 
 from nixt.defines import Cfg, Clients, Data, Dicts, Disk, Format, JSON
 from nixt.defines import JSONL, Locater, Log, Logging, MD5, Main, Methods
-from nixt.defines import Repeater, RLock, Runner, Runners, Stated, Utils
-from nixt.defines import Watcher, Workdir
+from nixt.defines import Pool, Repeater, RLock, Stated, Utils
+from nixt.defines import Watcher, Workdir, Worker
 
 
 logger = Log(__name__)
@@ -198,13 +198,13 @@ class Run:
     def run(cls, silent=False):
         "do a fetch run of all feeds."
         nrs = 0
-        if Runners.busy():
+        if Pool.busy():
             logger.debug("next!")
             return 0
         for fnm, fed in Locater.find("rss"):
             if fed.get("skip", False):
                 continue
-            Runners.put((fnm, fed, silent))
+            Pool.put((fnm, fed, silent))
             nrs += 1
         return nrs
 
@@ -221,7 +221,7 @@ class Run:
             Watcher.add(cls.path, cls.callback)
             Watcher.start(name="Watcher")
         cls.state.load()
-        Runners.init(2, Fetching)
+        Pool.init(2, Fetching)
         if not once:
             Repeater.add(Config.polltime, cls.run)
             Repeater.add(120, cls.clear)
@@ -240,7 +240,7 @@ class Run:
             cls.state.dump()
 
 
-class Fetching(Runner):
+class Fetching(Worker):
 
     "teh fetcher"
 

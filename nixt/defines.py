@@ -19,13 +19,12 @@ from .objects import Data, Object
 from .package import Mods
 from .parsers import Parser
 from .persist import Disk, Locater, Stated, Workdir
+from .pooling import Pool, Worker
 from .repeats import Repeater
 from .require import Cmd
-from .runners import Runner, Runners
 from .tasking import Task
-from .utility import Event, StreamHandler, TimedRotatingFileHandler, Path
-from .utility import MD5, Format, Log, Logging, Time
-from .utility import Queue, RLock, Utils, Thread, basicConfig
+from .utility import MD5, Event, Format, Log, Logging, Path, Time
+from .utility import Queue, RLock, Utils, Thread
 from .watcher import Watcher
 
 
@@ -66,11 +65,10 @@ __all__ = (
     'Output',
     'Parser',
     'Path',
+    'Pool',
     'Queue',
     'RLock',
     'Repeater',
-    'Runner',
-    'Runners',
     'Stated',
     'StreamHandler',
     'Task',
@@ -80,7 +78,7 @@ __all__ = (
     'Utils',
     'Watcher',
     'Workdir',
-    'basicConfig',
+    'Worker',
     'cmd'
 )
 

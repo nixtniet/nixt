@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.runners import Runner
+from nixt.pooling import Pool
 
 
 class TestRunner(unittest.TestCase):
@@ -16,5 +16,5 @@ class TestRunner(unittest.TestCase):
 
     def test_construct(self):
         "test runner construction."
-        runner = Runner()
-        self.assertTrue(type(runner), Runner)
+        pool = Pool()
+        self.assertTrue(type(pool), Pool)

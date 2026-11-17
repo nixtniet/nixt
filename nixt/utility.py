@@ -15,9 +15,11 @@ from queue     import Queue
 from threading import Event, RLock, Thread
 
 
-from logging          import basicConfig, Formatter, StreamHandler
 from logging.handlers import TimedRotatingFileHandler
-from logging          import getLogger as Log
+
+
+from logging import basicConfig, Formatter, StreamHandler
+from logging import getLogger as Log
 
 
 logger = Log(__name__)
@@ -315,18 +317,14 @@ __all__ = (
     'MD5',
     'Event',
     'Format',
-    'Formatter',
     'Log',
     'Logging',
     'Path',
     'Queue',
     'RLock',
-    'StreamHandler',
     'Thread',
     'Time',
-    'TimedRotatingFileHandler',
     'Utils',
-    'basicConfig'
 )
 
 

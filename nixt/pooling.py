@@ -12,47 +12,47 @@ from .methods import Methods
 from .utility import RLock
 
 
-class Runners:
+class Pool:
 
-    "multiple runners"
+    "multiple workers"
 
-    runners = []
+    workers = []
     lock = RLock()
     max = os.cpu_count()
     nrcpu = 1
     nrlast = 0
 
     @classmethod
-    def add(cls, runner):
+    def add(cls, worker):
         "add a runner."
-        cls.runners.append(runner)
+        cls.workers.append(worker)
 
     @classmethod
     def busy(cls):
         "see if pool is busy."
-        return any(runner.queue.qsize() for runner in cls.runners)
+        return any(worker.queue.qsize() for worker in cls.workers)
 
     @classmethod
     def init(cls, nrs, clz):
         "initialze a number of runners."
         cls.nrcpu = nrs
         for nr in range(nrs):
-            runner = clz()
-            runner.start(name=f"{Methods.clsname(runner)}{nr}")
-            cls.add(runner)
+            worker = clz()
+            worker.start(name=f"{Methods.clsname(worker)}{nr}")
+            cls.add(worker)
 
     @classmethod
     def put(cls, *args):
         "push job to a runner."
         with cls.lock:
-            if cls.nrlast-1 >= len(cls.runners)-1:
+            if cls.nrlast-1 >= len(cls.workers)-1:
                 cls.nrlast = 0
-            clt = cls.runners[cls.nrlast-1]
+            clt = cls.workers[cls.nrlast-1]
             clt.put(*args)
             cls.nrlast += 1
 
 
-class Runner(Loop):
+class Worker(Loop):
 
     "run jobs"
 
@@ -74,6 +74,6 @@ class Runner(Loop):
 
 def __dir__():
     return (
-        'Runners',
-        'Runner'
+        'Pool',
+        'Worker'
     )

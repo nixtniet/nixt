@@ -17,7 +17,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Boot, Client, Commands, Dicts, Main, Message, Mods
-from nixt.defines import Parser, Runners, Task, Time, Workdir
+from nixt.defines import Parser, Pool, Task, Time, Workdir
 
 
 Workdir.wdr = ".test"
@@ -56,10 +56,10 @@ class Kernel(Boot):
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
         if Main.threaded:
-            Runners.nrcpu = os.cpu_count()
+            Pool.nrcpu = os.cpu_count()
         else:
-            Runners.nrcpu = 1
-        Runners.init(Runners.nrcpu, CLI)
+            Pool.nrcpu = 1
+        Pool.init(Pool.nrcpu, CLI)
 
     @classmethod
     def collect(cls):
@@ -77,7 +77,7 @@ class Kernel(Boot):
         lap = Time.elapsed(endtime-Kernel.starttime)
         percall = (endtime-Kernel.starttime)/total
         print(f"{Dicts.fmt(vars(Main), skip='otxt,txt')}")
-        print(f"nrcpu: {Runners.nrcpu} events: {total}")
+        print(f"nrcpu: {Pool.nrcpu} events: {total}")
         print(f"total: {lap} nrs: {Kernel.nrevents} call: {percall}")
         print(threading.enumerate())
 
@@ -110,7 +110,7 @@ class Kernel(Boot):
                 evt = Message()
                 evt.kind = "command"
                 evt.text = f"{cmd} {ex}"
-                Runners.put(evt)
+                Pool.put(evt)
                 cls.messages.append(evt)
 
     @classmethod
