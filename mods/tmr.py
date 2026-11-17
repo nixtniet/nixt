@@ -63,7 +63,7 @@ class TimerLoop:
             remove = []
             for tme, args in cls.timers.items():
                 if float(tme) < timed:
-                    Task.start(cls.run, args)
+                    Task.begin(cls.run, args)
                     remove.append(tme)
             for tme in remove:
                 cls.dosave = True
@@ -83,7 +83,7 @@ class TimerLoop:
         "start timers."
         cls.path = Locater.first("timers", cls.timers)
         cls.running.set()
-        Task.start(cls.loop, name="Timers")
+        Task.begin(cls.loop, name="Timers")
 
     @classmethod
     def stop(cls):

@@ -470,7 +470,7 @@ class IRC(Buffered):
         self.state.keeprunning = False
         self.state.stopkeep = True
         self.stop()
-        Task.start(init)
+        Task.begin(init)
 
     def rlog(self, txt):
         "log function that ignore ping/pong/etc."
@@ -512,8 +512,8 @@ class IRC(Buffered):
         self.msgs.ready.clear()
         Buffered.start(self)
         if not self.state.keeprunning:
-            Task.start(self.keep, **kwargs)
-        Task.start(self.doconnect, **kwargs)
+            Task.begin(self.keep, **kwargs)
+        Task.begin(self.doconnect, **kwargs)
 
     def stop(self):
         "stop client."
@@ -612,7 +612,7 @@ def cb_privmsg(msg):
             msg.text = msg.text[0].lower() + msg.text[1:]
         if msg.text:
             kwargs = {"name": msg.text and msg.text.split()[0]}
-            Task.start(Commands.command, msg, **kwargs)
+            Task.begin(Commands.command, msg, **kwargs)
 
 
 def cb_quit(msg):

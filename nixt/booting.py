@@ -77,7 +77,7 @@ class Boot:
             mod = Mods.get(name)
             if not mod or "init" not in dir(mod):
                 continue
-            thrs.append(Task.start(mod.init, name=f"init {name}"))
+            thrs.append(Task.begin(mod.init, name=f"init {name}"))
         if thrs and wait:
             for thr in thrs:
                 thr.join()

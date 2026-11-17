@@ -60,7 +60,7 @@ class Watcher:
             return
         cls.running.set()
         kwargs["name"] = "Monitor"
-        Task.start(cls.loop, **kwargs)
+        Task.begin(cls.loop, **kwargs)
 
     @classmethod
     def stop(cls):

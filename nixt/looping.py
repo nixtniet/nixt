@@ -51,7 +51,7 @@ class Loop:
         "start callback loop."
         self.done.clear()
         self.stopped.clear()
-        Task.start(self.loop, **kwargs)
+        Task.begin(self.loop, **kwargs)
 
     def stop(self):
         "stop xallback loop."

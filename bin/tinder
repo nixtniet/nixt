@@ -87,17 +87,17 @@ class Kernel(Boot):
         nrs = Main.index or 1
         thrs = []
         for _x in range(nrs):
-            thrs.append(Task.start(cls.payload, pre))
+            thrs.append(Task.begin(cls.payload, pre))
         for thr in thrs:
             thr.join()
         thrs = []
         for _x in range(nrs):
-            thrs.append(Task.start(cls.payload, examples))
+            thrs.append(Task.begin(cls.payload, examples))
         for thr in thrs:
             thr.join()
         thrs = []
         for _x in range(nrs):
-            thrs.append(Task.start(cls.payload, post))
+            thrs.append(Task.begin(cls.payload, post))
         for thr in thrs:
             thr.join()
 

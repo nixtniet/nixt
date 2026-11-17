@@ -15,11 +15,12 @@ from .utility import Event, Log, Queue, RLock, Thread
 logger = Log(__name__)
 
 
-class Job(Thread):
+class Task(Thread):
 
     "unit of thread"
 
     block = Event()
+    lock = RLock()
 
     def __init__(self, func, *args, **kwargs):
         super().__init__(
@@ -43,6 +44,14 @@ class Job(Thread):
     def __next__(self):
         yield from dir(self)
 
+    @classmethod
+    def begin(cls, func, *args, **kwargs):
+        "start a new thread running function with arguments."
+        with cls.lock:
+            task = Task(func, *args, **kwargs)
+            task.start()
+            return task
+
     def join(self, timeout=None):
         "join thread and return result."
         try:
@@ -64,23 +73,7 @@ class Job(Thread):
             Errors.throw(ex)
 
 
-class Task:
-
-    "start a task"
-
-    lock = RLock()
-
-    @classmethod
-    def start(cls, func, *args, **kwargs):
-        "start a new thread running function with arguments."
-        with cls.lock:
-            job = Job(func, *args, **kwargs)
-            job.start()
-            return job
-
-
 def __dir__():
     return (
-        'Job',
-        'Task'
+        'Task',
     )

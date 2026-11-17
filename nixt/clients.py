@@ -144,7 +144,7 @@ class Display(Output):
     def start(self, **kwargs):
         "start output loop."
         self.ostopped.clear()
-        Task.start(self.output, **kwargs)
+        Task.begin(self.output, **kwargs)
 
     def stop(self):
         "stop output loop."

@@ -18,11 +18,11 @@ def test():
     buffer.append("test")
 
 
-class TestThreading(unittest.TestCase):
+class TestTask(unittest.TestCase):
 
     "thread unittests"
 
     def test_construct(self):
         "test thread construction."
-        task = Task()
+        task = Task(test)
         self.assertTrue(type(task), Task)
