@@ -5,7 +5,7 @@
 
 
 from .booting import Boot
-from .clients import Broker, Buffered, Client, Clients, Display, Output
+from .clients import Broker, Buffer, Client, Clients, Display, Output
 from .command import Commands
 from .configs import Cfg, Config, Main
 from .daemons import Daemon
@@ -18,7 +18,7 @@ from .methods import Dicts, Methods
 from .objects import Data, Object
 from .package import Mods
 from .parsers import Parser
-from .persist import Disk, Locater, Stated, Workdir
+from .persist import Disk, Dump, Locater, Workdir
 from .pooling import Pool, Worker
 from .repeats import Repeater
 from .require import Cmd
@@ -36,7 +36,7 @@ __all__ = (
     'MD5',
     'Boot',
     'Broker',
-    'Buffered',
+    'Buffer',
     'Cfg',
     'Client',
     'Clients',
@@ -48,6 +48,7 @@ __all__ = (
     'Dicts',
     'Disk',
     'Display',
+    'Dump',
     'Errors',
     'Format',
     'Handler',
@@ -64,7 +65,6 @@ __all__ = (
     'Parser',
     'Pool',
     'Repeater',
-    'Stated',
     'Task',
     'Time',
     'Utils',

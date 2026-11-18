@@ -23,10 +23,9 @@ from ssl         import SSLError
 from threading   import RLock
 
 
-from nixt.defines import Cfg, Clients, Data, Dicts, Disk, Format, JSON
+from nixt.defines import Cfg, Clients, Data, Dicts, Disk, Dump, Format, JSON
 from nixt.defines import JSONL, Locater, Log, Logging, MD5, Main, Methods
-from nixt.defines import Pool, Repeater, Stated, Utils
-from nixt.defines import Watcher, Workdir, Worker
+from nixt.defines import Pool, Repeater, Utils, Watcher, Workdir, Worker
 
 
 logger = Log(__name__)
@@ -61,7 +60,7 @@ class Feed(Data):
     "feed data"
 
 
-class State(Stated):
+class State(Dump):
 
     "rss state"
 

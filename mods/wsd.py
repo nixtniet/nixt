@@ -7,7 +7,7 @@
 import random
 
 
-from nixt.defines import Clients, Log, Repeater, Stated
+from nixt.defines import Clients, Dump, Log, Repeater
 
 
 logger = Log(__name__)
@@ -21,7 +21,7 @@ def init():
     logger.info("%s wise", len(TXTLIST))
 
 
-class State(Stated):
+class State(Dump):
 
     "stateful rss"
 

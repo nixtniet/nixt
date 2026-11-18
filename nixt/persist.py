@@ -100,6 +100,29 @@ class Disk:
             return path
 
 
+class Dump:
+
+    "state of wisdom"
+
+    def __init__(self):
+        super().__init__()
+        self.fnm = ""
+
+    def dump(self):
+        "dump state to disk."
+        if not self.fnm:
+            self.fnm, _x = Locater.first(Methods.fqn(self))
+        if not self.fnm:
+            self.fnm = Disk.ident(self)
+        Disk.write(vars(self), self.fnm)
+
+    def load(self):
+        "load from disk."
+        _path, dct = Locater.first(Methods.fqn(self))
+        if dct:
+            Methods.update(self, dct)
+
+
 class Locater:
 
     "find objects"
@@ -202,27 +225,6 @@ class Locater:
         return path.rsplit('store', maxsplit=1)[-1][1:]
 
 
-class Stated:
-
-    "state of wisdom"
-
-    def __init__(self):
-        super().__init__()
-        self.fnm = ""
-
-    def dump(self):
-        "dump state to disk."
-        if not self.fnm:
-            self.fnm, _x = Locater.first(Methods.fqn(self))
-        if not self.fnm:
-            self.fnm = Disk.ident(self)
-        Disk.write(vars(self), self.fnm)
-
-    def load(self):
-        "load from disk."
-        _path, dct = Locater.first(Methods.fqn(self))
-        if dct:
-            Methods.update(self, dct)
 
 
 class Workdir:
@@ -297,8 +299,8 @@ class Workdir:
 def __dir__():
     return (
         'Disk',
+        'Dump',
         'Locater',
         'Selector',
-        'Stated',
         'Workdir'
     )

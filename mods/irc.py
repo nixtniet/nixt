@@ -16,7 +16,7 @@ from queue     import Queue
 from threading import Event, RLock
 
 
-from nixt.defines import Broker, Buffered, Cfg, Commands, Dicts, Disk, Log
+from nixt.defines import Broker, Buffer, Cfg, Commands, Dicts, Disk, Log
 from nixt.defines import Main, Message, Methods, Mods, Object, Task
 
 
@@ -111,6 +111,7 @@ class State(Object):
         self.running = Event()
         self.stopkeep = False
 
+
 class TextWrap(textwrap.TextWrapper):
 
     "wrap text into IRC protocol"
@@ -128,12 +129,12 @@ class TextWrap(textwrap.TextWrapper):
 wrapper = TextWrap()
 
 
-class IRC(Buffered):
+class IRC(Buffer):
 
     "IYC client"
 
     def __init__(self):
-        Buffered.__init__(self)
+        Buffer.__init__(self)
         self.buffer = []
         self.cfg = Config()
         self.channels = []
@@ -513,7 +514,7 @@ class IRC(Buffered):
         self.msgs.connected.clear()
         self.msgs.joined.clear()
         self.msgs.ready.clear()
-        Buffered.start(self)
+        Buffer.start(self)
         if not self.state.keeprunning:
             Task.start(self.keep, **kwargs)
         Task.start(self.doconnect, **kwargs)
@@ -521,7 +522,7 @@ class IRC(Buffered):
     def stop(self):
         "stop client."
         self.state.stopkeep = True
-        Buffered.stop(self)
+        Buffer.stop(self)
 
     def wait(self):
         "wait for client to join."

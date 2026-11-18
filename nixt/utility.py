@@ -311,15 +311,12 @@ class Utils:
         return os.path.join(*path.split(os.sep)[-nrchar:])
 
 
-__all__ = (
-    'MD5',
-    'Format',
-    'Log',
-    'Logging',
-    'Time',
-    'Utils',
-)
-
-
 def __dir__():
-    return __all__
+    return (
+        'MD5',
+        'Format',
+        'Log',
+        'Logging',
+        'Time',
+        'Utils',
+    )

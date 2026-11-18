@@ -175,7 +175,7 @@ class Client(Handler, Output):
         raise NotImplementedError
 
 
-class Buffered(Handler, Display):
+class Buffer(Handler, Display):
 
     "buffered output"
 
@@ -201,7 +201,7 @@ class Buffered(Handler, Display):
 def __dir__():
     return (
         'Broker',
-        'Buffered',
+        'Buffer',
         'Client',
         'Clients',
         'Display',
