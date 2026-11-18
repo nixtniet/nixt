@@ -9,17 +9,15 @@ import time
 import uuid
 
 
-from datetime  import datetime
-from pathlib   import Path
-from queue     import Queue
-from threading import Event, RLock, Thread
-
-
 from logging.handlers import TimedRotatingFileHandler
 
 
-from logging import basicConfig, Formatter, StreamHandler
-from logging import getLogger as Log
+from logging  import basicConfig, Formatter, StreamHandler
+from logging  import getLogger as Log
+
+
+from datetime import datetime
+from pathlib  import Path
 
 
 logger = Log(__name__)
@@ -315,14 +313,9 @@ class Utils:
 
 __all__ = (
     'MD5',
-    'Event',
     'Format',
     'Log',
     'Logging',
-    'Path',
-    'Queue',
-    'RLock',
-    'Thread',
     'Time',
     'Utils',
 )

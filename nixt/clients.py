@@ -7,9 +7,12 @@
 import _thread
 
 
+from queue     import Queue
+from threading import Event, RLock
+
+
 from .handler import Handler
 from .tasking import Task
-from .utility import Event, Queue, RLock
 
 
 class Broker:
@@ -144,7 +147,7 @@ class Display(Output):
     def start(self, **kwargs):
         "start output loop."
         self.ostopped.clear()
-        Task.begin(self.output, **kwargs)
+        Task.start(self.output, **kwargs)
 
     def stop(self):
         "stop output loop."

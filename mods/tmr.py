@@ -8,8 +8,11 @@ import random
 import time
 
 
-from nixt.defines import Broker, Disk, Event, Locater, Log, Methods
-from nixt.defines import Object, RLock, Task, Time
+from threading import Event, RLock
+
+
+from nixt.defines import Broker, Disk, Locater, Log, Methods
+from nixt.defines import Object, Task, Time
 
 
 logger = Log(__name__)
@@ -63,7 +66,7 @@ class TimerLoop:
             remove = []
             for tme, args in cls.timers.items():
                 if float(tme) < timed:
-                    Task.begin(cls.run, args)
+                    Task.start(cls.run, args)
                     remove.append(tme)
             for tme in remove:
                 cls.dosave = True
@@ -83,7 +86,7 @@ class TimerLoop:
         "start timers."
         cls.path = Locater.first("timers", cls.timers)
         cls.running.set()
-        Task.begin(cls.loop, name="Timers")
+        Task.start(cls.loop, name="Timers")
 
     @classmethod
     def stop(cls):

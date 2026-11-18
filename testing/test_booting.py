@@ -33,7 +33,7 @@ class TestRuntime(unittest.TestCase):
 
     def test_forever(self):
         "test main loop."
-        task = Task.begin(self.boot.forever)
+        task = Task.start(self.boot.forever)
         self.boot.running.clear()
         task.join()
         self.assertEqual(self.boot.stopped.is_set(), True)
@@ -44,7 +44,7 @@ class TestRuntime(unittest.TestCase):
 
     def test_shutdown(self):
         "test shutdown/"
-        task = Task.begin(self.boot.shutdown, False)
+        task = Task.start(self.boot.shutdown, False)
         task.join()
         self.assertTrue(self.boot.stopped.is_set())
 

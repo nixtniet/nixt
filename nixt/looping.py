@@ -7,8 +7,11 @@
 import _thread
 
 
+from queue     import Queue
+from threading import Event
+
+
 from .tasking import Task
-from .utility import Event, Queue
 
 
 class Loop:
@@ -51,7 +54,7 @@ class Loop:
         "start callback loop."
         self.done.clear()
         self.stopped.clear()
-        Task.begin(self.loop, **kwargs)
+        Task.start(self.loop, **kwargs)
 
     def stop(self):
         "stop xallback loop."

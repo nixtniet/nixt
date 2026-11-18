@@ -7,15 +7,19 @@
 import time
 
 
+from queue     import Queue
+from threading import Event, RLock, Thread
+
+
 from .excepts import Errors
 from .methods import Methods
-from .utility import Event, Log, Queue, RLock, Thread
+from .utility import Log
 
 
 logger = Log(__name__)
 
 
-class Task(Thread):
+class Work(Thread):
 
     "unit of thread"
 
@@ -44,14 +48,6 @@ class Task(Thread):
     def __next__(self):
         yield from dir(self)
 
-    @classmethod
-    def begin(cls, func, *args, **kwargs):
-        "start a new thread running function with arguments."
-        with cls.lock:
-            task = Task(func, *args, **kwargs)
-            task.start()
-            return task
-
     def join(self, timeout=None):
         "join thread and return result."
         try:
@@ -73,7 +69,23 @@ class Task(Thread):
             Errors.throw(ex)
 
 
+class Task:
+
+    "start a task"
+
+    lock = RLock()
+
+    @classmethod
+    def start(cls, func, *args, **kwargs):
+        "start a new thread running function with arguments."
+        with cls.lock:
+            work = Work(func, *args, **kwargs)
+            work.start()
+            return work
+
+
 def __dir__():
     return (
         'Task',
+        'Work'
     )

@@ -7,9 +7,11 @@
 import os
 
 
+from threading import RLock
+
+
 from .looping import Loop
 from .methods import Methods
-from .utility import RLock
 
 
 class Pool:

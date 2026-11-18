@@ -6,8 +6,6 @@
 
 import gc
 import html
-
-
 import logging.handlers
 import os
 import pathlib
@@ -20,13 +18,14 @@ from urllib.parse   import unquote, urlparse, urlunparse
 from urllib.request import Request, urlopen
 
 
-from http.client    import RemoteDisconnected
-from ssl            import SSLError
+from http.client import RemoteDisconnected
+from ssl         import SSLError
+from threading   import RLock
 
 
 from nixt.defines import Cfg, Clients, Data, Dicts, Disk, Format, JSON
 from nixt.defines import JSONL, Locater, Log, Logging, MD5, Main, Methods
-from nixt.defines import Pool, Repeater, RLock, Stated, Utils
+from nixt.defines import Pool, Repeater, Stated, Utils
 from nixt.defines import Watcher, Workdir, Worker
 
 

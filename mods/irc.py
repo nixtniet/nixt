@@ -12,9 +12,12 @@ import time
 import _thread
 
 
-from nixt.defines import Dicts, Event, Log, Methods, RLock, Queue
-from nixt.defines import Broker, Buffered, Message, Object, Task
-from nixt.defines import Cfg, Commands, Disk, Main, Mods
+from queue     import Queue
+from threading import Event, RLock
+
+
+from nixt.defines import Broker, Buffered, Cfg, Commands, Dicts, Disk, Log
+from nixt.defines import Main, Message, Methods, Mods, Object, Task
 
 
 logger = Log(__name__)
@@ -470,7 +473,7 @@ class IRC(Buffered):
         self.state.keeprunning = False
         self.state.stopkeep = True
         self.stop()
-        Task.begin(init)
+        Task.start(init)
 
     def rlog(self, txt):
         "log function that ignore ping/pong/etc."
@@ -512,8 +515,8 @@ class IRC(Buffered):
         self.msgs.ready.clear()
         Buffered.start(self)
         if not self.state.keeprunning:
-            Task.begin(self.keep, **kwargs)
-        Task.begin(self.doconnect, **kwargs)
+            Task.start(self.keep, **kwargs)
+        Task.start(self.doconnect, **kwargs)
 
     def stop(self):
         "stop client."
@@ -612,7 +615,7 @@ def cb_privmsg(msg):
             msg.text = msg.text[0].lower() + msg.text[1:]
         if msg.text:
             kwargs = {"name": msg.text and msg.text.split()[0]}
-            Task.begin(Commands.command, msg, **kwargs)
+            Task.start(Commands.command, msg, **kwargs)
 
 
 def cb_quit(msg):

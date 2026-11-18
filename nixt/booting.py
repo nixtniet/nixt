@@ -9,6 +9,9 @@ import time
 import _thread
 
 
+from threading import Event
+
+
 from .clients import Broker, Client
 from .command import Commands
 from .configs import Main
@@ -16,7 +19,7 @@ from .package import Mods
 from .persist import Workdir
 from .require import Cmd
 from .tasking import Task
-from .utility import MD5, Event, Log, Logging, Utils
+from .utility import MD5, Log, Logging, Utils
 
 
 logger = Log(__name__)
@@ -77,7 +80,7 @@ class Boot:
             mod = Mods.get(name)
             if not mod or "init" not in dir(mod):
                 continue
-            thrs.append(Task.begin(mod.init, name=f"init {name}"))
+            thrs.append(Task.start(mod.init, name=f"init {name}"))
         if thrs and wait:
             for thr in thrs:
                 thr.join()

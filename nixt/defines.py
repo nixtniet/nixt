@@ -22,9 +22,8 @@ from .persist import Disk, Locater, Stated, Workdir
 from .pooling import Pool, Worker
 from .repeats import Repeater
 from .require import Cmd
-from .tasking import Task
-from .utility import MD5, Event, Format, Log, Logging, Path, Time
-from .utility import Queue, RLock, Utils, Thread
+from .tasking import Task, Work
+from .utility import MD5, Format, Log, Logging, Time, Utils
 from .watcher import Watcher
 
 
@@ -50,7 +49,6 @@ __all__ = (
     'Disk',
     'Display',
     'Errors',
-    'Event',
     'Format',
     'Handler',
     'Locater',
@@ -64,17 +62,14 @@ __all__ = (
     'Object',
     'Output',
     'Parser',
-    'Path',
     'Pool',
-    'Queue',
-    'RLock',
     'Repeater',
     'Stated',
     'Task',
-    'Thread',
     'Time',
     'Utils',
     'Watcher',
+    'Work',
     'Workdir',
     'Worker',
     'cmd'

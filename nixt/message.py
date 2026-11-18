@@ -4,8 +4,10 @@
 "only the message"
 
 
+from threading import Event
+
+
 from .objects import Data
-from .utility import Event
 
 
 class Message(Data):

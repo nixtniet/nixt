@@ -10,12 +10,14 @@ import time
 import types
 
 
-from datetime import datetime
+from datetime  import datetime
+from pathlib   import Path
+from threading import RLock
 
 
 from .encoder import JSON
 from .methods import Dicts, Methods
-from .utility import Log, Path, RLock, Utils
+from .utility import Log, Utils
 
 
 logger = Log(__name__)
