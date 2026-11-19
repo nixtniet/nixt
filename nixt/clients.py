@@ -7,9 +7,9 @@
 import _thread
 
 
+from .default import Event, Queue, RLock
 from .handler import Handler
 from .tasking import Task
-from .utility import Event, Queue, RLock
 
 
 class Broker:

@@ -11,9 +11,10 @@ import time
 import types
 
 
+from .default import Path, RLock
 from .encoder import JSON
 from .methods import Dicts, Methods
-from .utility import Log, Path, RLock, Utils
+from .utility import Log, Utils
 
 
 logger = Log(__name__)
@@ -63,6 +64,16 @@ class Disk:
     lock = RLock()
 
     @classmethod
+    def cdir(cls, path):
+        "create directory."
+        if os.path.exists(path):
+            return
+        with cls.lock:
+            pth = Path(path)
+            if not os.path.exists(pth.parent):
+                pth.parent.mkdir(parents=True, exist_ok=True)
+
+    @classmethod
     def ident(cls, clz):
         "return ident string for object."
         return os.path.join(Methods.fqn(clz), *str(datetime.datetime.now(tz=None)).split())
@@ -89,7 +100,7 @@ class Disk:
         with cls.lock:
             pth = os.path.join(Workdir.wdr, base, path)
             logger.debug("write %s/%s", base, path)
-            Utils.cdir(pth)
+            cls.cdir(pth)
             with open(pth, "w", encoding="utf-8") as fpt:
                 JSON.dump(dct, fpt, indent=4)
             Cache.sync(path, dct)
@@ -285,7 +296,7 @@ class Workdir:
         "create directories."
         assert cls.wdr
         if not os.path.exists(cls.wdr):
-            Utils.cdir(cls.wdr)
+            Disk.cdir(cls.wdr)
         path = os.path.abspath(cls.wdr)
         for wpth in ["config", "logs", "mods", "store"]:
             pth = Path(os.path.join(path, wpth))

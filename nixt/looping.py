@@ -7,8 +7,8 @@
 import _thread
 
 
+from .default import Event, Queue
 from .tasking import Task
-from .utility import Event, Queue
 
 
 class Loop:
