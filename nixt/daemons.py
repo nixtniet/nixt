@@ -4,6 +4,10 @@
 "long-term running process"
 
 
+from .configs import Main
+from .persist import Workdir
+
+
 class Daemon:
 
     "detach from console"
