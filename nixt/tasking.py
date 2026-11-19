@@ -7,10 +7,7 @@
 import time
 
 
-from queue     import Queue
-from threading import Event, RLock, Thread
-
-
+from .default import Event, Queue, RLock, Thread
 from .excepts import Errors
 from .methods import Methods
 from .utility import Log

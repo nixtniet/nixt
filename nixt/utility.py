@@ -4,20 +4,18 @@
 "usefulness"
 
 
+import datetime
 import os
 import time
 import uuid
 
 
 from logging.handlers import TimedRotatingFileHandler
+from logging          import basicConfig, Formatter, StreamHandler
+from logging          import getLogger as Log
 
 
-from logging  import basicConfig, Formatter, StreamHandler
-from logging  import getLogger as Log
-
-
-from datetime import datetime
-from pathlib  import Path
+from .default import Path
 
 
 logger = Log(__name__)
@@ -234,7 +232,7 @@ class Time:
                     continue
             res = cls.date(word.strip())
             if not res:
-                date = datetime.fromtimestamp(time.time(), tz=None).date()
+                date = datetime.datetime.fromtimestamp(time.time(), tz=None).date()
                 word = f"{date.year}-{date.month}-{date.day}" + " " + word
                 res = cls.date(word.strip())
             if res:

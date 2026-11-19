@@ -1,4 +1,6 @@
 # This file is placed in the Public Domain.
+# pylint: disable=unused-import
+# ruff: noqa
 
 
 "default imports"
@@ -17,4 +19,3 @@ def __dir__():
         'RLock',
         'Thread'
     )
-           

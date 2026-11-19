@@ -4,17 +4,14 @@
 "path to object cache"
 
 
+import datetime
 import json
 import os
 import time
 import types
 
 
-from datetime  import datetime
-from pathlib   import Path
-from threading import RLock
-
-
+from .default import Path, RLock
 from .encoder import JSON
 from .methods import Dicts, Methods
 from .utility import Log, Utils
@@ -69,7 +66,7 @@ class Disk:
     @classmethod
     def ident(cls, clz):
         "return ident string for object."
-        return os.path.join(Methods.fqn(clz), *str(datetime.now(tz=None)).split())
+        return os.path.join(Methods.fqn(clz), *str(datetime.datetime.now(tz=None)).split())
 
     @classmethod
     def read(cls, path, base="store"):

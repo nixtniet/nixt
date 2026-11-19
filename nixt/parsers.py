@@ -11,8 +11,6 @@ class Parser:
 
     "parsing for commands"
 
-    typed = Methods.typed
-
     @classmethod
     def init(cls, obj, text, clean=False):
         "set default values."
@@ -56,16 +54,16 @@ class Parser:
                 continue
             if "-=" in spli:
                 key, value = spli.split("-=", maxsplit=1)
-                cls.typed(obj.silent, key, value)
-                cls.typed(obj.gets, key, value)
+                Methods.typed(obj.silent, key, value)
+                Methods.typed(obj.gets, key, value)
                 continue
             if "==" in spli:
                 key, value = spli.split("==", maxsplit=1)
-                cls.typed(obj.gets, key, value)
+                Methods.typed(obj.gets, key, value)
                 continue
             if "=" in spli:
                 key, value = spli.split("=", maxsplit=1)
-                cls.typed(obj.sets, key, value)
+                Methods.typed(obj.sets, key, value)
                 continue
             nr += 1
             if nr == 0:

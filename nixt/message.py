@@ -4,9 +4,7 @@
 "only the message"
 
 
-from threading import Event
-
-
+from .default import Event
 from .objects import Data
 
 

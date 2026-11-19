@@ -7,11 +7,8 @@
 import _thread
 
 
-from queue     import Queue
-from threading import Event, RLock
-
-
-from .handler import Handler
+from .default import Event, Queue, RLock
+from .looping import Handler
 from .tasking import Task
 
 

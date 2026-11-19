@@ -37,7 +37,6 @@ class Mods:
                 pkgname = pth.rsplit(os.sep, maxsplit=1)[-1]
                 cls.dir(pkgname, pth)
 
-
     @classmethod
     def dir(cls, pkgname, path):
         "add module/path."
