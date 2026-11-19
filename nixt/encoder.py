@@ -8,7 +8,7 @@ import json
 import types
 
 
-from .default import RLock
+from .generic import RLock
 
 
 class Encoder(json.JSONEncoder):

@@ -12,7 +12,7 @@ import _thread
 from .clients import Broker, Client
 from .command import Commands
 from .configs import Main
-from .default import Event
+from .generic import Event
 from .package import Mods
 from .persist import Workdir
 from .require import Cmd

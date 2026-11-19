@@ -7,7 +7,7 @@
 import _thread
 
 
-from .default import Event, Queue
+from .generic import Event, Queue
 from .tasking import Task
 
 

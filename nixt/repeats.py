@@ -7,7 +7,7 @@
 import time
 
 
-from .default import Event
+from .generic import Event
 from .tasking import Task
 
 

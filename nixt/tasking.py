@@ -7,8 +7,8 @@
 import time
 
 
-from .default import Event, Queue, RLock, Thread
 from .excepts import Errors
+from .generic import Event, Queue, RLock, Thread
 from .methods import Methods
 from .utility import Log
 

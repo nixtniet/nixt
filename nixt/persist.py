@@ -11,8 +11,8 @@ import time
 import types
 
 
-from .default import Path, RLock
 from .encoder import JSON
+from .generic import Path, RLock
 from .methods import Dicts, Methods
 from .utility import Log, Utils
 

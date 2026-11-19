@@ -7,7 +7,7 @@
 import os
 
 
-from .default import RLock
+from .generic import RLock
 from .methods import Methods
 
 
