@@ -4,8 +4,8 @@
 "only the message"
 
 
-from .default import Event
 from .objects import Data
+from .utility import Event
 
 
 class Message(Data):

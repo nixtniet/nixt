@@ -15,7 +15,9 @@ from logging          import basicConfig, Formatter, StreamHandler
 from logging          import getLogger as Log
 
 
-from .default import Path
+from pathlib   import Path
+from queue     import Queue
+from threading import Event, RLock, Thread
 
 
 logger = Log(__name__)
@@ -312,9 +314,14 @@ class Utils:
 def __dir__():
     return (
         'MD5',
+        'Event',
         'Format',
         'Log',
         'Logging',
+        'Path',
+        'Queue',
+        'RLock',
+        'Thread'
         'Time',
         'Utils',
     )

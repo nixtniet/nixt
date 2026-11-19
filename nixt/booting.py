@@ -12,12 +12,11 @@ import _thread
 from .clients import Broker, Client
 from .command import Commands
 from .configs import Main
-from .default import Event
 from .package import Mods
 from .persist import Workdir
 from .require import Cmd
 from .tasking import Task
-from .utility import MD5, Log, Logging, Utils
+from .utility import MD5, Event, Log, Logging, Utils
 
 
 logger = Log(__name__)

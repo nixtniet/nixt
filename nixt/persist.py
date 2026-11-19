@@ -11,10 +11,9 @@ import time
 import types
 
 
-from .default import Path, RLock
 from .encoder import JSON
 from .methods import Dicts, Methods
-from .utility import Log, Utils
+from .utility import Log, Path, RLock, Utils
 
 
 logger = Log(__name__)

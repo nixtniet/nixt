@@ -11,7 +11,8 @@ from .configs import Cfg, Config, Main
 from .daemons import Daemon
 from .encoder import JSON, JSONL
 from .excepts import Errors
-from .looping import Handler, Loop, Worker
+from .handler import Handler
+from .looping import Loop, Worker
 from .message import Message
 from .methods import Dicts, Methods
 from .objects import Data, Object

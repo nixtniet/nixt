@@ -7,10 +7,9 @@
 import time
 
 
-from .default import Event, Queue, RLock, Thread
 from .excepts import Errors
 from .methods import Methods
-from .utility import Log
+from .utility import Event, Log, Queue, RLock, Thread
 
 
 logger = Log(__name__)

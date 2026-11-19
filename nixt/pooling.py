@@ -7,8 +7,8 @@
 import os
 
 
-from .default import RLock
 from .methods import Methods
+from .utility import RLock
 
 
 class Pool:

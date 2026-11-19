@@ -7,8 +7,8 @@
 import time
 
 
-from .default import Event
 from .tasking import Task
+from .utility import Event
 
 
 class Repeater:
