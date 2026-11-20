@@ -5,29 +5,29 @@
 
 
 CORE = {
-    "booting": "78685aa6edfce77aa8073322dd79db61",
-    "clients": "c19968a482c8a6005c9d28a361f7cb6b",
+    "booting": "51956f6dfac85a75729208ab945c89e9",
+    "clients": "3e30ae812b637fd23432631f8da26f65",
     "command": "0fa1623d9435d9482e4cc606ddf1317c",
     "configs": "dcbb9c9a94ac0daf8ef5615dddc1abc5",
-    "default": "a3fa370059974242c58de88397f98a08",
     "defines": "288a190b217f53a108f95794979dcbcf",
-    "encoder": "b9dd4e49bd87c33aa42ca86e13cb1c3e",
+    "encoder": "fe5be88ea51609027eb22002b71cac3a",
     "excepts": "8587223bf546f9c51104f0941e92b729",
+    "generic": "a3fa370059974242c58de88397f98a08",
     "handler": "3837f84064f721cf8d532d6da1b4b42c",
-    "looping": "9a6ca0c0691449fed3f055a6ec7c8a18",
-    "message": "799e7c3e5326ae28091779b9e13ca9d8",
+    "looping": "211bfcc87b27c08e1829b8ec69d58bd5",
+    "message": "f9762b6b0eaf36df130af42a976adcab",
     "methods": "a41d9fdad8ba989e9f913e1dfd60f9dd",
     "objects": "e7d8664b921306546ac5df9bf30c9b65",
     "package": "c0b22882547ee256b475ba19b9c9eec9",
     "parsers": "32a7060c0e0e58eaa3a8ac2fe0f1b3f0",
-    "persist": "031a56839b00c3d5f2b53108875339db",
-    "pooling": "3c2a59cf38c69896a6623df614ee99d8",
-    "repeats": "17f738910f4721cd0f0c5fbc0161c7ec",
+    "persist": "d3bc567aef4fb14f40e0533acb3c8032",
+    "pooling": "dbb1ce4c9ed9a749594749c89c55be9f",
+    "repeats": "dd05ef7ab6083966bbee0826a9c87b76",
     "require": "0b48a5e773f1753f610c7ea152ac2053",
     "runtime": "54abe7f91bfdcbdca0eb7bad4e929bac",
-    "tasking": "24bdb4f794f13652eb9b8277dda0af66",
+    "tasking": "3a5ec2b718eb59a0180d690efae281fd",
     "utility": "ed1e4c1cd1de63fa33e74e1887957c78",
-    "watcher": "e0259d02435af986febf3090c1b165f0"
+    "watcher": "c58496dfa9df7e9bc58b2226318ecfc4"
 }
 
 

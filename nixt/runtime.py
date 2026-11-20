@@ -4,6 +4,7 @@
 "runtime"
 
 
+import os
 import sys
 import time
 
@@ -11,7 +12,7 @@ import time
 from argparse import SUPPRESS, ArgumentParser, RawTextHelpFormatter
 
 
-from .defines import Boot, Client, Cmd, Commands, Daemon, Main
+from .defines import Boot, Client, Cmd, Commands, Main
 from .defines import MD5, Message, Methods, Mods
 
 
@@ -58,6 +59,50 @@ class Arguments:
         )
 
 
+class Daemon:
+
+    "detach from console"
+
+    @classmethod
+    def daemon(cls):
+        "run in the background."
+        pid = os.fork()
+        if pid != 0:
+            os._exit(0)
+        os.setsid()
+        pid2 = os.fork()
+        if pid2 != 0:
+            os._exit(0)
+        if not Main.verbose:
+            cls.null(sys.stdin)
+            cls.null(sys.stdout)
+            cls.null(sys.stderr)
+        os.umask(0o077)
+        if not Main.nochdir:
+            os.chdir("/")
+        os.nice(10)
+
+    @classmethod
+    def null(cls, iostream):
+        "route to /dev/null."
+        with open('/dev/null', 'r', encoding="utf-8") as sis:
+            os.dup2(sis.fileno(), iostream.fileno())
+
+    @classmethod
+    def pid(cls):
+        "return pid path."
+        return Workdir.pid(Main.name)
+
+    @classmethod
+    def privileges(cls):
+        "drop privileges."
+        import getpass
+        import pwd
+        pwnam2 = pwd.getpwnam(getpass.getuser())
+        os.setgid(pwnam2.pw_gid)
+        os.setuid(pwnam2.pw_uid)
+
+
 class Kernel(Boot, Daemon):
 
     "init/shutdown"
@@ -70,6 +115,37 @@ class Kernel(Boot, Daemon):
         tmr = time.ctime(time.time()).replace("  ", " ")
         print(f"{Main.name.upper()} {tmr} {Main.level.upper() or 'INFO'} ({MD5.coremd5})")
         sys.stdout.flush()
+
+    @classmethod
+    def boot(cls):
+        "start the kernel."
+        cls.configure()
+        if Main.verbose:
+            cls.banner()
+        if Main.all:
+            Main.mods = ",".join(Mods.list())
+        Commands.table()
+        Mods.table()
+        if Main.scanner:
+            Commands.scanner()
+        Commands.add(Cmd.cmd)
+
+    @classmethod
+    def wrap(cls, func, *args, dofinal=None):
+        "restore console."
+        import termios
+        try:
+            old = termios.tcgetattr(sys.stdin.fileno())
+        except termios.error:
+            old = None
+        try:
+            cls.wrapped(func, *args)
+        except (KeyboardInterrupt, EOFError):
+            pass
+        if old and old[0]:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
+        if dofinal:
+            dofinal()
 
 
 class CLI(Client):

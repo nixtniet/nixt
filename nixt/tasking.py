@@ -18,7 +18,7 @@ logger = Log(__name__)
 
 class Work(Thread):
 
-    "unit of thread"
+    "unit of work"
 
     block = Event()
     lock = RLock()

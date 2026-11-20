@@ -4,7 +4,7 @@
 "interface"
 
 
-from .booting import Boot, Daemon
+from .booting import Boot
 from .clients import Broker, Buffer, Client, Clients, Display, Output
 from .command import Commands
 from .configs import Cfg, Config, Main
