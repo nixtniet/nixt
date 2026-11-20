@@ -5,11 +5,11 @@
 
 
 CORE = {
-    "booting": "51956f6dfac85a75729208ab945c89e9",
+    "booting": "728411b3d6718e627677021c578c2e46",
     "clients": "3e30ae812b637fd23432631f8da26f65",
     "command": "0fa1623d9435d9482e4cc606ddf1317c",
     "configs": "dcbb9c9a94ac0daf8ef5615dddc1abc5",
-    "defines": "288a190b217f53a108f95794979dcbcf",
+    "defines": "c0433ba104cf5e69138711b5f375351a",
     "encoder": "fe5be88ea51609027eb22002b71cac3a",
     "excepts": "8587223bf546f9c51104f0941e92b729",
     "generic": "a3fa370059974242c58de88397f98a08",
@@ -24,8 +24,8 @@ CORE = {
     "pooling": "dbb1ce4c9ed9a749594749c89c55be9f",
     "repeats": "dd05ef7ab6083966bbee0826a9c87b76",
     "require": "0b48a5e773f1753f610c7ea152ac2053",
-    "runtime": "54abe7f91bfdcbdca0eb7bad4e929bac",
-    "tasking": "3a5ec2b718eb59a0180d690efae281fd",
+    "runtime": "a7661827c6bd79efc9112ba3c0e3d09e",
+    "tasking": "8c7c2ea6608bef32e785648a7cabd037",
     "utility": "ed1e4c1cd1de63fa33e74e1887957c78",
     "watcher": "c58496dfa9df7e9bc58b2226318ecfc4"
 }
