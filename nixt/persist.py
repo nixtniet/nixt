@@ -11,10 +11,12 @@ import time
 import types
 
 
+from .configs import Main
 from .encoder import JSON
 from .generic import Path, RLock
+from .loggers import Log
 from .methods import Dicts, Methods
-from .utility import Log, Utils
+from .utility import Utils
 
 
 logger = Log(__name__)
@@ -232,13 +234,17 @@ class Locater:
         return path.rsplit('store', maxsplit=1)[-1][1:]
 
 
-
-
 class Workdir:
 
     "the store everything directory"
 
     wdr = ""
+
+    @classmethod
+    def configure(cls, wdr=None):
+        "configure storage path."
+        cls.wdr = wdr or Main.wdr or cls.wdr or cls.home(Main.name)
+        cls.skel()
 
     @classmethod
     def home(cls, name):

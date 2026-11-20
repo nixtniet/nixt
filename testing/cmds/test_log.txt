@@ -6,7 +6,7 @@
 
 
 >>> from nixt.defines import Boot, cmd
->>> Boot.configure(".test")
+>>> Boot.configure()
 
 >>> cmd('log')
 ['log <txt>']

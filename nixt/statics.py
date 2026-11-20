@@ -5,29 +5,29 @@
 
 
 CORE = {
-    "booting": "728411b3d6718e627677021c578c2e46",
+    "booting": "db9e8893b32bc512629db8ea2d1e5e28",
     "clients": "3e30ae812b637fd23432631f8da26f65",
     "command": "0fa1623d9435d9482e4cc606ddf1317c",
     "configs": "dcbb9c9a94ac0daf8ef5615dddc1abc5",
-    "defines": "c0433ba104cf5e69138711b5f375351a",
+    "defines": "5af1ec1204691c59dd02b996857f8b5c",
     "encoder": "fe5be88ea51609027eb22002b71cac3a",
-    "excepts": "8587223bf546f9c51104f0941e92b729",
+    "excepts": "5757aecc90e0e7651d0a5579ae06a3df",
     "generic": "a3fa370059974242c58de88397f98a08",
-    "handler": "3837f84064f721cf8d532d6da1b4b42c",
-    "looping": "211bfcc87b27c08e1829b8ec69d58bd5",
+    "handler": "dfa1391f122a6fb842c10c0c2636b366",
+    "loggers": "a92fa96737530a43a8ee38d8dbb31ee5",
     "message": "f9762b6b0eaf36df130af42a976adcab",
     "methods": "a41d9fdad8ba989e9f913e1dfd60f9dd",
     "objects": "e7d8664b921306546ac5df9bf30c9b65",
-    "package": "c0b22882547ee256b475ba19b9c9eec9",
-    "parsers": "32a7060c0e0e58eaa3a8ac2fe0f1b3f0",
-    "persist": "d3bc567aef4fb14f40e0533acb3c8032",
-    "pooling": "dbb1ce4c9ed9a749594749c89c55be9f",
+    "package": "929f61d2608a31fac37fcebb9d58d83e",
+    "persist": "3846760f0ae6283392c44f4c14d0f16f",
     "repeats": "dd05ef7ab6083966bbee0826a9c87b76",
-    "require": "0b48a5e773f1753f610c7ea152ac2053",
-    "runtime": "a7661827c6bd79efc9112ba3c0e3d09e",
-    "tasking": "8c7c2ea6608bef32e785648a7cabd037",
-    "utility": "ed1e4c1cd1de63fa33e74e1887957c78",
-    "watcher": "c58496dfa9df7e9bc58b2226318ecfc4"
+    "require": "19567f32d9ba34b02081ceda6a1f39ab",
+    "runtime": "bbeb01afc0ea9eb705251aab0d93e38b",
+    "sources": "c168580436a6ded34ed0bd314a4d1a9c",
+    "tasking": "50b81e0036e525ddec401aac493ad6de",
+    "utility": "f5304027dac7144d25eba3fd54029903",
+    "watcher": "c58496dfa9df7e9bc58b2226318ecfc4",
+    "workers": "d533f97b8b726b5f7dfcbaf4a6fda5cc"
 }
 
 

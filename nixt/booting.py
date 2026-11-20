@@ -10,14 +10,13 @@ import _thread
 
 
 from .clients import Broker, Client
-from .command import Commands
-from .configs import Main
 from .generic import Event
+from .loggers import Log, Logging
 from .package import Mods
 from .persist import Workdir
-from .require import Cmd
+from .sources import MD5
 from .tasking import Task
-from .utility import MD5, Log, Logging, Utils
+from .utility import Utils
 
 
 logger = Log(__name__)
@@ -31,13 +30,10 @@ class Boot:
     stopped = Event()
 
     @classmethod
-    def configure(cls, wdr=""):
+    def configure(cls):
         "setup basic variables"
-        Main.level = Main.level or "warning"
-        Logging.size(len(Main.name))
-        Logging.level(Main.level)
-        Workdir.wdr = wdr or Main.wdr or Workdir.wdr or Workdir.home(Main.name)
-        Workdir.skel()
+        Logging.configure()
+        Workdir.configure()
         Mods.configure()
         MD5.core()
 

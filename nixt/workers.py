@@ -8,10 +8,11 @@ import os
 
 
 from .generic import RLock
+from .handler import Loop
 from .methods import Methods
 
 
-class Pool:
+class Workers:
 
     "multiple workers"
 
@@ -51,7 +52,28 @@ class Pool:
             cls.nrlast += 1
 
 
+class Worker(Loop):
+
+    "run jobs"
+
+    def run(self, *args, **kwargs):
+        "running."
+
+    def loop(self):
+        "loop to handle fetch jobs."
+        while not self.stopped.is_set():
+            job = self.queue.get()
+            if job is None:
+                break
+            self.run(*job)
+        self.done.set()
+
+    def wait(self):
+        "skip wait."
+
+
 def __dir__():
     return (
-        'Pool',
+        'Workers',
+        'Worker'
     )

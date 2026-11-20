@@ -7,14 +7,14 @@
 import unittest
 
 
-from nixt.pooling import Pool
+from nixt.workers import Workers
 
 
-class TestRunner(unittest.TestCase):
+class TestWorkers(unittest.TestCase):
 
     "runner unittests"
 
     def test_construct(self):
         "test runner construction."
-        pool = Pool()
-        self.assertTrue(type(pool), Pool)
+        workers = Workers()
+        self.assertTrue(type(workers), Workers)

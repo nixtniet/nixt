@@ -8,7 +8,7 @@
 import unittest
 
 
-from nixt.defines import Handler, Message
+from nixt.defines import Handler, Loop, Message
 
 
 buffer = []
@@ -86,3 +86,13 @@ class TestHandler(unittest.TestCase):
         "test engine stop."
         self.hdl.stop()
         self.assertTrue(self.hdl.stopped.is_set())
+
+
+class TestLoop(unittest.TestCase):
+
+    "looping unittests"
+
+    def test_construct(self):
+        "test loop construction."
+        loop = Loop()
+        self.assertTrue(type(loop), Loop)

@@ -10,7 +10,7 @@
 >>> Main.path = "mods,extra"
 >>> Workdir.wdr  = ".test"
 >>> if os.path.exists(".test"): shutil.rmtree(".test")
->>> Boot.boot()
+>>> Boot.configure()
 >>> Commands.scanner()
 >>> cmd("log txt1")
 ['ok']

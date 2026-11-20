@@ -8,9 +8,11 @@ import os
 
 
 from .configs import Main
+from .loggers import Log
 from .methods import Methods
 from .persist import Workdir
-from .utility import MD5, Log, Utils
+from .sources import MD5
+from .utility import Utils
 
 
 logger = Log(__name__)

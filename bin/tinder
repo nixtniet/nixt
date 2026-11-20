@@ -16,11 +16,84 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from nixt.defines import Boot, Client, Commands, Dicts, Main, Message, Mods
-from nixt.defines import Parser, Pool, Task, Time, Workdir
+from nixt.defines import Boot, Client, Commands, Dicts, Main, Message
+from nixt.defines import Methods, Mods, Task, Time, Workdir, Workers
 
 
 Workdir.wdr = ".test"
+
+
+class Parser:
+
+    "parsing for commands"
+
+    @classmethod
+    def init(cls, obj, text, clean=False):
+        "set default values."
+        data = {
+            "args": [],
+            "cmd": "",
+            "gets": {},
+            "index": None,
+            "init": "",
+            "mod": "",
+            "opts": "",
+            "otxt": text,
+            "rest": "",
+            "silent": {},
+            "sets": {},
+            "text": text
+        }
+        for k, v in data.items():
+            if not clean:
+                setattr(obj, k, data.get(k, v) or v)
+            else:
+                setattr(obj, k, v)
+
+    @classmethod
+    def parse(cls, obj, text=None, clean=False):
+        "parse text for command and arguments."
+        if text is None:
+            text = obj.text
+        cls.init(obj, text, clean)
+        args = []
+        nr = -1
+        for spli in text.split():
+            if spli.startswith("--"):
+                obj.opts += f",{spli[2:]}"
+                continue
+            if spli.startswith("-"):
+                try:
+                    obj.index = int(spli[1:])
+                except ValueError:
+                    obj.opts += spli[1:]
+                continue
+            if "-=" in spli:
+                key, value = spli.split("-=", maxsplit=1)
+                Methods.typed(obj.silent, key, value)
+                Methods.typed(obj.gets, key, value)
+                continue
+            if "==" in spli:
+                key, value = spli.split("==", maxsplit=1)
+                Methods.typed(obj.gets, key, value)
+                continue
+            if "=" in spli:
+                key, value = spli.split("=", maxsplit=1)
+                Methods.typed(obj.sets, key, value)
+                continue
+            nr += 1
+            if nr == 0:
+                obj.cmd = spli
+                continue
+            args.append(spli)
+        if args:
+            obj.args = args
+            obj.rest = " ".join(obj.args)
+            obj.text = obj.cmd + " " + obj.rest
+        if "v" in obj.opts:
+            obj.verbose = True
+        if "t" in obj.opts:
+            obj.threaded = True
 
 
 class CLI(Client):
@@ -56,10 +129,10 @@ class Kernel(Boot):
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
         if Main.threaded:
-            Pool.nrcpu = os.cpu_count()
+            Workers.nrcpu = os.cpu_count()
         else:
-            Pool.nrcpu = 1
-        Pool.init(Pool.nrcpu, CLI)
+            Workers.nrcpu = 1
+        Workers.init(Workers.nrcpu, CLI)
 
     @classmethod
     def collect(cls):
@@ -77,7 +150,7 @@ class Kernel(Boot):
         lap = Time.elapsed(endtime-Kernel.starttime)
         percall = (endtime-Kernel.starttime)/total
         print(f"{Dicts.fmt(vars(Main), skip='otxt,txt')}")
-        print(f"nrcpu: {Pool.nrcpu} events: {total}")
+        print(f"nrcpu: {Workers.nrcpu} events: {total}")
         print(f"total: {lap} nrs: {Kernel.nrevents} call: {percall}")
         print(threading.enumerate())
 
@@ -110,7 +183,7 @@ class Kernel(Boot):
                 evt = Message()
                 evt.kind = "command"
                 evt.text = f"{cmd} {ex}"
-                Pool.put(evt)
+                Workers.put(evt)
                 cls.messages.append(evt)
 
     @classmethod

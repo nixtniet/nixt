@@ -13,7 +13,7 @@ from argparse import SUPPRESS, ArgumentParser, RawTextHelpFormatter
 
 
 from .defines import Boot, Client, Cmd, Commands, Main
-from .defines import MD5, Message, Methods, Mods
+from .defines import MD5, Message, Methods, Mods, Workdir
 
 
 class Arguments:
