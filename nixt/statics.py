@@ -5,16 +5,16 @@
 
 
 CORE = {
-    "booting": "a1331589b5fde1852f7d65a779be0687",
+    "booting": "275a21055ff8318b6a441fae213f93fe",
     "brokers": "ea1b63c54e0188f7a97c4315a752554d",
     "clients": "9585eadc08bfb67c88b0774b2a7b6d90",
     "command": "4cb5c4d1476359d626bbcae4ab8acfde",
     "configs": "dcbb9c9a94ac0daf8ef5615dddc1abc5",
-    "defines": "6eb3e0fca740f084535b689edd4c55c5",
+    "defines": "3a480dbbb57ed1d8f079e0e064c595e5",
     "encoder": "fe5be88ea51609027eb22002b71cac3a",
     "excepts": "8587223bf546f9c51104f0941e92b729",
     "generic": "a3fa370059974242c58de88397f98a08",
-    "handler": "f2ea983b3f120a1073cffbc04cd920af",
+    "handler": "6adf78ee7cf21349b3b722539c73a991",
     "message": "f9762b6b0eaf36df130af42a976adcab",
     "methods": "a41d9fdad8ba989e9f913e1dfd60f9dd",
     "objects": "e7d8664b921306546ac5df9bf30c9b65",
