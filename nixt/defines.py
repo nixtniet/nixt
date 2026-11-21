@@ -5,15 +5,15 @@
 
 
 from .booting import Boot
-from .clients import Broker, Buffer, Client, Clients, Display, Output
+from .brokers import Broker
+from .clients import Buffer, Client, Clients, Display, Output
 from .command import Commands
 from .configs import Cfg, Config, Main
 from .encoder import JSON, JSONL
 from .excepts import Errors
-from .functio import Dicts
 from .handler import Handler, Loop
 from .message import Message
-from .methods import Methods
+from .methods import Dicts, Methods
 from .objects import Data, Object
 from .package import Mods
 from .parsers import Parser

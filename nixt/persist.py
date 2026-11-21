@@ -13,9 +13,8 @@ import types
 
 from .configs import Main
 from .encoder import JSON
-from .functio import Dicts
 from .generic import Path, RLock
-from .methods import Methods
+from .methods import Dicts, Methods
 from .utility import Log, Utils
 
 

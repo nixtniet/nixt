@@ -20,6 +20,7 @@ from nixt.defines import Boot, Client, Commands, Dicts, Main, Message, Parser
 from nixt.defines import Mods, Task, Time, Workdir, Workers
 
 
+Main.wait = True
 Workdir.wdr = ".test"
 
 

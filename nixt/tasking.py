@@ -70,16 +70,22 @@ class Task:
 
     "start a task"
 
+    later = []
     lock = RLock()
-
+    todo = []
+    
     @classmethod
     def start(cls, func, *args, **kwargs):
         "start a new thread running function with arguments."
         with cls.lock:
-            work = Work(func, *args, **kwargs)
-            work.start()
-            return work
-
+            while True:
+                try:
+                    work = Work(func, *args, **kwargs)
+                    work.start()
+                    return work
+                except RuntimeError:
+                    time.sleep(0.1)
+                
 
 def __dir__():
     return (
