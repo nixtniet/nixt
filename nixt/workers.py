@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"runners/clients"
+"pool of workers"
 
 
 import os

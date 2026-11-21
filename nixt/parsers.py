@@ -4,10 +4,7 @@
 "configuration"
 
 
-from nixt.configs import Main
-from nixt.methods import Dicts, Methods
-from nixt.package import Mods
-from nixt.persist import Disk
+from .methods import Methods
 
 
 class Parser:
@@ -83,38 +80,7 @@ class Parser:
             obj.threaded = True
 
 
-def cfg(msg):
-    "configure modules."
-    Parser.parse(msg)
-    if not msg.args:
-        mods = "main," + Mods.has('Config')
-        if mods and mods[-1] == ",":
-            mods = mods[:-1]
-        msg.iface(f"<{mods}>")
-        return
-    name = msg.args[0]
-    if name != "main":
-        mod = Mods.get(name)
-        if not mod:
-            msg.reply(f"no {name} module found.")
-            return
-        config = getattr(mod, "Config", None)
-        if not config:
-            msg.reply(f"no {name} config found.")
-            return
-    else:
-        config = Main
-    if not msg.sets:
-        msg.reply(
-            Dicts.fmt(
-                vars(config),
-                vars(config).keys(),
-                skip=["word",]
-            )
-        )
-        return
-    dct = {}
-    Dicts.edit(dct, msg.sets)
-    Methods.update(config, dct)
-    Disk.write(vars(config), name, "config")
-    msg.ok()
+def __dir__():
+    return (
+        "Parser",
+   )

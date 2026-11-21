@@ -16,6 +16,7 @@ from .defines import Boot, Client, Commands, Main, MD5, Message, Methods
 from .defines import Mods, Workdir
 from .require import Cmd
 
+
 class Arguments:
 
     "comamnd line arguments"

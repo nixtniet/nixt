@@ -13,7 +13,7 @@ from .handler import Handler
 from .tasking import Task
 
 
-class Output:
+class Display:
 
     "unit of display"
 
@@ -54,12 +54,12 @@ class Output:
         self.raw(text)
 
 
-class Display(Output):
+class Output(Display):
 
     "dedicated output loop"
 
     def __init__(self):
-        Output.__init__(self)
+        super().__init__()
         self.oqueue = Queue()
         self.ostopped = Event()
 
@@ -101,22 +101,9 @@ class Display(Output):
             _thread.interrupt_main()
 
 
-class Client(Handler, Output):
+class Client(Handler, Display):
 
     "display with coupled handler"
-
-    def __init__(self):
-        Handler.__init__(self)
-        Output.__init__(self)
-
-    def raw(self, text):
-        "raw output."
-        raise NotImplementedError
-
-
-class Buffer(Handler, Display):
-
-    "buffered output"
 
     def __init__(self):
         Handler.__init__(self)
@@ -126,15 +113,28 @@ class Buffer(Handler, Display):
         "raw output."
         raise NotImplementedError
 
+
+class Buffer(Handler, Output):
+
+    "buffered output"
+
+    def __init__(self):
+        Handler.__init__(self)
+        Output.__init__(self)
+
+    def raw(self, text):
+        "raw output."
+        raise NotImplementedError
+
     def start(self, **kwargs):
         "start output loop."
         Handler.start(self, **kwargs)
-        Display.start(self, **kwargs)
+        Output.start(self, **kwargs)
 
     def stop(self):
         "stop output loop."
         Handler.stop(self)
-        Display.stop(self)
+        Output.stop(self)
 
 
 def __dir__():

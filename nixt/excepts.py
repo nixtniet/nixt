@@ -23,7 +23,7 @@ class Errors:
 
     @classmethod
     def defer(cls, exc, *args):
-        "add an exception"
+        "add an exception."
         excp = exc.with_traceback(exc.__traceback__)
         if excp not in cls.errors:
             cls.errors.append(excp)
@@ -32,7 +32,7 @@ class Errors:
 
     @classmethod
     def format(cls, exc):
-        "format an exception"
+        "format an exception."
         return traceback.format_exception(type(exc), exc, exc.__traceback__)
 
     @classmethod

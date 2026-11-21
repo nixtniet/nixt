@@ -98,10 +98,8 @@ class Worker(Handler):
         "skip wait."
 
 
-
-
 def __dir__():
     return (
         'Handler',
-        'Work'
+        'Worker'
     )

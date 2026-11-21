@@ -30,7 +30,7 @@ class Boot:
 
     @classmethod
     def configure(cls):
-        "setup basic variables"
+        "setup basic variables."
         Logging.configure()
         Workdir.configure()
         Mods.configure()

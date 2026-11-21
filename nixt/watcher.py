@@ -64,7 +64,7 @@ class Watcher:
 
     @classmethod
     def stop(cls):
-        "stop xallback loop."
+        "stop callback loop."
         cls.running.clear()
 
     @classmethod

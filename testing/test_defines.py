@@ -16,4 +16,4 @@ class TestDefines(unittest.TestCase):
 
     def test_dir(self):
         "internal interface check."
-        self.assertEqual(len(dir(dev)), 39)
+        self.assertEqual(len(dir(dev)), 38)
