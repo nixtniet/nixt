@@ -303,7 +303,7 @@ class Fetching(Worker):
                          feed.get("display_list", "")
                         ) or []
 
-    def run(self, *args, **kwargs):
+    def work(self, *args, **kwargs):
         "poll all feeds."
         counter = 0
         fnm, feed, silent = args

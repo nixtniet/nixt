@@ -9,7 +9,7 @@ import time
 import _thread
 
 
-from .brokers import Broker 
+from .brokers import Broker
 from .clients import Client
 from .generic import Event
 from .package import Mods

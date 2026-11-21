@@ -4,6 +4,9 @@
 "message handler"
 
 
+import _thread
+
+
 from .generic import Event, Queue
 from .tasking import Task
 

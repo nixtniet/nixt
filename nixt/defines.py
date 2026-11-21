@@ -35,7 +35,6 @@ __all__ = (
     'Cfg',
     'Client',
     'Clients',
-    'Cmd',
     'Commands',
     'Config',
     'Data',
