@@ -20,7 +20,6 @@ class Mods:
 
     "modules"
 
-    core = {}
     dirs = {}
     md5s = {}
     mods = {}
@@ -87,7 +86,7 @@ class Mods:
 
     @classmethod
     def list(cls, skip=""):
-        "comma seperated list of available modules."
+        "list of available modules."
         mods = []
         for name, path in cls.dirs.items():
             if name in skip:
@@ -103,25 +102,13 @@ class Mods:
         return os.path.join(Methods.where(Mods), name)
 
     @classmethod
-    def statics(cls):
+    def table(cls):
         "read table,"
-        try:
-            from .statics import CORE
-            cls.core.update(CORE)
-        except (ImportError, SyntaxError, ValueError):
-            pass
         try:
             from .statics import MODULES
             cls.md5s.update(MODULES)
         except (ImportError, SyntaxError, ValueError):
             pass
-
-    @classmethod
-    def table(cls):
-        "read static tables."
-        cls.statics()
-        if cls.core:
-            MD5.check(cls.core)
 
 
 def __dir__():

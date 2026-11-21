@@ -125,6 +125,7 @@ class Kernel(Boot, Daemon):
             cls.banner()
         if Main.all:
             Main.mods = ",".join(Mods.list())
+        cls.table()
         Commands.table()
         Mods.table()
         if Main.scanner:

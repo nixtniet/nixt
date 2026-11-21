@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"a function with an object/dict as the first argument"
+"a function's first argument"
 
 
 import inspect
@@ -11,7 +11,7 @@ import types
 
 class Dicts:
 
-    "yeah"
+    "functions with a dictionary as the first argument"
 
     @classmethod
     def deleted(cls, dct):
@@ -142,7 +142,7 @@ class Dicts:
 
 class Methods:
 
-    "methods"
+    "functions with an object as the first argument"
 
     @classmethod
     def clsname(cls, obj):

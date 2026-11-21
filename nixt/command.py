@@ -94,18 +94,13 @@ class Commands:
             cls.scan(mod)
 
     @classmethod
-    def statics(cls):
+    def table(cls):
         "read table."
         try:
             from .statics import NAMES
             cls.names.update(NAMES)
         except (ImportError, SyntaxError, ValueError):
             pass
-
-    @classmethod
-    def table(cls):
-        "read static tables."
-        cls.statics()
         if not cls.names:
             cls.scanner()
 

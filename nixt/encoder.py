@@ -58,26 +58,26 @@ class JSON:
     "json wrapper"
 
     @classmethod
-    def dump(cls, *args, **kw):
+    def dump(cls, *args, **kwargs):
         "dump object to disk."
-        kw["cls"] = Encoder
-        return json.dump(*args, **kw)
+        kwargs["cls"] = Encoder
+        return json.dump(*args, **kwargs)
 
     @classmethod
-    def dumps(cls, *args, **kw):
+    def dumps(cls, *args, **kwargs):
         "dump object to string."
-        kw["cls"] = Encoder
-        return json.dumps(*args, **kw)
+        kwargs["cls"] = Encoder
+        return json.dumps(*args, **kwargs)
 
     @classmethod
-    def load(cls, s, *args, **kw):
+    def load(cls, s, *args, **kwargs):
         "load object from disk."
-        return json.load(s, *args, **kw)
+        return json.load(s, *args, **kwargs)
 
     @classmethod
-    def loads(cls, s, *args, **kw):
+    def loads(cls, s, *args, **kwargs):
         "load object from string."
-        return json.loads(s, *args, **kw)
+        return json.loads(s, *args, **kwargs)
 
 
 class JSONL(JSON):
@@ -85,17 +85,17 @@ class JSONL(JSON):
     "line oriented"
 
     @classmethod
-    def read(cls, fp, *args, **kw):
+    def read(cls, fp, *args, **kwargs):
         "read from file."
-        return cls.load(fp, *args, **kw)
+        return cls.load(fp, *args, **kwargs)
 
     @classmethod
-    def write(cls, obj, fp, *args, **kw):
+    def write(cls, obj, fp, *args, **kwargs):
         "dump object to disk."
-        kw["indent"] = None
-        kw["skipkeys"] = True
-        kw["sort_keys"] = True
-        cls.dump(obj, fp, *args, **kw)
+        kwargs["indent"] = None
+        kwargs["skipkeys"] = True
+        kwargs["sort_keys"] = True
+        cls.dump(obj, fp, *args, **kwargs)
         fp.write("\n")
         fp.flush()
 

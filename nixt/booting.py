@@ -25,6 +25,7 @@ class Boot:
 
     "at startup"
 
+    core = {}
     running = Event()
     stopped = Event()
 
@@ -85,6 +86,17 @@ class Boot:
                     break
                 time.sleep(0.01)
         cls.stopped.set()
+
+    @classmethod
+    def table(cls):
+        "read table,"
+        try:
+            from .statics import CORE
+            cls.core.update(CORE)
+        except (ImportError, SyntaxError, ValueError):
+            pass
+        if cls.core:
+            MD5.check(cls.core)
 
     @classmethod
     def wrapped(cls, func, *args):
