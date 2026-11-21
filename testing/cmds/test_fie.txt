@@ -5,16 +5,20 @@
 "plugins"
 
 
->>> from nixt.defines import cmd
+>>> from nixt.command import cmd
+
 
 >>> cmd("log test")
 ['ok']
 
+
 >>> cmd("fie")
 ['log,rss']
 
+
 >>> cmd("fie test")
 ['no attributes']
+
 
 >>> cmd("fie log")
 ['txt']

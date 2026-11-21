@@ -5,11 +5,14 @@
 "plugins"
 
 
->>> from nixt.defines import Boot, cmd
+>>> from nixt.defines import Boot
+>>> from nixt.command import cmd
 >>> Boot.configure()
+
 
 >>> cmd("pwd")
 ['pwd <nick> <password>']
+
 
 >>> cmd("pwd bla mekker")
 ['AGJsYQBtZWtrZXI=']

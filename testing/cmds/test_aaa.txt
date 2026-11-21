@@ -6,7 +6,8 @@
 
 >>> import os, shutil, sys
 >>> sys.path.insert(0, os.getcwd())
->>> from nixt.defines import Boot, Commands, Main, Workdir, cmd
+>>> from nixt.defines import Boot, Commands, Main, Workdir
+>>> from nixt.command import cmd
 >>> Main.path = "mods,extra"
 >>> Workdir.wdr  = ".test"
 >>> if os.path.exists(".test"): shutil.rmtree(".test")

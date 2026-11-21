@@ -5,7 +5,8 @@
 "plugins"
 
 
->>> from nixt.defines import cmd
+>>> from nixt.command import cmd
+
 
 >>> cmd("tdo")
 ['tdo <txt>']

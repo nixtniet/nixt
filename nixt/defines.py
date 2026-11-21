@@ -26,7 +26,7 @@ from .watcher import Watcher
 from .workers import Workers, Worker
 
 
-cmd = Commands.cmd
+#cmd = Commands.cmd
 
 
 __all__ = (
@@ -70,7 +70,7 @@ __all__ = (
     'Workdir',
     'Worker',
     'Workers',
-    'cmd'
+#    'cmd'
 )
 
 

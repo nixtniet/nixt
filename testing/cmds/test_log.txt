@@ -5,14 +5,18 @@
 "plugins"
 
 
->>> from nixt.defines import Boot, cmd
+>>> from nixt.defines import Boot
+>>> from nixt.command import cmd
 >>> Boot.configure()
+
 
 >>> cmd('log')
 ['log <txt>']
 
+
 >>> cmd('log test')
 ['ok']
+
 
 >>> cmd('fnd log')[0]
 '0 txt="txt1" ...'

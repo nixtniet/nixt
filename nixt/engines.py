@@ -11,7 +11,7 @@ from .generic import Event, Queue
 from .tasking import Task
 
 
-class Loop:
+class Engine:
 
     "keep looping"
 
@@ -69,5 +69,5 @@ class Loop:
 
 def __dir__():
     return (
-        'Loop',
+        'Engine',
     )

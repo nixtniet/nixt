@@ -5,10 +5,13 @@
 "plugins"
 
 
->>> from nixt.defines import Boot, cmd
+>>> from nixt.defines import Boot
+>>> from nixt.command import cmd
+
 
 >>> cmd("fnd")
 ['log,rss']
+
 
 >>> res = cmd("fnd log")
 >>> res[0]
