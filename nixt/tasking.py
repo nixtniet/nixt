@@ -70,10 +70,8 @@ class Task:
 
     "start a task"
 
-    later = []
     lock = RLock()
-    todo = []
-    
+
     @classmethod
     def start(cls, func, *args, **kwargs):
         "start a new thread running function with arguments."
@@ -85,7 +83,7 @@ class Task:
                     return work
                 except RuntimeError:
                     time.sleep(0.1)
-                
+
 
 def __dir__():
     return (

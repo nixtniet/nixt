@@ -6,6 +6,7 @@
 
 import inspect
 import os.path
+import types
 
 
 class Dicts:
@@ -54,7 +55,7 @@ class Dicts:
             elif isinstance(value, str):
                 txt += f'{key}="{value}" '
             else:
-                txt += f"{key}={Utils.clsname(value)}({value!s}) "
+                txt += f"{key}={Methods.clz(value)}({value!s}) "
         if txt == "":
             txt = "{}"
         return txt.strip()
