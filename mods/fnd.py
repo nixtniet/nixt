@@ -7,11 +7,12 @@
 import time
 
 
-from nixt.defines import Dicts, Locater, Time, Workdir
+from nixt.defines import Dicts, Locater, Parser, Time, Workdir
 
 
 def fnd(msg):
     "find objects."
+    Parser.parse(msg)
     if not msg.rest:
         res = sorted([x.split('.')[-1].lower() for x in Workdir.kinds()])
         if res:

@@ -16,12 +16,12 @@ from .message import Message
 from .methods import Dicts, Methods
 from .objects import Data, Object
 from .package import Mods
+from .parsers import Parser  
 from .persist import Disk, Dump, Locater, Workdir
 from .repeats import Repeater
 from .require import Cmd
-from .sources import MD5
 from .tasking import Task, Work
-from .utility import Time, Utils
+from .utility import MD5, Time, Utils
 from .watcher import Watcher
 from .workers import Workers, Worker
 

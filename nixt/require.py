@@ -13,8 +13,7 @@ from .configs import Main
 from .encoder import JSON
 from .methods import Methods
 from .package import Mods
-from .sources import MD5
-from .utility import Utils
+from .utility import MD5, Utils
 
 
 class Cmd:

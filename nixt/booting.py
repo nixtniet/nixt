@@ -14,9 +14,8 @@ from .generic import Event
 from .loggers import Log, Logging
 from .package import Mods
 from .persist import Workdir
-from .sources import MD5
 from .tasking import Task
-from .utility import Utils
+from .utility import MD5, Utils
 
 
 logger = Log(__name__)
