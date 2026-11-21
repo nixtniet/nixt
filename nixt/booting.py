@@ -79,12 +79,10 @@ class Boot:
                 pass
         time.sleep(0.01)
         if wait:
-            print("waiting")
             while True:
                 if len(threading.enumerate()) <= 1:
                     break
                 time.sleep(0.01)
-                print(len(threading.enumerate()))
         cls.stopped.set()
 
     @classmethod

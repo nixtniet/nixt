@@ -24,7 +24,7 @@ CORE = {
     "repeats": "dd05ef7ab6083966bbee0826a9c87b76",
     "require": "0b48a5e773f1753f610c7ea152ac2053",
     "runtime": "bbeb01afc0ea9eb705251aab0d93e38b",
-    "tasking": "8c7c2ea6608bef32e785648a7cabd037",
+    "tasking": "b06dee95ea919f92df604ec7317cd873",
     "utility": "d17b36e34ccaa9893e161d0a9e0b9989",
     "watcher": "c58496dfa9df7e9bc58b2226318ecfc4",
     "workers": "d533f97b8b726b5f7dfcbaf4a6fda5cc"
