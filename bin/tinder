@@ -17,7 +17,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Boot, Client, Commands, Dicts, Main, Message, Parser
-from nixt.defines import Methods, Mods, Task, Time, Workdir, Workers
+from nixt.defines import Mods, Task, Time, Workdir, Workers
 
 
 Workdir.wdr = ".test"

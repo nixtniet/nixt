@@ -11,7 +11,7 @@ import time
 from mailbox import Maildir, mbox
 
 
-from nixt.defines import Data, Dicts, Disk, Locater, Methods, Parser, Time
+from nixt.defines import Data, Dicts, Disk, Locater, Parser, Time
 
 
 class Email(Data):

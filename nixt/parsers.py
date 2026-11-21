@@ -5,7 +5,8 @@
 
 
 from nixt.configs import Main
-from nixt.methods import Dicts, Methods
+from nixt.functio import Dicts
+from nixt.methods import Methods
 from nixt.package import Mods
 from nixt.persist import Disk
 

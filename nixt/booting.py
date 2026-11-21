@@ -11,11 +11,10 @@ import _thread
 
 from .clients import Broker, Client
 from .generic import Event
-from .loggers import Log, Logging
 from .package import Mods
 from .persist import Workdir
 from .tasking import Task
-from .utility import MD5, Utils
+from .utility import MD5, Log, Logging, Utils
 
 
 logger = Log(__name__)
