@@ -8,9 +8,9 @@ import _thread
 
 
 from .brokers import Broker
-from .generic import Event, Queue, RLock
+from .imports import Event, Queue, RLock
 from .handler import Handler
-from .tasking import Task
+from .tasking import Tasks
 
 
 class Display:
@@ -86,7 +86,7 @@ class Output(Display):
     def start(self, **kwargs):
         "start output loop."
         self.ostopped.clear()
-        Task.start(self.output, **kwargs)
+        Tasks.start(self.output, **kwargs)
 
     def stop(self):
         "stop output loop."

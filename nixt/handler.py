@@ -7,11 +7,11 @@
 import _thread
 
 
-from .generic import Event, Queue
-from .tasking import Task
+from .imports import Event, Queue
+from .tasking import Tasks
 
 
-class Handler:
+class Loop:
 
     "keep looping"
 
@@ -25,13 +25,7 @@ class Handler:
         "called after callback."
 
     def handle(self, msg):
-        "run callback function with msg."
-        func = self.cbs.get(msg.kind, None)
-        if not func:
-            msg.ready()
-            return
-        name = msg.text and msg.text.split()[0]
-        msg.thread(Task.start(func, msg, name=name))
+        "override this."
 
     def loop(self):
         "callback loop."
@@ -54,15 +48,11 @@ class Handler:
         "put msg on queue."
         self.queue.put(msg)
 
-    def register(self, kind, callback):
-        "register callback."
-        self.cbs[kind] = callback
-
     def start(self, **kwargs):
         "start callback loop."
         self.done.clear()
         self.stopped.clear()
-        Task.start(self.loop, **kwargs)
+        Tasks.start(self.loop, **kwargs)
 
     def stop(self):
         "stop xallback loop."
@@ -78,28 +68,30 @@ class Handler:
             _thread.interrupt_main()
 
 
-class Worker(Handler):
+class Handler(Loop):
 
-    "run jobs"
+    "message handler"
 
-    def work(self, *args, **kwargs):
-        "running."
+    def __init__(self):
+        super().__init__()
+        self.cbs = {}
 
-    def loop(self):
-        "loop to handle fetch jobs."
-        while not self.stopped.is_set():
-            job = self.queue.get()
-            if job is None:
-                break
-            self.work(*job)
-        self.done.set()
+    def handle(self, msg):
+        "run callback function with msg."
+        func = self.cbs.get(msg.kind, None)
+        if not func:
+            msg.ready()
+            return
+        name = msg.text and msg.text.split()[0]
+        msg.thread(Tasks.start(func, msg, name=name))
 
-    def wait(self):
-        "skip wait."
+    def register(self, kind, callback):
+        "register callback."
+        self.cbs[kind] = callback
 
 
 def __dir__():
     return (
         'Handler',
-        'Worker'
+        'Loop'
     )

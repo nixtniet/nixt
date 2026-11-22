@@ -25,7 +25,7 @@ from threading   import RLock
 
 from nixt.defines import Cfg, Clients, Data, Dicts, Disk, Dump, Format, JSON
 from nixt.defines import JSONL, Locater, Log, Logging, MD5, Main, Methods
-from nixt.defines import Repeater, Utils, Watcher, Workdir, Worker, Workers
+from nixt.defines import Repeater, Runner, Runners, Utils, Watcher, Workdir
 
 
 logger = Log(__name__)
@@ -197,13 +197,13 @@ class Run:
     def run(cls, silent=False):
         "do a fetch run of all feeds."
         nrs = 0
-        if Workers.busy():
+        if Runners.busy():
             logger.debug("next!")
             return 0
         for fnm, fed in Locater.find("rss"):
             if fed.get("skip", False):
                 continue
-            Workers.put((fnm, fed, silent))
+            Runners.put((fnm, fed, silent))
             nrs += 1
         return nrs
 
@@ -220,7 +220,7 @@ class Run:
             Watcher.add(cls.path, cls.callback)
             Watcher.start(name="Watcher")
         cls.state.load()
-        Workers.init(2, Fetching)
+        Runners.init(2, Fetching)
         if not once:
             Repeater.add(Config.polltime, cls.run)
             Repeater.add(120, cls.clear)
@@ -239,7 +239,7 @@ class Run:
             cls.state.dump()
 
 
-class Fetching(Worker):
+class Fetching(Runner):
 
     "teh fetcher"
 
@@ -304,7 +304,7 @@ class Fetching(Worker):
                          feed.get("display_list", "")
                         ) or []
 
-    def work(self, *args, **kwargs):
+    def work(self, *args, **kwargs): # pylint: disable=unused-argument
         "poll all feeds."
         counter = 0
         fnm, feed, silent = args

@@ -17,7 +17,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Boot, Client, Commands, Dicts, Main, Message, Parser
-from nixt.defines import Mods, Task, Time, Workdir, Workers
+from nixt.defines import Mods, Runners, Tasks, Time, Workdir
 
 
 Main.wait = True
@@ -57,10 +57,10 @@ class Kernel(Boot):
         if os.path.exists(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
         if Main.threaded:
-            Workers.nrcpu = os.cpu_count()
+            Runners.nrcpu = os.cpu_count()
         else:
-            Workers.nrcpu = 1
-        Workers.init(Workers.nrcpu, CLI)
+            Runners.nrcpu = 1
+        Runners.init(Runners.nrcpu, CLI)
 
     @classmethod
     def collect(cls):
@@ -78,7 +78,7 @@ class Kernel(Boot):
         lap = Time.elapsed(endtime-Kernel.starttime)
         percall = (endtime-Kernel.starttime)/total
         print(f"{Dicts.fmt(vars(Main), skip='otxt,txt')}")
-        print(f"nrcpu: {Workers.nrcpu} events: {total}")
+        print(f"nrcpu: {Runners.nrcpu} events: {total}")
         print(f"total: {lap} nrs: {Kernel.nrevents} call: {percall}")
         print(threading.enumerate())
 
@@ -88,17 +88,17 @@ class Kernel(Boot):
         nrs = Main.index or 1
         thrs = []
         for _x in range(nrs):
-            thrs.append(Task.start(cls.payload, pre))
+            thrs.append(Tasks.start(cls.payload, pre))
         for thr in thrs:
             thr.join()
         thrs = []
         for _x in range(nrs):
-            thrs.append(Task.start(cls.payload, examples))
+            thrs.append(Tasks.start(cls.payload, examples))
         for thr in thrs:
             thr.join()
         thrs = []
         for _x in range(nrs):
-            thrs.append(Task.start(cls.payload, post))
+            thrs.append(Tasks.start(cls.payload, post))
         for thr in thrs:
             thr.join()
 
@@ -111,7 +111,7 @@ class Kernel(Boot):
                 evt = Message()
                 evt.kind = "command"
                 evt.text = f"{cmd} {ex}"
-                Workers.put(evt)
+                Runners.put(evt)
                 cls.messages.append(evt)
 
     @classmethod

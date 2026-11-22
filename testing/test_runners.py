@@ -7,14 +7,14 @@
 import unittest
 
 
-from nixt.workers import Workers
+from nixt.runners import Runners
 
 
-class TestWorkers(unittest.TestCase):
+class TestRunners(unittest.TestCase):
 
     "runner unittests"
 
     def test_construct(self):
         "test runner construction."
-        workers = Workers()
-        self.assertTrue(type(workers), Workers)
+        runners = Runners()
+        self.assertTrue(type(runners), Runners)

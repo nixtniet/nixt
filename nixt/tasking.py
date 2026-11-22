@@ -8,7 +8,7 @@ import time
 
 
 from .excepts import Errors
-from .generic import Event, Queue, RLock, Thread
+from .imports import Event, Queue, RLock, Thread
 from .methods import Methods
 from .utility import Log
 
@@ -16,7 +16,7 @@ from .utility import Log
 logger = Log(__name__)
 
 
-class Work(Thread):
+class Task(Thread):
 
     "unit of work"
 
@@ -66,7 +66,7 @@ class Work(Thread):
             Errors.throw(ex)
 
 
-class Task:
+class Tasks:
 
     "start a task"
 
@@ -78,9 +78,9 @@ class Task:
         with cls.lock:
             while True:
                 try:
-                    work = Work(func, *args, **kwargs)
-                    work.start()
-                    return work
+                    task = Task(func, *args, **kwargs)
+                    task.start()
+                    return task
                 except RuntimeError:
                     time.sleep(0.1)
 
@@ -88,5 +88,5 @@ class Task:
 def __dir__():
     return (
         'Task',
-        'Work'
+        'Tasks'
     )

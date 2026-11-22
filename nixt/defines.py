@@ -11,7 +11,7 @@ from .command import Commands
 from .configs import Cfg, Config, Main
 from .encoder import JSON, JSONL
 from .excepts import Errors
-from .handler import Handler, Worker
+from .handler import Handler, Loop
 from .message import Message
 from .methods import Dicts, Methods
 from .objects import Data, Object
@@ -19,10 +19,10 @@ from .package import Mods
 from .parsers import Parser
 from .persist import Disk, Dump, Locater, Workdir
 from .repeats import Repeater
-from .tasking import Task, Work
+from .runners import Runner, Runners
+from .tasking import Task, Tasks
 from .utility import MD5, Format, Log, Logging, Time, Utils
 from .watcher import Watcher
-from .workers import Workers
 
 
 __all__ = (
@@ -48,6 +48,7 @@ __all__ = (
     'Locater',
     'Log',
     'Logging',
+    'Loop',
     'Main',
     'Message',
     'Methods',
@@ -56,14 +57,14 @@ __all__ = (
     'Output',
     'Parser',
     'Repeater',
+    'Runner',
+    'Runners',
     'Task',
+    'Tasks',
     'Time',
     'Utils',
     'Watcher',
-    'Work',
-    'Workdir',
-    'Worker',
-    'Workers'
+    'Workdir'
 )
 
 

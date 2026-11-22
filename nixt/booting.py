@@ -11,10 +11,10 @@ import _thread
 
 from .brokers import Broker
 from .clients import Client
-from .generic import Event
+from .imports import Event
 from .package import Mods
 from .persist import Workdir
-from .tasking import Task
+from .tasking import Tasks
 from .utility import MD5, Log, Logging, Utils
 
 
@@ -56,7 +56,7 @@ class Boot:
             mod = Mods.get(name)
             if not mod or "init" not in dir(mod):
                 continue
-            thrs.append(Task.start(mod.init, name=f"init {name}"))
+            thrs.append(Tasks.start(mod.init, name=f"init {name}"))
         if thrs and wait:
             for thr in thrs:
                 thr.join()

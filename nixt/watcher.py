@@ -8,8 +8,8 @@ import os
 import time
 
 
-from .generic import Event
-from .tasking import Task
+from .imports import Event
+from .tasking import Tasks
 
 
 class Watcher:
@@ -60,7 +60,7 @@ class Watcher:
             return
         cls.running.set()
         kwargs["name"] = "Monitor"
-        Task.start(cls.loop, **kwargs)
+        Tasks.start(cls.loop, **kwargs)
 
     @classmethod
     def stop(cls):

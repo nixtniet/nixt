@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.tasking import Work
+from nixt.tasking import Task
 
 
 buffer = []
@@ -24,5 +24,5 @@ class TestTask(unittest.TestCase):
 
     def test_construct(self):
         "test thread construction."
-        work = Work(test)
-        self.assertTrue(type(work), Work)
+        task = Task(test)
+        self.assertTrue(type(task), Task)

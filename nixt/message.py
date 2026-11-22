@@ -4,7 +4,7 @@
 "only the message"
 
 
-from .generic import Event
+from .imports import Event
 from .objects import Data
 
 
