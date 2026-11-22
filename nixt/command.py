@@ -7,7 +7,7 @@
 import inspect
 
 
-from .brokers import Clients
+from .clients import Clients
 from .message import Message
 from .methods import Methods
 from .package import Mods

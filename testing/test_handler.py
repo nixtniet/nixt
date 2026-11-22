@@ -80,9 +80,9 @@ class TestHandler(unittest.TestCase):
         "test engine start."
         hdl = Handler()
         hdl.start()
-        self.assertTrue(not hdl.stopped.is_set())
+        self.assertTrue(hdl.running.is_set())
 
     def test_stop(self):
         "test engine stop."
         self.hdl.stop()
-        self.assertTrue(self.hdl.stopped.is_set())
+        self.assertTrue(not self.hdl.running.is_set())

@@ -7,9 +7,9 @@
 import os
 
 
-from .imports import RLock
 from .handler import Loop
 from .methods import Methods
+from .utility import RLock
 
 
 class Runners:
@@ -61,7 +61,7 @@ class Runner(Loop):
 
     def loop(self):
         "loop to handle fetch jobs."
-        while not self.stopped.is_set():
+        while self.running.is_set():
             job = self.queue.get()
             if job is None:
                 break

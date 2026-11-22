@@ -7,8 +7,8 @@
 import _thread
 
 
-from .imports import Event, Queue
 from .tasking import Tasks
+from .utility import Event, Queue
 
 
 class Loop:
@@ -16,9 +16,8 @@ class Loop:
     "keep looping"
 
     def __init__(self):
-        self.cbs = {}
         self.queue = Queue()
-        self.stopped = Event()
+        self.running = Event()
         self.done = Event()
 
     def after(self, msg):
@@ -29,7 +28,7 @@ class Loop:
 
     def loop(self):
         "callback loop."
-        while not self.stopped.is_set():
+        while self.running.is_set():
             self.poll()
             msg = self.queue.get()
             if msg is None:
@@ -51,12 +50,14 @@ class Loop:
     def start(self, **kwargs):
         "start callback loop."
         self.done.clear()
-        self.stopped.clear()
+        self.running.set()
         Tasks.start(self.loop, **kwargs)
 
     def stop(self):
         "stop xallback loop."
-        self.stopped.set()
+        if not self.running.is_set():
+            return
+        self.running.clear()
         self.queue.put(None)
         self.done.wait()
 

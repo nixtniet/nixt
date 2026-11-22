@@ -5,7 +5,7 @@
 "plugins"
 
 
->>> from nixt.defines import Display
+>>> from nixt.defines import Client
 >>> from nixt.command import cmd
 
 
@@ -13,10 +13,10 @@
 ['no clients']
 
 
->>> dpl = Display()
+>>> clt = Client()
 >>> cmd("flt")
-['Display']
+['Client']
 
 
 >>> cmd("flt 0")
-['<nixt.clients.Display object at ...']
+['<nixt.clients.Client object at ...']

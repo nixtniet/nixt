@@ -13,9 +13,8 @@ import types
 
 from .configs import Main
 from .encoder import JSON
-from .imports import Path, RLock
 from .methods import Dicts, Methods
-from .utility import Log, Utils
+from .utility import Log, Path, RLock, Utils
 
 
 logger = Log(__name__)

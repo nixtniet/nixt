@@ -8,11 +8,11 @@ import os
 import time
 
 
-from .imports import Event
 from .tasking import Tasks
+from .utility import Event
 
 
-class Watcher:
+class Observer:
 
     "watch files"
 
@@ -75,5 +75,5 @@ class Watcher:
 
 def __dir__():
     return (
-        'Watcher',
+        'Observer',
     )

@@ -8,9 +8,9 @@ import time
 
 
 from .excepts import Errors
-from .imports import Event, Queue, RLock, Thread
+from .loggers import Log
 from .methods import Methods
-from .utility import Log
+from .utility import Event, Queue, RLock, Thread
 
 
 logger = Log(__name__)

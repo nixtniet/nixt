@@ -25,7 +25,7 @@ from threading   import RLock
 
 from nixt.defines import Cfg, Clients, Data, Dicts, Disk, Dump, Format, JSON
 from nixt.defines import JSONL, Locater, Log, Logging, MD5, Main, Methods
-from nixt.defines import Repeater, Runner, Runners, Utils, Watcher, Workdir
+from nixt.defines import Observer, Repeater, Runner, Runners, Utils, Workdir
 
 
 logger = Log(__name__)
@@ -217,8 +217,8 @@ class Run:
             with open(cls.path, "a+", encoding="utf-8") as file:
                 cls.file = file
             cls.enable(cls.path)
-            Watcher.add(cls.path, cls.callback)
-            Watcher.start(name="Watcher")
+            Observer.add(cls.path, cls.callback)
+            Observer.start(name="Watcher")
         cls.state.load()
         Runners.init(2, Fetching)
         if not once:
@@ -229,7 +229,7 @@ class Run:
     @classmethod
     def stop(cls):
         "shutdown."
-        Watcher.stop()
+        Observer.stop()
 
     @classmethod
     def sync(cls):
