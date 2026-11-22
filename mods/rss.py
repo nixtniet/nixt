@@ -137,7 +137,8 @@ class Run:
                 counter += 1
                 if counter >= 10:
                     break
-        logger.debug("clear %s", counter)
+        if counter:
+            logger.debug("clear %s", counter)
         return counter
 
     @classmethod

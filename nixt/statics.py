@@ -25,7 +25,7 @@ CORE = {
     "require": "0b48a5e773f1753f610c7ea152ac2053",
     "runtime": "97c931a767a3c253237ec511ded9d399",
     "tasking": "22423254e8612d3691c8085992ac84d2",
-    "utility": "d17b36e34ccaa9893e161d0a9e0b9989",
+    "utility": "b1af36dda99611c26e1ba5727f0ba1bc",
     "watcher": "208a37d948fb0b51495892260fa15605",
     "workers": "0e2f6c8f5f712c1e4afd664d066e1c6d"
 }
