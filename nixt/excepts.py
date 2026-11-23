@@ -18,19 +18,6 @@ class Errors:
 
     "error management"
 
-    errors = []
-
-    @classmethod
-    def defer(cls, exc, *args):
-        "add an exception."
-        excp = exc.with_traceback(exc.__traceback__)
-        if excp not in cls.errors:
-            cls.errors.append(excp)
-        try:
-            args[0].ready()
-        except (IndexError, AttributeError):
-            pass
-
     @classmethod
     def format(cls, exc):
         "format an exception."

@@ -8,7 +8,7 @@ import time
 
 
 from .excepts import Errors
-from .methods import Methods
+from .objects import Methods
 from .utility import Event, Log, Queue, RLock, Thread
 
 

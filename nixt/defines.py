@@ -10,9 +10,9 @@ from .command import Commands, Parser
 from .configs import Cfg, Config, Main
 from .encoder import JSON, JSONL
 from .excepts import Errors
-from .handler import Engine, Handler, Message, Pool, Runner
-from .methods import Dicts, Methods
-from .objects import Data, Object
+from .handler import Engine, Handler, Pool, Runner
+from .message import Message
+from .objects import Data, Dicts, Methods, Object
 from .package import Mods
 from .persist import Disk, Dump, Locater, Workdir
 from .repeats import Repeater

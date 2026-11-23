@@ -8,8 +8,8 @@ import inspect
 
 
 from .clients import Clients
-from .handler import Message
-from .methods import Methods
+from .message import Message
+from .objects import Methods
 from .package import Mods
 
 

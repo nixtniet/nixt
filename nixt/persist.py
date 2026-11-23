@@ -13,7 +13,7 @@ import types
 
 from .configs import Main
 from .encoder import JSON
-from .methods import Dicts, Methods
+from .objects import Dicts, Methods
 from .utility import Log, Path, RLock, Utils
 
 

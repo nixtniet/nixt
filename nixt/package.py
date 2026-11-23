@@ -8,7 +8,7 @@ import os
 
 
 from .configs import Main
-from .methods import Methods
+from .objects import Methods
 from .persist import Workdir
 from .utility import MD5, Log, Utils
 
