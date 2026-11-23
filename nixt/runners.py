@@ -7,7 +7,6 @@
 import os
 
 
-from .handler import Loop
 from .methods import Methods
 from .utility import RLock
 
@@ -52,28 +51,7 @@ class Runners:
             cls.nrlast += 1
 
 
-class Runner(Loop):
-
-    "run jobs"
-
-    def run(self, *args, **kwargs):
-        "running."
-
-    def loop(self):
-        "loop to handle fetch jobs."
-        while self.running.is_set():
-            job = self.queue.get()
-            if job is None:
-                break
-            self.run(*job)
-        self.done.set()
-
-    def wait(self):
-        "skip wait."
-
-
 def __dir__():
     return (
-        'Runner',
-        'Runners'
+        'Runners',
     )

@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.defines import Commands, Handler, Message
+from nixt.defines import Commands, Engine, Message
 
 
 def cmnd(msg):
@@ -36,7 +36,7 @@ class TestCommands(unittest.TestCase):
 
     def test_command(self):
         "test running a command."
-        clt = Handler()
+        clt = Engine()
         Commands.add(cmnd)
         msg = Message()
         msg.text = "cmnd"

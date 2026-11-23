@@ -5,7 +5,7 @@
 
 
 from .display import Display, Output
-from .handler import Handler
+from .handler import Engine
 
 
 class Broker:
@@ -49,12 +49,12 @@ class Broker:
         del cls.objects[repr(obj)]
 
 
-class Buffer(Handler, Output):
+class Buffer(Engine, Output):
 
     "buffered output"
 
     def __init__(self):
-        Handler.__init__(self)
+        Engine.__init__(self)
         Output.__init__(self)
         Broker.add(self)
 
@@ -64,21 +64,21 @@ class Buffer(Handler, Output):
 
     def start(self, **kwargs):
         "start output loop."
-        Handler.start(self, **kwargs)
+        Engine.start(self, **kwargs)
         Output.start(self, **kwargs)
 
     def stop(self):
         "stop output loop."
-        Handler.stop(self)
+        Engine.stop(self)
         Output.stop(self)
 
 
-class Client(Handler, Display):
+class Client(Engine, Display):
 
     "display with coupled handler"
 
     def __init__(self):
-        Handler.__init__(self)
+        Engine.__init__(self)
         Display.__init__(self)
         Broker.add(self)
 

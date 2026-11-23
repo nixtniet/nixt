@@ -11,7 +11,7 @@ from .tasking import Tasks
 from .utility import Event, Queue
 
 
-class Loop:
+class Handler:
 
     "keep looping"
 
@@ -69,9 +69,9 @@ class Loop:
             _thread.interrupt_main()
 
 
-class Handler(Loop):
+class Engine(Handler):
 
-    "message handler"
+    "callback engine"
 
     def __init__(self):
         super().__init__()
@@ -91,8 +91,29 @@ class Handler(Loop):
         self.cbs[kind] = callback
 
 
+class Runner(Handler):
+
+    "run jobs"
+
+    def run(self, *args, **kwargs):
+        "running."
+
+    def loop(self):
+        "loop to handle fetch jobs."
+        while self.running.is_set():
+            job = self.queue.get()
+            if job is None:
+                break
+            self.run(*job)
+        self.done.set()
+
+    def wait(self):
+        "skip wait."
+
+
 def __dir__():
     return (
+        'Engine',
         'Handler',
-        'Loop'
+        'Runner'
     )

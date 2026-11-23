@@ -8,7 +8,7 @@
 import unittest
 
 
-from nixt.defines import Handler, Message
+from nixt.defines import Engine, Message
 
 
 buffer = []
@@ -24,7 +24,7 @@ class TestHandler(unittest.TestCase):
 
     "unittest to test the callback engine"
 
-    hdl = Handler()
+    hdl = Engine()
 
     def setUp(self):
         "setup engine."
@@ -64,7 +64,7 @@ class TestHandler(unittest.TestCase):
 
     def test_put(self):
         "test push/get from queue."
-        hdl = Handler()
+        hdl = Engine()
         msg = Message()
         msg.kind = "hello"
         hdl.put(msg)
@@ -78,7 +78,7 @@ class TestHandler(unittest.TestCase):
 
     def test_start(self):
         "test engine start."
-        hdl = Handler()
+        hdl = Engine()
         hdl.start()
         self.assertTrue(hdl.running.is_set())
 
