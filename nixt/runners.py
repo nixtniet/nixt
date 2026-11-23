@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"pool of workers"
+"pool of runners"
 
 
 import os
@@ -14,7 +14,7 @@ from .utility import RLock
 
 class Runners:
 
-    "multiple workers"
+    "multiple runners"
 
     runners = []
     lock = RLock()
@@ -30,16 +30,16 @@ class Runners:
     @classmethod
     def busy(cls):
         "see if pool is busy."
-        return any(worker.queue.qsize() for worker in cls.runners)
+        return any(runner.queue.qsize() for runner in cls.runners)
 
     @classmethod
     def init(cls, nrs, clz):
         "initialze a number of runners."
         cls.nrcpu = nrs
         for nr in range(nrs):
-            worker = clz()
-            worker.start(name=f"{Methods.clsname(worker)}{nr}")
-            cls.add(worker)
+            runner = clz()
+            runner.start(name=f"{Methods.clsname(runner)}{nr}")
+            cls.add(runner)
 
     @classmethod
     def put(cls, *args):

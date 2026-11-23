@@ -304,7 +304,7 @@ class Fetching(Runner):
                          feed.get("display_list", "")
                         ) or []
 
-    def work(self, *args, **kwargs): # pylint: disable=unused-argument
+    def run(self, *args, **kwargs): # pylint: disable=unused-argument
         "poll all feeds."
         counter = 0
         fnm, feed, silent = args

@@ -35,6 +35,7 @@ class Display:
                     return
                 self.dosay(msg.channel, txt)
                 del txt
+            msg.ready()
         del msg
 
     def dosay(self, channel, text):

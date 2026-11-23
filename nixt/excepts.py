@@ -8,8 +8,8 @@ import traceback
 import _thread
 
 
+from .loggers import Log
 from .message import Message
-from .utility import Log
 
 
 logger = Log(__name__)

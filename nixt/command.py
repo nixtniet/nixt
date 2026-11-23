@@ -43,10 +43,11 @@ class Commands:
             msg.ready()
             return
         func = cls.cmds.get(msg.cmd, cls.ondemand(msg.cmd))
-        if func:
-            func(msg)
-            Clients.display(msg)
-        msg.ready()
+        if not func:
+            msg.ready()
+            return
+        func(msg)
+        Clients.display(msg)
 
     @classmethod
     def list(cls):

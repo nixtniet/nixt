@@ -21,6 +21,7 @@ from .package import Mods
 from .parsers import Parser
 from .persist import Disk, Dump, Locater, Workdir
 from .repeats import Repeater
+from .require import Cmd
 from .runners import Runner, Runners
 from .tasking import Task, Tasks
 from .utility import MD5, Time, Utils
@@ -36,6 +37,7 @@ __all__ = (
     'Cfg',
     'Client',
     'Clients',
+    'Cmd',
     'Commands',
     'Config',
     'Data',

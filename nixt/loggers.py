@@ -1,7 +1,7 @@
 # This file is placed in the Public Domain.
 
 
-"usefulness"
+"logging"
 
 
 from logging.handlers import TimedRotatingFileHandler
