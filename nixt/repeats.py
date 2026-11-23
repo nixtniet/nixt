@@ -7,7 +7,7 @@
 import time
 
 
-from .tasking import Tasks
+from .threads import Threads
 from .utility import Event
 
 
@@ -40,7 +40,7 @@ class Repeater:
                 if cls.counter % slept != 0:
                     continue
                 for func, args, kwargs in arguments:
-                    Tasks.start(func, *args, **kwargs)
+                    Threads.start(func, *args, **kwargs)
         cls.stopped.set()
 
     @classmethod
@@ -50,7 +50,7 @@ class Repeater:
             return
         cls.stopped.clear()
         cls.running.set()
-        Tasks.start(cls.loop, name="Repeater")
+        Threads.start(cls.loop, name="Repeater")
 
     @classmethod
     def stop(cls):

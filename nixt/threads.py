@@ -8,9 +8,8 @@ import time
 
 
 from .excepts import Errors
-from .loggers import Log
 from .methods import Methods
-from .utility import Event, Queue, RLock, Thread
+from .utility import Event, Log, Queue, RLock, Thread
 
 
 logger = Log(__name__)
@@ -66,7 +65,7 @@ class Task(Thread):
             Errors.throw(ex)
 
 
-class Tasks:
+class Threads:
 
     "start a task"
 
@@ -88,5 +87,5 @@ class Tasks:
 def __dir__():
     return (
         'Task',
-        'Tasks'
+        'Threads'
     )

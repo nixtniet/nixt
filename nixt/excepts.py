@@ -8,8 +8,7 @@ import traceback
 import _thread
 
 
-from .loggers import Log
-from .message import Message
+from .utility import Log
 
 
 logger = Log(__name__)
@@ -27,8 +26,10 @@ class Errors:
         excp = exc.with_traceback(exc.__traceback__)
         if excp not in cls.errors:
             cls.errors.append(excp)
-        if args and isinstance(args[0], Message):
+        try:
             args[0].ready()
+        except (IndexError, AttributeError):
+            pass
 
     @classmethod
     def format(cls, exc):

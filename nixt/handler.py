@@ -4,11 +4,74 @@
 "message handler"
 
 
+import os
 import _thread
 
 
-from .tasking import Tasks
-from .utility import Event, Queue
+from .methods import Methods 
+from .objects import Data
+from .threads import Threads
+from .utility import Event, Queue, RLock
+
+
+class Message(Data):
+
+    "message as an event"
+
+    def __init__(self):
+        super().__init__()
+        self._ready = Event()
+        self._thr = None
+        self.args = []
+        self.cmd = ""
+        self.index = 0
+        self.kind = "message"
+        self.orig = ""
+        self.rest = ""
+        self.result = []
+        self.text = ""
+
+    def __iter__(self):
+        return iter(self.__dict__)
+
+    def iface(self, text):
+        "show interface."
+        self.reply(f"{self.cmd} {text}")
+
+    def isready(self):
+        "see if message is processed."
+        return self._ready.is_set()
+
+    def ok(self, text=""):
+        "print ok response."
+        self.reply(f"ok {text}".strip())
+
+    def parse(self):
+        "parse message."
+        try:
+            self.cmd, *self.args = self.text.split()
+            self.rest = " ".join(self.args)
+            return True
+        except ValueError:
+            return False
+
+    def ready(self):
+        "flag msg as ready."
+        self._ready.set()
+
+    def reply(self, text):
+        "add text to result."
+        self.result.append(text)
+
+    def thread(self, thr):
+        "set running thread."
+        self._thr = thr
+
+    def wait(self, timeout=0.0):
+        "wait for completion."
+        if self._thr:
+            self._thr.join(timeout or None)
+        self._ready.wait(timeout or None)
 
 
 class Handler:
@@ -51,7 +114,7 @@ class Handler:
         "start callback loop."
         self.done.clear()
         self.running.set()
-        Tasks.start(self.loop, **kwargs)
+        Threads.start(self.loop, **kwargs)
 
     def stop(self):
         "stop xallback loop."
@@ -84,7 +147,7 @@ class Engine(Handler):
             msg.ready()
             return
         name = msg.text and msg.text.split()[0]
-        msg.thread(Tasks.start(func, msg, name=name))
+        msg.thread(Threads.start(func, msg, name=name))
 
     def register(self, kind, callback):
         "register callback."
@@ -111,9 +174,51 @@ class Runner(Handler):
         "skip wait."
 
 
+class Runners:
+
+    "multiple runners"
+
+    runners = []
+    lock = RLock()
+    max = os.cpu_count()
+    nrcpu = 1
+    nrlast = 0
+
+    @classmethod
+    def add(cls, runner):
+        "add a runner."
+        cls.runners.append(runner)
+
+    @classmethod
+    def busy(cls):
+        "see if pool is busy."
+        return any(runner.queue.qsize() for runner in cls.runners)
+
+    @classmethod
+    def init(cls, nrs, clz):
+        "initialze a number of runners."
+        cls.nrcpu = nrs
+        for nr in range(nrs):
+            runner = clz()
+            runner.start(name=f"{Methods.clsname(runner)}{nr}")
+            cls.add(runner)
+
+    @classmethod
+    def put(cls, *args):
+        "push job to a runner."
+        with cls.lock:
+            if cls.nrlast-1 >= len(cls.runners)-1:
+                cls.nrlast = 0
+            clt = cls.runners[cls.nrlast-1]
+            clt.put(*args)
+            cls.nrlast += 1
+
+
 def __dir__():
     return (
         'Engine',
         'Handler',
-        'Runner'
+        'Message',
+        'Runner',
+        'Runners'
     )

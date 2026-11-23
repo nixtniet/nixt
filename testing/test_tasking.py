@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.tasking import Task
+from nixt.threads import Task
 
 
 buffer = []

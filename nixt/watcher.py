@@ -8,11 +8,11 @@ import os
 import time
 
 
-from .tasking import Tasks
+from .threads import Threads
 from .utility import Event
 
 
-class Observer:
+class Watcher:
 
     "watch files"
 
@@ -60,7 +60,7 @@ class Observer:
             return
         cls.running.set()
         kwargs["name"] = "Monitor"
-        Tasks.start(cls.loop, **kwargs)
+        Threads.start(cls.loop, **kwargs)
 
     @classmethod
     def stop(cls):
@@ -75,5 +75,5 @@ class Observer:
 
 def __dir__():
     return (
-        'Observer',
+        'Watcher',
     )

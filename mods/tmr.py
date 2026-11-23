@@ -12,7 +12,7 @@ from threading import Event, RLock
 
 
 from nixt.defines import Broker, Disk, Locater, Log, Methods
-from nixt.defines import Object, Tasks, Time
+from nixt.defines import Object, Threads, Time
 
 
 logger = Log(__name__)
@@ -66,7 +66,7 @@ class TimerLoop:
             remove = []
             for tme, args in cls.timers.items():
                 if float(tme) < timed:
-                    Tasks.start(cls.run, args)
+                    Threads.start(cls.run, args)
                     remove.append(tme)
             for tme in remove:
                 cls.dosave = True
@@ -86,7 +86,7 @@ class TimerLoop:
         "start timers."
         cls.path = Locater.first("timers", cls.timers)
         cls.running.set()
-        Tasks.start(cls.loop, name="Timers")
+        Threads.start(cls.loop, name="Timers")
 
     @classmethod
     def stop(cls):

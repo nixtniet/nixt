@@ -17,7 +17,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from nixt.defines import Boot, Client, Commands, Dicts, Main, Message, Parser
-from nixt.defines import Mods, Runners, Tasks, Time, Workdir
+from nixt.defines import Mods, Runners, Threads, Time, Workdir
 
 
 Main.wait = True
@@ -88,17 +88,17 @@ class Kernel(Boot):
         nrs = Main.index or 1
         thrs = []
         for _x in range(nrs):
-            thrs.append(Tasks.start(cls.payload, pre))
+            thrs.append(Threads.start(cls.payload, pre))
         for thr in thrs:
             thr.join()
         thrs = []
         for _x in range(nrs):
-            thrs.append(Tasks.start(cls.payload, examples))
+            thrs.append(Threads.start(cls.payload, examples))
         for thr in thrs:
             thr.join()
         thrs = []
         for _x in range(nrs):
-            thrs.append(Tasks.start(cls.payload, post))
+            thrs.append(Threads.start(cls.payload, post))
         for thr in thrs:
             thr.join()
 
