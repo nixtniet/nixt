@@ -5,7 +5,7 @@
 "plugins"
 
 
->>> from nixt.require import Cmd
+>>> from nixt.booting import Cmd
 >>> from nixt.defines import Commands, Main
 >>> from nixt.command import cmd
 >>> Main.admin = True

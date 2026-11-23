@@ -15,6 +15,7 @@ from .clients import Broker, Client
 from .command import Commands
 from .configs import Main
 from .encoder import JSON
+from .methods import Methods
 from .package import Mods
 from .persist import Workdir
 from .threads import Threads

@@ -4,12 +4,12 @@
 "handling client events"
 
 
-import os
+import _thread
 
 
 from .handler import Engine
-from .methods import Methods
-from .utility import Event, RLock
+from .threads import Threads
+from .utility import Event, Queue, RLock
 
 
 class Display:
@@ -58,7 +58,7 @@ class Output(Display):
     "dedicated output loop"
 
     def __init__(self):
-        Output.__init__(self)
+        Display.__init__(self)
         self.oqueue = Queue()
         self.ostopped = Event()
 
@@ -85,7 +85,7 @@ class Output(Display):
     def start(self, **kwargs):
         "start output loop."
         self.ostopped.clear()
-        Task.start(self.output, **kwargs)
+        Threads.start(self.output, **kwargs)
 
     def stop(self):
         "stop output loop."
@@ -137,7 +137,6 @@ class Client(Engine, Display):
     def raw(self, text):
         "raw output."
         raise NotImplementedError
-
 
 
 class Broker:

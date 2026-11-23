@@ -8,7 +8,7 @@ import os
 import _thread
 
 
-from .methods import Methods 
+from .methods import Methods
 from .objects import Data
 from .threads import Threads
 from .utility import Event, Queue, RLock
@@ -174,7 +174,7 @@ class Runner(Handler):
         "skip wait."
 
 
-class Runners:
+class Pool:
 
     "multiple runners"
 
@@ -219,6 +219,6 @@ def __dir__():
         'Engine',
         'Handler',
         'Message',
-        'Runner',
-        'Runners'
+        'Pool',
+        'Runner'
     )
