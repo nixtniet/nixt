@@ -28,7 +28,6 @@ class Mods:
     def configure(cls):
         "configure modules."
         cls.dir("modules", Workdir.moddir())
-        cls.dir(f"{Main.name}.miminal", cls.moddir("minimal"))
         cls.dir(f"{Main.name}.modules", cls.moddir())
         if Main.path:
             for pth in Utils.spl(Main.path):
@@ -103,7 +102,7 @@ class Mods:
 
     @classmethod
     def table(cls):
-        "read table,"
+        "read table."
         try:
             from .statics import MODULES
             cls.md5s.update(MODULES)
