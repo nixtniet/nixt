@@ -13,7 +13,7 @@ class Config(type):
 
     def __getattr__(cls, key):
         if key in dir(cls):
-            return cls.__getattribute__(key)
+            return super().__getattribute__(key)
         return ""
 
     def __str__(cls):
