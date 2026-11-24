@@ -7,7 +7,7 @@
 import _thread
 
 
-from .handler import Engine
+from .handler import Callbacks
 from .threads import Threads
 from .utility import Event, Queue, RLock
 
@@ -51,6 +51,20 @@ class Display:
         "say text in channel."
         self.last = channel
         self.raw(text)
+
+
+class Client(Callbacks, Display):
+
+    "display with coupled handler"
+
+    def __init__(self):
+        Callbacks.__init__(self)
+        Display.__init__(self)
+        Broker.add(self)
+
+    def raw(self, text):
+        "raw output."
+        raise NotImplementedError
 
 
 class Output(Display):
@@ -100,12 +114,12 @@ class Output(Display):
             _thread.interrupt_main()
 
 
-class Buffer(Engine, Output):
+class Buffer(Callbacks, Output):
 
     "buffered output"
 
     def __init__(self):
-        Engine.__init__(self)
+        Callbacks.__init__(self)
         Output.__init__(self)
         Broker.add(self)
 
@@ -115,27 +129,13 @@ class Buffer(Engine, Output):
 
     def start(self, **kwargs):
         "start output loop."
-        Engine.start(self, **kwargs)
+        Callbacks.start(self, **kwargs)
         Output.start(self, **kwargs)
 
     def stop(self):
         "stop output loop."
-        Engine.stop(self)
+        Callbacks.stop(self)
         Output.stop(self)
-
-
-class Client(Engine, Display):
-
-    "display with coupled handler"
-
-    def __init__(self):
-        Engine.__init__(self)
-        Display.__init__(self)
-        Broker.add(self)
-
-    def raw(self, text):
-        "raw output."
-        raise NotImplementedError
 
 
 class Broker:

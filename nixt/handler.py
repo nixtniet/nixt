@@ -71,7 +71,7 @@ class Handler:
             _thread.interrupt_main()
 
 
-class Engine(Handler):
+class Callbacks(Handler):
 
     "callback engine"
 
@@ -155,7 +155,7 @@ class Pool:
 
 def __dir__():
     return (
-        'Engine',
+        'Callbacks',
         'Handler',
         'Pool',
         'Runner'
