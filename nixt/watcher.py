@@ -9,7 +9,7 @@ import time
 
 
 from .threads import Threads
-from .utility import Event
+from .utility import Event, e
 
 
 class Watcher:
@@ -25,7 +25,7 @@ class Watcher:
     @classmethod
     def add(cls, path, callback):
         "add callback."
-        if not os.path.exists(path):
+        if not e(path):
             return
         cls.cbs[path] = callback
 
@@ -35,7 +35,7 @@ class Watcher:
         if times is None:
             times= {}
         for path in cls.cbs:
-            if not os.path.exists(path):
+            if not e(path):
                 continue
             cls.times[path] = times.get(path, os.stat(path).st_mtime)
 
@@ -44,7 +44,7 @@ class Watcher:
         "loop select."
         while cls.running.is_set():
             for path, callback in cls.cbs.items():
-                if not os.path.exists(path):
+                if not e(path):
                     continue
                 mtime = os.stat(path).st_mtime
                 if mtime > cls.times[path]:

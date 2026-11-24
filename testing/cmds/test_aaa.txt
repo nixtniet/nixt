@@ -8,9 +8,10 @@
 >>> sys.path.insert(0, os.getcwd())
 >>> from nixt.defines import Boot, Commands, Main, Workdir
 >>> from nixt.command import cmd
+>>> from nixt.utility import e 
 >>> Main.path = "mods,extra"
 >>> Workdir.wdr  = ".test"
->>> if os.path.exists(".test"): shutil.rmtree(".test")
+>>> if e(".test"): shutil.rmtree(".test")
 >>> Boot.configure()
 >>> Commands.scanner()
 >>> cmd("log txt1")

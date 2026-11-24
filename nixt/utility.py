@@ -6,12 +6,12 @@
 "usefulness"
 
 
-import datetime
 import os
 import time
 import uuid
 
 
+from datetime  import datetime 
 from pathlib   import Path
 from queue     import Queue
 from threading import Event, RLock, Thread
@@ -23,6 +23,11 @@ from logging          import getLogger as Log
 
 
 logger = Log(__name__)
+
+
+d = os.path.dirname
+e = os.path.exists
+j = os.path.join
 
 
 class Format(Formatter):
@@ -113,7 +118,7 @@ class MD5:
             if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
                 continue
             name = pth[:-3]
-            modpath = os.path.join(path, pth)
+            modpath = j(path, pth)
             if md5s and cls.md5(modpath) != md5s.get(name):
                 logger.warning("mismatch %s", name)
                 ok = False
@@ -138,7 +143,7 @@ class MD5:
             if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
                 continue
             name = pth[:-3]
-            data[name] = cls.md5(os.path.join(path, pth))
+            data[name] = cls.md5(j(path, pth))
 
     @classmethod
     def md5(cls, path):
@@ -244,7 +249,7 @@ class Time:
                     continue
             res = cls.date(word.strip())
             if not res:
-                date = datetime.datetime.fromtimestamp(time.time(), tz=None).date()
+                date = datetime.fromtimestamp(time.time(), tz=None).date()
                 word = f"{date.year}-{date.month}-{date.day}" + " " + word
                 res = cls.date(word.strip())
             if res:
@@ -318,7 +323,7 @@ class Utils:
     @staticmethod
     def strip(path, nrchar=3):
         "strip filename from path."
-        return os.path.join(*path.split(os.sep)[-nrchar:])
+        return j(*path.split(os.sep)[-nrchar:])
 
 
 def __dir__():
@@ -332,5 +337,9 @@ def __dir__():
         'RLock',
         'Thread',
         'Time',
-        'Utils'
+        'Utils',
+        'd',
+        'datetime',
+        'e',
+        'j'
     )

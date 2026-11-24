@@ -14,7 +14,7 @@ import types
 from .configs import Main
 from .encoder import JSON
 from .objects import Dicts, Methods
-from .utility import Log, Path, RLock, Utils
+from .utility import Log, Path, RLock, Utils, datetime, e, j
 
 
 logger = Log(__name__)
@@ -66,25 +66,25 @@ class Disk:
     @classmethod
     def cdir(cls, path):
         "create directory."
-        if os.path.exists(path):
+        if e(path):
             return
         with cls.lock:
             pth = Path(path)
-            if not os.path.exists(pth.parent):
+            if not e(pth.parent):
                 pth.parent.mkdir(parents=True, exist_ok=True)
 
     @classmethod
     def ident(cls, clz):
         "return ident string for object."
-        return os.path.join(Methods.fqn(clz), *str(datetime.datetime.now(tz=None)).split())
+        return j(Methods.fqn(clz), *str(datetime.now(tz=None)).split())
 
     @classmethod
     def read(cls, path, base="store"):
         "read object from path."
         with cls.lock:
-            pth = os.path.join(Workdir.wdr, base, path)
+            pth = j(Workdir.wdr, base, path)
             logger.debug("read %s/%s", base, path)
-            if not os.path.exists(pth):
+            if not e(pth):
                 return {}
             with open(pth, "r", encoding="utf-8") as fpt:
                 try:
@@ -98,7 +98,7 @@ class Disk:
         if not path:
             raise MissingPath
         with cls.lock:
-            pth = os.path.join(Workdir.wdr, base, path)
+            pth = j(Workdir.wdr, base, path)
             logger.debug("write %s/%s", base, path)
             cls.cdir(pth)
             with open(pth, "w", encoding="utf-8") as fpt:
@@ -179,14 +179,14 @@ class Locater:
     @classmethod
     def fns(cls, kind):
         "file names by kind of object."
-        path = os.path.join(Workdir.wdr, "store", kind)
+        path = j(Workdir.wdr, "store", kind)
         for rootdir, dirs, _files in os.walk(path, topdown=True):
             for dname in dirs:
                 if dname.count("-") != 2:
                     continue
-                ddd = os.path.join(rootdir, dname)
+                ddd = j(rootdir, dname)
                 for fll in os.listdir(ddd):
-                    yield cls.strip(os.path.join(ddd, fll))
+                    yield cls.strip(j(ddd, fll))
 
     @classmethod
     def fntime(cls, daystr):
@@ -253,8 +253,8 @@ class Workdir:
     def kinds(cls):
         "show kind on objects in cache."
         assert cls.wdr
-        path = os.path.join(cls.wdr, "store")
-        if not os.path.exists(path):
+        path = j(cls.wdr, "store")
+        if not e(path):
             cls.skel()
         return os.listdir(path)
 
@@ -262,7 +262,7 @@ class Workdir:
     def logdir(cls, path=""):
         "return directory to logs."
         assert cls.wdr
-        return os.path.join(cls.wdr, "logs", path)
+        return j(cls.wdr, "logs", path)
 
     @classmethod
     def long(cls, name):
@@ -281,14 +281,14 @@ class Workdir:
     def moddir(cls):
         "return modules directory."
         assert cls.wdr
-        return os.path.join(cls.wdr, "mods")
+        return j(cls.wdr, "mods")
 
     @classmethod
     def pid(cls, name):
         "write pid to file."
         assert cls.wdr
-        filename = os.path.join(cls.wdr, f"{name}.pid")
-        if os.path.exists(filename):
+        filename = j(cls.wdr, f"{name}.pid")
+        if e(filename):
             os.unlink(filename)
         path2 = Path(filename)
         path2.parent.mkdir(parents=True, exist_ok=True)
@@ -299,11 +299,11 @@ class Workdir:
     def skel(cls):
         "create directories."
         assert cls.wdr
-        if not os.path.exists(cls.wdr):
+        if not e(cls.wdr):
             Disk.cdir(cls.wdr)
         path = os.path.abspath(cls.wdr)
         for wpth in ["config", "logs", "mods", "store"]:
-            pth = Path(os.path.join(path, wpth))
+            pth = Path(j(path, wpth))
             pth.mkdir(parents=True, exist_ok=True)
 
 

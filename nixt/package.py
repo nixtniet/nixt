@@ -10,7 +10,7 @@ import os
 from .configs import Main
 from .objects import Methods
 from .persist import Workdir
-from .utility import MD5, Log, Utils
+from .utility import MD5, Log, Utils, e, j
 
 
 logger = Log(__name__)
@@ -48,8 +48,8 @@ class Mods:
             mod = cls.mods.get(modname, None)
             if mod:
                 return mod
-            fnm = os.path.join(path, name + ".py")
-            if not os.path.exists(fnm):
+            fnm = j(path, name + ".py")
+            if not e(fnm):
                 continue
             if not force and cls.md5s:
                 md5 = MD5.md5(fnm)
@@ -90,7 +90,7 @@ class Mods:
         for name, path in cls.dirs.items():
             if name in skip:
                 continue
-            if not os.path.exists(path):
+            if not e(path):
                 continue
             mods.extend(Utils.listdir(path))
         return sorted(set(mods))
@@ -98,7 +98,7 @@ class Mods:
     @classmethod
     def moddir(cls, name="modules"):
         "return package modules path."
-        return os.path.join(Methods.where(Mods), name)
+        return j(Methods.where(Mods), name)
 
     @classmethod
     def table(cls):

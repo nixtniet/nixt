@@ -5,8 +5,10 @@
 
 
 import inspect
-import os.path
 import types
+
+
+from .utility import d
 
 
 class Object:
@@ -265,7 +267,7 @@ class Methods:
     @classmethod
     def where(cls, obj):
         "path where object is defined."
-        return os.path.dirname(inspect.getfile(obj))
+        return d(inspect.getfile(obj))
 
 
 def __dir__():
