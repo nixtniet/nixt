@@ -157,7 +157,6 @@ def __dir__():
     return (
         'Engine',
         'Handler',
-        'Message',
         'Pool',
         'Runner'
     )

@@ -6,14 +6,14 @@
 
 CORE = {
     "booting": "53adc3f476a8c12ac877753067628f0e",
-    "clients": "b1a14eaa99a994ce14d2cbeec59e76fc",
+    "clients": "6a57eb8d0f2aeb1e1ca4c6382f1780cc",
     "command": "d6900447b06c51afaea707fbdc5e4f1d",
     "configs": "a797e516878dd61ed87e81caf6813840",
     "defines": "3468f04d241f225fd4feedb4aed4435c",
     "encoder": "51af17efa43d131b6726426c32c7e124",
     "excepts": "1a14ce75af0d7a7f8e50f05860122306",
-    "handler": "e0525ed5f732c3e0af12107f77a6a011",
-    "message": "ae807bd30871151b609b2cd808ea1861",
+    "handler": "172d503c84a51ca894d44dbfa87d5eef",
+    "message": "e781619e567aef7a6cff5dd22ba22fa9",
     "objects": "0f1b6b49c015f977cc57211feb515b2d",
     "package": "1ceab3672d6d754f474a20aed28fc379",
     "persist": "f887c167e3d2f9290bdde0b19835b3d8",

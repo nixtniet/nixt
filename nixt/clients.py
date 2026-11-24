@@ -100,7 +100,6 @@ class Output(Display):
             _thread.interrupt_main()
 
 
-
 class Buffer(Engine, Output):
 
     "buffered output"
