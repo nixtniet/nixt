@@ -7,7 +7,6 @@
 import gc
 import html
 import logging.handlers
-import os
 import pathlib
 import re
 import urllib.parse
@@ -26,6 +25,7 @@ from threading   import RLock
 from nixt.defines import Cfg, Clients, Data, Dicts, Disk, Dump, Format, JSON
 from nixt.defines import JSONL, Locater, Log, Logging, MD5, Main, Methods
 from nixt.defines import Pool, Repeater, Runner, Utils, Watcher, Workdir
+from nixt.utility import f, j
 
 
 logger = Log(__name__)
@@ -211,7 +211,7 @@ class Run:
     def start(cls, once=False):
         "initialise module."
         if Config.save:
-            cls.path = os.path.join(Workdir.logdir("rss"), 'rss.log')
+            cls.path = j(Workdir.logdir("rss"), 'rss.log')
             Utils.cdir(cls.path)
             pathlib.Path(cls.path).touch()
             with open(cls.path, "a+", encoding="utf-8") as file:
@@ -563,7 +563,7 @@ def imp(msg):
         msg.iface("<filename>")
         return
     fnm = msg.args[0]
-    if not os.path.isfile(fnm):
+    if not f(fnm):
         msg.reply(f"no {fnm} file found.")
         return
     with Locks.importlock:

@@ -4,7 +4,6 @@
 "mailbox"
 
 
-import os
 import time
 
 
@@ -12,6 +11,7 @@ from mailbox import Maildir, mbox
 
 
 from nixt.defines import Data, Dicts, Disk, Locater, Parser, Time
+from nixt.utility import e, f, i, x
 
 
 class Email(Data):
@@ -62,14 +62,14 @@ def mbx(msg):
     if not msg.args:
         msg.iface("<path>")
         return
-    fnm = os.path.expanduser(msg.args[0])
-    if not os.path.exists(fnm):
+    fnm = x(msg.args[0])
+    if not e(fnm):
         msg.iface("<path>")
         return
     msg.reply(f"reading from {fnm}")
-    if os.path.isdir(fnm):
+    if i(fnm):
         thing = Maildir(fnm, create=False)
-    elif os.path.isfile(fnm):
+    elif f(fnm):
         thing = mbox(fnm, create=False)
     else:
         return

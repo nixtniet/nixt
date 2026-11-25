@@ -5,12 +5,12 @@
 "persist tests"
 
 
-import os
 import unittest
 
 
 from nixt.defines import Dicts, Disk, Main, Locater, Workdir
 from nixt.persist import Cache
+from nixt.utility import e, j
 
 
 Workdir.wdr = '.test'
@@ -46,13 +46,13 @@ class TestDisk(unittest.TestCase):
         "test saving to disk."
         obj = {}
         opath = Disk.write(obj, "test")
-        self.assertTrue(os.path.exists(os.path.join(Workdir.wdr, "store", opath)))
+        self.assertTrue(e(j(Workdir.wdr, "store", opath)))
 
     def test_writecfg(self):
         "test writing config to disk."
         Main.a = "b"
         Disk.write(Dicts.skip(vars(Main)), "main", "config")
-        self.assertTrue(os.path.exists(os.path.join(Workdir.wdr, "config", "main")))
+        self.assertTrue(e(j(Workdir.wdr, "config", "main")))
 
 
 class TestLocater(unittest.TestCase):

@@ -25,9 +25,14 @@ from logging          import getLogger as Log
 logger = Log(__name__)
 
 
+a = os.path.abspath
 d = os.path.dirname
 e = os.path.exists
+f = os.path.isfile
+i = os.path.isdir
 j = os.path.join
+n = os.path.normpath
+x = os.path.expanduser
 
 
 class Format(Formatter):
@@ -111,8 +116,8 @@ class MD5:
         ok = True
         if not __spec__:
             return ok
-        path = os.path.dirname(str(__spec__.origin))
-        if not os.path.exists(path):
+        path = d(str(__spec__.origin))
+        if not e(path):
             return False
         for pth in os.listdir(path):
             if pth.startswith("__") or not pth.endswith(".py") or "statics" in pth:
@@ -148,7 +153,7 @@ class MD5:
     @classmethod
     def md5(cls, path):
         "calculate md5sum of a file."
-        if not os.path.exists(path):
+        if not e(path):
             return ""
         import hashlib
         md5s = hashlib.md5()
@@ -281,7 +286,7 @@ class Utils:
     @staticmethod
     def home(name):
         "return home working directory."
-        return os.path.expanduser(f"~/.{name}")
+        return x(f"~/.{name}")
 
     @staticmethod
     def listdir(path, ignore=""):
@@ -338,8 +343,13 @@ def __dir__():
         'Thread',
         'Time',
         'Utils',
+        'a',
         'd',
         'datetime',
         'e',
-        'j'
+        'f',
+        'i',
+        'j',
+        'n',
+        'x'
     )

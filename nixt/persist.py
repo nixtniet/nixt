@@ -13,7 +13,7 @@ import types
 from .configs import Main
 from .encoder import JSON
 from .objects import Dicts, Methods
-from .utility import Log, Path, RLock, Utils, datetime, e, j
+from .utility import Log, Path, RLock, Utils, datetime, a, e, j, x
 
 
 logger = Log(__name__)
@@ -246,7 +246,7 @@ class Workdir:
     @classmethod
     def home(cls, name):
         "return home working directory."
-        return os.path.expanduser(f"~/.{name}")
+        return x(f"~/.{name}")
 
     @classmethod
     def kinds(cls):
@@ -300,7 +300,7 @@ class Workdir:
         assert cls.wdr
         if not e(cls.wdr):
             Disk.cdir(cls.wdr)
-        path = os.path.abspath(cls.wdr)
+        path = a(cls.wdr)
         for wpth in ["config", "logs", "mods", "store"]:
             pth = Path(j(path, wpth))
             pth.mkdir(parents=True, exist_ok=True)

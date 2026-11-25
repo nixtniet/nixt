@@ -5,7 +5,6 @@
 
 
 import inspect
-import os
 import threading
 import time
 import _thread
@@ -19,7 +18,7 @@ from .objects import Methods
 from .package import Mods
 from .persist import Workdir
 from .threads import Threads
-from .utility import MD5, Event, Log, Logging, Utils
+from .utility import MD5, Event, Log, Logging, Utils, d
 
 
 logger = Log(__name__)
@@ -151,7 +150,7 @@ class Cmd:
                 md5s[name] = MD5.md5(module.__file__)
                 for cmd in Commands.scan(module):
                     Commands.names[Methods.getname(cmd)] = cmd.__module__.split(".")[-1]
-        corepath = os.path.dirname(str(inspect.getsourcefile(Mods)))
+        corepath = d(str(inspect.getsourcefile(Mods)))
         MD5.createmd5(corepath, core)
         msg.reply("# This file is placed in the Public Domain.")
         msg.reply("\n")

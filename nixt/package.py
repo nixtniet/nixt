@@ -10,7 +10,7 @@ import os
 from .configs import Main
 from .objects import Methods
 from .persist import Workdir
-from .utility import MD5, Log, Utils, e, j
+from .utility import MD5, Log, Utils, e, j, n
 
 
 logger = Log(__name__)
@@ -31,7 +31,7 @@ class Mods:
         cls.dir(f"{Main.name}.modules", cls.moddir())
         if Main.path:
             for pth in Utils.spl(Main.path):
-                pth = os.path.normpath(pth)
+                pth = n(pth)
                 pkgname = pth.rsplit(os.sep, maxsplit=1)[-1]
                 cls.dir(pkgname, pth)
 

@@ -18,6 +18,7 @@ sys.path.insert(0, os.getcwd())
 
 from nixt.defines import Boot, Client, Commands, Dicts, Main, Message, Parser
 from nixt.defines import Mods, Pool, Threads, Time, Workdir
+from nixt.utility import e
 
 
 Main.wait = True
@@ -54,7 +55,7 @@ class Kernel(Boot):
         Mods.dir("mods", "mods")
         Mods.dir("extra", "extra")
         Commands.table()
-        if os.path.exists(Workdir.wdr):
+        if e(Workdir.wdr):
             shutil.rmtree(Workdir.wdr)
         if Main.threaded:
             Pool.nrcpu = os.cpu_count()
