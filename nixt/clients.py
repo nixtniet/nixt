@@ -22,7 +22,6 @@ class Display:
     def __init__(self):
         self.olock = RLock()
         self.silent = False
-        Broker.add(self)
 
     def announce(self, text):
         "announce text to all channels."
