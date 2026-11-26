@@ -7,14 +7,8 @@
 import inspect
 
 
-from nixt.defines import MD5, Commands, JSON, Main, Mods
+from nixt.defines import MD5, Commands, JSON, Main, Mods, Methods, Utils
 from nixt.utility import d
-
-
-def cmd(msg):
-    "show commands."
-    check = len(Commands.cmds) > len(Commands.names)
-    msg.reply(",".join(sorted((check and Commands.cmds) or Commands.names)))
 
 
 def srv(msg):
@@ -63,11 +57,6 @@ def tbl(msg):
     msg.reply("        'MODULES',")
     msg.reply("        'NAMES'")
     msg.reply("    )")
-
-
-def ver(msg):
-    "show verson."
-    msg.reply(f"{Main.name.upper()} {MD5.coremd5}")
 
 
 SYSTEMD = """[Unit]

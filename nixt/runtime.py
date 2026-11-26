@@ -4,7 +4,6 @@
 "runtime"
 
 
-import inspect
 import os
 import sys
 import time
@@ -13,9 +12,8 @@ import time
 from argparse import SUPPRESS, ArgumentParser, RawTextHelpFormatter
 
 
-from .defines import Boot, Client, Commands, JSON, Main, MD5, Message
-from .defines import Methods, Mods, Utils, Workdir
-from .utility import d
+from .defines import Boot, Client, Commands, Main, MD5, Message
+from .defines import Methods, Mods, Workdir
 
 
 class Arguments:
@@ -190,6 +188,8 @@ class Console(CLI):
 
 
 class Cmd:
+
+    "basic commands"
 
     @staticmethod
     def cmd(msg):
