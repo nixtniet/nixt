@@ -7,7 +7,7 @@
 import random
 
 
-from nixt.defines import Dump, Log, Objects, Repeater
+from nixt.defines import Dump, Fleet, Log, Repeater
 
 
 logger = Log(__name__)
@@ -51,7 +51,7 @@ def get_msg():
 
 def cb_wsd():
     "show a wisdom quote."
-    Objects.announce(get_msg())
+    Fleet.announce(get_msg())
 
 
 def wsd(msg):

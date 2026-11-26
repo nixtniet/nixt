@@ -5,6 +5,8 @@
 
 
 import time
+import traceback
+import _thread
 
 
 from .objects import Methods

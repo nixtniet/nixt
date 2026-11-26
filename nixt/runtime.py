@@ -14,7 +14,7 @@ from argparse import SUPPRESS, ArgumentParser, RawTextHelpFormatter
 
 
 from .defines import Boot, Client, Commands, JSON, Main, MD5, Message
-from .defines import Methods, Mods, Workdir
+from .defines import Methods, Mods, Utils, Workdir
 from .utility import d
 
 

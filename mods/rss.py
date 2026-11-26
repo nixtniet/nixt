@@ -22,7 +22,7 @@ from ssl         import SSLError
 from threading   import RLock
 
 
-from nixt.defines import Cfg, Data, Dicts, Disk, Dump, Format, JSON, Objects
+from nixt.defines import Cfg, Data, Dicts, Disk, Dump, Fleet, Format, JSON
 from nixt.defines import JSONL, Locater, Log, Logging, MD5, Main, Methods
 from nixt.defines import Pool, Repeater, Runner, Utils, Watcher, Workdir
 from nixt.utility import f, j
@@ -121,7 +121,7 @@ class Run:
                 Methods.update(feed, JSONL.loads(line.strip()))
                 txt = cls.display(vars(feed))
                 if not Run.got(txt, feed):
-                    Objects.announce(txt)
+                    Fleet.announce(txt)
             cls.state.index = cls.file.tell()
         gc.collect(0)
 
@@ -322,7 +322,7 @@ class Fetching(Runner):
             if not silent:
                 txt = Run.display(dct)
                 if not Run.got(txt, feed):
-                    Objects.announce(txt)
+                    Fleet.announce(txt)
                     gotcha += 1
                     has = True
             del dct

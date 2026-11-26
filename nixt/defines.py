@@ -5,20 +5,20 @@
 
 
 from .booting import Boot
-from .brokers import Broker, Objects
+from .brokers import Broker, Fleet
 from .clients import Buffer, Client, Display, Output
-from .command import Commands, Parser
+from .command import Commands
 from .configs import Cfg, Config, Main
 from .encoder import JSON, JSONL
 from .handler import Callbacks, Handler, Pool, Runner
 from .message import Message
 from .objects import Data, Dicts, Methods, Object
 from .package import Mods
+from .parsers import Parser
 from .persist import Disk, Dump, Locater, Workdir
-from .repeats import Repeater
+from .repeats import Repeater, Watcher
 from .threads import Errors, Task, Threads
 from .utility import MD5, Format, Log, Logging, Time, Utils
-from .watcher import Watcher
 
 
 __all__ = (
@@ -39,6 +39,7 @@ __all__ = (
     'Display',
     'Dump',
     'Errors',
+    'Fleet',
     'Format',
     'Handler',
     'Locater',
@@ -49,7 +50,6 @@ __all__ = (
     'Methods',
     'Mods',
     'Object',
-    'Objects',
     'Output',
     'Parser',
     'Pool',

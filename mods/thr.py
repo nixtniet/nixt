@@ -11,7 +11,7 @@ import time
 from nixt.defines import Time
 
 
-def tsk(msg):
+def thr(msg):
     "list of running tasks."
     result = []
     for thread in sorted(threading.enumerate(), key=lambda x: x.name):
@@ -31,4 +31,4 @@ def tsk(msg):
     if res:
         msg.reply(" ".join(res))
     else:
-        msg.reply("no tasks")
+        msg.reply("no threads")

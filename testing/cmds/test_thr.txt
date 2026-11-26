@@ -2,12 +2,11 @@
 # doctest: +ELLIPSIS
 
 
-"plugins"
+"threads"
 
 
 >>> from nixt.command import cmd
 
 
->>> cmd("tsk")
-['no tasks']
-
+>>> cmd("thr")
+['no threads']

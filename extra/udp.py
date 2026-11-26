@@ -11,7 +11,7 @@ import threading
 import time
 
 
-from nixt.defines import Log, Main, Object, Objects, Task
+from nixt.defines import Fleet, Log, Main, Object, Task
 
 
 logger = Log(__name__)
@@ -77,7 +77,7 @@ class UDP(Object):
         "announce to clients."
         if addr:
             Cfg.addr = addr
-        Objects.announce(txt.replace("\00", ""))
+        Fleet.announce(txt.replace("\00", ""))
 
     def start(self):
         "start UDP listener."
