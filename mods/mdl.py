@@ -11,7 +11,7 @@ import time
 from typing import Dict
 
 
-from nixt.defines import Clients, Log, Message, Repeater, Time
+from nixt.defines import Log, Message, Objects, Repeater, Time
 
 
 logger = Log(__name__)
@@ -139,7 +139,7 @@ def cb_now(msg):
         nrtimes = int(delta/needed)
         txt += f"{getalias(nme)} {nrtimes} | "
     txt += SOURCE
-    Clients.announce(txt)
+    Objects.announce(txt)
 
 
 def cb_stats(msg):
@@ -155,7 +155,7 @@ def cb_stats(msg):
         alias = getalias(nme).upper()
         need = Time.elapsed(needed)
         txt = f"{elapsed} {alias} ({nrtimes}/{nrday}/{nryear}) every {need}"
-        Clients.announce(txt)
+        Objects.announce(txt)
 
 
 def dis(msg):

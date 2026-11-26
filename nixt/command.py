@@ -7,7 +7,7 @@
 import inspect
 
 
-from .clients import Clients
+from .brokers import Objects
 from .message import Message
 from .objects import Methods
 from .package import Mods
@@ -45,7 +45,7 @@ class Commands:
         func = cls.cmds.get(msg.cmd, cls.ondemand(msg.cmd))
         if func:
             func(msg)
-            Clients.display(msg)
+            Objects.display(msg)
         msg.ready()
 
     @classmethod

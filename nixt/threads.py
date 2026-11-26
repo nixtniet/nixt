@@ -7,12 +7,27 @@
 import time
 
 
-from .excepts import Errors
 from .objects import Methods
 from .utility import Event, Log, Queue, RLock, Thread
 
 
 logger = Log(__name__)
+
+
+class Errors:
+
+    "error management"
+
+    @classmethod
+    def format(cls, exc):
+        "format an exception."
+        return traceback.format_exception(type(exc), exc, exc.__traceback__)
+
+    @classmethod
+    def throw(cls, exc):
+        "log the exception and interrupt main loop."
+        logger.exception(exc)
+        _thread.interrupt_main()
 
 
 class Task(Thread):
@@ -86,6 +101,7 @@ class Threads:
 
 def __dir__():
     return (
+        'Errors',
         'Task',
         'Threads'
     )
