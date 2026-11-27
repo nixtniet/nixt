@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.clients import Display
+from nixt.display import Display
 
 
 class TestDisplay(unittest.TestCase):

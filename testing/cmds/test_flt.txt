@@ -19,4 +19,4 @@
 
 
 >>> cmd("flt 0")
-['<nixt.clients.Client object at ...']
+['<nixt.display.Client object at ...']

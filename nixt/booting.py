@@ -10,7 +10,7 @@ import _thread
 
 
 from .brokers import Broker
-from .clients import Client
+from .display import Client
 from .package import Mods
 from .persist import Workdir
 from .threads import Threads

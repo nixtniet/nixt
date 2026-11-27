@@ -7,7 +7,7 @@
 import unittest
 
 
-from nixt.clients import Buffer
+from nixt.defines import Buffer
 
 
 class TestBuffer(unittest.TestCase):

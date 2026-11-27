@@ -6,9 +6,9 @@
 
 from .booting import Boot
 from .brokers import Broker, Fleet
-from .clients import Buffer, Client, Display, Output
 from .command import Commands
 from .configs import Cfg, Config, Main
+from .display import Buffer, Client, Display, Output
 from .encoder import JSON, JSONL
 from .handler import Callbacks, Handler, Pool, Runner
 from .message import Message
