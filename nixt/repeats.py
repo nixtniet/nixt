@@ -18,8 +18,6 @@ class Repeater:
 
     running = Event()
     stopped = Event()
-    counter = 0
-    sleeptime = 0.1
     todo = {}
 
     @classmethod
@@ -33,12 +31,13 @@ class Repeater:
     @classmethod
     def loop(cls):
         "repeater loop."
+        counter = 0
         while cls.running.is_set():
             time.sleep(1.0)
-            cls.counter += 1
+            counter += 1
             for sleeptime, arguments in cls.todo.items():
                 slept = int(sleeptime)
-                if cls.counter % slept != 0:
+                if counter % slept != 0:
                     continue
                 for func, args, kwargs in arguments:
                     Threads.start(func, *args, **kwargs)

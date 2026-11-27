@@ -209,7 +209,7 @@ class Methods:
 
     @classmethod
     def funcname(cls, obj):
-        "return functionname."
+        "return function name."
         try:
             return obj.__name__
         except AttributeError:

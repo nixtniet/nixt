@@ -311,6 +311,5 @@ def __dir__():
         'Disk',
         'Dump',
         'Locater',
-        'Selector',
         'Workdir'
     )
