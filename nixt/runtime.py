@@ -151,6 +151,22 @@ class Kernel(Boot, Daemon):
             dofinal()
 
 
+class Cmd:
+
+    "basic commands"
+
+    @staticmethod
+    def cmd(msg):
+        "show commands."
+        check = len(Commands.cmds) > len(Commands.names)
+        msg.reply(",".join(sorted((check and Commands.cmds) or Commands.names)))
+
+    @staticmethod
+    def ver(msg):
+        "show verson."
+        msg.reply(f"{Main.name.upper()} {MD5.coremd5}")
+
+
 class CLI(Client):
 
     "Command Line Interface"
@@ -185,22 +201,6 @@ class Console(CLI):
         msg.kind = "command"
         self.put(msg)
         return msg
-
-
-class Cmd:
-
-    "basic commands"
-
-    @staticmethod
-    def cmd(msg):
-        "show commands."
-        check = len(Commands.cmds) > len(Commands.names)
-        msg.reply(",".join(sorted((check and Commands.cmds) or Commands.names)))
-
-    @staticmethod
-    def ver(msg):
-        "show verson."
-        msg.reply(f"{Main.name.upper()} {MD5.coremd5}")
 
 
 class Scripts:
